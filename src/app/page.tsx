@@ -14,11 +14,11 @@ export default function Home() {
   const [baseUrl, setBaseUrl] = useState("https://example.com");
   const [description, setDescription] = useState("");
   const [step, setStep] = useState<Step>("idle");
-  const [code, setCode] = useState("");
   const [editedCode, setEditedCode] = useState("");
   const [editing, setEditing] = useState(false);
   const [result, setResult] = useState<RunResult | null>(null);
   const [error, setError] = useState("");
+  const [copyLabel, setCopyLabel] = useState("Copy");
   const codeRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export default function Home() {
   async function handleGenerate() {
     if (!description.trim()) return;
     setStep("generating");
-    setCode("");
     setEditedCode("");
     setResult(null);
     setError("");
@@ -43,7 +42,6 @@ export default function Home() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Generation failed");
-      setCode(data.code);
       setEditedCode(data.code);
       setStep("ready");
     } catch (err: unknown) {
@@ -73,16 +71,20 @@ export default function Home() {
     }
   }
 
-  function handleCopy() {
-    navigator.clipboard.writeText(editedCode).catch(() => {});
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(editedCode);
+      setCopyLabel("Copied!");
+      setTimeout(() => setCopyLabel("Copy"), 2000);
+    } catch {
+      setCopyLabel("Copy failed");
+      setTimeout(() => setCopyLabel("Copy"), 2000);
+    }
   }
 
   const isGenerating = step === "generating";
   const isRunning = step === "running";
   const hasCode = step === "ready" || step === "done";
-
-  // suppress unused variable warning – code is stored for potential future use
-  void code;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -213,7 +215,7 @@ export default function Home() {
                   onClick={handleCopy}
                   className="text-xs text-zinc-400 hover:text-white transition px-2 py-1 rounded hover:bg-zinc-700"
                 >
-                  Copy
+                  {copyLabel}
                 </button>
               </div>
             </div>
