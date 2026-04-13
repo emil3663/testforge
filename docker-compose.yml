@@ -1,0 +1,125 @@
+services:
+  # ────────────────────────────────────────────────────────
+  # Infrastructure
+  # ────────────────────────────────────────────────────────
+  plane-db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: plane
+      POSTGRES_PASSWORD: plane
+      POSTGRES_DB: plane
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plane"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  plane-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+  plane-minio:
+    image: minio/minio
+    restart: unless-stopped
+    command: server /data --console-address ":9090"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-plane-access-key}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-plane-secret-key}
+    ports:
+      - "9000:9000"   # S3 API
+      - "9090:9090"   # MinIO Console
+    volumes:
+      - uploads:/data
+
+  # ────────────────────────────────────────────────────────
+  # Plane — test target
+  # ────────────────────────────────────────────────────────
+  plane-api:
+    image: makeplane/plane-backend:stable
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-api.sh
+    environment:
+      - DATABASE_URL=postgresql://plane:plane@plane-db/plane
+      - REDIS_URL=redis://plane-redis:6379/0
+      - SECRET_KEY=${PLANE_SECRET_KEY:-change-me-before-production}
+      - FILE_SIZE_LIMIT=5242880
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-plane-access-key}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-plane-secret-key}
+      - AWS_S3_ENDPOINT_URL=http://plane-minio:9000
+      - AWS_S3_BUCKET_NAME=uploads
+      - WEB_URL=http://localhost
+      - CORS_ALLOWED_ORIGINS=http://localhost
+      - SENTRY_DSN=
+    depends_on:
+      plane-db:
+        condition: service_healthy
+      plane-redis:
+        condition: service_started
+
+  plane-worker:
+    image: makeplane/plane-backend:stable
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-worker.sh
+    environment:
+      - DATABASE_URL=postgresql://plane:plane@plane-db/plane
+      - REDIS_URL=redis://plane-redis:6379/0
+      - SECRET_KEY=${PLANE_SECRET_KEY:-change-me-before-production}
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-plane-access-key}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-plane-secret-key}
+      - AWS_S3_ENDPOINT_URL=http://plane-minio:9000
+      - AWS_S3_BUCKET_NAME=uploads
+    depends_on:
+      - plane-api
+
+  plane-beat-worker:
+    image: makeplane/plane-backend:stable
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-beat.sh
+    environment:
+      - DATABASE_URL=postgresql://plane:plane@plane-db/plane
+      - REDIS_URL=redis://plane-redis:6379/0
+      - SECRET_KEY=${PLANE_SECRET_KEY:-change-me-before-production}
+    depends_on:
+      - plane-api
+
+  plane-web:
+    image: makeplane/plane-frontend:stable
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost/api
+      - NEXT_PUBLIC_DEPLOY_URL=http://localhost
+    depends_on:
+      - plane-api
+
+  plane-space:
+    image: makeplane/plane-space:stable
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost/api
+      - NEXT_PUBLIC_DEPLOY_URL=http://localhost/spaces
+    depends_on:
+      - plane-api
+
+  plane-proxy:
+    image: makeplane/plane-proxy:stable
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_PORT=80
+    depends_on:
+      - plane-web
+      - plane-api
+      - plane-space
+
+volumes:
+  pgdata:
+  redisdata:
+  uploads:

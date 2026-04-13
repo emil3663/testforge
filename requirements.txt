@@ -1,0 +1,20 @@
+# TestForge Python dependencies
+# Install with: pip install -r requirements.txt
+
+# Web framework
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+
+# Templating
+jinja2>=3.1.4
+
+# AI — test generation
+openai>=1.35.0
+
+# Browser automation — test execution
+playwright>=1.44.0
+pytest>=8.2.0
+pytest-playwright>=0.5.0
+
+# Configuration
+python-dotenv>=1.0.0

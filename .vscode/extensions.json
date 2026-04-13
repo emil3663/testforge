@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    // AI assistant — core to the TestForge workflow
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+
+    // Python
+    "ms-python.python",
+    "ms-python.debugpy",
+    "ms-python.pylint",
+    "charliermarsh.ruff",
+
+    // Playwright
+    "ms-playwright.playwright",
+
+    // Docker (for managing the Plane test-target containers)
+    "ms-azuretools.vscode-docker",
+
+    // Quality-of-life
+    "EditorConfig.EditorConfig",
+    "usernamehww.comment-divider"
+  ]
+}
