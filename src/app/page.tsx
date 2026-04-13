@@ -202,7 +202,7 @@ export default function Home() {
                 <span className="w-3 h-3 rounded-full bg-green-500" />
               </div>
               <span className="text-xs text-zinc-400 font-mono">
-                generated-test.spec.ts
+                generated_test.py
               </span>
               <div className="flex items-center gap-2">
                 <button
