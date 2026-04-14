@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TestForge — AI-native test automation</title>
+  <meta name="description" content="Describe what you want to test in plain English. TestForge writes the Python Playwright code. You review it, run it, and ship with confidence." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    [x-cloak] { display: none !important; }
+    textarea { tab-size: 2; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col bg-zinc-50 text-zinc-900 font-sans">
+
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-zinc-200 bg-white">
+      <div class="max-w-4xl mx-auto px-6 py-4 flex items-center gap-3">
+        <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600">
+          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
+          </svg>
+        </div>
+        <span class="text-lg font-semibold tracking-tight">TestForge</span>
+        <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">beta</span>
+        <span class="ml-auto text-xs text-zinc-400">Python · Playwright · pytest</span>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-10 space-y-8">
+
+      <!-- Hero -->
+      <div class="space-y-2">
+        <h1 class="text-3xl font-bold tracking-tight text-zinc-900">Describe your test in plain English</h1>
+        <p class="text-zinc-500 text-base">
+          Tell TestForge what you want to verify. It writes Python Playwright code.
+          You review, edit, and run it — no automation experience required.
+        </p>
+      </div>
+
+      <!-- Input card -->
+      <div class="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6 space-y-5">
+        <div class="space-y-1.5">
+          <label for="base-url" class="block text-sm font-medium text-zinc-700">Base URL</label>
+          <input
+            id="base-url"
+            type="url"
+            placeholder="http://localhost:80"
+            value="http://localhost:80"
+            class="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="description" class="block text-sm font-medium text-zinc-700">What do you want to test?</label>
+          <textarea
+            id="description"
+            rows="5"
+            placeholder="E.g. Log in to Plane with valid credentials and verify the workspace dashboard loads. Then try logging in with a wrong password and confirm the error message appears."
+            class="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
+          ></textarea>
+        </div>
+
+        <button
+          id="generate-btn"
+          onclick="handleGenerate()"
+          class="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          <span id="generate-label">Generate test</span>
+        </button>
+      </div>
+
+      <!-- Error banner -->
+      <div id="error-banner" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
+
+      <!-- Code panel -->
+      <div id="code-panel" class="hidden bg-zinc-900 rounded-2xl border border-zinc-700 overflow-hidden shadow-lg">
+        <!-- Toolbar -->
+        <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-700">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          </div>
+          <span class="text-xs text-zinc-400 font-mono">generated_test.py</span>
+          <div class="flex items-center gap-2">
+            <button id="edit-btn" onclick="toggleEdit()" class="text-xs text-zinc-400 hover:text-white transition px-2 py-1 rounded hover:bg-zinc-700">Edit</button>
+            <button id="copy-btn" onclick="handleCopy()" class="text-xs text-zinc-400 hover:text-white transition px-2 py-1 rounded hover:bg-zinc-700">Copy</button>
+          </div>
+        </div>
+
+        <!-- Code display -->
+        <pre id="code-display" class="overflow-x-auto px-5 py-5 text-sm font-mono text-green-300 leading-relaxed whitespace-pre"></pre>
+        <!-- Code editor (hidden by default) -->
+        <textarea
+          id="code-editor"
+          class="hidden w-full bg-zinc-900 text-green-300 font-mono text-sm px-5 py-5 focus:outline-none resize-none min-h-80"
+          spellcheck="false"
+          oninput="syncDisplay()"
+        ></textarea>
+
+        <!-- Run bar -->
+        <div class="flex items-center justify-between px-5 py-3 border-t border-zinc-700 bg-zinc-800">
+          <span class="text-xs text-zinc-400">Review the code above, edit if needed, then run it.</span>
+          <button
+            id="run-btn"
+            onclick="handleRun()"
+            class="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            <span id="run-label">Run test</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results panel -->
+      <div id="results-panel" class="hidden rounded-2xl border overflow-hidden shadow-sm">
+        <div id="results-header" class="flex items-center gap-3 px-5 py-3 border-b">
+          <span id="results-icon"></span>
+          <span id="results-title" class="font-semibold text-sm"></span>
+        </div>
+        <pre id="results-output" class="px-5 py-4 text-xs font-mono text-zinc-700 whitespace-pre-wrap overflow-x-auto"></pre>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-200 bg-white mt-auto">
+      <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between text-xs text-zinc-400">
+        <span>TestForge — AI-native test automation</span>
+        <span>Python · Playwright · OpenAI</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // State
+    // ---------------------------------------------------------------------------
+    let isGenerating = false;
+    let isRunning = false;
+    let isEditing = false;
+
+    // ---------------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------------
+    function setGenerating(val) {
+      isGenerating = val;
+      const btn = document.getElementById('generate-btn');
+      const label = document.getElementById('generate-label');
+      btn.disabled = val || isRunning;
+      label.textContent = val ? 'Generating…' : 'Generate test';
+    }
+
+    function setRunning(val) {
+      isRunning = val;
+      const btn = document.getElementById('run-btn');
+      const label = document.getElementById('run-label');
+      btn.disabled = val;
+      label.textContent = val ? 'Running…' : 'Run test';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-banner');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function clearError() {
+      document.getElementById('error-banner').classList.add('hidden');
+    }
+
+    function showCode(code) {
+      const panel = document.getElementById('code-panel');
+      const display = document.getElementById('code-display');
+      const editor = document.getElementById('code-editor');
+      display.textContent = code;
+      editor.value = code;
+      panel.classList.remove('hidden');
+    }
+
+    function getCode() {
+      return document.getElementById('code-editor').value;
+    }
+
+    function toggleEdit() {
+      const display = document.getElementById('code-display');
+      const editor = document.getElementById('code-editor');
+      const btn = document.getElementById('edit-btn');
+      isEditing = !isEditing;
+      if (isEditing) {
+        display.classList.add('hidden');
+        editor.classList.remove('hidden');
+        editor.focus();
+        btn.textContent = 'View';
+      } else {
+        editor.classList.add('hidden');
+        display.classList.remove('hidden');
+        display.textContent = editor.value;
+        btn.textContent = 'Edit';
+      }
+    }
+
+    function syncDisplay() {
+      // Keep display in sync while editing (for when user switches back)
+      document.getElementById('code-display').textContent =
+        document.getElementById('code-editor').value;
+    }
+
+    async function handleCopy() {
+      const btn = document.getElementById('copy-btn');
+      try {
+        await navigator.clipboard.writeText(getCode());
+        btn.textContent = 'Copied!';
+      } catch {
+        btn.textContent = 'Copy failed';
+      }
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    }
+
+    function showResults(passed, output, duration) {
+      const panel = document.getElementById('results-panel');
+      const header = document.getElementById('results-header');
+      const icon = document.getElementById('results-icon');
+      const title = document.getElementById('results-title');
+      const out = document.getElementById('results-output');
+
+      panel.classList.remove('hidden');
+
+      if (passed) {
+        panel.className = 'rounded-2xl border border-emerald-200 bg-emerald-50 overflow-hidden shadow-sm';
+        header.className = 'flex items-center gap-3 px-5 py-3 border-b border-emerald-200 bg-emerald-100';
+        icon.innerHTML = '<svg class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>';
+        title.className = 'font-semibold text-sm text-emerald-800';
+        title.textContent = `All tests passed — ${duration}ms`;
+      } else {
+        panel.className = 'rounded-2xl border border-red-200 bg-red-50 overflow-hidden shadow-sm';
+        header.className = 'flex items-center gap-3 px-5 py-3 border-b border-red-200 bg-red-100';
+        icon.innerHTML = '<svg class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" /></svg>';
+        title.className = 'font-semibold text-sm text-red-800';
+        title.textContent = `Tests failed — ${duration}ms`;
+      }
+
+      out.textContent = output;
+    }
+
+    // ---------------------------------------------------------------------------
+    // API calls
+    // ---------------------------------------------------------------------------
+    async function handleGenerate() {
+      const description = document.getElementById('description').value.trim();
+      if (!description) return;
+
+      clearError();
+      setGenerating(true);
+      document.getElementById('code-panel').classList.add('hidden');
+      document.getElementById('results-panel').classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            baseUrl: document.getElementById('base-url').value,
+            description,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? 'Generation failed');
+        showCode(data.code);
+      } catch (err) {
+        showError('Error: ' + err.message);
+      } finally {
+        setGenerating(false);
+      }
+    }
+
+    async function handleRun() {
+      clearError();
+      setRunning(true);
+      document.getElementById('results-panel').classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: getCode() }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? 'Run failed');
+        showResults(data.passed, data.output, data.duration);
+      } catch (err) {
+        showError('Error: ' + err.message);
+      } finally {
+        setRunning(false);
+      }
+    }
+
+    // Allow Ctrl+Enter / Cmd+Enter to generate
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        handleGenerate();
+      }
+    });
+  </script>
+
+</body>
+</html>
