@@ -5,6 +5,8 @@ const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_PATHS = 5;
 const MAX_TEXT_ITEMS = 8;
 const MAX_ACTIONABLE_ITEMS = 40;
+const MAX_LINK_DETAILS = 100;
+const MAX_EMBEDDED_LINK_DETAILS = 150;
 
 type InteractionCategory = "navigation" | "api" | "form" | "action";
 type ActionableElementType = "link" | "button" | "input" | "select" | "textarea" | "form";
@@ -31,9 +33,30 @@ interface ActionableElementDetail {
 interface LinkDetail {
     text: string;
     url: string;
+    rawHref: string;
     category: "navigation" | "api";
+    linkType: "internal" | "external" | "anchor" | "mailto" | "download";
     containerLabel: string;
     expectedStatus: number | null;
+    target: string;
+    targetBehavior: "same-window" | "new-tab" | "new-window";
+    titleAttribute: string;
+    downloadName: string;
+    requiresAuth: boolean;
+    isSecure: boolean;
+}
+
+interface EmbeddedLinkDetail {
+    text: string;
+    url: string;
+    rawValue: string;
+    tagName: string;
+    attributeName: string;
+    kind: "iframe" | "frame" | "image" | "script" | "stylesheet" | "media" | "document" | "form" | "button" | "data" | "interactive";
+    source: "dom" | "heuristic";
+    containerLabel: string;
+    sameOrigin: boolean;
+    isVisible: boolean;
 }
 
 interface PageSnapshot {
@@ -46,6 +69,7 @@ interface PageSnapshot {
     links: string[];
     actionableElements: ActionableElementDetail[];
     linkDetails: LinkDetail[];
+    embeddedLinkDetails: EmbeddedLinkDetail[];
     visibleTextSnippets: string[];
 }
 
@@ -130,7 +154,7 @@ export async function POST(req: NextRequest) {
                 await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
                 await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => { });
 
-                const snapshot = await page.evaluate((requestedPath) => {
+                const snapshot = await page.evaluate(({ requestedPath, maxActionableItems, maxLinkDetails, maxEmbeddedLinkDetails }) => {
                     const cleanItems = (items: string[], limit = 8) => [...new Set(
                         items
                             .map((item) => item.replace(/\s+/g, " ").trim())
@@ -336,6 +360,171 @@ export async function POST(req: NextRequest) {
                         return null;
                     };
 
+                    const inferLinkType = (href: string, element: Element) => {
+                        const loweredHref = href.toLowerCase();
+                        const downloadAttribute = cleanText(element.getAttribute("download") ?? "");
+
+                        if (loweredHref.startsWith("mailto:")) {
+                            return "mailto" as const;
+                        }
+
+                        if (loweredHref.startsWith("#")) {
+                            return "anchor" as const;
+                        }
+
+                        if (
+                            downloadAttribute ||
+                            /\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i.test(loweredHref)
+                        ) {
+                            return "download" as const;
+                        }
+
+                        try {
+                            const resolved = new URL(href, window.location.href);
+                            return resolved.origin === window.location.origin ? "internal" as const : "external" as const;
+                        } catch {
+                            return "external" as const;
+                        }
+                    };
+
+                    const inferTargetBehavior = (target: string) => {
+                        if (target === "_blank") {
+                            return "new-tab" as const;
+                        }
+
+                        if (target && target !== "_self") {
+                            return "new-window" as const;
+                        }
+
+                        return "same-window" as const;
+                    };
+
+                    const inferProtectedLink = (text: string, href: string, containerLabel: string) => {
+                        const context = `${text} ${href} ${containerLabel}`.toLowerCase();
+                        return /(login|sign in|signin|account|profile|admin|dashboard|checkout|orders|billing|settings|my\s)/.test(context);
+                    };
+
+                    const safeResolveUrl = (href: string) => {
+                        try {
+                            return new URL(href, window.location.href).toString();
+                        } catch {
+                            return null;
+                        }
+                    };
+
+                    const inferEmbeddedKind = (tagName: string, attributeName: string) => {
+                        if (tagName === "iframe") {
+                            return "iframe" as const;
+                        }
+
+                        if (tagName === "frame") {
+                            return "frame" as const;
+                        }
+
+                        if (tagName === "img") {
+                            return "image" as const;
+                        }
+
+                        if (tagName === "script") {
+                            return "script" as const;
+                        }
+
+                        if (tagName === "link") {
+                            return "stylesheet" as const;
+                        }
+
+                        if (["video", "audio", "source"].includes(tagName)) {
+                            return "media" as const;
+                        }
+
+                        if (tagName === "object" || tagName === "embed") {
+                            return "document" as const;
+                        }
+
+                        if (tagName === "form") {
+                            return "form" as const;
+                        }
+
+                        if (tagName === "button" || attributeName === "formaction") {
+                            return "button" as const;
+                        }
+
+                        if (["data-href", "data-url", "routerlink", "ng-href", "xlink:href"].includes(attributeName)) {
+                            return "data" as const;
+                        }
+
+                        return "interactive" as const;
+                    };
+
+                    const isVisibleElement = (element: Element) => {
+                        const htmlElement = element as HTMLElement;
+                        if (!(htmlElement instanceof HTMLElement)) {
+                            return false;
+                        }
+
+                        const styles = window.getComputedStyle(htmlElement);
+                        const rect = htmlElement.getBoundingClientRect();
+                        return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+                    };
+
+                    const isSameOriginUrl = (url: string) => {
+                        try {
+                            return new URL(url).origin === window.location.origin;
+                        } catch {
+                            return false;
+                        }
+                    };
+
+                    const buildEmbeddedText = (element: Element) => {
+                        return cleanText(
+                            getElementText(element) ||
+                            element.getAttribute("aria-label") ||
+                            element.getAttribute("alt") ||
+                            element.getAttribute("title") ||
+                            element.getAttribute("name") ||
+                            element.getAttribute("id") ||
+                            ""
+                        );
+                    };
+
+                    const getEmbeddedAttribute = (element: Element) => {
+                        for (const attributeName of [
+                            "src",
+                            "data",
+                            "href",
+                            "action",
+                            "formaction",
+                            "poster",
+                            "data-href",
+                            "data-url",
+                            "routerlink",
+                            "ng-href",
+                            "xlink:href",
+                        ]) {
+                            const value = element.getAttribute(attributeName);
+                            if (value && cleanText(value)) {
+                                return {
+                                    attributeName,
+                                    rawValue: cleanText(value),
+                                };
+                            }
+                        }
+
+                        return null;
+                    };
+
+                    const resolveEmbeddedUrl = (attributeName: string, rawValue: string) => {
+                        if (/^(mailto:|tel:|javascript:|data:)/i.test(rawValue)) {
+                            return rawValue;
+                        }
+
+                        if (attributeName === "xlink:href" && rawValue.startsWith("#")) {
+                            return null;
+                        }
+
+                        return safeResolveUrl(rawValue);
+                    };
+
                     const title = document.title.replace(/\s+/g, " ").trim();
                     const metaDescription = document
                         .querySelector('meta[name="description"]')
@@ -380,7 +569,7 @@ export async function POST(req: NextRequest) {
                                                     : "input";
                             const rawHref = node.getAttribute("href");
                             const url = rawHref && !rawHref.startsWith("#") && !rawHref.startsWith("javascript:") && !rawHref.startsWith("mailto:") && !rawHref.startsWith("tel:")
-                                ? new URL(rawHref, window.location.href).toString()
+                                ? safeResolveUrl(rawHref)
                                 : null;
                             const text = getElementText(node);
                             const label = getAssociatedLabel(node);
@@ -445,24 +634,150 @@ export async function POST(req: NextRequest) {
                                         candidate.locator.name === element.locator.name
                                 ) === index
                         )
-                        .slice(0, MAX_ACTIONABLE_ITEMS);
+                        .slice(0, maxActionableItems);
 
-                    const linkDetails = actionableElements
+                    const linkDetails = Array.from(document.querySelectorAll("a[href]"))
+                        .flatMap((anchor) => {
+                            const rawHref = anchor.getAttribute("href");
+
+                            if (!rawHref || rawHref.startsWith("javascript:") || rawHref.startsWith("tel:")) {
+                                return [];
+                            }
+
+                            try {
+                                const text = cleanText(anchor.textContent ?? "");
+                                const containerLabel = findContainerLabel(anchor);
+                                const descriptor = [
+                                    text,
+                                    cleanText(anchor.getAttribute("aria-label") ?? ""),
+                                    cleanText(anchor.getAttribute("id") ?? ""),
+                                    cleanText(anchor.getAttribute("name") ?? ""),
+                                    cleanText(anchor.getAttribute("data-testid") ?? ""),
+                                ].filter(Boolean).join(" ");
+                                const linkType = inferLinkType(rawHref, anchor);
+                                const resolvedUrl = rawHref.toLowerCase().startsWith("mailto:")
+                                    ? rawHref
+                                    : safeResolveUrl(rawHref);
+
+                                if (!resolvedUrl) {
+                                    return [];
+                                }
+
+                                const category = inferCategory(anchor, "link", descriptor, resolvedUrl, containerLabel);
+                                const target = cleanText(anchor.getAttribute("target") ?? "");
+                                const titleAttribute = cleanText(anchor.getAttribute("title") ?? "");
+                                const downloadName = cleanText(anchor.getAttribute("download") ?? "");
+
+                                return [{
+                                    text,
+                                    url: resolvedUrl,
+                                    rawHref,
+                                    category: category === "api" ? "api" : "navigation",
+                                    linkType,
+                                    containerLabel,
+                                    expectedStatus: inferExpectedStatus(text, resolvedUrl, containerLabel, category),
+                                    target,
+                                    targetBehavior: inferTargetBehavior(target),
+                                    titleAttribute,
+                                    downloadName,
+                                    requiresAuth: inferProtectedLink(text, rawHref, containerLabel),
+                                    isSecure: resolvedUrl.startsWith("https://") || rawHref.toLowerCase().startsWith("mailto:"),
+                                }];
+                            } catch {
+                                return [];
+                            }
+                        })
+                        .filter((link): link is LinkDetail => Boolean(link))
                         .filter(
-                            (element): element is ActionableElementDetail & {
-                                elementType: "link";
-                                url: string;
-                                category: "navigation" | "api";
-                            } => element.elementType === "link" && Boolean(element.url) && (element.category === "navigation" || element.category === "api")
+                            (link, index, allLinks) =>
+                                allLinks.findIndex(
+                                    (candidate) =>
+                                        candidate.rawHref === link.rawHref &&
+                                        candidate.url === link.url &&
+                                        candidate.text === link.text &&
+                                        candidate.containerLabel === link.containerLabel
+                                ) === index
                         )
-                        .map((element) => ({
-                            text: element.text,
-                            url: element.url,
-                            category: element.category,
-                            containerLabel: element.containerLabel,
-                            expectedStatus: element.expectedStatus,
-                        }))
-                        .slice(0, 25);
+                        .slice(0, maxLinkDetails);
+
+                    const embeddedLinkDetails = [
+                        ...Array.from(document.querySelectorAll("iframe[src], frame[src], embed[src], object[data], img[src], script[src], source[src], video[src], audio[src], link[href], form[action], button[formaction], input[formaction], [data-href], [data-url], [routerlink], [ng-href], [xlink\\:href], [poster]"))
+                            .flatMap((element) => {
+                                const tagName = element.tagName.toLowerCase();
+                                const attribute = getEmbeddedAttribute(element);
+
+                                if (!attribute) {
+                                    return [];
+                                }
+
+                                const resolvedUrl = resolveEmbeddedUrl(attribute.attributeName, attribute.rawValue);
+
+                                if (!resolvedUrl) {
+                                    return [];
+                                }
+
+                                return [{
+                                    text: buildEmbeddedText(element),
+                                    url: resolvedUrl,
+                                    rawValue: attribute.rawValue,
+                                    tagName,
+                                    attributeName: attribute.attributeName,
+                                    kind: inferEmbeddedKind(tagName, attribute.attributeName),
+                                    source: "dom" as const,
+                                    containerLabel: findContainerLabel(element),
+                                    sameOrigin: isSameOriginUrl(resolvedUrl),
+                                    isVisible: isVisibleElement(element),
+                                }];
+                            }),
+                        ...Array.from(document.querySelectorAll("[onclick]"))
+                            .flatMap((element) => {
+                                const onclickValue = cleanText(element.getAttribute("onclick") ?? "");
+
+                                if (!onclickValue) {
+                                    return [];
+                                }
+
+                                const urlMatches = [...onclickValue.matchAll(/(?:location(?:\.href)?\s*=|window\.open\(|document\.location\s*=)\s*['\"]([^'\"]+)['\"]/gi)];
+                                if (urlMatches.length === 0) {
+                                    return [];
+                                }
+
+                                return urlMatches.flatMap((match) => {
+                                    const rawValue = cleanText(match[1] ?? "");
+                                    const resolvedUrl = resolveEmbeddedUrl("onclick", rawValue);
+
+                                    if (!resolvedUrl) {
+                                        return [];
+                                    }
+
+                                    return [{
+                                        text: buildEmbeddedText(element),
+                                        url: resolvedUrl,
+                                        rawValue,
+                                        tagName: element.tagName.toLowerCase(),
+                                        attributeName: "onclick",
+                                        kind: "interactive" as const,
+                                        source: "heuristic" as const,
+                                        containerLabel: findContainerLabel(element),
+                                        sameOrigin: isSameOriginUrl(resolvedUrl),
+                                        isVisible: isVisibleElement(element),
+                                    }];
+                                });
+                            }),
+                    ]
+                        .filter(
+                            (embeddedLink, index, allEmbeddedLinks) =>
+                                allEmbeddedLinks.findIndex(
+                                    (candidate) =>
+                                        candidate.url === embeddedLink.url &&
+                                        candidate.rawValue === embeddedLink.rawValue &&
+                                        candidate.tagName === embeddedLink.tagName &&
+                                        candidate.attributeName === embeddedLink.attributeName &&
+                                        candidate.source === embeddedLink.source &&
+                                        candidate.containerLabel === embeddedLink.containerLabel
+                                ) === index
+                        )
+                        .slice(0, maxEmbeddedLinkDetails);
 
                     const visibleTextSnippets = cleanItems(
                         Array.from(document.querySelectorAll("main p, article p, section p, li"))
@@ -480,9 +795,15 @@ export async function POST(req: NextRequest) {
                         links,
                         actionableElements,
                         linkDetails,
+                        embeddedLinkDetails,
                         visibleTextSnippets,
                     };
-                }, path);
+                }, {
+                    requestedPath: path,
+                    maxActionableItems: MAX_ACTIONABLE_ITEMS,
+                    maxLinkDetails: MAX_LINK_DETAILS,
+                    maxEmbeddedLinkDetails: MAX_EMBEDDED_LINK_DETAILS,
+                });
 
                 pages.push({
                     ...snapshot,
@@ -491,6 +812,7 @@ export async function POST(req: NextRequest) {
                     links: cleanTextList(snapshot.links),
                     actionableElements: snapshot.actionableElements,
                     linkDetails: snapshot.linkDetails,
+                    embeddedLinkDetails: snapshot.embeddedLinkDetails,
                     visibleTextSnippets: cleanTextList(snapshot.visibleTextSnippets),
                 });
             } catch (error) {

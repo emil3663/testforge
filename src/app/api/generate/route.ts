@@ -44,9 +44,17 @@ interface ActionableElementDetail {
 interface LinkDetail {
     text: string;
     url: string;
+    rawHref: string;
     category: LinkCategory;
+    linkType: "internal" | "external" | "anchor" | "mailto" | "download";
     containerLabel: string;
     expectedStatus: number | null;
+    target: string;
+    targetBehavior: "same-window" | "new-tab" | "new-window";
+    titleAttribute: string;
+    downloadName: string;
+    requiresAuth: boolean;
+    isSecure: boolean;
 }
 
 interface GeneratedSuite {
@@ -327,17 +335,41 @@ function normalizeContentProfile(input: unknown): ContentProfile | null {
                     .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
                     .map((item) => {
                         const category: LinkCategory = item.category === "api" ? "api" : "navigation";
+                        const linkType: LinkDetail["linkType"] =
+                            item.linkType === "external"
+                                ? "external"
+                                : item.linkType === "anchor"
+                                    ? "anchor"
+                                    : item.linkType === "mailto"
+                                        ? "mailto"
+                                        : item.linkType === "download"
+                                            ? "download"
+                                            : "internal";
+                        const targetBehavior: LinkDetail["targetBehavior"] =
+                            item.targetBehavior === "new-tab"
+                                ? "new-tab"
+                                : item.targetBehavior === "new-window"
+                                    ? "new-window"
+                                    : "same-window";
 
                         return {
                             text: typeof item.text === "string" ? item.text.replace(/\s+/g, " ").trim() : "",
                             url: typeof item.url === "string" ? item.url.trim() : "",
+                            rawHref: typeof item.rawHref === "string" ? item.rawHref.trim() : "",
                             category,
+                            linkType,
                             containerLabel:
                                 typeof item.containerLabel === "string"
                                     ? item.containerLabel.replace(/\s+/g, " ").trim()
                                     : "",
                             expectedStatus:
                                 typeof item.expectedStatus === "number" ? item.expectedStatus : null,
+                            target: typeof item.target === "string" ? item.target.trim() : "",
+                            targetBehavior,
+                            titleAttribute: typeof item.titleAttribute === "string" ? item.titleAttribute.replace(/\s+/g, " ").trim() : "",
+                            downloadName: typeof item.downloadName === "string" ? item.downloadName.trim() : "",
+                            requiresAuth: Boolean(item.requiresAuth),
+                            isSecure: Boolean(item.isSecure),
                         };
                     })
                     .filter((item) => item.url)
@@ -703,12 +735,35 @@ function buildResponseHints(element: ActionableElementDetail) {
     return [...hints].slice(0, 8);
 }
 
+function buildLinkLocatorExpression(link: LinkDetail) {
+    if (link.rawHref) {
+        return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]').first()`;
+    }
+
+    if (link.text) {
+        return `page.getByRole('link', { name: '${escapeForSingleQuotedString(link.text)}', exact: true }).first()`;
+    }
+
+    return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.url)}"]').first()`;
+}
+
+function buildLinkTitle(link: LinkDetail) {
+    const label = escapeForSingleQuotedString(link.text || `Untitled link to ${link.url}`);
+    const containerSuffix = link.containerLabel
+        ? ` [${escapeForSingleQuotedString(link.containerLabel)}]`
+        : "";
+    return `${label}${containerSuffix}`;
+}
+
 function buildActionableElementTests(
     contentProfile: ContentProfile | null,
     path = "/"
 ) {
     const matchingPage = findMatchingProfilePage(contentProfile, path);
-    const actionableElements = matchingPage?.actionableElements?.slice(0, 25) ?? [];
+    const hasDedicatedLinkDetails = (matchingPage?.linkDetails?.length ?? 0) > 0;
+    const actionableElements = (matchingPage?.actionableElements ?? [])
+        .filter((element) => !hasDedicatedLinkDetails || element.elementType !== "link")
+        .slice(0, 50);
 
     if (actionableElements.length === 0) {
         const escapedPath = escapeForSingleQuotedString(path);
@@ -839,49 +894,479 @@ function buildTestMyLinksAuditTests(
 ) {
     const matchingPage = findMatchingProfilePage(contentProfile, path);
 
-    const linkDetails = matchingPage?.linkDetails?.slice(0, 25) ?? [];
+    const linkDetails = (matchingPage?.linkDetails ?? []).filter(
+        (link, index, allLinks) =>
+            allLinks.findIndex(
+                (candidate) =>
+                    candidate.rawHref === link.rawHref &&
+                    candidate.url === link.url &&
+                    candidate.text === link.text &&
+                    candidate.containerLabel === link.containerLabel
+            ) === index
+    );
 
     if (linkDetails.length === 0) {
         return buildActionableElementTests(contentProfile, path);
     }
 
-    return linkDetails.map((link) => {
-        const linkName = link.text || `Untitled link to ${link.url}`;
-        const label = escapeForSingleQuotedString(linkName);
-        const url = escapeForSingleQuotedString(link.url);
-        const containerSuffix = link.containerLabel
-            ? ` [${escapeForSingleQuotedString(link.containerLabel)}]`
-            : "";
+    const escapedPath = escapeForSingleQuotedString(path);
+    const httpLinks = linkDetails.filter((link) => ["internal", "external", "download"].includes(link.linkType));
+    const anchorLinks = linkDetails.filter((link) => link.linkType === "anchor");
+    const mailtoLinks = linkDetails.filter((link) => link.linkType === "mailto");
+    const protectedLinks = linkDetails.filter((link) => link.requiresAuth && link.linkType === "internal");
+    const popupLinks = linkDetails.filter((link) => link.targetBehavior !== "same-window");
+    const secureLinks = httpLinks.filter((link) => link.isSecure);
+    const downloadableLinks = linkDetails.filter((link) => link.linkType === "download");
+    const nonApiLinks = linkDetails.filter((link) => link.category !== "api");
+    const allLinkPayload = JSON.stringify(linkDetails);
+    const escapedCurrentPageUrl = escapeForSingleQuotedString(matchingPage?.url ?? `http://localhost${path}`);
+    const scannedPages = contentProfile?.pages.map((page) => ({
+        path: page.path,
+        url: page.url,
+        inboundCandidates: (page.linkDetails ?? []).map((link) => link.url),
+    })) ?? [];
+
+    const tests: string[] = [];
+
+    for (const link of linkDetails) {
+        const locatorExpression = buildLinkLocatorExpression(link);
+        const linkTitle = buildLinkTitle(link);
+        const linkUrl = escapeForSingleQuotedString(link.url);
+        const rawHref = escapeForSingleQuotedString(link.rawHref);
+        const expectedStatusAssertion = typeof link.expectedStatus === "number"
+            ? `    expect(response.status()).toBe(${link.expectedStatus});`
+            : "    expect(response.status()).toBeLessThan(500);";
 
         if (link.category === "api") {
-            const expectedStatusComment = typeof link.expectedStatus === "number"
-                ? `    expect(response.status()).toBe(${link.expectedStatus});`
-                : "    expect(response.status()).toBeLessThan(500);";
-            const redirectSetting = typeof link.expectedStatus === "number" && link.expectedStatus >= 300 && link.expectedStatus < 400
-                ? "      maxRedirects: 0,\n"
-                : "";
+            tests.push(`  test('api link response: ${linkTitle}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
 
-            return `  test('api element check: ${label}${containerSuffix} [link]', async ({ request }) => {
-        const response = await request.get('${url}', {
-            failOnStatusCode: false,
-            timeout: 15000,
-${redirectSetting}    });
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
 
-${expectedStatusComment}
-    });`;
+        const expectedUrl = new URL('${linkUrl}');
+        const responsePromise = page.waitForResponse((response) => {
+            const request = response.request();
+            const resourceType = request.resourceType();
+            return (
+                (resourceType === 'fetch' || resourceType === 'xhr' || resourceType === 'document') &&
+                request.method() !== 'OPTIONS' &&
+                response.url().toLowerCase().includes(expectedUrl.pathname.toLowerCase())
+            );
+        }, { timeout: 15000 });
+
+        await locator.click();
+        const response = await responsePromise;
+
+${expectedStatusAssertion}
+    });`);
+
+            continue;
         }
 
-        return `  test('navigation element check: ${label}${containerSuffix} [link]', async ({ request }) => {
-    const response = await request.get('${url}', {
-      failOnStatusCode: false,
-      timeout: 15000,
-            maxRedirects: 0,
-    });
+        if (link.linkType === "mailto") {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
 
-        expect(response.status()).toBeGreaterThanOrEqual(200);
-    expect(response.status()).toBeLessThan(400);
-  });`;
-    });
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+        await expect(locator).toHaveAttribute('href', '${rawHref}');
+    });`);
+
+            continue;
+        }
+
+        if (link.linkType === "anchor") {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+        await locator.click();
+
+        expect(new URL(page.url()).hash).toBe('${rawHref}');
+    });`);
+
+            continue;
+        }
+
+        if (link.linkType === "download") {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, request }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+
+        const response = await request.get('${linkUrl}', { failOnStatusCode: false, timeout: 15000 });
+        expect(response.status()).toBeLessThan(400);
+        await expect(locator).toHaveAttribute('href', /.+/);
+    });`);
+
+            continue;
+        }
+
+        if (link.targetBehavior === "new-tab" || link.targetBehavior === "new-window") {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, context, request }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+
+        const response = await request.get('${linkUrl}', {
+            failOnStatusCode: false,
+            timeout: 15000,
+            maxRedirects: 0,
+        });
+        expect(response.status()).toBeLessThan(400);
+
+        const popupPromise = context.waitForEvent('page');
+        await locator.click();
+        const popup = await popupPromise;
+        await popup.waitForLoadState('domcontentloaded').catch(() => {});
+        expect(popup.url()).toContain('${escapeForSingleQuotedString(link.url.replace(/[#?].*$/, ""))}');
+        await popup.close().catch(() => {});
+    });`);
+
+            continue;
+        }
+
+        tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, request }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+
+        const response = await request.get('${linkUrl}', {
+            failOnStatusCode: false,
+            timeout: 15000,
+            maxRedirects: 5,
+        });
+        expect(response.status()).toBeLessThan(400);
+
+        await locator.click();
+        await page.waitForLoadState('domcontentloaded').catch(() => {});
+        expect(page.url()).toContain('${escapeForSingleQuotedString(link.url.replace(/[#?].*$/, ""))}');
+    });`);
+    }
+
+    tests.push(`  test('link health: internal, external, and download links do not return broken responses', async ({ request }) => {
+        const links = ${allLinkPayload};
+
+        for (const link of links) {
+            if (!['internal', 'external', 'download'].includes(link.linkType)) {
+                continue;
+            }
+
+            const response = await request.get(link.url, {
+                failOnStatusCode: false,
+                timeout: 15000,
+                maxRedirects: link.targetBehavior === 'same-window' ? 5 : 0,
+            });
+
+            expect(response.status(), 'Broken link detected for ' + (link.text || link.url)).toBeLessThan(400);
+        }
+    });`);
+
+    if (nonApiLinks.length > 0) {
+        const navigationCandidates = JSON.stringify(nonApiLinks.slice(0, 8));
+        tests.push(`  test('navigation destination: links navigate to their required destination', async ({ page, context }) => {
+        const links = ${JSON.stringify(nonApiLinks)};
+
+        for (const link of links) {
+            await page.goto('${escapedPath}');
+            await page.waitForLoadState('domcontentloaded');
+
+            const linkLocator = link.rawHref
+                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
+                : page.getByRole('link', { name: link.text, exact: true }).first();
+
+            await expect(linkLocator).toBeVisible();
+
+            if (link.linkType === 'anchor') {
+                await linkLocator.click();
+                expect(new URL(page.url()).hash).toBe(link.rawHref);
+                continue;
+            }
+
+            if (link.targetBehavior === 'new-tab') {
+                const popupPromise = context.waitForEvent('page');
+                await linkLocator.click();
+                const popup = await popupPromise;
+                await popup.waitForLoadState('domcontentloaded').catch(() => {});
+                expect(popup.url()).toContain(link.url.replace(/[#?].*$/, ''));
+                await popup.close().catch(() => {});
+                continue;
+            }
+
+            await linkLocator.click();
+            await page.waitForLoadState('domcontentloaded').catch(() => {});
+            expect(page.url()).toContain(link.url.replace(/[#?].*$/, ''));
+        }
+    });`);
+    }
+
+    tests.push(`  test('link types: internal, external, anchor, mailto, and download links are classified correctly', async ({ page }) => {
+        const links = ${allLinkPayload};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            const locator = link.rawHref
+                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
+                : page.getByRole('link', { name: link.text, exact: true }).first();
+
+            await expect(locator).toBeVisible();
+
+            if (link.linkType === 'internal') {
+                expect(new URL(link.url).origin).toBe(new URL('${escapedCurrentPageUrl}').origin);
+            } else if (link.linkType === 'external') {
+                expect(new URL(link.url).origin).not.toBe(new URL('${escapedCurrentPageUrl}').origin);
+            } else if (link.linkType === 'anchor') {
+                expect(link.rawHref.startsWith('#')).toBeTruthy();
+            } else if (link.linkType === 'mailto') {
+                await expect(locator).toHaveAttribute('href', /^mailto:/i);
+            } else if (link.linkType === 'download') {
+                await expect(locator).toHaveAttribute('href', /\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
+            }
+        }
+    });`);
+
+    if (mailtoLinks.length > 0) {
+        tests.push(`  test('mailto links expose the correct recipient address', async ({ page }) => {
+        const links = ${JSON.stringify(mailtoLinks)};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            await expect(locator).toBeVisible();
+            await expect(locator).toHaveAttribute('href', link.rawHref);
+        }
+    });`);
+    }
+
+    if (downloadableLinks.length > 0) {
+        tests.push(`  test('download links can be requested successfully and expose downloadable resources', async ({ page, request }) => {
+        const links = ${JSON.stringify(downloadableLinks)};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            await expect(locator).toBeVisible();
+            const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000 });
+            expect(response.status()).toBeLessThan(400);
+            expect(await locator.getAttribute('href')).toMatch(/\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
+        }
+    });`);
+    }
+
+    if (popupLinks.length > 0) {
+        tests.push(`  test('target window behavior matches the link target configuration', async ({ page }) => {
+        const links = ${JSON.stringify(popupLinks)};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            await expect(locator).toBeVisible();
+            const target = await locator.getAttribute('target');
+
+            if (link.targetBehavior === 'new-tab') {
+                expect(target).toBe('_blank');
+            } else if (link.targetBehavior === 'new-window') {
+                expect(target).not.toBeNull();
+                expect(target).not.toBe('_self');
+                expect(target).not.toBe('_blank');
+            }
+        }
+    });`);
+    }
+
+    if (protectedLinks.length > 0) {
+        tests.push(`  test('authentication and permissions: protected links redirect or block unauthorized access', async ({ page, request }) => {
+        const links = ${JSON.stringify(protectedLinks)};
+
+        for (const link of links) {
+            const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000, maxRedirects: 0 });
+            expect([200, 301, 302, 303, 307, 308, 401, 403]).toContain(response.status());
+
+            await page.goto('${escapedPath}');
+            await page.waitForLoadState('domcontentloaded');
+            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            await locator.click();
+            await page.waitForLoadState('domcontentloaded').catch(() => {});
+            expect(/login|sign in|unauthorized|forbidden|account/i.test(await page.content()) || page.url().includes('login') || page.url().includes('signin')).toBeTruthy();
+        }
+    });`);
+    }
+
+    tests.push(`  test('visual representation: links are distinguishable from surrounding text', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const visibleLinks = page.locator('a[href]:visible');
+        const count = await visibleLinks.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let index = 0; index < count; index += 1) {
+            const locator = visibleLinks.nth(index);
+            const styles = await locator.evaluate((node) => {
+                const computed = window.getComputedStyle(node);
+                const parent = node.parentElement ? window.getComputedStyle(node.parentElement) : null;
+                return {
+                    color: computed.color,
+                    parentColor: parent?.color ?? '',
+                    textDecoration: computed.textDecorationLine,
+                };
+            });
+
+            expect(
+                styles.textDecoration.includes('underline') || styles.color !== styles.parentColor,
+                'Link should be visually distinct from surrounding text'
+            ).toBeTruthy();
+        }
+    });`);
+
+    tests.push(`  test('hover state: links show pointer cursor and preserve tooltip attributes', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const visibleLinks = page.locator('a[href]:visible');
+        const count = await visibleLinks.count();
+
+        for (let index = 0; index < count; index += 1) {
+            const locator = visibleLinks.nth(index);
+            await locator.hover();
+            const cursor = await locator.evaluate((node) => window.getComputedStyle(node).cursor);
+            expect(cursor).toBe('pointer');
+
+            const title = await locator.getAttribute('title');
+            if (title) {
+                expect(title.trim().length).toBeGreaterThan(0);
+            }
+        }
+    });`);
+
+    tests.push(`  test('visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const hasVisitedRule = await page.evaluate(() => {
+            for (const sheet of Array.from(document.styleSheets)) {
+                try {
+                    for (const rule of Array.from(sheet.cssRules)) {
+                        if ('selectorText' in rule && typeof rule.selectorText === 'string' && rule.selectorText.includes(':visited')) {
+                            return true;
+                        }
+                    }
+                } catch {
+                    continue;
+                }
+            }
+
+            return false;
+        });
+
+        expect(hasVisitedRule).toBeTruthy();
+    });`);
+
+    tests.push(`  test('keyboard navigation: links can receive focus and activate with Enter', async ({ page, context }) => {
+        const links = ${JSON.stringify(nonApiLinks)};
+
+        for (const link of links) {
+            await page.goto('${escapedPath}');
+            await page.waitForLoadState('domcontentloaded');
+            const locator = link.rawHref
+                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
+                : page.getByRole('link', { name: link.text, exact: true }).first();
+            await locator.focus();
+            await expect(locator).toBeFocused();
+
+            if (link.targetBehavior === 'new-tab') {
+                const popupPromise = context.waitForEvent('page');
+                await page.keyboard.press('Enter');
+                const popup = await popupPromise;
+                await popup.waitForLoadState('domcontentloaded').catch(() => {});
+                expect(popup.url()).toContain(link.url.replace(/[#?].*$/, ''));
+                await popup.close().catch(() => {});
+            } else {
+                await page.keyboard.press('Enter');
+                await page.waitForLoadState('domcontentloaded').catch(() => {});
+            }
+        }
+    });`);
+
+    tests.push(`  test('technical security: link protocols are safe and do not expose obvious XSS vectors', async ({ page }) => {
+        const links = ${allLinkPayload};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            expect(/^javascript:/i.test(link.rawHref)).toBeFalsy();
+            expect(/^data:/i.test(link.rawHref)).toBeFalsy();
+            expect(/<script|javascript:/i.test(link.text)).toBeFalsy();
+        }
+    });`);
+
+    if (secureLinks.length > 0) {
+        tests.push(`  test('HTTPS/SSL: secure links remain on HTTPS when marked as secure', async ({ request }) => {
+        const links = ${JSON.stringify(secureLinks)};
+
+        for (const link of links) {
+            expect(link.url.startsWith('https://') || link.rawHref.toLowerCase().startsWith('mailto:')).toBeTruthy();
+            if (!link.rawHref.toLowerCase().startsWith('mailto:')) {
+                const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000 });
+                expect(response.url().startsWith('https://')).toBeTruthy();
+            }
+        }
+    });`);
+    }
+
+    if (anchorLinks.length > 0) {
+        tests.push(`  test('anchor links point to existing in-page targets', async ({ page }) => {
+        const links = ${JSON.stringify(anchorLinks)};
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        for (const link of links) {
+            const selector = link.rawHref;
+            expect(await page.locator(selector).count(), 'Anchor target missing for ' + selector).toBeGreaterThan(0);
+        }
+    });`);
+    }
+
+    if (scannedPages.length > 1) {
+        tests.push(`  test('orphan page approximation: each scanned page is linked from another scanned page', async () => {
+        const pages = ${JSON.stringify(scannedPages)};
+        const inboundMap = new Map();
+
+        for (const page of pages) {
+            inboundMap.set(page.url.replace(/#.*$/, ''), 0);
+        }
+
+        for (const page of pages) {
+            for (const linkedUrl of page.inboundCandidates) {
+                const normalized = linkedUrl.replace(/#.*$/, '');
+                if (inboundMap.has(normalized)) {
+                    inboundMap.set(normalized, inboundMap.get(normalized) + 1);
+                }
+            }
+        }
+
+        for (const page of pages.slice(1)) {
+            expect(inboundMap.get(page.url.replace(/#.*$/, '')) ?? 0).toBeGreaterThan(0);
+        }
+    });`);
+    }
+
+    return tests;
 }
 
 function buildContentProfileComment(profile: ContentProfile | null, rules: ContentRules) {
@@ -1168,6 +1653,8 @@ function buildGenericSuites(
 ) {
     const lowerDescription = description.toLowerCase();
     const linkAuditPath = resolveLinkAuditPath(baseUrl);
+    const matchingPage = findMatchingProfilePage(contentProfile, linkAuditPath);
+    const discoveredLinkCount = matchingPage?.linkDetails?.length ?? 0;
     const suites: GeneratedSuite[] = [];
     const functionalTests: string[] = [];
     const usabilityTests: string[] = [];
@@ -1220,7 +1707,10 @@ function buildGenericSuites(
             functionalTests.push(...buildActionableElementTests(contentProfile, linkAuditPath));
         }
 
-        if (includesAny(lowerDescription, ["link", "links", "href", "anchor", "anchors", "broken link"])) {
+        if (
+            discoveredLinkCount > 0 ||
+            includesAny(lowerDescription, ["link", "links", "href", "anchor", "anchors", "broken link"])
+        ) {
             functionalTests.push(...buildTestMyLinksAuditTests(contentProfile, linkAuditPath));
         }
     }

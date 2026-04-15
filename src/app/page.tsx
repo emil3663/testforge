@@ -213,6 +213,12 @@ interface RunResult {
     report?: RunReport;
 }
 
+interface SavedSuiteResult {
+    fileName: string;
+    filePath: string;
+    suiteTitles: string[];
+}
+
 interface ContentRules {
     paths: string[];
     requiredHeadings: string[];
@@ -247,9 +253,23 @@ interface ContentProfilePage {
     linkDetails?: {
         text: string;
         url: string;
+        rawHref?: string;
         category: "navigation" | "api";
+        linkType?: "internal" | "external" | "anchor" | "mailto" | "download";
         containerLabel: string;
         expectedStatus: number | null;
+    }[];
+    embeddedLinkDetails?: {
+        text: string;
+        url: string;
+        rawValue: string;
+        tagName: string;
+        attributeName: string;
+        kind: "iframe" | "frame" | "image" | "script" | "stylesheet" | "media" | "document" | "form" | "button" | "data" | "interactive";
+        source: "dom" | "heuristic";
+        containerLabel: string;
+        sameOrigin: boolean;
+        isVisible: boolean;
     }[];
     visibleTextSnippets: string[];
 }
@@ -258,6 +278,21 @@ interface ContentProfile {
     scannedAt: string;
     baseUrl: string;
     pages: ContentProfilePage[];
+    warnings?: string[];
+}
+
+interface CrawledPage {
+    path: string;
+    url: string;
+    title: string;
+    discoveredFrom: string | null;
+}
+
+interface CrawlResult {
+    crawledAt: string;
+    baseUrl: string;
+    pageCount: number;
+    pages: CrawledPage[];
     warnings?: string[];
 }
 
@@ -331,6 +366,14 @@ function normalizeBaseUrl(value: string) {
     }
 }
 
+function getLinkPreviewLabel(link: NonNullable<ContentProfilePage["linkDetails"]>[number]) {
+    return link.text.trim() || link.rawHref?.trim() || link.url.trim();
+}
+
+function getEmbeddedPreviewLabel(embeddedLink: NonNullable<ContentProfilePage["embeddedLinkDetails"]>[number]) {
+    return embeddedLink.text.trim() || embeddedLink.rawValue.trim() || embeddedLink.url.trim();
+}
+
 function getDefaultInspectionPath(baseUrl: string) {
     try {
         const pathname = new URL(baseUrl).pathname || "/";
@@ -338,6 +381,18 @@ function getDefaultInspectionPath(baseUrl: string) {
     } catch {
         return "/";
     }
+}
+
+function normalizeInspectionPaths(baseUrl: string, manualPaths: string[], selectedPaths: string[]) {
+    if (selectedPaths.length > 0) {
+        return [...new Set(selectedPaths.map((path) => (path.startsWith("/") ? path : `/${path}`)))];
+    }
+
+    if (manualPaths.length > 0) {
+        return [...new Set(manualPaths.map((path) => (path.startsWith("/") ? path : `/${path}`)))];
+    }
+
+    return [getDefaultInspectionPath(baseUrl)];
 }
 
 function formatMilliseconds(value: number) {
@@ -391,9 +446,17 @@ export default function Home() {
     const [result, setResult] = useState<RunResult | null>(null);
     const [error, setError] = useState("");
     const [copyLabel, setCopyLabel] = useState("Copy");
+    const [rawOutputCopyLabel, setRawOutputCopyLabel] = useState("Copy raw output");
+    const [rawOutputExportLabel, setRawOutputExportLabel] = useState("Export raw output");
+    const [saveLabel, setSaveLabel] = useState("Add to Test Explorer");
+    const [savedSuite, setSavedSuite] = useState<SavedSuiteResult | null>(null);
     const [activeTab, setActiveTab] = useState<ReportTab>("summary");
     const [statusFilter, setStatusFilter] = useState<"All" | ExecutionStatus>("All");
     const [contentPathsInput, setContentPathsInput] = useState("");
+    const [crawlResult, setCrawlResult] = useState<CrawlResult | null>(null);
+    const [selectedCrawledPaths, setSelectedCrawledPaths] = useState<string[]>([]);
+    const [crawlStatus, setCrawlStatus] = useState<"idle" | "crawling">("idle");
+    const [crawlError, setCrawlError] = useState("");
     const [requiredHeadingsInput, setRequiredHeadingsInput] = useState("");
     const [requiredTextInput, setRequiredTextInput] = useState("");
     const [forbiddenTextInput, setForbiddenTextInput] = useState("");
@@ -403,6 +466,7 @@ export default function Home() {
     const [isGeneratedCollapsed, setIsGeneratedCollapsed] = useState(false);
     const [isReportCollapsed, setIsReportCollapsed] = useState(false);
     const [isContentRulesCollapsed, setIsContentRulesCollapsed] = useState(true);
+    const [isCrawledPagesCollapsed, setIsCrawledPagesCollapsed] = useState(false);
     const codeRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -454,6 +518,9 @@ export default function Home() {
         setEditedCode("");
         setResult(null);
         setError("");
+        setCrawlError("");
+        setSaveLabel("Add to Test Explorer");
+        setSavedSuite(null);
         setActiveTab("summary");
         setStatusFilter("All");
         setContentProfile(null);
@@ -464,10 +531,15 @@ export default function Home() {
         const parsedPaths = parseContentLines(contentPathsInput).map((item) =>
             item.startsWith("/") ? item : `/${item}`
         );
+        const activeSelectedCrawledPaths = crawlResult?.baseUrl === normalizedBaseUrl.value
+            ? selectedCrawledPaths
+            : [];
         const contentRules = {
-            paths: parsedPaths.length > 0
-                ? parsedPaths
-                : [getDefaultInspectionPath(normalizedBaseUrl.value)],
+            paths: normalizeInspectionPaths(
+                normalizedBaseUrl.value,
+                parsedPaths,
+                activeSelectedCrawledPaths
+            ),
             requiredHeadings: parseContentLines(requiredHeadingsInput),
             requiredText: parseContentLines(requiredTextInput),
             forbiddenText: parseContentLines(forbiddenTextInput),
@@ -555,8 +627,126 @@ export default function Home() {
         }
     }
 
+    async function handleSaveToExplorer() {
+        if (!editedCode.trim() || !description.trim()) {
+            return;
+        }
+
+        setSaveLabel("Saving...");
+
+        try {
+            const response = await fetch("/api/save-suite", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: editedCode, description }),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error ?? "Could not save suite to Test Explorer");
+            }
+
+            setSavedSuite(data);
+            setSaveLabel("Saved");
+            setTimeout(() => setSaveLabel("Add to Test Explorer"), 2000);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Unknown error");
+            setSaveLabel("Save failed");
+            setTimeout(() => setSaveLabel("Add to Test Explorer"), 2000);
+        }
+    }
+
+    async function handleCrawlPages() {
+        const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
+        if (!normalizedBaseUrl.ok) {
+            setCrawlError(normalizedBaseUrl.message);
+            return;
+        }
+
+        setCrawlStatus("crawling");
+        setCrawlError("");
+
+        try {
+            const response = await fetch("/api/crawl", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ baseUrl: normalizedBaseUrl.value }),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error ?? "Site crawl failed");
+            }
+
+            setCrawlResult(data);
+            setSelectedCrawledPaths(data.pages.map((page: CrawledPage) => page.path));
+            setIsCrawledPagesCollapsed(false);
+        } catch (err: unknown) {
+            setCrawlError(err instanceof Error ? err.message : "Unknown error");
+        } finally {
+            setCrawlStatus("idle");
+        }
+    }
+
+    function toggleCrawledPath(path: string) {
+        setSelectedCrawledPaths((current) =>
+            current.includes(path)
+                ? current.filter((item) => item !== path)
+                : [...current, path]
+        );
+    }
+
+    function selectAllCrawledPages() {
+        setSelectedCrawledPaths(crawlResult?.pages.map((page) => page.path) ?? []);
+    }
+
+    function clearCrawledPageSelection() {
+        setSelectedCrawledPaths([]);
+    }
+
+    async function handleCopyRawOutput(rawOutput: string) {
+        if (!rawOutput.trim()) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(rawOutput);
+            setRawOutputCopyLabel("Raw output copied");
+            setTimeout(() => setRawOutputCopyLabel("Copy raw output"), 2000);
+        } catch {
+            setRawOutputCopyLabel("Copy failed");
+            setTimeout(() => setRawOutputCopyLabel("Copy raw output"), 2000);
+        }
+    }
+
+    function handleExportRawOutput(rawOutput: string) {
+        if (!rawOutput.trim()) {
+            return;
+        }
+
+        try {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const fileName = `testforge-raw-output-${timestamp}.txt`;
+            const blob = new Blob([rawOutput], { type: "text/plain;charset=utf-8" });
+            const objectUrl = URL.createObjectURL(blob);
+            const anchor = document.createElement("a");
+            anchor.href = objectUrl;
+            anchor.download = fileName;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            URL.revokeObjectURL(objectUrl);
+            setRawOutputExportLabel("Raw output exported");
+            setTimeout(() => setRawOutputExportLabel("Export raw output"), 2000);
+        } catch {
+            setRawOutputExportLabel("Export failed");
+            setTimeout(() => setRawOutputExportLabel("Export raw output"), 2000);
+        }
+    }
+
     const isGenerating = step === "generating";
     const isRunning = step === "running";
+    const isCrawling = crawlStatus === "crawling";
     const hasCode = step === "ready" || step === "done";
     const inferredPractices = inferBestPracticesFromDescription(description);
     const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...inferredPractices])]
@@ -566,12 +756,18 @@ export default function Home() {
     const parsedDisplayPaths = parseContentLines(contentPathsInput).map((item) =>
         item.startsWith("/") ? item : `/${item}`
     );
+    const hasActiveCrawlSelection = Boolean(
+        normalizedBaseUrlForDisplay.ok &&
+        crawlResult?.baseUrl === normalizedBaseUrlForDisplay.value &&
+        selectedCrawledPaths.length > 0
+    );
+    const effectiveInspectionPaths = normalizeInspectionPaths(
+        normalizedBaseUrlForDisplay.ok ? normalizedBaseUrlForDisplay.value : DEFAULT_BASE_URL,
+        parsedDisplayPaths,
+        hasActiveCrawlSelection ? selectedCrawledPaths : []
+    );
     const contentRules = {
-        paths: parsedDisplayPaths.length > 0
-            ? parsedDisplayPaths
-            : [getDefaultInspectionPath(
-                normalizedBaseUrlForDisplay.ok ? normalizedBaseUrlForDisplay.value : DEFAULT_BASE_URL
-            )],
+        paths: effectiveInspectionPaths,
         requiredHeadings: parseContentLines(requiredHeadingsInput),
         requiredText: parseContentLines(requiredTextInput),
         forbiddenText: parseContentLines(forbiddenTextInput),
@@ -603,6 +799,49 @@ export default function Home() {
         )
         : [];
     const canGenerateOrRun = effectiveSelectedPractices.length > 0;
+    const discoveredLinkDetails = contentProfile?.pages.flatMap((page) => page.linkDetails ?? []) ?? [];
+    const uniqueDiscoveredLinks = discoveredLinkDetails.filter(
+        (link, index, allLinks) =>
+            allLinks.findIndex(
+                (candidate) =>
+                    candidate.url === link.url &&
+                    candidate.rawHref === link.rawHref &&
+                    candidate.category === link.category &&
+                    candidate.containerLabel === link.containerLabel &&
+                    getLinkPreviewLabel(candidate) === getLinkPreviewLabel(link)
+            ) === index
+    );
+    const discoveredLinkCount = uniqueDiscoveredLinks.length;
+    const discoveredLinkPages = (contentProfile?.pages ?? [])
+        .map((page) => ({
+            path: page.path,
+            count: (page.linkDetails ?? []).length,
+        }))
+        .filter((page) => page.count > 0);
+    const discoveredEmbeddedLinkDetails = contentProfile?.pages.flatMap((page) => page.embeddedLinkDetails ?? []) ?? [];
+    const uniqueDiscoveredEmbeddedLinks = discoveredEmbeddedLinkDetails.filter(
+        (embeddedLink, index, allEmbeddedLinks) =>
+            allEmbeddedLinks.findIndex(
+                (candidate) =>
+                    candidate.url === embeddedLink.url &&
+                    candidate.rawValue === embeddedLink.rawValue &&
+                    candidate.tagName === embeddedLink.tagName &&
+                    candidate.attributeName === embeddedLink.attributeName &&
+                    candidate.source === embeddedLink.source &&
+                    candidate.containerLabel === embeddedLink.containerLabel
+            ) === index
+    );
+    const discoveredEmbeddedLinkCount = uniqueDiscoveredEmbeddedLinks.length;
+    const discoveredEmbeddedLinkPages = (contentProfile?.pages ?? [])
+        .map((page) => ({
+            path: page.path,
+            count: (page.embeddedLinkDetails ?? []).length,
+        }))
+        .filter((page) => page.count > 0);
+    const crawledPages = crawlResult?.pages ?? [];
+    const isCrawlResultStale = Boolean(
+        crawlResult && normalizedBaseUrlForDisplay.ok && crawlResult.baseUrl !== normalizedBaseUrlForDisplay.value
+    );
 
     return (
         <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.12),_transparent_32%),linear-gradient(180deg,#f7f8fc_0%,#f4f6fb_52%,#eef3f8_100%)] text-zinc-900">
@@ -666,7 +905,7 @@ export default function Home() {
                 >
                     <div className="space-y-5">
                         <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-                            <div className="space-y-5">
+                            <div className="flex h-full flex-col gap-5">
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-700">
                                         Base URL
@@ -701,6 +940,126 @@ export default function Home() {
                                     <p className="text-xs text-zinc-500">
                                         Matching keywords will highlight the applicable best-practice areas on the right. Only active highlighted areas are generated and run.
                                     </p>
+                                </div>
+
+                                <div className="flex-1 rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsCrawledPagesCollapsed((value) => !value)}
+                                        className="flex w-full items-start justify-between gap-3 text-left"
+                                    >
+                                        <div>
+                                            <div className="text-sm font-medium text-zinc-700">
+                                                Discovered Site Pages
+                                            </div>
+                                            <p className="mt-1 text-xs leading-5 text-zinc-500">
+                                                Crawl the site and choose one page, multiple pages, or all pages for testing.
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                                {crawledPages.length > 0 ? `${selectedCrawledPaths.length}/${crawledPages.length} selected` : "No pages crawled"}
+                                            </span>
+                                            <Chevron collapsed={isCrawledPagesCollapsed} />
+                                        </div>
+                                    </button>
+
+                                    {!isCrawledPagesCollapsed && (
+                                        <>
+                                            <div className="mt-4 flex flex-wrap items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={handleCrawlPages}
+                                                    disabled={isGenerating || isRunning || isCrawling}
+                                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    {isCrawling ? (
+                                                        <>
+                                                            <Spinner />
+                                                            Crawling...
+                                                        </>
+                                                    ) : (
+                                                        "Crawl site"
+                                                    )}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={selectAllCrawledPages}
+                                                    disabled={crawledPages.length === 0 || isCrawling}
+                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    Select all
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={clearCrawledPageSelection}
+                                                    disabled={selectedCrawledPaths.length === 0 || isCrawling}
+                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    Clear selection
+                                                </button>
+                                            </div>
+
+                                            <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
+                                                {hasActiveCrawlSelection
+                                                    ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}.`
+                                                    : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
+                                            </div>
+
+                                            {isCrawlResultStale && (
+                                                <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+                                                    The base URL changed after the last crawl. Crawl again to refresh the page list for this target.
+                                                </div>
+                                            )}
+
+                                            {crawlError && (
+                                                <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs leading-5 text-rose-700">
+                                                    {crawlError}
+                                                </div>
+                                            )}
+
+                                            <div className="mt-4 min-h-[196px] overflow-y-auto rounded-2xl border border-zinc-200 bg-white">
+                                                {crawledPages.length > 0 ? (
+                                                    <div className="divide-y divide-zinc-100">
+                                                        {crawledPages.map((page) => {
+                                                            const checked = selectedCrawledPaths.includes(page.path);
+
+                                                            return (
+                                                                <label
+                                                                    key={page.path}
+                                                                    className="flex cursor-pointer items-start gap-3 px-4 py-3 text-sm text-zinc-700"
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={checked}
+                                                                        onChange={() => toggleCrawledPath(page.path)}
+                                                                        className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
+                                                                    />
+                                                                    <div className="min-w-0 flex-1">
+                                                                        <div className="font-medium text-zinc-900">
+                                                                            {page.title || page.path}
+                                                                        </div>
+                                                                        <div className="mt-1 break-all text-xs text-zinc-500">
+                                                                            {page.path}
+                                                                        </div>
+                                                                        {page.discoveredFrom && (
+                                                                            <div className="mt-1 text-[11px] text-zinc-400">
+                                                                                Discovered from {page.discoveredFrom}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex min-h-[196px] items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
+                                                        Run the crawler to discover same-origin pages and choose what should be tested.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -790,6 +1149,114 @@ export default function Home() {
                                                 : "Content-aware inputs changed. Regenerate the suite before running tests."
                                             : "Leave these fields empty if you only want URL and flow-based tests."}
                                     </div>
+
+                                    {contentProfile && (
+                                        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4">
+                                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                                <div>
+                                                    <div className="text-sm font-semibold text-emerald-950">
+                                                        Inspection Summary
+                                                    </div>
+                                                    <p className="mt-1 text-xs leading-5 text-emerald-800">
+                                                        {discoveredLinkCount > 0
+                                                            ? `${discoveredLinkCount} unique link${discoveredLinkCount === 1 ? "" : "s"} discovered and available for generated link tests.`
+                                                            : "No link metadata was discovered in the latest inspection."}
+                                                    </p>
+                                                    <p className="mt-1 text-xs leading-5 text-emerald-800">
+                                                        {discoveredEmbeddedLinkCount > 0
+                                                            ? `${discoveredEmbeddedLinkCount} embedded target${discoveredEmbeddedLinkCount === 1 ? "" : "s"} discovered across frames, assets, forms, and runtime-style attributes.`
+                                                            : "No embedded targets were discovered in the latest inspection."}
+                                                    </p>
+                                                </div>
+                                                <div className="rounded-full border border-emerald-300 bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
+                                                    {contentProfile.pages.length} page{contentProfile.pages.length === 1 ? "" : "s"} inspected
+                                                </div>
+                                            </div>
+
+                                            {discoveredLinkPages.length > 0 && (
+                                                <div className="mt-3 flex flex-wrap gap-2 text-xs text-emerald-900">
+                                                    {discoveredLinkPages.map((page) => (
+                                                        <span
+                                                            key={page.path}
+                                                            className="rounded-full border border-emerald-200 bg-white px-3 py-1"
+                                                        >
+                                                            {page.path}: {page.count} link{page.count === 1 ? "" : "s"}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {discoveredEmbeddedLinkPages.length > 0 && (
+                                                <div className="mt-3 flex flex-wrap gap-2 text-xs text-emerald-900">
+                                                    {discoveredEmbeddedLinkPages.map((page) => (
+                                                        <span
+                                                            key={`${page.path}-embedded`}
+                                                            className="rounded-full border border-emerald-200 bg-white px-3 py-1"
+                                                        >
+                                                            {page.path}: {page.count} embedded target{page.count === 1 ? "" : "s"}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {uniqueDiscoveredLinks.length > 0 && (
+                                                <div className="mt-4">
+                                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                                                        Discovered Links
+                                                    </div>
+                                                    <div className="mt-2 max-h-56 overflow-y-auto rounded-2xl border border-emerald-200 bg-white">
+                                                        <div className="divide-y divide-emerald-100">
+                                                            {uniqueDiscoveredLinks.map((link, index) => (
+                                                                <div key={`${link.url}-${index}`} className="px-4 py-3 text-xs leading-5 text-emerald-950">
+                                                                    <div className="font-medium text-zinc-900">
+                                                                        {getLinkPreviewLabel(link)}
+                                                                    </div>
+                                                                    <div className="mt-1 text-zinc-600">
+                                                                        {link.category === "api" ? "API" : "Navigation"}
+                                                                        {link.linkType ? ` • ${link.linkType}` : ""}
+                                                                        {link.containerLabel ? ` • ${link.containerLabel}` : ""}
+                                                                    </div>
+                                                                    <div className="mt-1 break-all text-zinc-500">
+                                                                        {link.url}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {uniqueDiscoveredEmbeddedLinks.length > 0 && (
+                                                <div className="mt-4">
+                                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                                                        Embedded Targets
+                                                    </div>
+                                                    <div className="mt-2 max-h-56 overflow-y-auto rounded-2xl border border-emerald-200 bg-white">
+                                                        <div className="divide-y divide-emerald-100">
+                                                            {uniqueDiscoveredEmbeddedLinks.map((embeddedLink, index) => (
+                                                                <div key={`${embeddedLink.url}-${embeddedLink.attributeName}-${index}`} className="px-4 py-3 text-xs leading-5 text-emerald-950">
+                                                                    <div className="font-medium text-zinc-900">
+                                                                        {getEmbeddedPreviewLabel(embeddedLink)}
+                                                                    </div>
+                                                                    <div className="mt-1 text-zinc-600">
+                                                                        {embeddedLink.kind} • {embeddedLink.tagName}[{embeddedLink.attributeName}] • {embeddedLink.source}
+                                                                        {embeddedLink.containerLabel ? ` • ${embeddedLink.containerLabel}` : ""}
+                                                                    </div>
+                                                                    <div className="mt-1 text-zinc-500">
+                                                                        {embeddedLink.sameOrigin ? "Same origin" : "Cross origin or external"}
+                                                                        {embeddedLink.isVisible ? " • visible" : " • non-visible"}
+                                                                    </div>
+                                                                    <div className="mt-1 break-all text-zinc-500">
+                                                                        {embeddedLink.url}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <div className="mt-4 grid gap-4 md:grid-cols-2">
                                         <div className="space-y-1.5">
@@ -918,6 +1385,13 @@ export default function Home() {
                                 )}
                             </button>
                             <button
+                                onClick={handleSaveToExplorer}
+                                disabled={!hasCode || isGenerating || isRunning}
+                                className="rounded-xl border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 transition hover:border-zinc-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {saveLabel}
+                            </button>
+                            <button
                                 onClick={() => setEditing((value) => !value)}
                                 className="rounded-xl border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 transition hover:border-zinc-500 hover:text-white"
                             >
@@ -955,12 +1429,33 @@ export default function Home() {
                         )}
                     </div>
 
+                    {savedSuite && (
+                        <div className="mt-4 rounded-2xl border border-emerald-800 bg-emerald-950/40 px-4 py-3 text-xs leading-6 text-emerald-200">
+                            <div>
+                                Added {savedSuite.fileName} to Playwright discovery.
+                            </div>
+                            <div className="mt-2 text-emerald-100/90">
+                                File: {savedSuite.filePath}
+                            </div>
+                            <div className="mt-2 space-y-1 text-emerald-100/90">
+                                {savedSuite.suiteTitles.length > 0 ? (
+                                    savedSuite.suiteTitles.map((suiteTitle) => (
+                                        <div key={suiteTitle}>{suiteTitle}</div>
+                                    ))
+                                ) : (
+                                    <div>Generated best-practice suites</div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="mt-4 flex items-center justify-between gap-3 border-t border-zinc-800 pt-4 text-xs text-zinc-500">
                         <span>
                             Review the generated suite, edit if needed, then run it.
                             {isCrossBrowserSelected
                                 ? " Cross-browser mode will run Chromium, Firefox, and WebKit."
                                 : ""}
+                            {savedSuite ? " VS Code Test Explorer will show one generated file with the saved top-level suites underneath it." : ""}
                             {runBlockedMessage ? ` ${runBlockedMessage}` : ""}
                         </span>
                         <button
@@ -1365,6 +1860,22 @@ export default function Home() {
                                 title="Execution output"
                                 description="Retained for debugging alongside the structured dashboard."
                             >
+                                <div className="mb-4 flex flex-wrap gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCopyRawOutput(report.rawOutput)}
+                                        className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                    >
+                                        {rawOutputCopyLabel}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleExportRawOutput(report.rawOutput)}
+                                        className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                    >
+                                        {rawOutputExportLabel}
+                                    </button>
+                                </div>
                                 <pre className="overflow-x-auto rounded-2xl border border-zinc-200 bg-zinc-950 px-4 py-4 font-mono text-xs leading-6 text-zinc-200 whitespace-pre-wrap">
                                     {report.rawOutput}
                                 </pre>
@@ -1372,14 +1883,39 @@ export default function Home() {
                         </div>
                     </CollapsibleSection>
                 ) : result ? (
-                    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-                        <div className="text-sm font-semibold text-zinc-900">
-                            {result.passed ? "All tests passed" : "Tests failed"} — {formatMilliseconds(result.duration)}
+                    <CollapsibleSection
+                        title="Execution Output"
+                        subtitle="Structured report data was not available for this run, so only the raw console output is shown."
+                        collapsed={isReportCollapsed}
+                        onToggle={() => setIsReportCollapsed((value) => !value)}
+                    >
+                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <div className="text-sm font-semibold text-zinc-900">
+                                    {result.passed ? "All tests passed" : "Tests failed"} — {formatMilliseconds(result.duration)}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCopyRawOutput(result.output)}
+                                        className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                    >
+                                        {rawOutputCopyLabel}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleExportRawOutput(result.output)}
+                                        className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                    >
+                                        {rawOutputExportLabel}
+                                    </button>
+                                </div>
+                            </div>
+                            <pre className="mt-4 overflow-x-auto rounded-2xl bg-zinc-950 px-4 py-4 font-mono text-xs leading-6 text-zinc-200 whitespace-pre-wrap">
+                                {result.output}
+                            </pre>
                         </div>
-                        <pre className="mt-4 overflow-x-auto rounded-2xl bg-zinc-950 px-4 py-4 font-mono text-xs leading-6 text-zinc-200 whitespace-pre-wrap">
-                            {result.output}
-                        </pre>
-                    </div>
+                    </CollapsibleSection>
                 ) : null}
             </main>
         </div>
