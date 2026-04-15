@@ -40,7 +40,19 @@ function normalizeBaseUrl(baseUrl: unknown) {
 
 function normalizePath(url: URL) {
     const pathname = url.pathname === "/" ? "/" : url.pathname.replace(/\/$/, "");
-    return `${pathname}${url.search}`;
+    return pathname;
+}
+
+function normalizeCrawlUrl(url: URL) {
+    const normalized = new URL(url.toString());
+    normalized.hash = "";
+    normalized.search = "";
+
+    if (normalized.pathname !== "/") {
+        normalized.pathname = normalized.pathname.replace(/\/$/, "");
+    }
+
+    return normalized;
 }
 
 function shouldQueueUrl(candidateUrl: URL, origin: string) {
@@ -70,11 +82,12 @@ export async function POST(req: NextRequest) {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     const startUrl = new URL(normalizedBaseUrl.value);
+    const normalizedStartUrl = normalizeCrawlUrl(startUrl);
     const queue: Array<{ url: string; discoveredFrom: string | null }> = [{
-        url: startUrl.toString(),
+        url: normalizedStartUrl.toString(),
         discoveredFrom: null,
     }];
-    const queued = new Set<string>([startUrl.toString()]);
+    const queued = new Set<string>([normalizedStartUrl.toString()]);
     const visited = new Set<string>();
     const visitedPaths = new Set<string>();
     const pages: CrawledPage[] = [];
@@ -109,7 +122,6 @@ export async function POST(req: NextRequest) {
 
                             try {
                                 const resolved = new URL(rawHref, window.location.href);
-                                resolved.hash = "";
                                 return resolved.toString();
                             } catch {
                                 return null;
@@ -130,8 +142,7 @@ export async function POST(req: NextRequest) {
                     limit: MAX_DISCOVERED_LINKS_PER_PAGE,
                 });
 
-                const currentUrl = new URL(pageData.currentUrl);
-                currentUrl.hash = "";
+                const currentUrl = normalizeCrawlUrl(new URL(pageData.currentUrl));
                 const path = normalizePath(currentUrl);
 
                 if (!visitedPaths.has(path)) {
@@ -146,8 +157,7 @@ export async function POST(req: NextRequest) {
 
                 for (const discoveredUrl of pageData.links) {
                     try {
-                        const candidateUrl = new URL(discoveredUrl);
-                        candidateUrl.hash = "";
+                        const candidateUrl = normalizeCrawlUrl(new URL(discoveredUrl));
 
                         if (!shouldQueueUrl(candidateUrl, startUrl.origin)) {
                             continue;
