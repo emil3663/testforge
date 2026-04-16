@@ -3,6 +3,8 @@
 import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 
 type Step = "idle" | "generating" | "ready" | "running" | "done";
+type TestAuditMode = "fast" | "deep";
+type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
 type ReportTab =
     | "summary"
     | "execution"
@@ -68,6 +70,7 @@ const BEST_PRACTICE_OPTIONS = [
 type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number]["id"];
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
+const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
 const REPORT_TABS: ReportTab[] = [
     "summary",
     "execution",
@@ -76,6 +79,23 @@ const REPORT_TABS: ReportTab[] = [
     "performance",
     "usability",
 ];
+
+const TEST_AUDIT_MODE_OPTIONS: Array<{
+    id: TestAuditMode;
+    label: string;
+    description: string;
+}> = [
+        {
+            id: "fast",
+            label: "Fast",
+            description: "Caps per-page link-click checks and keeps generation focused on the highest-value audits.",
+        },
+        {
+            id: "deep",
+            label: "Deep",
+            description: "Keeps the broader per-link navigation coverage for slower, more exhaustive suites.",
+        },
+    ];
 
 const BEST_PRACTICE_KEYWORDS: Record<BestPracticeArea, string[]> = {
     functional: ["functional", "flow", "journey", "form", "forms", "navigation", "link", "links"],
@@ -207,23 +227,46 @@ interface RunReport {
 }
 
 interface RunResult {
+    runId: string;
+    runStatus: Exclude<RunLifecycleStatus, "queued" | "running">;
     passed: boolean;
     output: string;
     duration: number;
+    progress: RunProgressSnapshot;
     report?: RunReport;
+}
+
+interface RunProgressSnapshot {
+    totalTests: number;
+    startedTests: number;
+    completedTests: number;
+    passedTests: number;
+    failedTests: number;
+    flakyTests: number;
+    blockedTests: number;
+    currentTestTitle: string | null;
+    currentLinkLabel: string | null;
+    lastCompletedTitle: string | null;
+    activeExecutions: {
+        id: string;
+        title: string;
+        linkLabel: string | null;
+    }[];
+}
+
+interface RunStatusSnapshot {
+    runId: string;
+    runStatus: RunLifecycleStatus;
+    duration: number;
+    progress: RunProgressSnapshot;
+    cancellationRequested: boolean;
+    result?: RunResult;
 }
 
 interface SavedSuiteResult {
     fileName: string;
     filePath: string;
     suiteTitles: string[];
-}
-
-interface ContentRules {
-    paths: string[];
-    requiredHeadings: string[];
-    requiredText: string[];
-    forbiddenText: string[];
 }
 
 interface ContentProfilePage {
@@ -296,12 +339,11 @@ interface CrawlResult {
     warnings?: string[];
 }
 
-const DEFAULT_CONTENT_RULES: ContentRules = {
-    paths: ["/"],
-    requiredHeadings: [],
-    requiredText: [],
-    forbiddenText: [],
-};
+interface BusyInspectionTarget {
+    path: string;
+    url: string;
+    title: string;
+}
 
 function parseContentLines(value: string) {
     return [...new Set(
@@ -334,10 +376,6 @@ function inferBestPracticesFromDescription(description: string) {
                 includesKeyword(normalizedDescription, keyword)
             )
         );
-}
-
-function toMultilineValue(values: string[]) {
-    return values.join("\n");
 }
 
 function normalizeBaseUrl(value: string) {
@@ -393,6 +431,43 @@ function normalizeInspectionPaths(baseUrl: string, manualPaths: string[], select
     }
 
     return [getDefaultInspectionPath(baseUrl)];
+}
+
+function buildBusyInspectionTargets(
+    baseUrl: string,
+    paths: string[],
+    crawledPages: CrawledPage[]
+) {
+    const pageTitleByPath = new Map(
+        crawledPages.map((page) => [page.path, page.title.trim()])
+    );
+
+    return [...new Map(
+        paths.map((path) => {
+            const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+            let url = normalizedPath;
+
+            try {
+                url = new URL(normalizedPath, baseUrl).toString();
+            } catch {
+                url = normalizedPath;
+            }
+
+            return [url, {
+                path: normalizedPath,
+                url,
+                title: pageTitleByPath.get(normalizedPath) ?? "",
+            } satisfies BusyInspectionTarget];
+        })
+    ).values()];
+}
+
+function getPathExtension(path: string) {
+    const cleanedPath = path.split(/[?#]/, 1)[0] ?? path;
+    const lastSegment = cleanedPath.split("/").filter(Boolean).pop() ?? "";
+    const match = /\.([a-z0-9]+)$/i.exec(lastSegment);
+
+    return match ? `.${match[1].toLowerCase()}` : "(no extension)";
 }
 
 function formatMilliseconds(value: number) {
@@ -455,18 +530,31 @@ export default function Home() {
     const [contentPathsInput, setContentPathsInput] = useState("");
     const [crawlResult, setCrawlResult] = useState<CrawlResult | null>(null);
     const [selectedCrawledPaths, setSelectedCrawledPaths] = useState<string[]>([]);
+    const [crawlSearchQuery, setCrawlSearchQuery] = useState("");
+    const [selectedCrawlExtensions, setSelectedCrawlExtensions] = useState<string[]>([]);
     const [crawlStatus, setCrawlStatus] = useState<"idle" | "crawling">("idle");
     const [crawlError, setCrawlError] = useState("");
     const [requiredHeadingsInput, setRequiredHeadingsInput] = useState("");
     const [requiredTextInput, setRequiredTextInput] = useState("");
     const [forbiddenTextInput, setForbiddenTextInput] = useState("");
+    const [auditMode, setAuditMode] = useState<TestAuditMode>(DEFAULT_TEST_AUDIT_MODE);
     const [contentProfile, setContentProfile] = useState<ContentProfile | null>(null);
     const [lastGeneratedContentSignature, setLastGeneratedContentSignature] = useState("");
+    const [lastGeneratedBaseUrl, setLastGeneratedBaseUrl] = useState(DEFAULT_BASE_URL);
+    const [lastGeneratedInspectionPaths, setLastGeneratedInspectionPaths] = useState<string[]>(["/"]);
+    const [lastGeneratedInspectionTargets, setLastGeneratedInspectionTargets] = useState<BusyInspectionTarget[]>([]);
+    const [lastGeneratedAuditMode, setLastGeneratedAuditMode] = useState<TestAuditMode>(DEFAULT_TEST_AUDIT_MODE);
+    const [activeRunId, setActiveRunId] = useState<string | null>(null);
+    const [runProgress, setRunProgress] = useState<RunProgressSnapshot | null>(null);
+    const [runStatus, setRunStatus] = useState<RunLifecycleStatus | null>(null);
+    const [runDurationMs, setRunDurationMs] = useState(0);
+    const [isCancellingRun, setIsCancellingRun] = useState(false);
     const [isCreationCollapsed, setIsCreationCollapsed] = useState(false);
     const [isGeneratedCollapsed, setIsGeneratedCollapsed] = useState(false);
     const [isReportCollapsed, setIsReportCollapsed] = useState(false);
     const [isContentRulesCollapsed, setIsContentRulesCollapsed] = useState(true);
     const [isCrawledPagesCollapsed, setIsCrawledPagesCollapsed] = useState(false);
+    const [isBusyTargetListExpanded, setIsBusyTargetListExpanded] = useState(false);
     const codeRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -474,6 +562,69 @@ export default function Home() {
             codeRef.current.focus();
         }
     }, [editing]);
+
+    useEffect(() => {
+        if (step !== "running" || !activeRunId) {
+            return;
+        }
+
+        let ignore = false;
+        let timer: number | null = null;
+
+        const pollRunStatus = async () => {
+            try {
+                const response = await fetch(`/api/run?runId=${encodeURIComponent(activeRunId)}`, {
+                    cache: "no-store",
+                });
+                const data = (await response.json()) as RunStatusSnapshot | { error?: string };
+
+                if (!response.ok) {
+                    throw new Error("error" in data ? data.error ?? "Run status check failed" : "Run status check failed");
+                }
+
+                if (ignore) {
+                    return;
+                }
+
+                const snapshot = data as RunStatusSnapshot;
+                setRunProgress(snapshot.progress);
+                setRunStatus(snapshot.runStatus);
+                setRunDurationMs(snapshot.duration);
+                setIsCancellingRun(snapshot.cancellationRequested);
+
+                if (snapshot.result) {
+                    setResult(snapshot.result);
+                    setStep("done");
+                    setActiveRunId(null);
+                    setIsCancellingRun(false);
+                    return;
+                }
+
+                timer = window.setTimeout(pollRunStatus, 800);
+            } catch (err: unknown) {
+                if (ignore) {
+                    return;
+                }
+
+                setError(err instanceof Error ? err.message : "Run status check failed");
+                setStep("ready");
+                setActiveRunId(null);
+                setRunProgress(null);
+                setRunStatus(null);
+                setRunDurationMs(0);
+                setIsCancellingRun(false);
+            }
+        };
+
+        void pollRunStatus();
+
+        return () => {
+            ignore = true;
+            if (timer !== null) {
+                window.clearTimeout(timer);
+            }
+        };
+    }, [activeRunId, step]);
 
     function togglePractice(
         practice: BestPracticeArea,
@@ -524,6 +675,7 @@ export default function Home() {
         setActiveTab("summary");
         setStatusFilter("All");
         setContentProfile(null);
+        setIsBusyTargetListExpanded(false);
         setIsCreationCollapsed(false);
         setIsGeneratedCollapsed(false);
         setIsReportCollapsed(false);
@@ -560,7 +712,17 @@ export default function Home() {
             }
 
             setContentProfile(introspectionData);
-            setLastGeneratedContentSignature(JSON.stringify(contentRules));
+            setLastGeneratedContentSignature(JSON.stringify({ contentRules, auditMode }));
+            setLastGeneratedBaseUrl(normalizedBaseUrl.value);
+            setLastGeneratedInspectionPaths(contentRules.paths);
+            setLastGeneratedInspectionTargets(
+                buildBusyInspectionTargets(
+                    normalizedBaseUrl.value,
+                    contentRules.paths,
+                    crawlResult?.baseUrl === normalizedBaseUrl.value ? crawlResult.pages : []
+                )
+            );
+            setLastGeneratedAuditMode(auditMode);
             setIsGeneratedCollapsed(false);
 
             const res = await fetch("/api/generate", {
@@ -570,6 +732,7 @@ export default function Home() {
                     baseUrl: normalizedBaseUrl.value,
                     description,
                     selectedPractices: effectiveSelectedPractices,
+                    auditMode,
                     contentRules,
                     contentProfile: introspectionData,
                 }),
@@ -596,6 +759,12 @@ export default function Home() {
         setError("");
         setActiveTab("summary");
         setStatusFilter("All");
+        setIsBusyTargetListExpanded(false);
+        setActiveRunId(null);
+        setRunProgress(null);
+        setRunStatus("running");
+        setRunDurationMs(0);
+        setIsCancellingRun(false);
         setIsCreationCollapsed(true);
         setIsGeneratedCollapsed(true);
         setIsReportCollapsed(false);
@@ -604,15 +773,54 @@ export default function Home() {
             const res = await fetch("/api/run", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: editedCode, selectedPractices: effectiveSelectedPractices }),
+                body: JSON.stringify({
+                    code: editedCode,
+                    selectedPractices: effectiveSelectedPractices,
+                    auditMode: lastGeneratedAuditMode,
+                }),
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error ?? "Run failed");
-            setResult(data);
-            setStep("done");
+            const data = (await res.json()) as RunStatusSnapshot | { error?: string };
+            if (!res.ok) {
+                throw new Error("error" in data ? data.error ?? "Run failed" : "Run failed");
+            }
+            const snapshot = data as RunStatusSnapshot;
+            setActiveRunId(snapshot.runId);
+            setRunProgress(snapshot.progress);
+            setRunStatus(snapshot.runStatus);
+            setRunDurationMs(snapshot.duration);
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Unknown error");
             setStep("ready");
+        }
+    }
+
+    async function handleStopRun() {
+        if (!activeRunId || isCancellingRun) {
+            return;
+        }
+
+        setIsCancellingRun(true);
+
+        try {
+            const response = await fetch("/api/run", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ runId: activeRunId }),
+            });
+            const data = (await response.json()) as RunStatusSnapshot | { error?: string };
+
+            if (!response.ok) {
+                throw new Error("error" in data ? data.error ?? "Unable to stop run" : "Unable to stop run");
+            }
+
+            const snapshot = data as RunStatusSnapshot;
+            setRunProgress(snapshot.progress);
+            setRunStatus(snapshot.runStatus);
+            setRunDurationMs(snapshot.duration);
+            setIsCancellingRun(snapshot.cancellationRequested);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Unable to stop run");
+            setIsCancellingRun(false);
         }
     }
 
@@ -680,6 +888,8 @@ export default function Home() {
 
             setCrawlResult(data);
             setSelectedCrawledPaths(data.pages.map((page: CrawledPage) => page.path));
+            setCrawlSearchQuery("");
+            setSelectedCrawlExtensions([]);
             setIsCrawledPagesCollapsed(false);
         } catch (err: unknown) {
             setCrawlError(err instanceof Error ? err.message : "Unknown error");
@@ -702,6 +912,18 @@ export default function Home() {
 
     function clearCrawledPageSelection() {
         setSelectedCrawledPaths([]);
+    }
+
+    function toggleCrawlExtension(extension: string) {
+        setSelectedCrawlExtensions((current) =>
+            current.includes(extension)
+                ? current.filter((item) => item !== extension)
+                : [...current, extension]
+        );
+    }
+
+    function selectVisibleCrawledPages(paths: string[]) {
+        setSelectedCrawledPaths((current) => [...new Set([...current, ...paths])]);
     }
 
     async function handleCopyRawOutput(rawOutput: string) {
@@ -780,18 +1002,64 @@ export default function Home() {
     const isContentAwareReady =
         !contentAwareRequested ||
         (contentProfile !== null &&
-            lastGeneratedContentSignature === JSON.stringify(contentRules) &&
+            lastGeneratedContentSignature === JSON.stringify({ contentRules, auditMode }) &&
             hasCode);
     const runBlockedMessage = !isContentAwareReady
         ? "Generate the suite again after completing the content-aware inputs before running it."
         : "";
     const showBusyOverlay = isGenerating || isRunning;
-    const busyTarget = normalizeBaseUrl(baseUrl).ok
-        ? normalizeBaseUrl(baseUrl).value
+    const normalizedBusyTarget = normalizeBaseUrl(baseUrl);
+    const busyTarget = normalizedBusyTarget.ok
+        ? normalizedBusyTarget.value
         : baseUrl.trim() || DEFAULT_BASE_URL;
+    const busyBaseUrl = (isRunning ? lastGeneratedBaseUrl : busyTarget) || DEFAULT_BASE_URL;
+    const busyInspectionPaths = isRunning
+        ? lastGeneratedInspectionPaths
+        : effectiveInspectionPaths;
     const busyLabel = isGenerating
         ? "Inspecting pages and generating tests..."
-        : "Running generated Playwright suite...";
+        : isCancellingRun
+            ? "Stopping generated Playwright suite..."
+            : "Running generated Playwright suite...";
+    const activeRunProgress = isRunning ? runProgress : null;
+    const runTotalTests = Math.max(activeRunProgress?.totalTests ?? 0, 0);
+    const runCompletedTests = Math.max(activeRunProgress?.completedTests ?? 0, 0);
+    const runProgressPercent = runTotalTests > 0
+        ? Math.min(100, Math.round((runCompletedTests / runTotalTests) * 100))
+        : 0;
+    const runElapsedLabel = formatMilliseconds(runDurationMs);
+    const estimatedRemainingMs =
+        runTotalTests > 0 && runCompletedTests > 0 && runCompletedTests < runTotalTests
+            ? Math.max(0, Math.round((runDurationMs / runCompletedTests) * (runTotalTests - runCompletedTests)))
+            : null;
+    const runRemainingLabel =
+        estimatedRemainingMs === null
+            ? isCancellingRun
+                ? "Stopping..."
+                : "Estimating..."
+            : formatMilliseconds(estimatedRemainingMs);
+    const etaConfidence =
+        estimatedRemainingMs === null
+            ? null
+            : runCompletedTests >= 6
+                ? "High confidence"
+                : runCompletedTests >= 3
+                    ? "Medium confidence"
+                    : "Low confidence";
+    const etaConfidenceDetail =
+        estimatedRemainingMs === null
+            ? isCancellingRun
+                ? "Playwright is shutting down, so no further estimate is needed."
+                : "Waiting for enough completed tests to project remaining time."
+            : runCompletedTests >= 6
+                ? "Estimate is based on several completed tests, so it should be relatively stable."
+                : runCompletedTests >= 3
+                    ? "Estimate is based on a few completed tests and may still move as the suite settles."
+                    : "Estimate is based on very little run history and may change sharply after the next tests finish.";
+    const activeRunLabel = activeRunProgress?.currentLinkLabel
+        ?? activeRunProgress?.currentTestTitle
+        ?? activeRunProgress?.lastCompletedTitle
+        ?? "Preparing the first test case...";
     const report = result?.report;
     const filteredExecution = report
         ? report.execution.filter((record) =>
@@ -839,9 +1107,46 @@ export default function Home() {
         }))
         .filter((page) => page.count > 0);
     const crawledPages = crawlResult?.pages ?? [];
+    const busyInspectionTargets = isRunning
+        ? lastGeneratedInspectionTargets
+        : buildBusyInspectionTargets(
+            busyBaseUrl,
+            busyInspectionPaths,
+            crawlResult?.baseUrl === busyBaseUrl ? crawledPages : []
+        );
+    const busyInspectionTargetsPreview = busyInspectionTargets.slice(0, 3);
+    const remainingBusyInspectionTargets = busyInspectionTargets.slice(3);
     const isCrawlResultStale = Boolean(
         crawlResult && normalizedBaseUrlForDisplay.ok && crawlResult.baseUrl !== normalizedBaseUrlForDisplay.value
     );
+    const crawlExtensionOptions = [...new Set(crawledPages.map((page) => getPathExtension(page.path)))].sort(
+        (left, right) => {
+            if (left === "(no extension)") {
+                return 1;
+            }
+
+            if (right === "(no extension)") {
+                return -1;
+            }
+
+            return left.localeCompare(right);
+        }
+    );
+    const normalizedCrawlSearchQuery = crawlSearchQuery.trim().toLowerCase();
+    const filteredCrawledPages = crawledPages.filter((page) => {
+        const pageExtension = getPathExtension(page.path);
+        const matchesExtension =
+            selectedCrawlExtensions.length === 0 || selectedCrawlExtensions.includes(pageExtension);
+        const matchesSearch =
+            normalizedCrawlSearchQuery.length === 0 ||
+            page.path.toLowerCase().includes(normalizedCrawlSearchQuery) ||
+            page.url.toLowerCase().includes(normalizedCrawlSearchQuery) ||
+            page.title.toLowerCase().includes(normalizedCrawlSearchQuery) ||
+            (page.discoveredFrom?.toLowerCase().includes(normalizedCrawlSearchQuery) ?? false);
+
+        return matchesExtension && matchesSearch;
+    });
+    const filteredCrawledPaths = filteredCrawledPages.map((page) => page.path);
 
     return (
         <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.12),_transparent_32%),linear-gradient(180deg,#f7f8fc_0%,#f4f6fb_52%,#eef3f8_100%)] text-zinc-900">
@@ -864,11 +1169,166 @@ export default function Home() {
                         <p className="mt-4 text-sm leading-6 text-zinc-500">
                             {isGenerating
                                 ? "TestForge is inspecting the requested pages and translating the results into concrete Playwright assertions."
-                                : "TestForge is executing the generated suite and collecting structured reporting data."}
+                                : isCancellingRun
+                                    ? "TestForge is stopping the running suite and preserving the latest available execution state."
+                                    : "TestForge is executing the generated suite and collecting structured reporting data."}
                         </p>
-                        <div className="mt-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs leading-5 text-zinc-600">
-                            Target site: {busyTarget}
-                        </div>
+                        {isRunning ? (
+                            <div className="mt-4 space-y-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4 text-xs leading-5 text-zinc-600">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                        <div className="font-semibold text-zinc-800">Overall progress</div>
+                                        <div className="mt-1 text-zinc-500">
+                                            {runCompletedTests} of {runTotalTests || activeRunProgress?.startedTests || 0} tests finished
+                                            {runStatus ? ` · ${toSentenceCase(runStatus)}` : ""}
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleStopRun}
+                                        disabled={!activeRunId || isCancellingRun}
+                                        className="rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {isCancellingRun ? "Stopping..." : "Stop run"}
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                        <span>Suite completion</span>
+                                        <span>{runProgressPercent}%</span>
+                                    </div>
+                                    <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-zinc-200">
+                                        <div
+                                            className="h-full rounded-full bg-indigo-500 transition-[width] duration-300"
+                                            style={{ width: `${runProgressPercent}%` }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Elapsed</div>
+                                        <div className="mt-1 text-base font-semibold text-zinc-900">{runElapsedLabel}</div>
+                                    </div>
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Projected remaining</div>
+                                        <div className="mt-1 text-base font-semibold text-zinc-900">{runRemainingLabel}</div>
+                                        <div className={`mt-1 text-[11px] font-semibold ${etaConfidence === "High confidence"
+                                            ? "text-emerald-700"
+                                            : etaConfidence === "Medium confidence"
+                                                ? "text-amber-700"
+                                                : "text-zinc-500"
+                                            }`}>
+                                            {etaConfidence ?? "Confidence pending"}
+                                        </div>
+                                        <div className="mt-1 text-[11px] leading-5 text-zinc-500">{etaConfidenceDetail}</div>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-3">
+                                    <div className="font-semibold text-zinc-800">Current link or test</div>
+                                    <div className="mt-2 text-sm font-medium text-zinc-900">{activeRunLabel}</div>
+                                    <div className="mt-1 text-zinc-500">
+                                        {activeRunProgress?.activeExecutions.length
+                                            ? `${activeRunProgress.activeExecutions.length} test${activeRunProgress.activeExecutions.length === 1 ? "" : "s"} active across workers`
+                                            : isCancellingRun
+                                                ? "Waiting for Playwright to stop and flush the latest status."
+                                                : "Waiting for the next test event from Playwright."}
+                                    </div>
+                                </div>
+
+                                {activeRunProgress?.activeExecutions.length ? (
+                                    <div className="space-y-2">
+                                        {activeRunProgress.activeExecutions.map((execution) => (
+                                            <div
+                                                key={execution.id}
+                                                className="rounded-xl border border-zinc-200 bg-white px-3 py-2"
+                                            >
+                                                <div className="font-semibold text-zinc-800">
+                                                    {execution.linkLabel ?? execution.title}
+                                                </div>
+                                                {execution.linkLabel && execution.linkLabel !== execution.title && (
+                                                    <div className="mt-1 text-zinc-500">{execution.title}</div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : null}
+
+                                <div className="grid gap-2 sm:grid-cols-4">
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Passed</div>
+                                        <div className="mt-1 text-lg font-semibold text-emerald-700">{activeRunProgress?.passedTests ?? 0}</div>
+                                    </div>
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Failed</div>
+                                        <div className="mt-1 text-lg font-semibold text-rose-700">{activeRunProgress?.failedTests ?? 0}</div>
+                                    </div>
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Flaky</div>
+                                        <div className="mt-1 text-lg font-semibold text-amber-600">{activeRunProgress?.flakyTests ?? 0}</div>
+                                    </div>
+                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Blocked</div>
+                                        <div className="mt-1 text-lg font-semibold text-zinc-700">{activeRunProgress?.blockedTests ?? 0}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="mt-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-xs leading-5 text-zinc-600">
+                                <div className="font-semibold text-zinc-800">Selected pages under test</div>
+                                <div className="mt-3 space-y-2">
+                                    {busyInspectionTargetsPreview.map((target) => (
+                                        <div
+                                            key={target.url}
+                                            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 break-all"
+                                        >
+                                            {target.title ? (
+                                                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                                                    <span className="font-semibold text-zinc-800">{target.title}</span>
+                                                    <span className="text-zinc-500">{target.url}</span>
+                                                </div>
+                                            ) : (
+                                                target.url
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                {remainingBusyInspectionTargets.length > 0 && (
+                                    <div className="mt-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsBusyTargetListExpanded((value) => !value)}
+                                            className="text-xs font-semibold text-indigo-600 transition hover:text-indigo-700"
+                                        >
+                                            {isBusyTargetListExpanded
+                                                ? `Hide ${remainingBusyInspectionTargets.length} more page${remainingBusyInspectionTargets.length === 1 ? "" : "s"}`
+                                                : `Show ${remainingBusyInspectionTargets.length} more page${remainingBusyInspectionTargets.length === 1 ? "" : "s"}`}
+                                        </button>
+                                        {isBusyTargetListExpanded && (
+                                            <div className="mt-2 space-y-2">
+                                                {remainingBusyInspectionTargets.map((target) => (
+                                                    <div
+                                                        key={target.url}
+                                                        className="rounded-xl border border-zinc-200 bg-white px-3 py-2 break-all"
+                                                    >
+                                                        {target.title ? (
+                                                            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                                                                <span className="font-semibold text-zinc-800">{target.title}</span>
+                                                                <span className="text-zinc-500">{target.url}</span>
+                                                            </div>
+                                                        ) : (
+                                                            target.url
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -942,6 +1402,43 @@ export default function Home() {
                                     </p>
                                 </div>
 
+                                <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <div className="text-sm font-medium text-zinc-700">
+                                                Generation Mode
+                                            </div>
+                                            <p className="mt-1 text-xs leading-5 text-zinc-500">
+                                                Fast mode reduces expensive link navigation checks. Deep mode keeps the broader audit coverage.
+                                            </p>
+                                        </div>
+                                        <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                            {auditMode === "fast" ? "Default" : "Expanded"}
+                                        </span>
+                                    </div>
+                                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                        {TEST_AUDIT_MODE_OPTIONS.map((mode) => {
+                                            const selected = auditMode === mode.id;
+
+                                            return (
+                                                <button
+                                                    key={mode.id}
+                                                    type="button"
+                                                    aria-pressed={selected}
+                                                    onClick={() => setAuditMode(mode.id)}
+                                                    className={`rounded-2xl border px-4 py-3 text-left transition ${selected
+                                                        ? "border-indigo-500 bg-indigo-50 text-indigo-950 shadow-[0_8px_24px_rgba(79,70,229,0.12)] ring-2 ring-indigo-200"
+                                                        : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-white"
+                                                        }`}
+                                                >
+                                                    <span className="block text-sm font-semibold">{mode.label}</span>
+                                                    <span className="mt-1 block text-xs leading-5 text-zinc-500">{mode.description}</span>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
                                 <div className="flex-1 rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
                                     <button
                                         type="button"
@@ -998,6 +1495,14 @@ export default function Home() {
                                                 >
                                                     Clear selection
                                                 </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => selectVisibleCrawledPages(filteredCrawledPaths)}
+                                                    disabled={filteredCrawledPaths.length === 0 || isCrawling}
+                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    Select visible
+                                                </button>
                                             </div>
 
                                             <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
@@ -1018,16 +1523,66 @@ export default function Home() {
                                                 </div>
                                             )}
 
-                                            <div className="mt-4 min-h-[196px] overflow-y-auto rounded-2xl border border-zinc-200 bg-white">
+                                            {crawledPages.length > 0 && (
+                                                <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-3">
+                                                    <div className="flex flex-wrap items-center justify-between gap-3">
+                                                        <label className="min-w-[220px] flex-1">
+                                                            <span className="sr-only">Search discovered pages</span>
+                                                            <input
+                                                                type="search"
+                                                                value={crawlSearchQuery}
+                                                                onChange={(event) => setCrawlSearchQuery(event.target.value)}
+                                                                placeholder="Search paths, titles, or discovery source"
+                                                                className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                                                            />
+                                                        </label>
+                                                        <div className="text-xs text-zinc-500">
+                                                            Showing {filteredCrawledPages.length} of {crawledPages.length} discovered pages.
+                                                        </div>
+                                                    </div>
+                                                    {crawlExtensionOptions.length > 0 && (
+                                                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                                                            {crawlExtensionOptions.map((extension) => {
+                                                                const selected = selectedCrawlExtensions.includes(extension);
+
+                                                                return (
+                                                                    <button
+                                                                        key={extension}
+                                                                        type="button"
+                                                                        onClick={() => toggleCrawlExtension(extension)}
+                                                                        className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition ${selected
+                                                                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                                                                            : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
+                                                                            }`}
+                                                                    >
+                                                                        {extension}
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                            {selectedCrawlExtensions.length > 0 && (
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setSelectedCrawlExtensions([])}
+                                                                    className="rounded-full border border-zinc-300 bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
+                                                                >
+                                                                    Clear filters
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            <div className="mt-4 h-[420px] overflow-y-auto rounded-2xl border border-zinc-200 bg-white">
                                                 {crawledPages.length > 0 ? (
                                                     <div className="divide-y divide-zinc-100">
-                                                        {crawledPages.map((page) => {
+                                                        {filteredCrawledPages.map((page) => {
                                                             const checked = selectedCrawledPaths.includes(page.path);
 
                                                             return (
                                                                 <label
                                                                     key={page.path}
-                                                                    className="flex cursor-pointer items-start gap-3 px-4 py-3 text-sm text-zinc-700"
+                                                                    className="flex min-h-[72px] cursor-pointer items-start gap-3 px-4 py-3 text-sm text-zinc-700"
                                                                 >
                                                                     <input
                                                                         type="checkbox"
@@ -1051,9 +1606,14 @@ export default function Home() {
                                                                 </label>
                                                             );
                                                         })}
+                                                        {filteredCrawledPages.length === 0 && (
+                                                            <div className="flex min-h-[196px] items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
+                                                                No discovered pages match the current search or extension filters.
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ) : (
-                                                    <div className="flex min-h-[196px] items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
+                                                    <div className="flex h-full items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
                                                         Run the crawler to discover same-origin pages and choose what should be tested.
                                                     </div>
                                                 )}
@@ -1452,6 +2012,7 @@ export default function Home() {
                     <div className="mt-4 flex items-center justify-between gap-3 border-t border-zinc-800 pt-4 text-xs text-zinc-500">
                         <span>
                             Review the generated suite, edit if needed, then run it.
+                            {` ${lastGeneratedAuditMode === "deep" ? "Deep mode keeps the expanded link audit coverage." : "Fast mode caps the most expensive per-page link navigation checks."}`}
                             {isCrossBrowserSelected
                                 ? " Cross-browser mode will run Chromium, Firefox, and WebKit."
                                 : ""}
@@ -1514,12 +2075,16 @@ export default function Home() {
                                             </p>
                                         </div>
                                         <span
-                                            className={`rounded-full border px-3 py-1 text-xs font-semibold ${result.passed
-                                                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                                                : "border-rose-200 bg-rose-50 text-rose-800"
+                                            className={`rounded-full border px-3 py-1 text-xs font-semibold ${result.runStatus === "cancelled"
+                                                ? "border-amber-200 bg-amber-50 text-amber-800"
+                                                : result.passed
+                                                    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                                                    : "border-rose-200 bg-rose-50 text-rose-800"
                                                 }`}
                                         >
-                                            {report.summary.releaseRecommendation}
+                                            {result.runStatus === "cancelled"
+                                                ? "Run stopped before completion"
+                                                : report.summary.releaseRecommendation}
                                         </span>
                                     </div>
 
@@ -1885,14 +2450,20 @@ export default function Home() {
                 ) : result ? (
                     <CollapsibleSection
                         title="Execution Output"
-                        subtitle="Structured report data was not available for this run, so only the raw console output is shown."
+                        subtitle={result.runStatus === "cancelled"
+                            ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
+                            : "Structured report data was not available for this run, so only the raw console output is shown."}
                         collapsed={isReportCollapsed}
                         onToggle={() => setIsReportCollapsed((value) => !value)}
                     >
                         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
                             <div className="flex flex-wrap items-start justify-between gap-4">
                                 <div className="text-sm font-semibold text-zinc-900">
-                                    {result.passed ? "All tests passed" : "Tests failed"} — {formatMilliseconds(result.duration)}
+                                    {result.runStatus === "cancelled"
+                                        ? "Run stopped"
+                                        : result.passed
+                                            ? "All tests passed"
+                                            : "Tests failed"} — {formatMilliseconds(result.duration)}
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     <button
@@ -1911,6 +2482,36 @@ export default function Home() {
                                     </button>
                                 </div>
                             </div>
+                            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                                <MetricCard
+                                    label="Completed"
+                                    value={result.progress.completedTests}
+                                    caption={`of ${result.progress.totalTests || result.progress.startedTests || 0} planned`}
+                                />
+                                <MetricCard
+                                    label="Passed"
+                                    value={result.progress.passedTests}
+                                    caption="completed successfully"
+                                />
+                                <MetricCard
+                                    label="Failed"
+                                    value={result.progress.failedTests}
+                                    caption="ended in failure"
+                                />
+                                <MetricCard
+                                    label="Blocked"
+                                    value={result.progress.blockedTests}
+                                    caption="skipped or interrupted"
+                                />
+                            </div>
+                            <div className="mt-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
+                                <div className="font-semibold text-zinc-900">Latest observed test</div>
+                                <div className="mt-1">
+                                    {result.progress.lastCompletedTitle
+                                        ?? result.progress.currentTestTitle
+                                        ?? "No test progress was captured before the run stopped."}
+                                </div>
+                            </div>
                             <pre className="mt-4 overflow-x-auto rounded-2xl bg-zinc-950 px-4 py-4 font-mono text-xs leading-6 text-zinc-200 whitespace-pre-wrap">
                                 {result.output}
                             </pre>
@@ -1918,7 +2519,7 @@ export default function Home() {
                     </CollapsibleSection>
                 ) : null}
             </main>
-        </div>
+        </div >
     );
 }
 

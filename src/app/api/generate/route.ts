@@ -17,6 +17,7 @@ const BEST_PRACTICE_OPTIONS = [
 ] as const;
 
 type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number];
+type TestAuditMode = "fast" | "deep";
 
 type InteractionCategory = "navigation" | "api" | "form" | "action";
 type ActionableElementType = "link" | "button" | "input" | "select" | "textarea" | "form";
@@ -98,6 +99,9 @@ const DEFAULT_BEST_PRACTICES: BestPracticeArea[] = [
     "accessibility",
     "seo/content",
 ];
+
+const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
+const FAST_LINK_INTERACTION_LIMIT = 4;
 
 const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
     functional: "Functional",
@@ -193,6 +197,10 @@ function normalizeSelectedPractices(input: unknown) {
     );
 
     return [...new Set(practices)];
+}
+
+function normalizeTestAuditMode(input: unknown): TestAuditMode {
+    return input === "deep" ? "deep" : DEFAULT_TEST_AUDIT_MODE;
 }
 
 function normalizeStringList(input: unknown) {
@@ -586,6 +594,19 @@ function resolveLinkAuditPath(baseUrl: string) {
     return normalizeRoutePath(pathname);
 }
 
+function resolveLinkAuditPaths(
+    contentProfile: ContentProfile | null,
+    baseUrl: string
+) {
+    const profilePaths = [...new Set(
+        (contentProfile?.pages ?? [])
+            .map((page) => normalizeRoutePath(page.path))
+            .filter(Boolean)
+    )];
+
+    return profilePaths.length > 0 ? profilePaths : [resolveLinkAuditPath(baseUrl)];
+}
+
 function findMatchingProfilePage(contentProfile: ContentProfile | null, path: string) {
     const normalizedPath = normalizeRoutePath(path);
 
@@ -736,15 +757,15 @@ function buildResponseHints(element: ActionableElementDetail) {
 }
 
 function buildLinkLocatorExpression(link: LinkDetail) {
-    if (link.rawHref) {
-        return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]').first()`;
-    }
-
     if (link.text) {
         return `page.getByRole('link', { name: '${escapeForSingleQuotedString(link.text)}', exact: true }).first()`;
     }
 
-    return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.url)}"]').first()`;
+    if (link.rawHref) {
+        return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:visible').first()`;
+    }
+
+    return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.url)}"]:visible').first()`;
 }
 
 function buildLinkTitle(link: LinkDetail) {
@@ -753,6 +774,50 @@ function buildLinkTitle(link: LinkDetail) {
         ? ` [${escapeForSingleQuotedString(link.containerLabel)}]`
         : "";
     return `${label}${containerSuffix}`;
+}
+
+function scoreLinkInteractionPriority(link: LinkDetail) {
+    let score = 0;
+
+    if (link.category !== "api") {
+        score += 4;
+    }
+
+    if (link.linkType === "internal") {
+        score += 3;
+    }
+
+    if (link.targetBehavior === "same-window") {
+        score += 2;
+    }
+
+    if (link.linkType === "anchor") {
+        score += 1;
+    }
+
+    if (link.requiresAuth) {
+        score -= 1;
+    }
+
+    return score;
+}
+
+function selectBrowserInteractionLinks(
+    links: LinkDetail[],
+    auditMode: TestAuditMode
+) {
+    if (auditMode === "deep") {
+        return links;
+    }
+
+    return links
+        .map((link, index) => ({ link, index }))
+        .sort((left, right) => {
+            const priorityDelta = scoreLinkInteractionPriority(right.link) - scoreLinkInteractionPriority(left.link);
+            return priorityDelta !== 0 ? priorityDelta : left.index - right.index;
+        })
+        .slice(0, FAST_LINK_INTERACTION_LIMIT)
+        .map(({ link }) => link);
 }
 
 function buildActionableElementTests(
@@ -890,7 +955,11 @@ ${visibilityAssertions}
 
 function buildTestMyLinksAuditTests(
     contentProfile: ContentProfile | null,
-    path = "/"
+    path = "/",
+    options: {
+        auditMode: TestAuditMode;
+        areas: BestPracticeArea[];
+    }
 ) {
     const matchingPage = findMatchingProfilePage(contentProfile, path);
 
@@ -912,12 +981,16 @@ function buildTestMyLinksAuditTests(
     const escapedPath = escapeForSingleQuotedString(path);
     const httpLinks = linkDetails.filter((link) => ["internal", "external", "download"].includes(link.linkType));
     const anchorLinks = linkDetails.filter((link) => link.linkType === "anchor");
-    const mailtoLinks = linkDetails.filter((link) => link.linkType === "mailto");
-    const protectedLinks = linkDetails.filter((link) => link.requiresAuth && link.linkType === "internal");
-    const popupLinks = linkDetails.filter((link) => link.targetBehavior !== "same-window");
     const secureLinks = httpLinks.filter((link) => link.isSecure);
-    const downloadableLinks = linkDetails.filter((link) => link.linkType === "download");
     const nonApiLinks = linkDetails.filter((link) => link.category !== "api");
+    const browserInteractionLinks = selectBrowserInteractionLinks(linkDetails, options.auditMode);
+    const interactionMailtoLinks = browserInteractionLinks.filter((link) => link.linkType === "mailto");
+    const interactionDownloadLinks = browserInteractionLinks.filter((link) => link.linkType === "download");
+    const interactionPopupLinks = browserInteractionLinks.filter((link) => link.targetBehavior !== "same-window");
+    const interactionProtectedLinks = browserInteractionLinks.filter((link) => link.requiresAuth && link.linkType === "internal");
+    const interactionNonApiLinks = selectBrowserInteractionLinks(nonApiLinks, options.auditMode);
+    const includeUsabilityLinkAudits = options.areas.includes("usability");
+    const includeAccessibilityLinkAudits = options.areas.includes("accessibility");
     const allLinkPayload = JSON.stringify(linkDetails);
     const escapedCurrentPageUrl = escapeForSingleQuotedString(matchingPage?.url ?? `http://localhost${path}`);
     const scannedPages = contentProfile?.pages.map((page) => ({
@@ -928,7 +1001,7 @@ function buildTestMyLinksAuditTests(
 
     const tests: string[] = [];
 
-    for (const link of linkDetails) {
+    for (const link of browserInteractionLinks) {
         const locatorExpression = buildLinkLocatorExpression(link);
         const linkTitle = buildLinkTitle(link);
         const linkUrl = escapeForSingleQuotedString(link.url);
@@ -1073,24 +1146,36 @@ ${expectedStatusAssertion}
         }
     });`);
 
-    if (nonApiLinks.length > 0) {
-        const navigationCandidates = JSON.stringify(nonApiLinks.slice(0, 8));
+    if (interactionNonApiLinks.length > 0) {
         tests.push(`  test('navigation destination: links navigate to their required destination', async ({ page, context }) => {
-        const links = ${JSON.stringify(nonApiLinks)};
-
-        for (const link of links) {
+        const links = ${JSON.stringify(interactionNonApiLinks)};
+        const revisitLinksPage = async () => {
             await page.goto('${escapedPath}');
             await page.waitForLoadState('domcontentloaded');
+        };
 
-            const linkLocator = link.rawHref
-                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
-                : page.getByRole('link', { name: link.text, exact: true }).first();
+        await revisitLinksPage();
+        for (const link of links) {
+            const linkLocator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : link.rawHref
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
 
             await expect(linkLocator).toBeVisible();
+            const urlBeforeInteraction = page.url();
 
             if (link.linkType === 'anchor') {
                 await linkLocator.click();
                 expect(new URL(page.url()).hash).toBe(link.rawHref);
+                if (page.url() !== urlBeforeInteraction) {
+                    await page.goBack().catch(async () => {
+                        await revisitLinksPage();
+                    });
+                    await page.waitForLoadState('domcontentloaded').catch(async () => {
+                        await revisitLinksPage();
+                    });
+                }
                 continue;
             }
 
@@ -1107,6 +1192,15 @@ ${expectedStatusAssertion}
             await linkLocator.click();
             await page.waitForLoadState('domcontentloaded').catch(() => {});
             expect(page.url()).toContain(link.url.replace(/[#?].*$/, ''));
+
+            if (page.url() !== urlBeforeInteraction) {
+                await page.goBack().catch(async () => {
+                    await revisitLinksPage();
+                });
+                await page.waitForLoadState('domcontentloaded').catch(async () => {
+                    await revisitLinksPage();
+                });
+            }
         }
     });`);
     }
@@ -1117,9 +1211,11 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const locator = link.rawHref
-                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
-                : page.getByRole('link', { name: link.text, exact: true }).first();
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : link.rawHref
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
 
             await expect(locator).toBeVisible();
 
@@ -1137,28 +1233,32 @@ ${expectedStatusAssertion}
         }
     });`);
 
-    if (mailtoLinks.length > 0) {
+    if (interactionMailtoLinks.length > 0) {
         tests.push(`  test('mailto links expose the correct recipient address', async ({ page }) => {
-        const links = ${JSON.stringify(mailtoLinks)};
+        const links = ${JSON.stringify(interactionMailtoLinks)};
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first();
             await expect(locator).toBeVisible();
             await expect(locator).toHaveAttribute('href', link.rawHref);
         }
     });`);
     }
 
-    if (downloadableLinks.length > 0) {
+    if (interactionDownloadLinks.length > 0) {
         tests.push(`  test('download links can be requested successfully and expose downloadable resources', async ({ page, request }) => {
-        const links = ${JSON.stringify(downloadableLinks)};
+        const links = ${JSON.stringify(interactionDownloadLinks)};
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first();
             await expect(locator).toBeVisible();
             const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000 });
             expect(response.status()).toBeLessThan(400);
@@ -1167,14 +1267,16 @@ ${expectedStatusAssertion}
     });`);
     }
 
-    if (popupLinks.length > 0) {
+    if (interactionPopupLinks.length > 0) {
         tests.push(`  test('target window behavior matches the link target configuration', async ({ page }) => {
-        const links = ${JSON.stringify(popupLinks)};
+        const links = ${JSON.stringify(interactionPopupLinks)};
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first();
             await expect(locator).toBeVisible();
             const target = await locator.getAttribute('target');
 
@@ -1189,25 +1291,44 @@ ${expectedStatusAssertion}
     });`);
     }
 
-    if (protectedLinks.length > 0) {
+    if (interactionProtectedLinks.length > 0) {
         tests.push(`  test('authentication and permissions: protected links redirect or block unauthorized access', async ({ page, request }) => {
-        const links = ${JSON.stringify(protectedLinks)};
+        const links = ${JSON.stringify(interactionProtectedLinks)};
+        const revisitLinksPage = async () => {
+            await page.goto('${escapedPath}');
+            await page.waitForLoadState('domcontentloaded');
+        };
+
+        await revisitLinksPage();
 
         for (const link of links) {
             const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000, maxRedirects: 0 });
             expect([200, 301, 302, 303, 307, 308, 401, 403]).toContain(response.status());
 
-            await page.goto('${escapedPath}');
-            await page.waitForLoadState('domcontentloaded');
-            const locator = page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first();
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first();
+            const urlBeforeInteraction = page.url();
             await locator.click();
             await page.waitForLoadState('domcontentloaded').catch(() => {});
             expect(/login|sign in|unauthorized|forbidden|account/i.test(await page.content()) || page.url().includes('login') || page.url().includes('signin')).toBeTruthy();
+
+            if (page.url() !== urlBeforeInteraction) {
+                await page.goBack().catch(async () => {
+                    await revisitLinksPage();
+                });
+                await page.waitForLoadState('domcontentloaded').catch(async () => {
+                    await revisitLinksPage();
+                });
+            } else {
+                await revisitLinksPage();
+            }
         }
     });`);
     }
 
-    tests.push(`  test('visual representation: links are distinguishable from surrounding text', async ({ page }) => {
+    if (includeUsabilityLinkAudits) {
+        tests.push(`  test('visual representation: links are distinguishable from surrounding text', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
@@ -1234,7 +1355,7 @@ ${expectedStatusAssertion}
         }
     });`);
 
-    tests.push(`  test('hover state: links show pointer cursor and preserve tooltip attributes', async ({ page }) => {
+        tests.push(`  test('hover state: links show pointer cursor and preserve tooltip attributes', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
@@ -1254,7 +1375,7 @@ ${expectedStatusAssertion}
         }
     });`);
 
-    tests.push(`  test('visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable', async ({ page }) => {
+        tests.push(`  test('visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
@@ -1276,18 +1397,26 @@ ${expectedStatusAssertion}
 
         expect(hasVisitedRule).toBeTruthy();
     });`);
+    }
 
-    tests.push(`  test('keyboard navigation: links can receive focus and activate with Enter', async ({ page, context }) => {
-        const links = ${JSON.stringify(nonApiLinks)};
-
-        for (const link of links) {
+    if (includeAccessibilityLinkAudits && interactionNonApiLinks.length > 0) {
+        tests.push(`  test('keyboard navigation: links can receive focus and activate with Enter', async ({ page, context }) => {
+        const links = ${JSON.stringify(interactionNonApiLinks)};
+        const revisitLinksPage = async () => {
             await page.goto('${escapedPath}');
             await page.waitForLoadState('domcontentloaded');
-            const locator = link.rawHref
-                ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]').first()
-                : page.getByRole('link', { name: link.text, exact: true }).first();
+        };
+
+        await revisitLinksPage();
+        for (const link of links) {
+            const locator = link.text
+                ? page.getByRole('link', { name: link.text, exact: true }).first()
+                : link.rawHref
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
             await locator.focus();
             await expect(locator).toBeFocused();
+            const urlBeforeInteraction = page.url();
 
             if (link.targetBehavior === 'new-tab') {
                 const popupPromise = context.waitForEvent('page');
@@ -1299,9 +1428,19 @@ ${expectedStatusAssertion}
             } else {
                 await page.keyboard.press('Enter');
                 await page.waitForLoadState('domcontentloaded').catch(() => {});
+
+                if (page.url() !== urlBeforeInteraction) {
+                    await page.goBack().catch(async () => {
+                        await revisitLinksPage();
+                    });
+                    await page.waitForLoadState('domcontentloaded').catch(async () => {
+                        await revisitLinksPage();
+                    });
+                }
             }
         }
     });`);
+    }
 
     tests.push(`  test('technical security: link protocols are safe and do not expose obvious XSS vectors', async ({ page }) => {
         const links = ${allLinkPayload};
@@ -1649,12 +1788,15 @@ function buildGenericSuites(
     baseUrl: string,
     description: string,
     areas: BestPracticeArea[],
-    contentProfile: ContentProfile | null
+    contentProfile: ContentProfile | null,
+    auditMode: TestAuditMode
 ) {
     const lowerDescription = description.toLowerCase();
-    const linkAuditPath = resolveLinkAuditPath(baseUrl);
-    const matchingPage = findMatchingProfilePage(contentProfile, linkAuditPath);
-    const discoveredLinkCount = matchingPage?.linkDetails?.length ?? 0;
+    const linkAuditPaths = resolveLinkAuditPaths(contentProfile, baseUrl);
+    const discoveredLinkCount = linkAuditPaths.reduce(
+        (count, path) => count + (findMatchingProfilePage(contentProfile, path)?.linkDetails?.length ?? 0),
+        0
+    );
     const suites: GeneratedSuite[] = [];
     const functionalTests: string[] = [];
     const usabilityTests: string[] = [];
@@ -1704,14 +1846,18 @@ function buildGenericSuites(
         }
 
         if (contentProfile?.pages.length) {
-            functionalTests.push(...buildActionableElementTests(contentProfile, linkAuditPath));
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildActionableElementTests(contentProfile, path))
+            );
         }
 
         if (
             discoveredLinkCount > 0 ||
             includesAny(lowerDescription, ["link", "links", "href", "anchor", "anchors", "broken link"])
         ) {
-            functionalTests.push(...buildTestMyLinksAuditTests(contentProfile, linkAuditPath));
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildTestMyLinksAuditTests(contentProfile, path, { auditMode, areas }))
+            );
         }
     }
 
@@ -1743,10 +1889,15 @@ function buildDemoQaSuites(
     baseUrl: string,
     description: string,
     areas: BestPracticeArea[],
-    contentProfile: ContentProfile | null
+    contentProfile: ContentProfile | null,
+    auditMode: TestAuditMode
 ) {
     const lowerDescription = description.toLowerCase();
-    const linkAuditPath = resolveLinkAuditPath(baseUrl);
+    const linkAuditPaths = resolveLinkAuditPaths(contentProfile, baseUrl);
+    const discoveredLinkCount = linkAuditPaths.reduce(
+        (count, path) => count + (findMatchingProfilePage(contentProfile, path)?.linkDetails?.length ?? 0),
+        0
+    );
     const suites: GeneratedSuite[] = [];
     const functionalTests: string[] = [];
     const usabilityTests: string[] = [];
@@ -1911,11 +2062,18 @@ function buildDemoQaSuites(
         }
 
         if (contentProfile?.pages.length) {
-            functionalTests.push(...buildActionableElementTests(contentProfile, linkAuditPath));
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildActionableElementTests(contentProfile, path))
+            );
         }
 
-        if (includesAny(lowerDescription, ["link", "links", "href", "anchor", "anchors", "broken link"])) {
-            functionalTests.push(...buildTestMyLinksAuditTests(contentProfile, linkAuditPath));
+        if (
+            discoveredLinkCount > 0 ||
+            includesAny(lowerDescription, ["link", "links", "href", "anchor", "anchors", "broken link"])
+        ) {
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildTestMyLinksAuditTests(contentProfile, path, { auditMode, areas }))
+            );
         }
     }
 
@@ -1992,7 +2150,8 @@ function mockGenerate(
     description: string,
     selectedPractices: BestPracticeArea[],
     contentProfile: ContentProfile | null,
-    contentRules: ContentRules
+    contentRules: ContentRules,
+    auditMode: TestAuditMode
 ) {
     const parsedBaseUrl = new URL(baseUrl);
     const escapedBaseUrl = escapeForSingleQuotedString(baseUrl);
@@ -2004,8 +2163,8 @@ function mockGenerate(
         toSentenceCase(summarizeDescription(description))
     );
     const suites = parsedBaseUrl.hostname.includes("demoqa.com")
-        ? buildDemoQaSuites(baseUrl, description, bestPracticeAreas, contentProfile)
-        : buildGenericSuites(baseUrl, description, bestPracticeAreas, contentProfile);
+        ? buildDemoQaSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode)
+        : buildGenericSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode);
     const contentSuites = buildContentSuites(contentProfile, contentRules);
     const manualFollowUpComment = buildManualFollowUpComment(bestPracticeAreas);
 
@@ -2013,6 +2172,7 @@ function mockGenerate(
 
 // Generated by TestForge without an OpenAI API key.
 // Scenario: ${escapedDescription}
+// Audit mode: ${auditMode}
 // Best-practice coverage selected for this suite:
 ${buildCoverageComment(bestPracticeAreas)}
 ${buildContentProfileComment(contentProfile, contentRules)}
@@ -2029,7 +2189,7 @@ ${renderSuites([...suites, ...contentSuites])}
 }
 
 export async function POST(req: NextRequest) {
-    const { baseUrl, description, selectedPractices, contentProfile, contentRules } = await req.json();
+    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json();
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
@@ -2049,6 +2209,7 @@ export async function POST(req: NextRequest) {
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
     const normalizedContentProfile = normalizeContentProfile(contentProfile);
     const normalizedContentRules = normalizeContentRules(contentRules);
+    const normalizedAuditMode = normalizeTestAuditMode(auditMode);
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
@@ -2057,7 +2218,8 @@ export async function POST(req: NextRequest) {
             description,
             normalizedPractices,
             normalizedContentProfile,
-            normalizedContentRules
+            normalizedContentRules,
+            normalizedAuditMode
         );
         return NextResponse.json({ code });
     }
@@ -2070,7 +2232,7 @@ export async function POST(req: NextRequest) {
             { role: "system", content: SYSTEM_PROMPT },
             {
                 role: "user",
-                content: `Base URL: ${normalizedBaseUrl.value}\nSelected best-practice coverage: ${normalizedPractices.length > 0 ? normalizedPractices.join(
+                content: `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${normalizedPractices.length > 0 ? normalizedPractices.join(
                     ", "
                 ) : "infer from prompt"}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}`,
             },
