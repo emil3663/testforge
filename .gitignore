@@ -30,6 +30,7 @@ dist/
 /.playwright-runs/
 /test-results/
 /playwright-report/
+/artifacts/
 
 # next.js
 /.next/

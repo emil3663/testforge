@@ -1521,10 +1521,12 @@ export default function Home() {
                         <div className="grid items-start gap-4 lg:grid-cols-[0.95fr_1.05fr]">
                             <div className="space-y-5">
                                 <div className="space-y-1.5">
-                                    <label className="block text-sm font-medium text-zinc-700">
+                                    <label htmlFor="base-url-input" className="block text-sm font-medium text-zinc-700">
                                         Base URL
                                     </label>
                                     <input
+                                        id="base-url-input"
+                                        aria-label="Base URL"
                                         type="text"
                                         value={baseUrl}
                                         onChange={(event) => setBaseUrl(event.target.value)}
@@ -1541,10 +1543,12 @@ export default function Home() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="block text-sm font-medium text-zinc-700">
+                                    <label htmlFor="test-description-input" className="block text-sm font-medium text-zinc-700">
                                         What do you want to test?
                                     </label>
                                     <textarea
+                                        id="test-description-input"
+                                        aria-label="What do you want to test?"
                                         rows={5}
                                         value={description}
                                         onChange={(event) => setDescription(event.target.value)}
@@ -1596,9 +1600,9 @@ export default function Home() {
 
                             <div className="space-y-3 rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
                                 <div className="flex items-center justify-between gap-3">
-                                    <label className="block text-sm font-medium text-zinc-700">
+                                    <div className="block text-sm font-medium text-zinc-700">
                                         Best-Practice Coverage
-                                    </label>
+                                    </div>
                                     <span className="text-xs text-zinc-500">
                                         {effectiveSelectedPractices.length === 0
                                             ? "No active sections"
@@ -1654,6 +1658,8 @@ export default function Home() {
                             <button
                                 type="button"
                                 onClick={() => setIsCrawledPagesCollapsed((value) => !value)}
+                                aria-expanded={!isCrawledPagesCollapsed}
+                                aria-controls="discovered-site-pages-panel"
                                 className="flex w-full items-start justify-between gap-3 text-left"
                             >
                                 <div>
@@ -1673,7 +1679,7 @@ export default function Home() {
                             </button>
 
                             {!isCrawledPagesCollapsed && (
-                                <>
+                                <div id="discovered-site-pages-panel">
                                     <div className="mt-4 flex flex-wrap items-center gap-2">
                                         <button
                                             type="button"
@@ -1814,9 +1820,11 @@ export default function Home() {
                                     {crawledPages.length > 0 && (
                                         <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-3">
                                             <div className="flex flex-wrap items-center justify-between gap-3">
-                                                <label className="min-w-[220px] flex-1">
+                                                <label htmlFor="crawl-search-input" className="min-w-[220px] flex-1">
                                                     <span className="sr-only">Search discovered pages</span>
                                                     <input
+                                                        id="crawl-search-input"
+                                                        aria-label="Search discovered pages"
                                                         type="search"
                                                         value={crawlSearchQuery}
                                                         onChange={(event) => setCrawlSearchQuery(event.target.value)}
@@ -1906,7 +1914,7 @@ export default function Home() {
                                             </div>
                                         )}
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
 
@@ -1914,6 +1922,8 @@ export default function Home() {
                             <button
                                 type="button"
                                 onClick={() => setIsContentRulesCollapsed((value) => !value)}
+                                aria-expanded={!isContentRulesCollapsed}
+                                aria-controls="content-rules-panel"
                                 className="flex w-full items-center justify-between gap-3 text-left"
                             >
                                 <div>
@@ -1932,7 +1942,7 @@ export default function Home() {
                                 </div>
                             </button>
                             {!isContentRulesCollapsed && (
-                                <>
+                                <div id="content-rules-panel">
                                     <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
                                         {contentAwareRequested
                                             ? isContentAwareReady
@@ -2051,10 +2061,12 @@ export default function Home() {
 
                                     <div className="mt-4 grid gap-4 md:grid-cols-2">
                                         <div className="space-y-1.5">
-                                            <label className="block text-sm font-medium text-zinc-700">
+                                            <label htmlFor="content-paths-input" className="block text-sm font-medium text-zinc-700">
                                                 Paths to inspect
                                             </label>
                                             <textarea
+                                                id="content-paths-input"
+                                                aria-label="Paths to inspect"
                                                 rows={4}
                                                 value={contentPathsInput}
                                                 onChange={(event) => setContentPathsInput(event.target.value)}
@@ -2063,10 +2075,12 @@ export default function Home() {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="block text-sm font-medium text-zinc-700">
+                                            <label htmlFor="required-headings-input" className="block text-sm font-medium text-zinc-700">
                                                 Required headings
                                             </label>
                                             <textarea
+                                                id="required-headings-input"
+                                                aria-label="Required headings"
                                                 rows={4}
                                                 value={requiredHeadingsInput}
                                                 onChange={(event) => setRequiredHeadingsInput(event.target.value)}
@@ -2075,10 +2089,12 @@ export default function Home() {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="block text-sm font-medium text-zinc-700">
+                                            <label htmlFor="required-text-input" className="block text-sm font-medium text-zinc-700">
                                                 Required text snippets
                                             </label>
                                             <textarea
+                                                id="required-text-input"
+                                                aria-label="Required text snippets"
                                                 rows={4}
                                                 value={requiredTextInput}
                                                 onChange={(event) => setRequiredTextInput(event.target.value)}
@@ -2087,10 +2103,12 @@ export default function Home() {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="block text-sm font-medium text-zinc-700">
+                                            <label htmlFor="forbidden-text-input" className="block text-sm font-medium text-zinc-700">
                                                 Forbidden text snippets
                                             </label>
                                             <textarea
+                                                id="forbidden-text-input"
+                                                aria-label="Forbidden text snippets"
                                                 rows={4}
                                                 value={forbiddenTextInput}
                                                 onChange={(event) => setForbiddenTextInput(event.target.value)}
@@ -2099,7 +2117,7 @@ export default function Home() {
                                             />
                                         </div>
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
 
@@ -2769,6 +2787,8 @@ function CollapsibleSection({
     children: ReactNode;
     dark?: boolean;
 }) {
+    const sectionId = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-panel`;
+
     return (
         <section className={`rounded-[28px] border p-6 shadow-[0_24px_80px_rgba(15,23,42,0.06)] ${dark
             ? "border-white/70 bg-zinc-950 text-zinc-100 shadow-[0_24px_80px_rgba(15,23,42,0.16)]"
@@ -2777,6 +2797,8 @@ function CollapsibleSection({
             <button
                 type="button"
                 onClick={onToggle}
+                aria-expanded={!collapsed}
+                aria-controls={sectionId}
                 className="flex w-full items-start justify-between gap-4 text-left"
             >
                 <div>
@@ -2789,7 +2811,7 @@ function CollapsibleSection({
                 </div>
                 <Chevron collapsed={collapsed} dark={dark} />
             </button>
-            {!collapsed && <div className="mt-6">{children}</div>}
+            {!collapsed && <div id={sectionId} className="mt-6">{children}</div>}
         </section>
     );
 }

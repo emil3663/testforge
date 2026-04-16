@@ -1,15 +1,20 @@
-name: Self Test
+name: Smoke Test
 
 on:
   push:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
 
 jobs:
-  self-test:
+  smoke-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
@@ -30,5 +35,47 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run TestForge self-test
-        run: npm run test:self
+      - name: Run TestForge smoke suite with Allure
+        run: npm run test:self:allure
+
+      - name: Upload smoke Allure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-smoke-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            artifacts/allure-report/smoke
+            artifacts/allure-results/smoke
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Prune older smoke reports
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          ARTIFACT_PREFIX: allure-smoke-
+        with:
+          script: |
+            const prefix = process.env.ARTIFACT_PREFIX;
+            const { owner, repo } = context.repo;
+            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+              owner,
+              repo,
+              per_page: 100,
+            });
+
+            const matchingArtifacts = artifacts
+              .filter((artifact) => !artifact.expired && artifact.name.startsWith(prefix))
+              .sort((left, right) => new Date(right.created_at) - new Date(left.created_at));
+
+            core.info(`Found ${matchingArtifacts.length} smoke report artifacts.`);
+
+            for (const artifact of matchingArtifacts.slice(5)) {
+              core.info(`Deleting ${artifact.name} (${artifact.id}).`);
+              await github.rest.actions.deleteArtifact({
+                owner,
+                repo,
+                artifact_id: artifact.id,
+              });
+            }

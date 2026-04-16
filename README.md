@@ -212,6 +212,17 @@ pytest runs/ -v --browser=chromium
 | `docker compose up -d` | Start Plane (test target) |
 | `docker compose down` | Stop Plane |
 | `docker compose down -v` | Stop Plane and remove all data |
+| `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
+| `npm run test:regression:allure` | Run the regression suite and generate an Allure report in `artifacts/allure-report/regression` |
+| `npm run report:open:smoke` | Open the latest local smoke Allure report |
+| `npm run report:open:regression` | Open the latest local regression Allure report |
 | `pytest runs/ -v` | Run all generated tests directly |
+
+---
+
+## CI reports
+
+- The smoke workflow uploads an Allure artifact on every CI run and keeps the latest 5 smoke-report artifacts.
+- The regression workflow can be triggered manually from GitHub Actions and also keeps the latest 5 regression-report artifacts.
 
 
