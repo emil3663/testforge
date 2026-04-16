@@ -3,6 +3,7 @@
 import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 
 type Step = "idle" | "generating" | "ready" | "running" | "done";
+type CrawlLifecycleStatus = "running" | "completed" | "failed" | "cancelled";
 type TestAuditMode = "fast" | "deep";
 type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
 type ReportTab =
@@ -339,6 +340,28 @@ interface CrawlResult {
     warnings?: string[];
 }
 
+interface CrawlProgressSnapshot {
+    maxPages: number;
+    visitedUrls: number;
+    queuedUrls: number;
+    discoveredPages: number;
+    warningsCount: number;
+    currentUrl: string | null;
+    currentPath: string | null;
+    currentTitle: string | null;
+    lastCompletedPath: string | null;
+    lastCompletedTitle: string | null;
+}
+
+interface CrawlStatusSnapshot {
+    crawlId: string;
+    crawlStatus: CrawlLifecycleStatus;
+    duration: number;
+    progress: CrawlProgressSnapshot;
+    result?: CrawlResult;
+    error?: string;
+}
+
 interface BusyInspectionTarget {
     path: string;
     url: string;
@@ -533,6 +556,11 @@ export default function Home() {
     const [crawlSearchQuery, setCrawlSearchQuery] = useState("");
     const [selectedCrawlExtensions, setSelectedCrawlExtensions] = useState<string[]>([]);
     const [crawlStatus, setCrawlStatus] = useState<"idle" | "crawling">("idle");
+    const [activeCrawlId, setActiveCrawlId] = useState<string | null>(null);
+    const [crawlProgress, setCrawlProgress] = useState<CrawlProgressSnapshot | null>(null);
+    const [crawlDurationMs, setCrawlDurationMs] = useState(0);
+    const [crawlRunStatus, setCrawlRunStatus] = useState<CrawlLifecycleStatus | null>(null);
+    const [isCancellingCrawl, setIsCancellingCrawl] = useState(false);
     const [crawlError, setCrawlError] = useState("");
     const [requiredHeadingsInput, setRequiredHeadingsInput] = useState("");
     const [requiredTextInput, setRequiredTextInput] = useState("");
@@ -562,6 +590,77 @@ export default function Home() {
             codeRef.current.focus();
         }
     }, [editing]);
+
+    useEffect(() => {
+        if (crawlStatus !== "crawling" || !activeCrawlId) {
+            return;
+        }
+
+        let ignore = false;
+        let timer: number | null = null;
+
+        const pollCrawlStatus = async () => {
+            try {
+                const response = await fetch(`/api/crawl?crawlId=${encodeURIComponent(activeCrawlId)}`, {
+                    cache: "no-store",
+                });
+                const data = (await response.json()) as CrawlStatusSnapshot | { error?: string };
+
+                if (!response.ok) {
+                    throw new Error("error" in data ? data.error ?? "Site crawl failed" : "Site crawl failed");
+                }
+
+                if (ignore) {
+                    return;
+                }
+
+                const snapshot = data as CrawlStatusSnapshot;
+                setCrawlProgress(snapshot.progress);
+                setCrawlDurationMs(snapshot.duration);
+                setCrawlRunStatus(snapshot.crawlStatus);
+
+                if (snapshot.result) {
+                    setCrawlResult(snapshot.result);
+                    setSelectedCrawledPaths(snapshot.result.pages.map((page) => page.path));
+                    setCrawlSearchQuery("");
+                    setSelectedCrawlExtensions([]);
+                    setIsCrawledPagesCollapsed(false);
+                    setActiveCrawlId(null);
+                    setIsCancellingCrawl(false);
+                    setCrawlStatus("idle");
+                    return;
+                }
+
+                if (snapshot.crawlStatus === "failed") {
+                    setCrawlError(snapshot.error ?? "Site crawl failed");
+                    setActiveCrawlId(null);
+                    setIsCancellingCrawl(false);
+                    setCrawlStatus("idle");
+                    return;
+                }
+
+                timer = window.setTimeout(pollCrawlStatus, 500);
+            } catch (err: unknown) {
+                if (ignore) {
+                    return;
+                }
+
+                setCrawlError(err instanceof Error ? err.message : "Site crawl failed");
+                setActiveCrawlId(null);
+                setIsCancellingCrawl(false);
+                setCrawlStatus("idle");
+            }
+        };
+
+        void pollCrawlStatus();
+
+        return () => {
+            ignore = true;
+            if (timer !== null) {
+                window.clearTimeout(timer);
+            }
+        };
+    }, [activeCrawlId, crawlStatus]);
 
     useEffect(() => {
         if (step !== "running" || !activeRunId) {
@@ -873,6 +972,11 @@ export default function Home() {
 
         setCrawlStatus("crawling");
         setCrawlError("");
+        setActiveCrawlId(null);
+        setCrawlProgress(null);
+        setCrawlDurationMs(0);
+        setCrawlRunStatus("running");
+        setIsCancellingCrawl(false);
 
         try {
             const response = await fetch("/api/crawl", {
@@ -880,21 +984,51 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ baseUrl: normalizedBaseUrl.value }),
             });
-            const data = await response.json();
+            const data = (await response.json()) as CrawlStatusSnapshot | { error?: string };
 
             if (!response.ok) {
-                throw new Error(data.error ?? "Site crawl failed");
+                throw new Error("error" in data ? data.error ?? "Site crawl failed" : "Site crawl failed");
             }
 
-            setCrawlResult(data);
-            setSelectedCrawledPaths(data.pages.map((page: CrawledPage) => page.path));
-            setCrawlSearchQuery("");
-            setSelectedCrawlExtensions([]);
-            setIsCrawledPagesCollapsed(false);
+            const snapshot = data as CrawlStatusSnapshot;
+            setActiveCrawlId(snapshot.crawlId);
+            setCrawlProgress(snapshot.progress);
+            setCrawlDurationMs(snapshot.duration);
+            setCrawlRunStatus(snapshot.crawlStatus);
         } catch (err: unknown) {
             setCrawlError(err instanceof Error ? err.message : "Unknown error");
-        } finally {
             setCrawlStatus("idle");
+            setCrawlRunStatus("failed");
+            setIsCancellingCrawl(false);
+        }
+    }
+
+    async function handleStopCrawl() {
+        if (!activeCrawlId || isCancellingCrawl) {
+            return;
+        }
+
+        setIsCancellingCrawl(true);
+
+        try {
+            const response = await fetch("/api/crawl", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ crawlId: activeCrawlId }),
+            });
+            const data = (await response.json()) as CrawlStatusSnapshot | { error?: string };
+
+            if (!response.ok) {
+                throw new Error("error" in data ? data.error ?? "Unable to stop crawl" : "Unable to stop crawl");
+            }
+
+            const snapshot = data as CrawlStatusSnapshot;
+            setCrawlProgress(snapshot.progress);
+            setCrawlDurationMs(snapshot.duration);
+            setCrawlRunStatus(snapshot.crawlStatus);
+        } catch (err: unknown) {
+            setCrawlError(err instanceof Error ? err.message : "Unable to stop crawl");
+            setIsCancellingCrawl(false);
         }
     }
 
@@ -1107,6 +1241,26 @@ export default function Home() {
         }))
         .filter((page) => page.count > 0);
     const crawledPages = crawlResult?.pages ?? [];
+    const activeCrawlProgress = isCrawling ? crawlProgress : null;
+    const crawlVisitedCount = activeCrawlProgress?.visitedUrls ?? 0;
+    const crawlQueuedCount = activeCrawlProgress?.queuedUrls ?? 0;
+    const crawlDiscoveredCount = activeCrawlProgress?.discoveredPages ?? 0;
+    const crawlKnownWork = Math.min(
+        activeCrawlProgress?.maxPages ?? 0,
+        crawlVisitedCount + crawlQueuedCount + (activeCrawlProgress?.currentUrl ? 1 : 0)
+    );
+    const crawlProgressPercent = activeCrawlProgress
+        ? crawlKnownWork > 0
+            ? Math.min(99, Math.max(5, Math.round((crawlVisitedCount / crawlKnownWork) * 100)))
+            : 5
+        : 0;
+    const crawlElapsedLabel = formatMilliseconds(crawlDurationMs);
+    const activeCrawlLabel = activeCrawlProgress?.currentTitle
+        ?? activeCrawlProgress?.currentPath
+        ?? activeCrawlProgress?.currentUrl
+        ?? activeCrawlProgress?.lastCompletedTitle
+        ?? activeCrawlProgress?.lastCompletedPath
+        ?? "Preparing the first page...";
     const busyInspectionTargets = isRunning
         ? lastGeneratedInspectionTargets
         : buildBusyInspectionTargets(
@@ -1364,8 +1518,8 @@ export default function Home() {
                     onToggle={() => setIsCreationCollapsed((value) => !value)}
                 >
                     <div className="space-y-5">
-                        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-                            <div className="flex h-full flex-col gap-5">
+                        <div className="grid items-start gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+                            <div className="space-y-5">
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-700">
                                         Base URL
@@ -1438,189 +1592,6 @@ export default function Home() {
                                         })}
                                     </div>
                                 </div>
-
-                                <div className="flex-1 rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsCrawledPagesCollapsed((value) => !value)}
-                                        className="flex w-full items-start justify-between gap-3 text-left"
-                                    >
-                                        <div>
-                                            <div className="text-sm font-medium text-zinc-700">
-                                                Discovered Site Pages
-                                            </div>
-                                            <p className="mt-1 text-xs leading-5 text-zinc-500">
-                                                Crawl the site and choose one page, multiple pages, or all pages for testing.
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-                                                {crawledPages.length > 0 ? `${selectedCrawledPaths.length}/${crawledPages.length} selected` : "No pages crawled"}
-                                            </span>
-                                            <Chevron collapsed={isCrawledPagesCollapsed} />
-                                        </div>
-                                    </button>
-
-                                    {!isCrawledPagesCollapsed && (
-                                        <>
-                                            <div className="mt-4 flex flex-wrap items-center gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={handleCrawlPages}
-                                                    disabled={isGenerating || isRunning || isCrawling}
-                                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-                                                >
-                                                    {isCrawling ? (
-                                                        <>
-                                                            <Spinner />
-                                                            Crawling...
-                                                        </>
-                                                    ) : (
-                                                        "Crawl site"
-                                                    )}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={selectAllCrawledPages}
-                                                    disabled={crawledPages.length === 0 || isCrawling}
-                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
-                                                >
-                                                    Select all
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={clearCrawledPageSelection}
-                                                    disabled={selectedCrawledPaths.length === 0 || isCrawling}
-                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
-                                                >
-                                                    Clear selection
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => selectVisibleCrawledPages(filteredCrawledPaths)}
-                                                    disabled={filteredCrawledPaths.length === 0 || isCrawling}
-                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
-                                                >
-                                                    Select visible
-                                                </button>
-                                            </div>
-
-                                            <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
-                                                {hasActiveCrawlSelection
-                                                    ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}.`
-                                                    : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
-                                            </div>
-
-                                            {isCrawlResultStale && (
-                                                <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
-                                                    The base URL changed after the last crawl. Crawl again to refresh the page list for this target.
-                                                </div>
-                                            )}
-
-                                            {crawlError && (
-                                                <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs leading-5 text-rose-700">
-                                                    {crawlError}
-                                                </div>
-                                            )}
-
-                                            {crawledPages.length > 0 && (
-                                                <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-3">
-                                                    <div className="flex flex-wrap items-center justify-between gap-3">
-                                                        <label className="min-w-[220px] flex-1">
-                                                            <span className="sr-only">Search discovered pages</span>
-                                                            <input
-                                                                type="search"
-                                                                value={crawlSearchQuery}
-                                                                onChange={(event) => setCrawlSearchQuery(event.target.value)}
-                                                                placeholder="Search paths, titles, or discovery source"
-                                                                className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                                                            />
-                                                        </label>
-                                                        <div className="text-xs text-zinc-500">
-                                                            Showing {filteredCrawledPages.length} of {crawledPages.length} discovered pages.
-                                                        </div>
-                                                    </div>
-                                                    {crawlExtensionOptions.length > 0 && (
-                                                        <div className="mt-3 flex flex-wrap items-center gap-2">
-                                                            {crawlExtensionOptions.map((extension) => {
-                                                                const selected = selectedCrawlExtensions.includes(extension);
-
-                                                                return (
-                                                                    <button
-                                                                        key={extension}
-                                                                        type="button"
-                                                                        onClick={() => toggleCrawlExtension(extension)}
-                                                                        className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition ${selected
-                                                                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                                                                            : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
-                                                                            }`}
-                                                                    >
-                                                                        {extension}
-                                                                    </button>
-                                                                );
-                                                            })}
-                                                            {selectedCrawlExtensions.length > 0 && (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => setSelectedCrawlExtensions([])}
-                                                                    className="rounded-full border border-zinc-300 bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
-                                                                >
-                                                                    Clear filters
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            <div className="mt-4 h-[420px] overflow-y-auto rounded-2xl border border-zinc-200 bg-white">
-                                                {crawledPages.length > 0 ? (
-                                                    <div className="divide-y divide-zinc-100">
-                                                        {filteredCrawledPages.map((page) => {
-                                                            const checked = selectedCrawledPaths.includes(page.path);
-
-                                                            return (
-                                                                <label
-                                                                    key={page.path}
-                                                                    className="flex min-h-[72px] cursor-pointer items-start gap-3 px-4 py-3 text-sm text-zinc-700"
-                                                                >
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={checked}
-                                                                        onChange={() => toggleCrawledPath(page.path)}
-                                                                        className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
-                                                                    />
-                                                                    <div className="min-w-0 flex-1">
-                                                                        <div className="font-medium text-zinc-900">
-                                                                            {page.title || page.path}
-                                                                        </div>
-                                                                        <div className="mt-1 break-all text-xs text-zinc-500">
-                                                                            {page.path}
-                                                                        </div>
-                                                                        {page.discoveredFrom && (
-                                                                            <div className="mt-1 text-[11px] text-zinc-400">
-                                                                                Discovered from {page.discoveredFrom}
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                </label>
-                                                            );
-                                                        })}
-                                                        {filteredCrawledPages.length === 0 && (
-                                                            <div className="flex min-h-[196px] items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
-                                                                No discovered pages match the current search or extension filters.
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex h-full items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
-                                                        Run the crawler to discover same-origin pages and choose what should be tested.
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
                             </div>
 
                             <div className="space-y-3 rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
@@ -1677,6 +1648,266 @@ export default function Home() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+
+                        <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
+                            <button
+                                type="button"
+                                onClick={() => setIsCrawledPagesCollapsed((value) => !value)}
+                                className="flex w-full items-start justify-between gap-3 text-left"
+                            >
+                                <div>
+                                    <div className="text-sm font-medium text-zinc-700">
+                                        Discovered Site Pages
+                                    </div>
+                                    <p className="mt-1 text-xs leading-5 text-zinc-500">
+                                        Crawl the site and choose one page, multiple pages, or all pages for testing.
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                                        {crawledPages.length > 0 ? `${selectedCrawledPaths.length}/${crawledPages.length} selected` : "No pages crawled"}
+                                    </span>
+                                    <Chevron collapsed={isCrawledPagesCollapsed} />
+                                </div>
+                            </button>
+
+                            {!isCrawledPagesCollapsed && (
+                                <>
+                                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={handleCrawlPages}
+                                            disabled={isGenerating || isRunning || isCrawling}
+                                            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            {isCrawling ? (
+                                                <>
+                                                    <Spinner />
+                                                    Crawling...
+                                                </>
+                                            ) : (
+                                                "Crawl site"
+                                            )}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleStopCrawl}
+                                            disabled={!activeCrawlId || !isCrawling || isCancellingCrawl}
+                                            className="rounded-xl border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition hover:border-rose-300 hover:text-rose-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            {isCancellingCrawl ? "Stopping..." : "Stop crawl"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={selectAllCrawledPages}
+                                            disabled={crawledPages.length === 0 || isCrawling}
+                                            className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Select all
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={clearCrawledPageSelection}
+                                            disabled={selectedCrawledPaths.length === 0 || isCrawling}
+                                            className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Clear selection
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => selectVisibleCrawledPages(filteredCrawledPaths)}
+                                            disabled={filteredCrawledPaths.length === 0 || isCrawling}
+                                            className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Select visible
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
+                                        {hasActiveCrawlSelection
+                                            ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}.`
+                                            : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
+                                    </div>
+
+                                    {isCrawlResultStale && (
+                                        <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+                                            The base URL changed after the last crawl. Crawl again to refresh the page list for this target.
+                                        </div>
+                                    )}
+
+                                    {crawlError && (
+                                        <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs leading-5 text-rose-700">
+                                            {crawlError}
+                                        </div>
+                                    )}
+
+                                    {isCrawling && activeCrawlProgress && (
+                                        <div className="mt-4 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-4 text-xs leading-5 text-zinc-600">
+                                            <div className="flex flex-wrap items-start justify-between gap-3">
+                                                <div>
+                                                    <div className="text-sm font-semibold text-zinc-900">Crawl in progress</div>
+                                                    <div className="mt-1 text-zinc-500">
+                                                        {crawlVisitedCount} pages processed, {crawlQueuedCount} queued, {crawlDiscoveredCount} discovered
+                                                        {crawlRunStatus ? ` · ${toSentenceCase(crawlRunStatus)}` : ""}
+                                                    </div>
+                                                </div>
+                                                <div className="rounded-xl border border-indigo-200 bg-white px-3 py-2 text-right">
+                                                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Elapsed</div>
+                                                    <div className="mt-1 text-sm font-semibold text-zinc-900">{crawlElapsedLabel}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-4">
+                                                <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                    <span>Known crawl frontier</span>
+                                                    <span>{crawlProgressPercent}%</span>
+                                                </div>
+                                                <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-indigo-100">
+                                                    <div
+                                                        className="h-full rounded-full bg-indigo-500 transition-[width] duration-300"
+                                                        style={{ width: `${crawlProgressPercent}%` }}
+                                                    />
+                                                </div>
+                                                <div className="mt-2 text-[11px] leading-5 text-zinc-500">
+                                                    The crawl can discover new pages while it runs, so this percentage reflects the current known queue rather than a fixed total.
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-4 grid gap-2 sm:grid-cols-4">
+                                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Processed</div>
+                                                    <div className="mt-1 text-lg font-semibold text-zinc-900">{crawlVisitedCount}</div>
+                                                </div>
+                                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Queued</div>
+                                                    <div className="mt-1 text-lg font-semibold text-zinc-900">{crawlQueuedCount}</div>
+                                                </div>
+                                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Discovered</div>
+                                                    <div className="mt-1 text-lg font-semibold text-zinc-900">{crawlDiscoveredCount}</div>
+                                                </div>
+                                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
+                                                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Warnings</div>
+                                                    <div className="mt-1 text-lg font-semibold text-zinc-900">{activeCrawlProgress.warningsCount}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-4 rounded-xl border border-zinc-200 bg-white px-3 py-3">
+                                                <div className="font-semibold text-zinc-800">Current page</div>
+                                                <div className="mt-2 break-all text-sm font-medium text-zinc-900">{activeCrawlLabel}</div>
+                                                <div className="mt-1 text-[11px] leading-5 text-zinc-500">
+                                                    {activeCrawlProgress.currentTitle && activeCrawlProgress.currentUrl
+                                                        ? `${activeCrawlProgress.currentTitle} · ${activeCrawlProgress.currentUrl}`
+                                                        : activeCrawlProgress.currentUrl
+                                                            ? activeCrawlProgress.currentUrl
+                                                            : activeCrawlProgress.lastCompletedPath
+                                                                ? activeCrawlProgress.lastCompletedTitle
+                                                                    ? `Last completed page: ${activeCrawlProgress.lastCompletedTitle} · ${activeCrawlProgress.lastCompletedPath}`
+                                                                    : `Last completed page: ${activeCrawlProgress.lastCompletedPath}`
+                                                                : "Waiting for the first successful page load."}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {crawledPages.length > 0 && (
+                                        <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-3">
+                                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                                <label className="min-w-[220px] flex-1">
+                                                    <span className="sr-only">Search discovered pages</span>
+                                                    <input
+                                                        type="search"
+                                                        value={crawlSearchQuery}
+                                                        onChange={(event) => setCrawlSearchQuery(event.target.value)}
+                                                        placeholder="Search paths, titles, or discovery source"
+                                                        className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                                                    />
+                                                </label>
+                                                <div className="text-xs text-zinc-500">
+                                                    Showing {filteredCrawledPages.length} of {crawledPages.length} discovered pages.
+                                                </div>
+                                            </div>
+                                            {crawlExtensionOptions.length > 0 && (
+                                                <div className="mt-3 flex flex-wrap items-center gap-2">
+                                                    {crawlExtensionOptions.map((extension) => {
+                                                        const selected = selectedCrawlExtensions.includes(extension);
+
+                                                        return (
+                                                            <button
+                                                                key={extension}
+                                                                type="button"
+                                                                onClick={() => toggleCrawlExtension(extension)}
+                                                                className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition ${selected
+                                                                    ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                                                                    : "border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
+                                                                    }`}
+                                                            >
+                                                                {extension}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                    {selectedCrawlExtensions.length > 0 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setSelectedCrawlExtensions([])}
+                                                            className="rounded-full border border-zinc-300 bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
+                                                        >
+                                                            Clear filters
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    <div className="mt-4 h-[420px] overflow-y-auto rounded-2xl border border-zinc-200 bg-white">
+                                        {crawledPages.length > 0 ? (
+                                            <div className="divide-y divide-zinc-100">
+                                                {filteredCrawledPages.map((page) => {
+                                                    const checked = selectedCrawledPaths.includes(page.path);
+
+                                                    return (
+                                                        <label
+                                                            key={page.path}
+                                                            className="flex min-h-[72px] cursor-pointer items-start gap-3 px-4 py-3 text-sm text-zinc-700"
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={checked}
+                                                                onChange={() => toggleCrawledPath(page.path)}
+                                                                className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500"
+                                                            />
+                                                            <div className="min-w-0 flex-1">
+                                                                <div className="font-medium text-zinc-900">
+                                                                    {page.title || page.path}
+                                                                </div>
+                                                                <div className="mt-1 break-all text-xs text-zinc-500">
+                                                                    {page.path}
+                                                                </div>
+                                                                {page.discoveredFrom && (
+                                                                    <div className="mt-1 text-[11px] text-zinc-400">
+                                                                        Discovered from {page.discoveredFrom}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </label>
+                                                    );
+                                                })}
+                                                {filteredCrawledPages.length === 0 && (
+                                                    <div className="flex min-h-[196px] items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
+                                                        No discovered pages match the current search or extension filters.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center px-6 text-center text-xs leading-6 text-zinc-500">
+                                                Run the crawler to discover same-origin pages and choose what should be tested.
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
