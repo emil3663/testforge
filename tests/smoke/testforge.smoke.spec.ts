@@ -11,12 +11,13 @@ test("TestForge can generate, save, and run a smoke suite through its UI", async
         page.getByRole("button", { name: /Generated Suite Review the generated Playwright code/i })
     ).toBeVisible();
 
-    const baseUrlInput = page.getByPlaceholder("http://localhost:3000");
-    const descriptionInput = page.getByPlaceholder("E.g. Create a cross-browser accessibility and performance suite for the login flow.");
+    const baseUrlInput = page.getByLabel("Base URL");
+    const descriptionInput = page.getByLabel("What do you want to test?");
     const generateButton = page.getByRole("button", { name: "Generate test suite" });
 
     await expect(baseUrlInput).toBeEnabled();
     await expect(descriptionInput).toBeEnabled();
+    await expect(baseUrlInput).toHaveValue("http://localhost:3000");
 
     await baseUrlInput.fill("https://demoqa.com/");
     await descriptionInput.fill(

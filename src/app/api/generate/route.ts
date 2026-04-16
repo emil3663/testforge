@@ -50,6 +50,7 @@ interface LinkDetail {
     linkType: "internal" | "external" | "anchor" | "mailto" | "download";
     containerLabel: string;
     expectedStatus: number | null;
+    isVisible: boolean;
     target: string;
     targetBehavior: "same-window" | "new-tab" | "new-window";
     titleAttribute: string;
@@ -372,6 +373,7 @@ function normalizeContentProfile(input: unknown): ContentProfile | null {
                                     : "",
                             expectedStatus:
                                 typeof item.expectedStatus === "number" ? item.expectedStatus : null,
+                            isVisible: "isVisible" in item ? Boolean(item.isVisible) : true,
                             target: typeof item.target === "string" ? item.target.trim() : "",
                             targetBehavior,
                             titleAttribute: typeof item.titleAttribute === "string" ? item.titleAttribute.replace(/\s+/g, " ").trim() : "",

@@ -1,7 +1,9 @@
 import { expect, type Locator, type Page, test } from "@playwright/test";
 
 const demoQaUrl = "https://demoqa.com/";
+const demoQaLinksUrl = "https://demoqa.com/links";
 const demoQaDescription = "Create a functional smoke test for the DemoQA homepage and verify visible navigation links are present and usable.";
+const demoQaLinksDescription = "Create link coverage for the DemoQA links page and verify new-tab links and API response links are classified correctly.";
 const localAppUrl = "http://127.0.0.1:3001";
 
 function getSection(page: Page, title: RegExp): Locator {
@@ -50,6 +52,7 @@ test.describe("TestForge regression coverage", () => {
         await expect(creationSection.getByText("What do you want to test?")).toBeVisible();
         await expect(creationSection.getByText("Generation Mode")).toBeVisible();
         await expect(creationSection.getByText("Best-Practice Coverage")).toBeVisible();
+        await expect(page.getByLabel("Base URL")).toHaveValue("http://localhost:3000");
 
         await fillCreationInputs(page, demoQaUrl, demoQaDescription);
 
@@ -88,19 +91,25 @@ test.describe("TestForge regression coverage", () => {
 
     test("covers the content rules section and content-aware generation state", async ({ page }) => {
         await openHome(page);
-        await fillCreationInputs(page, demoQaUrl, demoQaDescription);
+        await fillCreationInputs(page, demoQaLinksUrl, demoQaLinksDescription);
 
         await page.getByRole("button", { name: /Content Rules Inspect the page before generation/i }).click();
         await expect(page.getByText("Paths to inspect")).toBeVisible();
         await expect(page.getByText("Required headings")).toBeVisible();
 
-        await page.getByLabel("Required headings").fill("Elements");
-        await page.getByLabel("Required text snippets").fill("Forms");
+        await page.getByLabel("Required headings").fill("Links");
+        await page.getByLabel("Required text snippets").fill("Following links will send an api call");
 
         await generateSuite(page);
 
         await expect(page.getByText("Content-aware inputs are synced with the generated suite.")).toBeVisible({ timeout: 60_000 });
         await expect(page.getByText("Inspection Summary")).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText("Visible Links For Fast Testing")).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText("Opens New Tab", { exact: true })).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText("Sends API Call", { exact: true })).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText(/visible links? discovered and shown for fast testing\./i)).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText("Home", { exact: true })).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByText("Created", { exact: true })).toBeVisible({ timeout: 60_000 });
     });
 
     test("covers the generated suite section actions for editing and saving", async ({ page }) => {

@@ -302,6 +302,8 @@ interface ContentProfilePage {
         linkType?: "internal" | "external" | "anchor" | "mailto" | "download";
         containerLabel: string;
         expectedStatus: number | null;
+        isVisible?: boolean;
+        targetBehavior?: "same-window" | "new-tab" | "new-window";
     }[];
     embeddedLinkDetails?: {
         text: string;
@@ -399,6 +401,18 @@ function inferBestPracticesFromDescription(description: string) {
                 includesKeyword(normalizedDescription, keyword)
             )
         );
+}
+
+function buildSelectedPracticeDescription(practices: BestPracticeArea[]) {
+    if (practices.length === 0) {
+        return "";
+    }
+
+    const labels = BEST_PRACTICE_OPTIONS
+        .filter((option) => practices.includes(option.id))
+        .map((option) => option.label.toLowerCase());
+
+    return `Generate a test suite covering ${labels.join(", ")}.`;
 }
 
 function normalizeBaseUrl(value: string) {
@@ -535,6 +549,7 @@ function coverageClasses(status: CoverageMatrixItem["status"]) {
 
 export default function Home() {
     const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+    const [isBaseUrlPlaceholderActive, setIsBaseUrlPlaceholderActive] = useState(true);
     const [description, setDescription] = useState("");
     const [selectedPractices, setSelectedPractices] = useState<BestPracticeArea[]>([]);
     const [deselectedPractices, setDeselectedPractices] = useState<BestPracticeArea[]>([]);
@@ -751,8 +766,6 @@ export default function Home() {
     }
 
     async function handleGenerate() {
-        if (!description.trim()) return;
-
         const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
         if (!normalizedBaseUrl.ok) {
             setError(normalizedBaseUrl.message);
@@ -785,6 +798,7 @@ export default function Home() {
         const activeSelectedCrawledPaths = crawlResult?.baseUrl === normalizedBaseUrl.value
             ? selectedCrawledPaths
             : [];
+        const effectiveDescription = description.trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
         const contentRules = {
             paths: normalizeInspectionPaths(
                 normalizedBaseUrl.value,
@@ -829,7 +843,7 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     baseUrl: normalizedBaseUrl.value,
-                    description,
+                    description: effectiveDescription,
                     selectedPractices: effectiveSelectedPractices,
                     auditMode,
                     contentRules,
@@ -839,7 +853,13 @@ export default function Home() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Generation failed");
             setEditedCode(data.code);
-            setBaseUrl(normalizedBaseUrl.value);
+            if (isBaseUrlPlaceholderActive && normalizedBaseUrl.value === DEFAULT_BASE_URL) {
+                setBaseUrl(DEFAULT_BASE_URL);
+                setIsBaseUrlPlaceholderActive(true);
+            } else {
+                setBaseUrl(normalizedBaseUrl.value);
+                setIsBaseUrlPlaceholderActive(false);
+            }
             setStep("ready");
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Unknown error");
@@ -935,7 +955,9 @@ export default function Home() {
     }
 
     async function handleSaveToExplorer() {
-        if (!editedCode.trim() || !description.trim()) {
+        const effectiveDescription = description.trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
+
+        if (!editedCode.trim() || !effectiveDescription) {
             return;
         }
 
@@ -945,7 +967,7 @@ export default function Home() {
             const response = await fetch("/api/save-suite", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: editedCode, description }),
+                body: JSON.stringify({ code: editedCode, description: effectiveDescription }),
             });
             const data = await response.json();
 
@@ -1213,11 +1235,34 @@ export default function Home() {
                     getLinkPreviewLabel(candidate) === getLinkPreviewLabel(link)
             ) === index
     );
-    const discoveredLinkCount = uniqueDiscoveredLinks.length;
+    const displayedDiscoveredLinks = auditMode === "deep"
+        ? uniqueDiscoveredLinks
+        : uniqueDiscoveredLinks.filter((link) => link.isVisible ?? true);
+    const discoveredLinkGroups = [
+        {
+            title: "Opens New Tab",
+            links: displayedDiscoveredLinks.filter(
+                (link) => link.targetBehavior === "new-tab" || link.targetBehavior === "new-window"
+            ),
+        },
+        {
+            title: "Sends API Call",
+            links: displayedDiscoveredLinks.filter((link) => link.category === "api"),
+        },
+        {
+            title: "Other Visible Navigation Links",
+            links: displayedDiscoveredLinks.filter(
+                (link) => link.category !== "api" && link.targetBehavior !== "new-tab" && link.targetBehavior !== "new-window"
+            ),
+        },
+    ].filter((group) => group.links.length > 0);
+    const discoveredLinkCount = displayedDiscoveredLinks.length;
     const discoveredLinkPages = (contentProfile?.pages ?? [])
         .map((page) => ({
             path: page.path,
-            count: (page.linkDetails ?? []).length,
+            count: auditMode === "deep"
+                ? (page.linkDetails ?? []).length
+                : (page.linkDetails ?? []).filter((link) => link.isVisible ?? true).length,
         }))
         .filter((page) => page.count > 0);
     const discoveredEmbeddedLinkDetails = contentProfile?.pages.flatMap((page) => page.embeddedLinkDetails ?? []) ?? [];
@@ -1233,11 +1278,12 @@ export default function Home() {
                     candidate.containerLabel === embeddedLink.containerLabel
             ) === index
     );
-    const discoveredEmbeddedLinkCount = uniqueDiscoveredEmbeddedLinks.length;
+    const displayedDiscoveredEmbeddedLinks = auditMode === "deep" ? uniqueDiscoveredEmbeddedLinks : [];
+    const discoveredEmbeddedLinkCount = displayedDiscoveredEmbeddedLinks.length;
     const discoveredEmbeddedLinkPages = (contentProfile?.pages ?? [])
         .map((page) => ({
             path: page.path,
-            count: (page.embeddedLinkDetails ?? []).length,
+            count: auditMode === "deep" ? (page.embeddedLinkDetails ?? []).length : 0,
         }))
         .filter((page) => page.count > 0);
     const crawledPages = crawlResult?.pages ?? [];
@@ -1529,13 +1575,29 @@ export default function Home() {
                                         aria-label="Base URL"
                                         type="text"
                                         value={baseUrl}
-                                        onChange={(event) => setBaseUrl(event.target.value)}
+                                        onFocus={() => {
+                                            if (isBaseUrlPlaceholderActive) {
+                                                setBaseUrl("");
+                                                setIsBaseUrlPlaceholderActive(false);
+                                            }
+                                        }}
+                                        onBlur={() => {
+                                            if (!baseUrl.trim()) {
+                                                setBaseUrl(DEFAULT_BASE_URL);
+                                                setIsBaseUrlPlaceholderActive(true);
+                                            }
+                                        }}
+                                        onChange={(event) => {
+                                            setBaseUrl(event.target.value);
+                                            if (isBaseUrlPlaceholderActive) {
+                                                setIsBaseUrlPlaceholderActive(false);
+                                            }
+                                        }}
                                         inputMode="url"
                                         autoCapitalize="none"
                                         autoCorrect="off"
                                         spellCheck={false}
-                                        placeholder="http://localhost:3000"
-                                        className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                                        className={`w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm ${isBaseUrlPlaceholderActive ? "text-zinc-400" : "text-zinc-900"} focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200`}
                                     />
                                     <p className="text-xs text-zinc-500">
                                         Accepts local addresses like localhost:3000 and full URLs.
@@ -1556,7 +1618,7 @@ export default function Home() {
                                         className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none"
                                     />
                                     <p className="text-xs text-zinc-500">
-                                        Matching keywords will highlight the applicable best-practice areas on the right. Only active highlighted areas are generated and run.
+                                        Matching keywords will highlight the applicable best-practice areas on the right. You can also leave this blank and generate from the selected best-practice areas alone.
                                     </p>
                                 </div>
 
@@ -1730,7 +1792,7 @@ export default function Home() {
                                         </button>
                                     </div>
 
-                                    <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-xs leading-5 text-zinc-500">
+                                    <div className="mt-3 rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3 text-xs leading-5 text-sky-900">
                                         {hasActiveCrawlSelection
                                             ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}.`
                                             : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
@@ -1960,14 +2022,20 @@ export default function Home() {
                                                     </div>
                                                     <p className="mt-1 text-xs leading-5 text-emerald-800">
                                                         {discoveredLinkCount > 0
-                                                            ? `${discoveredLinkCount} unique link${discoveredLinkCount === 1 ? "" : "s"} discovered and available for generated link tests.`
-                                                            : "No link metadata was discovered in the latest inspection."}
+                                                            ? auditMode === "deep"
+                                                                ? `${discoveredLinkCount} unique link${discoveredLinkCount === 1 ? "" : "s"} discovered and available for generated link tests.`
+                                                                : `${discoveredLinkCount} visible link${discoveredLinkCount === 1 ? "" : "s"} discovered and shown for fast testing.`
+                                                            : auditMode === "deep"
+                                                                ? "No link metadata was discovered in the latest inspection."
+                                                                : "No visible links were discovered in the latest inspection for fast testing."}
                                                     </p>
-                                                    <p className="mt-1 text-xs leading-5 text-emerald-800">
-                                                        {discoveredEmbeddedLinkCount > 0
-                                                            ? `${discoveredEmbeddedLinkCount} embedded target${discoveredEmbeddedLinkCount === 1 ? "" : "s"} discovered across frames, assets, forms, and runtime-style attributes.`
-                                                            : "No embedded targets were discovered in the latest inspection."}
-                                                    </p>
+                                                    {auditMode === "deep" && (
+                                                        <p className="mt-1 text-xs leading-5 text-emerald-800">
+                                                            {discoveredEmbeddedLinkCount > 0
+                                                                ? `${discoveredEmbeddedLinkCount} embedded target${discoveredEmbeddedLinkCount === 1 ? "" : "s"} discovered across frames, assets, forms, and runtime-style attributes.`
+                                                                : "No embedded targets were discovered in the latest inspection."}
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <div className="rounded-full border border-emerald-300 bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
                                                     {contentProfile.pages.length} page{contentProfile.pages.length === 1 ? "" : "s"} inspected
@@ -2000,41 +2068,55 @@ export default function Home() {
                                                 </div>
                                             )}
 
-                                            {uniqueDiscoveredLinks.length > 0 && (
+                                            {displayedDiscoveredLinks.length > 0 && (
                                                 <div className="mt-4">
                                                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                                                        Discovered Links
+                                                        {auditMode === "deep" ? "Discovered Links" : "Visible Links For Fast Testing"}
                                                     </div>
-                                                    <div className="mt-2 max-h-56 overflow-y-auto rounded-2xl border border-emerald-200 bg-white">
-                                                        <div className="divide-y divide-emerald-100">
-                                                            {uniqueDiscoveredLinks.map((link, index) => (
-                                                                <div key={`${link.url}-${index}`} className="px-4 py-3 text-xs leading-5 text-emerald-950">
-                                                                    <div className="font-medium text-zinc-900">
-                                                                        {getLinkPreviewLabel(link)}
-                                                                    </div>
-                                                                    <div className="mt-1 text-zinc-600">
-                                                                        {link.category === "api" ? "API" : "Navigation"}
-                                                                        {link.linkType ? ` • ${link.linkType}` : ""}
-                                                                        {link.containerLabel ? ` • ${link.containerLabel}` : ""}
-                                                                    </div>
-                                                                    <div className="mt-1 break-all text-zinc-500">
-                                                                        {link.url}
-                                                                    </div>
+                                                    <div className="mt-2 space-y-3">
+                                                        {discoveredLinkGroups.map((group) => (
+                                                            <div key={group.title} className="rounded-2xl border border-emerald-200 bg-white">
+                                                                <div className="border-b border-emerald-100 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                                                                    {group.title}
                                                                 </div>
-                                                            ))}
-                                                        </div>
+                                                                <div className="px-4 py-2 text-[11px] leading-5 text-zinc-600">
+                                                                    Links found: {group.links.map((link) => getLinkPreviewLabel(link)).join(", ")}
+                                                                </div>
+                                                                <div className="max-h-56 overflow-y-auto divide-y divide-emerald-100">
+                                                                    {group.links.map((link, index) => (
+                                                                        <div key={`${group.title}-${link.url}-${index}`} className="px-4 py-3 text-xs leading-5 text-emerald-950">
+                                                                            <div className="font-medium text-zinc-900">
+                                                                                {getLinkPreviewLabel(link)}
+                                                                            </div>
+                                                                            <div className="mt-1 text-zinc-600">
+                                                                                {link.category === "api" ? "API" : "Navigation"}
+                                                                                {link.linkType ? ` • ${link.linkType}` : ""}
+                                                                                {link.targetBehavior === "new-tab" || link.targetBehavior === "new-window"
+                                                                                    ? " • opens new tab"
+                                                                                    : " • same tab"}
+                                                                                {link.isVisible === false ? " • hidden" : " • visible"}
+                                                                                {link.containerLabel ? ` • ${link.containerLabel}` : ""}
+                                                                            </div>
+                                                                            <div className="mt-1 break-all text-zinc-500">
+                                                                                {link.url}
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             )}
 
-                                            {uniqueDiscoveredEmbeddedLinks.length > 0 && (
+                                            {displayedDiscoveredEmbeddedLinks.length > 0 && (
                                                 <div className="mt-4">
                                                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
                                                         Embedded Targets
                                                     </div>
                                                     <div className="mt-2 max-h-56 overflow-y-auto rounded-2xl border border-emerald-200 bg-white">
                                                         <div className="divide-y divide-emerald-100">
-                                                            {uniqueDiscoveredEmbeddedLinks.map((embeddedLink, index) => (
+                                                            {displayedDiscoveredEmbeddedLinks.map((embeddedLink, index) => (
                                                                 <div key={`${embeddedLink.url}-${embeddedLink.attributeName}-${index}`} className="px-4 py-3 text-xs leading-5 text-emerald-950">
                                                                     <div className="font-medium text-zinc-900">
                                                                         {getEmbeddedPreviewLabel(embeddedLink)}
@@ -2123,7 +2205,7 @@ export default function Home() {
 
                         <button
                             onClick={handleGenerate}
-                            disabled={!description.trim() || isGenerating || isRunning || !canGenerateOrRun}
+                            disabled={isGenerating || isRunning || !canGenerateOrRun}
                             className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isGenerating ? (

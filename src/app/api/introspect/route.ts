@@ -38,6 +38,7 @@ interface LinkDetail {
     linkType: "internal" | "external" | "anchor" | "mailto" | "download";
     containerLabel: string;
     expectedStatus: number | null;
+    isVisible: boolean;
     target: string;
     targetBehavior: "same-window" | "new-tab" | "new-window";
     titleAttribute: string;
@@ -294,7 +295,7 @@ export async function POST(req: NextRequest) {
                             return "navigation";
                         }
 
-                        if (/(api call|api response|status code|send an api call|created|no content|bad request|unauthorized|forbidden|invalid url)/.test(context)) {
+                        if (/(api call|api response|status code|send an api call|created|no\s*content|nocontent|moved|bad[-\s]?request|unauthorized|forbidden|invalid[-\s]?url|not[-\s]?found)/.test(context)) {
                             return "api";
                         }
 
@@ -333,7 +334,7 @@ export async function POST(req: NextRequest) {
                             return 201;
                         }
 
-                        if (/\bno content\b/.test(context)) {
+                        if (/\bno\s*content\b|\bnocontent\b/.test(context)) {
                             return 204;
                         }
 
@@ -341,7 +342,7 @@ export async function POST(req: NextRequest) {
                             return 301;
                         }
 
-                        if (/\bbad request\b/.test(context)) {
+                        if (/\bbad[-\s]?request\b/.test(context)) {
                             return 400;
                         }
 
@@ -353,7 +354,7 @@ export async function POST(req: NextRequest) {
                             return 403;
                         }
 
-                        if (/\binvalid url\b|\bnot found\b/.test(context)) {
+                        if (/\binvalid[-\s]?url\b|\bnot[-\s]?found\b/.test(context)) {
                             return 404;
                         }
 
@@ -543,12 +544,12 @@ export async function POST(req: NextRequest) {
                     );
 
                     const links = cleanItems(
-                        Array.from(document.querySelectorAll("a[href]"))
+                        Array.from(document.querySelectorAll("a"))
                             .map((node) => node.textContent ?? "")
                     );
 
                     const actionableElements = Array.from(
-                        document.querySelectorAll("a[href], button, input:not([type='hidden']), select, textarea, form, [role='button']")
+                        document.querySelectorAll("a, button, input:not([type='hidden']), select, textarea, form, [role='button']")
                     )
                         .map((node) => {
                             const tagName = node.tagName.toLowerCase();
@@ -636,11 +637,13 @@ export async function POST(req: NextRequest) {
                         )
                         .slice(0, maxActionableItems);
 
-                    const linkDetails = Array.from(document.querySelectorAll("a[href]"))
+                    const linkDetails = Array.from(document.querySelectorAll("a"))
                         .flatMap((anchor) => {
-                            const rawHref = anchor.getAttribute("href");
+                            const rawHref = cleanText(anchor.getAttribute("href") ?? "");
+                            const anchorId = cleanText(anchor.getAttribute("id") ?? "");
+                            const ariaLabel = cleanText(anchor.getAttribute("aria-label") ?? "");
 
-                            if (!rawHref || rawHref.startsWith("javascript:") || rawHref.startsWith("tel:")) {
+                            if ((rawHref.startsWith("javascript:") || rawHref.startsWith("tel:")) && !anchorId) {
                                 return [];
                             }
 
@@ -649,39 +652,51 @@ export async function POST(req: NextRequest) {
                                 const containerLabel = findContainerLabel(anchor);
                                 const descriptor = [
                                     text,
-                                    cleanText(anchor.getAttribute("aria-label") ?? ""),
-                                    cleanText(anchor.getAttribute("id") ?? ""),
+                                    ariaLabel,
+                                    anchorId,
                                     cleanText(anchor.getAttribute("name") ?? ""),
                                     cleanText(anchor.getAttribute("data-testid") ?? ""),
                                 ].filter(Boolean).join(" ");
-                                const linkType = inferLinkType(rawHref, anchor);
-                                const resolvedUrl = rawHref.toLowerCase().startsWith("mailto:")
-                                    ? rawHref
-                                    : safeResolveUrl(rawHref);
+                                const fallbackHref = rawHref || (anchorId ? `/${anchorId}` : "");
+                                const resolvedUrl = fallbackHref.toLowerCase().startsWith("mailto:")
+                                    ? fallbackHref
+                                    : fallbackHref
+                                        ? safeResolveUrl(fallbackHref)
+                                        : null;
 
-                                if (!resolvedUrl) {
+                                if (!rawHref && !text && !ariaLabel && !anchorId) {
                                     return [];
                                 }
 
-                                const category = inferCategory(anchor, "link", descriptor, resolvedUrl, containerLabel);
+                                if (!resolvedUrl && !text && !anchorId) {
+                                    return [];
+                                }
+
+                                const category = inferCategory(anchor, "link", descriptor, resolvedUrl ?? "", containerLabel);
+                                const linkType = rawHref ? inferLinkType(rawHref, anchor) : "internal" as const;
                                 const target = cleanText(anchor.getAttribute("target") ?? "");
                                 const titleAttribute = cleanText(anchor.getAttribute("title") ?? "");
                                 const downloadName = cleanText(anchor.getAttribute("download") ?? "");
 
+                                if (!rawHref && category !== "api") {
+                                    return [];
+                                }
+
                                 return [{
                                     text,
-                                    url: resolvedUrl,
-                                    rawHref,
+                                    url: resolvedUrl ?? window.location.href,
+                                    rawHref: rawHref || fallbackHref,
                                     category: category === "api" ? "api" : "navigation",
                                     linkType,
                                     containerLabel,
-                                    expectedStatus: inferExpectedStatus(text, resolvedUrl, containerLabel, category),
+                                    expectedStatus: inferExpectedStatus(text, resolvedUrl ?? fallbackHref, containerLabel, category),
+                                    isVisible: isVisibleElement(anchor),
                                     target,
                                     targetBehavior: inferTargetBehavior(target),
                                     titleAttribute,
                                     downloadName,
                                     requiresAuth: inferProtectedLink(text, rawHref, containerLabel),
-                                    isSecure: resolvedUrl.startsWith("https://") || rawHref.toLowerCase().startsWith("mailto:"),
+                                    isSecure: Boolean(resolvedUrl?.startsWith("https://")) || rawHref.toLowerCase().startsWith("mailto:"),
                                 }];
                             } catch {
                                 return [];
