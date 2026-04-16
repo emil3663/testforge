@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "start:self-test": "next start --hostname 127.0.0.1 --port 3001",
+    "serve:self-test": "npm run build && npm run start:self-test",
+    "lint": "eslint",
+    "test:self": "playwright test -c playwright.self-test.config.ts"
   },
   "dependencies": {
     "@playwright/test": "^1.59.1",
