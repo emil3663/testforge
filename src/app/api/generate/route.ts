@@ -102,7 +102,9 @@ const DEFAULT_BEST_PRACTICES: BestPracticeArea[] = [
 ];
 
 const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
-const FAST_LINK_INTERACTION_LIMIT = 4;
+const FAST_LINK_INTERACTION_LIMIT = 3;
+const FAST_LINK_AUDIT_TIMEOUT_MS = 4000;
+const DEEP_LINK_AUDIT_TIMEOUT_MS = 15000;
 
 const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
     functional: "Functional",
@@ -442,10 +444,12 @@ function getBestPracticeAreas(
     description: string,
     selectedPractices: BestPracticeArea[]
 ) {
+    if (selectedPractices.length > 0) {
+        return BEST_PRACTICE_OPTIONS.filter((area) => selectedPractices.includes(area));
+    }
+
     const lowerDescription = description.toLowerCase();
-    const areas = new Set<BestPracticeArea>(
-        selectedPractices.length > 0 ? selectedPractices : DEFAULT_BEST_PRACTICES
-    );
+    const areas = new Set<BestPracticeArea>(DEFAULT_BEST_PRACTICES);
 
     if (
         includesAny(lowerDescription, [
@@ -993,6 +997,8 @@ function buildTestMyLinksAuditTests(
     const interactionNonApiLinks = selectBrowserInteractionLinks(nonApiLinks, options.auditMode);
     const includeUsabilityLinkAudits = options.areas.includes("usability");
     const includeAccessibilityLinkAudits = options.areas.includes("accessibility");
+    const isFastLinkAudit = options.auditMode === "fast";
+    const linkAuditTimeoutMs = isFastLinkAudit ? FAST_LINK_AUDIT_TIMEOUT_MS : DEEP_LINK_AUDIT_TIMEOUT_MS;
     const allLinkPayload = JSON.stringify(linkDetails);
     const escapedCurrentPageUrl = escapeForSingleQuotedString(matchingPage?.url ?? `http://localhost${path}`);
     const scannedPages = contentProfile?.pages.map((page) => ({
@@ -1029,7 +1035,7 @@ function buildTestMyLinksAuditTests(
                 request.method() !== 'OPTIONS' &&
                 response.url().toLowerCase().includes(expectedUrl.pathname.toLowerCase())
             );
-        }, { timeout: 15000 });
+        }, { timeout: ${linkAuditTimeoutMs} });
 
         await locator.click();
         const response = await responsePromise;
@@ -1076,7 +1082,7 @@ ${expectedStatusAssertion}
         const locator = ${locatorExpression};
         await expect(locator).toBeVisible();
 
-        const response = await request.get('${linkUrl}', { failOnStatusCode: false, timeout: 15000 });
+        const response = await request.get('${linkUrl}', { failOnStatusCode: false, timeout: ${linkAuditTimeoutMs} });
         expect(response.status()).toBeLessThan(400);
         await expect(locator).toHaveAttribute('href', /.+/);
     });`);
@@ -1085,6 +1091,25 @@ ${expectedStatusAssertion}
         }
 
         if (link.targetBehavior === "new-tab" || link.targetBehavior === "new-window") {
+            if (isFastLinkAudit) {
+                tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, request }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+
+        const response = await request.get('${linkUrl}', {
+            failOnStatusCode: false,
+            timeout: ${linkAuditTimeoutMs},
+            maxRedirects: 0,
+        });
+        expect(response.status()).toBeLessThan(400);
+    });`);
+
+                continue;
+            }
+
             tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, context, request }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
@@ -1094,7 +1119,7 @@ ${expectedStatusAssertion}
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
-            timeout: 15000,
+            timeout: ${linkAuditTimeoutMs},
             maxRedirects: 0,
         });
         expect(response.status()).toBeLessThan(400);
@@ -1110,6 +1135,26 @@ ${expectedStatusAssertion}
             continue;
         }
 
+        if (isFastLinkAudit) {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, request }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+
+        const response = await request.get('${linkUrl}', {
+            failOnStatusCode: false,
+            timeout: ${linkAuditTimeoutMs},
+            maxRedirects: 5,
+        });
+        expect(response.status()).toBeLessThan(400);
+        await expect(locator).toHaveAttribute('href', /.+/);
+    });`);
+
+            continue;
+        }
+
         tests.push(`  test('navigation link health: ${linkTitle}', async ({ page, request }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
@@ -1119,7 +1164,7 @@ ${expectedStatusAssertion}
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
-            timeout: 15000,
+            timeout: ${linkAuditTimeoutMs},
             maxRedirects: 5,
         });
         expect(response.status()).toBeLessThan(400);
@@ -1140,7 +1185,7 @@ ${expectedStatusAssertion}
 
             const response = await request.get(link.url, {
                 failOnStatusCode: false,
-                timeout: 15000,
+                timeout: ${linkAuditTimeoutMs},
                 maxRedirects: link.targetBehavior === 'same-window' ? 5 : 0,
             });
 
@@ -1148,7 +1193,7 @@ ${expectedStatusAssertion}
         }
     });`);
 
-    if (interactionNonApiLinks.length > 0) {
+    if (interactionNonApiLinks.length > 0 && !isFastLinkAudit) {
         tests.push(`  test('navigation destination: links navigate to their required destination', async ({ page, context }) => {
         const links = ${JSON.stringify(interactionNonApiLinks)};
         const revisitLinksPage = async () => {
@@ -1262,7 +1307,7 @@ ${expectedStatusAssertion}
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first();
             await expect(locator).toBeVisible();
-            const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000 });
+            const response = await request.get(link.url, { failOnStatusCode: false, timeout: ${linkAuditTimeoutMs} });
             expect(response.status()).toBeLessThan(400);
             expect(await locator.getAttribute('href')).toMatch(/\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
         }
@@ -1293,7 +1338,7 @@ ${expectedStatusAssertion}
     });`);
     }
 
-    if (interactionProtectedLinks.length > 0) {
+    if (interactionProtectedLinks.length > 0 && !isFastLinkAudit) {
         tests.push(`  test('authentication and permissions: protected links redirect or block unauthorized access', async ({ page, request }) => {
         const links = ${JSON.stringify(interactionProtectedLinks)};
         const revisitLinksPage = async () => {
@@ -1304,7 +1349,7 @@ ${expectedStatusAssertion}
         await revisitLinksPage();
 
         for (const link of links) {
-            const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000, maxRedirects: 0 });
+            const response = await request.get(link.url, { failOnStatusCode: false, timeout: ${linkAuditTimeoutMs}, maxRedirects: 0 });
             expect([200, 301, 302, 303, 307, 308, 401, 403]).toContain(response.status());
 
             const locator = link.text
@@ -1450,9 +1495,10 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            expect(/^javascript:/i.test(link.rawHref)).toBeFalsy();
-            expect(/^data:/i.test(link.rawHref)).toBeFalsy();
-            expect(/<script|javascript:/i.test(link.text)).toBeFalsy();
+            const linkLabel = link.text || link.rawHref || link.url;
+            expect(/^javascript:/i.test(link.rawHref), 'Unsafe link protocol detected for ' + linkLabel).toBeFalsy();
+            expect(/^data:/i.test(link.rawHref), 'Unsafe data protocol detected for ' + linkLabel).toBeFalsy();
+            expect(/<script|javascript:/i.test(link.text), 'Suspicious link text detected for ' + linkLabel).toBeFalsy();
         }
     });`);
 

@@ -16,6 +16,7 @@ type ReportTab =
     | "usability"
     | "seo";
 type ExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky";
+type FallbackExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky" | "Interrupted" | "Not run";
 
 const BEST_PRACTICE_OPTIONS = [
     {
@@ -73,6 +74,7 @@ const BEST_PRACTICE_OPTIONS = [
 type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number]["id"];
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
+const DEFAULT_DESCRIPTION_EXAMPLE = "E.g. Create a cross-browser accessibility and performance suite for the login flow.";
 const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
 const BASE_REPORT_TABS: ReportTab[] = [
     "summary",
@@ -146,6 +148,7 @@ interface ExecutionRecord {
     status: ExecutionStatus;
     duration: number;
     remarks: string;
+    rawMessage?: string;
     reproductionSteps: string[];
     order: number;
 }
@@ -318,6 +321,12 @@ interface RunProgressSnapshot {
         title: string;
         linkLabel: string | null;
     }[];
+    plannedExecutions: {
+        id: string;
+        title: string;
+        linkLabel: string | null;
+        status: "not-run" | "running" | "passed" | "failed" | "flaky" | "blocked" | "interrupted";
+    }[];
 }
 
 interface RunStatusSnapshot {
@@ -327,6 +336,23 @@ interface RunStatusSnapshot {
     progress: RunProgressSnapshot;
     cancellationRequested: boolean;
     result?: RunResult;
+}
+
+function getContinuationExcludedTitles(result: RunResult | null) {
+    if (!result || result.runStatus !== "cancelled") {
+        return [] as string[];
+    }
+
+    if (result.report) {
+        return [...new Set(result.report.execution.map((record) => record.title).filter((title) => title.trim().length > 0))];
+    }
+
+    return [...new Set(
+        (result.progress.plannedExecutions ?? [])
+            .filter((execution) => ["passed", "failed", "flaky", "blocked"].includes(execution.status))
+            .map((execution) => execution.title)
+            .filter((title) => title.trim().length > 0)
+    )];
 }
 
 function escapeReportHtml(value: string) {
@@ -346,8 +372,9 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
                 <td>${escapeReportHtml(record.browser)}</td>
                 <td>${escapeReportHtml(record.status)}</td>
                 <td>${escapeReportHtml(formatMilliseconds(record.duration))}</td>
-                <td>${escapeReportHtml(record.remarks || "No additional remarks.")}</td>
-            </tr>`).join("") || "<tr><td colspan=\"6\">No execution records were produced for this run.</td></tr>";
+                <td>${escapeReportHtml(record.description || "No expected result recorded.")}</td>
+                <td>${escapeReportHtml(record.remarks || "No additional outcome recorded.")}</td>
+            </tr>`).join("") || "<tr><td colspan=\"7\">No execution records were produced for this run.</td></tr>";
     const defectsMarkup = report.defects.issues.map((defect) => `
             <li>
                 <strong>${escapeReportHtml(defect.title)}</strong><br />
@@ -430,7 +457,7 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
         <section>
             <h2>Detailed case-by-case results</h2>
             <table>
-                <thead><tr><th>Test</th><th>Area</th><th>Browser</th><th>Status</th><th>Duration</th><th>Remarks</th></tr></thead>
+                <thead><tr><th>Test</th><th>Area</th><th>Browser</th><th>Status</th><th>Duration</th><th>Expected Result</th><th>Observed Outcome</th></tr></thead>
                 <tbody>${executionRowsMarkup}</tbody>
             </table>
         </section>
@@ -487,6 +514,7 @@ function buildExecutionOutputHtmlDocument(result: RunResult) {
     const executionOutputMessage = result.runStatus === "cancelled"
         ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
         : "Structured report data was not available for this run, so only the raw console output is shown.";
+    const fallbackExecutionMarkup = buildFallbackExecutionHtmlMarkup(result.progress);
 
         return `<!doctype html>
 <html lang="en">
@@ -509,6 +537,11 @@ function buildExecutionOutputHtmlDocument(result: RunResult) {
             <h2>Structured report status</h2>
             <p>${escapeReportHtml(executionOutputMessage)}</p>
         </section>
+        ${fallbackExecutionMarkup ? `
+        <section>
+            <h2>Execution detail</h2>
+            ${fallbackExecutionMarkup}
+        </section>` : ""}
         <section>
             <h2>Raw Console</h2>
             <pre>${escapeReportHtml(result.output)}</pre>
@@ -522,6 +555,106 @@ function buildResultHtmlDocument(result: RunResult) {
         return result.report
                 ? buildReportHtmlDocument(result.report, result.runId)
                 : buildExecutionOutputHtmlDocument(result);
+}
+
+function mapFallbackExecutionStatus(
+    status: RunProgressSnapshot["plannedExecutions"][number]["status"]
+): FallbackExecutionStatus {
+    if (status === "passed") {
+        return "Passed";
+    }
+
+    if (status === "failed") {
+        return "Failed";
+    }
+
+    if (status === "flaky") {
+        return "Flaky";
+    }
+
+    if (status === "blocked") {
+        return "Blocked";
+    }
+
+    if (status === "interrupted" || status === "running") {
+        return "Interrupted";
+    }
+
+    return "Not run";
+}
+
+function fallbackExecutionSummary(status: FallbackExecutionStatus) {
+    if (status === "Passed") {
+        return "Completed successfully before the run stopped.";
+    }
+
+    if (status === "Failed") {
+        return "Completed with a failure before the run stopped.";
+    }
+
+    if (status === "Flaky") {
+        return "Recovered after a retry before the run stopped.";
+    }
+
+    if (status === "Blocked") {
+        return "Marked as skipped or blocked before the run stopped.";
+    }
+
+    if (status === "Interrupted") {
+        return "Started but did not finish before the run was stopped.";
+    }
+
+    return "This test had not started when the run was stopped.";
+}
+
+function getFallbackExecutionRecords(progress: RunProgressSnapshot) {
+    return (progress.plannedExecutions ?? []).map((execution) => ({
+        id: execution.id,
+        title: execution.title,
+        linkLabel: execution.linkLabel,
+        status: mapFallbackExecutionStatus(execution.status),
+        remarks: fallbackExecutionSummary(mapFallbackExecutionStatus(execution.status)),
+    }));
+}
+
+function fallbackStatusClasses(status: FallbackExecutionStatus) {
+    if (status === "Passed") {
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+    }
+
+    if (status === "Failed") {
+        return "bg-rose-100 text-rose-800 border-rose-200";
+    }
+
+    if (status === "Flaky") {
+        return "bg-sky-100 text-sky-800 border-sky-200";
+    }
+
+    if (status === "Blocked") {
+        return "bg-amber-100 text-amber-800 border-amber-200";
+    }
+
+    if (status === "Interrupted") {
+        return "bg-orange-100 text-orange-800 border-orange-200";
+    }
+
+    return "bg-zinc-100 text-zinc-700 border-zinc-200";
+}
+
+function buildFallbackExecutionHtmlMarkup(progress: RunProgressSnapshot) {
+    const records = getFallbackExecutionRecords(progress);
+
+    if (records.length === 0) {
+        return "";
+    }
+
+    return `<ul>${records.map((record) => `
+            <li>
+                <strong>${escapeReportHtml(record.title)}</strong><br />
+                Status: ${escapeReportHtml(record.status)}<br />
+                ${escapeReportHtml(record.remarks)}
+            </li>`).join("")}
+        </ul>`;
 }
 
 interface SavedSuiteResult {
@@ -793,41 +926,16 @@ function formatExecutionRemark(record: ExecutionRecord) {
     const trimmed = record.remarks.trim();
 
     if (!trimmed) {
-        if (record.status === "Passed") {
-            return "Completed as expected with no additional action required.";
-        }
-
-        if (record.status === "Flaky") {
-            return "Recovered after a retry. Keep this test under watch because the result was not stable on the first attempt.";
-        }
-
-        if (record.status === "Blocked") {
-            return "The test could not finish because an external dependency or prerequisite blocked progress.";
-        }
-
-        return "This test did not complete as expected. Review the steps below and the defect details before the next run.";
+        return record.status === "Passed"
+            ? "Passed. The observed result matched the expected result."
+            : record.status === "Flaky"
+                ? "Passed after retry. The observed result was unstable before it recovered."
+                : record.status === "Blocked"
+                    ? "Blocked. The test could not be completed."
+                    : "Failed. The observed result did not match the expected result.";
     }
 
-    const normalized = trimmed
-        .replace(/^remarks?:\s*/i, "")
-        .replace(/^observation:\s*/i, "")
-        .replace(/^status:\s*/i, "")
-        .replace(/\btest case\b/gi, "test")
-        .replace(/\bexecution\b/gi, "run");
-
-    if (record.status === "Passed") {
-        return ensureSentence(normalized.replace(/^passed\b[:\s-]*/i, "Completed as expected. ")) || "Completed as expected.";
-    }
-
-    if (record.status === "Blocked") {
-        return ensureSentence(`Blocked before completion. ${normalized}`);
-    }
-
-    if (record.status === "Flaky") {
-        return ensureSentence(`Recovered after retry. ${normalized}`);
-    }
-
-    return ensureSentence(normalized);
+    return ensureSentence(trimmed);
 }
 
 function summarizeSuite(records: ExecutionRecord[]) {
@@ -854,6 +962,37 @@ function statusClasses(status: ExecutionStatus) {
     }
 
     return "bg-sky-100 text-sky-800 border-sky-200";
+}
+
+function FallbackExecutionTable({ progress }: { progress: RunProgressSnapshot }) {
+    const records = getFallbackExecutionRecords(progress);
+
+    if (records.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="mt-4 space-y-3">
+            {records.map((record) => (
+                <article key={record.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <div className="text-sm font-semibold text-zinc-950">{record.title}</div>
+                            {record.linkLabel ? (
+                                <div className="mt-1 text-xs text-zinc-500">Target: {record.linkLabel}</div>
+                            ) : null}
+                        </div>
+                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${fallbackStatusClasses(record.status)}`}>
+                            {record.status}
+                        </span>
+                    </div>
+                    <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm leading-6 text-zinc-600">
+                        {record.remarks}
+                    </div>
+                </article>
+            ))}
+        </div>
+    );
 }
 
 function coverageClasses(status: CoverageMatrixItem["status"]) {
@@ -899,7 +1038,8 @@ const websiteSchema = {
 export default function Home() {
     const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
     const [isBaseUrlPlaceholderActive, setIsBaseUrlPlaceholderActive] = useState(true);
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(DEFAULT_DESCRIPTION_EXAMPLE);
+    const [isDescriptionPlaceholderActive, setIsDescriptionPlaceholderActive] = useState(true);
     const [selectedPractices, setSelectedPractices] = useState<BestPracticeArea[]>([]);
     const [deselectedPractices, setDeselectedPractices] = useState<BestPracticeArea[]>([]);
     const [step, setStep] = useState<Step>("idle");
@@ -918,6 +1058,7 @@ export default function Home() {
     const [openReportInNewPage, setOpenReportInNewPage] = useState(false);
     const [selectedSeoPageKey, setSelectedSeoPageKey] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<"All" | ExecutionStatus>("All");
+    const [selectedFailedRerunTitles, setSelectedFailedRerunTitles] = useState<string[]>([]);
     const [contentPathsInput, setContentPathsInput] = useState("");
     const [crawlResult, setCrawlResult] = useState<CrawlResult | null>(null);
     const [selectedCrawledPaths, setSelectedCrawledPaths] = useState<string[]>([]);
@@ -940,6 +1081,7 @@ export default function Home() {
     const [lastGeneratedInspectionPaths, setLastGeneratedInspectionPaths] = useState<string[]>(["/"]);
     const [lastGeneratedInspectionTargets, setLastGeneratedInspectionTargets] = useState<BusyInspectionTarget[]>([]);
     const [lastGeneratedAuditMode, setLastGeneratedAuditMode] = useState<TestAuditMode>(DEFAULT_TEST_AUDIT_MODE);
+    const [lastGeneratedPracticeSignature, setLastGeneratedPracticeSignature] = useState("[]");
     const [activeRunId, setActiveRunId] = useState<string | null>(null);
     const [runProgress, setRunProgress] = useState<RunProgressSnapshot | null>(null);
     const [runStatus, setRunStatus] = useState<RunLifecycleStatus | null>(null);
@@ -1182,6 +1324,7 @@ export default function Home() {
         setSavedSuite(null);
         setActiveTab("summary");
         setStatusFilter("All");
+        setSelectedFailedRerunTitles([]);
         setContentProfile(null);
         setIsBusyTargetListExpanded(false);
         setIsCreationCollapsed(false);
@@ -1194,7 +1337,7 @@ export default function Home() {
         const activeSelectedCrawledPaths = crawlResult?.baseUrl === normalizedBaseUrl.value
             ? selectedCrawledPaths
             : [];
-        const effectiveDescription = description.trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
+        const effectiveDescription = (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
         const contentRules = {
             paths: normalizeInspectionPaths(
                 normalizedBaseUrl.value,
@@ -1232,6 +1375,7 @@ export default function Home() {
                 )
             );
             setLastGeneratedAuditMode(auditMode);
+            setLastGeneratedPracticeSignature(JSON.stringify([...effectiveSelectedPractices].sort()));
             setIsGeneratedCollapsed(false);
 
             const res = await fetch("/api/generate", {
@@ -1263,7 +1407,7 @@ export default function Home() {
         }
     }
 
-    async function handleRun() {
+    async function startRun({ excludeTestTitles = [], includeTestTitles = [] }: { excludeTestTitles?: string[]; includeTestTitles?: string[] } = {}) {
         if (effectiveSelectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -1284,6 +1428,7 @@ export default function Home() {
         setError("");
         setActiveTab("summary");
         setStatusFilter("All");
+        setSelectedFailedRerunTitles([]);
         setIsBusyTargetListExpanded(false);
         setActiveRunId(null);
         setRunProgress(null);
@@ -1303,6 +1448,8 @@ export default function Home() {
                     selectedPractices: effectiveSelectedPractices,
                     auditMode: lastGeneratedAuditMode,
                     baseUrl: lastGeneratedBaseUrl,
+                    excludeTestTitles,
+                    includeTestTitles,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };
@@ -1323,6 +1470,40 @@ export default function Home() {
             reportWindowRef.current = null;
             setReportPopupNotice("");
         }
+    }
+
+    async function handleRun() {
+        await startRun();
+    }
+
+    async function handleContinueRun() {
+        const excludedTitles = continuationExcludedTitles;
+
+        if (excludedTitles.length === 0) {
+            setError("There are no completed test results available to continue from.");
+            return;
+        }
+
+        await startRun({ excludeTestTitles: excludedTitles });
+    }
+
+    function toggleFailedRerunTitle(title: string) {
+        setSelectedFailedRerunTitles((current) =>
+            current.includes(title)
+                ? current.filter((item) => item !== title)
+                : [...current, title]
+        );
+    }
+
+    async function handleRerunFailedTitles(titles: string[]) {
+        const uniqueTitles = [...new Set(titles.filter((title) => title.trim().length > 0))];
+
+        if (uniqueTitles.length === 0) {
+            setError("Select at least one failed test before rerunning.");
+            return;
+        }
+
+        await startRun({ includeTestTitles: uniqueTitles });
     }
 
     async function handleStopRun() {
@@ -1367,7 +1548,7 @@ export default function Home() {
     }
 
     async function handleSaveToExplorer() {
-        const effectiveDescription = description.trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
+        const effectiveDescription = (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices);
 
         if (!editedCode.trim() || !effectiveDescription) {
             return;
@@ -1559,8 +1740,9 @@ export default function Home() {
     const isRunning = step === "running";
     const isCrawling = crawlStatus === "crawling";
     const hasCode = step === "ready" || step === "done";
-    const inferredPractices = inferBestPracticesFromDescription(description);
-    const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...inferredPractices])]
+    const effectiveDescriptionText = isDescriptionPlaceholderActive ? "" : description;
+    const inferredPractices = inferBestPracticesFromDescription(effectiveDescriptionText);
+    const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...(selectedPractices.length > 0 ? [] : inferredPractices)])]
         .filter((practice) => !deselectedPractices.includes(practice));
     const isCrossBrowserSelected = effectiveSelectedPractices.includes("cross-browser");
     const normalizedBaseUrlForDisplay = normalizeBaseUrl(baseUrl);
@@ -1588,14 +1770,18 @@ export default function Home() {
         contentRules.requiredText.length > 0 ||
         contentRules.forbiddenText.length > 0 ||
         contentRules.paths.some((path) => path !== "/");
+    const selectedPracticeSignature = JSON.stringify([...effectiveSelectedPractices].sort());
     const isContentAwareReady =
         !contentAwareRequested ||
         (contentProfile !== null &&
             lastGeneratedContentSignature === JSON.stringify({ contentRules, auditMode }) &&
             hasCode);
+    const isPracticeSelectionReady = lastGeneratedPracticeSignature === selectedPracticeSignature;
     const runBlockedMessage = !isContentAwareReady
         ? "Generate the suite again after completing the content-aware inputs before running it."
-        : "";
+        : !isPracticeSelectionReady
+            ? "Generate the suite again after changing the selected best-practice areas before running it."
+            : "";
     const showBusyOverlay = isGenerating || isRunning;
     const normalizedBusyTarget = normalizeBaseUrl(baseUrl);
     const busyTarget = normalizedBusyTarget.ok
@@ -1658,6 +1844,24 @@ export default function Home() {
             1,
         )
         : 1;
+    const continuationExcludedTitles = getContinuationExcludedTitles(result);
+    const hasPendingRunWork = Boolean(
+        result && result.progress.completedTests < result.progress.totalTests
+    );
+    const hasSingleBrowserRun = result?.report
+        ? result.report.summary.browsers.length === 1
+        : !effectiveSelectedPractices.includes("cross-browser");
+    const canContinueCancelledRun = Boolean(
+        result?.runStatus === "cancelled" &&
+        hasSingleBrowserRun &&
+        continuationExcludedTitles.length > 0 &&
+        hasPendingRunWork
+    );
+    const continueRunUnavailableMessage = result?.runStatus === "cancelled" && hasPendingRunWork && !canContinueCancelledRun
+        ? !hasSingleBrowserRun
+            ? "Continue remaining tests is only available for single-browser runs right now."
+            : "Continue remaining tests needs at least one completed test from the stopped run."
+        : "";
     const seoPageGroups = report?.seo?.pageGroups ?? [];
     const selectedSeoPageGroup = seoPageGroups.find((group) => group.pageKey === selectedSeoPageKey) ?? seoPageGroups[0] ?? null;
     const selectedSeoRecommendations = selectedSeoPageGroup
@@ -1665,6 +1869,13 @@ export default function Home() {
             (recommendation) => !recommendation.pageKey || recommendation.pageKey === selectedSeoPageGroup.pageKey
         ) ?? []
         : report?.seo?.recommendations ?? [];
+    const rerunnableFailedTitles = [...new Set(
+        report?.execution
+            .filter((record) => record.status === "Failed")
+            .map((record) => record.title)
+            .filter((title) => title.trim().length > 0) ?? []
+    )];
+    const selectedRerunnableFailedTitles = selectedFailedRerunTitles.filter((title) => rerunnableFailedTitles.includes(title));
     const reportTabs = report?.seo?.totalChecks
         ? [...BASE_REPORT_TABS, "seo" as const]
         : BASE_REPORT_TABS;
@@ -2082,9 +2293,25 @@ export default function Home() {
                                         aria-label="What do you want to test?"
                                         rows={5}
                                         value={description}
-                                        onChange={(event) => setDescription(event.target.value)}
-                                        placeholder="E.g. Create a cross-browser accessibility and performance suite for the login flow."
-                                        className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none"
+                                        onFocus={() => {
+                                            if (isDescriptionPlaceholderActive) {
+                                                setDescription("");
+                                                setIsDescriptionPlaceholderActive(false);
+                                            }
+                                        }}
+                                        onBlur={() => {
+                                            if (!description.trim()) {
+                                                setDescription(DEFAULT_DESCRIPTION_EXAMPLE);
+                                                setIsDescriptionPlaceholderActive(true);
+                                            }
+                                        }}
+                                        onChange={(event) => {
+                                            setDescription(event.target.value);
+                                            if (isDescriptionPlaceholderActive) {
+                                                setIsDescriptionPlaceholderActive(false);
+                                            }
+                                        }}
+                                        className={`w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm ${isDescriptionPlaceholderActive ? "text-zinc-400" : "text-zinc-900"} focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none`}
                                     />
                                     <p className="text-xs text-zinc-500">
                                         Matching keywords will highlight the applicable best-practice areas on the right. You can also leave this blank and generate from the selected best-practice areas alone.
@@ -2741,7 +2968,7 @@ export default function Home() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={handleRun}
-                                disabled={!hasCode || isRunning || !isContentAwareReady || !canGenerateOrRun}
+                                disabled={!hasCode || isRunning || !isContentAwareReady || !isPracticeSelectionReady || !canGenerateOrRun}
                                 className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isRunning ? (
@@ -2836,6 +3063,7 @@ export default function Home() {
                                 : ""}
                             {savedSuite ? " VS Code Test Explorer will show one generated file with the saved top-level suites underneath it." : ""}
                             {runBlockedMessage ? ` ${runBlockedMessage}` : ""}
+                            {continueRunUnavailableMessage ? ` ${continueRunUnavailableMessage}` : ""}
                         </span>
                         <div className="flex items-center gap-3">
                             <span className="text-zinc-500">
@@ -2843,7 +3071,7 @@ export default function Home() {
                             </span>
                             <button
                                 onClick={handleRun}
-                                disabled={!hasCode || isRunning || !isContentAwareReady || !canGenerateOrRun}
+                                disabled={!hasCode || isRunning || !isContentAwareReady || !isPracticeSelectionReady || !canGenerateOrRun}
                                 className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isRunning ? (
@@ -3087,7 +3315,39 @@ export default function Home() {
                                             )
                                         )}
                                     </div>
-                                    <ExecutionTable records={filteredExecution} />
+                                    {rerunnableFailedTitles.length > 0 ? (
+                                        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
+                                            <div className="text-sm text-zinc-600">
+                                                {selectedRerunnableFailedTitles.length > 0
+                                                    ? `${selectedRerunnableFailedTitles.length} failed test${selectedRerunnableFailedTitles.length === 1 ? "" : "s"} selected for rerun`
+                                                    : `${rerunnableFailedTitles.length} failed test${rerunnableFailedTitles.length === 1 ? "" : "s"} available for rerun`}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRerunFailedTitles(selectedRerunnableFailedTitles)}
+                                                disabled={isRunning || !canGenerateOrRun || selectedRerunnableFailedTitles.length === 0}
+                                                className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition hover:border-rose-400 hover:text-rose-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                Rerun selected failed tests
+                                            </button>
+                                            {selectedRerunnableFailedTitles.length > 0 ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setSelectedFailedRerunTitles([])}
+                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                                >
+                                                    Clear selection
+                                                </button>
+                                            ) : null}
+                                        </div>
+                                    ) : null}
+                                    <ExecutionTable
+                                        records={filteredExecution}
+                                        selectedFailedTitles={selectedRerunnableFailedTitles}
+                                        onToggleFailedSelection={toggleFailedRerunTitle}
+                                        onRerunFailedTitle={(title) => handleRerunFailedTitles([title])}
+                                        rerunActionsDisabled={isRunning || !canGenerateOrRun}
+                                    />
                                 </ReportPanel>
                             )}
 
@@ -3383,6 +3643,16 @@ export default function Home() {
                                 description="Retained for debugging alongside the structured dashboard."
                             >
                                 <div className="mb-4 flex flex-wrap gap-2">
+                                    {result.runStatus === "cancelled" ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleContinueRun}
+                                            disabled={!hasCode || isRunning || !isContentAwareReady || !isPracticeSelectionReady || !canGenerateOrRun || !canContinueCancelledRun}
+                                            className="rounded-xl border border-sky-300 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 transition hover:border-sky-400 hover:text-sky-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Continue remaining tests
+                                        </button>
+                                    ) : null}
                                     <button
                                         type="button"
                                         onClick={() => handleCopyRawOutput(report.rawOutput)}
@@ -3430,6 +3700,16 @@ export default function Home() {
                                             : "Tests failed"} — {formatMilliseconds(result.duration)}
                                 </div>
                                 <div className="flex flex-wrap gap-2">
+                                    {result.runStatus === "cancelled" ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleContinueRun}
+                                            disabled={!hasCode || isRunning || !isContentAwareReady || !isPracticeSelectionReady || !canGenerateOrRun || !canContinueCancelledRun}
+                                            className="rounded-xl border border-sky-300 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 transition hover:border-sky-400 hover:text-sky-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Continue remaining tests
+                                        </button>
+                                    ) : null}
                                     <button
                                         type="button"
                                         onClick={() => handleCopyRawOutput(result.output)}
@@ -3476,6 +3756,17 @@ export default function Home() {
                                         ?? "No test progress was captured before the run stopped."}
                                 </div>
                             </div>
+                            {result.progress.plannedExecutions.length > 0 ? (
+                                <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-4">
+                                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                        Execution detail
+                                    </div>
+                                    <div className="mt-2 text-sm text-zinc-500">
+                                        TestForge preserved the planned execution list and the latest known state for each test when the run stopped.
+                                    </div>
+                                    <FallbackExecutionTable progress={result.progress} />
+                                </div>
+                            ) : null}
                             <pre className="mt-4 overflow-x-auto rounded-2xl bg-zinc-950 px-4 py-4 font-mono text-xs leading-6 text-zinc-200 whitespace-pre-wrap">
                                 {result.output}
                             </pre>
@@ -3694,7 +3985,19 @@ function getSuiteLabel(suite: string) {
     return trimmed || "General test set";
 }
 
-function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
+function ExecutionTable({
+    records,
+    selectedFailedTitles,
+    onToggleFailedSelection,
+    onRerunFailedTitle,
+    rerunActionsDisabled,
+}: {
+    records: ExecutionRecord[];
+    selectedFailedTitles: string[];
+    onToggleFailedSelection: (title: string) => void;
+    onRerunFailedTitle: (title: string) => void;
+    rerunActionsDisabled: boolean;
+}) {
     const [expandedRows, setExpandedRows] = useState<string[]>([]);
 
     const suites = records.reduce((groups, record) => {
@@ -3769,6 +4072,7 @@ function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
                             {suiteRecords.map((record) => {
                                 const rowId = `${record.id}-${record.browser}-${record.order}`;
                                 const expanded = expandedRows.includes(rowId);
+                                const failedSelected = selectedFailedTitles.includes(record.title);
 
                                 return (
                                     <Fragment key={rowId}>
@@ -3776,7 +4080,6 @@ function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
                                             <div className="flex flex-wrap items-start justify-between gap-3">
                                                 <div>
                                                     <div className="text-sm font-semibold text-zinc-950">{record.title}</div>
-                                                    <p className="mt-1 text-sm leading-6 text-zinc-500">{record.description}</p>
                                                 </div>
                                                 <div className="flex flex-wrap gap-2">
                                                     <span
@@ -3805,14 +4108,45 @@ function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
 
                                             <div className="mt-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
                                                 <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                                                    Outcome Summary
+                                                    Expected Result
+                                                </div>
+                                                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                                                    {record.description}
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
+                                                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                    Observed Outcome
                                                 </div>
                                                 <p className="mt-2 text-sm leading-6 text-zinc-600">
                                                     {formatExecutionRemark(record)}
                                                 </p>
                                             </div>
 
-                                            <div className="mt-4">
+                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                {record.status === "Failed" ? (
+                                                    <label className="inline-flex items-center gap-2 rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={failedSelected}
+                                                            onChange={() => onToggleFailedSelection(record.title)}
+                                                            aria-label={`Select ${record.title} for rerun`}
+                                                            className="h-4 w-4 rounded border-zinc-300 text-rose-600 focus:ring-rose-500"
+                                                        />
+                                                        Select for rerun
+                                                    </label>
+                                                ) : null}
+                                                {record.status === "Failed" ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => onRerunFailedTitle(record.title)}
+                                                        disabled={rerunActionsDisabled}
+                                                        className="rounded-xl border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition hover:border-rose-400 hover:text-rose-900 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        Rerun this failed test
+                                                    </button>
+                                                ) : null}
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleRow(rowId)}

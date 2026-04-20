@@ -264,6 +264,51 @@ test.describe("TestForge regression coverage", () => {
         expect(result.report?.seo?.findings?.[0]).not.toContain("locator");
     });
 
+    test("lists the specific broken links in observed outcomes for broken-link failures", async ({ request }) => {
+        const response = await request.post("/api/run", {
+            data: {
+                code: [
+                    "import { test, expect } from '@playwright/test';",
+                    "",
+                    "test.describe('Functional Coverage', () => {",
+                    "  test('link health: internal, external, and download links do not return broken responses', async () => {",
+                    "    expect(500, 'Broken link detected for Pricing').toBeLessThan(400);",
+                    "  });",
+                    "});",
+                ].join("\n"),
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const startedRun = await response.json();
+        expect(startedRun.runId).toBeTruthy();
+
+        let finalSnapshot: Record<string, unknown> | null = null;
+        for (let attempt = 0; attempt < 40; attempt += 1) {
+            const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
+            expect(statusResponse.ok()).toBeTruthy();
+            const snapshot = await statusResponse.json();
+
+            if (snapshot.runStatus !== "running" && snapshot.runStatus !== "queued") {
+                finalSnapshot = snapshot;
+                break;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+
+        expect(finalSnapshot).not.toBeNull();
+        const result = finalSnapshot?.result as {
+            report?: {
+                execution: Array<{ remarks: string }>;
+            };
+        };
+
+        expect(result.report?.execution?.[0]?.remarks).toContain("Broken links were detected for: Pricing");
+    });
+
     test("does not show a structured report when Playwright executes zero tests", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
@@ -302,6 +347,147 @@ test.describe("TestForge regression coverage", () => {
         const result = finalSnapshot?.result as { output: string; report?: unknown };
         expect(result.report).toBeUndefined();
         expect(result.output).toContain("without executing any tests");
+    });
+
+    test("preserves planned, interrupted, and not-run test states when a run is stopped", async ({ request }) => {
+        const response = await request.post("/api/run", {
+            data: {
+                code: [
+                    "import { test, expect } from '@playwright/test';",
+                    "",
+                    "test.describe('Functional Coverage', () => {",
+                    "  test('first completes before stop', async () => {",
+                    "    expect(1).toBe(1);",
+                    "  });",
+                    "",
+                    "  test('second is interrupted by stop', async () => {",
+                    "    await new Promise((resolve) => setTimeout(resolve, 10000));",
+                    "    expect(1).toBe(1);",
+                    "  });",
+                    "",
+                    "  test('third never starts', async () => {",
+                    "    expect(1).toBe(1);",
+                    "  });",
+                    "});",
+                ].join("\n"),
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const startedRun = await response.json();
+        expect(startedRun.runId).toBeTruthy();
+
+        let sawSecondTestRunning = false;
+        for (let attempt = 0; attempt < 80; attempt += 1) {
+            const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
+            expect(statusResponse.ok()).toBeTruthy();
+            const snapshot = await statusResponse.json();
+
+            if (snapshot.progress?.currentTestTitle === "second is interrupted by stop") {
+                sawSecondTestRunning = true;
+                break;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 125));
+        }
+
+        expect(sawSecondTestRunning).toBeTruthy();
+
+        const cancelResponse = await request.delete("/api/run", {
+            data: { runId: startedRun.runId },
+        });
+        expect(cancelResponse.ok()).toBeTruthy();
+
+        let finalSnapshot: Record<string, unknown> | null = null;
+        for (let attempt = 0; attempt < 80; attempt += 1) {
+            const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
+            expect(statusResponse.ok()).toBeTruthy();
+            const snapshot = await statusResponse.json();
+
+            if (snapshot.runStatus !== "running" && snapshot.runStatus !== "queued") {
+                finalSnapshot = snapshot;
+                break;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 125));
+        }
+
+        expect(finalSnapshot).not.toBeNull();
+        const result = finalSnapshot?.result as {
+            runStatus: string;
+            progress: {
+                plannedExecutions: Array<{ title: string; status: string }>;
+            };
+        };
+
+        expect(result.runStatus).toBe("cancelled");
+        expect(result.progress.plannedExecutions).toHaveLength(3);
+        expect(result.progress.plannedExecutions).toEqual([
+            expect.objectContaining({ title: "first completes before stop", status: "passed" }),
+            expect.objectContaining({ title: "second is interrupted by stop", status: "interrupted" }),
+            expect.objectContaining({ title: "third never starts", status: "not-run" }),
+        ]);
+    });
+
+    test("runs only the selected failed test titles when includeTestTitles is provided", async ({ request }) => {
+        const response = await request.post("/api/run", {
+            data: {
+                code: [
+                    "import { test, expect } from '@playwright/test';",
+                    "",
+                    "test.describe('Functional Coverage', () => {",
+                    "  test('control test passes', async () => {",
+                    "    expect(1).toBe(1);",
+                    "  });",
+                    "",
+                    "  test('first failed test is rerunnable', async () => {",
+                    "    expect(1).toBe(2);",
+                    "  });",
+                    "",
+                    "  test('second failed test stays excluded', async () => {",
+                    "    expect(1).toBe(2);",
+                    "  });",
+                    "});",
+                ].join("\n"),
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                includeTestTitles: ["first failed test is rerunnable"],
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const startedRun = await response.json();
+        expect(startedRun.runId).toBeTruthy();
+
+        let finalSnapshot: Record<string, unknown> | null = null;
+        for (let attempt = 0; attempt < 40; attempt += 1) {
+            const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
+            expect(statusResponse.ok()).toBeTruthy();
+            const snapshot = await statusResponse.json();
+
+            if (snapshot.runStatus !== "running" && snapshot.runStatus !== "queued") {
+                finalSnapshot = snapshot;
+                break;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+
+        expect(finalSnapshot).not.toBeNull();
+        const result = finalSnapshot?.result as {
+            report?: {
+                summary: { planned: number; executed: number };
+                execution: Array<{ title: string }>;
+            };
+        };
+
+        expect(result.report?.summary.planned).toBe(1);
+        expect(result.report?.summary.executed).toBe(1);
+        expect(result.report?.execution).toEqual([
+            expect.objectContaining({ title: "first failed test is rerunnable" }),
+        ]);
     });
 
     test("covers SEO metadata and crawler-facing files", async ({ page, request }) => {
@@ -417,6 +603,20 @@ test.describe("TestForge regression coverage", () => {
         await expect(page.getByText(/File:/)).toBeVisible();
     });
 
+    test("requires regeneration before running when selected best-practice areas change", async ({ page }) => {
+        await openHome(page);
+        await fillCreationInputs(page, localAppUrl, localSeoDescription);
+
+        const generatedSuitePanel = await generateSuite(page);
+        await expect(generatedSuitePanel.locator("pre")).toContainText("SEO and Content Coverage");
+
+        await page.getByRole("button", { name: /^Functional Forms, links, navigation, and core flows$/ }).click();
+
+        const runButtons = generatedSuitePanel.getByRole("button", { name: "Run suite" });
+        await expect(runButtons.first()).toBeDisabled();
+        await expect(page.getByText("Generate the suite again after changing the selected best-practice areas before running it.")).toBeVisible();
+    });
+
     test("covers the report tabs, HTML export, and page-scoped SEO drilldown after running a generated suite", async ({ page }) => {
         await openHome(page);
         await fillCreationInputs(page, localAppUrl, localSeoDescription);
@@ -496,5 +696,54 @@ test.describe("TestForge regression coverage", () => {
         await expect(reportPopup.getByRole("heading", { name: "TestForge Execution Output" })).toBeVisible({ timeout: 120_000 });
         await expect(reportPopup.getByText("Structured report data was not available for this run, so only the raw console output is shown.")).toBeVisible({ timeout: 120_000 });
         await expect(reportPopup.getByText(/without executing any tests/i)).toBeVisible({ timeout: 120_000 });
+    });
+
+    test("reruns the selected failed test from the execution report", async ({ page }) => {
+        await openHome(page);
+        await fillCreationInputs(page, localAppUrl, demoQaDescription);
+
+        const generatedSuitePanel = await generateSuite(page);
+        await generatedSuitePanel.getByRole("button", { name: "Edit" }).click();
+        const codeEditor = generatedSuitePanel.locator("textarea");
+        await expect(codeEditor).toBeVisible();
+        await codeEditor.fill([
+            "import { test, expect } from '@playwright/test';",
+            "",
+            "test.describe('Functional Coverage', () => {",
+            "  test('control test passes', async () => {",
+            "    expect(1).toBe(1);",
+            "  });",
+            "",
+            "  test('first failed test is rerunnable', async () => {",
+            "    expect(1).toBe(2);",
+            "  });",
+            "",
+            "  test('second failed test stays excluded', async () => {",
+            "    expect(1).toBe(2);",
+            "  });",
+            "});",
+        ].join("\n"));
+
+        await generatedSuitePanel.getByRole("button", { name: "Run suite" }).first().click();
+        await expect(page.getByText("Test Reports")).toBeVisible({ timeout: 120_000 });
+
+        await page.getByRole("button", { name: "Execution", exact: true }).click();
+        await expect(page.getByRole("button", { name: "Rerun selected failed tests" })).toBeVisible();
+        await expect(page.getByRole("button", { name: "Rerun this failed test" }).first()).toBeVisible();
+
+        await page.getByLabel("Select first failed test is rerunnable for rerun").check();
+        await page.getByRole("button", { name: "Rerun selected failed tests" }).click();
+
+        await expect(page.getByText("Test Reports")).toBeVisible({ timeout: 120_000 });
+        await page.getByRole("button", { name: "Execution", exact: true }).click();
+        await page.getByRole("button", { name: "All", exact: true }).click();
+
+        const executionSection = page.locator("section").filter({
+            has: page.getByText("Detailed case-by-case results"),
+        }).first();
+
+        await expect(executionSection.getByText("first failed test is rerunnable", { exact: true })).toBeVisible();
+        await expect(executionSection.getByText("second failed test stays excluded", { exact: true })).toHaveCount(0);
+        await expect(executionSection.getByText("control test passes", { exact: true })).toHaveCount(0);
     });
 });

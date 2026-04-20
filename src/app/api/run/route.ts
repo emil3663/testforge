@@ -103,6 +103,7 @@ interface ExecutionRecord {
     status: ExecutionStatus;
     duration: number;
     remarks: string;
+    rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];
     order: number;
@@ -346,17 +347,26 @@ function buildIssueTitle(record: ExecutionRecord) {
 }
 
 function buildIssueDescription(record: ExecutionRecord) {
-    return `${toTitleCase(record.area)} validation for ${simplifyExecutionTarget(record.title)} failed because ${classifyFailureReason(record.remarks)}.`;
+    return `${toTitleCase(record.area)} validation for ${simplifyExecutionTarget(record.title)} failed because ${classifyFailureReason(record.rawMessage)}.`;
 }
 
 function summarizeFinding(record: ExecutionRecord) {
-    return `${toTitleCase(record.area)} issue: ${simplifyExecutionTarget(record.title)} needs attention because ${classifyFailureReason(record.remarks)}.`;
+    return `${toTitleCase(record.area)} issue: ${simplifyExecutionTarget(record.title)} needs attention because ${classifyFailureReason(record.rawMessage)}.`;
 }
 
 interface ActiveExecution {
     id: string;
     title: string;
     linkLabel: string | null;
+}
+
+type PlannedExecutionStatus = "not-run" | "running" | "passed" | "failed" | "flaky" | "blocked" | "interrupted";
+
+interface PlannedExecutionSnapshot {
+    id: string;
+    title: string;
+    linkLabel: string | null;
+    status: PlannedExecutionStatus;
 }
 
 interface RunProgressSnapshot {
@@ -371,6 +381,7 @@ interface RunProgressSnapshot {
     currentLinkLabel: string | null;
     lastCompletedTitle: string | null;
     activeExecutions: ActiveExecution[];
+    plannedExecutions: PlannedExecutionSnapshot[];
 }
 
 interface RunResultPayload {
@@ -532,6 +543,53 @@ function estimateTestCount(code: string) {
     return Math.max(1, matches?.length ?? 0);
 }
 
+function extractDeclaredTestTitles(code: string) {
+    const titles: string[] = [];
+    const testTitlePattern = /\btest(?:\.only|\.skip|\.fixme)?\(\s*(['"`])((?:\\.|(?!\1).)*)\1/g;
+
+    for (const match of code.matchAll(testTitlePattern)) {
+        const rawTitle = match[2] ?? "";
+        titles.push(rawTitle.replace(/\\([\\'"`])/g, "$1"));
+    }
+
+    return titles;
+}
+
+function escapeRegexLiteral(value: string) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function buildRunSelection(code: string, excludedTestTitles: string[], includedTestTitles: string[] = []) {
+    const declaredTitles = extractDeclaredTestTitles(code);
+    const uniqueExcludedTitles = [...new Set(excludedTestTitles.filter((title) => title.trim().length > 0))];
+    const uniqueIncludedTitles = [...new Set(includedTestTitles.filter((title) => title.trim().length > 0))];
+
+    const candidateTitles = uniqueIncludedTitles.length > 0
+        ? declaredTitles.filter((title) => uniqueIncludedTitles.includes(title))
+        : declaredTitles;
+
+    if (uniqueExcludedTitles.length === 0 && uniqueIncludedTitles.length === 0) {
+        return {
+            runnableTestCount: declaredTitles.length > 0 ? declaredTitles.length : estimateTestCount(code),
+            grepPattern: null,
+            grepInvertPattern: null,
+        };
+    }
+
+    const excludedTitleSet = new Set(uniqueExcludedTitles);
+    const runnableTitles = candidateTitles.filter((title) => !excludedTitleSet.has(title));
+    const fallbackCount = uniqueIncludedTitles.length > 0
+        ? uniqueIncludedTitles.filter((title) => !excludedTitleSet.has(title)).length
+        : estimateTestCount(code);
+    const runnableTestCount = declaredTitles.length > 0 ? runnableTitles.length : fallbackCount;
+
+    return {
+        runnableTestCount,
+        grepPattern: uniqueIncludedTitles.length > 0 ? uniqueIncludedTitles.map(escapeRegexLiteral).join("|") : null,
+        grepInvertPattern: uniqueExcludedTitles.map(escapeRegexLiteral).join("|"),
+    };
+}
+
 function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean) {
     if (auditMode === "deep") {
         return {
@@ -593,6 +651,7 @@ function createEmptyProgress(totalTests = 0): RunProgressSnapshot {
         currentLinkLabel: null,
         lastCompletedTitle: null,
         activeExecutions: [],
+        plannedExecutions: [],
     };
 }
 
@@ -605,6 +664,34 @@ function updateActiveExecutions(job: RunJob) {
     job.progress.activeExecutions = [...job.activeExecutions.values()].slice(0, 3);
     job.progress.currentTestTitle = job.progress.activeExecutions[0]?.title ?? null;
     job.progress.currentLinkLabel = job.progress.activeExecutions[0]?.linkLabel ?? null;
+}
+
+function updatePlannedExecutionStatus(job: RunJob, id: string, status: PlannedExecutionStatus) {
+    const execution = job.progress.plannedExecutions.find((entry) => entry.id === id);
+
+    if (execution) {
+        execution.status = status;
+    }
+}
+
+function syncPlannedExecutions(job: RunJob, plannedTests: Array<{ id: string; title: string }>) {
+    const uniqueExecutions = plannedTests.reduce((executions, test) => {
+        if (!executions.some((entry) => entry.id === test.id)) {
+            executions.push({
+                id: test.id,
+                title: test.title,
+                linkLabel: deriveLinkLabel(test.title),
+                status: "not-run" as PlannedExecutionStatus,
+            });
+        }
+
+        return executions;
+    }, [] as PlannedExecutionSnapshot[]);
+
+    if (uniqueExecutions.length > 0) {
+        job.progress.plannedExecutions = uniqueExecutions;
+        job.progress.totalTests = Math.max(job.progress.totalTests, uniqueExecutions.length);
+    }
 }
 
 function updateCompletedCounts(job: RunJob, status: string | undefined) {
@@ -626,6 +713,41 @@ function updateCompletedCounts(job: RunJob, status: string | undefined) {
     job.progress.failedTests += 1;
 }
 
+function mapResultStatusToPlannedStatus(status: string | undefined): PlannedExecutionStatus {
+    if (status === "passed") {
+        return "passed";
+    }
+
+    if (status === "flaky") {
+        return "flaky";
+    }
+
+    if (status === "skipped") {
+        return "blocked";
+    }
+
+    if (status === "interrupted") {
+        return "interrupted";
+    }
+
+    return "failed";
+}
+
+function finalizeInterruptedPlannedExecutions(job: RunJob) {
+    let interruptedCount = 0;
+
+    for (const execution of job.progress.plannedExecutions) {
+        if (execution.status === "running") {
+            execution.status = "interrupted";
+            interruptedCount += 1;
+        }
+    }
+
+    if (interruptedCount > 0) {
+        job.progress.blockedTests += interruptedCount;
+    }
+}
+
 function handleProgressEvent(job: RunJob, line: string) {
     if (!line.startsWith(PROGRESS_PREFIX)) {
         return false;
@@ -635,12 +757,13 @@ function handleProgressEvent(job: RunJob, line: string) {
 
     try {
         const event = JSON.parse(payload) as
-            | { type: "begin"; total: number }
+            | { type: "begin"; total: number; tests?: Array<{ id: string; title: string }> }
             | { type: "test-begin"; id: string; title: string }
             | { type: "test-end"; id: string; title: string; status?: string };
 
         if (event.type === "begin") {
             job.progress.totalTests = Math.max(job.progress.totalTests, event.total || 0);
+            syncPlannedExecutions(job, event.tests ?? []);
             return true;
         }
 
@@ -654,6 +777,7 @@ function handleProgressEvent(job: RunJob, line: string) {
                 title: event.title,
                 linkLabel: deriveLinkLabel(event.title),
             });
+            updatePlannedExecutionStatus(job, event.id, "running");
             updateActiveExecutions(job);
             return true;
         }
@@ -665,6 +789,7 @@ function handleProgressEvent(job: RunJob, line: string) {
 
             job.progress.completedTests += 1;
             job.progress.lastCompletedTitle = event.title;
+            updatePlannedExecutionStatus(job, event.id, mapResultStatusToPlannedStatus(event.status));
             updateCompletedCounts(job, event.status);
             updateActiveExecutions(job);
             return true;
@@ -714,7 +839,8 @@ function buildProgressReporterSource() {
   }
 
   onBegin(config, suite) {
-    this.emit({ type: 'begin', total: suite.allTests().length });
+        const tests = suite.allTests().map((test) => ({ id: test.id, title: test.title }));
+        this.emit({ type: 'begin', total: tests.length, tests });
   }
 
   onTestBegin(test) {
@@ -732,6 +858,7 @@ module.exports = TestForgeProgressReporter;
 
 async function finalizeRunJob(job: RunJob) {
     job.finishedAt = Date.now();
+    finalizeInterruptedPlannedExecutions(job);
     job.progress.completedTests = Math.min(job.progress.completedTests, Math.max(job.progress.totalTests, job.progress.completedTests));
     job.progress.totalTests = Math.max(job.progress.totalTests, job.progress.completedTests, estimateTestCount(await readFile(job.testFile, "utf8").catch(() => "")));
 
@@ -858,12 +985,20 @@ async function startRunJob(
     code: string,
     selectedPractices: string[],
     auditMode: TestAuditMode,
-    baseUrl?: string
+    baseUrl?: string,
+    excludedTestTitles: string[] = [],
+    includedTestTitles: string[] = []
 ) {
     const includesCrossBrowser = selectedPractices.includes(CROSS_BROWSER_AREA);
     const browserProjects = includesCrossBrowser
         ? ["chromium", "firefox", "webkit"]
         : ["chromium"];
+    const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
+
+    if (runSelection.runnableTestCount === 0) {
+        throw new Error("No remaining tests are available to run.");
+    }
+
     const workerCount = calculateWorkerCount(auditMode, includesCrossBrowser);
     const runTimeout = calculateRunTimeout(
         code,
@@ -900,7 +1035,7 @@ async function startRunJob(
         finishedAt: null,
         pendingOutput: "",
         outputChunks: [],
-        progress: createEmptyProgress(estimateTestCount(code) * browserProjects.length),
+        progress: createEmptyProgress(runSelection.runnableTestCount * browserProjects.length),
         activeExecutions: new Map(),
         process: null,
         testFile,
@@ -923,6 +1058,8 @@ async function startRunJob(
             "--timeout=30000",
             `--output=${artifactDir.replace(/\\/g, "/")}`,
             `--workers=${workerCount}`,
+            ...(runSelection.grepPattern ? [`--grep=${runSelection.grepPattern}`] : []),
+            ...(runSelection.grepInvertPattern ? [`--grep-invert=${runSelection.grepInvertPattern}`] : []),
             ...browserProjects.flatMap((project) => [`--project=${project}`]),
         ],
         {
@@ -1052,11 +1189,130 @@ function buildExecutionDescription(
     title: string,
     interactionType: "Navigation" | "API" | "Form" | "Action" | null,
 ) {
-    if (interactionType) {
-        return `Validated the ${interactionType.toLowerCase()} element behavior for ${normalizeExecutionTitle(title)}.`;
+    const normalizedTitle = normalizeExecutionTitle(title);
+
+    if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+        return "Expected result: links should use safe protocols only and should not expose javascript: or other obvious XSS-style vectors.";
     }
 
-    return `Validated that ${title}.`;
+    if (/do not return broken responses/i.test(title)) {
+        return "Expected result: every checked link should return a healthy response rather than a broken HTTP result.";
+    }
+
+    if (/navigate to their required destination/i.test(title)) {
+        return "Expected result: each tested link should open the correct destination without sending the user to the wrong page.";
+    }
+
+    if (/classified correctly/i.test(title)) {
+        return "Expected result: each tested link should be correctly identified as internal, external, anchor, mailto, or download.";
+    }
+
+    if (/mailto links expose the correct recipient/i.test(title)) {
+        return "Expected result: each mailto link should point to the correct recipient address.";
+    }
+
+    if (/download links can be requested successfully/i.test(title)) {
+        return "Expected result: each download link should point to a real downloadable resource that responds successfully.";
+    }
+
+    if (/protected links redirect or block unauthorized access/i.test(title)) {
+        return "Expected result: protected links should redirect unauthenticated users to login or return an appropriate access-denied response.";
+    }
+
+    if (/shows visible content/i.test(title)) {
+        return "Expected result: the page should load successfully and show visible content to the user.";
+    }
+
+    if (/interactive element/i.test(title)) {
+        return "Expected result: the page should expose at least one visible interactive element related to the selected flow.";
+    }
+
+    if (interactionType) {
+        return `Expected result: the ${interactionType.toLowerCase()} behavior for ${normalizedTitle} should complete successfully.`;
+    }
+
+    return `Expected result: ${normalizedTitle} should complete successfully.`;
+}
+
+function extractNamedFailures(rawMessage: string, prefix: string) {
+    const matches = [...rawMessage.matchAll(new RegExp(`${prefix}([^\n\r]+)`, "gi"))]
+        .map((match) => sanitizeDiagnosticText(match[1] ?? ""))
+        .filter((value) => value.length > 0);
+
+    return [...new Set(matches)];
+}
+
+function buildExecutionOutcomeSummary(
+    title: string,
+    status: ExecutionStatus,
+    rawMessage: string
+) {
+    const simplifiedTitle = simplifyExecutionTarget(title);
+    const brokenLinks = extractNamedFailures(rawMessage, "Broken link detected for ");
+    const unsafeLinks = [
+        ...extractNamedFailures(rawMessage, "Unsafe link protocol detected for "),
+        ...extractNamedFailures(rawMessage, "Unsafe data protocol detected for "),
+        ...extractNamedFailures(rawMessage, "Suspicious link text detected for "),
+    ];
+    const uniqueUnsafeLinks = [...new Set(unsafeLinks)];
+
+    if (status === "Passed") {
+        if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+            return "Passed. No unsafe link protocols or obvious XSS-style href patterns were detected in the checked links.";
+        }
+
+        if (/do not return broken responses/i.test(title)) {
+            return "Passed. The checked links returned healthy responses and did not show broken-link behavior.";
+        }
+
+        if (/navigate to their required destination/i.test(title)) {
+            return "Passed. The tested links opened the expected destinations.";
+        }
+
+        return `Passed. ${simplifiedTitle} behaved as expected.`;
+    }
+
+    if (status === "Flaky") {
+        return `Passed after retry. ${simplifiedTitle} did not succeed on the first attempt, so this behavior should be monitored for instability.`;
+    }
+
+    if (status === "Blocked") {
+        return `Blocked. ${simplifiedTitle} could not be completed because the run was interrupted or a required dependency was unavailable.`;
+    }
+
+    if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+        return uniqueUnsafeLinks.length > 0
+            ? `Failed. Unsafe link patterns were detected for: ${uniqueUnsafeLinks.join(", ")}.`
+            : "Failed. At least one checked link used an unsafe protocol or href pattern that could expose a client-side security risk, such as a javascript: style target.";
+    }
+
+    if (/do not return broken responses/i.test(title)) {
+        return brokenLinks.length > 0
+            ? `Failed. Broken links were detected for: ${brokenLinks.join(", ")}.`
+            : "Failed. One or more checked links returned an unhealthy HTTP response and appear to be broken.";
+    }
+
+    if (/navigate to their required destination/i.test(title)) {
+        return "Failed. At least one tested link did not open the expected destination.";
+    }
+
+    if (/classified correctly/i.test(title)) {
+        return "Failed. At least one link was detected with the wrong link type or an unexpected href pattern.";
+    }
+
+    if (/mailto links expose the correct recipient/i.test(title)) {
+        return "Failed. At least one mailto link did not expose the expected recipient address.";
+    }
+
+    if (/download links can be requested successfully/i.test(title)) {
+        return "Failed. At least one download link did not return a successful downloadable response.";
+    }
+
+    if (/protected links redirect or block unauthorized access/i.test(title)) {
+        return "Failed. At least one protected link did not redirect or block unauthenticated access as expected.";
+    }
+
+    return `Failed. ${simplifiedTitle} did not meet the expected result because ${classifyFailureReason(rawMessage)}.`;
 }
 
 function buildExecutionSteps(
@@ -1106,22 +1362,6 @@ function extractMessage(result: JsonTestResult) {
         result.errors.find((error) => error.message)?.message ??
         "No additional diagnostics captured."
     );
-}
-
-function toRemark(status: ExecutionStatus, message: string) {
-    if (status === "Passed") {
-        return "Completed successfully.";
-    }
-
-    if (status === "Flaky") {
-        return `Recovered after retry. ${sanitizeDiagnosticText(message.split("\n")[0])}`;
-    }
-
-    if (status === "Blocked") {
-        return "Execution was skipped or blocked before completion.";
-    }
-
-    return sanitizeDiagnosticText(message.split("\n")[0]);
 }
 
 function severityFromMessage(message: string): DefectSeverity {
@@ -1195,7 +1435,8 @@ function flattenSuites(
                     browser: test.projectName || "chromium",
                     status,
                     duration: latestResult?.duration ?? 0,
-                    remarks: toRemark(status, message),
+                    remarks: buildExecutionOutcomeSummary(spec.title, status, message),
+                    rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,
                         suiteName,
@@ -1219,12 +1460,12 @@ function buildDefects(records: ExecutionRecord[]) {
     return records
         .filter((record) => record.status === "Failed")
         .map((record, index) => {
-            const severity = severityFromMessage(record.remarks);
+            const severity = severityFromMessage(record.rawMessage);
             return {
                 id: `BUG-${String(index + 1).padStart(3, "0")}`,
                 title: buildIssueTitle(record),
                 summary: buildIssueDescription(record),
-                description: record.remarks,
+                description: record.rawMessage,
                 reproductionSteps: record.reproductionSteps,
                 severity,
                 priority: severity,
@@ -1688,7 +1929,7 @@ function buildConsoleSummary(records: ExecutionRecord[], duration: number) {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl } = await req.json();
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles } = await req.json();
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -1696,11 +1937,24 @@ export async function POST(req: NextRequest) {
 
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
+    const normalizedExcludedTitles = Array.isArray(excludeTestTitles)
+        ? excludeTestTitles.filter((title): title is string => typeof title === "string")
+        : [];
+    const normalizedIncludedTitles = Array.isArray(includeTestTitles)
+        ? includeTestTitles.filter((title): title is string => typeof title === "string")
+        : [];
+
+    if (buildRunSelection(code, normalizedExcludedTitles, normalizedIncludedTitles).runnableTestCount === 0) {
+        return NextResponse.json({ error: normalizedIncludedTitles.length > 0 ? "No selected tests are available to rerun." : "No remaining tests are available to continue." }, { status: 400 });
+    }
+
     const job = await startRunJob(
         code,
         normalizedPractices,
         normalizedAuditMode,
-        typeof baseUrl === "string" ? baseUrl : undefined
+        typeof baseUrl === "string" ? baseUrl : undefined,
+        normalizedExcludedTitles,
+        normalizedIncludedTitles
     );
     return NextResponse.json(job, { status: 202 });
 }
