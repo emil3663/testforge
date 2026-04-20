@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { type ChildProcess, spawn } from "child_process";
 import { mkdir, readFile, unlink, writeFile } from "fs/promises";
-import { join, relative } from "path";
+import { basename, extname, join, relative, resolve } from "path";
 import { randomUUID } from "crypto";
 
 const CROSS_BROWSER_AREA = "cross-browser";
@@ -76,6 +76,20 @@ interface JsonTestResult {
     retry: number;
     error?: { message?: string; stack?: string };
     errors: { message?: string }[];
+    attachments?: Array<{
+        name?: string;
+        path?: string;
+        contentType?: string;
+    }>;
+}
+
+interface ExecutionArtifact {
+    artifactId: string;
+    filePath: string;
+    fileName: string;
+    label: string;
+    artifactType: "trace" | "video" | "screenshot" | "file";
+    contentType: string;
 }
 
 interface ExecutionRecord {
@@ -90,18 +104,236 @@ interface ExecutionRecord {
     duration: number;
     remarks: string;
     reproductionSteps: string[];
+    artifacts: ExecutionArtifact[];
     order: number;
 }
 
 interface DefectRecord {
     id: string;
+    title: string;
     summary: string;
+    description: string;
     reproductionSteps: string[];
     severity: DefectSeverity;
     priority: DefectSeverity;
     status: "Open" | "Fixed" | "Closed";
     area: string;
     browser: string;
+}
+
+interface SeoCheckRecord {
+    title: string;
+    browser: string;
+    status: ExecutionStatus;
+    remarks: string;
+}
+
+interface SeoCheckSummary {
+    id: string;
+    label: string;
+    description: string;
+    status: "passed" | "failed" | "not-covered";
+    evidence: SeoCheckRecord[];
+}
+
+interface SeoPageCheckSummary extends SeoCheckSummary {
+    pageKey: string;
+    pageLabel: string;
+}
+
+interface SeoPageGroup {
+    pageKey: string;
+    pageLabel: string;
+    findings: string[];
+    strengths: string[];
+    checks: SeoPageCheckSummary[];
+}
+
+interface SeoRecommendation {
+    priority: "High" | "Medium" | "Low";
+    title: string;
+    rationale: string;
+}
+
+function pluralize(value: number, singular: string, plural: string) {
+    return value === 1 ? singular : plural;
+}
+
+function sanitizeDiagnosticText(value: string) {
+    return stripAnsi(value)
+        .replace(/\s+/g, " ")
+        .replace(/\s+([.,;:!?])/g, "$1")
+        .trim();
+}
+
+function toTitleCase(value: string) {
+    return value
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+}
+
+function simplifyExecutionTarget(title: string) {
+    const normalized = normalizeExecutionTitle(title)
+        .replace(/^keeps\s+/i, "")
+        .replace(/^shows\s+/i, "")
+        .replace(/^does not show\s+/i, "")
+        .replace(/^exposes\s+/i, "")
+        .replace(/^publishes\s+/i, "")
+        .replace(/^link health:\s*/i, "")
+        .replace(/^navigation destination:\s*/i, "")
+        .replace(/^link types:\s*/i, "")
+        .trim();
+
+    return normalized || "the expected behavior";
+}
+
+function inferArtifactType(fileName: string, contentType?: string): ExecutionArtifact["artifactType"] {
+    const normalizedName = fileName.toLowerCase();
+    const normalizedType = contentType?.toLowerCase() ?? "";
+
+    if (normalizedName.endsWith(".zip") || normalizedType.includes("zip") || normalizedName.includes("trace")) {
+        return "trace";
+    }
+
+    if (/(\.webm|\.mp4)$/i.test(normalizedName) || normalizedType.startsWith("video/")) {
+        return "video";
+    }
+
+    if (/(\.png|\.jpg|\.jpeg|\.webp)$/i.test(normalizedName) || normalizedType.startsWith("image/")) {
+        return "screenshot";
+    }
+
+    return "file";
+}
+
+function inferArtifactContentType(fileName: string, contentType?: string) {
+    if (contentType) {
+        return contentType;
+    }
+
+    const extension = extname(fileName).toLowerCase();
+    if (extension === ".zip") {
+        return "application/zip";
+    }
+
+    if (extension === ".webm") {
+        return "video/webm";
+    }
+
+    if (extension === ".mp4") {
+        return "video/mp4";
+    }
+
+    if (extension === ".png") {
+        return "image/png";
+    }
+
+    if (extension === ".jpg" || extension === ".jpeg") {
+        return "image/jpeg";
+    }
+
+    if (extension === ".webp") {
+        return "image/webp";
+    }
+
+    return "application/octet-stream";
+}
+
+function buildArtifactLabel(artifactType: ExecutionArtifact["artifactType"], fileName: string) {
+    if (artifactType === "trace") {
+        return "Trace";
+    }
+
+    if (artifactType === "video") {
+        return "Video";
+    }
+
+    if (artifactType === "screenshot") {
+        return "Screenshot";
+    }
+
+    return basename(fileName);
+}
+
+function extractSeoPageInfo(title: string) {
+    const pathMatch = title.match(/\sfor\s(\/.*)$/i);
+    if (pathMatch?.[1]) {
+        return {
+            pageKey: pathMatch[1],
+            pageLabel: pathMatch[1],
+        };
+    }
+
+    if (/robots\.txt|sitemap\.xml|manifest metadata/i.test(title)) {
+        return {
+            pageKey: "site-wide",
+            pageLabel: "Site-wide",
+        };
+    }
+
+    return {
+        pageKey: "general",
+        pageLabel: "General",
+    };
+}
+
+function classifyFailureReason(message: string) {
+    const normalized = sanitizeDiagnosticText(message).toLowerCase();
+
+    if (/tohaveattribute|attribute/.test(normalized)) {
+        return "required attribute values did not match the expected result";
+    }
+
+    if (/tohavetitle|title/.test(normalized)) {
+        return "the page title did not match the expected value";
+    }
+
+    if (/tocontaintext|text content|not to contain text|tocontain/.test(normalized)) {
+        return "the expected page text did not match the expected content";
+    }
+
+    if (/tobevisible|not found|locator/.test(normalized)) {
+        return "the expected element was not visible to the user";
+    }
+
+    if (/tohaveurl|url/.test(normalized)) {
+        return "navigation finished on a different URL than expected";
+    }
+
+    if (/timeout/.test(normalized)) {
+        return "the check timed out before the expected state was reached";
+    }
+
+    if (/toequal|tobe\(|expected/.test(normalized)) {
+        return "the observed result did not match the expected assertion";
+    }
+
+    return "the automated check did not reach the expected result";
+}
+
+function buildIssueTitle(record: ExecutionRecord) {
+    const areaLabel = toTitleCase(record.area);
+    const target = simplifyExecutionTarget(record.title);
+
+    if (record.area === "SEO") {
+        return `${areaLabel}: ${toTitleCase(target)} check failed`;
+    }
+
+    if (record.area === "Usability") {
+        return `${areaLabel}: ${toTitleCase(target)} needs attention`;
+    }
+
+    return `${areaLabel}: ${toTitleCase(target)} failed`;
+}
+
+function buildIssueDescription(record: ExecutionRecord) {
+    return `${toTitleCase(record.area)} validation for ${simplifyExecutionTarget(record.title)} failed because ${classifyFailureReason(record.remarks)}.`;
+}
+
+function summarizeFinding(record: ExecutionRecord) {
+    return `${toTitleCase(record.area)} issue: ${simplifyExecutionTarget(record.title)} needs attention because ${classifyFailureReason(record.remarks)}.`;
 }
 
 interface ActiveExecution {
@@ -134,6 +366,114 @@ interface RunResultPayload {
     report?: ReturnType<typeof buildReport>;
 }
 
+const SEO_RULE_DEFINITIONS: Array<{
+    id: string;
+    label: string;
+    description: string;
+    test: (record: ExecutionRecord) => boolean;
+    recommendation: SeoRecommendation;
+}> = [
+        {
+            id: "title",
+            label: "Page titles",
+            description: "Public pages should expose stable, descriptive document titles.",
+            test: (record) => /keeps page title stable/i.test(record.title),
+            recommendation: {
+                priority: "High",
+                title: "Stabilize page titles",
+                rationale: "Set a unique, descriptive title for each public page and keep the title aligned with the final indexable URL and page intent.",
+            },
+        },
+        {
+            id: "meta-description",
+            label: "Meta descriptions",
+            description: "Public pages should ship a non-empty meta description that matches the page intent.",
+            test: (record) => /keeps meta description stable/i.test(record.title),
+            recommendation: {
+                priority: "High",
+                title: "Improve meta description coverage",
+                rationale: "Add or refine meta descriptions so each page has concise summary copy that can stand in search results without duplication.",
+            },
+        },
+        {
+            id: "heading-structure",
+            label: "Heading structure",
+            description: "Landing pages should keep a visible heading hierarchy led by a clear primary heading.",
+            test: (record) => /keeps heading structure stable/i.test(record.title),
+            recommendation: {
+                priority: "High",
+                title: "Tighten heading hierarchy",
+                rationale: "Ensure each public page has a clear primary heading and that major sections descend in a predictable order.",
+            },
+        },
+        {
+            id: "canonical",
+            label: "Canonical URLs",
+            description: "Canonical metadata should point crawlers at the final URL for each public page.",
+            test: (record) => /keeps canonical metadata stable/i.test(record.title),
+            recommendation: {
+                priority: "High",
+                title: "Validate canonical URLs",
+                rationale: "Add rel=canonical to each public page and make sure it resolves to the final, preferred indexable path.",
+            },
+        },
+        {
+            id: "structured-data",
+            label: "Structured data",
+            description: "Public pages should expose machine-readable schema when the page is intended to rank in search.",
+            test: (record) => /exposes structured data/i.test(record.title),
+            recommendation: {
+                priority: "Medium",
+                title: "Add JSON-LD schema",
+                rationale: "Publish relevant JSON-LD for the landing page or page type so crawlers can parse entity and page intent more reliably.",
+            },
+        },
+        {
+            id: "robots",
+            label: "robots.txt",
+            description: "robots.txt should be reachable and point crawlers at the sitemap.",
+            test: (record) => /publishes robots\.txt/i.test(record.title),
+            recommendation: {
+                priority: "Medium",
+                title: "Publish robots.txt",
+                rationale: "Serve a robots.txt file that allows intended crawl paths and includes a sitemap reference for discovery.",
+            },
+        },
+        {
+            id: "sitemap",
+            label: "Sitemap",
+            description: "A sitemap should be reachable and expose at least one canonical URL.",
+            test: (record) => /publishes sitemap\.xml/i.test(record.title),
+            recommendation: {
+                priority: "Medium",
+                title: "Publish sitemap.xml",
+                rationale: "Expose a valid sitemap.xml containing the canonical public URLs you want crawlers to discover and revisit.",
+            },
+        },
+        {
+            id: "manifest",
+            label: "Manifest",
+            description: "The site should expose a valid web manifest for installable-browser metadata where applicable.",
+            test: (record) => /publishes manifest metadata/i.test(record.title),
+            recommendation: {
+                priority: "Low",
+                title: "Expose a valid web manifest",
+                rationale: "Link a valid web manifest from the document head so installable browsers and rich previews can resolve app metadata consistently.",
+            },
+        },
+        {
+            id: "critical-content",
+            label: "Critical content",
+            description: "Key public-facing content snippets should be present when they are declared as SEO-critical rules.",
+            test: (record) => /shows the required content snippet/i.test(record.title),
+            recommendation: {
+                priority: "Medium",
+                title: "Protect critical content blocks",
+                rationale: "Turn important marketing copy, product value statements, or entity text into stable content checks so SEO-critical sections do not silently disappear.",
+            },
+        },
+    ];
+
 interface RunStatusPayload {
     runId: string;
     runStatus: RunLifecycleStatus;
@@ -157,7 +497,9 @@ interface RunJob {
     testFile: string;
     jsonReportFile: string;
     reporterFile: string;
+    artifactDir: string;
     selectedPractices: string[];
+    artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
 }
 
@@ -355,7 +697,52 @@ async function finalizeRunJob(job: RunJob) {
     const duration = job.finishedAt - job.createdAt;
 
     if (parsedReport) {
-        const aggregatedReport = buildReport(parsedReport, job.selectedPractices, output || buildConsoleSummary(flattenSuites(parsedReport.suites ?? []), duration));
+        const executionRecords = flattenSuites(parsedReport.suites ?? []);
+        const aggregatedReport = buildReport(parsedReport, job.selectedPractices, output || buildConsoleSummary(executionRecords, duration));
+        job.artifactFiles = collectArtifactFiles(executionRecords);
+        const zeroExecution = aggregatedReport.summary.planned === 0;
+
+        if (zeroExecution) {
+            const reportedErrors = (parsedReport.errors ?? [])
+                .map((error) => error.message?.trim())
+                .filter((message): message is string => Boolean(message));
+            const finalOutput = [
+                ...reportedErrors,
+                output,
+                "Playwright completed without executing any tests. TestForge did not produce a structured report because no test cases actually ran.",
+            ]
+                .filter(Boolean)
+                .join("\n\n")
+                .trim();
+
+            job.result = {
+                runId: job.id,
+                runStatus: job.cancellationRequested ? "cancelled" : "failed",
+                passed: false,
+                output: finalOutput || "Playwright completed without executing any tests.",
+                duration,
+                progress: {
+                    ...job.progress,
+                    totalTests: 0,
+                    completedTests: 0,
+                    passedTests: 0,
+                    failedTests: 0,
+                    flakyTests: 0,
+                    blockedTests: 0,
+                },
+            };
+            job.progress = job.result.progress;
+            job.status = job.result.runStatus;
+            job.process = null;
+
+            await Promise.all([
+                unlink(job.testFile).catch(() => { }),
+                unlink(job.jsonReportFile).catch(() => { }),
+                unlink(job.reporterFile).catch(() => { }),
+            ]);
+            return;
+        }
+
         const runStatus: RunResultPayload["runStatus"] = job.cancellationRequested
             ? "cancelled"
             : aggregatedReport.summary.failed === 0
@@ -377,7 +764,16 @@ async function finalizeRunJob(job: RunJob) {
                 flakyTests: aggregatedReport.summary.flaky,
                 blockedTests: aggregatedReport.summary.blocked,
             },
-            report: aggregatedReport,
+            report: {
+                ...aggregatedReport,
+                usability: {
+                    ...aggregatedReport.usability,
+                    sessionEvidence: aggregatedReport.usability.sessionEvidence.map((item) => ({
+                        ...item,
+                        downloadPath: `/api/run?runId=${encodeURIComponent(job.id)}&artifactId=${encodeURIComponent(item.artifactId)}`,
+                    })),
+                },
+            },
         };
         job.progress = job.result.progress;
         job.status = runStatus;
@@ -429,9 +825,11 @@ async function startRunJob(
     const testFile = join(runsDir, `test-${runId}.spec.ts`);
     const jsonReportFile = join(runsDir, `report-${runId}.json`);
     const reporterFile = join(runsDir, `progress-reporter-${runId}.cjs`);
+    const artifactDir = join(runsDir, `artifacts-${runId}`);
 
     await writeFile(testFile, code, "utf8");
     await writeFile(reporterFile, buildProgressReporterSource(), "utf8");
+    await mkdir(artifactDir, { recursive: true });
 
     const testPath = relative(process.cwd(), testFile).replace(/\\/g, "/");
     const playwrightCli = join(
@@ -455,7 +853,9 @@ async function startRunJob(
         testFile,
         jsonReportFile,
         reporterFile,
+        artifactDir,
         selectedPractices,
+        artifactFiles: new Map(),
         result: null,
     };
 
@@ -467,6 +867,7 @@ async function startRunJob(
             testPath,
             `--reporter=${reporterFile},json`,
             "--timeout=30000",
+            `--output=${artifactDir.replace(/\\/g, "/")}`,
             `--workers=${workerCount}`,
             ...browserProjects.flatMap((project) => [`--project=${project}`]),
         ],
@@ -626,8 +1027,27 @@ function buildExecutionSteps(
     ];
 }
 
+function createExecutionArtifacts(result: JsonTestResult | undefined, testId: string, browser: string) {
+    const attachments = result?.attachments ?? [];
+
+    return attachments
+        .filter((attachment) => attachment.path)
+        .map((attachment, index) => {
+            const fileName = basename(attachment.path ?? `artifact-${index}`);
+            const artifactType = inferArtifactType(fileName, attachment.contentType);
+            return {
+                artifactId: `${testId}-${browser}-${index}`.replace(/[^a-zA-Z0-9_-]+/g, "-"),
+                filePath: resolve(attachment.path ?? fileName),
+                fileName,
+                label: buildArtifactLabel(artifactType, fileName),
+                artifactType,
+                contentType: inferArtifactContentType(fileName, attachment.contentType),
+            } satisfies ExecutionArtifact;
+        });
+}
+
 function extractMessage(result: JsonTestResult) {
-    return (
+    return sanitizeDiagnosticText(
         result.error?.message ??
         result.errors.find((error) => error.message)?.message ??
         "No additional diagnostics captured."
@@ -640,14 +1060,14 @@ function toRemark(status: ExecutionStatus, message: string) {
     }
 
     if (status === "Flaky") {
-        return `Recovered after retry. ${message.split("\n")[0]}`;
+        return `Recovered after retry. ${sanitizeDiagnosticText(message.split("\n")[0])}`;
     }
 
     if (status === "Blocked") {
         return "Execution was skipped or blocked before completion.";
     }
 
-    return message.split("\n")[0];
+    return sanitizeDiagnosticText(message.split("\n")[0]);
 }
 
 function severityFromMessage(message: string): DefectSeverity {
@@ -729,6 +1149,7 @@ function flattenSuites(
                         message,
                         interactionType
                     ),
+                    artifacts: createExecutionArtifacts(latestResult, spec.id, test.projectName || "chromium"),
                     order: orderRef.value,
                 });
             }
@@ -747,7 +1168,9 @@ function buildDefects(records: ExecutionRecord[]) {
             const severity = severityFromMessage(record.remarks);
             return {
                 id: `BUG-${String(index + 1).padStart(3, "0")}`,
-                summary: record.remarks,
+                title: buildIssueTitle(record),
+                summary: buildIssueDescription(record),
+                description: record.remarks,
                 reproductionSteps: record.reproductionSteps,
                 severity,
                 priority: severity,
@@ -875,7 +1298,21 @@ function buildUsabilityReport(records: ExecutionRecord[]) {
     ).length;
     const findings = scopedRecords
         .filter((record) => record.status === "Failed")
-        .map((record) => `${record.title}: ${record.remarks}`);
+        .map((record) => summarizeFinding(record));
+    const sessionEvidence = scopedRecords
+        .flatMap((record) =>
+            record.artifacts.map((artifact) => ({
+                artifactId: artifact.artifactId,
+                label: artifact.label,
+                artifactType: artifact.artifactType,
+                browser: record.browser,
+                testTitle: normalizeExecutionTitle(record.title),
+                fileName: artifact.fileName,
+            }))
+        )
+        .filter((item, index, allItems) =>
+            allItems.findIndex((candidate) => candidate.artifactId === item.artifactId) === index
+        );
 
     return {
         successRate: scopedRecords.length === 0
@@ -884,10 +1321,201 @@ function buildUsabilityReport(records: ExecutionRecord[]) {
         findings: findings.length > 0
             ? findings
             : ["No major usability blockers surfaced in the current automated pass."],
-        videoClips: "Session recordings are not captured by the current runner. Add Playwright video or trace collection if you need evidence clips.",
+        videoClips: sessionEvidence.length > 0
+            ? "Failed-run artifacts were captured for this run. Use the evidence list to inspect trace, video, or screenshot files."
+            : "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
+        sessionEvidence,
         tasksCompleted: passedTasks,
         totalTasks: scopedRecords.length,
     };
+}
+
+function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[]) {
+    const seoScopedRecords = records.filter(
+        (record) => record.area === "SEO" || /shows the required content snippet/i.test(record.title)
+    );
+    const seoRequested = selectedPractices.includes("seo/content") || seoScopedRecords.length > 0;
+
+    const checks = SEO_RULE_DEFINITIONS
+        .filter((rule) => seoRequested || seoScopedRecords.some(rule.test))
+        .map((rule) => {
+            const evidence = seoScopedRecords
+                .filter(rule.test)
+                .map((record) => ({
+                    title: record.title,
+                    browser: record.browser,
+                    status: record.status,
+                    remarks: record.remarks,
+                }));
+            const hasFailure = evidence.some(
+                (record) => record.status === "Failed" || record.status === "Blocked"
+            );
+            const hasSuccess = evidence.some(
+                (record) => record.status === "Passed" || record.status === "Flaky"
+            );
+
+            return {
+                id: rule.id,
+                label: rule.label,
+                description: rule.description,
+                status: hasFailure
+                    ? "failed"
+                    : hasSuccess
+                        ? "passed"
+                        : "not-covered",
+                evidence,
+            } satisfies SeoCheckSummary;
+        });
+
+    const passedChecks = checks.filter((check) => check.status === "passed").length;
+    const failedChecks = checks.filter((check) => check.status === "failed").length;
+    const notCoveredChecks = checks.filter((check) => check.status === "not-covered").length;
+    const scoreDenominator = Math.max(checks.length, 1);
+    const score = Math.round((passedChecks / scoreDenominator) * 100);
+    const findings = checks
+        .filter((check) => check.status === "failed")
+        .map((check) => summarizeSeoCheckFailure(check));
+    const strengths = checks
+        .filter((check) => check.status === "passed")
+        .map((check) => `${check.label} passed in the current run.`);
+    const pageChecks = SEO_RULE_DEFINITIONS.flatMap((rule) => {
+        const groupedEvidence = new Map<string, SeoCheckRecord[]>();
+
+        for (const record of seoScopedRecords.filter(rule.test)) {
+            const pageInfo = extractSeoPageInfo(record.title);
+            const existing = groupedEvidence.get(pageInfo.pageKey) ?? [];
+            existing.push({
+                title: record.title,
+                browser: record.browser,
+                status: record.status,
+                remarks: record.remarks,
+            });
+            groupedEvidence.set(pageInfo.pageKey, existing);
+        }
+
+        return [...groupedEvidence.entries()].map(([pageKey, evidence]) => {
+            const pageInfo = extractSeoPageInfo(evidence[0]?.title ?? "");
+            const hasFailure = evidence.some(
+                (record) => record.status === "Failed" || record.status === "Blocked"
+            );
+            const hasSuccess = evidence.some(
+                (record) => record.status === "Passed" || record.status === "Flaky"
+            );
+
+            return {
+                id: `${rule.id}:${pageKey}`,
+                label: rule.label,
+                description: rule.description,
+                status: hasFailure
+                    ? "failed"
+                    : hasSuccess
+                        ? "passed"
+                        : "not-covered",
+                evidence,
+                pageKey,
+                pageLabel: pageInfo.pageLabel,
+            } satisfies SeoPageCheckSummary;
+        });
+    });
+    const pageGroups = [...new Map(pageChecks.map((check) => [check.pageKey, check.pageLabel])).entries()].map(
+        ([pageKey, pageLabel]) => {
+            const checksForPage = pageChecks.filter((check) => check.pageKey === pageKey);
+            return {
+                pageKey,
+                pageLabel,
+                checks: checksForPage,
+                findings: checksForPage
+                    .filter((check) => check.status === "failed")
+                    .map((check) => summarizeSeoCheckFailure(check)),
+                strengths: checksForPage
+                    .filter((check) => check.status === "passed")
+                    .map((check) => `${check.label} passed for ${pageLabel}.`),
+            } satisfies SeoPageGroup;
+        }
+    );
+    const recommendations = SEO_RULE_DEFINITIONS
+        .filter((rule) => {
+            const check = checks.find((item) => item.id === rule.id);
+            return check && check.status !== "passed";
+        })
+        .map((rule) => rule.recommendation);
+
+    return {
+        requested: seoRequested,
+        score,
+        statusLabel: failedChecks > 0
+            ? "Needs attention"
+            : notCoveredChecks > 0
+                ? "Partially covered"
+                : "Healthy",
+        passedChecks,
+        failedChecks,
+        notCoveredChecks,
+        totalChecks: checks.length,
+        checks,
+        pageGroups,
+        findings: findings.length > 0
+            ? findings
+            : ["No SEO-specific failures were produced in the current run."],
+        strengths: strengths.length > 0
+            ? strengths
+            : ["Add explicit SEO checks to surface deterministic strengths in future runs."],
+        recommendations: recommendations.length > 0
+            ? recommendations
+            : [{
+                priority: "Low" as const,
+                title: "Keep the SEO audit in regression",
+                rationale: "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time.",
+            }],
+    };
+}
+
+function summarizeSeoCheckFailure(check: SeoCheckSummary) {
+    const failingEvidence = check.evidence.filter(
+        (record) => record.status === "Failed" || record.status === "Blocked"
+    );
+    const browserList = [...new Set(failingEvidence.map((record) => record.browser))].join(", ");
+    const browserSuffix = browserList ? ` in ${browserList}` : "";
+    const failureCount = failingEvidence.length;
+
+    switch (check.id) {
+        case "title":
+            return `Page titles failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm a stable, descriptive title for the page.`;
+        case "meta-description":
+            return `Meta descriptions failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm a stable non-empty meta description for the page.`;
+        case "heading-structure":
+            return `Heading structure failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm the expected visible heading hierarchy.`;
+        case "canonical":
+            return `Canonical URLs failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm that the page exposes the expected canonical target.`;
+        case "structured-data":
+            return `Structured data failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm usable JSON-LD on the page.`;
+        case "robots":
+            return `robots.txt failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The crawler-facing robots file was missing or did not expose the expected sitemap reference.`;
+        case "sitemap":
+            return `Sitemap failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm a reachable sitemap with public URLs.`;
+        case "manifest":
+            return `Manifest metadata failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm a valid linked web manifest.`;
+        case "critical-content":
+            return `Critical content checks failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. Required SEO-facing copy was not confirmed in the current run.`;
+        default:
+            return `${check.label} failed ${failureCount} ${pluralize(failureCount, "time", "times")}${browserSuffix}. The audit could not confirm this SEO rule in the current run.`;
+    }
+}
+
+function collectArtifactFiles(records: ExecutionRecord[]) {
+    const artifactFiles = new Map<string, { filePath: string; fileName: string; contentType: string }>();
+
+    for (const record of records) {
+        for (const artifact of record.artifacts) {
+            artifactFiles.set(artifact.artifactId, {
+                filePath: artifact.filePath,
+                fileName: artifact.fileName,
+                contentType: artifact.contentType,
+            });
+        }
+    }
+
+    return artifactFiles;
 }
 
 function buildSummary(
@@ -947,6 +1575,7 @@ function buildReport(
     const summary = buildSummary(execution, defects, report.stats?.duration ?? 0);
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
     const usability = buildUsabilityReport(execution);
+    const seo = buildSeoReport(execution, selectedPractices);
 
     return {
         summary: {
@@ -961,6 +1590,7 @@ function buildReport(
         coverage,
         performance,
         usability,
+        seo,
         rawOutput: output,
     };
 }
@@ -992,6 +1622,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
     const runId = req.nextUrl.searchParams.get("runId");
+    const artifactId = req.nextUrl.searchParams.get("artifactId");
 
     if (!runId) {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });
@@ -1001,6 +1632,34 @@ export async function GET(req: NextRequest) {
 
     if (!job) {
         return NextResponse.json({ error: "Run not found" }, { status: 404 });
+    }
+
+    if (artifactId) {
+        const artifact = job.artifactFiles.get(artifactId);
+
+        if (!artifact) {
+            return NextResponse.json({ error: "Artifact not found" }, { status: 404 });
+        }
+
+        const artifactPath = resolve(artifact.filePath);
+        const allowedRoot = resolve(job.artifactDir);
+
+        if (!artifactPath.startsWith(allowedRoot)) {
+            return NextResponse.json({ error: "Artifact path is invalid" }, { status: 400 });
+        }
+
+        const fileBuffer = await readFile(artifactPath).catch(() => null);
+        if (!fileBuffer) {
+            return NextResponse.json({ error: "Artifact file is unavailable" }, { status: 404 });
+        }
+
+        return new NextResponse(fileBuffer, {
+            status: 200,
+            headers: {
+                "Content-Type": artifact.contentType,
+                "Content-Disposition": `attachment; filename="${artifact.fileName}"`,
+            },
+        });
     }
 
     return NextResponse.json(buildRunSnapshot(job));

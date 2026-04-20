@@ -1554,9 +1554,6 @@ function buildContentSuites(
 
     for (const page of contentProfile.pages) {
         const escapedPath = escapeForSingleQuotedString(page.path || "/");
-        const titleAssertion = page.title
-            ? `    await expect(page).toHaveTitle('${escapeForSingleQuotedString(page.title)}');\n`
-            : "    await expect(page).toHaveTitle(/.+/);\n";
         const keyHeadings = page.headings.slice(0, 3)
             .map(
                 (heading) =>
@@ -1564,13 +1561,91 @@ function buildContentSuites(
             )
             .join("\n");
 
-        seoTests.push(`  test('keeps key page metadata and headings stable for ${escapedPath}', async ({ page }) => {
+                seoTests.push(`  test('keeps page title stable for ${escapedPath}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+${page.title
+                                ? `    await expect(page).toHaveTitle('${escapeForSingleQuotedString(page.title)}');`
+                                : "    await expect(page).toHaveTitle(/.+/);"}
+    });`);
+
+                seoTests.push(`  test('keeps meta description stable for ${escapedPath}', async ({ page }) => {
     await page.goto('${escapedPath}');
     await page.waitForLoadState('domcontentloaded');
 
-${titleAssertion}${page.metaDescription ? `    await expect(page.locator('meta[name="description"]').first()).toHaveAttribute('content', /${escapeForRegExpLiteral(page.metaDescription.slice(0, 60))}/i);\n` : ""}${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisible();"}
+${page.metaDescription
+                                ? `    await expect(page.locator('meta[name="description"]').first()).toHaveAttribute('content', /${escapeForRegExpLiteral(page.metaDescription.slice(0, 60))}/i);`
+                                : "    await expect(page.locator('meta[name=\"description\"]').first()).toHaveAttribute('content', /.+/);"}
+    });`);
+
+                seoTests.push(`  test('keeps heading structure stable for ${escapedPath}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisible();"}
+    });`);
+
+                seoTests.push(`  test('keeps canonical metadata stable for ${escapedPath}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const canonical = page.locator('link[rel="canonical"]').first();
+        await expect(canonical).toHaveAttribute('href', /.+/);
+
+        const href = await canonical.getAttribute('href');
+        expect(href).not.toBeNull();
+
+        const canonicalUrl = new URL(href ?? '', page.url());
+        const currentUrl = new URL(page.url());
+        const canonicalPath = canonicalUrl.pathname.replace(/\\/$/, '') || '/';
+        const currentPath = currentUrl.pathname.replace(/\\/$/, '') || '/';
+
+        expect(canonicalPath).toBe(currentPath);
+    });`);
+
+                seoTests.push(`  test('exposes structured data for ${escapedPath}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const scripts = page.locator('script[type="application/ld+json"]');
+        expect(await scripts.count()).toBeGreaterThan(0);
+
+        const structuredData = await scripts.first().textContent();
+        expect(structuredData?.trim().length ?? 0).toBeGreaterThan(0);
   });`);
     }
+
+        seoTests.push(`  test('publishes robots.txt with a sitemap reference', async ({ request }) => {
+        const response = await request.get('/robots.txt', { failOnStatusCode: false, timeout: 15000 });
+        expect(response.status()).toBeLessThan(400);
+
+        const body = await response.text();
+        expect(body).toContain('Sitemap:');
+    });`);
+
+        seoTests.push(`  test('publishes sitemap.xml with at least one URL', async ({ request }) => {
+        const response = await request.get('/sitemap.xml', { failOnStatusCode: false, timeout: 15000 });
+        expect(response.status()).toBeLessThan(400);
+
+        const body = await response.text();
+        expect(body).toContain('<loc>');
+    });`);
+
+        seoTests.push(`  test('publishes manifest metadata for installable clients', async ({ page, request }) => {
+        await page.goto('/');
+        await page.waitForLoadState('domcontentloaded');
+
+        const manifestLink = page.locator('link[rel="manifest"]').first();
+        await expect(manifestLink).toHaveAttribute('href', /.+/);
+
+        const manifestHref = await manifestLink.getAttribute('href');
+        expect(manifestHref).not.toBeNull();
+
+        const response = await request.get(manifestHref ?? '/manifest.webmanifest', { failOnStatusCode: false, timeout: 15000 });
+        expect(response.status()).toBeLessThan(400);
+        expect(await response.text()).toContain('name');
+    });`);
 
     for (const heading of contentRules.requiredHeadings) {
         functionalTests.push(`  test('shows the required heading ${escapeForSingleQuotedString(heading)}', async ({ page }) => {

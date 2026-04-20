@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const localAppUrl = "http://127.0.0.1:3001";
+
 test("TestForge can generate, save, and run a smoke suite through its UI", async ({ page }) => {
     test.setTimeout(180_000);
 
@@ -19,9 +21,9 @@ test("TestForge can generate, save, and run a smoke suite through its UI", async
     await expect(descriptionInput).toBeEnabled();
     await expect(baseUrlInput).toHaveValue("http://localhost:3000");
 
-    await baseUrlInput.fill("https://demoqa.com/");
+    await baseUrlInput.fill(localAppUrl);
     await descriptionInput.fill(
-        "Create a functional smoke test for the DemoQA homepage and verify visible navigation links are present and usable."
+        "Create SEO and usability coverage for the TestForge landing page including metadata, heading structure, canonical signals, and report export behavior."
     );
 
     await expect(page.getByText(/\d+ active/)).toBeVisible({ timeout: 15_000 });
@@ -39,9 +41,23 @@ test("TestForge can generate, save, and run a smoke suite through its UI", async
     await generatedSuitePanel.getByRole("button", { name: "Add to Test Explorer" }).click();
     await expect(page.getByText(/Added .* to Playwright discovery\./)).toBeVisible({ timeout: 30_000 });
 
+    const openReportSwitch = page.getByRole("switch", { name: /Open completed report in a new page/i });
+    await expect(openReportSwitch).toBeVisible();
+    await openReportSwitch.check({ force: true });
+
+    const popupPromise = page.waitForEvent("popup", { timeout: 120_000 });
     await generatedSuitePanel.getByRole("button", { name: "Run suite" }).first().click();
 
     await expect(page.getByText("Test Reports")).toBeVisible({ timeout: 120_000 });
     await expect(page.getByText("Release readiness at a glance")).toBeVisible({ timeout: 120_000 });
+    await expect(page.getByRole("button", { name: "Save report as HTML" })).toBeVisible({ timeout: 120_000 });
+
+    const reportPopup = await popupPromise;
+    await expect(reportPopup.getByRole("heading", { name: "TestForge Report" })).toBeVisible({ timeout: 120_000 });
+
+    const downloadPromise = page.waitForEvent("download", { timeout: 30_000 });
+    await page.getByRole("button", { name: "Save report as HTML" }).click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/testforge-report-.*\.html$/i);
     await expect(page.getByText(/^Error:/)).toHaveCount(0);
 });

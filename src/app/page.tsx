@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, getSiteUrl } from "@/lib/seo";
 
 type Step = "idle" | "generating" | "ready" | "running" | "done";
 type CrawlLifecycleStatus = "running" | "completed" | "failed" | "cancelled";
@@ -12,7 +13,8 @@ type ReportTab =
     | "defects"
     | "coverage"
     | "performance"
-    | "usability";
+    | "usability"
+    | "seo";
 type ExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky";
 
 const BEST_PRACTICE_OPTIONS = [
@@ -72,7 +74,7 @@ type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number]["id"];
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
-const REPORT_TABS: ReportTab[] = [
+const BASE_REPORT_TABS: ReportTab[] = [
     "summary",
     "execution",
     "defects",
@@ -150,7 +152,9 @@ interface ExecutionRecord {
 
 interface DefectRecord {
     id: string;
+    title: string;
     summary: string;
+    description: string;
     reproductionSteps: string[];
     severity: "Critical" | "Major" | "Minor";
     priority: "Critical" | "Major" | "Minor";
@@ -163,6 +167,50 @@ interface CoverageMatrixItem {
     requirement: string;
     status: "covered" | "partial" | "uncovered";
     tests: string[];
+}
+
+interface SeoCheckRecord {
+    title: string;
+    browser: string;
+    status: ExecutionStatus;
+    remarks: string;
+}
+
+interface SeoCheckSummary {
+    id: string;
+    label: string;
+    description: string;
+    status: "passed" | "failed" | "not-covered";
+    evidence: SeoCheckRecord[];
+}
+
+interface SeoPageCheckSummary extends SeoCheckSummary {
+    pageKey: string;
+    pageLabel: string;
+}
+
+interface SeoPageGroup {
+    pageKey: string;
+    pageLabel: string;
+    findings: string[];
+    strengths: string[];
+    checks: SeoPageCheckSummary[];
+}
+
+interface SeoRecommendation {
+    priority: "High" | "Medium" | "Low";
+    title: string;
+    rationale: string;
+}
+
+interface SessionEvidenceItem {
+    artifactId: string;
+    label: string;
+    artifactType: "trace" | "video" | "screenshot" | "file";
+    browser: string;
+    testTitle: string;
+    fileName: string;
+    downloadPath?: string;
 }
 
 interface RunReport {
@@ -221,8 +269,23 @@ interface RunReport {
         successRate: number;
         findings: string[];
         videoClips: string;
+        sessionEvidence: SessionEvidenceItem[];
         tasksCompleted: number;
         totalTasks: number;
+    };
+    seo: {
+        requested: boolean;
+        score: number;
+        statusLabel: string;
+        passedChecks: number;
+        failedChecks: number;
+        notCoveredChecks: number;
+        totalChecks: number;
+        checks: SeoCheckSummary[];
+        pageGroups: SeoPageGroup[];
+        findings: string[];
+        strengths: string[];
+        recommendations: SeoRecommendation[];
     };
     rawOutput: string;
 }
@@ -262,6 +325,201 @@ interface RunStatusSnapshot {
     progress: RunProgressSnapshot;
     cancellationRequested: boolean;
     result?: RunResult;
+}
+
+function escapeReportHtml(value: string) {
+        return value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+}
+
+function buildReportHtmlDocument(report: RunReport, runId: string) {
+    const executionRowsMarkup = report.execution.map((record) => `
+            <tr>
+                <td>${escapeReportHtml(record.title)}</td>
+                <td>${escapeReportHtml(record.area)}</td>
+                <td>${escapeReportHtml(record.browser)}</td>
+                <td>${escapeReportHtml(record.status)}</td>
+                <td>${escapeReportHtml(formatMilliseconds(record.duration))}</td>
+                <td>${escapeReportHtml(record.remarks || "No additional remarks.")}</td>
+            </tr>`).join("") || "<tr><td colspan=\"6\">No execution records were produced for this run.</td></tr>";
+    const defectsMarkup = report.defects.issues.map((defect) => `
+            <li>
+                <strong>${escapeReportHtml(defect.title)}</strong><br />
+                ${escapeReportHtml(defect.summary)}<br />
+                ${escapeReportHtml(defect.description)}
+            </li>`).join("") || "<li>No open issues were recorded for this run.</li>";
+    const coverageMarkup = report.coverage.matrix.map((item) => `
+            <tr>
+                <td>${escapeReportHtml(item.requirement)}</td>
+                <td>${escapeReportHtml(item.status)}</td>
+                <td>${escapeReportHtml(item.tests.join(" | ") || "No tests mapped")}</td>
+            </tr>`).join("") || "<tr><td colspan=\"3\">No coverage matrix was produced for this run.</td></tr>";
+    const performanceMarkup = report.performance.slowestTests.map((row) => `
+            <tr>
+                <td>${escapeReportHtml(row.title)}</td>
+                <td>${escapeReportHtml(row.browser)}</td>
+                <td>${escapeReportHtml(row.area)}</td>
+                <td>${escapeReportHtml(formatMilliseconds(row.duration))}</td>
+            </tr>`).join("") || "<tr><td colspan=\"4\">No performance timings were produced for this run.</td></tr>";
+    const usabilityFindingsMarkup = report.usability.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No usability findings were recorded for this run.</li>";
+    const recommendationsMarkup = report.seo.recommendations.map((recommendation) => `
+            <li>
+                <strong>${escapeReportHtml(recommendation.title)}</strong> (${escapeReportHtml(recommendation.priority)})<br />
+                ${escapeReportHtml(recommendation.rationale)}
+            </li>`).join("") || "<li>No SEO recommendations were generated for this run.</li>";
+    const seoPagesMarkup = report.seo.pageGroups.map((group) => {
+                const checksMarkup = group.checks.map((check) => `
+                                <tr>
+                                        <td>${escapeReportHtml(check.label)}</td>
+                                        <td>${escapeReportHtml(check.status)}</td>
+                                        <td>${escapeReportHtml(check.evidence.map((record) => `${record.browser}: ${record.title} (${record.status})`).join(" | ") || "No explicit evidence captured.")}</td>
+                                </tr>`).join("");
+                const findingsMarkup = group.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No failed checks for this page.</li>";
+                return `
+                                <section>
+                                        <h3>${escapeReportHtml(group.pageLabel)}</h3>
+                                        <ul>${findingsMarkup}</ul>
+                                        <table>
+                                                <thead><tr><th>Rule</th><th>Status</th><th>Evidence</th></tr></thead>
+                                                <tbody>${checksMarkup}</tbody>
+                                        </table>
+                                </section>`;
+        }).join("");
+
+        const evidenceMarkup = report.usability.sessionEvidence.map((item) => `
+                        <li>${escapeReportHtml(item.label)} | ${escapeReportHtml(item.browser)} | ${escapeReportHtml(item.testTitle)} | ${escapeReportHtml(item.fileName)}</li>`).join("") || "<li>No session evidence captured for this run.</li>";
+
+        return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TestForge Report ${escapeReportHtml(runId)}</title>
+    <style>
+        body { font-family: Georgia, 'Times New Roman', serif; margin: 0; padding: 32px; background: #f5f1e8; color: #1f2937; }
+        main { max-width: 1100px; margin: 0 auto; }
+        h1, h2, h3 { margin: 0 0 12px; }
+        section { background: #fffdf8; border: 1px solid #e5ddcf; border-radius: 20px; padding: 20px; margin-top: 20px; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+        .metric { border: 1px solid #e5ddcf; border-radius: 16px; padding: 14px; background: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border-top: 1px solid #e5ddcf; padding: 10px; text-align: left; vertical-align: top; }
+        ul, ol { margin: 10px 0 0; padding-left: 20px; }
+        pre { white-space: pre-wrap; background: #111827; color: #f3f4f6; padding: 16px; border-radius: 16px; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>TestForge Report</h1>
+        <p>Run ${escapeReportHtml(runId)} | ${escapeReportHtml(report.summary.releaseRecommendation)}</p>
+        <section>
+            <h2>Release readiness at a glance</h2>
+            <div class="metrics">
+                <div class="metric"><strong>Planned</strong><div>${report.summary.planned}</div></div>
+                <div class="metric"><strong>Executed</strong><div>${report.summary.executed}</div></div>
+                <div class="metric"><strong>Passed</strong><div>${report.summary.passed + report.summary.flaky}</div></div>
+                <div class="metric"><strong>Failed</strong><div>${report.summary.failed}</div></div>
+            </div>
+        </section>
+        <section>
+            <h2>Detailed case-by-case results</h2>
+            <table>
+                <thead><tr><th>Test</th><th>Area</th><th>Browser</th><th>Status</th><th>Duration</th><th>Remarks</th></tr></thead>
+                <tbody>${executionRowsMarkup}</tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Issue tracking and hot spots</h2>
+            <ul>${defectsMarkup}</ul>
+        </section>
+        <section>
+            <h2>Traceability</h2>
+            <p>${report.coverage.covered} of ${report.coverage.total} requested coverage areas were fully covered. Coverage score: ${report.coverage.percentage}%.</p>
+            <table>
+                <thead><tr><th>Requirement</th><th>Status</th><th>Linked Tests</th></tr></thead>
+                <tbody>${coverageMarkup}</tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Timing and scalability view</h2>
+            <p>Total duration ${escapeReportHtml(formatMilliseconds(report.performance.totalDuration))} | Average test ${escapeReportHtml(formatMilliseconds(report.performance.averageDuration))} | Throughput ${escapeReportHtml(String(report.performance.throughput))}/min</p>
+            <table>
+                <thead><tr><th>Test</th><th>Browser</th><th>Area</th><th>Duration</th></tr></thead>
+                <tbody>${performanceMarkup}</tbody>
+            </table>
+            <p>${escapeReportHtml(report.performance.resourceUtilization)}</p>
+            <p>${escapeReportHtml(report.performance.scalability)}</p>
+        </section>
+        <section>
+            <h2>User-centric findings</h2>
+            <p>Task success ${report.usability.successRate}% | Completed ${report.usability.tasksCompleted} of ${report.usability.totalTasks}</p>
+            <ul>${usabilityFindingsMarkup}</ul>
+        </section>
+        <section>
+            <h2>Session Evidence</h2>
+            <ul>${evidenceMarkup}</ul>
+        </section>
+        <section>
+            <h2>Rule-backed search readiness</h2>
+            <p>SEO score ${report.seo.score}% | Passed ${report.seo.passedChecks} | Failed ${report.seo.failedChecks} | Not covered ${report.seo.notCoveredChecks}</p>
+            ${seoPagesMarkup || "<p>No SEO page groups were produced for this run.</p>"}
+        </section>
+        <section>
+            <h2>Prioritized recommendations</h2>
+            <ul>${recommendationsMarkup}</ul>
+        </section>
+        <section>
+            <h2>Raw Console</h2>
+            <pre>${escapeReportHtml(report.rawOutput)}</pre>
+        </section>
+    </main>
+</body>
+</html>`;
+}
+
+function buildExecutionOutputHtmlDocument(result: RunResult) {
+    const executionOutputMessage = result.runStatus === "cancelled"
+        ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
+        : "Structured report data was not available for this run, so only the raw console output is shown.";
+
+        return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TestForge Execution Output ${escapeReportHtml(result.runId)}</title>
+    <style>
+        body { font-family: Georgia, 'Times New Roman', serif; margin: 0; padding: 32px; background: #f5f1e8; color: #1f2937; }
+        main { max-width: 960px; margin: 0 auto; }
+        section { background: #fffdf8; border: 1px solid #e5ddcf; border-radius: 20px; padding: 20px; margin-top: 20px; }
+        pre { white-space: pre-wrap; background: #111827; color: #f3f4f6; padding: 16px; border-radius: 16px; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>TestForge Execution Output</h1>
+        <p>Run ${escapeReportHtml(result.runId)} | ${escapeReportHtml(toSentenceCase(result.runStatus))} | ${escapeReportHtml(formatMilliseconds(result.duration))}</p>
+        <section>
+            <h2>Structured report status</h2>
+            <p>${escapeReportHtml(executionOutputMessage)}</p>
+        </section>
+        <section>
+            <h2>Raw Console</h2>
+            <pre>${escapeReportHtml(result.output)}</pre>
+        </section>
+    </main>
+</body>
+</html>`;
+}
+
+function buildResultHtmlDocument(result: RunResult) {
+        return result.report
+                ? buildReportHtmlDocument(result.report, result.runId)
+                : buildExecutionOutputHtmlDocument(result);
 }
 
 interface SavedSuiteResult {
@@ -547,6 +805,46 @@ function coverageClasses(status: CoverageMatrixItem["status"]) {
     return "bg-rose-100 text-rose-800 border-rose-200";
 }
 
+function seoCheckClasses(status: SeoCheckSummary["status"]) {
+    if (status === "passed") {
+        return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    }
+
+    if (status === "failed") {
+        return "border-rose-200 bg-rose-50 text-rose-700";
+    }
+
+    return "border-amber-200 bg-amber-50 text-amber-700";
+}
+
+function recommendationClasses(priority: SeoRecommendation["priority"]) {
+    if (priority === "High") {
+        return "border-rose-200 bg-rose-50 text-rose-700";
+    }
+
+    if (priority === "Medium") {
+        return "border-amber-200 bg-amber-50 text-amber-700";
+    }
+
+    return "border-sky-200 bg-sky-50 text-sky-700";
+}
+
+const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web",
+    url: getSiteUrl(),
+    featureList: [
+        "Plain-English Playwright test generation",
+        "Crawl-aware page selection",
+        "Content-aware assertions",
+        "Structured regression reporting",
+    ],
+};
+
 export default function Home() {
     const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
     const [isBaseUrlPlaceholderActive, setIsBaseUrlPlaceholderActive] = useState(true);
@@ -561,9 +859,13 @@ export default function Home() {
     const [copyLabel, setCopyLabel] = useState("Copy");
     const [rawOutputCopyLabel, setRawOutputCopyLabel] = useState("Copy raw output");
     const [rawOutputExportLabel, setRawOutputExportLabel] = useState("Export raw output");
+    const [htmlReportExportLabel, setHtmlReportExportLabel] = useState("Save report as HTML");
     const [saveLabel, setSaveLabel] = useState("Add to Test Explorer");
+    const [reportPopupNotice, setReportPopupNotice] = useState("");
     const [savedSuite, setSavedSuite] = useState<SavedSuiteResult | null>(null);
     const [activeTab, setActiveTab] = useState<ReportTab>("summary");
+    const [openReportInNewPage, setOpenReportInNewPage] = useState(false);
+    const [selectedSeoPageKey, setSelectedSeoPageKey] = useState<string | null>(null);
     const [statusFilter, setStatusFilter] = useState<"All" | ExecutionStatus>("All");
     const [contentPathsInput, setContentPathsInput] = useState("");
     const [crawlResult, setCrawlResult] = useState<CrawlResult | null>(null);
@@ -599,6 +901,8 @@ export default function Home() {
     const [isCrawledPagesCollapsed, setIsCrawledPagesCollapsed] = useState(false);
     const [isBusyTargetListExpanded, setIsBusyTargetListExpanded] = useState(false);
     const codeRef = useRef<HTMLTextAreaElement>(null);
+    const autoOpenedReportRunIdRef = useRef<string | null>(null);
+    const reportWindowRef = useRef<Window | null>(null);
 
     useEffect(() => {
         if (editing && codeRef.current) {
@@ -740,6 +1044,47 @@ export default function Home() {
         };
     }, [activeRunId, step]);
 
+    useEffect(() => {
+        const pageGroups = result?.report?.seo?.pageGroups ?? [];
+        if (pageGroups.length === 0) {
+            if (selectedSeoPageKey !== null) {
+                setSelectedSeoPageKey(null);
+            }
+            return;
+        }
+
+        if (!selectedSeoPageKey || !pageGroups.some((group) => group.pageKey === selectedSeoPageKey)) {
+            setSelectedSeoPageKey(pageGroups[0].pageKey);
+        }
+    }, [result, selectedSeoPageKey]);
+
+    useEffect(() => {
+        if (!openReportInNewPage || !result) {
+            return;
+        }
+
+        if (autoOpenedReportRunIdRef.current === result.runId) {
+            return;
+        }
+
+        autoOpenedReportRunIdRef.current = result.runId;
+        const blob = new Blob([buildResultHtmlDocument(result)], { type: "text/html;charset=utf-8" });
+        const objectUrl = URL.createObjectURL(blob);
+        const openedWindow = reportWindowRef.current && !reportWindowRef.current.closed
+            ? reportWindowRef.current
+            : window.open("about:blank", "_blank");
+
+        if (!openedWindow) {
+            setReportPopupNotice("Your browser blocked the report page. The latest results will stay embedded below.");
+            URL.revokeObjectURL(objectUrl);
+            return;
+        }
+
+        setReportPopupNotice("");
+        openedWindow.location.href = objectUrl;
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+    }, [openReportInNewPage, result]);
+
     function togglePractice(
         practice: BestPracticeArea,
         inferredPractices: BestPracticeArea[],
@@ -873,6 +1218,16 @@ export default function Home() {
             return;
         }
 
+        if (openReportInNewPage) {
+            reportWindowRef.current = window.open("about:blank", "_blank");
+            setReportPopupNotice(reportWindowRef.current
+                ? ""
+                : "Your browser blocked the report page. The latest results will stay embedded below.");
+        } else {
+            reportWindowRef.current = null;
+            setReportPopupNotice("");
+        }
+
         setStep("running");
         setResult(null);
         setError("");
@@ -910,6 +1265,11 @@ export default function Home() {
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Unknown error");
             setStep("ready");
+            if (reportWindowRef.current && !reportWindowRef.current.closed) {
+                reportWindowRef.current.close();
+            }
+            reportWindowRef.current = null;
+            setReportPopupNotice("");
         }
     }
 
@@ -1122,6 +1482,27 @@ export default function Home() {
         }
     }
 
+        async function handleExportHtmlReport(report: RunReport, runId: string) {
+                try {
+                        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                        const fileName = `testforge-report-${runId}-${timestamp}.html`;
+                        const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
+                        const objectUrl = URL.createObjectURL(blob);
+                        const anchor = document.createElement("a");
+                        anchor.href = objectUrl;
+                        anchor.download = fileName;
+                        document.body.appendChild(anchor);
+                        anchor.click();
+                        anchor.remove();
+                        URL.revokeObjectURL(objectUrl);
+                        setHtmlReportExportLabel("HTML report saved");
+                        setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
+                } catch {
+                        setHtmlReportExportLabel("Save failed");
+                        setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
+                }
+        }
+
     const isGenerating = step === "generating";
     const isRunning = step === "running";
     const isCrawling = crawlStatus === "crawling";
@@ -1217,6 +1598,11 @@ export default function Home() {
         ?? activeRunProgress?.lastCompletedTitle
         ?? "Preparing the first test case...";
     const report = result?.report;
+    const seoPageGroups = report?.seo?.pageGroups ?? [];
+    const selectedSeoPageGroup = seoPageGroups.find((group) => group.pageKey === selectedSeoPageKey) ?? seoPageGroups[0] ?? null;
+    const reportTabs = report?.seo?.totalChecks
+        ? [...BASE_REPORT_TABS, "seo" as const]
+        : BASE_REPORT_TABS;
     const filteredExecution = report
         ? report.execution.filter((record) =>
             statusFilter === "All" ? true : record.status === statusFilter
@@ -1557,6 +1943,24 @@ export default function Home() {
             </header>
 
             <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10">
+                <script
+                    type="application/ld+json"
+                    suppressHydrationWarning
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+                />
+                <section className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
+                    <div className="max-w-3xl">
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-600">
+                            AI-native QA workflow
+                        </p>
+                        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
+                            Generate Playwright test suites from plain-English quality goals.
+                        </h1>
+                        <p className="mt-4 text-sm leading-7 text-zinc-600 sm:text-base">
+                            {SITE_TAGLINE}. Describe the target, inspect discovered pages and links, review the generated suite, and run it with structured reports before shipping.
+                        </p>
+                    </div>
+                </section>
                 <CollapsibleSection
                     title="Test Suite Creation"
                     subtitle="Define the target, describe the scenario, and choose which best-practice areas should generate tests."
@@ -2250,6 +2654,24 @@ export default function Home() {
                             <div className="mt-1 text-sm font-semibold text-zinc-100">
                                 generated_test.spec.ts
                             </div>
+                            <label className="mt-3 inline-flex items-center gap-3 text-xs text-zinc-400">
+                                <input
+                                    type="checkbox"
+                                    role="switch"
+                                    checked={openReportInNewPage}
+                                    onChange={(event) => {
+                                        setOpenReportInNewPage(event.target.checked);
+                                        if (!event.target.checked) {
+                                            setReportPopupNotice("");
+                                        }
+                                    }}
+                                    className="peer sr-only"
+                                />
+                                <span className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${openReportInNewPage ? "bg-emerald-500" : "bg-zinc-700"}`}>
+                                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${openReportInNewPage ? "translate-x-5" : "translate-x-1"}`} />
+                                </span>
+                                <span>Open completed report in a new page</span>
+                            </label>
                         </div>
                         <div className="flex items-center gap-2">
                             <button
@@ -2350,35 +2772,46 @@ export default function Home() {
                             {savedSuite ? " VS Code Test Explorer will show one generated file with the saved top-level suites underneath it." : ""}
                             {runBlockedMessage ? ` ${runBlockedMessage}` : ""}
                         </span>
-                        <button
-                            onClick={handleRun}
-                            disabled={!hasCode || isRunning || !isContentAwareReady || !canGenerateOrRun}
-                            className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {isRunning ? (
-                                <>
-                                    <Spinner />
-                                    Running…
-                                </>
-                            ) : (
-                                <>
-                                    <svg
-                                        className="h-4 w-4"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M8 5v14l11-7z" />
-                                    </svg>
-                                    Run suite
-                                </>
-                            )}
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <span className="text-zinc-500">
+                                {openReportInNewPage ? "The completed report will also open in a separate page." : "The report will stay embedded below after the run completes."}
+                            </span>
+                            <button
+                                onClick={handleRun}
+                                disabled={!hasCode || isRunning || !isContentAwareReady || !canGenerateOrRun}
+                                className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {isRunning ? (
+                                    <>
+                                        <Spinner />
+                                        Running…
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg
+                                            className="h-4 w-4"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                        Run suite
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </CollapsibleSection>
 
                 {error && (
                     <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                         <strong>Error:</strong> {error}
+                    </div>
+                )}
+
+                {reportPopupNotice && (
+                    <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                        <strong>Report page notice:</strong> {reportPopupNotice}
                     </div>
                 )}
 
@@ -2486,7 +2919,7 @@ export default function Home() {
                             </div>
 
                             <div className="flex flex-wrap gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-2">
-                                {REPORT_TABS.map((tab) => (
+                                {reportTabs.map((tab) => (
                                     <button
                                         key={tab}
                                         type="button"
@@ -2743,12 +3176,137 @@ export default function Home() {
                                                 ))}
                                             </ul>
                                         </div>
-                                        <InfoCard
-                                            title="Session evidence"
-                                            body={report.usability.videoClips}
-                                        />
+                                        <ReportPanel
+                                            eyebrow="Session Evidence"
+                                            title="Captured artifacts"
+                                            description={report.usability.videoClips}
+                                        >
+                                            <SessionEvidenceList items={report.usability.sessionEvidence} />
+                                        </ReportPanel>
                                     </div>
                                 </ReportPanel>
+                            )}
+
+                            {activeTab === "seo" && report.seo && (
+                                <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+                                    <ReportPanel
+                                        eyebrow="SEO Audit"
+                                        title="Rule-backed search readiness"
+                                        description="Deterministic crawler-facing checks with a simple score based on the executed SEO rules in this run."
+                                    >
+                                        <div className="grid gap-4 sm:grid-cols-4">
+                                            <MetricCard
+                                                label="SEO Score"
+                                                value={`${report.seo.score}%`}
+                                                caption={report.seo.statusLabel}
+                                            />
+                                            <MetricCard
+                                                label="Passed"
+                                                value={report.seo.passedChecks}
+                                                caption="rule checks passed"
+                                            />
+                                            <MetricCard
+                                                label="Failed"
+                                                value={report.seo.failedChecks}
+                                                caption="checks need attention"
+                                            />
+                                            <MetricCard
+                                                label="Not Covered"
+                                                value={report.seo.notCoveredChecks}
+                                                caption="areas missing explicit proof"
+                                            />
+                                        </div>
+                                        <div className="mt-6">
+                                            <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                                                {seoPageGroups.length > 1 ? "SEO pages" : "Rule checks"}
+                                            </div>
+                                            {seoPageGroups.length > 1 ? (
+                                                <div className="mb-5 flex flex-wrap gap-2">
+                                                    {seoPageGroups.map((group) => (
+                                                        <button
+                                                            key={group.pageKey}
+                                                            type="button"
+                                                            onClick={() => setSelectedSeoPageKey(group.pageKey)}
+                                                            className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${selectedSeoPageGroup?.pageKey === group.pageKey
+                                                                ? "border-zinc-900 bg-zinc-900 text-white"
+                                                                : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
+                                                                }`}
+                                                        >
+                                                            {group.pageLabel}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : null}
+                                            <SeoChecksTable checks={selectedSeoPageGroup?.checks ?? report.seo.checks} />
+                                        </div>
+                                    </ReportPanel>
+
+                                    <div className="space-y-6">
+                                        <ReportPanel
+                                            eyebrow="Recommendations"
+                                            title="Prioritized recommendations"
+                                            description="These recommendations are derived from the failed or uncovered rule checks so the next SEO pass stays grounded in real evidence."
+                                        >
+                                            <div className="space-y-3">
+                                                {report.seo.recommendations.map((recommendation) => (
+                                                    <div
+                                                        key={`${recommendation.priority}-${recommendation.title}`}
+                                                        className={`rounded-2xl border px-4 py-3 ${recommendationClasses(recommendation.priority)}`}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+                                                            <span>{recommendation.title}</span>
+                                                            <span>{recommendation.priority}</span>
+                                                        </div>
+                                                        <p className="mt-2 text-sm leading-6">
+                                                            {recommendation.rationale}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </ReportPanel>
+
+                                        <ReportPanel
+                                            eyebrow={selectedSeoPageGroup ? `Results For ${selectedSeoPageGroup.pageLabel}` : "Evidence Summary"}
+                                            title={selectedSeoPageGroup ? "Page-specific findings" : "What the run found"}
+                                            description={selectedSeoPageGroup
+                                                ? "Use the selected page to inspect only the checks and findings that belong to that page."
+                                                : "Keep the findings tied to the executed checks so follow-up work remains specific."}
+                                        >
+                                            <div className="space-y-5">
+                                                <div>
+                                                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                                                        Findings
+                                                    </div>
+                                                    <ul className="space-y-3">
+                                                        {(selectedSeoPageGroup?.findings ?? report.seo.findings).map((finding) => (
+                                                            <li
+                                                                key={finding}
+                                                                className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm leading-6 text-zinc-600"
+                                                            >
+                                                                {finding}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                                                        Strengths
+                                                    </div>
+                                                    <ul className="space-y-3">
+                                                        {(selectedSeoPageGroup?.strengths ?? report.seo.strengths).map((strength) => (
+                                                            <li
+                                                                key={strength}
+                                                                className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-700"
+                                                            >
+                                                                {strength}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </ReportPanel>
+                                    </div>
+                                </div>
                             )}
 
                             <ReportPanel
@@ -2763,6 +3321,13 @@ export default function Home() {
                                         className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
                                     >
                                         {rawOutputCopyLabel}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleExportHtmlReport(report, result.runId)}
+                                        className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                    >
+                                        {htmlReportExportLabel}
                                     </button>
                                     <button
                                         type="button"
@@ -3168,8 +3733,9 @@ function DefectList({ defects }: { defects: DefectRecord[] }) {
                                 {defect.id}
                             </div>
                             <div className="mt-1 text-sm font-semibold text-zinc-950">
-                                {defect.summary}
+                                {defect.title}
                             </div>
+                            <p className="mt-2 text-sm leading-6 text-zinc-600">{defect.summary}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
@@ -3182,6 +3748,12 @@ function DefectList({ defects }: { defects: DefectRecord[] }) {
                                 {defect.severity}
                             </span>
                         </div>
+                    </div>
+                    <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm leading-6 text-zinc-600">
+                        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                            Observed failure
+                        </div>
+                        <div className="mt-2">{defect.description}</div>
                     </div>
                     <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm leading-6 text-zinc-600">
                         {defect.reproductionSteps.map((step) => (
@@ -3262,6 +3834,77 @@ function CoverageTable({ matrix }: { matrix: CoverageMatrixItem[] }) {
     );
 }
 
+function SessionEvidenceList({ items }: { items: SessionEvidenceItem[] }) {
+    return items.length > 0 ? (
+        <div className="space-y-3">
+            {items.map((item) => (
+                <div key={item.artifactId} className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <div className="text-sm font-semibold text-zinc-950">{item.label}</div>
+                            <div className="mt-1 text-xs leading-5 text-zinc-500">
+                                {item.browser} • {item.testTitle} • {item.fileName}
+                            </div>
+                        </div>
+                        {item.downloadPath ? (
+                            <a
+                                href={item.downloadPath}
+                                className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                            >
+                                Download
+                            </a>
+                        ) : null}
+                    </div>
+                </div>
+            ))}
+        </div>
+    ) : (
+        <EmptyState message="No session evidence artifacts were captured for this run." />
+    );
+}
+
+function SeoChecksTable({ checks }: { checks: SeoCheckSummary[] }) {
+    return checks.length > 0 ? (
+        <div className="overflow-x-auto rounded-2xl border border-zinc-200">
+            <table className="min-w-full divide-y divide-zinc-200 text-left text-sm">
+                <thead className="bg-zinc-50 text-xs uppercase tracking-[0.16em] text-zinc-500">
+                    <tr>
+                        <th className="px-4 py-3 font-medium">Rule</th>
+                        <th className="px-4 py-3 font-medium">Status</th>
+                        <th className="px-4 py-3 font-medium">Evidence</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 bg-white text-zinc-600">
+                    {checks.map((check) => (
+                        <tr key={check.id}>
+                            <td className="px-4 py-3 align-top">
+                                <div className="font-medium text-zinc-900">{check.label}</div>
+                                <div className="mt-1 text-xs leading-5 text-zinc-500">{check.description}</div>
+                            </td>
+                            <td className="px-4 py-3 align-top">
+                                <span
+                                    className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${seoCheckClasses(
+                                        check.status
+                                    )}`}
+                                >
+                                    {check.status}
+                                </span>
+                            </td>
+                            <td className="px-4 py-3 align-top text-xs leading-5 text-zinc-500">
+                                {check.evidence.length > 0
+                                    ? check.evidence.map((record) => `${record.browser}: ${record.title} (${record.status})`).join(" • ")
+                                    : "No explicit evidence captured in this run."}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    ) : (
+        <EmptyState message="No SEO checks were produced for this run." />
+    );
+}
+
 function PerformanceTable({
     rows,
 }: {
@@ -3309,6 +3952,10 @@ function EmptyState({ message }: { message: string }) {
 }
 
 function toSentenceCase(value: string) {
+    if (value.toLowerCase() === "seo") {
+        return "SEO";
+    }
+
     return value
         .split("/")
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
