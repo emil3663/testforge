@@ -155,6 +155,8 @@ interface ExecutionRecord {
 
 interface DefectRecord {
     id: string;
+    testId: string;
+    testTitle: string;
     title: string;
     summary: string;
     description: string;
@@ -164,6 +166,18 @@ interface DefectRecord {
     status: "Open" | "Fixed" | "Closed";
     area: string;
     browser: string;
+    artifacts: SessionEvidenceItem[];
+}
+
+interface UsabilityFindingRecord {
+    id: string;
+    summary: string;
+    testId: string;
+    testTitle: string;
+    browser: string;
+    defectId?: string;
+    defectTitle?: string;
+    artifacts: SessionEvidenceItem[];
 }
 
 interface CoverageMatrixItem {
@@ -213,8 +227,11 @@ interface SessionEvidenceItem {
     label: string;
     artifactType: "trace" | "video" | "screenshot" | "file";
     browser: string;
+    testId: string;
     testTitle: string;
     fileName: string;
+    defectId?: string;
+    defectTitle?: string;
     downloadPath?: string;
 }
 
@@ -272,7 +289,7 @@ interface RunReport {
     };
     usability: {
         successRate: number;
-        findings: string[];
+        findings: UsabilityFindingRecord[];
         videoClips: string;
         sessionEvidence: SessionEvidenceItem[];
         tasksCompleted: number;
@@ -378,8 +395,10 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
     const defectsMarkup = report.defects.issues.map((defect) => `
             <li>
                 <strong>${escapeReportHtml(defect.title)}</strong><br />
+                ${defect.testTitle ? `Failed test: ${escapeReportHtml(defect.testTitle)} (${escapeReportHtml(defect.browser)})<br />` : ""}
                 ${escapeReportHtml(defect.summary)}<br />
                 ${escapeReportHtml(defect.description)}
+                ${defect.artifacts.length > 0 ? `<br />Artifacts: ${escapeReportHtml(defect.artifacts.map((artifact) => `${artifact.label} (${artifact.fileName})`).join(" | "))}` : ""}
             </li>`).join("") || "<li>No open issues were recorded for this run.</li>";
     const coverageMarkup = report.coverage.matrix.map((item) => `
             <tr>
@@ -394,7 +413,13 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
                 <td>${escapeReportHtml(row.area)}</td>
                 <td>${escapeReportHtml(formatMilliseconds(row.duration))}</td>
             </tr>`).join("") || "<tr><td colspan=\"4\">No performance timings were produced for this run.</td></tr>";
-    const usabilityFindingsMarkup = report.usability.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No usability findings were recorded for this run.</li>";
+    const usabilityFindingsMarkup = report.usability.findings.map((finding) => `
+            <li>
+                <strong>${escapeReportHtml(finding.summary)}</strong>
+                ${finding.testTitle ? `<br />Failed test: ${escapeReportHtml(finding.testTitle)} (${escapeReportHtml(finding.browser)})` : ""}
+                ${finding.defectTitle ? `<br />Linked bug: ${escapeReportHtml(finding.defectId ?? "")}${finding.defectId ? " - " : ""}${escapeReportHtml(finding.defectTitle)}` : ""}
+                ${finding.artifacts.length > 0 ? `<br />Artifacts: ${escapeReportHtml(finding.artifacts.map((artifact) => `${artifact.label} (${artifact.fileName})`).join(" | "))}` : ""}
+            </li>`).join("") || "<li>No usability findings were recorded for this run.</li>";
     const recommendationsMarkup = report.seo.recommendations.map((recommendation) => `
             <li>
                 <strong>${escapeReportHtml(recommendation.title)}</strong> (${escapeReportHtml(recommendation.priority)})<br />
@@ -420,7 +445,7 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
         }).join("");
 
         const evidenceMarkup = report.usability.sessionEvidence.map((item) => `
-                        <li>${escapeReportHtml(item.label)} | ${escapeReportHtml(item.browser)} | ${escapeReportHtml(item.testTitle)} | ${escapeReportHtml(item.fileName)}</li>`).join("") || "<li>No session evidence captured for this run.</li>";
+                <li>${escapeReportHtml(item.label)} | ${escapeReportHtml(item.browser)} | ${escapeReportHtml(item.testTitle)} | ${escapeReportHtml(item.fileName)}${item.defectTitle ? ` | ${escapeReportHtml(item.defectId ?? "")} - ${escapeReportHtml(item.defectTitle)}` : ""}</li>`).join("") || "<li>No session evidence captured for this run.</li>";
 
         return `<!doctype html>
 <html lang="en">
@@ -636,6 +661,66 @@ function fallbackStatusClasses(status: FallbackExecutionStatus) {
 
     if (status === "Interrupted") {
         return "bg-orange-100 text-orange-800 border-orange-200";
+    }
+
+    return "bg-zinc-100 text-zinc-700 border-zinc-200";
+}
+
+function livePlannedExecutionStatusLabel(
+    status: RunProgressSnapshot["plannedExecutions"][number]["status"]
+) {
+    if (status === "passed") {
+        return "Passed";
+    }
+
+    if (status === "failed") {
+        return "Failed";
+    }
+
+    if (status === "flaky") {
+        return "Flaky";
+    }
+
+    if (status === "blocked") {
+        return "Blocked";
+    }
+
+    if (status === "interrupted") {
+        return "Interrupted";
+    }
+
+    if (status === "running") {
+        return "Running";
+    }
+
+    return "Queued";
+}
+
+function livePlannedExecutionStatusClasses(
+    status: RunProgressSnapshot["plannedExecutions"][number]["status"]
+) {
+    if (status === "passed") {
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+    }
+
+    if (status === "failed") {
+        return "bg-rose-100 text-rose-800 border-rose-200";
+    }
+
+    if (status === "flaky") {
+        return "bg-sky-100 text-sky-800 border-sky-200";
+    }
+
+    if (status === "blocked") {
+        return "bg-amber-100 text-amber-800 border-amber-200";
+    }
+
+    if (status === "interrupted") {
+        return "bg-orange-100 text-orange-800 border-orange-200";
+    }
+
+    if (status === "running") {
+        return "bg-indigo-100 text-indigo-800 border-indigo-200";
     }
 
     return "bg-zinc-100 text-zinc-700 border-zinc-200";
@@ -1096,6 +1181,8 @@ export default function Home() {
     const codeRef = useRef<HTMLTextAreaElement>(null);
     const autoOpenedReportRunIdRef = useRef<string | null>(null);
     const reportWindowRef = useRef<Window | null>(null);
+    const plannedExecutionListRef = useRef<HTMLDivElement>(null);
+    const plannedExecutionItemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     useEffect(() => {
         if (editing && codeRef.current) {
@@ -1797,6 +1884,8 @@ export default function Home() {
             ? "Stopping generated Playwright suite..."
             : "Running generated Playwright suite...";
     const activeRunProgress = isRunning ? runProgress : null;
+    const activeRunPlannedExecutions = activeRunProgress?.plannedExecutions ?? [];
+    const focusedPlannedExecutionId = activeRunPlannedExecutions.find((execution) => execution.status === "running")?.id ?? null;
     const runTotalTests = Math.max(activeRunProgress?.totalTests ?? 0, 0);
     const runCompletedTests = Math.max(activeRunProgress?.completedTests ?? 0, 0);
     const runProgressPercent = runTotalTests > 0
@@ -1813,28 +1902,6 @@ export default function Home() {
                 ? "Stopping..."
                 : "Estimating..."
             : formatMilliseconds(estimatedRemainingMs);
-    const etaConfidence =
-        estimatedRemainingMs === null
-            ? null
-            : runCompletedTests >= 6
-                ? "High confidence"
-                : runCompletedTests >= 3
-                    ? "Medium confidence"
-                    : "Low confidence";
-    const etaConfidenceDetail =
-        estimatedRemainingMs === null
-            ? isCancellingRun
-                ? "Playwright is shutting down, so no further estimate is needed."
-                : "Waiting for enough completed tests to project remaining time."
-            : runCompletedTests >= 6
-                ? "Estimate is based on several completed tests, so it should be relatively stable."
-                : runCompletedTests >= 3
-                    ? "Estimate is based on a few completed tests and may still move as the suite settles."
-                    : "Estimate is based on very little run history and may change sharply after the next tests finish.";
-    const activeRunLabel = activeRunProgress?.currentLinkLabel
-        ?? activeRunProgress?.currentTestTitle
-        ?? activeRunProgress?.lastCompletedTitle
-        ?? "Preparing the first test case...";
     const report = result?.report;
     const defectSeverityMax = report
         ? Math.max(
@@ -2010,11 +2077,25 @@ export default function Home() {
     });
     const filteredCrawledPaths = filteredCrawledPages.map((page) => page.path);
 
+    useEffect(() => {
+        if (!focusedPlannedExecutionId) {
+            return;
+        }
+
+        const activeRow = plannedExecutionItemRefs.current[focusedPlannedExecutionId];
+        if (!activeRow) {
+            return;
+        }
+
+        activeRow.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+    }, [focusedPlannedExecutionId, activeRunProgress?.completedTests]);
+
     return (
         <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.12),_transparent_32%),linear-gradient(180deg,#f7f8fc_0%,#f4f6fb_52%,#eef3f8_100%)] text-zinc-900">
             {showBusyOverlay && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/35 px-6 backdrop-blur-sm">
-                    <div className="w-full max-w-md rounded-[28px] border border-white/70 bg-white/95 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
+                    <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-white/70 bg-white/95 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
+                        <div>
                         <div className="flex items-center gap-3">
                             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-[0_12px_32px_rgba(79,70,229,0.28)]">
                                 <Spinner />
@@ -2035,8 +2116,9 @@ export default function Home() {
                                     ? "TestForge is stopping the running suite and preserving the latest available execution state."
                                     : "TestForge is executing the generated suite and collecting structured reporting data."}
                         </p>
+                        </div>
                         {isRunning ? (
-                            <div className="mt-4 space-y-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4 text-xs leading-5 text-zinc-600">
+                            <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4 text-xs leading-5 text-zinc-600">
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
                                         <div className="font-semibold text-zinc-800">Overall progress</div>
@@ -2056,6 +2138,24 @@ export default function Home() {
                                 </div>
 
                                 <div>
+                                    <div className="mb-3 grid grid-cols-2 gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] sm:grid-cols-4">
+                                        <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 text-emerald-700">
+                                            <span>Passed</span>
+                                            <span className="text-base font-semibold">{activeRunProgress?.passedTests ?? 0}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 text-rose-700">
+                                            <span>Failed</span>
+                                            <span className="text-base font-semibold">{activeRunProgress?.failedTests ?? 0}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 text-amber-600">
+                                            <span>Flaky</span>
+                                            <span className="text-base font-semibold">{activeRunProgress?.flakyTests ?? 0}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-2 text-zinc-700">
+                                            <span>Blocked</span>
+                                            <span className="text-base font-semibold">{activeRunProgress?.blockedTests ?? 0}</span>
+                                        </div>
+                                    </div>
                                     <div className="flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
                                         <span>Suite completion</span>
                                         <span>{runProgressPercent}%</span>
@@ -2076,66 +2176,50 @@ export default function Home() {
                                     <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
                                         <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Projected remaining</div>
                                         <div className="mt-1 text-base font-semibold text-zinc-900">{runRemainingLabel}</div>
-                                        <div className={`mt-1 text-[11px] font-semibold ${etaConfidence === "High confidence"
-                                            ? "text-emerald-700"
-                                            : etaConfidence === "Medium confidence"
-                                                ? "text-amber-700"
-                                                : "text-zinc-500"
-                                            }`}>
-                                            {etaConfidence ?? "Confidence pending"}
-                                        </div>
-                                        <div className="mt-1 text-[11px] leading-5 text-zinc-500">{etaConfidenceDetail}</div>
                                     </div>
                                 </div>
 
-                                <div className="rounded-xl border border-zinc-200 bg-white px-3 py-3">
-                                    <div className="font-semibold text-zinc-800">Current link or test</div>
-                                    <div className="mt-2 text-sm font-medium text-zinc-900">{activeRunLabel}</div>
-                                    <div className="mt-1 text-zinc-500">
-                                        {activeRunProgress?.activeExecutions.length
-                                            ? `${activeRunProgress.activeExecutions.length} test${activeRunProgress.activeExecutions.length === 1 ? "" : "s"} active across workers`
-                                            : isCancellingRun
-                                                ? "Waiting for Playwright to stop and flush the latest status."
-                                                : "Waiting for the next test event from Playwright."}
-                                    </div>
-                                </div>
-
-                                {activeRunProgress?.activeExecutions.length ? (
-                                    <div className="space-y-2">
-                                        {activeRunProgress.activeExecutions.map((execution) => (
-                                            <div
-                                                key={execution.id}
-                                                className="rounded-xl border border-zinc-200 bg-white px-3 py-2"
-                                            >
-                                                <div className="font-semibold text-zinc-800">
-                                                    {execution.linkLabel ?? execution.title}
-                                                </div>
-                                                {execution.linkLabel && execution.linkLabel !== execution.title && (
-                                                    <div className="mt-1 text-zinc-500">{execution.title}</div>
-                                                )}
+                                {activeRunPlannedExecutions.length > 0 ? (
+                                    <div className="flex min-h-0 flex-1 flex-col rounded-xl border border-zinc-200 bg-white px-3 py-3">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="font-semibold text-zinc-800">Planned tests in this run</div>
+                                            <div className="text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+                                                {activeRunPlannedExecutions.length} total
                                             </div>
-                                        ))}
+                                        </div>
+                                        <div className="mt-1 text-[11px] leading-5 text-zinc-500">
+                                            These are the exact test titles queued for the current run, shown in execution order.
+                                        </div>
+                                        <div ref={plannedExecutionListRef} className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+                                            {activeRunPlannedExecutions.map((execution, index) => (
+                                                <div
+                                                    key={execution.id}
+                                                    ref={(element) => {
+                                                        plannedExecutionItemRefs.current[execution.id] = element;
+                                                    }}
+                                                    className={`flex items-start justify-between gap-3 rounded-xl border px-3 py-2 transition ${execution.id === focusedPlannedExecutionId
+                                                        ? "border-indigo-300 bg-indigo-50 shadow-sm"
+                                                        : "border-zinc-200 bg-zinc-50"
+                                                        }`}
+                                                >
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className={`text-[11px] font-semibold uppercase tracking-[0.16em] ${execution.id === focusedPlannedExecutionId ? "text-indigo-600" : "text-zinc-500"}`}>
+                                                            Test {index + 1}
+                                                        </div>
+                                                        <div className="mt-1 break-words text-sm font-medium text-zinc-900">
+                                                            {execution.title}
+                                                        </div>
+                                                    </div>
+                                                    <span
+                                                        className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${livePlannedExecutionStatusClasses(execution.status)}`}
+                                                    >
+                                                        {livePlannedExecutionStatusLabel(execution.status)}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ) : null}
-
-                                <div className="grid gap-2 sm:grid-cols-4">
-                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
-                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Passed</div>
-                                        <div className="mt-1 text-lg font-semibold text-emerald-700">{activeRunProgress?.passedTests ?? 0}</div>
-                                    </div>
-                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
-                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Failed</div>
-                                        <div className="mt-1 text-lg font-semibold text-rose-700">{activeRunProgress?.failedTests ?? 0}</div>
-                                    </div>
-                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
-                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Flaky</div>
-                                        <div className="mt-1 text-lg font-semibold text-amber-600">{activeRunProgress?.flakyTests ?? 0}</div>
-                                    </div>
-                                    <div className="rounded-xl border border-zinc-200 bg-white px-3 py-2">
-                                        <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Blocked</div>
-                                        <div className="mt-1 text-lg font-semibold text-zinc-700">{activeRunProgress?.blockedTests ?? 0}</div>
-                                    </div>
-                                </div>
                             </div>
                         ) : (
                             <div className="mt-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-xs leading-5 text-zinc-600">
@@ -3496,10 +3580,28 @@ export default function Home() {
                                             <ul className="space-y-3">
                                                 {report.usability.findings.map((finding) => (
                                                     <li
-                                                        key={finding}
+                                                        key={finding.id}
                                                         className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm leading-6 text-zinc-600"
                                                     >
-                                                        {finding}
+                                                        <div className="font-medium text-zinc-900">{finding.summary}</div>
+                                                        {finding.testTitle ? (
+                                                            <div className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                                Failed test: {finding.testTitle} · {finding.browser}
+                                                            </div>
+                                                        ) : null}
+                                                        {finding.defectTitle ? (
+                                                            <div className="mt-2 text-sm text-zinc-600">
+                                                                Linked bug: <span className="font-medium text-zinc-900">{finding.defectId}</span> · {finding.defectTitle}
+                                                            </div>
+                                                        ) : null}
+                                                        {finding.artifacts.length > 0 ? (
+                                                            <div className="mt-3">
+                                                                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                                    Related artifacts
+                                                                </div>
+                                                                <ArtifactLinkList items={finding.artifacts} className="mt-2" compact />
+                                                            </div>
+                                                        ) : null}
                                                     </li>
                                                 ))}
                                             </ul>
@@ -4182,6 +4284,49 @@ function ExecutionTable({
     );
 }
 
+function ArtifactLinkList({
+    items,
+    className,
+    compact = false,
+}: {
+    items: SessionEvidenceItem[];
+    className?: string;
+    compact?: boolean;
+}) {
+    return items.length > 0 ? (
+        <div className={`space-y-2 ${className ?? ""}`}>
+            {items.map((item) => (
+                <div
+                    key={item.artifactId}
+                    className={`rounded-2xl border border-zinc-200 bg-white ${compact ? "px-3 py-2" : "px-4 py-3"}`}
+                >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <div className="text-sm font-semibold text-zinc-950">{item.label}</div>
+                            <div className="mt-1 text-xs leading-5 text-zinc-500">
+                                {item.browser} · {item.testTitle || "No linked test"} · {item.fileName}
+                            </div>
+                            {item.defectTitle ? (
+                                <div className="mt-1 text-xs leading-5 text-zinc-500">
+                                    Linked bug: {item.defectId} · {item.defectTitle}
+                                </div>
+                            ) : null}
+                        </div>
+                        {item.downloadPath ? (
+                            <a
+                                href={item.downloadPath}
+                                className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                            >
+                                Download
+                            </a>
+                        ) : null}
+                    </div>
+                </div>
+            ))}
+        </div>
+    ) : null;
+}
+
 function DefectList({ defects }: { defects: DefectRecord[] }) {
     return defects.length > 0 ? (
         <div className="space-y-4">
@@ -4198,6 +4343,11 @@ function DefectList({ defects }: { defects: DefectRecord[] }) {
                             <div className="mt-1 text-sm font-semibold text-zinc-950">
                                 {defect.title}
                             </div>
+                            {defect.testTitle ? (
+                                <div className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                    Failed test: {defect.testTitle} · {defect.browser}
+                                </div>
+                            ) : null}
                             <p className="mt-2 text-sm leading-6 text-zinc-600">{defect.summary}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -4223,6 +4373,14 @@ function DefectList({ defects }: { defects: DefectRecord[] }) {
                             <li key={step}>{step}</li>
                         ))}
                     </ol>
+                    {defect.artifacts.length > 0 ? (
+                        <div className="mt-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
+                            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                Related artifacts
+                            </div>
+                            <ArtifactLinkList items={defect.artifacts} className="mt-3" />
+                        </div>
+                    ) : null}
                 </div>
             ))}
         </div>
@@ -4312,28 +4470,7 @@ function CoverageTable({ matrix }: { matrix: CoverageMatrixItem[] }) {
 
 function SessionEvidenceList({ items }: { items: SessionEvidenceItem[] }) {
     return items.length > 0 ? (
-        <div className="space-y-3">
-            {items.map((item) => (
-                <div key={item.artifactId} className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                            <div className="text-sm font-semibold text-zinc-950">{item.label}</div>
-                            <div className="mt-1 text-xs leading-5 text-zinc-500">
-                                {item.browser} • {item.testTitle} • {item.fileName}
-                            </div>
-                        </div>
-                        {item.downloadPath ? (
-                            <a
-                                href={item.downloadPath}
-                                className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
-                            >
-                                Download
-                            </a>
-                        ) : null}
-                    </div>
-                </div>
-            ))}
-        </div>
+        <ArtifactLinkList items={items} />
     ) : (
         <EmptyState message="No session evidence artifacts were captured for this run." />
     );

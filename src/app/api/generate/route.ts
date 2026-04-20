@@ -1589,7 +1589,8 @@ function buildContentProfileComment(profile: ContentProfile | null, rules: Conte
 
 function buildContentSuites(
     contentProfile: ContentProfile | null,
-    contentRules: ContentRules
+    contentRules: ContentRules,
+    areas: BestPracticeArea[]
 ) {
     if (!contentProfile?.pages.length) {
         return [] as GeneratedSuite[];
@@ -1721,14 +1722,18 @@ ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisibl
     }
 
     const suites: GeneratedSuite[] = [];
-    const seoSuite = createSuite("seo/content", seoTests);
-    if (seoSuite) {
-        suites.push(seoSuite);
+    if (areas.includes("seo/content")) {
+        const seoSuite = createSuite("seo/content", seoTests);
+        if (seoSuite) {
+            suites.push(seoSuite);
+        }
     }
 
-    const functionalSuite = createSuite("functional", functionalTests);
-    if (functionalSuite) {
-        suites.push(functionalSuite);
+    if (areas.includes("functional")) {
+        const functionalSuite = createSuite("functional", functionalTests);
+        if (functionalSuite) {
+            suites.push(functionalSuite);
+        }
     }
 
     return suites;
@@ -2288,7 +2293,7 @@ function mockGenerate(
     const suites = parsedBaseUrl.hostname.includes("demoqa.com")
         ? buildDemoQaSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode)
         : buildGenericSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode);
-    const contentSuites = buildContentSuites(contentProfile, contentRules);
+    const contentSuites = buildContentSuites(contentProfile, contentRules, bestPracticeAreas);
     const manualFollowUpComment = buildManualFollowUpComment(bestPracticeAreas);
 
     return `import { test, expect } from '@playwright/test';

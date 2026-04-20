@@ -109,8 +109,23 @@ interface ExecutionRecord {
     order: number;
 }
 
+interface ReportArtifactItem {
+    artifactId: string;
+    label: string;
+    artifactType: "trace" | "video" | "screenshot" | "file";
+    browser: string;
+    testId: string;
+    testTitle: string;
+    fileName: string;
+    defectId?: string;
+    defectTitle?: string;
+    downloadPath?: string;
+}
+
 interface DefectRecord {
     id: string;
+    testId: string;
+    testTitle: string;
     title: string;
     summary: string;
     description: string;
@@ -120,6 +135,18 @@ interface DefectRecord {
     status: "Open" | "Fixed" | "Closed";
     area: string;
     browser: string;
+    artifacts: ReportArtifactItem[];
+}
+
+interface UsabilityFindingRecord {
+    id: string;
+    summary: string;
+    testId: string;
+    testTitle: string;
+    browser: string;
+    defectId?: string;
+    defectTitle?: string;
+    artifacts: ReportArtifactItem[];
 }
 
 interface SeoCheckRecord {
@@ -352,6 +379,28 @@ function buildIssueDescription(record: ExecutionRecord) {
 
 function summarizeFinding(record: ExecutionRecord) {
     return `${toTitleCase(record.area)} issue: ${simplifyExecutionTarget(record.title)} needs attention because ${classifyFailureReason(record.rawMessage)}.`;
+}
+
+function buildRecordRunKey(record: Pick<ExecutionRecord, "id" | "browser">) {
+    return `${record.id}::${record.browser}`;
+}
+
+function mapRecordArtifact(
+    record: Pick<ExecutionRecord, "id" | "title" | "browser">,
+    artifact: ExecutionArtifact,
+    linkedDefect?: Pick<DefectRecord, "id" | "title">
+): ReportArtifactItem {
+    return {
+        artifactId: artifact.artifactId,
+        label: artifact.label,
+        artifactType: artifact.artifactType,
+        browser: record.browser,
+        testId: record.id,
+        testTitle: normalizeExecutionTitle(record.title),
+        fileName: artifact.fileName,
+        defectId: linkedDefect?.id,
+        defectTitle: linkedDefect?.title,
+    };
 }
 
 interface ActiveExecution {
@@ -944,11 +993,21 @@ async function finalizeRunJob(job: RunJob) {
             },
             report: {
                 ...aggregatedReport,
+                defects: {
+                    ...aggregatedReport.defects,
+                    issues: aggregatedReport.defects.issues.map((defect) => ({
+                        ...defect,
+                        artifacts: defect.artifacts.map((item) => withArtifactDownloadPath(item, job.id)),
+                    })),
+                },
                 usability: {
                     ...aggregatedReport.usability,
+                    findings: aggregatedReport.usability.findings.map((finding) => ({
+                        ...finding,
+                        artifacts: finding.artifacts.map((item) => withArtifactDownloadPath(item, job.id)),
+                    })),
                     sessionEvidence: aggregatedReport.usability.sessionEvidence.map((item) => ({
-                        ...item,
-                        downloadPath: `/api/run?runId=${encodeURIComponent(job.id)}&artifactId=${encodeURIComponent(item.artifactId)}`,
+                        ...withArtifactDownloadPath(item, job.id),
                     })),
                 },
             },
@@ -1461,9 +1520,13 @@ function buildDefects(records: ExecutionRecord[]) {
         .filter((record) => record.status === "Failed")
         .map((record, index) => {
             const severity = severityFromMessage(record.rawMessage);
+            const id = `BUG-${String(index + 1).padStart(3, "0")}`;
+            const title = buildIssueTitle(record);
             return {
-                id: `BUG-${String(index + 1).padStart(3, "0")}`,
-                title: buildIssueTitle(record),
+                id,
+                testId: record.id,
+                testTitle: normalizeExecutionTitle(record.title),
+                title,
                 summary: buildIssueDescription(record),
                 description: record.rawMessage,
                 reproductionSteps: record.reproductionSteps,
@@ -1472,6 +1535,9 @@ function buildDefects(records: ExecutionRecord[]) {
                 status: "Open" as const,
                 area: record.area,
                 browser: record.browser,
+                artifacts: record.artifacts.map((artifact) =>
+                    mapRecordArtifact(record, artifact, { id, title })
+                ),
             };
         });
 }
@@ -1585,25 +1651,35 @@ function buildPerformanceReport(records: ExecutionRecord[], duration: number) {
     };
 }
 
-function buildUsabilityReport(records: ExecutionRecord[]) {
+function buildUsabilityReport(records: ExecutionRecord[], defects: DefectRecord[]) {
     const usabilityRecords = records.filter((record) => record.area === "Usability");
     const scopedRecords = usabilityRecords.length > 0 ? usabilityRecords : records;
+    const defectByRunKey: Map<string, DefectRecord> = new Map(
+        defects.map((defect) => [`${defect.testId}::${defect.browser}`, defect] as const)
+    );
     const passedTasks = scopedRecords.filter(
         (record) => record.status === "Passed" || record.status === "Flaky"
     ).length;
     const findings = scopedRecords
         .filter((record) => record.status === "Failed")
-        .map((record) => summarizeFinding(record));
-    const sessionEvidence = scopedRecords
-        .flatMap((record) =>
-            record.artifacts.map((artifact) => ({
-                artifactId: artifact.artifactId,
-                label: artifact.label,
-                artifactType: artifact.artifactType,
-                browser: record.browser,
+        .map((record, index) => {
+            const linkedDefect = defectByRunKey.get(buildRecordRunKey(record));
+            return {
+                id: `FINDING-${String(index + 1).padStart(3, "0")}`,
+                summary: summarizeFinding(record),
+                testId: record.id,
                 testTitle: normalizeExecutionTitle(record.title),
-                fileName: artifact.fileName,
-            }))
+                browser: record.browser,
+                defectId: linkedDefect?.id,
+                defectTitle: linkedDefect?.title,
+                artifacts: record.artifacts.map((artifact) => mapRecordArtifact(record, artifact, linkedDefect)),
+            } satisfies UsabilityFindingRecord;
+        });
+    const sessionEvidence = scopedRecords
+        .flatMap((record) => {
+            const linkedDefect = defectByRunKey.get(buildRecordRunKey(record));
+            return record.artifacts.map((artifact) => mapRecordArtifact(record, artifact, linkedDefect));
+        }
         )
         .filter((item, index, allItems) =>
             allItems.findIndex((candidate) => candidate.artifactId === item.artifactId) === index
@@ -1615,7 +1691,16 @@ function buildUsabilityReport(records: ExecutionRecord[]) {
             : Math.round((passedTasks / scopedRecords.length) * 100),
         findings: findings.length > 0
             ? findings
-            : ["No major usability blockers surfaced in the current automated pass."],
+            : [{
+                id: "FINDING-000",
+                summary: "No major usability blockers surfaced in the current automated pass.",
+                testId: "",
+                testTitle: "",
+                browser: "",
+                defectId: undefined,
+                defectTitle: undefined,
+                artifacts: [],
+            } satisfies UsabilityFindingRecord],
         videoClips: sessionEvidence.length > 0
             ? "Failed-run artifacts were captured for this run. Use the evidence list to inspect trace, video, or screenshot files."
             : "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
@@ -1895,7 +1980,7 @@ function buildReport(
     const coverage = buildCoverageMatrix(selectedPractices, execution);
     const summary = buildSummary(execution, defects, report.stats?.duration ?? 0);
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
-    const usability = buildUsabilityReport(execution);
+    const usability = buildUsabilityReport(execution, defects);
     const seo = buildSeoReport(execution, selectedPractices, baseUrl);
 
     return {
@@ -1913,6 +1998,13 @@ function buildReport(
         usability,
         seo,
         rawOutput: output,
+    };
+}
+
+function withArtifactDownloadPath(item: ReportArtifactItem, runId: string): ReportArtifactItem {
+    return {
+        ...item,
+        downloadPath: `/api/run?runId=${encodeURIComponent(runId)}&artifactId=${encodeURIComponent(item.artifactId)}`,
     };
 }
 

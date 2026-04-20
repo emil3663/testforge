@@ -94,7 +94,7 @@ test.describe("TestForge regression coverage", () => {
                     issues: Array<{ title: string; summary: string; description: string }>;
                 };
                 usability?: {
-                    findings: string[];
+                    findings: Array<{ summary: string }>;
                 };
             };
         };
@@ -105,8 +105,8 @@ test.describe("TestForge regression coverage", () => {
         expect(result.report?.defects?.issues?.[0]?.summary).not.toContain("expect(");
         expect(result.report?.defects?.issues?.[0]?.description).not.toContain("\u001b");
         expect(result.report?.usability?.findings?.length).toBeGreaterThan(0);
-        expect(result.report?.usability?.findings?.[0]).toContain("Usability issue:");
-        expect(result.report?.usability?.findings?.[0]).not.toContain("expect(");
+        expect(result.report?.usability?.findings?.[0]?.summary).toContain("Usability issue:");
+        expect(result.report?.usability?.findings?.[0]?.summary).not.toContain("expect(");
     });
 
     test("captures session evidence artifacts for failed generated runs", async ({ request }) => {
@@ -159,6 +159,88 @@ test.describe("TestForge regression coverage", () => {
 
         const artifactResponse = await request.get(evidencePath ?? "");
         expect(artifactResponse.ok()).toBeTruthy();
+    });
+
+    test("links defects, usability findings, and captured artifacts to the same failed test", async ({ request }) => {
+        const response = await request.post("/api/run", {
+            data: {
+                code: [
+                    "import { test, expect } from '@playwright/test';",
+                    "",
+                    "test.describe('Usability Coverage', () => {",
+                    "  test('keeps the primary call to action visible', async ({ page }) => {",
+                    "    await page.goto('http://127.0.0.1:3001/');",
+                    "    expect(1).toBe(2);",
+                    "  });",
+                    "});",
+                ].join("\n"),
+                selectedPractices: ["usability"],
+                auditMode: "fast",
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const startedRun = await response.json();
+        expect(startedRun.runId).toBeTruthy();
+
+        let finalSnapshot: Record<string, unknown> | null = null;
+        for (let attempt = 0; attempt < 120; attempt += 1) {
+            const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
+            expect(statusResponse.ok()).toBeTruthy();
+            const snapshot = await statusResponse.json();
+
+            if (snapshot.runStatus !== "running" && snapshot.runStatus !== "queued") {
+                finalSnapshot = snapshot;
+                break;
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+
+        expect(finalSnapshot).not.toBeNull();
+        const result = finalSnapshot?.result as {
+            report?: {
+                defects?: {
+                    issues: Array<{
+                        id: string;
+                        testTitle: string;
+                        browser: string;
+                        artifacts: Array<{ artifactId: string; testTitle: string; defectId?: string; downloadPath?: string }>;
+                    }>;
+                };
+                usability?: {
+                    findings: Array<{
+                        testTitle: string;
+                        defectId?: string;
+                        artifacts: Array<{ artifactId: string; testTitle: string; defectId?: string; downloadPath?: string }>;
+                    }>;
+                    sessionEvidence: Array<{ artifactId: string; testTitle: string; defectId?: string; downloadPath?: string }>;
+                };
+            };
+        };
+
+        const defect = result.report?.defects?.issues?.[0];
+        const finding = result.report?.usability?.findings?.[0];
+        const evidence = result.report?.usability?.sessionEvidence ?? [];
+
+        expect(defect).toBeTruthy();
+        expect(defect?.testTitle).toBe("keeps the primary call to action visible");
+        expect(defect?.artifacts.length).toBeGreaterThan(0);
+        expect(defect?.artifacts[0]?.testTitle).toBe(defect?.testTitle);
+        expect(defect?.artifacts[0]?.defectId).toBe(defect?.id);
+        expect(defect?.artifacts[0]?.downloadPath).toBeTruthy();
+
+        expect(finding).toBeTruthy();
+        expect(finding?.testTitle).toBe(defect?.testTitle);
+        expect(finding?.defectId).toBe(defect?.id);
+        expect(finding?.artifacts.length).toBeGreaterThan(0);
+        expect(finding?.artifacts[0]?.artifactId).toBe(defect?.artifacts[0]?.artifactId);
+        expect(finding?.artifacts[0]?.downloadPath).toBeTruthy();
+
+        expect(evidence.length).toBeGreaterThan(0);
+        expect(evidence[0]?.testTitle).toBe(defect?.testTitle);
+        expect(evidence[0]?.defectId).toBe(defect?.id);
+        expect(evidence[0]?.artifactId).toBe(defect?.artifacts[0]?.artifactId);
     });
 
     test("groups SEO checks by page when multiple pages are under test", async ({ request }) => {
@@ -601,6 +683,76 @@ test.describe("TestForge regression coverage", () => {
         await generatedSuitePanel.getByRole("button", { name: "Add to Test Explorer" }).click();
         await expect(page.getByText(/Added .* to Playwright discovery\./)).toBeVisible({ timeout: 30_000 });
         await expect(page.getByText(/File:/)).toBeVisible();
+    });
+
+    test("does not generate SEO coverage when Functional is explicitly selected", async ({ request }) => {
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: localSeoDescription,
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                contentRules: {
+                    paths: ["/"],
+                    requiredHeadings: [],
+                    requiredText: [],
+                    forbiddenText: [],
+                },
+                contentProfile: null,
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("Functional Coverage");
+        expect(payload.code).not.toContain("SEO and Content Coverage");
+        expect(payload.code).not.toContain("publishes robots.txt");
+        expect(payload.code).not.toContain("publishes sitemap.xml");
+    });
+
+    test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: localSeoDescription,
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                contentRules: {
+                    paths: ["/links"],
+                    requiredHeadings: [],
+                    requiredText: [],
+                    forbiddenText: [],
+                },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [
+                        {
+                            path: "/links",
+                            url: `${localAppUrl}/links`,
+                            title: "Links",
+                            metaDescription: "Demo links page",
+                            headings: ["Links"],
+                            buttons: [],
+                            links: [],
+                            actionableElements: [],
+                            linkDetails: [],
+                            visibleTextSnippets: ["Following links will send an api call"],
+                        },
+                    ],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("Functional Coverage");
+        expect(payload.code).not.toContain("SEO and Content Coverage");
+        expect(payload.code).not.toContain("keeps page title stable for /links");
+        expect(payload.code).not.toContain("keeps meta description stable for /links");
+        expect(payload.code).not.toContain("publishes robots.txt");
     });
 
     test("requires regeneration before running when selected best-practice areas change", async ({ page }) => {
