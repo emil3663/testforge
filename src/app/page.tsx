@@ -201,6 +201,8 @@ interface SeoRecommendation {
     priority: "High" | "Medium" | "Low";
     title: string;
     rationale: string;
+    pageKey?: string;
+    pageLabel?: string;
 }
 
 interface SessionEvidenceItem {
@@ -803,18 +805,6 @@ function coverageClasses(status: CoverageMatrixItem["status"]) {
     }
 
     return "bg-rose-100 text-rose-800 border-rose-200";
-}
-
-function seoCheckClasses(status: SeoCheckSummary["status"]) {
-    if (status === "passed") {
-        return "border-emerald-200 bg-emerald-50 text-emerald-700";
-    }
-
-    if (status === "failed") {
-        return "border-rose-200 bg-rose-50 text-rose-700";
-    }
-
-    return "border-amber-200 bg-amber-50 text-amber-700";
 }
 
 function recommendationClasses(priority: SeoRecommendation["priority"]) {
@@ -1600,6 +1590,11 @@ export default function Home() {
     const report = result?.report;
     const seoPageGroups = report?.seo?.pageGroups ?? [];
     const selectedSeoPageGroup = seoPageGroups.find((group) => group.pageKey === selectedSeoPageKey) ?? seoPageGroups[0] ?? null;
+    const selectedSeoRecommendations = selectedSeoPageGroup
+        ? report?.seo?.recommendations.filter(
+            (recommendation) => !recommendation.pageKey || recommendation.pageKey === selectedSeoPageGroup.pageKey
+        ) ?? []
+        : report?.seo?.recommendations ?? [];
     const reportTabs = report?.seo?.totalChecks
         ? [...BASE_REPORT_TABS, "seo" as const]
         : BASE_REPORT_TABS;
@@ -3191,8 +3186,10 @@ export default function Home() {
                                 <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
                                     <ReportPanel
                                         eyebrow="SEO Audit"
-                                        title="Rule-backed search readiness"
-                                        description="Deterministic crawler-facing checks with a simple score based on the executed SEO rules in this run."
+                                        title={selectedSeoPageGroup ? `What happened on ${selectedSeoPageGroup.pageLabel}` : "Rule-backed search readiness"}
+                                        description={selectedSeoPageGroup
+                                            ? "Use the selected page to review only the findings and strengths captured for that page."
+                                            : "Deterministic crawler-facing checks with a simple score based on the executed SEO rules in this run."}
                                     >
                                         <div className="grid gap-4 sm:grid-cols-4">
                                             <MetricCard
@@ -3218,7 +3215,7 @@ export default function Home() {
                                         </div>
                                         <div className="mt-6">
                                             <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                                                {seoPageGroups.length > 1 ? "SEO pages" : "Rule checks"}
+                                                {seoPageGroups.length > 1 ? "SEO pages" : "Page-specific findings"}
                                             </div>
                                             {seoPageGroups.length > 1 ? (
                                                 <div className="mb-5 flex flex-wrap gap-2">
@@ -3237,41 +3234,7 @@ export default function Home() {
                                                     ))}
                                                 </div>
                                             ) : null}
-                                            <SeoChecksTable checks={selectedSeoPageGroup?.checks ?? report.seo.checks} />
-                                        </div>
-                                    </ReportPanel>
 
-                                    <div className="space-y-6">
-                                        <ReportPanel
-                                            eyebrow="Recommendations"
-                                            title="Prioritized recommendations"
-                                            description="These recommendations are derived from the failed or uncovered rule checks so the next SEO pass stays grounded in real evidence."
-                                        >
-                                            <div className="space-y-3">
-                                                {report.seo.recommendations.map((recommendation) => (
-                                                    <div
-                                                        key={`${recommendation.priority}-${recommendation.title}`}
-                                                        className={`rounded-2xl border px-4 py-3 ${recommendationClasses(recommendation.priority)}`}
-                                                    >
-                                                        <div className="flex items-center justify-between gap-3 text-sm font-semibold">
-                                                            <span>{recommendation.title}</span>
-                                                            <span>{recommendation.priority}</span>
-                                                        </div>
-                                                        <p className="mt-2 text-sm leading-6">
-                                                            {recommendation.rationale}
-                                                        </p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </ReportPanel>
-
-                                        <ReportPanel
-                                            eyebrow={selectedSeoPageGroup ? `Results For ${selectedSeoPageGroup.pageLabel}` : "Evidence Summary"}
-                                            title={selectedSeoPageGroup ? "Page-specific findings" : "What the run found"}
-                                            description={selectedSeoPageGroup
-                                                ? "Use the selected page to inspect only the checks and findings that belong to that page."
-                                                : "Keep the findings tied to the executed checks so follow-up work remains specific."}
-                                        >
                                             <div className="space-y-5">
                                                 <div>
                                                     <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
@@ -3303,6 +3266,38 @@ export default function Home() {
                                                         ))}
                                                     </ul>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </ReportPanel>
+
+                                    <div className="space-y-6">
+                                        <ReportPanel
+                                            eyebrow="Recommendations"
+                                            title="Prioritized recommendations"
+                                            description={selectedSeoPageGroup
+                                                ? `These recommendations are scoped to ${selectedSeoPageGroup.pageLabel} when page-specific evidence is available.`
+                                                : "These recommendations are derived from the failed or uncovered rule checks so the next SEO pass stays grounded in real evidence."}
+                                        >
+                                            <div className="space-y-3">
+                                                {selectedSeoRecommendations.map((recommendation) => (
+                                                    <div
+                                                        key={`${recommendation.priority}-${recommendation.pageKey ?? "global"}-${recommendation.title}`}
+                                                        className={`rounded-2xl border px-4 py-3 ${recommendationClasses(recommendation.priority)}`}
+                                                    >
+                                                        <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+                                                            <span>{recommendation.title}</span>
+                                                            <span>{recommendation.priority}</span>
+                                                        </div>
+                                                        {recommendation.pageLabel ? (
+                                                            <div className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                                Page: {recommendation.pageLabel}
+                                                            </div>
+                                                        ) : null}
+                                                        <p className="mt-2 text-sm leading-6">
+                                                            {recommendation.rationale}
+                                                        </p>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </ReportPanel>
                                     </div>
@@ -3860,48 +3855,6 @@ function SessionEvidenceList({ items }: { items: SessionEvidenceItem[] }) {
         </div>
     ) : (
         <EmptyState message="No session evidence artifacts were captured for this run." />
-    );
-}
-
-function SeoChecksTable({ checks }: { checks: SeoCheckSummary[] }) {
-    return checks.length > 0 ? (
-        <div className="overflow-x-auto rounded-2xl border border-zinc-200">
-            <table className="min-w-full divide-y divide-zinc-200 text-left text-sm">
-                <thead className="bg-zinc-50 text-xs uppercase tracking-[0.16em] text-zinc-500">
-                    <tr>
-                        <th className="px-4 py-3 font-medium">Rule</th>
-                        <th className="px-4 py-3 font-medium">Status</th>
-                        <th className="px-4 py-3 font-medium">Evidence</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 bg-white text-zinc-600">
-                    {checks.map((check) => (
-                        <tr key={check.id}>
-                            <td className="px-4 py-3 align-top">
-                                <div className="font-medium text-zinc-900">{check.label}</div>
-                                <div className="mt-1 text-xs leading-5 text-zinc-500">{check.description}</div>
-                            </td>
-                            <td className="px-4 py-3 align-top">
-                                <span
-                                    className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${seoCheckClasses(
-                                        check.status
-                                    )}`}
-                                >
-                                    {check.status}
-                                </span>
-                            </td>
-                            <td className="px-4 py-3 align-top text-xs leading-5 text-zinc-500">
-                                {check.evidence.length > 0
-                                    ? check.evidence.map((record) => `${record.browser}: ${record.title} (${record.status})`).join(" • ")
-                                    : "No explicit evidence captured in this run."}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    ) : (
-        <EmptyState message="No SEO checks were produced for this run." />
     );
 }
 

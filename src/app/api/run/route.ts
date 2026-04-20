@@ -153,6 +153,8 @@ interface SeoRecommendation {
     priority: "High" | "Medium" | "Low";
     title: string;
     rationale: string;
+    pageKey?: string;
+    pageLabel?: string;
 }
 
 function pluralize(value: number, singular: string, plural: string) {
@@ -1433,12 +1435,31 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
             } satisfies SeoPageGroup;
         }
     );
-    const recommendations = SEO_RULE_DEFINITIONS
-        .filter((rule) => {
-            const check = checks.find((item) => item.id === rule.id);
-            return check && check.status !== "passed";
-        })
-        .map((rule) => rule.recommendation);
+    const recommendations = pageGroups
+        .flatMap((group) =>
+            group.checks
+                .filter((check) => check.status !== "passed")
+                .map((check) => {
+                    const rule = SEO_RULE_DEFINITIONS.find((item) => item.id === check.id.split(":")[0]);
+                    if (!rule) {
+                        return null;
+                    }
+
+                    return {
+                        ...rule.recommendation,
+                        title: `${rule.recommendation.title} for ${group.pageLabel}`,
+                        rationale: `Update ${group.pageLabel}: ${rule.recommendation.rationale}`,
+                        pageKey: group.pageKey,
+                        pageLabel: group.pageLabel,
+                    } satisfies SeoRecommendation;
+                })
+                .filter((recommendation) => recommendation !== null)
+        )
+        .filter((recommendation, index, allRecommendations) =>
+            allRecommendations.findIndex((candidate) =>
+                candidate.title === recommendation.title && candidate.pageKey === recommendation.pageKey
+            ) === index
+        );
 
     return {
         requested: seoRequested,
@@ -1462,11 +1483,19 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
             : ["Add explicit SEO checks to surface deterministic strengths in future runs."],
         recommendations: recommendations.length > 0
             ? recommendations
-            : [{
-                priority: "Low" as const,
-                title: "Keep the SEO audit in regression",
-                rationale: "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time.",
-            }],
+            : pageGroups.length > 0
+                ? pageGroups.map((group) => ({
+                    priority: "Low" as const,
+                    title: `Keep the SEO audit in regression for ${group.pageLabel}`,
+                    rationale: `Keep explicit SEO coverage for ${group.pageLabel} so metadata, schema, and crawler-facing behavior stay stable over time.`,
+                    pageKey: group.pageKey,
+                    pageLabel: group.pageLabel,
+                }))
+                : [{
+                    priority: "Low" as const,
+                    title: "Keep the SEO audit in regression",
+                    rationale: "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time.",
+                }],
     };
 }
 
