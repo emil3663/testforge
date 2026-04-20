@@ -189,7 +189,7 @@ test.describe("TestForge regression coverage", () => {
         expect(startedRun.runId).toBeTruthy();
 
         let finalSnapshot: Record<string, unknown> | null = null;
-        for (let attempt = 0; attempt < 60; attempt += 1) {
+        for (let attempt = 0; attempt < 120; attempt += 1) {
             const statusResponse = await request.get(`/api/run?runId=${startedRun.runId}`);
             expect(statusResponse.ok()).toBeTruthy();
             const snapshot = await statusResponse.json();
@@ -464,9 +464,9 @@ test.describe("TestForge regression coverage", () => {
         await expect(page.getByText("Session Evidence", { exact: true })).toBeVisible();
 
         await page.getByRole("button", { name: /seo/i }).click();
-        await expect(page.getByText("What happened on /")).toBeVisible();
+        await expect(page.getByText(`What happened on ${localAppUrl}`)).toBeVisible();
         await expect(page.getByText("Prioritized recommendations")).toBeVisible();
-        await expect(page.getByText("Page: /")).toBeVisible();
+        await expect(page.getByText(`Page: ${localAppUrl}`)).toBeVisible();
         await expect(page.getByText("Results For /", { exact: false })).toHaveCount(0);
     });
 

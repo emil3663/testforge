@@ -779,6 +779,67 @@ function formatMilliseconds(value: number) {
     return `${value}ms`;
 }
 
+function ensureSentence(value: string) {
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+        return "";
+    }
+
+    return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+}
+
+function formatExecutionRemark(record: ExecutionRecord) {
+    const trimmed = record.remarks.trim();
+
+    if (!trimmed) {
+        if (record.status === "Passed") {
+            return "Completed as expected with no additional action required.";
+        }
+
+        if (record.status === "Flaky") {
+            return "Recovered after a retry. Keep this test under watch because the result was not stable on the first attempt.";
+        }
+
+        if (record.status === "Blocked") {
+            return "The test could not finish because an external dependency or prerequisite blocked progress.";
+        }
+
+        return "This test did not complete as expected. Review the steps below and the defect details before the next run.";
+    }
+
+    const normalized = trimmed
+        .replace(/^remarks?:\s*/i, "")
+        .replace(/^observation:\s*/i, "")
+        .replace(/^status:\s*/i, "")
+        .replace(/\btest case\b/gi, "test")
+        .replace(/\bexecution\b/gi, "run");
+
+    if (record.status === "Passed") {
+        return ensureSentence(normalized.replace(/^passed\b[:\s-]*/i, "Completed as expected. ")) || "Completed as expected.";
+    }
+
+    if (record.status === "Blocked") {
+        return ensureSentence(`Blocked before completion. ${normalized}`);
+    }
+
+    if (record.status === "Flaky") {
+        return ensureSentence(`Recovered after retry. ${normalized}`);
+    }
+
+    return ensureSentence(normalized);
+}
+
+function summarizeSuite(records: ExecutionRecord[]) {
+    return records.reduce(
+        (summary, record) => {
+            summary[record.status] += 1;
+            return summary;
+        },
+        { Passed: 0, Failed: 0, Blocked: 0, Flaky: 0 } as Record<ExecutionStatus, number>
+    );
+}
+
 function statusClasses(status: ExecutionStatus) {
     if (status === "Passed") {
         return "bg-emerald-100 text-emerald-800 border-emerald-200";
@@ -1241,6 +1302,7 @@ export default function Home() {
                     code: editedCode,
                     selectedPractices: effectiveSelectedPractices,
                     auditMode: lastGeneratedAuditMode,
+                    baseUrl: lastGeneratedBaseUrl,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };
@@ -1473,24 +1535,24 @@ export default function Home() {
     }
 
         async function handleExportHtmlReport(report: RunReport, runId: string) {
-                try {
-                        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-                        const fileName = `testforge-report-${runId}-${timestamp}.html`;
-                        const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
-                        const objectUrl = URL.createObjectURL(blob);
-                        const anchor = document.createElement("a");
-                        anchor.href = objectUrl;
-                        anchor.download = fileName;
-                        document.body.appendChild(anchor);
-                        anchor.click();
-                        anchor.remove();
-                        URL.revokeObjectURL(objectUrl);
-                        setHtmlReportExportLabel("HTML report saved");
-                        setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
-                } catch {
-                        setHtmlReportExportLabel("Save failed");
-                        setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
-                }
+            try {
+                const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                const fileName = `testforge-report-${runId}-${timestamp}.html`;
+                const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
+                const objectUrl = URL.createObjectURL(blob);
+                const anchor = document.createElement("a");
+                anchor.href = objectUrl;
+                anchor.download = fileName;
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                URL.revokeObjectURL(objectUrl);
+                setHtmlReportExportLabel("HTML report saved");
+                setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
+            } catch {
+                setHtmlReportExportLabel("Save failed");
+                setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
+            }
         }
 
     const isGenerating = step === "generating";
@@ -1588,6 +1650,14 @@ export default function Home() {
         ?? activeRunProgress?.lastCompletedTitle
         ?? "Preparing the first test case...";
     const report = result?.report;
+    const defectSeverityMax = report
+        ? Math.max(
+            report.summary.defectDistribution.Critical,
+            report.summary.defectDistribution.Major,
+            report.summary.defectDistribution.Minor,
+            1,
+        )
+        : 1;
     const seoPageGroups = report?.seo?.pageGroups ?? [];
     const selectedSeoPageGroup = seoPageGroups.find((group) => group.pageKey === selectedSeoPageKey) ?? seoPageGroups[0] ?? null;
     const selectedSeoRecommendations = selectedSeoPageGroup
@@ -2896,16 +2966,19 @@ export default function Home() {
                                             <SeverityBar
                                                 label="Critical"
                                                 value={report.summary.defectDistribution.Critical}
+                                                maxValue={defectSeverityMax}
                                                 color="bg-rose-600"
                                             />
                                             <SeverityBar
                                                 label="Major"
                                                 value={report.summary.defectDistribution.Major}
+                                                maxValue={defectSeverityMax}
                                                 color="bg-amber-500"
                                             />
                                             <SeverityBar
                                                 label="Minor"
                                                 value={report.summary.defectDistribution.Minor}
+                                                maxValue={defectSeverityMax}
                                                 color="bg-sky-500"
                                             />
                                         </div>
@@ -3567,12 +3640,16 @@ function LegendRow({
 function SeverityBar({
     label,
     value,
+    maxValue,
     color,
 }: {
     label: string;
     value: number;
+    maxValue: number;
     color: string;
 }) {
+    const widthPercent = value === 0 ? 0 : Math.max(8, (value / Math.max(maxValue, 1)) * 100);
+
     return (
         <div>
             <div className="mb-1 flex items-center justify-between text-xs font-medium">
@@ -3582,7 +3659,7 @@ function SeverityBar({
             <div className="h-2 rounded-full bg-zinc-100">
                 <div
                     className={`h-2 rounded-full ${color}`}
-                    style={{ width: `${Math.max(8, value * 18)}px` }}
+                    style={{ width: `${Math.min(widthPercent, 100)}%` }}
                 />
             </div>
         </div>
@@ -3612,8 +3689,26 @@ function TrendBars({ points }: { points: { label: string; count: number }[] }) {
     );
 }
 
+function getSuiteLabel(suite: string) {
+    const trimmed = suite.trim();
+    return trimmed || "General test set";
+}
+
 function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
     const [expandedRows, setExpandedRows] = useState<string[]>([]);
+
+    const suites = records.reduce((groups, record) => {
+        const key = getSuiteLabel(record.suite);
+        const existing = groups.get(key);
+
+        if (existing) {
+            existing.push(record);
+        } else {
+            groups.set(key, [record]);
+        }
+
+        return groups;
+    }, new Map<string, ExecutionRecord[]>());
 
     function toggleRow(rowId: string) {
         setExpandedRows((current) =>
@@ -3624,90 +3719,129 @@ function ExecutionTable({ records }: { records: ExecutionRecord[] }) {
     }
 
     return records.length > 0 ? (
-        <div className="overflow-x-auto rounded-2xl border border-zinc-200">
-            <table className="min-w-full divide-y divide-zinc-200 text-left text-sm">
-                <thead className="bg-zinc-50 text-xs uppercase tracking-[0.16em] text-zinc-500">
-                    <tr>
-                        <th className="px-4 py-3 font-medium">Test Case</th>
-                        <th className="px-4 py-3 font-medium">Area</th>
-                        <th className="px-4 py-3 font-medium">Interaction Type</th>
-                        <th className="px-4 py-3 font-medium">Browser</th>
-                        <th className="px-4 py-3 font-medium">Status</th>
-                        <th className="px-4 py-3 font-medium">Duration</th>
-                        <th className="px-4 py-3 font-medium">Remarks</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 bg-white text-zinc-600">
-                    {records.map((record) => {
-                        const rowId = `${record.id}-${record.browser}-${record.order}`;
-                        const expanded = expandedRows.includes(rowId);
+        <div className="space-y-4">
+            {Array.from(suites.entries()).map(([suite, suiteRecords], suiteIndex) => {
+                const suiteSummary = summarizeSuite(suiteRecords);
 
-                        return (
-                            <Fragment key={rowId}>
-                                <tr>
-                                    <td className="px-4 py-3 align-top">
-                                        <button
-                                            type="button"
-                                            onClick={() => toggleRow(rowId)}
-                                            className="flex w-full items-start justify-between gap-3 text-left"
-                                        >
-                                            <div>
-                                                <div className="font-medium text-zinc-900">{record.title}</div>
-                                                <div className="mt-1 text-xs leading-5 text-zinc-500">
-                                                    {record.description}
+                return (
+                    <details
+                        key={suite}
+                        open={suiteIndex === 0}
+                        className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white"
+                    >
+                        <summary className="flex cursor-pointer list-none flex-wrap items-start justify-between gap-4 bg-zinc-50 px-4 py-4 marker:hidden">
+                            <div>
+                                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                                    Test Set
+                                </div>
+                                <div className="mt-1 text-base font-semibold text-zinc-950">{suite}</div>
+                                <div className="mt-1 text-sm text-zinc-500">
+                                    {suiteRecords.length} test{suiteRecords.length === 1 ? "" : "s"} in this set
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                                {suiteSummary.Passed > 0 ? (
+                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                                        Passed {suiteSummary.Passed}
+                                    </span>
+                                ) : null}
+                                {suiteSummary.Flaky > 0 ? (
+                                    <span className="rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700">
+                                        Flaky {suiteSummary.Flaky}
+                                    </span>
+                                ) : null}
+                                {suiteSummary.Blocked > 0 ? (
+                                    <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                                        Blocked {suiteSummary.Blocked}
+                                    </span>
+                                ) : null}
+                                {suiteSummary.Failed > 0 ? (
+                                    <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700">
+                                        Failed {suiteSummary.Failed}
+                                    </span>
+                                ) : null}
+                                <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500 transition group-open:bg-zinc-900 group-open:text-white">
+                                    Collapsible
+                                </span>
+                            </div>
+                        </summary>
+                        <div className="space-y-3 border-t border-zinc-200 px-4 py-4">
+                            {suiteRecords.map((record) => {
+                                const rowId = `${record.id}-${record.browser}-${record.order}`;
+                                const expanded = expandedRows.includes(rowId);
+
+                                return (
+                                    <Fragment key={rowId}>
+                                        <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                                            <div className="flex flex-wrap items-start justify-between gap-3">
+                                                <div>
+                                                    <div className="text-sm font-semibold text-zinc-950">{record.title}</div>
+                                                    <p className="mt-1 text-sm leading-6 text-zinc-500">{record.description}</p>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <span
+                                                        className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClasses(
+                                                            record.status
+                                                        )}`}
+                                                    >
+                                                        {record.status}
+                                                    </span>
+                                                    <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
+                                                        {record.browser}
+                                                    </span>
+                                                    <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
+                                                        {formatMilliseconds(record.duration)}
+                                                    </span>
+                                                    {record.interactionType ? (
+                                                        <span className="rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-800">
+                                                            {record.interactionType}
+                                                        </span>
+                                                    ) : null}
+                                                    <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
+                                                        {record.area}
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <span className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                                                {expanded ? "Hide steps" : "Show steps"}
-                                            </span>
-                                        </button>
-                                    </td>
-                                    <td className="px-4 py-3 align-top">{record.area}</td>
-                                    <td className="px-4 py-3 align-top">
-                                        {record.interactionType ? (
-                                            <span className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-800">
-                                                {record.interactionType}
-                                            </span>
-                                        ) : (
-                                            <span className="text-zinc-400">-</span>
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-3 align-top">{record.browser}</td>
-                                    <td className="px-4 py-3 align-top">
-                                        <span
-                                            className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClasses(
-                                                record.status
-                                            )}`}
-                                        >
-                                            {record.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-3 align-top">{formatMilliseconds(record.duration)}</td>
-                                    <td className="px-4 py-3 align-top text-xs leading-5 text-zinc-500">
-                                        {record.remarks}
-                                    </td>
-                                </tr>
-                                {expanded && (
-                                    <tr className="bg-zinc-50/80">
-                                        <td colSpan={7} className="px-4 py-4">
-                                            <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+
+                                            <div className="mt-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
                                                 <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
-                                                    Validation Steps
+                                                    Outcome Summary
                                                 </div>
-                                                <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-zinc-600">
-                                                    {record.reproductionSteps.map((step) => (
-                                                        <li key={step}>{step}</li>
-                                                    ))}
-                                                </ol>
+                                                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                                                    {formatExecutionRemark(record)}
+                                                </p>
                                             </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </Fragment>
-                        );
-                    })}
-                </tbody>
-            </table>
+
+                                            <div className="mt-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleRow(rowId)}
+                                                    className="rounded-xl border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950"
+                                                >
+                                                    {expanded ? "Hide validation steps" : "Show validation steps"}
+                                                </button>
+                                            </div>
+
+                                            {expanded ? (
+                                                <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-4">
+                                                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-500">
+                                                        Validation Steps
+                                                    </div>
+                                                    <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-zinc-600">
+                                                        {record.reproductionSteps.map((step) => (
+                                                            <li key={step}>{step}</li>
+                                                        ))}
+                                                    </ol>
+                                                </div>
+                                            ) : null}
+                                        </article>
+                                    </Fragment>
+                                );
+                            })}
+                        </div>
+                    </details>
+                );
+            })}
         </div>
     ) : (
         <EmptyState message="No test cases match the current execution filter." />
@@ -3817,7 +3951,20 @@ function CoverageTable({ matrix }: { matrix: CoverageMatrixItem[] }) {
                                 </span>
                             </td>
                             <td className="px-4 py-3 align-top text-xs leading-5 text-zinc-500">
-                                {item.tests.length > 0 ? item.tests.join(" • ") : "No tests mapped"}
+                                {item.tests.length > 0 ? (
+                                    <ul className="space-y-2">
+                                        {item.tests.map((testName) => (
+                                            <li
+                                                key={`${item.requirement}-${testName}`}
+                                                className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm leading-5 text-zinc-700"
+                                            >
+                                                {testName}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    "No tests mapped"
+                                )}
                             </td>
                         </tr>
                     ))}

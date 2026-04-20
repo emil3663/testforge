@@ -259,12 +259,27 @@ function buildArtifactLabel(artifactType: ExecutionArtifact["artifactType"], fil
     return basename(fileName);
 }
 
-function extractSeoPageInfo(title: string) {
+function normalizeSeoBaseUrl(baseUrl?: string) {
+    if (!baseUrl?.trim()) {
+        return null;
+    }
+
+    try {
+        return new URL(baseUrl).toString().replace(/\/$/, "");
+    } catch {
+        return baseUrl.replace(/\/$/, "");
+    }
+}
+
+function extractSeoPageInfo(title: string, baseUrl?: string) {
+    const normalizedBaseUrl = normalizeSeoBaseUrl(baseUrl);
     const pathMatch = title.match(/\sfor\s(\/.*)$/i);
     if (pathMatch?.[1]) {
         return {
             pageKey: pathMatch[1],
-            pageLabel: pathMatch[1],
+            pageLabel: pathMatch[1] === "/" && normalizedBaseUrl
+                ? normalizedBaseUrl
+                : pathMatch[1],
         };
     }
 
@@ -500,6 +515,7 @@ interface RunJob {
     jsonReportFile: string;
     reporterFile: string;
     artifactDir: string;
+    baseUrl?: string;
     selectedPractices: string[];
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
@@ -516,18 +532,46 @@ function estimateTestCount(code: string) {
     return Math.max(1, matches?.length ?? 0);
 }
 
+function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean) {
+    if (auditMode === "deep") {
+        return {
+            baseTimeout: isLinkHeavySuite ? 240_000 : 150_000,
+            perExecutionBudget: isLinkHeavySuite ? 22_500 : 15_000,
+            minTimeout: 240_000,
+            maxTimeout: 1_500_000,
+            crossBrowserMinTimeout: 360_000,
+            crossBrowserMaxTimeout: 1_800_000,
+        };
+    }
+
+    return {
+        baseTimeout: 60_000,
+        perExecutionBudget: isLinkHeavySuite ? 12_500 : 7_500,
+        minTimeout: 120_000,
+        maxTimeout: 900_000,
+        crossBrowserMinTimeout: 360_000,
+        crossBrowserMaxTimeout: 1_200_000,
+    };
+}
+
 function calculateRunTimeout(
     code: string,
     browserProjectCount: number,
-    includesCrossBrowser: boolean
+    includesCrossBrowser: boolean,
+    auditMode: TestAuditMode
 ) {
     const estimatedExecutions = estimateTestCount(code) * browserProjectCount;
-    const timeout = 60_000 + estimatedExecutions * 7_500;
+    const isLinkHeavySuite = /link health|navigation destination|link types|href|links?/i.test(code);
+    const timeoutBudget = getRunTimeoutBudget(auditMode, isLinkHeavySuite);
+    const timeout = timeoutBudget.baseTimeout + estimatedExecutions * timeoutBudget.perExecutionBudget;
+    const minTimeout = includesCrossBrowser
+        ? timeoutBudget.crossBrowserMinTimeout
+        : timeoutBudget.minTimeout;
+    const maxTimeout = includesCrossBrowser
+        ? timeoutBudget.crossBrowserMaxTimeout
+        : timeoutBudget.maxTimeout;
 
-    return Math.min(
-        Math.max(timeout, includesCrossBrowser ? 240_000 : 120_000),
-        includesCrossBrowser ? 1_200_000 : 900_000
-    );
+    return Math.min(Math.max(timeout, minTimeout), maxTimeout);
 }
 
 function stripAnsi(text: string) {
@@ -700,7 +744,12 @@ async function finalizeRunJob(job: RunJob) {
 
     if (parsedReport) {
         const executionRecords = flattenSuites(parsedReport.suites ?? []);
-        const aggregatedReport = buildReport(parsedReport, job.selectedPractices, output || buildConsoleSummary(executionRecords, duration));
+        const aggregatedReport = buildReport(
+            parsedReport,
+            job.selectedPractices,
+            output || buildConsoleSummary(executionRecords, duration),
+            job.baseUrl
+        );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;
 
@@ -808,7 +857,8 @@ async function finalizeRunJob(job: RunJob) {
 async function startRunJob(
     code: string,
     selectedPractices: string[],
-    auditMode: TestAuditMode
+    auditMode: TestAuditMode,
+    baseUrl?: string
 ) {
     const includesCrossBrowser = selectedPractices.includes(CROSS_BROWSER_AREA);
     const browserProjects = includesCrossBrowser
@@ -818,7 +868,8 @@ async function startRunJob(
     const runTimeout = calculateRunTimeout(
         code,
         browserProjects.length,
-        includesCrossBrowser
+        includesCrossBrowser,
+        auditMode
     );
 
     const runsDir = join(process.cwd(), ".playwright-runs");
@@ -856,6 +907,7 @@ async function startRunJob(
         jsonReportFile,
         reporterFile,
         artifactDir,
+        baseUrl,
         selectedPractices,
         artifactFiles: new Map(),
         result: null,
@@ -1332,7 +1384,7 @@ function buildUsabilityReport(records: ExecutionRecord[]) {
     };
 }
 
-function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[]) {
+function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[], baseUrl?: string) {
     const seoScopedRecords = records.filter(
         (record) => record.area === "SEO" || /shows the required content snippet/i.test(record.title)
     );
@@ -1384,7 +1436,7 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
         const groupedEvidence = new Map<string, SeoCheckRecord[]>();
 
         for (const record of seoScopedRecords.filter(rule.test)) {
-            const pageInfo = extractSeoPageInfo(record.title);
+            const pageInfo = extractSeoPageInfo(record.title, baseUrl);
             const existing = groupedEvidence.get(pageInfo.pageKey) ?? [];
             existing.push({
                 title: record.title,
@@ -1396,7 +1448,7 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
         }
 
         return [...groupedEvidence.entries()].map(([pageKey, evidence]) => {
-            const pageInfo = extractSeoPageInfo(evidence[0]?.title ?? "");
+            const pageInfo = extractSeoPageInfo(evidence[0]?.title ?? "", baseUrl);
             const hasFailure = evidence.some(
                 (record) => record.status === "Failed" || record.status === "Blocked"
             );
@@ -1447,8 +1499,6 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
 
                     return {
                         ...rule.recommendation,
-                        title: `${rule.recommendation.title} for ${group.pageLabel}`,
-                        rationale: `Update ${group.pageLabel}: ${rule.recommendation.rationale}`,
                         pageKey: group.pageKey,
                         pageLabel: group.pageLabel,
                     } satisfies SeoRecommendation;
@@ -1486,8 +1536,8 @@ function buildSeoReport(records: ExecutionRecord[], selectedPractices: string[])
             : pageGroups.length > 0
                 ? pageGroups.map((group) => ({
                     priority: "Low" as const,
-                    title: `Keep the SEO audit in regression for ${group.pageLabel}`,
-                    rationale: `Keep explicit SEO coverage for ${group.pageLabel} so metadata, schema, and crawler-facing behavior stay stable over time.`,
+                    title: "Keep the SEO audit in regression",
+                    rationale: "Keep explicit SEO coverage in regression so metadata, schema, and crawler-facing behavior stay stable over time.",
                     pageKey: group.pageKey,
                     pageLabel: group.pageLabel,
                 }))
@@ -1596,7 +1646,8 @@ function buildHeatmap(defects: DefectRecord[]) {
 function buildReport(
     report: JsonReport,
     selectedPractices: string[],
-    output: string
+    output: string,
+    baseUrl?: string
 ) {
     const execution = flattenSuites(report.suites ?? []);
     const defects = buildDefects(execution);
@@ -1604,7 +1655,7 @@ function buildReport(
     const summary = buildSummary(execution, defects, report.stats?.duration ?? 0);
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
     const usability = buildUsabilityReport(execution);
-    const seo = buildSeoReport(execution, selectedPractices);
+    const seo = buildSeoReport(execution, selectedPractices, baseUrl);
 
     return {
         summary: {
@@ -1637,7 +1688,7 @@ function buildConsoleSummary(records: ExecutionRecord[], duration: number) {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode } = await req.json();
+    const { code, selectedPractices, auditMode, baseUrl } = await req.json();
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -1645,7 +1696,12 @@ export async function POST(req: NextRequest) {
 
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
-    const job = await startRunJob(code, normalizedPractices, normalizedAuditMode);
+    const job = await startRunJob(
+        code,
+        normalizedPractices,
+        normalizedAuditMode,
+        typeof baseUrl === "string" ? baseUrl : undefined
+    );
     return NextResponse.json(job, { status: 202 });
 }
 
