@@ -116,9 +116,9 @@ OPENAI_API_KEY=sk-...
 docker compose up -d
 ```
 
-Wait about 60 seconds for all services to initialise. Plane will be available at **http://localhost**.
+Wait about 60 seconds for all services to initialise. Plane will be available at **<http://localhost>**.
 
-> **First run**: Plane will prompt you to create an admin account at http://localhost.  
+> **First run**: Plane will prompt you to create an admin account at <http://localhost>.  
 > Use those credentials when describing login tests to TestForge.
 
 ### 8. Start TestForge
@@ -127,7 +127,7 @@ Wait about 60 seconds for all services to initialise. Plane will be available at
 uvicorn app:app --reload
 ```
 
-Open **http://localhost:8000** in your browser.
+Open **<http://localhost:8000>** in your browser.
 
 ---
 
@@ -225,4 +225,63 @@ pytest runs/ -v --browser=chromium
 - The smoke workflow uploads an Allure artifact on every CI run and keeps the latest 5 smoke-report artifacts.
 - The regression workflow can be triggered manually from GitHub Actions and also keeps the latest 5 regression-report artifacts.
 
+---
 
+## Troubleshooting
+
+### WSL update/install issues on Windows
+
+If you see errors like `Windows Subsystem for Linux must be updated` or `Catastrophic failure`:
+
+1. Verify optional features are enabled:
+
+```powershell
+Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux | Select-Object FeatureName,State
+Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform | Select-Object FeatureName,State
+```
+
+1. Install/update WSL package from winget:
+
+```powershell
+winget install --id Microsoft.WSL -e --accept-package-agreements --accept-source-agreements
+```
+
+1. Reboot Windows, then verify:
+
+```powershell
+wsl --status
+wsl -l -v
+```
+
+Expected: WSL default version is 2 and status command succeeds.
+
+### Docker Compose proxy restart loop (Plane)
+
+If `plane-proxy` keeps restarting and `http://localhost` is unreachable:
+
+1. Check proxy logs:
+
+```powershell
+docker compose logs plane-proxy --tail 100
+```
+
+1. If Caddy config errors are shown (for example `server block without any key...`), use the local Nginx proxy setup in this repo:
+
+- `docker-compose.yml` uses `nginx:1.27-alpine` for `plane-proxy`.
+- `docker/nginx/plane.conf` defines routes for `/`, `/api/`, and `/spaces/`.
+
+1. Restart services:
+
+```powershell
+docker compose up -d
+docker compose ps
+```
+
+1. Verify endpoints:
+
+```powershell
+Invoke-WebRequest http://localhost -UseBasicParsing | Select-Object -ExpandProperty StatusCode
+Invoke-WebRequest http://localhost:8000 -UseBasicParsing | Select-Object -ExpandProperty StatusCode
+```
+
+Expected: both commands return `200` when Plane and TestForge are running.
