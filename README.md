@@ -285,3 +285,30 @@ Invoke-WebRequest http://localhost:8000 -UseBasicParsing | Select-Object -Expand
 ```
 
 Expected: both commands return `200` when Plane and TestForge are running.
+
+## Consolidation cutover (single UI mode)
+
+TestForge is being consolidated so the Next.js app at <http://localhost:3000> is the primary UI.
+
+Current state:
+
+1. Next.js API routes can proxy to an external backend when TESTFORGE_BACKEND_BASE_URL is set.
+1. The legacy FastAPI UI can be disabled with TESTFORGE_DISABLE_LEGACY_UI=true.
+
+Recommended cutover settings in .env:
+
+- TESTFORGE_BACKEND_BASE_URL=<http://localhost:8000>
+- TESTFORGE_DISABLE_LEGACY_UI=true
+- TESTFORGE_NEXT_UI_URL=<http://localhost:3000>
+
+Verification checklist:
+
+1. Start Next.js and FastAPI services.
+1. Open <http://localhost:3000> and confirm generate/introspect/crawl/run/save-suite flows work.
+1. Open <http://localhost:8000> and confirm it redirects to <http://localhost:3000>.
+
+Rollback:
+
+1. Set TESTFORGE_DISABLE_LEGACY_UI=false.
+1. Restart FastAPI.
+1. Confirm <http://localhost:8000> serves the legacy UI again.
