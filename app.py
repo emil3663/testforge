@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
 from pydantic import BaseModel
@@ -31,6 +31,13 @@ app = FastAPI(title="TestForge", version="1.0.0")
 STATIC_DIR = Path(__file__).parent / "static"
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 RUNS_DIR = Path(__file__).parent / "runs"
+NEXT_UI_URL = os.getenv("TESTFORGE_NEXT_UI_URL", "http://localhost:3000")
+DISABLE_LEGACY_UI = os.getenv("TESTFORGE_DISABLE_LEGACY_UI", "false").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -119,8 +126,11 @@ class RunRequest(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def index() -> HTMLResponse:
+    if DISABLE_LEGACY_UI:
+        return RedirectResponse(url=NEXT_UI_URL, status_code=307)
+
     html = (TEMPLATES_DIR / "index.html").read_text(encoding="utf-8")
-    return HTMLResponse(content=html)
+    return HTMLResponse(content=html, headers={"X-TestForge-Legacy-UI": "true"})
 
 
 @app.post("/api/generate")
