@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mkdir, writeFile } from "fs/promises";
 import { join, relative } from "path";
+import { isExternalBackendEnabled, proxyJsonRequest } from "@/lib/backend-proxy";
 
 const GENERATED_SUITES_DIR = join(process.cwd(), ".playwright-runs", "generated-suites");
 
@@ -20,6 +21,21 @@ function extractSuiteTitles(code: string) {
 
 export async function POST(req: NextRequest) {
     const { code, description } = await req.json();
+
+    if (isExternalBackendEnabled()) {
+        const proxied = await proxyJsonRequest<{
+            fileName?: string;
+            filePath?: string;
+            suiteTitles?: string[];
+            error?: string;
+        }>({
+            path: "/save-suite",
+            method: "POST",
+            body: { code, description },
+        });
+
+        return NextResponse.json(proxied.data, { status: proxied.status });
+    }
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
