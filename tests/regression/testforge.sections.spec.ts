@@ -46,6 +46,25 @@ async function runSuite(page: Page) {
 }
 
 test.describe("TestForge regression coverage", () => {
+    test("redirects FastAPI root to Next.js UI when backend is available", async ({ request }) => {
+        const backendBaseUrl = process.env.TESTFORGE_BACKEND_BASE_URL ?? "http://127.0.0.1:8000";
+        const expectedNextUiUrl = process.env.TESTFORGE_NEXT_UI_URL ?? "http://localhost:3000";
+
+        let response;
+        try {
+            response = await request.get(`${backendBaseUrl}/`, {
+                maxRedirects: 0,
+                failOnStatusCode: false,
+            });
+        } catch {
+            test.skip(true, `Backend not reachable at ${backendBaseUrl}`);
+            return;
+        }
+
+        expect(response.status()).toBe(307);
+        expect(response.headers()["location"]).toBe(expectedNextUiUrl);
+    });
+
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
@@ -626,9 +645,14 @@ test.describe("TestForge regression coverage", () => {
         const crawlSection = page.getByText("Discovered Site Pages").locator("..").locator("..");
         await page.getByRole("button", { name: "Crawl site" }).click();
 
-        await expect(
-            page.getByText(/Crawl in progress|Run the crawler to discover same-origin pages and choose what should be tested\./)
-        ).toBeVisible({ timeout: 10_000 });
+        await Promise.race([
+            page.getByText("Crawl in progress", { exact: true }).waitFor({ state: "visible", timeout: 10_000 }),
+            page
+                .getByText("Run the crawler to discover same-origin pages and choose what should be tested.", {
+                    exact: true,
+                })
+                .waitFor({ state: "visible", timeout: 10_000 }),
+        ]);
 
         const firstPageCheckbox = page.locator('input[type="checkbox"]').first();
         await expect(firstPageCheckbox).toBeVisible({ timeout: 40_000 });
