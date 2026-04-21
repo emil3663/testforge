@@ -35,6 +35,9 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Run build
+        run: npm run build
+
       - name: Run TestForge smoke suite with Allure
         run: npm run test:self:allure
 
