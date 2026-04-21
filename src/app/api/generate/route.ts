@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { isExternalBackendEnabled, proxyJsonRequest } from "@/lib/backend-proxy";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
@@ -1608,32 +1609,32 @@ function buildContentSuites(
             )
             .join("\n");
 
-                seoTests.push(`  test('keeps page title stable for ${escapedPath}', async ({ page }) => {
+        seoTests.push(`  test('keeps page title stable for ${escapedPath}', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
 ${page.title
-                                ? `    await expect(page).toHaveTitle('${escapeForSingleQuotedString(page.title)}');`
-                                : "    await expect(page).toHaveTitle(/.+/);"}
+                ? `    await expect(page).toHaveTitle('${escapeForSingleQuotedString(page.title)}');`
+                : "    await expect(page).toHaveTitle(/.+/);"}
     });`);
 
-                seoTests.push(`  test('keeps meta description stable for ${escapedPath}', async ({ page }) => {
+        seoTests.push(`  test('keeps meta description stable for ${escapedPath}', async ({ page }) => {
     await page.goto('${escapedPath}');
     await page.waitForLoadState('domcontentloaded');
 
 ${page.metaDescription
-                                ? `    await expect(page.locator('meta[name="description"]').first()).toHaveAttribute('content', /${escapeForRegExpLiteral(page.metaDescription.slice(0, 60))}/i);`
-                                : "    await expect(page.locator('meta[name=\"description\"]').first()).toHaveAttribute('content', /.+/);"}
+                ? `    await expect(page.locator('meta[name="description"]').first()).toHaveAttribute('content', /${escapeForRegExpLiteral(page.metaDescription.slice(0, 60))}/i);`
+                : "    await expect(page.locator('meta[name=\"description\"]').first()).toHaveAttribute('content', /.+/);"}
     });`);
 
-                seoTests.push(`  test('keeps heading structure stable for ${escapedPath}', async ({ page }) => {
+        seoTests.push(`  test('keeps heading structure stable for ${escapedPath}', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
 ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisible();"}
     });`);
 
-                seoTests.push(`  test('keeps canonical metadata stable for ${escapedPath}', async ({ page }) => {
+        seoTests.push(`  test('keeps canonical metadata stable for ${escapedPath}', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
@@ -1651,7 +1652,7 @@ ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisibl
         expect(canonicalPath).toBe(currentPath);
     });`);
 
-                seoTests.push(`  test('exposes structured data for ${escapedPath}', async ({ page }) => {
+        seoTests.push(`  test('exposes structured data for ${escapedPath}', async ({ page }) => {
         await page.goto('${escapedPath}');
         await page.waitForLoadState('domcontentloaded');
 
@@ -1663,7 +1664,7 @@ ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisibl
   });`);
     }
 
-        seoTests.push(`  test('publishes robots.txt with a sitemap reference', async ({ request }) => {
+    seoTests.push(`  test('publishes robots.txt with a sitemap reference', async ({ request }) => {
         const response = await request.get('/robots.txt', { failOnStatusCode: false, timeout: 15000 });
         expect(response.status()).toBeLessThan(400);
 
@@ -1671,7 +1672,7 @@ ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisibl
         expect(body).toContain('Sitemap:');
     });`);
 
-        seoTests.push(`  test('publishes sitemap.xml with at least one URL', async ({ request }) => {
+    seoTests.push(`  test('publishes sitemap.xml with at least one URL', async ({ request }) => {
         const response = await request.get('/sitemap.xml', { failOnStatusCode: false, timeout: 15000 });
         expect(response.status()).toBeLessThan(400);
 
@@ -1679,7 +1680,7 @@ ${keyHeadings || "    await expect(page.getByRole('heading').first()).toBeVisibl
         expect(body).toContain('<loc>');
     });`);
 
-        seoTests.push(`  test('publishes manifest metadata for installable clients', async ({ page, request }) => {
+    seoTests.push(`  test('publishes manifest metadata for installable clients', async ({ page, request }) => {
         await page.goto('/');
         await page.waitForLoadState('domcontentloaded');
 
@@ -2318,6 +2319,23 @@ ${renderSuites([...suites, ...contentSuites])}
 
 export async function POST(req: NextRequest) {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json();
+
+    if (isExternalBackendEnabled()) {
+        const proxied = await proxyJsonRequest<{ code?: string; error?: string }>({
+            path: "/generate",
+            method: "POST",
+            body: {
+                baseUrl,
+                description,
+                selectedPractices,
+                contentProfile,
+                contentRules,
+                auditMode,
+            },
+        });
+
+        return NextResponse.json(proxied.data, { status: proxied.status });
+    }
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
