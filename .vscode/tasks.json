@@ -1,0 +1,106 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm: lint",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "lint"
+            ],
+            "problemMatcher": [
+                "$eslint-stylish"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "npm: build",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "build"
+            ],
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "npm: test:regression",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "test:regression"
+            ],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "npm: test:self",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "test:self"
+            ],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "npm: report:open:regression",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "report:open:regression"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: report:open:smoke",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "report:open:smoke"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: dev",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "dev"
+            ],
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: start:self-test",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "start:self-test"
+            ],
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "python: uvicorn app",
+            "type": "shell",
+            "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+            "args": [
+                "-m",
+                "uvicorn",
+                "app:app",
+                "--reload"
+            ],
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}

@@ -3,21 +3,21 @@
     // AI assistant — core to the TestForge workflow
     "GitHub.copilot",
     "GitHub.copilot-chat",
-
+    // TypeScript / Next.js / quality
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "yoavbls.pretty-ts-errors",
+    "christian-kohler.path-intellisense",
     // Python
     "ms-python.python",
-    "ms-python.debugpy",
-    "ms-python.pylint",
-    "charliermarsh.ruff",
-
+    "ms-python.vscode-pylance",
     // Playwright
     "ms-playwright.playwright",
-
+    // GitHub / repo workflow
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
     // Docker (for managing the Plane test-target containers)
-    "ms-azuretools.vscode-docker",
-
-    // Quality-of-life
-    "EditorConfig.EditorConfig",
-    "usernamehww.comment-divider"
+    "ms-azuretools.vscode-docker"
   ]
 }

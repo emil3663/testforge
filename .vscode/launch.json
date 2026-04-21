@@ -1,0 +1,59 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Next.js: dev server",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev",
+            "cwd": "${workspaceFolder}",
+            "serverReadyAction": {
+                "pattern": "(?:Local|Ready in).*?(https?://localhost:(\\d+))",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            }
+        },
+        {
+            "name": "Next.js: self-test server",
+            "type": "node-terminal",
+            "request": "launch",
+            "preLaunchTask": "npm: build",
+            "command": "npm run start:self-test",
+            "cwd": "${workspaceFolder}",
+            "serverReadyAction": {
+                "pattern": "- Local:\\s+(https?://127\\.0\\.0\\.1:3001)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            }
+        },
+        {
+            "name": "Python: FastAPI app",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app:app",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}",
+            "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "serverReadyAction": {
+                "pattern": "(https?://127\\.0\\.0\\.1:8000|https?://localhost:8000)",
+                "uriFormat": "%s",
+                "action": "openExternally"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Run: Next.js + FastAPI",
+            "configurations": [
+                "Next.js: dev server",
+                "Python: FastAPI app"
+            ],
+            "stopAll": true
+        }
+    ]
+}

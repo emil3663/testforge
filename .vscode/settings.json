@@ -5,10 +5,35 @@
   "terminal.integrated.env.windows": {
     "PATH": "C:\\Program Files\\nodejs;${env:PATH}"
   },
-  // Formatting
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  // Formatting and fixups
   "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit"
     }
@@ -21,18 +46,37 @@
   ],
   // Playwright extension settings
   "playwright.reuseBrowser": false,
-  "playwright.showTrace": false,
+  "playwright.showTrace": true,
   // Docker
   "docker.defaultRegistryPath": "",
   // Editor
   "files.exclude": {
     "**/__pycache__": true,
     "**/.pytest_cache": true,
+    "**/.next": true,
+    "**/test-results": true,
+    "**/.playwright-runs": true,
     "**/runs": false
   },
   "search.exclude": {
     "**/__pycache__": true,
     "**/.pytest_cache": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/test-results": true,
+    "**/artifacts/allure-report": true,
+    "**/artifacts/allure-results": true
+  },
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/artifacts/allure-results/**": true,
+    "**/artifacts/allure-report/**": true,
+    "**/test-results/**": true
+  },
+  "npm.enableScriptExplorer": true,
+  "chat.tools.terminal.autoApprove": {
+    "Test-Path": true,
+    "Get-Process": true
   }
 }
