@@ -146,6 +146,21 @@ async def index() -> RedirectResponse:
     return RedirectResponse(url=NEXT_UI_URL, status_code=307)
 
 
+@app.get("/healthz")
+async def healthz() -> JSONResponse:
+    return JSONResponse(
+        {
+            "status": "ok",
+            "service": "testforge-fastapi",
+            "environment": os.getenv("TESTFORGE_ENV", "development"),
+            "nextUiUrl": NEXT_UI_URL,
+            "openAiConfigured": bool(os.getenv("OPENAI_API_KEY")),
+            "runsDir": str(RUNS_DIR),
+        },
+        headers={"X-TestForge-Request-Id": uuid.uuid4().hex},
+    )
+
+
 @app.post("/api/generate")
 async def generate(req: GenerateRequest) -> JSONResponse:
     if not req.description.strip():

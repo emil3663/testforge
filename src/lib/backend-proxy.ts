@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 const LOCAL_API_PREFIX = "/api";
 
 function normalizeBaseUrl(input: string) {
@@ -37,24 +39,47 @@ export interface ProxyJsonOptions {
     cache?: RequestCache;
 }
 
+export interface ProxyJsonResult<T> {
+    ok: boolean;
+    status: number;
+    data: T | { error?: string };
+    requestId: string;
+    target: string;
+}
+
 export async function proxyJsonRequest<T>(options: ProxyJsonOptions) {
     const { path, method, body, headers, cache } = options;
     const target = buildBackendUrl(path.startsWith(LOCAL_API_PREFIX) ? path : `${LOCAL_API_PREFIX}${path}`);
+    const requestId = randomUUID();
 
-    const response = await fetch(target, {
-        method,
-        cache,
-        headers: {
-            "Content-Type": "application/json",
-            ...(headers ?? {}),
-        },
-        body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    try {
+        const response = await fetch(target, {
+            method,
+            cache,
+            headers: {
+                "Content-Type": "application/json",
+                "X-TestForge-Request-Id": requestId,
+                ...(headers ?? {}),
+            },
+            body: body === undefined ? undefined : JSON.stringify(body),
+        });
 
-    const data = (await response.json().catch(() => ({}))) as T | { error?: string };
-    return {
-        ok: response.ok,
-        status: response.status,
-        data,
-    };
+        const data = (await response.json().catch(() => ({}))) as T | { error?: string };
+        return {
+            ok: response.ok,
+            status: response.status,
+            data,
+            requestId: response.headers.get("x-testforge-request-id") ?? requestId,
+            target,
+        } satisfies ProxyJsonResult<T>;
+    } catch {
+        return {
+            ok: false,
+            status: 502,
+            data: { error: "Failed to reach external backend" },
+            requestId,
+            target,
+        } satisfies ProxyJsonResult<T>;
+    }
+
 }

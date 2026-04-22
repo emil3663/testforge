@@ -46,6 +46,29 @@ async function runSuite(page: Page) {
 }
 
 test.describe("TestForge regression coverage", () => {
+    test("reports health and observability metadata for consolidated mode", async ({ request }) => {
+        const response = await request.get("/api/health");
+
+        expect(response.ok()).toBeTruthy();
+
+        const payload = (await response.json()) as {
+            status: string;
+            service: string;
+            environment: string;
+            siteUrl: string;
+            externalBackendEnabled: boolean;
+            backendBaseUrl: string | null;
+            timestamp: string;
+        };
+
+        expect(payload.status).toBe("ok");
+        expect(payload.service).toBe("testforge-next");
+        expect(typeof payload.environment).toBe("string");
+        expect(payload.siteUrl).toContain("http");
+        expect(typeof payload.externalBackendEnabled).toBe("boolean");
+        expect(payload.timestamp).toContain("T");
+    });
+
     test("redirects FastAPI root to Next.js UI when backend is available", async ({ request }) => {
         const backendBaseUrl = process.env.TESTFORGE_BACKEND_BASE_URL ?? "http://127.0.0.1:8000";
         const expectedNextUiUrl = process.env.TESTFORGE_NEXT_UI_URL ?? "http://localhost:3000";
