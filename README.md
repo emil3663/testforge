@@ -110,6 +110,15 @@ Edit `.env` and add your OpenAI API key (optional — TestForge works without it
 OPENAI_API_KEY=sk-...
 ```
 
+Environment-specific templates are also available:
+
+- `.env.development`
+- `.env.staging`
+- `.env.production`
+
+FastAPI loads `.env` first and then overlays `.env.<TESTFORGE_ENV>` when `TESTFORGE_ENV` is set.
+Next.js can be started with the matching scripts such as `npm run dev:staging` or `npm run build:production`.
+
 ### 7. Start the test target (Plane) with Docker
 
 ```bash
@@ -299,6 +308,12 @@ Recommended cutover settings in .env:
 
 - TESTFORGE_BACKEND_BASE_URL=<http://localhost:8000>
 - TESTFORGE_NEXT_UI_URL=<http://localhost:3000>
+
+Recommended environment selection:
+
+- Local development: `TESTFORGE_ENV=development`
+- Shared test or preview: `TESTFORGE_ENV=staging`
+- Production deployment: `TESTFORGE_ENV=production`
 
 Verification checklist:
 

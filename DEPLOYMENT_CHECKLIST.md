@@ -86,14 +86,20 @@
 
 ### 1. Enable Consolidated Mode
 
-Set the following in `.env`:
+Set the following in `.env` or the matching environment-specific file:
 
 ```env
+# Choose the environment overlay for FastAPI
+TESTFORGE_ENV=production
+
 # Enable backend proxying through Next.js API routes
 TESTFORGE_BACKEND_BASE_URL=http://localhost:8000
 
 # FastAPI root redirects here
 TESTFORGE_NEXT_UI_URL=http://localhost:3000
+
+# Public origin for Next.js metadata
+NEXT_PUBLIC_SITE_URL=https://your-testforge-host
 ```
 
 ### 2. Restart Services
@@ -104,7 +110,7 @@ Ctrl+C (if running in terminal)
 uvicorn app:app --reload
 
 # Restart Next.js (in separate terminal)
-npm run dev
+npm run start:production
 ```
 
 ### 3. Verify Consolidated Routes
@@ -161,6 +167,22 @@ Expected: Returns success confirmation.
 
 ---
 
+## Environment Profiles
+
+- `.env.development`: local defaults for localhost workflows
+- `.env.staging`: shared environment defaults for preview or staging
+- `.env.production`: production-safe placeholders that must be finalized before release
+
+FastAPI loads `.env` and then overlays `.env.<TESTFORGE_ENV>` when `TESTFORGE_ENV` is set.
+Next.js uses the matching scripts:
+
+- `npm run dev:development`
+- `npm run dev:staging`
+- `npm run build:staging`
+- `npm run build:production`
+- `npm run start:staging`
+- `npm run start:production`
+
 ## Legacy Fallback (Rollback Plan)
 
 If consolidated mode needs to revert:
@@ -178,9 +200,10 @@ If consolidated mode needs to revert:
    npm run dev
    ```
 
-3. **Legacy UI still accessible on FastAPI**:
-   - FastAPI root at `http://localhost:8000` will serve the legacy HTML UI.
-   - All `/api/*` endpoints remain functional on FastAPI.
+3. **Backend endpoints still accessible on FastAPI**:
+
+- FastAPI root at `http://localhost:8000` will continue redirecting to Next.js.
+- All `/api/*` endpoints remain functional on FastAPI.
 
 ---
 

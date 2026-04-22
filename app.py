@@ -20,7 +20,31 @@ from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
 from pydantic import BaseModel
 
-load_dotenv()
+
+def load_runtime_env() -> None:
+    root_dir = Path(__file__).parent
+    base_env_file = root_dir / ".env"
+
+    if base_env_file.exists():
+        load_dotenv(base_env_file)
+
+    env_name = (
+        os.getenv("TESTFORGE_ENV")
+        or os.getenv("APP_ENV")
+        or os.getenv("ENVIRONMENT")
+        or os.getenv("NODE_ENV")
+        or ""
+    ).strip().lower()
+
+    if not env_name:
+        return
+
+    env_file = root_dir / f".env.{env_name}"
+    if env_file.exists():
+        load_dotenv(env_file, override=True)
+
+
+load_runtime_env()
 
 app = FastAPI(title="TestForge", version="1.0.0")
 
