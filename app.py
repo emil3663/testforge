@@ -14,7 +14,7 @@ import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
@@ -47,6 +47,31 @@ def load_runtime_env() -> None:
 load_runtime_env()
 
 app = FastAPI(title="TestForge", version="1.0.0")
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    request_id = request.headers.get("X-TestForge-Request-Id") or uuid.uuid4().hex
+    response.headers["X-TestForge-Request-Id"] = request_id
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["Content-Security-Policy"] = "; ".join(
+        [
+            "default-src 'self'",
+            "base-uri 'self'",
+            "frame-ancestors 'none'",
+            "form-action 'self'",
+            "img-src 'self' data: blob: https:",
+            "font-src 'self' data:",
+            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "connect-src 'self' http: https: ws: wss:",
+        ]
+    )
+    return response
 
 # ---------------------------------------------------------------------------
 # Static files & templates

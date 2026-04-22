@@ -6,6 +6,10 @@ function normalizeBaseUrl(input: string) {
     return input.replace(/\/+$/, "");
 }
 
+function isAllowedBackendProtocol(value: string) {
+    return value === "http:" || value === "https:";
+}
+
 export function getBackendBaseUrl() {
     const configured = process.env.TESTFORGE_BACKEND_BASE_URL?.trim();
 
@@ -13,7 +17,21 @@ export function getBackendBaseUrl() {
         return null;
     }
 
-    return normalizeBaseUrl(configured);
+    try {
+        const parsed = new URL(configured);
+
+        if (!isAllowedBackendProtocol(parsed.protocol)) {
+            return null;
+        }
+
+        if (parsed.username || parsed.password || parsed.search || parsed.hash) {
+            return null;
+        }
+
+        return normalizeBaseUrl(parsed.toString());
+    } catch {
+        return null;
+    }
 }
 
 export function isExternalBackendEnabled() {
