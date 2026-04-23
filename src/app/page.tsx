@@ -343,6 +343,7 @@ interface RunProgressSnapshot {
         title: string;
         linkLabel: string | null;
         status: "not-run" | "running" | "passed" | "failed" | "flaky" | "blocked" | "interrupted";
+        duration: number | null;
     }[];
 }
 
@@ -373,12 +374,12 @@ function getContinuationExcludedTitles(result: RunResult | null) {
 }
 
 function escapeReportHtml(value: string) {
-        return value
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/\"/g, "&quot;")
-                .replace(/'/g, "&#39;");
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 function buildReportHtmlDocument(report: RunReport, runId: string) {
@@ -426,14 +427,14 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
                 ${escapeReportHtml(recommendation.rationale)}
             </li>`).join("") || "<li>No SEO recommendations were generated for this run.</li>";
     const seoPagesMarkup = report.seo.pageGroups.map((group) => {
-                const checksMarkup = group.checks.map((check) => `
+        const checksMarkup = group.checks.map((check) => `
                                 <tr>
                                         <td>${escapeReportHtml(check.label)}</td>
                                         <td>${escapeReportHtml(check.status)}</td>
                                         <td>${escapeReportHtml(check.evidence.map((record) => `${record.browser}: ${record.title} (${record.status})`).join(" | ") || "No explicit evidence captured.")}</td>
                                 </tr>`).join("");
-                const findingsMarkup = group.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No failed checks for this page.</li>";
-                return `
+        const findingsMarkup = group.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No failed checks for this page.</li>";
+        return `
                                 <section>
                                         <h3>${escapeReportHtml(group.pageLabel)}</h3>
                                         <ul>${findingsMarkup}</ul>
@@ -442,12 +443,12 @@ function buildReportHtmlDocument(report: RunReport, runId: string) {
                                                 <tbody>${checksMarkup}</tbody>
                                         </table>
                                 </section>`;
-        }).join("");
+    }).join("");
 
-        const evidenceMarkup = report.usability.sessionEvidence.map((item) => `
+    const evidenceMarkup = report.usability.sessionEvidence.map((item) => `
                 <li>${escapeReportHtml(item.label)} | ${escapeReportHtml(item.browser)} | ${escapeReportHtml(item.testTitle)} | ${escapeReportHtml(item.fileName)}${item.defectTitle ? ` | ${escapeReportHtml(item.defectId ?? "")} - ${escapeReportHtml(item.defectTitle)}` : ""}</li>`).join("") || "<li>No session evidence captured for this run.</li>";
 
-        return `<!doctype html>
+    return `<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -541,7 +542,7 @@ function buildExecutionOutputHtmlDocument(result: RunResult) {
         : "Structured report data was not available for this run, so only the raw console output is shown.";
     const fallbackExecutionMarkup = buildFallbackExecutionHtmlMarkup(result.progress);
 
-        return `<!doctype html>
+    return `<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -577,9 +578,9 @@ function buildExecutionOutputHtmlDocument(result: RunResult) {
 }
 
 function buildResultHtmlDocument(result: RunResult) {
-        return result.report
-                ? buildReportHtmlDocument(result.report, result.runId)
-                : buildExecutionOutputHtmlDocument(result);
+    return result.report
+        ? buildReportHtmlDocument(result.report, result.runId)
+        : buildExecutionOutputHtmlDocument(result);
 }
 
 function mapFallbackExecutionStatus(
@@ -637,6 +638,7 @@ function getFallbackExecutionRecords(progress: RunProgressSnapshot) {
         id: execution.id,
         title: execution.title,
         linkLabel: execution.linkLabel,
+        duration: execution.duration,
         status: mapFallbackExecutionStatus(execution.status),
         remarks: fallbackExecutionSummary(mapFallbackExecutionStatus(execution.status)),
     }));
@@ -737,6 +739,7 @@ function buildFallbackExecutionHtmlMarkup(progress: RunProgressSnapshot) {
             <li>
                 <strong>${escapeReportHtml(record.title)}</strong><br />
                 Status: ${escapeReportHtml(record.status)}<br />
+                Duration: ${escapeReportHtml(record.duration !== null ? formatMilliseconds(record.duration) : "Not captured")}<br />
                 ${escapeReportHtml(record.remarks)}
             </li>`).join("")}
         </ul>`;
@@ -1070,6 +1073,9 @@ function FallbackExecutionTable({ progress }: { progress: RunProgressSnapshot })
                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${fallbackStatusClasses(record.status)}`}>
                             {record.status}
                         </span>
+                    </div>
+                    <div className="mt-3 inline-flex rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
+                        Duration: {record.duration !== null ? formatMilliseconds(record.duration) : "Not captured"}
                     </div>
                     <div className="mt-3 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm leading-6 text-zinc-600">
                         {record.remarks}
@@ -1802,26 +1808,26 @@ export default function Home() {
         }
     }
 
-        async function handleExportHtmlReport(report: RunReport, runId: string) {
-            try {
-                const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-                const fileName = `testforge-report-${runId}-${timestamp}.html`;
-                const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
-                const objectUrl = URL.createObjectURL(blob);
-                const anchor = document.createElement("a");
-                anchor.href = objectUrl;
-                anchor.download = fileName;
-                document.body.appendChild(anchor);
-                anchor.click();
-                anchor.remove();
-                URL.revokeObjectURL(objectUrl);
-                setHtmlReportExportLabel("HTML report saved");
-                setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
-            } catch {
-                setHtmlReportExportLabel("Save failed");
-                setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
-            }
+    async function handleExportHtmlReport(report: RunReport, runId: string) {
+        try {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const fileName = `testforge-report-${runId}-${timestamp}.html`;
+            const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
+            const objectUrl = URL.createObjectURL(blob);
+            const anchor = document.createElement("a");
+            anchor.href = objectUrl;
+            anchor.download = fileName;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            URL.revokeObjectURL(objectUrl);
+            setHtmlReportExportLabel("HTML report saved");
+            setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
+        } catch {
+            setHtmlReportExportLabel("Save failed");
+            setTimeout(() => setHtmlReportExportLabel("Save report as HTML"), 2000);
         }
+    }
 
     const isGenerating = step === "generating";
     const isRunning = step === "running";
@@ -2096,26 +2102,26 @@ export default function Home() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/35 px-6 backdrop-blur-sm">
                     <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-white/70 bg-white/95 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
                         <div>
-                        <div className="flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-[0_12px_32px_rgba(79,70,229,0.28)]">
-                                <Spinner />
-                            </div>
-                            <div>
-                                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">
-                                    {isGenerating ? "Generating" : "Running"}
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-[0_12px_32px_rgba(79,70,229,0.28)]">
+                                    <Spinner />
                                 </div>
-                                <div className="mt-1 text-lg font-semibold text-zinc-950">
-                                    {busyLabel}
+                                <div>
+                                    <div className="text-sm font-semibold uppercase tracking-[0.18em] text-indigo-600">
+                                        {isGenerating ? "Generating" : "Running"}
+                                    </div>
+                                    <div className="mt-1 text-lg font-semibold text-zinc-950">
+                                        {busyLabel}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <p className="mt-4 text-sm leading-6 text-zinc-500">
-                            {isGenerating
-                                ? "TestForge is inspecting the requested pages and translating the results into concrete Playwright assertions."
-                                : isCancellingRun
-                                    ? "TestForge is stopping the running suite and preserving the latest available execution state."
-                                    : "TestForge is executing the generated suite and collecting structured reporting data."}
-                        </p>
+                            <p className="mt-4 text-sm leading-6 text-zinc-500">
+                                {isGenerating
+                                    ? "TestForge is inspecting the requested pages and translating the results into concrete Playwright assertions."
+                                    : isCancellingRun
+                                        ? "TestForge is stopping the running suite and preserving the latest available execution state."
+                                        : "TestForge is executing the generated suite and collecting structured reporting data."}
+                            </p>
                         </div>
                         {isRunning ? (
                             <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4 text-xs leading-5 text-zinc-600">
@@ -2214,6 +2220,9 @@ export default function Home() {
                                                         className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${livePlannedExecutionStatusClasses(execution.status)}`}
                                                     >
                                                         {livePlannedExecutionStatusLabel(execution.status)}
+                                                    </span>
+                                                    <span className="inline-flex shrink-0 rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-700">
+                                                        {execution.duration !== null ? formatMilliseconds(execution.duration) : "--"}
                                                     </span>
                                                 </div>
                                             ))}

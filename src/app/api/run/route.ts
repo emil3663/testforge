@@ -417,6 +417,7 @@ interface PlannedExecutionSnapshot {
     title: string;
     linkLabel: string | null;
     status: PlannedExecutionStatus;
+    duration: number | null;
 }
 
 interface RunProgressSnapshot {
@@ -583,6 +584,7 @@ interface RunJob {
 }
 
 const PROGRESS_PREFIX = "TESTFORGE_PROGRESS ";
+const RUN_TIMEOUT_GRACE_MS = 15_000;
 const globalRunJobs = globalThis as typeof globalThis & {
     __testforgeRunJobs?: Map<string, RunJob>;
 };
@@ -643,22 +645,22 @@ function buildRunSelection(code: string, excludedTestTitles: string[], includedT
 function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean) {
     if (auditMode === "deep") {
         return {
-            baseTimeout: isLinkHeavySuite ? 240_000 : 150_000,
-            perExecutionBudget: isLinkHeavySuite ? 22_500 : 15_000,
+            baseTimeout: isLinkHeavySuite ? 300_000 : 180_000,
+            perExecutionBudget: isLinkHeavySuite ? 30_000 : 20_000,
             minTimeout: 240_000,
-            maxTimeout: 1_500_000,
+            maxTimeout: 2_700_000,
             crossBrowserMinTimeout: 360_000,
-            crossBrowserMaxTimeout: 1_800_000,
+            crossBrowserMaxTimeout: 3_600_000,
         };
     }
 
     return {
         baseTimeout: 60_000,
-        perExecutionBudget: isLinkHeavySuite ? 12_500 : 7_500,
+        perExecutionBudget: isLinkHeavySuite ? 15_000 : 10_000,
         minTimeout: 120_000,
-        maxTimeout: 900_000,
+        maxTimeout: 1_800_000,
         crossBrowserMinTimeout: 360_000,
-        crossBrowserMaxTimeout: 1_200_000,
+        crossBrowserMaxTimeout: 2_400_000,
     };
 }
 
@@ -716,11 +718,19 @@ function updateActiveExecutions(job: RunJob) {
     job.progress.currentLinkLabel = job.progress.activeExecutions[0]?.linkLabel ?? null;
 }
 
-function updatePlannedExecutionStatus(job: RunJob, id: string, status: PlannedExecutionStatus) {
+function updatePlannedExecutionStatus(
+    job: RunJob,
+    id: string,
+    status: PlannedExecutionStatus,
+    duration?: number | null
+) {
     const execution = job.progress.plannedExecutions.find((entry) => entry.id === id);
 
     if (execution) {
         execution.status = status;
+        if (duration !== undefined) {
+            execution.duration = duration;
+        }
     }
 }
 
@@ -732,6 +742,7 @@ function syncPlannedExecutions(job: RunJob, plannedTests: Array<{ id: string; ti
                 title: test.title,
                 linkLabel: deriveLinkLabel(test.title),
                 status: "not-run" as PlannedExecutionStatus,
+                duration: null,
             });
         }
 
@@ -809,7 +820,7 @@ function handleProgressEvent(job: RunJob, line: string) {
         const event = JSON.parse(payload) as
             | { type: "begin"; total: number; tests?: Array<{ id: string; title: string }> }
             | { type: "test-begin"; id: string; title: string }
-            | { type: "test-end"; id: string; title: string; status?: string };
+            | { type: "test-end"; id: string; title: string; status?: string; duration?: number };
 
         if (event.type === "begin") {
             job.progress.totalTests = Math.max(job.progress.totalTests, event.total || 0);
@@ -827,7 +838,7 @@ function handleProgressEvent(job: RunJob, line: string) {
                 title: event.title,
                 linkLabel: deriveLinkLabel(event.title),
             });
-            updatePlannedExecutionStatus(job, event.id, "running");
+            updatePlannedExecutionStatus(job, event.id, "running", null);
             updateActiveExecutions(job);
             return true;
         }
@@ -839,7 +850,7 @@ function handleProgressEvent(job: RunJob, line: string) {
 
             job.progress.completedTests += 1;
             job.progress.lastCompletedTitle = event.title;
-            updatePlannedExecutionStatus(job, event.id, mapResultStatusToPlannedStatus(event.status));
+            updatePlannedExecutionStatus(job, event.id, mapResultStatusToPlannedStatus(event.status), event.duration ?? null);
             updateCompletedCounts(job, event.status);
             updateActiveExecutions(job);
             return true;
@@ -898,7 +909,7 @@ function buildProgressReporterSource() {
   }
 
   onTestEnd(test, result) {
-    this.emit({ type: 'test-end', id: test.id, title: test.title, status: result.status });
+        this.emit({ type: 'test-end', id: test.id, title: test.title, status: result.status, duration: result.duration });
   }
 }
 
@@ -1060,6 +1071,7 @@ async function startRunJob(
     }
 
     const workerCount = calculateWorkerCount(auditMode, includesCrossBrowser);
+    const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
         browserProjects.length,
@@ -1140,6 +1152,9 @@ async function startRunJob(
 
     job.process = child;
     runJobs.set(runId, job);
+    job.outputChunks.push(
+        `Run budget: up to ${Math.round(runTimeout / 1000)}s for ~${estimatedExecutions} execution(s) across ${browserProjects.length} browser project(s) in ${auditMode} mode.\n`
+    );
 
     child.stdout?.setEncoding("utf8");
     child.stderr?.setEncoding("utf8");
@@ -1149,16 +1164,30 @@ async function startRunJob(
         job.outputChunks.push(`${error.message}\n`);
     });
 
+    let forceStopTimer: NodeJS.Timeout | null = null;
+
     const timeoutId = setTimeout(() => {
         if (job.status === "running" && child.exitCode === null) {
             job.cancellationRequested = true;
-            child.kill("SIGTERM");
-            job.outputChunks.push("Run timed out and was stopped by TestForge.\n");
+            job.outputChunks.push(
+                `Run timed out after ${Math.round(runTimeout / 1000)}s and TestForge requested a graceful stop.\n`
+            );
+            child.kill("SIGINT");
+
+            forceStopTimer = setTimeout(() => {
+                if (job.status === "running" && child.exitCode === null) {
+                    child.kill("SIGTERM");
+                    job.outputChunks.push("Playwright did not stop in time, so TestForge forced termination.\n");
+                }
+            }, RUN_TIMEOUT_GRACE_MS);
         }
     }, runTimeout);
 
     child.on("close", () => {
         clearTimeout(timeoutId);
+        if (forceStopTimer) {
+            clearTimeout(forceStopTimer);
+        }
         appendProcessOutput(job, "", true);
         void finalizeRunJob(job);
     });
@@ -1384,14 +1413,14 @@ function buildExecutionSteps(
 ) {
     if (interactionType) {
         return [
-            `Opened the generated ${suiteName} scenario in ${browserName}.`,
+            `Reused the active ${browserName} session for generated ${suiteName} checks.`,
             `Executed the ${interactionType.toLowerCase()} element check for ${normalizeExecutionTitle(title)}.`,
             `Validated the observed outcome: ${message.split("\n")[0]}.`,
         ];
     }
 
     return [
-        `Opened the generated ${suiteName} scenario in ${browserName}.`,
+        `Reused the active ${browserName} session for generated ${suiteName} checks.`,
         `Executed the test case: ${title}.`,
         `Validated the observed outcome: ${message.split("\n")[0]}.`,
     ];
