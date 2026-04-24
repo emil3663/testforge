@@ -120,6 +120,19 @@ const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
     database: "Database",
 };
 
+const SUITE_AREA_CODES: Record<BestPracticeArea, string> = {
+    functional: "FU",
+    "cross-browser": "CB",
+    "responsive/mobile": "RM",
+    "performance/load": "PL",
+    security: "SC",
+    accessibility: "AC",
+    usability: "US",
+    "seo/content": "SE",
+    "cookie/session": "CS",
+    database: "DB",
+};
+
 const SUITE_TITLES: Record<BestPracticeArea, string> = {
     functional: "Functional Coverage",
     "cross-browser": "Cross-Browser Coverage",
@@ -2267,9 +2280,15 @@ function renderSuites(suites: GeneratedSuite[]) {
                 ? `${suite.notes.map((note) => `// ${note}`).join("\n")}\n`
                 : "";
 
+            const areaCode = SUITE_AREA_CODES[suite.area] ?? "GN";
+            const numberedTests = suite.tests.map((testStr, index) => {
+                const id = `TF${areaCode}-${String(index + 1).padStart(3, "0")}`;
+                return testStr.replace(/^(\s*test\(['"])/, (match) => `${match}${id}: `);
+            });
+
             return `${notes}test.describe('${escapeForSingleQuotedString(
                 suite.title
-            )}', () => {\n${suite.tests.join("\n\n")}\n});`;
+            )}', () => {\n${numberedTests.join("\n\n")}\n});`;
         })
         .join("\n\n");
 }
