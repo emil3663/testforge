@@ -1524,6 +1524,14 @@ export default function Home() {
             return;
         }
 
+        const hasCompletedPlannedTests =
+            result.progress.totalTests === 0 ||
+            result.progress.completedTests >= result.progress.totalTests;
+
+        if (result.runStatus === "cancelled" || !hasCompletedPlannedTests) {
+            return;
+        }
+
         if (autoOpenedReportRunIdRef.current === result.runId) {
             return;
         }
@@ -1681,15 +1689,10 @@ export default function Home() {
             return;
         }
 
-        if (openReportInNewPage) {
-            reportWindowRef.current = window.open("about:blank", "_blank");
-            setReportPopupNotice(reportWindowRef.current
-                ? ""
-                : "Your browser blocked the report page. The latest results will stay embedded below.");
-        } else {
+        if (!openReportInNewPage) {
             reportWindowRef.current = null;
-            setReportPopupNotice("");
         }
+        setReportPopupNotice("");
 
         setStep("running");
         setResult(null);

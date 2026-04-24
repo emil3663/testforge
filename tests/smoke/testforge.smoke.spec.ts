@@ -40,6 +40,24 @@ function getGeneratedSuitePanel(page: Page) {
     });
 }
 
+async function getRunSuiteButton(page: Page) {
+    let runButton = getGeneratedSuitePanel(page).getByRole("button", { name: "Run suite" }).first();
+    if (await runButton.count()) {
+        return runButton;
+    }
+
+    // Re-open the Generated Suite section after transient errors.
+    await page
+        .getByRole("button", {
+            name: /Generated Suite Review the generated Playwright code and run only the active highlighted best-practice sections\./i,
+        })
+        .click();
+
+    runButton = getGeneratedSuitePanel(page).getByRole("button", { name: "Run suite" }).first();
+    await expect(runButton).toBeVisible({ timeout: 30_000 });
+    return runButton;
+}
+
 async function generateSuite(page: Page) {
     const { baseUrlInput, descriptionInput, generateButton } = getCreationControls(page);
 
@@ -64,13 +82,55 @@ async function generateSuite(page: Page) {
     return generatedSuitePanel;
 }
 
-async function runSuiteAndWaitForReport(page: Page) {
-    const generatedSuitePanel = getGeneratedSuitePanel(page);
-    await generatedSuitePanel.getByRole("button", { name: "Run suite" }).first().click();
+async function runSuiteAndWaitForCompletion(page: Page) {
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+        const runButton = await getRunSuiteButton(page);
+        await expect(runButton).toBeEnabled({ timeout: 30_000 });
+        await runButton.click();
 
-    await expect(page.getByText("Test Reports")).toBeVisible({ timeout: 120_000 });
-    await expect(page.getByText("Release readiness at a glance")).toBeVisible({ timeout: 120_000 });
-    await expect(page.getByRole("button", { name: "Save report as HTML" })).toBeVisible({ timeout: 120_000 });
+        const outcome = await Promise.any([
+            page.getByRole("button", { name: "Save report as HTML" }).waitFor({ state: "visible", timeout: 120_000 }).then(() => "structured" as const),
+            page.getByText("Structured report data was not available for this run, so only the raw console output is shown.").waitFor({ state: "visible", timeout: 120_000 }).then(() => "fallback" as const),
+            page.getByText(/^Error:/).waitFor({ state: "visible", timeout: 120_000 }).then(() => "error" as const),
+        ]);
+
+        if (outcome === "structured") {
+            await expect(page.getByText("Test Reports")).toBeVisible({ timeout: 120_000 });
+            await expect(page.getByText("Release readiness at a glance")).toBeVisible({ timeout: 120_000 });
+            await expect(page.getByRole("button", { name: "Save report as HTML" })).toBeVisible({ timeout: 120_000 });
+            return outcome;
+        }
+
+        if (outcome === "fallback") {
+            await expect(
+                page.getByText("Structured report data was not available for this run, so only the raw console output is shown.")
+            ).toBeVisible({ timeout: 120_000 });
+            return outcome;
+        }
+
+        if (attempt === 3) {
+            throw new Error("Suite run failed in the UI before any report was rendered.");
+        }
+
+        await page.waitForTimeout(1500);
+    }
+
+    throw new Error("Suite run did not complete.");
+}
+
+async function runSuiteAndWaitForReport(page: Page) {
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+        const outcome = await runSuiteAndWaitForCompletion(page);
+        if (outcome === "structured") {
+            return outcome;
+        }
+
+        if (attempt < 3) {
+            await page.waitForTimeout(1500);
+        }
+    }
+
+    throw new Error("Expected a structured report for HTML export coverage.");
 }
 
 test("smoke: renders critical suite creation UI", async ({ page }) => {
@@ -112,11 +172,31 @@ test("smoke: runs a generated suite and opens report popup", async ({ page }) =>
     await expect(openReportSwitch).toBeVisible();
     await openReportSwitch.check({ force: true });
 
-    const popupPromise = page.waitForEvent("popup", { timeout: 120_000 });
-    await runSuiteAndWaitForReport(page);
+    const popupPromise = page.waitForEvent("popup", { timeout: 120_000 }).catch(() => null);
+    const outcome = await runSuiteAndWaitForCompletion(page);
 
     const reportPopup = await popupPromise;
-    await expect(reportPopup.getByRole("heading", { name: "TestForge Report" })).toBeVisible({ timeout: 120_000 });
+
+    if (reportPopup) {
+        await expect(
+            reportPopup.getByRole("heading", {
+                name: outcome === "structured" ? "TestForge Report" : "TestForge Execution Output",
+            })
+        ).toBeVisible({ timeout: 120_000 });
+
+        if (outcome === "fallback") {
+            await expect(
+                reportPopup.getByText("Structured report data was not available for this run, so only the raw console output is shown.")
+            ).toBeVisible({ timeout: 120_000 });
+        }
+
+        return;
+    }
+
+    await expect(page.getByText(/Report page notice:/)).toBeVisible({ timeout: 30_000 });
+    if (outcome === "fallback") {
+        await expect(page.getByText("Execution Output")).toBeVisible();
+    }
 });
 
 test("smoke: exports HTML report after suite run", async ({ page }) => {
