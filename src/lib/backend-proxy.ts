@@ -65,6 +65,10 @@ export interface ProxyJsonResult<T> {
     target: string;
 }
 
+export function shouldFallbackToLocalBackend(status: number) {
+    return status === 502 || status === 503 || status === 504;
+}
+
 export async function proxyJsonRequest<T>(options: ProxyJsonOptions) {
     const { path, method, body, headers, cache } = options;
     const target = buildBackendUrl(path.startsWith(LOCAL_API_PREFIX) ? path : `${LOCAL_API_PREFIX}${path}`);

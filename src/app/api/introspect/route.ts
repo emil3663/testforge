@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { chromium } from "@playwright/test";
-import { isExternalBackendEnabled, proxyJsonRequest } from "@/lib/backend-proxy";
+import { isExternalBackendEnabled, proxyJsonRequest, shouldFallbackToLocalBackend } from "@/lib/backend-proxy";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_PATHS = 5;
@@ -146,7 +146,11 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        return NextResponse.json(proxied.data, { status: proxied.status });
+        if (!proxied.ok && shouldFallbackToLocalBackend(proxied.status)) {
+            // External backend is configured but unreachable; continue with local introspection.
+        } else {
+            return NextResponse.json(proxied.data, { status: proxied.status });
+        }
     }
 
     const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
