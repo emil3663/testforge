@@ -734,6 +734,7 @@ function buildExecutionOutputHtmlDocument(result: RunResult) {
 </head>
 <body>
     <main>
+        <h1>TestForge Execution Output</h1>
         <section>
             <h2>Structured report status</h2>
             <p>${escapeReportHtml(executionOutputMessage)}</p>

@@ -56,7 +56,11 @@
     "**/.next": true,
     "**/test-results": true,
     "**/.playwright-runs": true,
-    "**/runs": false
+    "**/runs": false,
+    "**/*.rpyc": true,
+    "**/*.rpa": true,
+    "**/*.rpymc": true,
+    "**/cache/": true
   },
   "search.exclude": {
     "**/__pycache__": true,
