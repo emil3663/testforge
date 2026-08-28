@@ -31,6 +31,12 @@ const eslintConfig = defineConfig([
   },
   ...nextVitals,
   ...nextTs,
+  {
+    files: ["src/**/*.ts", "src/**/*.tsx"],
+    rules: {
+      "max-lines": ["error", { max: 500, skipBlankLines: false, skipComments: false }],
+    },
+  },
 ]);
 
 export default eslintConfig;
