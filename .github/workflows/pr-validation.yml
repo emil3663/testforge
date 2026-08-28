@@ -36,8 +36,19 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Run smoke tests
-        run: npm run test:self
+      - name: Run smoke tests with Allure
+        run: npm run test:self:allure
+
+      - name: Upload smoke Allure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-smoke-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            artifacts/allure-report/smoke
+            artifacts/allure-results/smoke
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Comment PR on success
         if: success()
