@@ -624,7 +624,9 @@ must land before Gate C can be honestly declared complete.
 - Build, lint, smoke and regression all pass.
 
 ### Gate C — Decomposition complete
-- No file under `src/` exceeds 500 lines.
+- No file under `src/` exceeds 500 lines, with one documented exception:
+  `src/lib/introspect/dom-snapshot.ts`, the function passed by reference to
+  Playwright's `page.evaluate` (see the decision record, Decision 5).
 - `npm run lint` enforces that limit.
 - Smoke and regression pass with no assertion changes made during this phase.
 - HTML report export is unchanged for an identical run.

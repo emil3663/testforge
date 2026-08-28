@@ -53,7 +53,13 @@ structure that existed to support the other answer.
 - `src/app/page.tsx` is split into section components under `src/app/_components/`.
 - `src/app/api/generate/route.ts` and `src/app/api/run/route.ts` are split into
   modules under `src/lib/`.
-- No source file exceeds 500 lines on completion.
+- No source file exceeds 500 lines on completion, with one named exception:
+  `src/lib/introspect/dom-snapshot.ts` (673 lines), the function passed by
+  reference to Playwright's `page.evaluate`. Playwright serializes only that
+  function's own source text and runs it inside the browser's isolated JS
+  context, with no access to this module's scope — its ~18 nested helpers
+  cannot be extracted into importable files without throwing `ReferenceError`
+  at runtime. This is the only file in the repository under this exception.
 - Decomposition is behaviour-preserving: no user-visible change ships with it.
 
 6. Tracked build and test artifacts are removed from version control.
@@ -88,7 +94,8 @@ structure that existed to support the other answer.
 - Every command listed in `README.md` exists in `package.json`.
 
 5. Decomposition
-- `wc -l` reports no file over 500 lines under `src/`.
+- `wc -l` reports no file over 500 lines under `src/`, with the one named
+  exception in Decision 5 (`src/lib/introspect/dom-snapshot.ts`).
 - The regression suite passes with no assertion changes.
 - No route or component exports change name or signature without a
   corresponding test update.
