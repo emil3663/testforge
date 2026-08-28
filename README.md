@@ -1,7 +1,7 @@
 # TestForge
 
 **TestForge is an AI-native test automation assistant that works alongside testers, not instead of them.**  
-You tell it what you want to test in plain English. It writes Python Playwright code. You review it, run it, and learn from it. The AI handles the syntax; you provide the judgment.
+You tell it what you want to test in plain English. It writes TypeScript Playwright code. You review it, run it, and learn from it. The AI handles the syntax; you provide the judgment.
 
 ---
 
@@ -37,10 +37,10 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 
 | Tool | Purpose |
 |---|---|
-| **VS Code** | Code editor — open this repo as a workspace |
-| **GitHub Copilot** | AI assistant in VS Code (install from the extension marketplace) |
-| **Python 3.11+** | TestForge runs on Python |
+| **Node.js 20+** | TestForge runs on Next.js |
 | **Docker Desktop** | Runs Plane — the test target application |
+| **VS Code** | Code editor — open this repo as a workspace (optional) |
+| **GitHub Copilot** | AI assistant in VS Code (optional, install from the extension marketplace) |
 | **Git** | Version control |
 
 ---
@@ -48,10 +48,12 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 ## Features
 
 - **Plain-English input** — Describe what you want to test the way you'd explain it to a colleague.
-- **AI-generated Python code** — Clean, idiomatic `pytest-playwright` test files with descriptive names and inline comments so you can learn from them.
-- **In-browser code editor** — Review and edit the generated code before running it.
-- **One-click test execution** — Run the test directly from the UI and see pass/fail results with output.
-- **No lock-in** — The generated code is standard Python you can copy, version-control, and extend.
+- **AI-generated TypeScript code** — OpenAI GPT-4o generates `.spec.ts` Playwright suites with descriptive test names; a template-based generator produces a working suite when no API key is configured.
+- **Site crawl and page introspection** — TestForge can crawl the target site and inspect individual pages to generate content-aware coverage instead of guessing at selectors.
+- **In-browser code editor** — Review and edit the generated suite before running it.
+- **Async run lifecycle** — Runs execute in the background with live progress, cancellation, and targeted rerun of just the failed tests.
+- **Seven-tab structured report** — Summary, execution, defects, coverage, performance, usability, and (when SEO coverage is selected) SEO, each with an HTML export.
+- **No lock-in** — The generated code is a standard Playwright TypeScript suite you can copy, version-control, and extend, or open directly in VS Code's Test Explorer.
 
 ---
 
@@ -61,11 +63,11 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 
 | Tool | Version | Notes |
 |---|---|---|
-| Python | 3.11+ | [python.org](https://python.org) |
+| Node.js | 20+ | [nodejs.org](https://nodejs.org) |
 | Git | any | [git-scm.com](https://git-scm.com) |
 | Docker Desktop | latest | [docker.com](https://docker.com) — needed to run Plane |
-| VS Code | latest | [code.visualstudio.com](https://code.visualstudio.com) |
-| GitHub Copilot | extension | Install from VS Code marketplace |
+| VS Code | latest | [code.visualstudio.com](https://code.visualstudio.com) (optional) |
+| GitHub Copilot | extension | Install from VS Code marketplace (optional) |
 
 ---
 
@@ -76,64 +78,31 @@ git clone https://github.com/emil3663/testforge.git
 cd testforge
 ```
 
-### 2. Open in VS Code
+### 2. Install dependencies
 
 ```bash
-code .
+npm install
 ```
 
-When prompted, install the **recommended extensions** (GitHub Copilot, Python, Playwright, Docker). Or open the Extensions panel and search `@recommended`.
-
-### 3. Create a Python virtual environment
+### 3. Install the Playwright browser
 
 ```bash
-python -m venv .venv
+npx playwright install chromium
 ```
 
-Activate it:
-
-| Platform | Command |
-|---|---|
-| macOS / Linux | `source .venv/bin/activate` |
-| Windows (PowerShell) | `.venv\Scripts\Activate.ps1` |
-| Windows (cmd.exe) | `.venv\Scripts\activate.bat` |
-
-VS Code will detect `.venv` automatically and use it as the Python interpreter.
-
-### 4. Install Python dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Install the Playwright browser
-
-```bash
-playwright install chromium
-```
-
-### 6. Configure your environment
+### 4. Configure your environment
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and add your OpenAI API key (optional — TestForge works without it using a sample template):
+Edit `.env` and add your OpenAI API key (optional — TestForge works without it using a template-based generator):
 
 ```
 OPENAI_API_KEY=sk-...
 ```
 
-Environment-specific templates are also available:
-
-- `.env.development`
-- `.env.staging`
-- `.env.production`
-
-FastAPI loads `.env` first and then overlays `.env.<TESTFORGE_ENV>` when `TESTFORGE_ENV` is set.
-Next.js can be started with the matching scripts such as `npm run dev:staging` or `npm run build:production`.
-
-### 7. Start the test target (Plane) with Docker
+### 5. Start the test target (Plane) with Docker
 
 ```bash
 docker compose up -d
@@ -144,71 +113,71 @@ Wait about 60 seconds for all services to initialise. Plane will be available at
 > **First run**: Plane will prompt you to create an admin account at <http://localhost>.  
 > Use those credentials when describing login tests to TestForge.
 
-### 8. Start TestForge
+### 6. Start TestForge
 
 ```bash
-uvicorn app:app --reload
+npm run dev
 ```
 
-Open **<http://localhost:8000>** in your browser.
+Open **<http://localhost:3000>** in your browser.
 
 ---
 
 ## How it works
 
 1. **Enter the base URL** — e.g. `http://localhost` (where Plane is running).
-2. **Describe your test** — in plain English, as you'd explain it to a colleague.
-3. **Click "Generate test"** — TestForge calls OpenAI and receives a complete `pytest-playwright` Python test file.
-4. **Review the code** — read the comments, understand each step, edit if needed.
-5. **Click "Run test"** — the test runs on the server and results appear instantly.
+2. **Describe your test** — in plain English, as you'd explain it to a colleague. Optionally crawl the site or introspect a page first so generation is content-aware.
+3. **Click "Generate test suite"** — TestForge calls OpenAI and returns a complete TypeScript Playwright `.spec.ts` file.
+4. **Review the code** — read it, understand each step, edit if needed.
+5. **Click "Run suite"** — the suite runs against Chromium and a structured report appears with execution, defect, coverage, performance, usability, and (when applicable) SEO detail.
 
 ---
 
 ## Example generated test
 
-```python
-from playwright.sync_api import Page, expect
+```typescript
+import { test, expect } from '@playwright/test';
 
+test.describe('Login flow', () => {
+  test('user can sign in and reach the workspace dashboard', async ({ page }) => {
+    // Open the Plane login page
+    await page.goto('http://localhost');
 
-def test_login_with_valid_credentials(page: Page) -> None:
-    """User can sign in and reach the workspace dashboard."""
-    # Open the Plane login page
-    page.goto("http://localhost")
+    // Fill in credentials
+    await page.getByLabel('Email').fill('admin@example.com');
+    await page.getByLabel('Password').fill('your-password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
 
-    # Fill in credentials
-    page.get_by_label("Email").fill("admin@example.com")
-    page.get_by_label("Password").fill("your-password")
-    page.get_by_role("button", name="Sign in").click()
+    // Verify the dashboard is visible after login
+    await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible();
+  });
 
-    # Verify the dashboard is visible after login
-    expect(page.get_by_role("heading", name="Home")).to_be_visible()
+  test('wrong password shows an error', async ({ page }) => {
+    await page.goto('http://localhost');
+    await page.getByLabel('Email').fill('admin@example.com');
+    await page.getByLabel('Password').fill('wrong-password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
 
-
-def test_login_with_wrong_password_shows_error(page: Page) -> None:
-    """Wrong password displays a helpful error message."""
-    page.goto("http://localhost")
-    page.get_by_label("Email").fill("admin@example.com")
-    page.get_by_label("Password").fill("wrong-password")
-    page.get_by_role("button", name="Sign in").click()
-
-    # Error message should be visible
-    expect(page.get_by_text("Invalid credentials")).to_be_visible()
+    // Error message should be visible
+    await expect(page.getByText('Invalid credentials')).toBeVisible();
+  });
+});
 ```
 
 ---
 
 ## Running tests directly (without the UI)
 
-Generated tests are standard pytest files. Copy one and run it directly:
+Generated suites are standard Playwright `.spec.ts` files. Use "Save to suite" in the UI to write one into `.playwright-runs/generated-suites`, where VS Code's Test Explorer will pick it up automatically, or run it directly:
 
 ```bash
-pytest my_test.py -v --browser=chromium
+npx playwright test .playwright-runs/generated-suites/my-suite.spec.ts --project=chromium
 ```
 
-Or run all tests in the `runs/` folder:
+Or run every saved suite:
 
 ```bash
-pytest runs/ -v --browser=chromium
+npx playwright test --project=chromium
 ```
 
 ---
@@ -217,11 +186,11 @@ pytest runs/ -v --browser=chromium
 
 | Layer | Technology |
 |---|---|
-| Language | Python 3.11+ |
-| Web framework | [FastAPI](https://fastapi.tiangolo.com/) |
-| Browser automation | [Playwright for Python](https://playwright.dev/python/) |
-| Test runner | [pytest](https://pytest.org) + [pytest-playwright](https://github.com/microsoft/playwright-pytest) |
+| Framework | [Next.js](https://nextjs.org/) (App Router, TypeScript) |
+| Browser automation | [Playwright](https://playwright.dev/) |
+| Test runner | [Playwright Test](https://playwright.dev/docs/test-intro), Chromium only |
 | AI | [OpenAI GPT-4o](https://platform.openai.com/) |
+| Reporting | [Allure](https://allurereport.org/) (smoke and regression suites) |
 | Test target | [Plane](https://plane.so) via Docker |
 
 ---
@@ -230,23 +199,27 @@ pytest runs/ -v --browser=chromium
 
 | Command | Description |
 |---|---|
-| `uvicorn app:app --reload` | Start TestForge (dev mode with auto-reload) |
-| `uvicorn app:app` | Start TestForge (production mode) |
-| `docker compose up -d` | Start Plane (test target) |
-| `docker compose down` | Stop Plane |
-| `docker compose down -v` | Stop Plane and remove all data |
+| `npm run dev` | Start TestForge (dev mode) |
+| `npm run build` | Build TestForge for production |
+| `npm run start` | Start the production build |
+| `npm run lint` | Run ESLint |
+| `npm run test:self` | Run the smoke suite |
 | `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
+| `npm run test:regression` | Run the regression suite |
 | `npm run test:regression:allure` | Run the regression suite and generate an Allure report in `artifacts/allure-report/regression` |
 | `npm run report:open:smoke` | Open the latest local smoke Allure report |
 | `npm run report:open:regression` | Open the latest local regression Allure report |
-| `pytest runs/ -v` | Run all generated tests directly |
+| `docker compose up -d` | Start Plane (test target) |
+| `docker compose down` | Stop Plane |
+| `docker compose down -v` | Stop Plane and remove all data |
 
 ---
 
 ## CI reports
 
-- The smoke workflow uploads an Allure artifact on every CI run and keeps the latest 5 smoke-report artifacts.
-- The regression workflow can be triggered manually from GitHub Actions and also keeps the latest 5 regression-report artifacts.
+- The PR validation workflow runs lint, build, and the smoke suite with Allure on every pull request, and uploads a smoke Allure artifact.
+- The self-test workflow runs the same checks on every push to `main` and keeps the latest 5 smoke-report artifacts.
+- The regression workflow can be triggered manually from GitHub Actions and keeps the latest 5 regression-report artifacts.
 
 ---
 
@@ -304,35 +277,7 @@ docker compose ps
 
 ```powershell
 Invoke-WebRequest http://localhost -UseBasicParsing | Select-Object -ExpandProperty StatusCode
-Invoke-WebRequest http://localhost:8000 -UseBasicParsing | Select-Object -ExpandProperty StatusCode
+Invoke-WebRequest http://localhost:3000 -UseBasicParsing | Select-Object -ExpandProperty StatusCode
 ```
 
 Expected: both commands return `200` when Plane and TestForge are running.
-
-## Consolidation cutover (single UI mode)
-
-TestForge is being consolidated so the Next.js app at <http://localhost:3000> is the primary UI.
-
-Current state:
-
-1. FastAPI no longer serves the legacy HTML UI at `/`; it redirects to Next.js.
-
-Recommended cutover settings in .env:
-
-- TESTFORGE_NEXT_UI_URL=<http://localhost:3000>
-
-Recommended environment selection:
-
-- Local development: `TESTFORGE_ENV=development`
-- Shared test or preview: `TESTFORGE_ENV=staging`
-- Production deployment: `TESTFORGE_ENV=production`
-
-Verification checklist:
-
-1. Start Next.js and FastAPI services.
-1. Open <http://localhost:3000> and confirm generate/introspect/crawl/run/save-suite flows work.
-1. Open <http://localhost:8000> and confirm it redirects to <http://localhost:3000>.
-
-Rollback:
-
-1. Keep TESTFORGE_NEXT_UI_URL set to your preferred UI host.
