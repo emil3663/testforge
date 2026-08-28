@@ -5,7 +5,6 @@ const DEFAULT_BASE_URL = "http://localhost:3000";
 
 const BEST_PRACTICE_OPTIONS = [
     "functional",
-    "cross-browser",
     "responsive/mobile",
     "performance/load",
     "security",
@@ -108,7 +107,6 @@ const DEEP_LINK_AUDIT_TIMEOUT_MS = 15000;
 
 const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
     functional: "Functional",
-    "cross-browser": "Cross-Browser",
     "responsive/mobile": "Responsive/Mobile",
     "performance/load": "Performance/Load",
     security: "Security",
@@ -121,7 +119,6 @@ const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
 
 const SUITE_AREA_CODES: Record<BestPracticeArea, string> = {
     functional: "FU",
-    "cross-browser": "CB",
     "responsive/mobile": "RM",
     "performance/load": "PL",
     security: "SC",
@@ -134,7 +131,6 @@ const SUITE_AREA_CODES: Record<BestPracticeArea, string> = {
 
 const SUITE_TITLES: Record<BestPracticeArea, string> = {
     functional: "Functional Coverage",
-    "cross-browser": "Cross-Browser Coverage",
     "responsive/mobile": "Responsive Coverage",
     "performance/load": "Performance Coverage",
     security: "Security Coverage",
@@ -147,7 +143,6 @@ const SUITE_TITLES: Record<BestPracticeArea, string> = {
 
 const BEST_PRACTICE_GUIDANCE = `Best-practice coverage to consider when relevant:
 - Functional testing: verify navigation, forms, links, and primary happy-path flows.
-- Cross-browser testing: write standards-based Playwright tests that can run in Chromium, Firefox, and WebKit projects.
 - Responsive/mobile testing: include viewport checks for phone, tablet, and desktop when layout matters.
 - Performance/load testing: include lightweight browser timing assertions when requested; do not invent JMeter or Lighthouse output.
 - Security testing: focus on browser-visible checks like HTTPS, invalid-input handling, auth/session behavior, and visible security errors.
@@ -466,20 +461,6 @@ function getBestPracticeAreas(
 
     if (
         includesAny(lowerDescription, [
-            "cross-browser",
-            "browser",
-            "chrome",
-            "firefox",
-            "safari",
-            "edge",
-            "webkit",
-        ])
-    ) {
-        areas.add("cross-browser");
-    }
-
-    if (
-        includesAny(lowerDescription, [
             "responsive",
             "mobile",
             "tablet",
@@ -581,12 +562,6 @@ function buildCoverageComment(areas: BestPracticeArea[]) {
 
 function buildManualFollowUpComment(areas: BestPracticeArea[]) {
     const followUps: string[] = [];
-
-    if (areas.includes("cross-browser")) {
-        followUps.push(
-            "// - Cross-browser: this suite is intended to run in Chromium, Firefox, and WebKit projects."
-        );
-    }
 
     if (areas.includes("security")) {
         followUps.push(
@@ -1776,22 +1751,6 @@ function buildSharedBestPracticeSuites(
 ) {
     const lowerDescription = description.toLowerCase();
     const suites: GeneratedSuite[] = [];
-
-    if (areas.includes("cross-browser")) {
-        const suite = createSuite("cross-browser", [
-            `  test('runs the core smoke journey in the configured browser project', async ({ page, browserName }) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-
-    expect(['chromium', 'firefox', 'webkit']).toContain(browserName);
-    await expect(page.locator('body')).toBeVisible();
-  });`,
-        ]);
-
-        if (suite) {
-            suites.push(suite);
-        }
-    }
 
     if (areas.includes("responsive/mobile")) {
         const suite = createSuite("responsive/mobile", [

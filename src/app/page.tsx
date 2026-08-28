@@ -25,11 +25,6 @@ const BEST_PRACTICE_OPTIONS = [
         description: "Forms, links, navigation, and core flows",
     },
     {
-        id: "cross-browser",
-        label: "Cross-Browser",
-        description: "Chromium, Firefox, and WebKit coverage",
-    },
-    {
         id: "responsive/mobile",
         label: "Responsive",
         description: "Phone, tablet, and desktop viewports",
@@ -104,16 +99,6 @@ const TEST_AUDIT_MODE_OPTIONS: Array<{
 
 const BEST_PRACTICE_KEYWORDS: Record<BestPracticeArea, string[]> = {
     functional: ["functional", "flow", "journey", "form", "forms", "navigation", "link", "links"],
-    "cross-browser": [
-        "cross-browser",
-        "browser",
-        "chrome",
-        "chromium",
-        "firefox",
-        "safari",
-        "edge",
-        "webkit",
-    ],
     "responsive/mobile": [
         "responsive",
         "mobile",
@@ -2016,7 +2001,6 @@ export default function Home() {
     const inferredPractices = inferBestPracticesFromDescription(effectiveDescriptionText);
     const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...(selectedPractices.length > 0 ? [] : inferredPractices)])]
         .filter((practice) => !deselectedPractices.includes(practice));
-    const isCrossBrowserSelected = effectiveSelectedPractices.includes("cross-browser");
     const normalizedBaseUrlForDisplay = normalizeBaseUrl(baseUrl);
     const parsedDisplayPaths = parseContentLines(contentPathsInput).map((item) =>
         item.startsWith("/") ? item : `/${item}`
@@ -2102,7 +2086,7 @@ export default function Home() {
     );
     const hasSingleBrowserRun = result?.report
         ? result.report.summary.browsers.length === 1
-        : !effectiveSelectedPractices.includes("cross-browser");
+        : true;
     const canContinueCancelledRun = Boolean(
         result?.runStatus === "cancelled" &&
         hasSingleBrowserRun &&
@@ -3330,9 +3314,6 @@ export default function Home() {
                         <span>
                             Review the generated suite, edit if needed, then run it.
                             {` ${lastGeneratedAuditMode === "deep" ? "Deep mode keeps the expanded link audit coverage." : "Fast mode caps the most expensive per-page link navigation checks."}`}
-                            {isCrossBrowserSelected
-                                ? " Cross-browser mode will run Chromium, Firefox, and WebKit."
-                                : ""}
                             {savedSuite ? " VS Code Test Explorer will show one generated file with the saved top-level suites underneath it." : ""}
                             {runBlockedMessage ? ` ${runBlockedMessage}` : ""}
                             {continueRunUnavailableMessage ? ` ${continueRunUnavailableMessage}` : ""}

@@ -4,7 +4,6 @@ import { mkdir, readFile, unlink, writeFile } from "fs/promises";
 import { basename, extname, join, relative, resolve } from "path";
 import { randomUUID } from "crypto";
 
-const CROSS_BROWSER_AREA = "cross-browser";
 type TestAuditMode = "fast" | "deep";
 type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
 
@@ -13,7 +12,6 @@ export const dynamic = "force-dynamic";
 
 const AREA_LABELS: Record<string, string> = {
     functional: "Functional",
-    "cross-browser": "Cross-Browser",
     "responsive/mobile": "Responsive",
     "performance/load": "Performance",
     security: "Security",
@@ -26,7 +24,6 @@ const AREA_LABELS: Record<string, string> = {
 
 const SUITE_AREA_MAP: Record<string, string> = {
     "Functional Coverage": "functional",
-    "Cross-Browser Coverage": "cross-browser",
     "Responsive Coverage": "responsive/mobile",
     "Performance Coverage": "performance/load",
     "Security Coverage": "security",
@@ -648,8 +645,6 @@ function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean
             perExecutionBudget: isLinkHeavySuite ? 30_000 : 20_000,
             minTimeout: 240_000,
             maxTimeout: 2_700_000,
-            crossBrowserMinTimeout: 360_000,
-            crossBrowserMaxTimeout: 3_600_000,
         };
     }
 
@@ -658,29 +653,20 @@ function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean
         perExecutionBudget: isLinkHeavySuite ? 15_000 : 10_000,
         minTimeout: 120_000,
         maxTimeout: 1_800_000,
-        crossBrowserMinTimeout: 360_000,
-        crossBrowserMaxTimeout: 2_400_000,
     };
 }
 
 function calculateRunTimeout(
     code: string,
     browserProjectCount: number,
-    includesCrossBrowser: boolean,
     auditMode: TestAuditMode
 ) {
     const estimatedExecutions = estimateTestCount(code) * browserProjectCount;
     const isLinkHeavySuite = /link health|navigation destination|link types|href|links?/i.test(code);
     const timeoutBudget = getRunTimeoutBudget(auditMode, isLinkHeavySuite);
     const timeout = timeoutBudget.baseTimeout + estimatedExecutions * timeoutBudget.perExecutionBudget;
-    const minTimeout = includesCrossBrowser
-        ? timeoutBudget.crossBrowserMinTimeout
-        : timeoutBudget.minTimeout;
-    const maxTimeout = includesCrossBrowser
-        ? timeoutBudget.crossBrowserMaxTimeout
-        : timeoutBudget.maxTimeout;
 
-    return Math.min(Math.max(timeout, minTimeout), maxTimeout);
+    return Math.min(Math.max(timeout, timeoutBudget.minTimeout), timeoutBudget.maxTimeout);
 }
 
 function stripAnsi(text: string) {
@@ -1059,22 +1045,18 @@ async function startRunJob(
     excludedTestTitles: string[] = [],
     includedTestTitles: string[] = []
 ) {
-    const includesCrossBrowser = selectedPractices.includes(CROSS_BROWSER_AREA);
-    const browserProjects = includesCrossBrowser
-        ? ["chromium", "firefox", "webkit"]
-        : ["chromium"];
+    const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
 
     if (runSelection.runnableTestCount === 0) {
         throw new Error("No remaining tests are available to run.");
     }
 
-    const workerCount = calculateWorkerCount(auditMode, includesCrossBrowser);
+    const workerCount = calculateWorkerCount(auditMode);
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
         browserProjects.length,
-        includesCrossBrowser,
         auditMode
     );
 
@@ -1206,14 +1188,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
     return input === "deep" ? "deep" : "fast";
 }
 
-function calculateWorkerCount(
-    auditMode: TestAuditMode,
-    includesCrossBrowser: boolean
-) {
-    if (includesCrossBrowser) {
-        return auditMode === "deep" ? 2 : 3;
-    }
-
+function calculateWorkerCount(auditMode: TestAuditMode) {
     return auditMode === "deep" ? 2 : 4;
 }
 
