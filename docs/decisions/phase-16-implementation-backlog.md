@@ -437,6 +437,76 @@ and SEO. It runs on the tester's own machine against a local target.
   - `npm run lint` passes on the decomposed codebase with no suppressions.
 - **Dependencies:** TFP-021, TFP-022, TFP-023
 
+### TFP-025 — Decompose the mock suite generator
+
+- **Phase:** 16C
+- **Priority:** P0
+- **Suggested labels:** `refactor`, `generator`
+- **Problem it solves:** `src/lib/generate/mock.ts` is 2,028 lines and was never
+  itself a decomposition target — TFP-022 extracted it out of the API route but
+  did not further break it up. It is the deterministic generator, the core of
+  the product's non-AI path, and it now fails the TFP-024 lint gate.
+- **Scope:**
+  - Extract the escaping/formatting helpers, best-practice-area detection, and
+    locator/hint builders into `src/lib/generate/mock/` submodules.
+  - Extract `buildActionableElementTests`, `buildTestMyLinksAuditTests`,
+    `buildContentSuites`, and `buildSharedBestPracticeSuites`/`buildGenericSuites`
+    into their own modules, grouped by the concern they generate tests for.
+  - Isolate `buildDemoQaSuites` into its own module. This ticket only relocates
+    it — whether the demoqa.com special case is kept, generalized, or removed is
+    a separate, not-yet-made product decision and is out of scope here.
+  - Leave `mock.ts` (or a thin `index.ts`) exporting `mockGenerate` and
+    re-exporting the public surface consumed by `src/app/api/generate/route.ts`.
+- **Deliverables:**
+  - `src/lib/generate/mock/` module split; no behavior change to generated
+    suite output.
+- **Acceptance criteria:**
+  - No file under `src/lib/generate/` exceeds 500 lines.
+  - `npm run lint` passes with no suppressions.
+  - Byte-identical generated suite output for a frozen fixture input, before and
+    after (behavior-preservation verification: diff and hash both runs).
+  - The smoke and regression suites pass with no assertion changes.
+  - `buildDemoQaSuites`'s behavior and call sites are unchanged — relocated, not
+    altered.
+- **Dependencies:** TFP-022, TFP-024
+
+### TFP-026 — Decompose the introspect route
+
+- **Phase:** 16C
+- **Priority:** P0
+- **Suggested labels:** `refactor`, `introspection`
+- **Problem it solves:** `src/app/api/introspect/route.ts` is 850 lines and was
+  never ticketed for decomposition — it predates the audit that scoped TFP-020
+  through TFP-023, and it now fails the TFP-024 lint gate. Nearly all of it is
+  one `POST` handler wrapping a single large in-browser `page.evaluate`
+  DOM-scraping closure.
+- **Scope:**
+  - Extract the in-page DOM-snapshot closure (currently inline in
+    `page.evaluate`) into a standalone, self-contained function in
+    `src/lib/introspect/dom-snapshot.ts`, passed to `page.evaluate` by
+    reference. It already takes all its inputs through the destructured
+    argument object, so no closure-captured state needs to move.
+  - Extract the per-path browser lifecycle and inspection loop
+    (`chromium.launch`, `page.goto`, warnings collection, snapshot assembly)
+    into `src/lib/introspect/inspector.ts` as an `inspectPages(baseUrl, paths)`
+    function.
+  - Leave `route.ts` with only request parsing, the existing
+    `normalizeBaseUrl`/`getDefaultInspectionPath`/`normalizePaths`/
+    `cleanTextList` helpers (or their relocation), and the `POST` handler
+    calling `inspectPages` and returning the response.
+- **Deliverables:**
+  - `src/lib/introspect/` module split; `route.ts` reduced to request/response
+    wiring.
+- **Acceptance criteria:**
+  - `wc -l src/app/api/introspect/route.ts` reports under 200.
+  - No file under `src/lib/introspect/` exceeds 500 lines.
+  - `npm run lint` passes with no suppressions.
+  - Byte-identical introspection JSON output for a frozen fixture site/page,
+    before and after (behavior-preservation verification: diff and hash both
+    runs).
+  - The smoke and regression suites pass with no assertion changes.
+- **Dependencies:** TFP-024
+
 ### TFP-030 — Create `TEST_PLAN.md`
 
 - **Phase:** 16D
@@ -521,17 +591,22 @@ and SEO. It runs on the tester's own machine against a local target.
 12. TFP-022 — split the generate route
 13. TFP-023 — split `page.tsx`
 14. TFP-024 — file-size guard
-15. TFP-030 — create `TEST_PLAN.md`
-16. TFP-031 — close the regression gap
-17. TFP-032 — record SaaS prerequisites
-18. TFP-005 — delete stale remote branches
+15. TFP-025 — decompose the mock suite generator
+16. TFP-026 — decompose the introspect route
+17. TFP-030 — create `TEST_PLAN.md`
+18. TFP-031 — close the regression gap
+19. TFP-032 — record SaaS prerequisites
+20. TFP-005 — delete stale remote branches
 
 TFP-001 through TFP-004 have no dependencies and are ordered first because they
 are cheap and remove the most misleading content in the repository. TFP-005 is
 last because branch deletion is irreversible and worth doing only once the phase
 is otherwise settled. TFP-020 precedes TFP-021, TFP-022 and TFP-023 because all
 three shrink substantially once report construction has already moved out — doing
-them in the other order means moving the same code twice.
+them in the other order means moving the same code twice. TFP-025 and TFP-026
+follow TFP-024 because the lint gate it added is what surfaced them: both
+decompose files that TFP-020 through TFP-023's original scoping missed, and both
+must land before Gate C can be honestly declared complete.
 
 ## Suggested Milestone Gates
 
@@ -553,6 +628,8 @@ them in the other order means moving the same code twice.
 - `npm run lint` enforces that limit.
 - Smoke and regression pass with no assertion changes made during this phase.
 - HTML report export is unchanged for an identical run.
+- Generated suite output is unchanged for an identical fixture input.
+- Introspection JSON output is unchanged for an identical fixture site.
 
 ### Gate D — Phase 16 complete
 - `TEST_PLAN.md` exists and maps every automated test to a case ID.
