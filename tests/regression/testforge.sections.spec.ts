@@ -46,7 +46,7 @@ async function runSuite(page: Page) {
 }
 
 test.describe("TestForge regression coverage", () => {
-    test("reports health and observability metadata for consolidated mode", async ({ request }) => {
+    test("reports health and observability metadata", async ({ request }) => {
         const response = await request.get("/api/health");
 
         expect(response.ok()).toBeTruthy();
@@ -56,8 +56,6 @@ test.describe("TestForge regression coverage", () => {
             service: string;
             environment: string;
             siteUrl: string;
-            externalBackendEnabled: boolean;
-            backendBaseUrl: string | null;
             timestamp: string;
         };
 
@@ -65,51 +63,12 @@ test.describe("TestForge regression coverage", () => {
         expect(payload.service).toBe("testforge-next");
         expect(typeof payload.environment).toBe("string");
         expect(payload.siteUrl).toContain("http");
-        expect(typeof payload.externalBackendEnabled).toBe("boolean");
         expect(payload.timestamp).toContain("T");
         expect(response.headers()["x-frame-options"]).toBe("DENY");
         expect(response.headers()["x-content-type-options"]).toBe("nosniff");
         expect(response.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
         expect(response.headers()["permissions-policy"]).toContain("camera=()");
         expect(response.headers()["content-security-policy"]).toContain("default-src 'self'");
-    });
-
-    test("redirects FastAPI root to Next.js UI when backend is available", async ({ request }) => {
-        const backendBaseUrl = process.env.TESTFORGE_BACKEND_BASE_URL?.trim();
-        const expectedNextUiUrl = process.env.TESTFORGE_NEXT_UI_URL ?? "http://localhost:3000";
-
-        if (!backendBaseUrl) {
-            test.skip(true, "External backend is not configured for this environment.");
-            return;
-        }
-
-        let response;
-        try {
-            response = await request.get(`${backendBaseUrl}/`, {
-                maxRedirects: 0,
-                failOnStatusCode: false,
-            });
-        } catch {
-            test.skip(true, `Backend not reachable at ${backendBaseUrl}`);
-            return;
-        }
-
-        expect(response.status()).toBe(307);
-
-        const locationHeader = response.headers()["location"];
-        expect(locationHeader).toBeTruthy();
-
-        const actualUrl = new URL(locationHeader!);
-        const expectedUrl = new URL(expectedNextUiUrl);
-        const loopbackHosts = new Set(["localhost", "127.0.0.1"]);
-
-        const sameLoopbackTarget =
-            loopbackHosts.has(actualUrl.hostname) &&
-            loopbackHosts.has(expectedUrl.hostname) &&
-            actualUrl.protocol === expectedUrl.protocol &&
-            actualUrl.port === expectedUrl.port;
-
-        expect(sameLoopbackTarget || actualUrl.toString() === expectedUrl.toString()).toBeTruthy();
     });
 
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {

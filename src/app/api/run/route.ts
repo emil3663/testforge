@@ -3,7 +3,6 @@ import { type ChildProcess, spawn } from "child_process";
 import { mkdir, readFile, unlink, writeFile } from "fs/promises";
 import { basename, extname, join, relative, resolve } from "path";
 import { randomUUID } from "crypto";
-import { buildBackendUrl, isExternalBackendEnabled, proxyJsonRequest } from "@/lib/backend-proxy";
 
 const CROSS_BROWSER_AREA = "cross-browser";
 type TestAuditMode = "fast" | "deep";
@@ -2053,23 +2052,6 @@ function buildConsoleSummary(records: ExecutionRecord[], duration: number) {
 export async function POST(req: NextRequest) {
     const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles } = await req.json();
 
-    if (isExternalBackendEnabled()) {
-        const proxied = await proxyJsonRequest<RunStatusPayload | { error?: string }>({
-            path: "/run",
-            method: "POST",
-            body: {
-                code,
-                selectedPractices,
-                auditMode,
-                baseUrl,
-                excludeTestTitles,
-                includeTestTitles,
-            },
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
-
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
     }
@@ -2101,56 +2083,6 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     const runId = req.nextUrl.searchParams.get("runId");
     const artifactId = req.nextUrl.searchParams.get("artifactId");
-
-    if (isExternalBackendEnabled()) {
-        if (!runId) {
-            return NextResponse.json({ error: "runId is required" }, { status: 400 });
-        }
-
-        if (artifactId) {
-            const target = buildBackendUrl(
-                `/api/run?runId=${encodeURIComponent(runId)}&artifactId=${encodeURIComponent(artifactId)}`
-            );
-            const response = await fetch(target, {
-                method: "GET",
-                cache: "no-store",
-            });
-            const contentType = response.headers.get("content-type") ?? "";
-
-            if (!response.ok && contentType.includes("application/json")) {
-                const payload = (await response.json().catch(() => ({ error: "Run request failed" }))) as {
-                    error?: string;
-                };
-                return NextResponse.json(payload, { status: response.status });
-            }
-
-            const body = await response.arrayBuffer();
-            const headers = new Headers();
-            const responseContentType = response.headers.get("content-type");
-            const contentDisposition = response.headers.get("content-disposition");
-
-            if (responseContentType) {
-                headers.set("Content-Type", responseContentType);
-            }
-
-            if (contentDisposition) {
-                headers.set("Content-Disposition", contentDisposition);
-            }
-
-            return new NextResponse(body, {
-                status: response.status,
-                headers,
-            });
-        }
-
-        const proxied = await proxyJsonRequest<RunStatusPayload | { error?: string }>({
-            path: `/run?runId=${encodeURIComponent(runId)}`,
-            method: "GET",
-            cache: "no-store",
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
 
     if (!runId) {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });
@@ -2195,16 +2127,6 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     const { runId } = await req.json().catch(() => ({ runId: null }));
-
-    if (isExternalBackendEnabled()) {
-        const proxied = await proxyJsonRequest<RunStatusPayload | { error?: string }>({
-            path: "/run",
-            method: "DELETE",
-            body: { runId },
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
 
     if (!runId || typeof runId !== "string") {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });

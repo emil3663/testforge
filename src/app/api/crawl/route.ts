@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
-import { isExternalBackendEnabled, proxyJsonRequest } from "@/lib/backend-proxy";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_CRAWL_PAGES = 100;
@@ -337,16 +336,6 @@ async function runCrawlJob(job: CrawlJob) {
 export async function POST(req: NextRequest) {
     const { baseUrl } = await req.json();
 
-    if (isExternalBackendEnabled()) {
-        const proxied = await proxyJsonRequest<CrawlStatusPayload | { error?: string }>({
-            path: "/crawl",
-            method: "POST",
-            body: { baseUrl },
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
-
     const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
 
     if (!normalizedBaseUrl.ok) {
@@ -377,20 +366,6 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     const crawlId = req.nextUrl.searchParams.get("crawlId");
 
-    if (isExternalBackendEnabled()) {
-        if (!crawlId) {
-            return NextResponse.json({ error: "crawlId is required" }, { status: 400 });
-        }
-
-        const proxied = await proxyJsonRequest<CrawlStatusPayload | { error?: string }>({
-            path: `/crawl?crawlId=${encodeURIComponent(crawlId)}`,
-            method: "GET",
-            cache: "no-store",
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
-
     if (!crawlId) {
         return NextResponse.json({ error: "crawlId is required" }, { status: 400 });
     }
@@ -406,16 +381,6 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     const { crawlId } = await req.json().catch(() => ({ crawlId: null }));
-
-    if (isExternalBackendEnabled()) {
-        const proxied = await proxyJsonRequest<CrawlStatusPayload | { error?: string }>({
-            path: "/crawl",
-            method: "DELETE",
-            body: { crawlId },
-        });
-
-        return NextResponse.json(proxied.data, { status: proxied.status });
-    }
 
     if (!crawlId || typeof crawlId !== "string") {
         return NextResponse.json({ error: "crawlId is required" }, { status: 400 });

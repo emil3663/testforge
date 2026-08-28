@@ -315,12 +315,10 @@ TestForge is being consolidated so the Next.js app at <http://localhost:3000> is
 
 Current state:
 
-1. Next.js API routes can proxy to an external backend when TESTFORGE_BACKEND_BASE_URL is set.
 1. FastAPI no longer serves the legacy HTML UI at `/`; it redirects to Next.js.
 
 Recommended cutover settings in .env:
 
-- TESTFORGE_BACKEND_BASE_URL=<http://localhost:8000>
 - TESTFORGE_NEXT_UI_URL=<http://localhost:3000>
 
 Recommended environment selection:
@@ -337,5 +335,4 @@ Verification checklist:
 
 Rollback:
 
-1. Remove TESTFORGE_BACKEND_BASE_URL to return Next.js API routes to local in-process behavior.
 1. Keep TESTFORGE_NEXT_UI_URL set to your preferred UI host.

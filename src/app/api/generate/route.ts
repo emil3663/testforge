@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import { isExternalBackendEnabled, proxyJsonRequest, shouldFallbackToLocalBackend } from "@/lib/backend-proxy";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
@@ -2338,28 +2337,6 @@ ${renderSuites([...suites, ...contentSuites])}
 
 export async function POST(req: NextRequest) {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json();
-
-    if (isExternalBackendEnabled()) {
-        const proxied = await proxyJsonRequest<{ code?: string; error?: string }>({
-            path: "/generate",
-            method: "POST",
-            body: {
-                baseUrl,
-                description,
-                selectedPractices,
-                contentProfile,
-                contentRules,
-                auditMode,
-            },
-        });
-
-        if (!proxied.ok && shouldFallbackToLocalBackend(proxied.status)) {
-            // External backend is configured but currently unreachable.
-            // Fall back to in-process generation so the UI remains usable.
-        } else {
-            return NextResponse.json(proxied.data, { status: proxied.status });
-        }
-    }
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
