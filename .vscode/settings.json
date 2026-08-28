@@ -1,6 +1,4 @@
 {
-  // Python interpreter — point at the project virtual environment
-  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
   // Ensure VS Code terminals can resolve Node.js after installation on Windows
   "terminal.integrated.env.windows": {
     "PATH": "C:\\Program Files\\nodejs;${env:PATH}"
@@ -33,17 +31,6 @@
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
-    }
-  },
-  // pytest integration
-  "python.testing.pytestEnabled": true,
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestArgs": [
-    "runs"
-  ],
   // Playwright extension settings
   "playwright.reuseBrowser": false,
   "playwright.showTrace": true,
@@ -51,8 +38,6 @@
   "docker.defaultRegistryPath": "",
   // Editor
   "files.exclude": {
-    "**/__pycache__": true,
-    "**/.pytest_cache": true,
     "**/.next": true,
     "**/test-results": true,
     "**/.playwright-runs": true,
@@ -63,8 +48,6 @@
     "**/cache/": true
   },
   "search.exclude": {
-    "**/__pycache__": true,
-    "**/.pytest_cache": true,
     "**/node_modules": true,
     "**/.next": true,
     "**/test-results": true,

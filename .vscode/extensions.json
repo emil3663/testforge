@@ -9,9 +9,6 @@
     "ms-vscode.vscode-typescript-next",
     "yoavbls.pretty-ts-errors",
     "christian-kohler.path-intellisense",
-    // Python
-    "ms-python.python",
-    "ms-python.vscode-pylance",
     // Playwright
     "ms-playwright.playwright",
     // GitHub / repo workflow

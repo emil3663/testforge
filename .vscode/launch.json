@@ -25,35 +25,6 @@
                 "uriFormat": "%s",
                 "action": "debugWithChrome"
             }
-        },
-        {
-            "name": "Python: FastAPI app",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "app:app",
-                "--reload"
-            ],
-            "cwd": "${workspaceFolder}",
-            "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "serverReadyAction": {
-                "pattern": "(https?://127\\.0\\.0\\.1:8000|https?://localhost:8000)",
-                "uriFormat": "%s",
-                "action": "openExternally"
-            }
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Run: Next.js + FastAPI",
-            "configurations": [
-                "Next.js: dev server",
-                "Python: FastAPI app"
-            ],
-            "stopAll": true
         }
     ]
 }
