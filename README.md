@@ -5,6 +5,20 @@ You tell it what you want to test in plain English. It writes Python Playwright 
 
 ---
 
+## Security model
+
+TestForge is a local-only developer tool and is not designed to be deployed.
+`/api/run` executes caller-supplied code with the privileges of the user
+running the dev server — this is intended behaviour under the local-only
+model, not a vulnerability to be patched. There is no authentication,
+sandboxing, or multi-tenant isolation.
+
+**Do not bind TestForge to a non-loopback interface and do not expose it
+through a tunnel** (ngrok, Cloudflare Tunnel, port forwarding, etc.). Doing
+so exposes arbitrary remote code execution to anyone who can reach the port.
+
+---
+
 ## The problem TestForge solves
 
 There's a gap in software testing that nobody talks about honestly.
