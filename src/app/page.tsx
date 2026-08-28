@@ -69,7 +69,7 @@ const BEST_PRACTICE_OPTIONS = [
 type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number]["id"];
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
-const DEFAULT_DESCRIPTION_EXAMPLE = "E.g. Create a cross-browser accessibility and performance suite for the login flow.";
+const DEFAULT_DESCRIPTION_EXAMPLE = "E.g. Create an accessibility and performance suite for the login flow.";
 const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";
 const BASE_REPORT_TABS: ReportTab[] = [
     "summary",
