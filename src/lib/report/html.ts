@@ -1,0 +1,388 @@
+import { escapeReportHtml, formatMilliseconds } from "./text";
+import { buildFallbackExecutionHtmlMarkup } from "./status";
+import type { RunReport } from "./types";
+
+interface RunResultLike {
+    runId: string;
+    runStatus: string;
+    output: string;
+    progress: Parameters<typeof buildFallbackExecutionHtmlMarkup>[0];
+    report?: RunReport;
+}
+
+export function buildReportHtmlDocument(report: RunReport, runId: string) {
+    function statusBadge(status: string) {
+        const map: Record<string, string> = { Passed: "badge-passed", Failed: "badge-failed", Blocked: "badge-blocked", Flaky: "badge-flaky" };
+        const cls = map[status] ?? "badge-neutral";
+        return `<span class="badge ${cls}">${escapeReportHtml(status)}</span>`;
+    }
+    function coverageBadge(status: string) {
+        const map: Record<string, string> = { covered: "badge-covered", partial: "badge-partial", uncovered: "badge-uncovered" };
+        const cls = map[status] ?? "badge-neutral";
+        return `<span class="badge ${cls}">${escapeReportHtml(status)}</span>`;
+    }
+    function checkBadge(status: string) {
+        const map: Record<string, string> = { passed: "badge-passed", failed: "badge-failed" };
+        const cls = map[status] ?? "badge-neutral";
+        return `<span class="badge ${cls}">${escapeReportHtml(status)}</span>`;
+    }
+    function priorityBadge(priority: string) {
+        const map: Record<string, string> = { High: "priority-high", Medium: "priority-medium", Low: "priority-low" };
+        const cls = map[priority] ?? "";
+        return `<span class="${cls}">${escapeReportHtml(priority)}</span>`;
+    }
+    const recClass = report.summary.failed > 0 ? "rec-failed" : report.summary.blocked > 0 ? "rec-blocked" : "rec-passed";
+    const executionRowsMarkup = report.execution.map((record) => `
+            <tr>
+                <td>${escapeReportHtml(record.title)}</td>
+                <td>${escapeReportHtml(record.area)}</td>
+                <td>${escapeReportHtml(record.browser)}</td>
+                <td>${statusBadge(record.status)}</td>
+                <td>${escapeReportHtml(formatMilliseconds(record.duration))}</td>
+                <td>${escapeReportHtml(record.description || "No expected result recorded.")}</td>
+                <td>${escapeReportHtml(record.remarks || "No additional outcome recorded.")}</td>
+            </tr>`).join("") || "<tr><td colspan=\"7\">No execution records were produced for this run.</td></tr>";
+    const defectsMarkup = report.defects.issues.map((defect) => `
+            <div class="issue-item">
+                <div class="issue-title">${escapeReportHtml(defect.title)}</div>
+                ${defect.testTitle ? `<div class="issue-meta">Failed test: ${escapeReportHtml(defect.testTitle)} &nbsp;·&nbsp; ${escapeReportHtml(defect.browser)}</div>` : ""}
+                <div class="issue-body">${escapeReportHtml(defect.summary)}</div>
+                <div class="issue-body">${escapeReportHtml(defect.description)}</div>
+                ${defect.artifacts.length > 0 ? `<div class="issue-meta" style="margin-top:6px">Artifacts: ${escapeReportHtml(defect.artifacts.map((artifact) => `${artifact.label} (${artifact.fileName})`).join(" · "))}</div>` : ""}
+            </div>`).join("") || "<p>No open issues were recorded for this run.</p>";
+    const coverageMarkup = report.coverage.matrix.map((item) => `
+            <tr>
+                <td>${escapeReportHtml(item.requirement)}</td>
+                <td>${coverageBadge(item.status)}</td>
+                <td>${escapeReportHtml(item.tests.join(" · ") || "No tests mapped")}</td>
+            </tr>`).join("") || "<tr><td colspan=\"3\">No coverage matrix was produced for this run.</td></tr>";
+    const performanceMarkup = report.performance.slowestTests.map((row) => `
+            <tr>
+                <td>${escapeReportHtml(row.title)}</td>
+                <td>${escapeReportHtml(row.browser)}</td>
+                <td>${escapeReportHtml(row.area)}</td>
+                <td>${escapeReportHtml(formatMilliseconds(row.duration))}</td>
+            </tr>`).join("") || "<tr><td colspan=\"4\">No performance timings were produced for this run.</td></tr>";
+    const usabilityFindingsMarkup = report.usability.findings.map((finding) => `
+            <div class="issue-item">
+                <div class="issue-title">${escapeReportHtml(finding.summary)}</div>
+                ${finding.testTitle ? `<div class="issue-meta">Failed test: ${escapeReportHtml(finding.testTitle)} &nbsp;·&nbsp; ${escapeReportHtml(finding.browser)}</div>` : ""}
+                ${finding.defectTitle ? `<div class="issue-meta">Linked bug: ${finding.defectId ? escapeReportHtml(finding.defectId) + " — " : ""}${escapeReportHtml(finding.defectTitle)}</div>` : ""}
+                ${finding.artifacts.length > 0 ? `<div class="issue-meta" style="margin-top:6px">Artifacts: ${escapeReportHtml(finding.artifacts.map((artifact) => `${artifact.label} (${artifact.fileName})`).join(" · "))}</div>` : ""}
+            </div>`).join("") || "<p>No usability findings were recorded for this run.</p>";
+    const recommendationsMarkup = report.seo.recommendations.map((recommendation) => `
+            <div class="issue-item">
+                <div class="issue-title">${escapeReportHtml(recommendation.title)} &nbsp;${priorityBadge(recommendation.priority)}</div>
+                <div class="issue-body">${escapeReportHtml(recommendation.rationale)}</div>
+            </div>`).join("") || "<p>No SEO recommendations were generated for this run.</p>";
+    const seoPagesMarkup = report.seo.pageGroups.map((group) => {
+        const checksMarkup = group.checks.map((check) => `
+                <tr>
+                    <td>${escapeReportHtml(check.label)}</td>
+                    <td>${checkBadge(check.status)}</td>
+                    <td>${escapeReportHtml(check.evidence.map((record) => `${record.browser}: ${record.title} (${record.status})`).join(" · ") || "No explicit evidence captured.")}</td>
+                </tr>`).join("");
+        const findingsMarkup = group.findings.map((finding) => `<li>${escapeReportHtml(finding)}</li>`).join("") || "<li>No failed checks for this page.</li>";
+        return `
+            <div class="seo-page-card">
+                <div class="seo-page-label">${escapeReportHtml(group.pageLabel)}</div>
+                <ul class="seo-findings">${findingsMarkup}</ul>
+                <table>
+                    <thead><tr><th>Rule</th><th>Status</th><th>Evidence</th></tr></thead>
+                    <tbody>${checksMarkup}</tbody>
+                </table>
+            </div>`;
+    }).join("");
+
+    const evidenceMarkup = report.usability.sessionEvidence.map((item) => `
+        <tr>
+            <td>${escapeReportHtml(item.label)}</td>
+            <td>${escapeReportHtml(item.browser)}</td>
+            <td>${escapeReportHtml(item.testTitle)}</td>
+            <td>${escapeReportHtml(item.fileName)}</td>
+            <td>${item.defectTitle ? escapeReportHtml((item.defectId ? item.defectId + " — " : "") + item.defectTitle) : "—"}</td>
+        </tr>`).join("") || "<tr><td colspan=\"5\">No session evidence captured for this run.</td></tr>";
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TestForge Report ${escapeReportHtml(runId)}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; background: #f4f4f5; color: #18181b; line-height: 1.5; }
+        a { color: inherit; }
+        /* Header */
+        .tf-header { background: #09090b; color: white; padding: 14px 24px; display: flex; align-items: center; gap: 12px; }
+        .tf-logo { width: 34px; height: 34px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: white; flex-shrink: 0; }
+        .tf-header-name { font-size: 15px; font-weight: 600; }
+        .tf-header-sub { font-size: 11px; color: #a1a1aa; margin-top: 1px; }
+        /* Layout */
+        main { max-width: 1140px; margin: 0 auto; padding: 24px 16px 48px; }
+        .run-meta { font-size: 12px; color: #71717a; margin-bottom: 20px; }
+        /* Tabs */
+        .tabs { display: flex; gap: 0; border-bottom: 1px solid #e4e4e7; margin-bottom: 24px; overflow-x: auto; }
+        .tab-btn { padding: 8px 14px; font-size: 13px; font-weight: 500; color: #71717a; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; margin-bottom: -1px; transition: color 0.12s; }
+        .tab-btn.active { color: #6366f1; border-bottom-color: #6366f1; }
+        .tab-btn:hover:not(.active) { color: #3f3f46; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        /* Card */
+        .card { background: white; border: 1px solid #e4e4e7; border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .card-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: #71717a; }
+        .card-title { font-size: 17px; font-weight: 700; color: #09090b; margin-top: 5px; }
+        .card-desc { font-size: 13px; color: #71717a; margin-top: 3px; }
+        /* Metrics grid */
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 16px; }
+        .metric { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; padding: 14px 12px; text-align: center; }
+        .metric-value { font-size: 26px; font-weight: 800; color: #09090b; line-height: 1.1; }
+        .metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: #71717a; margin-top: 5px; }
+        /* Recommendation banner */
+        .rec-banner { border-radius: 14px; padding: 14px 18px; margin-top: 16px; }
+        .rec-passed { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .rec-failed { background: #fff1f2; border: 1px solid #fecdd3; }
+        .rec-blocked { background: #fff7ed; border: 1px solid #fed7aa; }
+        .rec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; }
+        .rec-passed .rec-label { color: #16a34a; }
+        .rec-failed .rec-label { color: #dc2626; }
+        .rec-blocked .rec-label { color: #ea580c; }
+        .rec-text { font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .rec-passed .rec-text { color: #15803d; }
+        .rec-failed .rec-text { color: #b91c1c; }
+        .rec-blocked .rec-text { color: #c2410c; }
+        /* Tables */
+        .table-wrap { overflow-x: auto; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: #71717a; border-bottom: 1px solid #e4e4e7; white-space: nowrap; }
+        tbody td { padding: 10px 12px; border-top: 1px solid #f4f4f5; vertical-align: top; color: #3f3f46; }
+        tbody tr:hover td { background: #fafafa; }
+        /* Badges */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .badge-passed { background: #dcfce7; color: #15803d; }
+        .badge-failed { background: #fee2e2; color: #dc2626; }
+        .badge-blocked { background: #fef3c7; color: #b45309; }
+        .badge-flaky { background: #ede9fe; color: #7c3aed; }
+        .badge-neutral { background: #f4f4f5; color: #71717a; }
+        .badge-covered { background: #dcfce7; color: #15803d; }
+        .badge-partial { background: #fef3c7; color: #b45309; }
+        .badge-uncovered { background: #fee2e2; color: #dc2626; }
+        .badge-not-covered { background: #f4f4f5; color: #71717a; }
+        /* Issue / finding cards */
+        .issue-item { border: 1px solid #e4e4e7; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; background: #fafafa; }
+        .issue-title { font-weight: 600; font-size: 14px; color: #09090b; }
+        .issue-meta { font-size: 12px; color: #71717a; margin-top: 4px; }
+        .issue-body { font-size: 13px; color: #52525b; margin-top: 5px; }
+        /* SEO page card */
+        .seo-page-card { border: 1px solid #e4e4e7; border-radius: 14px; padding: 16px; margin-bottom: 14px; background: #fafafa; }
+        .seo-page-label { font-weight: 600; font-size: 14px; color: #09090b; margin-bottom: 8px; }
+        .seo-findings { margin: 0 0 10px; padding-left: 18px; font-size: 13px; color: #52525b; }
+        /* Priority colors */
+        .priority-high { color: #dc2626; font-weight: 600; }
+        .priority-medium { color: #d97706; font-weight: 600; }
+        .priority-low { color: #71717a; font-weight: 600; }
+        /* Stat rows */
+        .stat-row { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: #52525b; margin-bottom: 12px; }
+        .stat-row span { white-space: nowrap; }
+        .stat-label { font-weight: 600; color: #3f3f46; }
+        /* Pre/code */
+        pre { white-space: pre-wrap; background: #111827; color: #f3f4f6; padding: 16px; border-radius: 14px; font-size: 12px; overflow-x: auto; }
+        /* Section heading inside card */
+        .section-heading { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: #71717a; margin: 18px 0 10px; }
+            /* Page title */
+            .page-title { font-size: 22px; font-weight: 800; color: #09090b; margin: 0 0 2px; }
+    </style>
+</head>
+<body>
+    <header class="tf-header">
+        <div class="tf-logo">T</div>
+        <div>
+            <div class="tf-header-name">TestForge</div>
+            <div class="tf-header-sub">AI-native test automation</div>
+        </div>
+    </header>
+    <main>
+        <div class="run-meta">Run <strong>${escapeReportHtml(runId)}</strong></div>
+            <h1 class="page-title">TestForge Report</h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab(this,'tab-summary')">Summary</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-execution')">Execution</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-defects')">Defects</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-coverage')">Coverage</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-performance')">Performance</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-usability')">Usability</button>
+            <button class="tab-btn" onclick="showTab(this,'tab-seo')">SEO</button>
+        </div>
+        <!-- SUMMARY -->
+        <div id="tab-summary" class="tab-panel active">
+            <div class="card">
+                <div class="card-eyebrow">Test Summary Report</div>
+                <div class="card-title">Release readiness at a glance</div>
+                <div class="card-desc">Aggregated pass/fail metrics and overall confidence score for this test cycle.</div>
+                <div class="metrics">
+                    <div class="metric"><div class="metric-value">${report.summary.planned}</div><div class="metric-label">Planned</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.executed}</div><div class="metric-label">Executed</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.passed + report.summary.flaky}</div><div class="metric-label">Passed</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.failed}</div><div class="metric-label">Failed</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.blocked}</div><div class="metric-label">Blocked</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.flaky}</div><div class="metric-label">Flaky</div></div>
+                    <div class="metric"><div class="metric-value">${escapeReportHtml(formatMilliseconds(report.summary.duration))}</div><div class="metric-label">Duration</div></div>
+                </div>
+                <div class="rec-banner ${recClass}">
+                    <div class="rec-label">Release Recommendation</div>
+                    <div class="rec-text">${escapeReportHtml(report.summary.releaseRecommendation)}</div>
+                </div>
+            </div>
+        </div>
+        <!-- EXECUTION -->
+        <div id="tab-execution" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">Execution</div>
+                <div class="card-title">Detailed case-by-case results</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Test</th><th>Area</th><th>Browser</th><th>Status</th><th>Duration</th><th>Expected Result</th><th>Observed Outcome</th></tr></thead>
+                        <tbody>${executionRowsMarkup}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- DEFECTS -->
+        <div id="tab-defects" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">Defects</div>
+                <div class="card-title">Issue tracking and hot spots</div>
+                <div style="margin-top:14px">${defectsMarkup}</div>
+            </div>
+        </div>
+        <!-- COVERAGE -->
+        <div id="tab-coverage" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">Coverage</div>
+                <div class="card-title">Traceability matrix</div>
+                <div class="stat-row" style="margin-top:12px">
+                    <span><span class="stat-label">Covered</span> ${report.coverage.covered} of ${report.coverage.total}</span>
+                    <span><span class="stat-label">Score</span> ${report.coverage.percentage}%</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Requirement</th><th>Status</th><th>Linked Tests</th></tr></thead>
+                        <tbody>${coverageMarkup}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- PERFORMANCE -->
+        <div id="tab-performance" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">Performance</div>
+                <div class="card-title">Timing and scalability view</div>
+                <div class="stat-row" style="margin-top:12px">
+                    <span><span class="stat-label">Total</span> ${escapeReportHtml(formatMilliseconds(report.performance.totalDuration))}</span>
+                    <span><span class="stat-label">Average</span> ${escapeReportHtml(formatMilliseconds(report.performance.averageDuration))}</span>
+                    <span><span class="stat-label">Throughput</span> ${escapeReportHtml(String(report.performance.throughput))}/min</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Test</th><th>Browser</th><th>Area</th><th>Duration</th></tr></thead>
+                        <tbody>${performanceMarkup}</tbody>
+                    </table>
+                </div>
+                <p style="font-size:13px;color:#52525b;margin-top:14px">${escapeReportHtml(report.performance.resourceUtilization)}</p>
+                <p style="font-size:13px;color:#52525b">${escapeReportHtml(report.performance.scalability)}</p>
+            </div>
+        </div>
+        <!-- USABILITY -->
+        <div id="tab-usability" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">Usability</div>
+                <div class="card-title">User-centric findings</div>
+                <div class="stat-row" style="margin-top:12px">
+                    <span><span class="stat-label">Task success</span> ${report.usability.successRate}%</span>
+                    <span><span class="stat-label">Tasks completed</span> ${report.usability.tasksCompleted} of ${report.usability.totalTasks}</span>
+                </div>
+                <div style="margin-top:10px">${usabilityFindingsMarkup}</div>
+                <div class="section-heading">Session Evidence</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Label</th><th>Browser</th><th>Test</th><th>File</th><th>Defect</th></tr></thead>
+                        <tbody>${evidenceMarkup}</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- SEO -->
+        <div id="tab-seo" class="tab-panel">
+            <div class="card">
+                <div class="card-eyebrow">SEO</div>
+                <div class="card-title">Rule-backed search readiness</div>
+                <div class="stat-row" style="margin-top:12px">
+                    <span><span class="stat-label">Score</span> ${report.seo.score}%</span>
+                    <span><span class="stat-label">Passed</span> ${report.seo.passedChecks}</span>
+                    <span><span class="stat-label">Failed</span> ${report.seo.failedChecks}</span>
+                    <span><span class="stat-label">Not covered</span> ${report.seo.notCoveredChecks}</span>
+                </div>
+                ${seoPagesMarkup || "<p style=\"font-size:13px;color:#71717a\">No SEO page groups were produced for this run.</p>"}
+                <div class="section-heading">Prioritized Recommendations</div>
+                <div>${recommendationsMarkup}</div>
+            </div>
+        </div>
+        <!-- RAW CONSOLE (collapsed at end) -->
+        <details style="margin-top:16px">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:#71717a;padding:8px 0">Raw Console Output</summary>
+            <pre style="margin-top:8px">${escapeReportHtml(report.rawOutput)}</pre>
+        </details>
+    </main>
+            btn.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>`;
+}
+
+export function buildExecutionOutputHtmlDocument(result: RunResultLike) {
+    const executionOutputMessage = result.runStatus === "cancelled"
+        ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
+        : "Structured report data was not available for this run, so only the raw console output is shown.";
+    const fallbackExecutionMarkup = buildFallbackExecutionHtmlMarkup(result.progress);
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TestForge Execution Output ${escapeReportHtml(result.runId)}</title>
+    <style>
+        body { font-family: Georgia, 'Times New Roman', serif; margin: 0; padding: 32px; background: #f5f1e8; color: #1f2937; }
+        main { max-width: 960px; margin: 0 auto; }
+        section { background: #fffdf8; border: 1px solid #e5ddcf; border-radius: 20px; padding: 20px; margin-top: 20px; }
+        pre { white-space: pre-wrap; background: #111827; color: #f3f4f6; padding: 16px; border-radius: 16px; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>TestForge Execution Output</h1>
+        <section>
+            <h2>Structured report status</h2>
+            <p>${escapeReportHtml(executionOutputMessage)}</p>
+        </section>
+        ${fallbackExecutionMarkup ? `
+        <section>
+            <h2>Execution detail</h2>
+            ${fallbackExecutionMarkup}
+        </section>` : ""}
+        <section>
+            <h2>Raw Console</h2>
+            <pre>${escapeReportHtml(result.output)}</pre>
+        </section>
+    </main>
+</body>
+</html>`;
+}
+
+export function buildResultHtmlDocument(result: RunResultLike) {
+    return result.report
+        ? buildReportHtmlDocument(result.report, result.runId)
+        : buildExecutionOutputHtmlDocument(result);
+}

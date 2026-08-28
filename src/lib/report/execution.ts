@@ -1,0 +1,295 @@
+import { normalizeExecutionTitle, sanitizeDiagnosticText, simplifyExecutionTarget, classifyFailureReason } from "./text";
+import { createExecutionArtifacts } from "./artifacts";
+import type {
+    ExecutionRecord,
+    ExecutionStatus,
+    JsonSuite,
+    JsonTest,
+    JsonTestResult,
+} from "./types";
+
+export const AREA_LABELS: Record<string, string> = {
+    functional: "Functional",
+    "responsive/mobile": "Responsive",
+    "performance/load": "Performance",
+    security: "Security",
+    accessibility: "Accessibility",
+    usability: "Usability",
+    "seo/content": "SEO",
+    "cookie/session": "Cookies",
+    database: "Database",
+};
+
+export const SUITE_AREA_MAP: Record<string, string> = {
+    "Functional Coverage": "functional",
+    "Responsive Coverage": "responsive/mobile",
+    "Performance Coverage": "performance/load",
+    "Security Coverage": "security",
+    "Accessibility Coverage": "accessibility",
+    "Usability Coverage": "usability",
+    "SEO and Content Coverage": "seo/content",
+    "Cookie and Session Coverage": "cookie/session",
+    "Database Coverage": "database",
+};
+
+export function mapStatus(testStatus: JsonTest["status"]): ExecutionStatus {
+    if (testStatus === "unexpected") {
+        return "Failed";
+    }
+
+    if (testStatus === "flaky") {
+        return "Flaky";
+    }
+
+    if (testStatus === "skipped") {
+        return "Blocked";
+    }
+
+    return "Passed";
+}
+
+export function deriveArea(pathTitles: string[]) {
+    const matchedSuite = pathTitles.find((title) => SUITE_AREA_MAP[title]);
+    const area = matchedSuite ? SUITE_AREA_MAP[matchedSuite] : "functional";
+    return {
+        key: area,
+        label: AREA_LABELS[area] ?? "Functional",
+    };
+}
+
+export function deriveInteractionType(title: string) {
+    if (/^navigation link health:/i.test(title) || /^navigation element check:/i.test(title)) {
+        return "Navigation" as const;
+    }
+
+    if (/^api link response:/i.test(title) || /^api element check:/i.test(title)) {
+        return "API" as const;
+    }
+
+    if (/^form element check:/i.test(title)) {
+        return "Form" as const;
+    }
+
+    if (/^action element check:/i.test(title)) {
+        return "Action" as const;
+    }
+
+    return null;
+}
+
+export function buildExecutionDescription(
+    title: string,
+    interactionType: "Navigation" | "API" | "Form" | "Action" | null,
+) {
+    const normalizedTitle = normalizeExecutionTitle(title);
+
+    if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+        return "Expected result: links should use safe protocols only and should not expose javascript: or other obvious XSS-style vectors.";
+    }
+
+    if (/do not return broken responses/i.test(title)) {
+        return "Expected result: every checked link should return a healthy response rather than a broken HTTP result.";
+    }
+
+    if (/navigate to their required destination/i.test(title)) {
+        return "Expected result: each tested link should open the correct destination without sending the user to the wrong page.";
+    }
+
+    if (/classified correctly/i.test(title)) {
+        return "Expected result: each tested link should be correctly identified as internal, external, anchor, mailto, or download.";
+    }
+
+    if (/mailto links expose the correct recipient/i.test(title)) {
+        return "Expected result: each mailto link should point to the correct recipient address.";
+    }
+
+    if (/download links can be requested successfully/i.test(title)) {
+        return "Expected result: each download link should point to a real downloadable resource that responds successfully.";
+    }
+
+    if (/protected links redirect or block unauthorized access/i.test(title)) {
+        return "Expected result: protected links should redirect unauthenticated users to login or return an appropriate access-denied response.";
+    }
+
+    if (/shows visible content/i.test(title)) {
+        return "Expected result: the page should load successfully and show visible content to the user.";
+    }
+
+    if (/interactive element/i.test(title)) {
+        return "Expected result: the page should expose at least one visible interactive element related to the selected flow.";
+    }
+
+    if (interactionType) {
+        return `Expected result: the ${interactionType.toLowerCase()} behavior for ${normalizedTitle} should complete successfully.`;
+    }
+
+    return `Expected result: ${normalizedTitle} should complete successfully.`;
+}
+
+export function extractNamedFailures(rawMessage: string, prefix: string) {
+    const matches = [...rawMessage.matchAll(new RegExp(`${prefix}([^\n\r]+)`, "gi"))]
+        .map((match) => sanitizeDiagnosticText(match[1] ?? ""))
+        .filter((value) => value.length > 0);
+
+    return [...new Set(matches)];
+}
+
+export function buildExecutionOutcomeSummary(
+    title: string,
+    status: ExecutionStatus,
+    rawMessage: string
+) {
+    const simplifiedTitle = simplifyExecutionTarget(title);
+    const brokenLinks = extractNamedFailures(rawMessage, "Broken link detected for ");
+    const unsafeLinks = [
+        ...extractNamedFailures(rawMessage, "Unsafe link protocol detected for "),
+        ...extractNamedFailures(rawMessage, "Unsafe data protocol detected for "),
+        ...extractNamedFailures(rawMessage, "Suspicious link text detected for "),
+    ];
+    const uniqueUnsafeLinks = [...new Set(unsafeLinks)];
+
+    if (status === "Passed") {
+        if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+            return "Passed. No unsafe link protocols or obvious XSS-style href patterns were detected in the checked links.";
+        }
+
+        if (/do not return broken responses/i.test(title)) {
+            return "Passed. The checked links returned healthy responses and did not show broken-link behavior.";
+        }
+
+        if (/navigate to their required destination/i.test(title)) {
+            return "Passed. The tested links opened the expected destinations.";
+        }
+
+        return `Passed. ${simplifiedTitle} behaved as expected.`;
+    }
+
+    if (status === "Flaky") {
+        return `Passed after retry. ${simplifiedTitle} did not succeed on the first attempt, so this behavior should be monitored for instability.`;
+    }
+
+    if (status === "Blocked") {
+        return `Blocked. ${simplifiedTitle} could not be completed because the run was interrupted or a required dependency was unavailable.`;
+    }
+
+    if (/link protocols are safe and do not expose obvious xss vectors/i.test(title)) {
+        return uniqueUnsafeLinks.length > 0
+            ? `Failed. Unsafe link patterns were detected for: ${uniqueUnsafeLinks.join(", ")}.`
+            : "Failed. At least one checked link used an unsafe protocol or href pattern that could expose a client-side security risk, such as a javascript: style target.";
+    }
+
+    if (/do not return broken responses/i.test(title)) {
+        return brokenLinks.length > 0
+            ? `Failed. Broken links were detected for: ${brokenLinks.join(", ")}.`
+            : "Failed. One or more checked links returned an unhealthy HTTP response and appear to be broken.";
+    }
+
+    if (/navigate to their required destination/i.test(title)) {
+        return "Failed. At least one tested link did not open the expected destination.";
+    }
+
+    if (/classified correctly/i.test(title)) {
+        return "Failed. At least one link was detected with the wrong link type or an unexpected href pattern.";
+    }
+
+    if (/mailto links expose the correct recipient/i.test(title)) {
+        return "Failed. At least one mailto link did not expose the expected recipient address.";
+    }
+
+    if (/download links can be requested successfully/i.test(title)) {
+        return "Failed. At least one download link did not return a successful downloadable response.";
+    }
+
+    if (/protected links redirect or block unauthorized access/i.test(title)) {
+        return "Failed. At least one protected link did not redirect or block unauthenticated access as expected.";
+    }
+
+    return `Failed. ${simplifiedTitle} did not meet the expected result because ${classifyFailureReason(rawMessage)}.`;
+}
+
+export function buildExecutionSteps(
+    title: string,
+    suiteName: string,
+    browserName: string,
+    message: string,
+    interactionType: "Navigation" | "API" | "Form" | "Action" | null
+) {
+    if (interactionType) {
+        return [
+            `Reused the active ${browserName} session for generated ${suiteName} checks.`,
+            `Executed the ${interactionType.toLowerCase()} element check for ${normalizeExecutionTitle(title)}.`,
+            `Validated the observed outcome: ${message.split("\n")[0]}.`,
+        ];
+    }
+
+    return [
+        `Reused the active ${browserName} session for generated ${suiteName} checks.`,
+        `Executed the test case: ${title}.`,
+        `Validated the observed outcome: ${message.split("\n")[0]}.`,
+    ];
+}
+
+export function extractMessage(result: JsonTestResult) {
+    return sanitizeDiagnosticText(
+        result.error?.message ??
+        result.errors.find((error) => error.message)?.message ??
+        "No additional diagnostics captured."
+    );
+}
+
+export function flattenSuites(
+    suites: JsonSuite[],
+    lineage: string[] = [],
+    orderRef: { value: number } = { value: 0 }
+): ExecutionRecord[] {
+    const records: ExecutionRecord[] = [];
+
+    for (const suite of suites) {
+        const nextLineage = suite.title ? [...lineage, suite.title] : lineage;
+
+        for (const spec of suite.specs ?? []) {
+            const area = deriveArea(nextLineage);
+            const suiteName = nextLineage.find((title) => SUITE_AREA_MAP[title]) ?? "General";
+
+            for (const test of spec.tests ?? []) {
+                const latestResult = [...(test.results ?? [])].sort(
+                    (left, right) => left.retry - right.retry
+                ).at(-1);
+                const status = mapStatus(test.status);
+                const message = latestResult ? extractMessage(latestResult) : "No result captured.";
+                const interactionType = deriveInteractionType(spec.title);
+
+                orderRef.value += 1;
+                records.push({
+                    id: spec.id,
+                    title: spec.title,
+                    description: buildExecutionDescription(
+                        spec.title,
+                        interactionType,
+                    ),
+                    suite: suiteName,
+                    area: area.label,
+                    interactionType,
+                    browser: test.projectName || "chromium",
+                    status,
+                    duration: latestResult?.duration ?? 0,
+                    remarks: buildExecutionOutcomeSummary(spec.title, status, message),
+                    rawMessage: message,
+                    reproductionSteps: buildExecutionSteps(
+                        spec.title,
+                        suiteName,
+                        test.projectName || "chromium",
+                        message,
+                        interactionType
+                    ),
+                    artifacts: createExecutionArtifacts(latestResult, spec.id, test.projectName || "chromium"),
+                    order: orderRef.value,
+                });
+            }
+        }
+
+        records.push(...flattenSuites(suite.suites ?? [], nextLineage, orderRef));
+    }
+
+    return records;
+}
