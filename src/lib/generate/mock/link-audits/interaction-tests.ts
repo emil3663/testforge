@@ -47,6 +47,19 @@ ${expectedStatusAssertion}
             continue;
         }
 
+        if (link.linkType === "inert") {
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locatorExpression};
+        await expect(locator).toBeVisible();
+        await expect(locator).toHaveAttribute('href', '${rawHref}');
+    });`);
+
+            continue;
+        }
+
         if (link.linkType === "mailto") {
             tests.push(`  test('navigation link health: ${linkTitle}', async ({ page }) => {
         await page.goto('${escapedPath}');

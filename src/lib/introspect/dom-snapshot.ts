@@ -530,7 +530,12 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                 }
 
                 const category = inferCategory(anchor, "link", descriptor, resolvedUrl ?? "", containerLabel);
-                const linkType = rawHref ? inferLinkType(rawHref, anchor) : "internal" as const;
+                const isInertScheme = rawHref.startsWith("javascript:") || rawHref.startsWith("tel:");
+                const linkType = isInertScheme
+                    ? "inert" as const
+                    : rawHref
+                        ? inferLinkType(rawHref, anchor)
+                        : "internal" as const;
                 const target = cleanText(anchor.getAttribute("target") ?? "");
                 const titleAttribute = cleanText(anchor.getAttribute("title") ?? "");
                 const downloadName = cleanText(anchor.getAttribute("download") ?? "");

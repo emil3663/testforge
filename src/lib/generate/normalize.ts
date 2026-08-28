@@ -206,7 +206,9 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                                         ? "mailto"
                                         : item.linkType === "download"
                                             ? "download"
-                                            : "internal";
+                                            : item.linkType === "inert"
+                                                ? "inert"
+                                                : "internal";
                         const targetBehavior: LinkDetail["targetBehavior"] =
                             item.targetBehavior === "new-tab"
                                 ? "new-tab"

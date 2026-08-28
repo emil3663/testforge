@@ -25,7 +25,7 @@ export interface LinkDetail {
     url: string;
     rawHref: string;
     category: "navigation" | "api";
-    linkType: "internal" | "external" | "anchor" | "mailto" | "download";
+    linkType: "internal" | "external" | "anchor" | "mailto" | "download" | "inert";
     containerLabel: string;
     expectedStatus: number | null;
     isVisible: boolean;
