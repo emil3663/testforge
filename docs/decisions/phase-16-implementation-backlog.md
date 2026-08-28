@@ -573,6 +573,58 @@ and SEO. It runs on the tester's own machine against a local target.
   - The document states that no code in the repository anticipates it.
 - **Dependencies:** TFP-011
 
+### TFP-033 — Fix javascript:/tel: links miscategorized as external in link introspection
+
+- **Phase:** 16D
+- **Priority:** P1
+- **Suggested labels:** `bug`, `introspection`
+- **Problem it solves:** An `id`-tagged `javascript:` or `tel:` href survives
+  the early-return filter in `captureDomSnapshot`'s link scan
+  (`src/lib/introspect/dom-snapshot.ts`) but then falls through to
+  `fallbackHref = rawHref || (anchorId ? ... : "")`, which — because `rawHref`
+  is truthy — never reaches the anchor-id fallback the filter's own condition
+  implies. `inferLinkType` has no case for these schemes, so `new URL(...)`
+  resolves an opaque cross-origin URL and classifies the link `external`. That
+  link then flows into every `request.get(link.url, ...)` call in
+  `src/lib/generate/mock/link-audits/` (`coverage-tests.ts`,
+  `interaction-tests.ts`, `detail-tests.ts`, `experience-tests.ts`), where
+  Playwright throws `TypeError: apiRequestContext.get: Request path contains
+  unescaped characters` — an uncaught crash, not a clean test failure.
+  Reproduced live against demoqa.com's `/links` page (a `javascript:`-href
+  link labeled "Created", carrying an `id` attribute). This will hit any real
+  site with `id`-tagged `javascript:`/`tel:` links — a common click-to-call or
+  JS-hook pattern — not just this practice page.
+- **Scope:**
+  - In `src/lib/introspect/dom-snapshot.ts`, correct the anchor-link branch so
+    an `id`-tagged `javascript:`/`tel:` link is classified as its own
+    `linkType` (not `internal`/`external`/`download`) rather than falling
+    through to `new URL()` resolution.
+  - Keep the link in `linkDetails` for its label/accessible-name value and the
+    existing protocol-safety check in `experience-tests.ts`, but ensure
+    `coverage-tests.ts`, `interaction-tests.ts`, `detail-tests.ts`, and
+    `experience-tests.ts`'s own `request.get(link.url, ...)` call sites never
+    receive a `javascript:`/`tel:` URL.
+  - Do not change behavior for `javascript:`/`tel:` links that have no `id`
+    attribute — those are already correctly dropped.
+  - Do not touch the existing `experience-tests.ts` protocol-safety assertion
+    (the one that correctly flags `javascript:` hrefs) beyond what's needed to
+    keep it working under the corrected classification.
+- **Deliverables:**
+  - Corrected link classification in `src/lib/introspect/dom-snapshot.ts`.
+- **Acceptance criteria:**
+  - A frozen fixture page containing an `id`-tagged `javascript:` href
+    (reproducing the "Created" case) and an `id`-tagged `tel:` href:
+    introspecting it produces `LinkDetail`s for both, with `linkType` outside
+    `internal`/`external`/`download`.
+  - Generating and running a suite against that fixture produces no
+    `TypeError: apiRequestContext.get` crash.
+  - The existing `javascript:`-protocol-safety test (`experience-tests.ts`)
+    still fires and still fails on the `javascript:` link — this ticket fixes
+    the crash, not the protocol-safety flag itself.
+  - The smoke and regression suites pass with no assertion changes.
+  - `npm run lint` passes.
+- **Dependencies:** TFP-026
+
 ---
 
 ## Recommended Execution Order
@@ -596,7 +648,8 @@ and SEO. It runs on the tester's own machine against a local target.
 17. TFP-030 — create `TEST_PLAN.md`
 18. TFP-031 — close the regression gap
 19. TFP-032 — record SaaS prerequisites
-20. TFP-005 — delete stale remote branches
+20. TFP-033 — fix javascript:/tel: link miscategorization
+21. TFP-005 — delete stale remote branches
 
 TFP-001 through TFP-004 have no dependencies and are ordered first because they
 are cheap and remove the most misleading content in the repository. TFP-005 is
@@ -606,7 +659,12 @@ three shrink substantially once report construction has already moved out — do
 them in the other order means moving the same code twice. TFP-025 and TFP-026
 follow TFP-024 because the lint gate it added is what surfaced them: both
 decompose files that TFP-020 through TFP-023's original scoping missed, and both
-must land before Gate C can be honestly declared complete.
+must land before Gate C can be honestly declared complete. TFP-033 depends on
+TFP-026 because it touches the same introspection module that ticket just
+finished decomposing, and it was found by exercising the shipped Phase 16
+build against a real site rather than by any ticket in the original scope —
+it predates Phase 16 and is not a Gate requirement, but it should land before
+Phase 17 is locked.
 
 ## Suggested Milestone Gates
 
