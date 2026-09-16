@@ -63,7 +63,13 @@ the thing under test — and reports them.
 Generalizes: TA-230, which cost Emil time three times in two days,
 including a suite that stayed green while the app died on startup.
 
-Status: not started.
+Built as [`skills/testing/find-the-hidden-platform/SKILL.md`](testing/find-the-hidden-platform/SKILL.md)
+by TFP-045, from a full extraction of TA-230 into
+[`docs/TA-230.md`](../docs/TA-230.md). States explicitly, in its own text,
+that this is ISTQB's structural (white-box) testing category — code
+coverage of unreached paths — rather than leaving the connection implicit.
+
+Status: built.
 
 ### `plan-to-specs`
 
@@ -76,7 +82,15 @@ Generalizes: an existing tool, already built twice (`cah-pwa/scripts/` and
 the `generator-improvements` branch). This is generalizing what exists, not
 designing something new.
 
-Status: not started.
+Built as [`skills/testing/plan-to-specs/SKILL.md`](testing/plan-to-specs/SKILL.md)
+by TFP-046, porting `generator-improvements` (cah-pwa, commit `78e30de`,
+Martin Hugo + Claude Opus 5) rather than rebuilding from a description —
+generalized past that branch's hardcoded `cah-pwa` paths and case-ID scheme
+so it runs against any repo's `TEST_PLAN.md`. Verified against `cah-pwa`'s
+own real plan and spec tree: reports real coverage ("18 of 181"), and
+correctly catches a deleted spec file on `--check`, exiting non-zero.
+
+Status: built.
 
 ### `regression-safety-net`
 
