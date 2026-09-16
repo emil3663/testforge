@@ -37,6 +37,20 @@ Checked against `skills/README.md` and `ROADMAP.md` as of Phase 20.
 | `failure-mode-tests` (ch. 17) | `sre-testing` | Same chapter. `failure-mode-tests` writes the tests; `sre-testing` decides what to test and how much. Complementary rather than competing. |
 | `verified-release-pipeline` (account skill, ch. 8 skipped) | `sre-release` | The skip looks right for pipelines. `sre-release` also carries launch coordination and progressive rollout, which that skill doesn't cover. |
 
+**TFP-052 (Phase 23) trialled that gap against a real project, not hypothetically.**
+`sre-release`'s launch-coordination/rollout material and `sre-toil`'s six-property
+test were run against `test-assist`'s actual update/rollback situation — both
+builds had zero rollback mechanism, confirmed by reading `update_check.py` and
+`pages.yml` directly. Toil-classified (desktop: 5-6/6 depending on task; browser:
+5/6, honestly not O(n) for a single-maintainer site) and two proposals scoped to
+what a manual-update, no-telemetry, solo-maintainer project actually supports —
+not the canary/feature-flag material `sre-release` assumes for a continuously
+operated service. Desktop proposal implemented (a `KNOWN_GOOD:` marker read
+through `UpdateChecker.interpret()`'s existing pure seam, 9 new tests); browser
+proposal is a timed runbook, no workflow change. Full findings:
+[`test-assist/docs/RELEASE_ROLLBACK_TRIAL.md`](https://github.com/emil3663/test-assist/blob/docs/ta-250-release-rollback-trial/docs/RELEASE_ROLLBACK_TRIAL.md),
+[`test-assist#24`](https://github.com/emil3663/test-assist/pull/24) (open).
+
 **No overlap — chapters not yet mined:**
 ch. 3-5 (risk, SLOs, toil) · ch. 7 (automation safety) · ch. 9 (simplicity) ·
 ch. 12-16 (troubleshooting, incident command, postmortems) · ch. 18 (software
