@@ -91,3 +91,83 @@ a comment noting the follow-up work that would need separate tooling.
 - Output only the TypeScript code for the test file — no markdown
   fences, no surrounding explanation, unless the user asked for
   commentary alongside it.
+
+## Worked example
+
+**Description given to the skill:**
+
+> Test the login page at https://example.com/login. There's an email
+> field, a password field, and a "Sign in" button. On success the user
+> is redirected to /dashboard which shows a welcome heading. On invalid
+> credentials, an inline error message appears without navigating away.
+> The page should also work well on mobile.
+
+Reading that against the category list in step 1: this is a login form
+with a stated success/failure outcome (**Functional** — clearly in
+scope) and an explicit mobile-layout requirement (**Responsive/mobile**
+— clearly in scope). Nothing in the description touches performance,
+security, accessibility, usability, SEO, cookies, or persistence, so
+those categories are left out rather than added reflexively — each of
+the two describe blocks below maps to preconditions, inputs, and
+expected results for its cases, the same shape ISTQB uses for a test
+case: a known starting state, what's entered or done, and what should
+be observably true afterward.
+
+**Resulting test file:**
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+const BASE_URL = 'https://example.com';
+
+test.describe('Functional', () => {
+  test('user can sign in with valid credentials and lands on the dashboard', async ({ page }) => {
+    // Go to the login page
+    await page.goto(`${BASE_URL}/login`);
+
+    // Fill in valid credentials
+    await page.getByLabel('Email').fill('test.user@example.com');
+    await page.getByLabel('Password').fill('correct-horse-battery-staple');
+
+    // Submit the form
+    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    // The user should land on the dashboard and see a welcome heading
+    await expect(page).toHaveURL(`${BASE_URL}/dashboard`);
+    await expect(page.getByRole('heading', { name: /welcome/i })).toBeVisible();
+  });
+
+  test('invalid credentials show an inline error without navigating away', async ({ page }) => {
+    await page.goto(`${BASE_URL}/login`);
+
+    await page.getByLabel('Email').fill('test.user@example.com');
+    await page.getByLabel('Password').fill('wrong-password');
+
+    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    // An inline error appears, and the user stays on the login page
+    await expect(page.getByText(/invalid|incorrect/i)).toBeVisible();
+    await expect(page).toHaveURL(`${BASE_URL}/login`);
+  });
+});
+
+test.describe('Responsive/mobile', () => {
+  const viewports = [
+    { name: 'phone', width: 375, height: 667 },
+    { name: 'tablet', width: 768, height: 1024 },
+    { name: 'desktop', width: 1440, height: 900 },
+  ];
+
+  for (const viewport of viewports) {
+    test(`login form is usable at ${viewport.name} size`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto(`${BASE_URL}/login`);
+
+      // The core form controls stay visible and usable at every size
+      await expect(page.getByLabel('Email')).toBeVisible();
+      await expect(page.getByLabel('Password')).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    });
+  }
+});
+```

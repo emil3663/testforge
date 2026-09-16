@@ -1,17 +1,26 @@
 # Skills roadmap
 
 `skills/` is a growing set, not a single product with supporting material.
-[`write-playwright-test`](write-playwright-test/SKILL.md) is the first entry
-because it was the one already isolated in the codebase — it is not a
-flagship, and nothing below is positioned as secondary to it. Each entry
-below is a candidate: recorded so the direction doesn't quietly collapse
-into "one skill is the product" by default, not a commitment to build it on
-any particular timeline. See
+[`write-playwright-test`](testing/write-playwright-test/SKILL.md) is the
+first entry because it was the one already isolated in the codebase — it is
+not a flagship, and nothing below is positioned as secondary to it. Each
+entry below is a candidate: recorded so the direction doesn't quietly
+collapse into "one skill is the product" by default, not a commitment to
+build it on any particular timeline. See
 [`docs/decisions/phase-17-skills-extraction-backlog.md`](../docs/decisions/phase-17-skills-extraction-backlog.md)
-for the backlog these came from, and `docs/REIMAGINING.md` for the source
+and
+[`docs/decisions/phase-18-skills-taxonomy-backlog.md`](../docs/decisions/phase-18-skills-taxonomy-backlog.md)
+for the backlogs these came from, and `docs/REIMAGINING.md` for the source
 proposal.
 
-## Candidates
+`skills/` is split into two categories, `skills/testing/` and
+`skills/engineering/` — see [`README.md`](README.md) for what distinguishes
+them.
+
+## Testing judgment
+
+Skills about what a test should cover and what it actually proves. Lives in
+`skills/testing/`.
 
 ### `honest-coverage`
 
@@ -60,6 +69,24 @@ designing something new.
 
 Status: not started.
 
+## Engineering concerns
+
+Skills about how code is structured and where it's likely to break, as
+distinct from what a test covers. `skills/engineering/` is empty for now —
+approved engineering-concern skills land there once TFP-039 reviews the
+drafts below.
+
+### `code-structure` and `refactor-audit`
+
+Two drafts — deciding where new code goes before it's written, and auditing
+an existing codebase for structural drift — are written and under
+[`skills/proposed/`](proposed/), not yet in `skills/engineering/`.
+
+Generalizes: `cah-pwa/skills/`'s own template, applied to a `useRun.ts`
+review (442 lines, 18 `useState` calls in four unrelated groups).
+
+Status: pending review (TFP-039) before promotion into `skills/engineering/`.
+
 ## Known gaps / open questions
 
 - **`write-playwright-test` isn't auto-discovered by Claude Code's `Skill`
@@ -71,7 +98,3 @@ Status: not started.
   suggestion to check whether Playwright MCP already covers that capability.
   That investigation is TFP-036, already ticketed — tracked there, not
   duplicated here.
-- **Two additional draft skills** (`code-structure`, `refactor-audit`) exist
-  under `skills/proposed/`, deliberately kept out of both `skills/` and this
-  candidate list — they arrived after Phase 17 was scoped and are pending
-  review before any decision to promote them here.
