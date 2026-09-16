@@ -46,13 +46,25 @@ engineering) · ch. 23-27 (consensus, cron, pipelines, data integrity, launches)
 
 ## Something worth knowing either way
 
-**There is a 2nd edition of the SRE book** — Beyer, Jones, Leng, Huska, Petoff,
-Murphy — and it has chapters the 2016 edition doesn't: "Safety Engineering for
-Software: Beyond Reacting to Failure" and "AI for SRE". Both of these sets were
-built from the **1st** edition, which is the one published free at
-`sre.google/sre-book`. The 2nd is paywalled on O'Reilly and neither of us has
-read it. Given how much of `skills/` traces to this book, it's probably worth a
-look before mining it further.
+**A 2nd edition of the SRE book is coming** — Beyer, Jones, Leng, Huska, Petoff,
+Murphy, 771pp, **published 27 October 2026**. It is not out yet; chapters are
+visible in early release on O'Reilly, which means the text can still change.
+Everything in `skills/` and everything here was built from the **1st** edition,
+the one published free at `sre.google/sre-book`.
+
+Two things to know before mining the book further:
+
+- **It is a restructure, not an appendix.** The 2nd edition's chapters are
+  differently titled and differently ordered — sociotechnical foundations,
+  situational awareness, continuous preparedness, infrastructure design,
+  resilient products, emergent reliability — plus material with no 1st-edition
+  ancestor ("Safety Engineering for Software: Beyond Reacting to Failure",
+  ch. 3, and a chapter on AI and SRE). So the chapter numbers in the overlap
+  table above are **1st-edition numbers** and will not map across.
+- **Waiting is cheap.** Six weeks, and the early-release text may move under
+  anyone who mines it now.
+
+Neither of us has read it. This is from the publisher's listing, not the book.
 
 ## What to be sceptical about
 
