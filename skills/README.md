@@ -16,6 +16,27 @@ raised the question are built. None are pure agent judgment with nothing to
 check against: each names the real case it generalizes from, and most were
 run against a real target before being called done.
 
+## Invoking a skill for real
+
+As of Phase 21 (TFP-051), these are real Claude Code plugin skills, not
+just files to open and follow by hand. `skills/.claude-plugin/plugin.json`
+declares both `testing/` and `engineering/` as skill directories, packaged
+as the `testforge-skills` plugin and registered via a local marketplace
+(`.claude-plugin/marketplace.json`) that `.claude/settings.json` enables
+automatically for anyone with this repo trusted — no manual install step.
+
+Invoke any skill by its plugin-scoped name, e.g.:
+
+```text
+/testforge-skills:write-playwright-test
+/testforge-skills:code-structure
+```
+
+Verified directly (`claude plugin install`, then a fresh session's own
+`Skill` tool — not opened and read manually): both produced their
+documented worked-example output exactly, through the real invocation
+path.
+
 ## Testing judgment
 
 Skills about what a test should cover and what it actually proves. Lives in
@@ -68,12 +89,12 @@ Skills about how code is structured and where it's likely to break, as
 distinct from what a test covers. Lives in
 [`skills/engineering/`](engineering/).
 
-- **[`code-structure`](engineering/code-structure.md)** — judges where new
+- **[`code-structure`](engineering/code-structure/SKILL.md)** — judges where new
   code should go and whether a file is implementing rather than assembling,
   before it's written. Martin's proposal, calibrated against
   `src/app/page.tsx` and promoted after a real trial run — see
   [`CALIBRATION.md`](engineering/CALIBRATION.md).
-- **[`refactor-audit`](engineering/refactor-audit.md)** — audits an
+- **[`refactor-audit`](engineering/refactor-audit/SKILL.md)** — audits an
   existing codebase for structural drift against the same thresholds.
   Also Martin's proposal, trial-run against `src/app/_hooks/`
   (`useRun.ts`: 442 lines, 17 `useState` calls across four unrelated

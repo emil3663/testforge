@@ -180,10 +180,21 @@ candidate here — it's already covered by the existing
 
 ## Known gaps / open questions
 
-- **`write-playwright-test` isn't auto-discovered by Claude Code's `Skill`
-  tool from a bare top-level `skills/` folder.** Discovery expects
-  `.claude/skills/` or a plugin manifest. Worth its own ticket later; not
-  fixed as part of TFP-034 or this roadmap.
+- **All 11 skills are now real Claude Code plugin skills, not just files.**
+  Fixed by TFP-051: a plugin manifest (`skills/.claude-plugin/plugin.json`)
+  declares both `skills/testing/` and `skills/engineering/` via the
+  `skills` field's array support, registered through a local marketplace
+  (`.claude-plugin/marketplace.json`) and a committed
+  `.claude/settings.json` (`extraKnownMarketplaces` + `enabledPlugins`) so
+  every trusted collaborator gets it, no manual install step. Not a
+  restructure of `skills/`'s own testing/engineering split — the canonical
+  files stayed where Phase 18 put them (two flat files,
+  `code-structure.md`/`refactor-audit.md`, did need moving into
+  `<name>/SKILL.md` form with real frontmatter, since that exact shape is
+  what Claude Code's plugin scanner requires — a fix the ticket didn't
+  originally anticipate, found by reading the reference doc rather than
+  assuming the existing layout already qualified). See
+  [`skills/README.md`](README.md) for the actual invocation syntax.
 - **`introspect`/`crawl` (~1,300 lines of DOM exploration)** are flagged in
   `docs/REIMAGINING.md` as a genuine loss if the app is ever trimmed, with a
   suggestion to check whether Playwright MCP already covers that capability.
