@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "testforge-skills-marketplace": {
+      "source": {
+        "source": "directory",
+        "path": "./"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "testforge-skills@testforge-skills-marketplace": true
+  }
+}

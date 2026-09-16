@@ -1,0 +1,12 @@
+{
+  "name": "testforge-skills",
+  "description": "TestForge's testing-judgment and engineering-concern skills, built and verified across Phases 17-20 - not moved from their canonical skills/testing/ and skills/engineering/ locations.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emil"
+  },
+  "skills": [
+    "./testing/",
+    "./engineering/"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "testforge-skills-marketplace",
+  "description": "Local marketplace for this repo's own skills/testing/ and skills/engineering/ content.",
+  "owner": {
+    "name": "Emil"
+  },
+  "plugins": [
+    {
+      "name": "testforge-skills",
+      "source": "./skills",
+      "description": "TestForge's testing-judgment and engineering-concern skills."
+    }
+  ]
+}
