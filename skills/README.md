@@ -22,7 +22,9 @@ agent's workflow without running the TestForge app.
 ## Engineering concerns
 
 Skills about how code is structured and where it's likely to break, as
-distinct from what a test covers. `skills/engineering/` is empty for now —
-`code-structure` and `refactor-audit` stay under
-[`skills/proposed/`](proposed/) until TFP-039 reviews them; approved
-engineering-concern skills land in `skills/engineering/` once that happens.
+distinct from what a test covers. Lives in
+[`skills/engineering/`](engineering/), holding `code-structure` and
+`refactor-audit` — promoted from `skills/proposed/` by TFP-039 after a real
+calibration check and trial run; see
+[`skills/engineering/CALIBRATION.md`](engineering/CALIBRATION.md) for that
+output in full.

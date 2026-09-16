@@ -24,7 +24,7 @@ being written, this one catches what got past it.
 ## Output format
 
 One issue per finding, in the repo's own brief shape
-(`docs/WORKING_AGREEMENTS.md`):
+([`docs/WORKING_AGREEMENTS.md`](../../docs/WORKING_AGREEMENTS.md)):
 
 ```markdown
 ## Context
@@ -139,6 +139,16 @@ When a finding turns out to be wrong, or a signal keeps producing noise,
 
 The table above is a starter set from one afternoon on one codebase. It is
 expected to be wrong in places, and it is more useful edited than admired.
+
+**Correction found during the first real trial (TFP-039, `src/app/_hooks/`,
+16 September 2026):** the worked example above undercounted its own finding.
+`useRun.ts` has 17 `useState` calls, not 18, and the four listed groups only
+account for 15 of them — `reportPopupNotice` and `isBusyTargetListExpanded`
+were left uncategorized. The set-then-revert button-label pattern it
+describes also exists in `useGeneration.ts` (`copyLabel`, `saveLabel`) — 5
+call sites across 2 files, not 3 in 1 file. Full audit output, including
+this correction and the finding it was superseded by, is in
+[`skills/engineering/CALIBRATION.md`](CALIBRATION.md).
 
 ## How Emil invokes this skill
 

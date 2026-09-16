@@ -72,13 +72,28 @@ not refuse:
 |---|---|
 | Component over ~250 lines | name the sections; propose the split |
 | Hook over ~150 lines, or more than 3 pieces of state | probably two hooks |
-| Page or route over ~300 lines | it is implementing, not assembling |
+| Page or route over ~300 lines | check the split between composition and inline derived-state logic before calling it implementation |
 | Any file over ~500 lines | stop and ask before adding to it |
 
 **The number is not the point.** A 4,700-line file was never made in one
 commit — it was made in three hundred commits that each added forty lines,
 and at no point did anyone see something worth stopping for. The threshold
 exists to make that moment visible while it is still small.
+
+**Calibrated against `src/app/page.tsx`** (353 lines, TFP-039, 16 September
+2026): the 300-line threshold fired, but the file turned out to be mostly
+legitimate assembly — roughly 150 lines of JSX composing four already-
+extracted section components, plus ~40 lines of imports and a static SEO
+schema object. The real, extractable seam was smaller than the line count
+implied: about 85 lines of inline derived-view-readiness logic
+(`isContentAwareReady`, `runBlockedMessage`, the `busy*` fallbacks) that
+could become one more pure function in `_lib/derive.ts`, alongside the
+functions already extracted there. Raw line count doesn't distinguish
+"assembling from extracted pieces" from "still implementing" — that's why
+the row above asks for a check rather than asserting the conclusion
+outright. Full calibration writeup, including the Files/Placement/Seams
+treatment applied as if this were a real finding, is in
+[`skills/engineering/CALIBRATION.md`](CALIBRATION.md).
 
 ## Worked example
 

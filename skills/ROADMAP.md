@@ -84,20 +84,22 @@ Status: not started.
 ## Engineering concerns
 
 Skills about how code is structured and where it's likely to break, as
-distinct from what a test covers. `skills/engineering/` is empty for now —
-approved engineering-concern skills land there once TFP-039 reviews the
-drafts below.
+distinct from what a test covers. Lives in `skills/engineering/`, holding
+`code-structure` and `refactor-audit` (below) since TFP-039.
 
 ### `code-structure` and `refactor-audit`
 
-Two drafts — deciding where new code goes before it's written, and auditing
-an existing codebase for structural drift — are written and under
-[`skills/proposed/`](proposed/), not yet in `skills/engineering/`.
+Deciding where new code goes before it's written, and auditing an existing
+codebase for structural drift. Promoted into
+[`skills/engineering/`](engineering/) by TFP-039, after `code-structure`'s
+thresholds were calibrated against `src/app/page.tsx` and `refactor-audit`
+was trial-run against `src/app/_hooks/` (printed, not filed). Full output:
+[`skills/engineering/CALIBRATION.md`](engineering/CALIBRATION.md).
 
 Generalizes: `cah-pwa/skills/`'s own template, applied to a `useRun.ts`
-review (442 lines, 18 `useState` calls in four unrelated groups).
+review (442 lines, 17 `useState` calls in four unrelated groups).
 
-Status: pending review (TFP-039) before promotion into `skills/engineering/`.
+Status: shipped.
 
 ### `reliability-audit`
 
