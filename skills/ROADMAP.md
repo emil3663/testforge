@@ -167,7 +167,12 @@ prove" into "and would anyone notice."
 
 Generalizes: the Google SRE book, ch. 6 (Monitoring Distributed Systems).
 
-Status: not started.
+Built as [`skills/engineering/observability-check/SKILL.md`](engineering/observability-check/SKILL.md)
+by TFP-050, cross-referencing `honest-coverage` directly as its sibling —
+same instinct, aimed at production rather than the test run — rather than
+sharing the theme by coincidence.
+
+Status: built.
 
 Release engineering (SRE ch. 8) is deliberately not proposed as a new
 candidate here — it's already covered by the existing
