@@ -32,7 +32,12 @@ Generalizes: Emil's own prior writing in `DESKTOP_STABILITY_MATRIX.md` and
 single project. The skill would produce a stability-matrix-shaped output —
 every case rated, every limitation named — rather than a one-off document.
 
-Status: not started.
+Built as [`skills/testing/honest-coverage/SKILL.md`](testing/honest-coverage/SKILL.md)
+by TFP-043, porting the Stable/Moderate/Blocked scheme and real excerpted
+rows from `DESKTOP_STABILITY_MATRIX.md` plus `cah-pwa/tests/README.md`'s
+"a reviewer who counts spec files" framing.
+
+Status: built.
 
 ### `dont-stub-what-you-prove`
 
@@ -43,7 +48,11 @@ Generalizes: TA-227, a defect Emil found and named in his own testing work —
 a green test that proves nothing, because the assertion checks a stub
 instead of the real dependency.
 
-Status: not started.
+Built as [`skills/testing/dont-stub-what-you-prove/SKILL.md`](testing/dont-stub-what-you-prove/SKILL.md)
+by TFP-044, porting TA-227's `_start_capture` example verbatim from
+`test-assist/docs/ta227-228-e2e-testing-brief.md`.
+
+Status: built.
 
 ### `find-the-hidden-platform`
 
@@ -79,7 +88,11 @@ Generalizes: ISTQB's change-related testing. Unlike the four candidates
 above, not generalized from any of Emil's own prior work — a fresh
 candidate, so there's no cross-repo material to port.
 
-Status: not started.
+Built as [`skills/testing/regression-safety-net/SKILL.md`](testing/regression-safety-net/SKILL.md)
+by TFP-047, keeping confirmation and regression as two separately-testable
+checks rather than one blended verdict, per its own acceptance criteria.
+
+Status: built.
 
 ## Engineering concerns
 
@@ -109,7 +122,13 @@ unbounded queues — "what happens when this dependency is slow or down."
 Generalizes: the Google SRE book, ch. 21-22 (Handling Overload, Addressing
 Cascading Failures).
 
-Status: not started.
+Built as [`skills/engineering/reliability-audit/SKILL.md`](engineering/reliability-audit/SKILL.md)
+by TFP-048, following `refactor-audit`'s own issue-template convention
+(`docs/WORKING_AGREEMENTS.md`'s brief shape) for consistency, with a
+three-signal table (missing timeout, retry without backoff, unbounded queue)
+in place of `refactor-audit`'s structural-drift signals.
+
+Status: built.
 
 ### `failure-mode-tests`
 
@@ -119,7 +138,12 @@ happens to mention them.
 
 Generalizes: the Google SRE book, ch. 17 (Testing for Reliability).
 
-Status: not started.
+Built as [`skills/testing/failure-mode-tests/SKILL.md`](testing/failure-mode-tests/SKILL.md)
+by TFP-049, verified against `write-playwright-test`'s own login-page worked
+example: proposes timeout, connection-abort, and malformed-response tests
+that output doesn't cover.
+
+Status: built.
 
 ### `observability-check`
 
