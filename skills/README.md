@@ -11,10 +11,13 @@ for why. Neither category has a flagship, and none of these are positioned
 as secondary to another — see [`ROADMAP.md`](ROADMAP.md) for full detail on
 what each one generalizes from and how it was verified.
 
-As of Phase 20, all 11 skills discussed since `docs/REIMAGINING.md` first
-raised the question are built. None are pure agent judgment with nothing to
-check against: each names the real case it generalizes from, and most were
-run against a real target before being called done.
+As of Phase 22, 12 skills are built: the 11 discussed since
+`docs/REIMAGINING.md` first raised the question, plus
+`crawl-and-classify-pages`, added once TFP-036's spike (Phase 22) confirmed
+introspect/crawl was real, non-duplicated capability rather than something
+Playwright MCP already provided. None are pure agent judgment with nothing
+to check against: each names the real case it generalizes from, and most
+were run against a real target before being called done.
 
 ## Invoking a skill for real
 
@@ -82,6 +85,17 @@ Skills about what a test should cover and what it actually proves. Lives in
   sibling to `write-playwright-test` that writes dependency-timeout and
   partial-failure tests as a matter of course, not only when asked.
   Generalizes the Google SRE book, ch. 17 (Testing for Reliability).
+- **[`crawl-and-classify-pages`](testing/crawl-and-classify-pages/SKILL.md)**
+  — breadth-first same-origin crawl to build a page map, then per-page
+  testing-semantic classification (interaction category, expected HTTP
+  status, `requiresAuth` heuristic, container labeling, embedded-resource
+  kind) of every actionable element and link. Generalizes
+  `src/lib/introspect/dom-snapshot.ts` and `src/app/api/crawl/route.ts`
+  (~1,200 lines) directly, after TFP-036 (Phase 22) confirmed — against
+  Playwright MCP's real 73-tool list, not by assumption — that neither the
+  crawl nor the testing-semantic classification has any equivalent there.
+  The discovery step upstream of `write-playwright-test` on a multi-page
+  app it doesn't already know.
 
 ## Engineering concerns
 
@@ -119,7 +133,9 @@ Every skill above traces to something real rather than a generic best
 practice: five to Emil's own prior incidents and write-ups (TA-227, TA-230,
 `DESKTOP_STABILITY_MATRIX.md`), two to Martin's own proposed drafts, one to
 Martin's own unmerged branch on a sibling repo, three to named chapters of
-the Google SRE book, and one directly to the ISTQB testing taxonomy. Full
+the Google SRE book, one directly to the ISTQB testing taxonomy, and one
+(`crawl-and-classify-pages`) to TestForge's own `introspect`/`crawl` source,
+via TFP-036's spike against Playwright MCP's real tool list. Full
 citation and verification detail for each is in
 [`ROADMAP.md`](ROADMAP.md) and the Phase 17-20 decision records under
 [`docs/decisions/`](../docs/decisions/).
@@ -130,10 +146,11 @@ citation and verification detail for each is in
   tool from a bare top-level `skills/` folder.** Discovery expects
   `.claude/skills/` or a plugin manifest. Worth its own ticket; not fixed
   as part of this roadmap.
-- **`introspect`/`crawl` (~1,300 lines of DOM exploration)** are flagged in
-  `docs/REIMAGINING.md` as a genuine loss if the app is ever trimmed, with
-  a suggestion to check whether Playwright MCP already covers that
-  capability — tracked as TFP-036, not duplicated here.
+- ~~`introspect`/`crawl` (~1,300 lines of DOM exploration)... tracked as
+  TFP-036~~ — resolved. TFP-036 (Phase 22) ran the comparison; neither half
+  is duplicated by Playwright MCP, and the capability is now packaged as
+  [`crawl-and-classify-pages`](testing/crawl-and-classify-pages/SKILL.md).
+  Full comparison: [`INTROSPECT_CRAWL_SPIKE.md`](INTROSPECT_CRAWL_SPIKE.md).
 
 ## What's next
 

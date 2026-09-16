@@ -178,6 +178,32 @@ Release engineering (SRE ch. 8) is deliberately not proposed as a new
 candidate here — it's already covered by the existing
 `verified-release-pipeline` account skill.
 
+### `crawl-and-classify-pages`
+
+Breadth-first same-origin crawl to build a page map, then per-page
+testing-semantic classification of every actionable element and link —
+interaction category, expected HTTP status, a `requiresAuth` heuristic,
+container/section labeling, embedded-resource kind, link-type. The
+discovery step upstream of `write-playwright-test` on a multi-page app it
+doesn't already know the shape of.
+
+Generalizes: `src/lib/introspect/dom-snapshot.ts` and
+`src/app/api/crawl/route.ts` directly (~1,200 lines), reproducing their
+exact algorithms and heuristics (the BFS queue/dedup rules, the role
+table, the container-label ancestor search, the interaction-category and
+expected-status regex chains, the link-type and `requiresAuth` checks)
+rather than a generic "explore the page" instruction.
+
+Built as [`skills/testing/crawl-and-classify-pages/SKILL.md`](testing/crawl-and-classify-pages/SKILL.md),
+directly off TFP-036's (Phase 22) finding that neither half of this logic
+has any equivalent in Playwright MCP's real 73-tool list — see the
+Known-gaps entry below and [`INTROSPECT_CRAWL_SPIKE.md`](INTROSPECT_CRAWL_SPIKE.md)
+for the full comparison this skill is built from. Not yet run against a
+live target with a connected browser-automation tool — same method caveat
+as the spike itself, stated in the skill rather than hidden.
+
+Status: built, unverified live (see caveat above).
+
 ## Known gaps / open questions
 
 - **All 11 skills are now real Claude Code plugin skills, not just files.**
@@ -196,7 +222,9 @@ candidate here — it's already covered by the existing
   assuming the existing layout already qualified). See
   [`skills/README.md`](README.md) for the actual invocation syntax.
 - **`introspect`/`crawl` (~1,200-1,300 lines of DOM exploration) does not
-  duplicate Playwright MCP — spiked, not still an open placeholder.**
+  duplicate Playwright MCP — spiked and now packaged as
+  [`crawl-and-classify-pages`](testing/crawl-and-classify-pages/SKILL.md),
+  not still an open placeholder.**
   TFP-036 (Phase 22) ran the comparison `docs/REIMAGINING.md` asked for:
   `crawl/route.ts`'s BFS same-origin crawl has no equivalent anywhere in
   Playwright MCP's real, published 73-tool list — `browser_navigate` is
@@ -214,3 +242,6 @@ candidate here — it's already covered by the existing
   documentation (fetched directly, all 73 tools), not a live run against
   the two originally-intended target pages. Full comparison, including the
   per-tool breakdown: [`skills/INTROSPECT_CRAWL_SPIKE.md`](INTROSPECT_CRAWL_SPIKE.md).
+  The remaining open piece is the live-verification gap the spike itself
+  named: the skill hasn't been run yet against a real connected
+  browser-automation tool.
