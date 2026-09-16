@@ -1,9 +1,12 @@
 # Phase 20 — Build the Remaining Skills Backlog
 
-**Version:** 1.1 — TFP-046 revised: `generator-improvements` located and
-read in full, port replaces rebuild-from-spec
+**Version:** 1.2 — TFP-046 revised: `generator-improvements` located and
+read in full, port replaces rebuild-from-spec. TFP-043/044/047/048/049
+built and verified. TFP-045 revised: names the ISTQB structural
+(white-box) testing category explicitly.
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** In progress — TFP-043/044/047/048/049 done, TFP-045/046/050
+remaining
 
 ## Context
 
@@ -140,9 +143,19 @@ Build all 8 remaining skills as real `SKILL.md` files (plus, for
     shared state, and monkeypatches that replace the thing under test;
     report each as a path the suite cannot fail for, with what's
     unverified while it's skipped.
+  - Name it explicitly, in the skill's own text, as ISTQB's structural
+    (white-box) testing — code coverage of paths the suite doesn't
+    reach. This surfaced during the Phase 18 ISTQB pass and Emil
+    confirmed: keep the skill named `find-the-hidden-platform` (it's
+    specific to what TA-230 actually found), but state the ISTQB
+    category plainly rather than leave the connection implicit —
+    "coverage" already has a precise, checkable meaning in that
+    vocabulary, worth reusing rather than reinventing.
 - **Acceptance criteria:**
   - `docs/TA-230.md` exists and is a clean extraction (not a summary —
     the actual content).
+  - `SKILL.md` states, in its own words, that this is ISTQB structural
+    (white-box) testing — not just implied by what the skill does.
   - Applied to a real codebase with at least one `skipif` or default-off
     flag, the skill finds it.
 - **Dependencies:** None.
