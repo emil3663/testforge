@@ -98,20 +98,76 @@ pinned to a model version, and covered by evals.
 
 ## Contents
 
-**Router** — `sre` (routing table, core tenets, what the 1st edition gets wrong)
+Sixteen skills. Each states its source chapters at the top and ends with the
+artifact it produces.
 
-**Design-time** — `sre-code`, `sre-architecture`, `sre-testing`
+**Router**
 
-**Runtime** — `sre-slo`, `sre-monitoring`, `sre-release`, `sre-incident`,
-`sre-postmortem`, `sre-overload`, `sre-data-integrity`, `sre-toil`
+- **`sre`** — routing table, the core tenets (error budgets, the 50% cap, three
+  valid monitoring outputs), an argument about which practices lost the cost
+  that used to enforce them, and an explicit list of what the 1st edition gets
+  wrong.
 
-**Cross-cutting** — `sre-agents`, `sre-cost`
+**Design-time** — building it
 
-**Delivery** — `dora` (the five metrics, benchmarks, misuse),
-`dora-capabilities` (symptom → capability diagnosis)
+- **`sre-code`** — intent-based APIs (declare *what*, not *how*), negative lines
+  of code, minimal APIs, launch-and-iterate, configuration as a spec sheet
+  rather than as code, and "language is code": prompts and skill files treated
+  as source, with the model version pinned or the build isn't reproducible.
+- **`sre-architecture`** — dependency direction (always downward), failure
+  domains and hidden shared fate, designed degradation paths, where state lives,
+  which problems genuinely require consensus, dependencies as a portfolio you
+  can't page. Ends in a 12-point design-review checklist.
+- **`sre-testing`** — the test taxonomy (unit/integration/system, plus
+  configuration, stress and canary as production tests), how much testing is
+  enough, why a flaky test is worse than no test, and evals as the test layer
+  for nondeterministic components.
 
-**Reference files** — `sre-postmortem/reference/template.md`,
-`sre-release/reference/launch-checklist.md`
+**Runtime** — it exists and has users
+
+- **`sre-slo`** — SLI/SLO/SLA kept straight, why latency SLOs must never be
+  means, the six-part measurement spec, choosing targets, error-budget maths,
+  and splitting budget burn into self-inflicted versus inherited from vendors.
+- **`sre-monitoring`** — the four golden signals, symptom-versus-cause (the
+  rule that decides what pages), five questions every alert rule must answer,
+  and rule construction that doesn't flap.
+- **`sre-release`** — hermetic builds, progressive rollout and canarying,
+  feature flags, the pipeline as a reviewable artifact, and a launch
+  coordination checklist.
+- **`sre-incident`** — stop the bleeding before diagnosing, the diagnose loop
+  (what touched it last, bisect, simplify and reduce), the four incident roles,
+  and two cases the book didn't anticipate: vendor outages where troubleshooting
+  is unavailable, and nondeterminism breaking bisection.
+- **`sre-postmortem`** — trigger criteria, blameless phrasing with worked
+  rewrites, a full template, and tracking outages across incidents.
+- **`sre-overload`** — an active-cascading-failure checklist first, then retry
+  budgets (4 layers x 3 retries = 64 attempts), deadline propagation, load
+  shedding, criticality levels, and load-balancing policy.
+- **`sre-data-integrity`** — backups versus archives ("what people really want
+  are restores"), three defense-in-depth layers, consensus deployment, and
+  idempotent scheduling.
+- **`sre-toil`** — the six properties that make work toil, the 50% cap and why
+  it stopped enforcing itself, the automation ladder, and the safety
+  requirements for destructive automation.
+
+**Cross-cutting** — not in the book
+
+- **`sre-agents`** — how agent and human capacities actually differ, and the
+  division of labour that follows: agents take the documented, humans take the
+  novel. Escalation by enforced tripwire rather than self-assessment.
+- **`sre-cost`** — a cost budget with the error budget's mechanics, bounding
+  everything that can scale on its own, and saturation as a financial signal.
+
+**Delivery** — DORA
+
+- **`dora`** — the five metrics (there are five now, not four), how to compute
+  each from git and CI, benchmarks, how they get misused, and which signals a
+  repository can and cannot tell you.
+- **`dora-capabilities`** — symptom-to-capability diagnosis, and why
+  "trunk-based development" is better stated as small batches integrated often.
+
+**Reference files** — `sre-postmortem/reference/template.md` (postmortem
+structure), `sre-release/reference/launch-checklist.md`.
 
 Provenance: Google SRE book, 1st edition (`sre.google/sre-book`, free) and
 DORA (`dora.dev`), both trawled September 2026.
