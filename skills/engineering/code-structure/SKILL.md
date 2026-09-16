@@ -1,3 +1,14 @@
+---
+name: code-structure
+description: >
+  Decide where new code goes — a new component, hook, page, or module — and
+  whether a file is implementing rather than assembling, before writing it.
+  Not a refactoring skill; it applies while code is being written, the only
+  time the placement decision is still cheap. Use this skill when building
+  a feature, adding a screen, or extending an existing module, especially
+  once a file is approaching this skill's own thresholds.
+---
+
 # Skill: Code Structure
 
 ## What this skill is for
@@ -93,7 +104,7 @@ functions already extracted there. Raw line count doesn't distinguish
 the row above asks for a check rather than asserting the conclusion
 outright. Full calibration writeup, including the Files/Placement/Seams
 treatment applied as if this were a real finding, is in
-[`skills/engineering/CALIBRATION.md`](CALIBRATION.md).
+[`skills/engineering/CALIBRATION.md`](../CALIBRATION.md).
 
 ## Worked example
 

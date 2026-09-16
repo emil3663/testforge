@@ -9,8 +9,8 @@ based on.
 
 | | What it does | When it runs |
 |---|---|---|
-| [`code-structure.md`](code-structure.md) | decides where new code goes, before it is written | while building |
-| [`refactor-audit.md`](refactor-audit.md) | finds drift and files it as issues | after the fact |
+| [`code-structure`](code-structure/SKILL.md) | decides where new code goes, before it is written | while building |
+| [`refactor-audit`](refactor-audit/SKILL.md) | finds drift and files it as issues | after the fact |
 
 They are a pair. The first prevents; the second catches what got past it.
 

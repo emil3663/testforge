@@ -1,3 +1,15 @@
+---
+name: refactor-audit
+description: >
+  Read a codebase, find where structure has drifted, and file each finding
+  as an issue someone can pick up cold — one issue per seam, with the
+  measurement that justifies it. Does not refactor anything; finding and
+  fixing are separate jobs. Pairs with code-structure: that one prevents
+  drift while code is being written, this one catches what got past it.
+  Use this skill when auditing an existing repo, directory, or file for
+  structural drift, not while code is actively being written.
+---
+
 # Skill: Refactor Audit
 
 ## What this skill is for
@@ -24,7 +36,7 @@ being written, this one catches what got past it.
 ## Output format
 
 One issue per finding, in the repo's own brief shape
-([`docs/WORKING_AGREEMENTS.md`](../../docs/WORKING_AGREEMENTS.md)):
+([`docs/WORKING_AGREEMENTS.md`](../../../docs/WORKING_AGREEMENTS.md)):
 
 ```markdown
 ## Context
@@ -148,7 +160,7 @@ were left uncategorized. The set-then-revert button-label pattern it
 describes also exists in `useGeneration.ts` (`copyLabel`, `saveLabel`) — 5
 call sites across 2 files, not 3 in 1 file. Full audit output, including
 this correction and the finding it was superseded by, is in
-[`skills/engineering/CALIBRATION.md`](CALIBRATION.md).
+[`skills/engineering/CALIBRATION.md`](../CALIBRATION.md).
 
 ## How Emil invokes this skill
 
