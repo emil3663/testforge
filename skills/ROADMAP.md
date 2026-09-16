@@ -195,8 +195,22 @@ candidate here — it's already covered by the existing
   originally anticipate, found by reading the reference doc rather than
   assuming the existing layout already qualified). See
   [`skills/README.md`](README.md) for the actual invocation syntax.
-- **`introspect`/`crawl` (~1,300 lines of DOM exploration)** are flagged in
-  `docs/REIMAGINING.md` as a genuine loss if the app is ever trimmed, with a
-  suggestion to check whether Playwright MCP already covers that capability.
-  That investigation is TFP-036, already ticketed — tracked there, not
-  duplicated here.
+- **`introspect`/`crawl` (~1,200-1,300 lines of DOM exploration) does not
+  duplicate Playwright MCP — spiked, not still an open placeholder.**
+  TFP-036 (Phase 22) ran the comparison `docs/REIMAGINING.md` asked for:
+  `crawl/route.ts`'s BFS same-origin crawl has no equivalent anywhere in
+  Playwright MCP's real, published 73-tool list — `browser_navigate` is
+  explicitly single-page, and no tool follows links automatically.
+  `dom-snapshot.ts`'s element-role/name discovery has a real, arguably
+  better partial equivalent in `browser_snapshot`'s accessibility-tree
+  read, but its actual value — testing-semantic classification (interaction
+  category, expected HTTP status, `requiresAuth`, embedded-resource kind,
+  link-type, container labeling) — has no equivalent at all, since a
+  general-purpose browser-automation surface has no reason to make those
+  judgments. **Not covered, on both halves, not a close call.** Method
+  caveat, stated plainly: no live browser-automation tool was available in
+  the session that ran this spike, so the comparison is built from a full
+  read of TestForge's own code plus Playwright MCP's real tool
+  documentation (fetched directly, all 73 tools), not a live run against
+  the two originally-intended target pages. Full comparison, including the
+  per-tool breakdown: [`skills/INTROSPECT_CRAWL_SPIKE.md`](INTROSPECT_CRAWL_SPIKE.md).
