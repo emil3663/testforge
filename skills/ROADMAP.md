@@ -69,6 +69,18 @@ designing something new.
 
 Status: not started.
 
+### `regression-safety-net`
+
+After a fix, confirm the originally-reported failure is actually gone
+(confirmation testing); separately, confirm the change didn't break
+anything outside what it was meant to touch (regression testing).
+
+Generalizes: ISTQB's change-related testing. Unlike the four candidates
+above, not generalized from any of Emil's own prior work — a fresh
+candidate, so there's no cross-repo material to port.
+
+Status: not started.
+
 ## Engineering concerns
 
 Skills about how code is structured and where it's likely to break, as
@@ -86,6 +98,40 @@ Generalizes: `cah-pwa/skills/`'s own template, applied to a `useRun.ts`
 review (442 lines, 18 `useState` calls in four unrelated groups).
 
 Status: pending review (TFP-039) before promotion into `skills/engineering/`.
+
+### `reliability-audit`
+
+Audits external calls for missing timeouts, retries without backoff, and
+unbounded queues — "what happens when this dependency is slow or down."
+
+Generalizes: the Google SRE book, ch. 21-22 (Handling Overload, Addressing
+Cascading Failures).
+
+Status: not started.
+
+### `failure-mode-tests`
+
+A sibling to `write-playwright-test` that covers dependency-timeout and
+partial-failure scenarios as a matter of course, not only when the user
+happens to mention them.
+
+Generalizes: the Google SRE book, ch. 17 (Testing for Reliability).
+
+Status: not started.
+
+### `observability-check`
+
+Checks whether a feature under test has any way to tell, in production,
+that it's broken — extends `honest-coverage`'s "what a green run doesn't
+prove" into "and would anyone notice."
+
+Generalizes: the Google SRE book, ch. 6 (Monitoring Distributed Systems).
+
+Status: not started.
+
+Release engineering (SRE ch. 8) is deliberately not proposed as a new
+candidate here — it's already covered by the existing
+`verified-release-pipeline` account skill.
 
 ## Known gaps / open questions
 
