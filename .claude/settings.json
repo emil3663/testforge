@@ -9,5 +9,18 @@
   },
   "enabledPlugins": {
     "testforge-skills@testforge-skills-marketplace": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "if [ -f .git/index.lock ] && ! tasklist //FI \"IMAGENAME eq git.exe\" 2>/dev/null | grep -qi git.exe; then rm -f .git/index.lock && echo \"[hook] cleared stale .git/index.lock (no git.exe running)\"; fi"
+          }
+        ]
+      }
+    ]
   }
 }
