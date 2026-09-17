@@ -2,6 +2,7 @@ import {
     buildAccessibilityElementTests,
     buildActionableElementTests,
     buildToggleGroupTests,
+    buildUsabilityElementTests,
 } from "./actionable-elements";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -291,14 +292,19 @@ export function buildGenericSuites(
     }
 
     if (areas.includes("usability")) {
+        // TFP-059: "visible interactive count > 0" restated Functional's own
+        // "shows at least one interactive element" claim under a different
+        // suite name. Keep the heading-visibility check (that one is
+        // usability-specific) and replace the count check with assertions
+        // that are actually about usability: real guidance text instead of
+        // generic labels, and primary actions reachable without scrolling.
         usabilityTests.push(`  test('keeps navigation and guidance visible for a first-time user', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
 
     await expect(page.getByRole('heading').first()).toBeVisible();
-    const visibleInteractive = page.locator('a:visible, button:visible');
-    expect(await visibleInteractive.count()).toBeGreaterThan(0);
   });`);
+        usabilityTests.push(...buildUsabilityElementTests(contentProfile, "/"));
     }
 
     const functionalSuite = createSuite("functional", functionalTests);

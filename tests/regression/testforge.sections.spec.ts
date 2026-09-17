@@ -1155,6 +1155,77 @@ test.describe("TestForge regression coverage", () => {
         expect(payload.code).toContain("dispatchEvent('touchstart')");
     });
 
+    test("replaces the usability interactive-count check with content-specific assertions", async ({ request }) => {
+        // TFP-059: "visible interactive count > 0" restated Functional's
+        // own claim under the Usability suite name. Live verification
+        // against test-assist (recorded in this commit's message): the
+        // regenerated suite asserts non-generic guidance text per labeled
+        // element plus fold-visibility of primary actions, both passing -
+        // and the primary-actions check is scoped to isVisible elements
+        // only, after a first attempt without that filter flagged
+        // test-assist's own hidden-at-introspection Start Recording button
+        // as a false positive.
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for usability-specific checks.",
+                selectedPractices: ["usability"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [
+                            {
+                                text: "Enter your annotation comment",
+                                url: null,
+                                category: "form",
+                                elementType: "textarea",
+                                containerLabel: "",
+                                expectedStatus: null,
+                                isVisible: true,
+                                locator: { role: "textbox", name: "Enter your annotation comment", label: "Enter your annotation comment", placeholder: "Enter your annotation comment", id: "usabilityProbeInput", inputType: "" },
+                            },
+                            {
+                                text: "Hidden Primary Action",
+                                url: null,
+                                category: "action",
+                                elementType: "button",
+                                containerLabel: "",
+                                expectedStatus: null,
+                                isVisible: false,
+                                locator: { role: "button", name: "Hidden Primary Action", label: "", placeholder: "", id: "hiddenPrimaryAction", inputType: "" },
+                            },
+                        ],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("Enter your annotation comment");
+        expect(payload.code).toContain("uses non-generic guidance text");
+        // A hidden-at-introspection element must not be asked for a
+        // bounding box or fold position - it is excluded from the
+        // "reachable without scrolling" sample entirely, not just from
+        // the assertion strength (there is no attach-only fallback here,
+        // unlike the functional and accessibility suites).
+        expect(payload.code).not.toContain("Hidden Primary Action has no bounding box");
+    });
+
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
         const response = await request.post("/api/generate", {
             data: {
