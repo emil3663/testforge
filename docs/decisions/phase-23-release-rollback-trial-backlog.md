@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Trial complete, TFP-052 landed — desktop proposal implemented (rollback marker through `UpdateChecker.interpret()`'s existing seam, 9 new tests) and toil-classified both builds. Findings live in `test-assist/docs/RELEASE_ROLLBACK_TRIAL.md`, currently on an **open, unmerged** branch/PR (`docs/ta-250-release-rollback-trial`, test-assist#24) — not yet on `main` there.
+**Status:** Trial complete, TFP-052 landed — desktop proposal implemented (rollback marker through `UpdateChecker.interpret()`'s existing seam, 9 new tests) and toil-classified both builds. Findings live in `test-assist/docs/RELEASE_ROLLBACK_TRIAL.md`, merged to `test-assist`'s `main` via test-assist#24 (merge commit `b91c79b`). Gate A below is satisfied.
 
 ## Context
 
@@ -145,8 +145,16 @@ existing pure seam, with 9 new tests. `skills/proposed/README.md` already
 points its `verified-release-pipeline`/`sre-release` overlap note at this
 result (commit `97e3ef2`).
 
-**Not yet done:** `test-assist` PR #24 (branch
-`docs/ta-250-release-rollback-trial`, commit `9479425`) is still open —
-the rollback marker and `RELEASE_ROLLBACK_TRIAL.md` aren't on `test-assist`'s
-`main` yet. This backlog's own Gate A isn't fully satisfied until that PR
-merges.
+**Done (2026-09-17):** `test-assist` PR #24 (branch
+`docs/ta-250-release-rollback-trial`, commit `9479425`) reviewed and merged
+to `main` there (merge commit `b91c79b`). Reviewed for real before merging:
+the 9 new tests were confirmed by name in the diff and their pass count
+(405 passed, 2 skipped, 3 deselected, 1 xfailed) verified directly against
+the PR's own CI log, not just its description; the `update_check.py` diff
+is a pure-function addition through `interpret()`'s existing seam with no
+new network call; the browser-build proposal's file list confirmed
+doc-only (no `pages.yml` change). The PR's "visual" check showed as
+failing at merge time — confirmed to be a pre-existing flake also present
+on `main`'s own tip (`7f0c284`), unrelated to this PR's changes, before
+merging past it. The rollback marker and `RELEASE_ROLLBACK_TRIAL.md` are
+now on `test-assist`'s `main`. This backlog's Gate A is satisfied.
