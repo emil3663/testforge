@@ -34,6 +34,11 @@ export interface ActionableElementDetail {
     containerLabel: string;
     expectedStatus: number | null;
     isVisible: boolean;
+    ariaPressed: string | null;
+    ariaSelected: string | null;
+    ariaChecked: string | null;
+    ariaExpanded: string | null;
+    groupId: string | null;
     locator: LocatorHint;
 }
 

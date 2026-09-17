@@ -179,6 +179,50 @@ test.describe("TestForge regression coverage", () => {
         }
     });
 
+    test("introspect reports ARIA state and toggle-group membership on actionable elements", async ({ request }) => {
+        // TFP-055: introspection captured role (getRole()) but no ARIA state
+        // and no signal that several elements form a toggle/selection group -
+        // precisely TA-252's shape (a .tool-btn list with only a CSS .active
+        // class, no ARIA state), which the generator's own Accessibility
+        // Coverage test (TFAC-001) had no data to catch. Shape check here,
+        // same reasoning as the isVisible test above: testforge's own
+        // landing page has no real toggle group. Verified live against
+        // test-assist and recorded in this commit's message: the seven
+        // .tool-btn elements are detected as one group (role "button",
+        // containerLabel "Tools", 3+ member threshold), and - since TA-252
+        // already shipped by the time this ran - each now reports a real
+        // ariaChecked value rather than null, which is the correct current
+        // state, not a stale expectation. Also verified the heuristic does
+        // NOT over-group: strokeColor/strokeSize/fillOpacity all resolve to
+        // role "textbox" and are correctly excluded (grouping requires role
+        // button/radio), and Undo/Redo/Clear share the same containerLabel
+        // as the real group but are excluded as one-shot action verbs.
+        const response = await request.post("/api/introspect", {
+            data: { baseUrl: localAppUrl, paths: ["/"] },
+        });
+        expect(response.ok()).toBeTruthy();
+        const payload = (await response.json()) as {
+            pages: {
+                actionableElements: {
+                    ariaPressed: unknown;
+                    ariaSelected: unknown;
+                    ariaChecked: unknown;
+                    ariaExpanded: unknown;
+                    groupId: unknown;
+                }[];
+            }[];
+        };
+        const elements = payload.pages[0]?.actionableElements ?? [];
+        expect(elements.length).toBeGreaterThan(0);
+        for (const element of elements) {
+            expect(element.ariaPressed === null || typeof element.ariaPressed === "string").toBe(true);
+            expect(element.ariaSelected === null || typeof element.ariaSelected === "string").toBe(true);
+            expect(element.ariaChecked === null || typeof element.ariaChecked === "string").toBe(true);
+            expect(element.ariaExpanded === null || typeof element.ariaExpanded === "string").toBe(true);
+            expect(element.groupId === null || typeof element.groupId === "string").toBe(true);
+        }
+    });
+
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {

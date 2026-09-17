@@ -155,6 +155,16 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                             // an older/malformed payload missing the field should not
                             // be silently read as "everything is hidden."
                             isVisible: "isVisible" in item ? Boolean(item.isVisible) : true,
+                            // TFP-055: ARIA state attributes are strings when present
+                            // ("true"/"false" for pressed/selected/expanded, a token
+                            // for checked's "mixed" state) - null means absent, not
+                            // "false", so this must not coerce to boolean the way
+                            // isVisible does.
+                            ariaPressed: typeof item.ariaPressed === "string" ? item.ariaPressed : null,
+                            ariaSelected: typeof item.ariaSelected === "string" ? item.ariaSelected : null,
+                            ariaChecked: typeof item.ariaChecked === "string" ? item.ariaChecked : null,
+                            ariaExpanded: typeof item.ariaExpanded === "string" ? item.ariaExpanded : null,
+                            groupId: typeof item.groupId === "string" ? item.groupId : null,
                             locator: {
                                 role:
                                     typeof item.locator === "object" &&

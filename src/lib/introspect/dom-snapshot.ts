@@ -314,6 +314,30 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         return "interactive" as const;
     };
 
+    const getAriaAttribute = (element: Element, name: string) => {
+        const value = element.getAttribute(name);
+        return value === null ? null : cleanText(value);
+    };
+
+    // Names that make a button a one-shot action rather than a member of a
+    // mutually-exclusive selection/toggle group - Undo/Redo/Clear share a
+    // container and a role with each other (and, via findContainerLabel's
+    // own sibling-walk, sometimes with an unrelated toggle group too), but
+    // are three independent actions, not a set where exactly one is ever
+    // "current." Excluding recognizable action verbs is what keeps a group
+    // like that from being merged into a real toggle group such as
+    // test-assist's seven .tool-btn elements (TA-252).
+    const ONE_SHOT_ACTION_WORDS = [
+        "undo", "redo", "clear", "save", "cancel", "close", "delete", "remove",
+        "add", "export", "import", "confirm", "submit", "reset", "apply",
+        "discard", "done", "ok",
+    ];
+
+    const isLikelyOneShotAction = (text: string) => {
+        const normalized = text.toLowerCase();
+        return ONE_SHOT_ACTION_WORDS.some((word) => new RegExp(`\\b${word}\\b`).test(normalized));
+    };
+
     const isVisibleElement = (element: Element) => {
         const htmlElement = element as HTMLElement;
         if (!(htmlElement instanceof HTMLElement)) {
@@ -405,7 +429,7 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
             .map((node) => node.textContent ?? "")
     );
 
-    const actionableElements = Array.from(
+    const dedupedActionableElements = Array.from(
         document.querySelectorAll("a, button, input:not([type='hidden']), select, textarea, form, [role='button']")
     )
         .map((node) => {
@@ -467,6 +491,11 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                 containerLabel,
                 expectedStatus: inferExpectedStatus(text, url ?? "", containerLabel, category),
                 isVisible: isVisibleElement(node),
+                ariaPressed: getAriaAttribute(node, "aria-pressed"),
+                ariaSelected: getAriaAttribute(node, "aria-selected"),
+                ariaChecked: getAriaAttribute(node, "aria-checked"),
+                ariaExpanded: getAriaAttribute(node, "aria-expanded"),
+                groupId: null as string | null,
                 locator: {
                     role: getRole(node, elementType, inputType),
                     name,
@@ -492,8 +521,50 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                         candidate.locator.id === element.locator.id &&
                         candidate.locator.name === element.locator.name
                 ) === index
-        )
-        .slice(0, maxActionableItems);
+        );
+
+    // TFP-055: detect toggle/selection groups heuristically, reusing the
+    // same signal findContainerLabel already computes rather than a new
+    // discovery mechanism - elements sharing a container and a role of
+    // button/radio, per the ticket's own scope. Role alone over-groups:
+    // test-assist's strokeColor/strokeSize/fillOpacity inputs all resolve
+    // to role "textbox" (getRole()'s fallback for any non-checkbox/radio
+    // input) and briefly matched before this was restricted to button/
+    // radio specifically. Container alone also over-groups the other way -
+    // findContainerLabel's own sibling-walk gives test-assist's
+    // Undo/Redo/Clear the same containerLabel, "Tools", as its seven real
+    // .tool-btn elements, since both sit under the same ancestor's nearest
+    // heading - so one-shot action verbs are excluded too, and a group
+    // needs 3+ members before it counts. A starter heuristic, expected to
+    // be wrong in more places than these two caught, not a claim of
+    // general correctness.
+    const groupCandidates = new Map<string, ActionableElementDetail[]>();
+    for (const element of dedupedActionableElements) {
+        const isGroupableRole = element.locator.role === "button" || element.locator.role === "radio";
+        if (!element.containerLabel || !isGroupableRole || isLikelyOneShotAction(element.text)) {
+            continue;
+        }
+
+        const key = `${element.containerLabel}::${element.locator.role}::${element.elementType}`;
+        const members = groupCandidates.get(key) ?? [];
+        members.push(element);
+        groupCandidates.set(key, members);
+    }
+
+    let groupSequence = 0;
+    for (const members of groupCandidates.values()) {
+        if (members.length < 3) {
+            continue;
+        }
+
+        groupSequence += 1;
+        const groupId = `group-${groupSequence}`;
+        for (const member of members) {
+            member.groupId = groupId;
+        }
+    }
+
+    const actionableElements = dedupedActionableElements.slice(0, maxActionableItems);
 
     const linkDetails = Array.from(document.querySelectorAll("a"))
         .flatMap((anchor) => {
