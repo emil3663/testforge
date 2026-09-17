@@ -1,6 +1,7 @@
 import {
     buildAccessibilityElementTests,
     buildActionableElementTests,
+    buildActionPairTests,
     buildToggleGroupTests,
     buildUsabilityElementTests,
 } from "./actionable-elements";
@@ -278,6 +279,12 @@ export function buildGenericSuites(
         if (contentProfile?.pages.length) {
             functionalTests.push(
                 ...linkAuditPaths.flatMap((path) => buildActionableElementTests(contentProfile, path))
+            );
+            // TFP-060: Undo/Redo and similar detected action pairs get a
+            // regression guard that an unrelated interaction doesn't leak
+            // into their state.
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildActionPairTests(contentProfile, path))
             );
         }
 

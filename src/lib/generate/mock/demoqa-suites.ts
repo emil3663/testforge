@@ -1,4 +1,4 @@
-import { buildActionableElementTests } from "./actionable-elements";
+import { buildActionableElementTests, buildActionPairTests } from "./actionable-elements";
 import { includesAny } from "./format";
 import { buildSharedBestPracticeSuites } from "./generic-suites";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -185,6 +185,9 @@ export function buildDemoQaSuites(
         if (contentProfile?.pages.length) {
             functionalTests.push(
                 ...linkAuditPaths.flatMap((path) => buildActionableElementTests(contentProfile, path))
+            );
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildActionPairTests(contentProfile, path))
             );
         }
 

@@ -222,7 +222,6 @@ test.describe("TestForge regression coverage", () => {
             expect(element.groupId === null || typeof element.groupId === "string").toBe(true);
         }
     });
-
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
@@ -1224,6 +1223,64 @@ test.describe("TestForge regression coverage", () => {
         // the assertion strength (there is no attach-only fallback here,
         // unlike the functional and accessibility suites).
         expect(payload.code).not.toContain("Hidden Primary Action has no bounding box");
+    });
+
+    test("generates a negative-assertion test for a detected action pair, and only for it", async ({ request }) => {
+        // TFP-060: an Undo/Redo-style pair gets a regression guard that an
+        // unrelated interaction doesn't change either element's state. A
+        // third, unpaired "Close" button (no matching "Open") must not
+        // generate a spurious pair test - ambiguous or absent matches are
+        // skipped rather than guessed at. Live verification against
+        // test-assist (recorded in this commit's message): the regenerated
+        // functional suite's TFFU-029 (Undo/Redo pair, and no other pair)
+        // passes.
+        const pairMember = (name: string, id: string) => ({
+            text: name,
+            url: null,
+            category: "action" as const,
+            elementType: "button" as const,
+            containerLabel: "Tools",
+            expectedStatus: null,
+            isVisible: true,
+            locator: { role: "button", name, label: "", placeholder: "", id, inputType: "" },
+        });
+
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for a detected action pair.",
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [
+                            pairMember("Undo", "undoProbeButton"),
+                            pairMember("Redo", "redoProbeButton"),
+                            pairMember("Close", "closeProbeButton"),
+                        ],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("action pair: Undo / Redo are unaffected by an unrelated interaction");
+        expect(payload.code.match(/action pair:/g) ?? []).toHaveLength(1);
     });
 
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
