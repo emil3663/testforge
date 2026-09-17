@@ -70,6 +70,17 @@ ${expectedStatusComment}
   });`;
         }
 
+        // TFP-054: an element discovered but not visible at introspection
+        // time is not a false claim to make "visible" about - it may be
+        // legitimately hidden by design until a prerequisite action (a mode
+        // switch, an open dialog, a different tab), the exact shape behind
+        // TFP-040's 7 confirmed false positives. Assert only that it exists,
+        // and say why nothing stronger is claimed, rather than attempting
+        // enabled/editable/click assertions that would fail for the same
+        // underlying reason in a different matcher.
+        const hiddenAtIntrospectionComment =
+            "    // Hidden at introspection time - may require a prerequisite action (e.g. a mode switch, an open dialog, a different tab) before it becomes visible. Asserting only that it exists in the DOM, not that it is currently visible or interactable.";
+
         if (
             element.category === "api" &&
             (element.elementType === "button" ||
@@ -78,6 +89,18 @@ ${expectedStatusComment}
         ) {
             const escapedPath = escapeForSingleQuotedString(path);
             const locatorExpression = buildLocatorExpression(element);
+
+            if (!element.isVisible) {
+                return `  test('${title}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+${hiddenAtIntrospectionComment}
+        const locator = ${locatorExpression};
+        await expect(locator).toBeAttached();
+    });`;
+            }
+
             const expectedStatusComment = typeof element.expectedStatus === "number"
                 ? `    expect(response.status()).toBe(${element.expectedStatus});`
                 : "    expect(response.status()).toBeLessThan(500);";
@@ -121,15 +144,17 @@ ${expectedStatusComment}
 
         const escapedPath = escapeForSingleQuotedString(path);
         const locatorExpression = buildLocatorExpression(element);
-        const visibilityAssertions = element.elementType === "form"
-            ? `    await expect(locator).toBeVisible();\n\n    const controlCount = await locator.locator('input, textarea, select, button').count();\n    expect(controlCount).toBeGreaterThan(0);`
-            : element.elementType === "input" || element.elementType === "textarea"
-                ? `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEditable();`
-                : element.elementType === "select"
-                    ? `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEnabled();`
-                    : element.elementType === "link"
-                        ? `    await expect(locator).toBeVisible();\n    await expect(locator).toHaveAttribute('href', /.+/);`
-                        : `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEnabled();`;
+        const visibilityAssertions = !element.isVisible
+            ? `${hiddenAtIntrospectionComment}\n    await expect(locator).toBeAttached();`
+            : element.elementType === "form"
+                ? `    await expect(locator).toBeVisible();\n\n    const controlCount = await locator.locator('input, textarea, select, button').count();\n    expect(controlCount).toBeGreaterThan(0);`
+                : element.elementType === "input" || element.elementType === "textarea"
+                    ? `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEditable();`
+                    : element.elementType === "select"
+                        ? `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEnabled();`
+                        : element.elementType === "link"
+                            ? `    await expect(locator).toBeVisible();\n    await expect(locator).toHaveAttribute('href', /.+/);`
+                            : `    await expect(locator).toBeVisible();\n    await expect(locator).toBeEnabled();`;
 
         return `  test('${title}', async ({ page }) => {
     await page.goto('${escapedPath}');
@@ -140,3 +165,4 @@ ${visibilityAssertions}
   });`;
     });
 }
+

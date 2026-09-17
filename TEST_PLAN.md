@@ -49,6 +49,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | GEN-08 | Manual: generate with no `OPENAI_API_KEY` set | Template-based generator produces a suite; no request to OpenAI is made. | ⬜ |
 | GEN-09 | Manual: generate with `OPENAI_API_KEY` set | OpenAI GPT-4o path produces a suite with descriptive test names. | ⬜ |
 | GEN-10 | Generate executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/generate` succeeds and returns real Playwright code, with no environment variable set beyond `.env.development`. | ✅ |
+| GEN-11 | An element hidden at introspection time does not get an unconditional visibility claim (TFP-054, automated: "does not assert unconditional visibility for an element hidden at introspection time") | A synthetic element with `isVisible: false` generates `toBeAttached()` plus a "Hidden at introspection time" comment, not `toBeVisible()`. Verified live against `test-assist`: regenerating TFP-040's exact suite now produces 0 of the 7 originally-confirmed false positives (41 of 42 passing; the 42nd, `TFFU-036`, is a separate, pre-existing finding unrelated to visibility). | ✅ |
 
 ### 3.3 Crawl (CRW)
 

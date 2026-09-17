@@ -893,6 +893,68 @@ test.describe("TestForge regression coverage", () => {
         expect(payload.code).not.toContain("publishes sitemap.xml");
     });
 
+    test("does not assert unconditional visibility for an element hidden at introspection time", async ({ request }) => {
+        // TFP-054: the actual root cause of TFP-040's 7 confirmed false
+        // positives - every per-element test defaulted to
+        // `await expect(locator).toBeVisible();` regardless of whether the
+        // element was actually visible when introspected. A synthetic
+        // contentProfile here (rather than a live target) makes this
+        // deterministic and independent of test-assist being reachable -
+        // the live verification against test-assist itself is recorded in
+        // this commit's message: regenerating TFP-040's exact suite there
+        // now produces 0 of the 7 original failures, 41 of 42 passing (the
+        // 42nd, TFFU-036, is a separate, pre-existing finding unrelated to
+        // visibility).
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for a conditionally-hidden button.",
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [{
+                            text: "Hidden Probe Button",
+                            url: null,
+                            category: "action",
+                            elementType: "button",
+                            containerLabel: "",
+                            expectedStatus: null,
+                            isVisible: false,
+                            locator: { role: "button", name: "Hidden Probe Button", label: "", placeholder: "", id: "hiddenProbeButton", inputType: "" },
+                        }],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("Hidden Probe Button");
+        expect(payload.code).toContain("await expect(locator).toBeAttached();");
+        expect(payload.code).toContain("Hidden at introspection time");
+        // The specific generated test for this element must not claim
+        // unconditional visibility - a broader "no toBeVisible anywhere in
+        // the file" assertion would be too strong, since other generic
+        // template tests (e.g. the page-load check) legitimately use it.
+        const hiddenButtonTest = payload.code.split("Hidden Probe Button")[1]?.split("});")[0] ?? "";
+        expect(hiddenButtonTest).not.toContain("toBeVisible()");
+    });
+
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
         const response = await request.post("/api/generate", {
             data: {
