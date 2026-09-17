@@ -150,6 +150,11 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                                     : "",
                             expectedStatus:
                                 typeof item.expectedStatus === "number" ? item.expectedStatus : null,
+                            // TFP-053: default true (not false) when absent, matching
+                            // linkDetails' own isVisible normalization just below -
+                            // an older/malformed payload missing the field should not
+                            // be silently read as "everything is hidden."
+                            isVisible: "isVisible" in item ? Boolean(item.isVisible) : true,
                             locator: {
                                 role:
                                     typeof item.locator === "object" &&

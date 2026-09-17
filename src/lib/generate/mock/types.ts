@@ -33,6 +33,7 @@ export interface ActionableElementDetail {
     elementType: ActionableElementType;
     containerLabel: string;
     expectedStatus: number | null;
+    isVisible: boolean;
     locator: LocatorHint;
 }
 

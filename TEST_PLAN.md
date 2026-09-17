@@ -65,6 +65,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | INT-01 | Content rules and content-aware generation state (automated: "covers the content rules section and content-aware generation state") | Per-page introspection results (elements, roles, content) are reflected in the content rules section and inform content-aware generation. | ✅ |
 | INT-02 | Manual: introspect a page with no actionable elements | Introspection completes without error and reports an empty or near-empty actionable-element set rather than failing. | ⬜ |
 | INT-03 | Introspect executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/introspect` succeeds synchronously and returns at least one inspected page, with no environment variable set beyond `.env.development`. | ✅ |
+| INT-04 | Actionable elements report `isVisible` (TFP-053, automated: "introspect reports isVisible on every discovered actionable element") | Every discovered actionable element carries a boolean `isVisible`. Verified live against `test-assist`, separately from this suite: `#btnRecord`, `#btnClearSession`, `#uploadImage`, `#btnStopRecord`, `#textInput`, `#btnTextOk`, `#btnTextCancel` all report `isVisible: false` — this repo's own landing page has no naturally-hidden element to assert the `false` case against directly. | ✅ |
 
 ### 3.5 Run (RUN)
 

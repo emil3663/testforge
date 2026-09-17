@@ -466,6 +466,7 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                 elementType,
                 containerLabel,
                 expectedStatus: inferExpectedStatus(text, url ?? "", containerLabel, category),
+                isVisible: isVisibleElement(node),
                 locator: {
                     role: getRole(node, elementType, inputType),
                     name,

@@ -152,6 +152,33 @@ test.describe("TestForge regression coverage", () => {
         expect(saveSuitePayload.fileName).toMatch(/\.spec\.ts$/);
     });
 
+    test("introspect reports isVisible on every discovered actionable element", async ({ request }) => {
+        // TFP-053: ActionableElementDetail had no isVisible field, so every
+        // downstream consumer had to assume every discovered element was
+        // unconditionally visible - the exact assumption behind TFP-040's 7
+        // confirmed false positives. This is a type-shape regression check,
+        // not a specific true/false case: testforge's own landing page has
+        // no naturally-hidden actionable element to assert against inside
+        // this self-contained suite. The specific false case (#btnRecord,
+        // #btnClearSession, #uploadImage, #btnStopRecord, #textInput,
+        // #btnTextOk, #btnTextCancel all reporting isVisible: false) was
+        // verified live against test-assist and is recorded in this
+        // commit's message, not reproducible here without that external
+        // target.
+        const response = await request.post("/api/introspect", {
+            data: { baseUrl: localAppUrl, paths: ["/"] },
+        });
+        expect(response.ok()).toBeTruthy();
+        const payload = (await response.json()) as {
+            pages: { actionableElements: { isVisible: unknown }[] }[];
+        };
+        const elements = payload.pages[0]?.actionableElements ?? [];
+        expect(elements.length).toBeGreaterThan(0);
+        for (const element of elements) {
+            expect(typeof element.isVisible).toBe("boolean");
+        }
+    });
+
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
