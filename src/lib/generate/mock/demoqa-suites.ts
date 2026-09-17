@@ -249,5 +249,5 @@ export function buildDemoQaSuites(
         suites.push(usabilitySuite);
     }
 
-    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas)];
+    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas, contentProfile)];
 }

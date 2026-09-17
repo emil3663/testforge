@@ -955,6 +955,70 @@ test.describe("TestForge regression coverage", () => {
         expect(hiddenButtonTest).not.toContain("toBeVisible()");
     });
 
+    test("generates a toggle-group ARIA assertion for a detected selection group", async ({ request }) => {
+        // TFP-057: turns TFP-055's captured group data into an actual
+        // failing assertion - the shape TA-252 was filed from. Synthetic
+        // payload for the same determinism reason as the test above. Live
+        // verification against test-assist (recorded in this commit's
+        // message): a generated accessibility suite there produces
+        // TFAC-002 (presence) and TFAC-003 (toggle behavior), both passing
+        // now that TA-252 has shipped and every .tool-btn member reports a
+        // real aria-checked value.
+        const groupMember = (name: string, id: string, checked: string) => ({
+            text: name,
+            url: null,
+            category: "action" as const,
+            elementType: "button" as const,
+            containerLabel: "Tools",
+            expectedStatus: null,
+            isVisible: true,
+            ariaPressed: null,
+            ariaSelected: null,
+            ariaChecked: checked,
+            ariaExpanded: null,
+            groupId: "group-1",
+            locator: { role: "button", name, label: "", placeholder: "", id, inputType: "" },
+        });
+
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for a detected toggle group.",
+                selectedPractices: ["accessibility"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [
+                            groupMember("Select", "toolSelect", "true"),
+                            groupMember("Highlight", "toolHighlight", "false"),
+                            groupMember("Circle", "toolCircle", "false"),
+                        ],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain('toggle group "Tools"');
+        expect(payload.code).toContain("exposes ARIA state on every member");
+        expect(payload.code).toContain("clicking a member flips its aria-checked");
+    });
+
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
         const response = await request.post("/api/generate", {
             data: {

@@ -1,14 +1,15 @@
-import { buildActionableElementTests } from "./actionable-elements";
+import { buildActionableElementTests, buildToggleGroupTests } from "./actionable-elements";
 import { includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
-import { findMatchingProfilePage, resolveLinkAuditPaths } from "./locators";
+import { findMatchingProfilePage, resolveLinkAuditPath, resolveLinkAuditPaths } from "./locators";
 import { createSuite } from "./suite";
 import type { BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
 export function buildSharedBestPracticeSuites(
     baseUrl: string,
     description: string,
-    areas: BestPracticeArea[]
+    areas: BestPracticeArea[],
+    contentProfile: ContentProfile | null = null
 ) {
     const lowerDescription = description.toLowerCase();
     const suites: GeneratedSuite[] = [];
@@ -38,6 +39,15 @@ export function buildSharedBestPracticeSuites(
     }
 
     if (areas.includes("accessibility")) {
+        // TFP-057: toggle/selection groups TFP-055 detected get a real
+        // assertion here, not just a data point - every group member must
+        // expose at least one ARIA state attribute, and where one already
+        // does, that it actually toggles on click. Appended alongside the
+        // existing structural check below, which TFP-056 replaces with
+        // real per-element coverage separately.
+        const accessibilityPath = resolveLinkAuditPath(baseUrl);
+        const toggleGroupTests = buildToggleGroupTests(contentProfile, accessibilityPath);
+
         const suite = createSuite("accessibility", [
             `  test('exposes basic accessible structure for assistive technologies', async ({ page }) => {
     await page.goto('/');
@@ -47,6 +57,7 @@ export function buildSharedBestPracticeSuites(
     const interactiveCount = await page.locator('a, button, input, textarea, select, [role="button"]').count();
     expect(interactiveCount).toBeGreaterThan(0);
   });`,
+            ...toggleGroupTests,
         ]);
 
         if (suite) {
@@ -243,5 +254,5 @@ export function buildGenericSuites(
         suites.push(usabilitySuite);
     }
 
-    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas)];
+    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas, contentProfile)];
 }
