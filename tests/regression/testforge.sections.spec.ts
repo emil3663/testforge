@@ -1103,6 +1103,58 @@ test.describe("TestForge regression coverage", () => {
         expect(hiddenTest).not.toContain("toHaveAccessibleName");
     });
 
+    test("checks real discovered elements across viewports and adds a touch smoke test", async ({ request }) => {
+        // TFP-058: the responsive suite previously only checked `body` and
+        // the first heading at each viewport, which stays green even when
+        // real interactive elements collapse off-screen. Live verification
+        // against test-assist (recorded in this commit's message): the
+        // regenerated suite asserts 5 real elements stay visible across
+        // mobile/tablet/desktop, plus a touch-dispatch smoke test, both
+        // passing.
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for viewport-aware responsive checks.",
+                selectedPractices: ["responsive/mobile"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [{
+                            text: "Responsive Probe Button",
+                            url: null,
+                            category: "action",
+                            elementType: "button",
+                            containerLabel: "",
+                            expectedStatus: null,
+                            isVisible: true,
+                            locator: { role: "button", name: "Responsive Probe Button", label: "", placeholder: "", id: "responsiveProbeButton", inputType: "" },
+                        }],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("Responsive Probe Button should stay visible at");
+        expect(payload.code).toContain("responds to a touch tap at mobile viewport");
+        expect(payload.code).toContain("dispatchEvent('touchstart')");
+    });
+
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
         const response = await request.post("/api/generate", {
             data: {

@@ -3,9 +3,15 @@ import {
     buildActionableElementTests,
     buildToggleGroupTests,
 } from "./actionable-elements";
-import { includesAny } from "./format";
+import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
-import { findMatchingProfilePage, resolveLinkAuditPath, resolveLinkAuditPaths } from "./locators";
+import {
+    buildLocatorExpression,
+    findMatchingProfilePage,
+    getActionableElementDisplayName,
+    resolveLinkAuditPath,
+    resolveLinkAuditPaths,
+} from "./locators";
 import { createSuite } from "./suite";
 import type { BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
@@ -19,7 +25,24 @@ export function buildSharedBestPracticeSuites(
     const suites: GeneratedSuite[] = [];
 
     if (areas.includes("responsive/mobile")) {
-        const suite = createSuite("responsive/mobile", [
+        // TFP-058: the viewport loop previously only checked `body` and the
+        // first heading, which stays true even when real interactive
+        // elements have collapsed off-screen at a given breakpoint. Sample
+        // a handful of actually-discovered, visible-at-introspection
+        // elements and assert each one individually at every viewport.
+        const matchingPage = findMatchingProfilePage(contentProfile, "/");
+        const sampledElements = (matchingPage?.actionableElements ?? [])
+            .filter((element) => element.isVisible)
+            .slice(0, 5);
+        const elementChecks = sampledElements
+            .map((element) => {
+                const name = escapeForSingleQuotedString(getActionableElementDisplayName(element));
+                const locatorExpression = buildLocatorExpression(element);
+                return `      await expect(${locatorExpression}, '${name} should stay visible at ' + viewport.name + ' viewport').toBeVisible();`;
+            })
+            .join("\n");
+
+        const responsiveTests = [
             `  test('keeps the core journey visible across common viewport sizes', async ({ page }) => {
     const viewports = [
       { name: 'mobile', width: 390, height: 844 },
@@ -33,9 +56,33 @@ export function buildSharedBestPracticeSuites(
       await page.waitForLoadState('domcontentloaded');
       await expect(page.locator('body')).toBeVisible();
       await expect(page.getByRole('heading').first()).toBeVisible();
+${elementChecks}
     }
   });`,
-        ]);
+        ];
+
+        if (sampledElements.length > 0) {
+            const touchTarget = sampledElements[0];
+            const touchName = escapeForSingleQuotedString(getActionableElementDisplayName(touchTarget));
+            const touchLocatorExpression = buildLocatorExpression(touchTarget);
+
+            responsiveTests.push(`  test('responds to a touch tap at mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.waitForLoadState('domcontentloaded');
+
+    // Static introspection can't see touch-specific JS handlers, so this is
+    // a smoke check that ${touchName} accepts a tap without erroring - not a
+    // claim about what it does in response.
+    const locator = ${touchLocatorExpression};
+    await locator.scrollIntoViewIfNeeded();
+    await locator.dispatchEvent('touchstart');
+    await locator.dispatchEvent('touchend');
+    await expect(page.locator('body')).toBeVisible();
+  });`);
+        }
+
+        const suite = createSuite("responsive/mobile", responsiveTests);
 
         if (suite) {
             suites.push(suite);
