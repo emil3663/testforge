@@ -87,6 +87,8 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | RUN-05 | Session evidence capture on failure (automated: "captures session evidence artifacts for failed generated runs") | A failed generated test produces captured evidence artifacts (trace/video/screenshot per `playwright.config.ts`'s `retain-on-failure`/`only-on-failure` settings). | ✅ |
 | RUN-06 | Manual: cancel a run mid-execution from the UI | Run stops promptly; already-completed test results remain visible. | ⬜ |
 | RUN-07 | Run executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/run` starts a job that reaches `runStatus: "passed"`, with no environment variable set beyond `.env.development`. | ✅ |
+| RUN-08 | A finished run survives a server restart (TFP-064, Phase 17 Group 1: `persistRunJob`/`loadRunRecord` round-trip in `src/lib/run/persistence.ts`) | `runs/<runId>/run.json` and `suite.spec.ts` are readable, and evidence resolves under `runs/<runId>/evidence/`, using only data on disk — no reference to the in-memory job that produced it, modeling exactly what a fresh process sees after a restart. Verified live: `POST /api/run` against the running dev server, then read back via `GET /api/run`/`GET /api/runs` and directly from disk. | ✅ |
+| RUN-09 | Retention: pin overrides automatic archiving; archiving keeps `run.json`/`suite.spec.ts` and deletes only `evidence/`; a fixed defect's run becomes sweep-eligible once superseded (TFP-064, Phase 17 Group 1: `sweepAutomaticArchiving` in `src/lib/run/persistence.ts`) | A pinned run is never archived by the sweep even when superseded and its one failure is fixed elsewhere; an unpinned, superseded run whose failure is fixed becomes archived (evidence gone, report/suite intact); a run that is still the only evidence for a still-failing test is never auto-archived. | ✅ |
 
 ### 3.6 Report (RPT)
 
@@ -120,8 +122,8 @@ crawl, introspect, generate, run, report, export, and save-suite.
 
 1. **`/api/run`'s execution model is unsandboxed, in-process code execution.** It runs caller-supplied Playwright code with the privileges of the user running the dev server — no authentication, no sandboxing, no multi-tenant isolation. This is documented, intended behavior under TestForge's local-only posture (see `README.md`'s Security Model), not a defect, and it is why TestForge must never be bound to a non-loopback interface or exposed through a tunnel.
 2. **Chromium only.** Cross-browser execution (Firefox, WebKit) is out of scope as of Phase 16 (TFP-012); `playwright.config.ts` declares a single `chromium` project.
-3. **Run state is in-memory only.** Nothing persists across a server restart; there is no way to compare two runs of the same site against each other. This is the specific gap Phase 17 (run persistence and honest coverage) is scoped to close.
-4. **Coverage is computed from the tests that ran, not against a discovered surface.** There is no "not tested, and why" accounting yet — also a Phase 17 target.
+3. **Run persistence (Phase 17 Group 1) has landed** — a finished run's config, suite, result, and evidence survive a server restart (`runs/<runId>/`, RUN-08/RUN-09). Diffing two persisted runs (Phase 17 Group 4) has not landed yet; there is still no way to compare two runs of the same site against each other.
+4. **Coverage is computed from the tests that ran, not against a discovered surface.** There is no "not tested, and why" accounting yet — Phase 17 Groups 2/3, still pending.
 5. **The OpenAI-backed generation path is untested in CI.** Only the template-based generator runs in automated tests; the AI path is exercised manually. Phase 21 evaluates it against the deterministic generator using Phase 17's persistence.
 6. **No deployed or hosted version exists, and none is assumed.** TestForge is local-only by design; `docs/decisions/saas-prerequisites.md` records what a hosted version would actually require and states plainly that none of it is implemented.
 
@@ -134,10 +136,10 @@ crawl, introspect, generate, run, report, export, and save-suite.
 - [x] TFP-032 — `docs/decisions/saas-prerequisites.md`
 
 ### Sprint 2 (Phase 17 — run persistence and honest coverage)
-- [ ] Persist run config, suite, result, and evidence to disk
-- [ ] Recompute coverage against the discovered surface (crawl + introspect), not just the tests that ran
-- [ ] Add a "not tested, and why" report section
-- [ ] Diff two persisted runs of the same site
+- [x] Persist run config, suite, result, and evidence to disk (Group 1, TFP-064)
+- [ ] Recompute coverage against the discovered surface (crawl + introspect), not just the tests that ran (Group 2)
+- [ ] Add a "not tested, and why" report section (Group 3)
+- [ ] Diff two persisted runs of the same site (Group 4)
 
 ## 6. GitHub Project Board Structure
 

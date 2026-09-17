@@ -76,7 +76,8 @@ export async function startRunJob(
     auditMode: TestAuditMode,
     baseUrl?: string,
     excludedTestTitles: string[] = [],
-    includedTestTitles: string[] = []
+    includedTestTitles: string[] = [],
+    description = ""
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -129,6 +130,8 @@ export async function startRunJob(
         reporterFile,
         artifactDir,
         baseUrl,
+        description,
+        auditMode,
         selectedPractices,
         artifactFiles: new Map(),
         result: null,

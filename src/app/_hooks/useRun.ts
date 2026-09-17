@@ -10,6 +10,7 @@ interface StartRunParams {
     selectedPractices: string[];
     auditMode: TestAuditMode;
     baseUrl: string;
+    description?: string;
     excludeTestTitles?: string[];
     includeTestTitles?: string[];
 }
@@ -153,7 +154,7 @@ export function useRun(
         window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     }, [openReportInNewPage, result]);
 
-    async function startRun({ code, selectedPractices, auditMode, baseUrl, excludeTestTitles = [], includeTestTitles = [] }: StartRunParams) {
+    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [] }: StartRunParams) {
         if (selectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -189,6 +190,7 @@ export function useRun(
                     selectedPractices,
                     auditMode,
                     baseUrl,
+                    description,
                     excludeTestTitles,
                     includeTestTitles,
                 }),

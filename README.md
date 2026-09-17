@@ -19,6 +19,42 @@ so exposes arbitrary remote code execution to anyone who can reach the port.
 
 ---
 
+## Run persistence and retention
+
+A finished run is written to `runs/<runId>/` on disk (gitignored, no
+database dependency): `run.json` (the config that produced it plus the
+full result/report), `suite.spec.ts` (the exact code that was executed),
+and `evidence/` (trace/video/screenshot files, moved out of Playwright's
+shared, reusable output directory so a later run can't overwrite them).
+This survives a server restart — the in-memory job map only serves runs
+that are still in flight; a finished run's report and evidence are read
+back from `runs/<runId>/` regardless of process lifetime.
+
+Runs have a tiered retention state:
+
+- **Full** (default): everything is kept — `run.json`, `suite.spec.ts`,
+  and `evidence/`.
+- **Archived**: `evidence/` is deleted; `run.json` and `suite.spec.ts` are
+  kept in full, so history, coverage numbers, and diffing keep working.
+  Nothing about a run's pass/fail record or config is ever deleted by
+  archiving, only the heavy replay evidence.
+- **Pinned**: a hard override set by an explicit user action. A pinned run
+  is never auto-archived, regardless of any other rule.
+
+A non-pinned run becomes eligible for **automatic archiving** once (a) a
+newer run exists for the same `baseUrl` (it's been superseded), and (b)
+none of its failing tests, if any, are still failing in that newest run —
+in other words, it isn't the only evidence for a still-open defect.
+Automatic archiving runs as an on-demand sweep, not a background daemon;
+nothing is archived until the sweep is triggered.
+
+`lastAccessedAt` is `null` on a freshly persisted run and is set the first
+time that run's report is read back through the API — an informational
+"has this even been looked at" signal, not itself a reason to delete
+anything.
+
+---
+
 ## The problem TestForge solves
 
 There's a gap in software testing that nobody talks about honestly.

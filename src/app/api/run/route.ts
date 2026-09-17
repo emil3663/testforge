@@ -4,6 +4,8 @@ import { resolve } from "path";
 import { startRunJob } from "@/lib/run/executor";
 import type { TestAuditMode } from "@/lib/run/executor";
 import { buildRunSnapshot, runJobs } from "@/lib/run/jobs";
+import type { RunStatusPayload } from "@/lib/run/jobs";
+import { loadRunRecord, markRunAccessed, runEvidenceDir } from "@/lib/run/persistence";
 import { buildRunSelection } from "@/lib/run/selection";
 
 export const runtime = "nodejs";
@@ -22,7 +24,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles } = await req.json();
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description } = await req.json();
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -47,7 +49,8 @@ export async function POST(req: NextRequest) {
         normalizedAuditMode,
         typeof baseUrl === "string" ? baseUrl : undefined,
         normalizedExcludedTitles,
-        normalizedIncludedTitles
+        normalizedIncludedTitles,
+        typeof description === "string" ? description : ""
     );
     return NextResponse.json(job, { status: 202 });
 }
@@ -62,21 +65,26 @@ export async function GET(req: NextRequest) {
 
     const job = runJobs.get(runId);
 
-    if (!job) {
-        return NextResponse.json({ error: "Run not found" }, { status: 404 });
-    }
-
     if (artifactId) {
-        const artifact = job.artifactFiles.get(artifactId);
+        const liveArtifact = job?.artifactFiles.get(artifactId) ?? null;
+        let artifact = liveArtifact;
+
+        if (!artifact) {
+            const record = await loadRunRecord(runId);
+            artifact = record?.artifactFiles[artifactId] ?? null;
+        }
 
         if (!artifact) {
             return NextResponse.json({ error: "Artifact not found" }, { status: 404 });
         }
 
         const artifactPath = resolve(artifact.filePath);
-        const allowedRoot = resolve(job.artifactDir);
+        const allowedRoots = [
+            ...(job ? [resolve(job.artifactDir)] : []),
+            resolve(runEvidenceDir(runId)),
+        ];
 
-        if (!artifactPath.startsWith(allowedRoot)) {
+        if (!allowedRoots.some((root) => artifactPath.startsWith(root))) {
             return NextResponse.json({ error: "Artifact path is invalid" }, { status: 400 });
         }
 
@@ -94,7 +102,31 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    return NextResponse.json(buildRunSnapshot(job));
+    if (job) {
+        if (job.result) {
+            await markRunAccessed(runId).catch(() => { });
+        }
+        return NextResponse.json(buildRunSnapshot(job));
+    }
+
+    const record = await loadRunRecord(runId);
+
+    if (!record) {
+        return NextResponse.json({ error: "Run not found" }, { status: 404 });
+    }
+
+    await markRunAccessed(runId).catch(() => { });
+
+    const snapshot: RunStatusPayload = {
+        runId: record.runId,
+        runStatus: record.result.runStatus,
+        duration: record.result.duration,
+        progress: record.result.progress,
+        cancellationRequested: false,
+        result: record.result,
+    };
+
+    return NextResponse.json(snapshot);
 }
 
 export async function DELETE(req: NextRequest) {

@@ -4,6 +4,7 @@ import { flattenSuites } from "@/lib/report/execution";
 import { buildReport } from "@/lib/report/report";
 import type { JsonReport, RunReport } from "@/lib/report/types";
 import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedExecutions, withArtifactDownloadPath } from "@/lib/run/output";
+import { persistRunJob } from "@/lib/run/persistence";
 import { estimateTestCount } from "@/lib/run/selection";
 
 export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
@@ -74,6 +75,8 @@ export interface RunJob {
     reporterFile: string;
     artifactDir: string;
     baseUrl?: string;
+    description: string;
+    auditMode: string;
     selectedPractices: string[];
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
@@ -169,6 +172,8 @@ export async function finalizeRunJob(job: RunJob) {
             job.status = job.result.runStatus;
             job.process = null;
 
+            job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
+
             await Promise.all([
                 unlink(job.testFile).catch(() => { }),
                 unlink(job.jsonReportFile).catch(() => { }),
@@ -239,6 +244,8 @@ export async function finalizeRunJob(job: RunJob) {
     }
 
     job.process = null;
+
+    job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
 
     await Promise.all([
         unlink(job.testFile).catch(() => { }),
