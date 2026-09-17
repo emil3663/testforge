@@ -56,6 +56,26 @@ export interface EmbeddedLinkDetail {
     isVisible: boolean;
 }
 
+// TFP-061: a drag source or drop target. isDropTarget can't be detected by
+// attribute presence alone - most real apps (test-assist included) wire
+// dragover/drop via addEventListener rather than inline ondragover=/ondrop=
+// attributes, which an attribute-only scan (the [onclick] scan's pattern)
+// would miss entirely. isDropTarget is instead confirmed by dispatching a
+// synthetic, side-effect-free 'dragover' event and checking whether a
+// listener called preventDefault() on it - the same signal the browser
+// itself uses to decide whether an element accepts drops.
+export interface DragDropTargetDetail {
+    text: string;
+    containerLabel: string;
+    isVisible: boolean;
+    isDraggableSource: boolean;
+    isDropTarget: boolean;
+    tagName: string;
+    id: string;
+    className: string;
+    ariaLabel: string;
+}
+
 export interface PageSnapshot {
     path: string;
     url: string;
@@ -67,5 +87,6 @@ export interface PageSnapshot {
     actionableElements: ActionableElementDetail[];
     linkDetails: LinkDetail[];
     embeddedLinkDetails: EmbeddedLinkDetail[];
+    dragDropTargets: DragDropTargetDetail[];
     visibleTextSnippets: string[];
 }

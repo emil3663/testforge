@@ -2,6 +2,7 @@ import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./fo
 import type {
     ActionableElementDetail,
     ContentProfile,
+    DragDropTargetDetail,
     InteractionCategory,
     LinkDetail,
     TestAuditMode,
@@ -100,6 +101,31 @@ export function buildLocatorExpression(element: ActionableElementDetail) {
     }
 
     return "page.locator('a[href]').first()";
+}
+
+// TFP-061: a drag-drop target is rarely a form control with a role/label/
+// placeholder the way ActionableElementDetail's locators are - it's
+// commonly an untagged container (test-assist's canvas is a plain <main
+// class="canvas-wrap">). id, then aria-label, then a class-attribute
+// selector, then a bare tag selector, in that order of specificity.
+export function getDragDropTargetDisplayName(target: DragDropTargetDetail) {
+    return target.text || target.ariaLabel || target.id || `${target.tagName}${target.className ? `.${target.className}` : ""}`;
+}
+
+export function buildDragDropLocatorExpression(target: DragDropTargetDetail) {
+    if (target.id) {
+        return `page.locator('[id="${escapeForDoubleQuotedSelector(target.id)}"]').first()`;
+    }
+
+    if (target.ariaLabel) {
+        return `page.getByLabel('${escapeForSingleQuotedString(target.ariaLabel)}', { exact: true }).first()`;
+    }
+
+    if (target.className) {
+        return `page.locator('${target.tagName}[class~="${escapeForDoubleQuotedSelector(target.className)}"]').first()`;
+    }
+
+    return `page.locator('${target.tagName}').first()`;
 }
 
 export function buildInteractionPrefix(category: InteractionCategory) {

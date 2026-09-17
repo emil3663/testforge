@@ -5,6 +5,7 @@ export interface DomSnapshotArgs {
     maxActionableItems: number;
     maxLinkDetails: number;
     maxEmbeddedLinkDetails: number;
+    maxDragDropTargets: number;
 }
 
 // Passed to page.evaluate by reference: Playwright serializes this function's
@@ -12,7 +13,7 @@ export interface DomSnapshotArgs {
 // access to this module's scope. Every helper it uses must stay nested in its
 // body (only real browser globals and the destructured args are available at
 // runtime), so this function cannot be split further without breaking that.
-export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkDetails, maxEmbeddedLinkDetails }: DomSnapshotArgs): PageSnapshot {
+export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkDetails, maxEmbeddedLinkDetails, maxDragDropTargets }: DomSnapshotArgs): PageSnapshot {
     const cleanItems = (items: string[], limit = 8) => [...new Set(
         items
             .map((item) => item.replace(/\s+/g, " ").trim())
@@ -728,6 +729,71 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         )
         .slice(0, maxEmbeddedLinkDetails);
 
+    // TFP-061: [draggable]/[ondragover]/[ondrop] catches the rare
+    // inline-attribute case cheaply, but most real drop targets (including
+    // test-assist's canvas) attach dragover/drop via addEventListener,
+    // which no attribute selector can see. The extra candidate selectors
+    // below (semantic class/id hints, plus `main`) are only a shortlist to
+    // probe, not the detection itself - actual confirmation is the
+    // dispatched 'dragover' event below, which mirrors how the browser
+    // itself decides an element accepts drops. Dispatching only
+    // 'dragover' (never 'drop') keeps this read-only: a well-behaved
+    // dragover handler is a visual hint only (see test-assist's own,
+    // which just toggles an outline), not a state mutation.
+    const dragDropCandidates = Array.from(document.querySelectorAll(
+        '[draggable], [ondragover], [ondrop], main, [class*="canvas" i], [class*="drop" i], [class*="upload" i], [id*="canvas" i], [id*="drop" i], [id*="upload" i]'
+    )).slice(0, 25);
+
+    // bubbles: false is deliberate and differs from a real drag
+    // interaction (which does bubble): a bubbling probe dispatched on any
+    // descendant of a real drop target also reaches the target's own
+    // listener and reports defaultPrevented, falsely flagging every
+    // descendant as its own drop target. Disabling bubbling for the probe
+    // isolates exactly which element has a directly-attached listener,
+    // without changing how the generated test itself later dispatches a
+    // real (bubbling) drop.
+    const probeAcceptsDrop = (element: Element) => {
+        try {
+            const event = typeof DragEvent !== "undefined"
+                ? new DragEvent("dragover", { bubbles: false, cancelable: true })
+                : new Event("dragover", { bubbles: false, cancelable: true });
+            element.dispatchEvent(event);
+            return event.defaultPrevented;
+        } catch {
+            return false;
+        }
+    };
+
+    const dragDropTargets = dragDropCandidates
+        .map((element) => {
+            const draggableAttribute = element.getAttribute("draggable");
+            const isDraggableSource = draggableAttribute !== null && draggableAttribute !== "false";
+            const isDropTarget =
+                element.hasAttribute("ondragover") ||
+                element.hasAttribute("ondrop") ||
+                probeAcceptsDrop(element);
+
+            if (!isDraggableSource && !isDropTarget) {
+                return null;
+            }
+
+            const classAttribute = typeof element.className === "string" ? element.className : "";
+
+            return {
+                text: buildEmbeddedText(element),
+                containerLabel: findContainerLabel(element),
+                isVisible: isVisibleElement(element),
+                isDraggableSource,
+                isDropTarget,
+                tagName: element.tagName.toLowerCase(),
+                id: element.id || "",
+                className: cleanText(classAttribute).split(" ").find(Boolean) ?? "",
+                ariaLabel: cleanText(element.getAttribute("aria-label") ?? ""),
+            };
+        })
+        .filter((target): target is NonNullable<typeof target> => target !== null)
+        .slice(0, maxDragDropTargets);
+
     const visibleTextSnippets = cleanItems(
         Array.from(document.querySelectorAll("main p, article p, section p, li"))
             .map((node) => node.textContent ?? ""),
@@ -745,6 +811,7 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         actionableElements,
         linkDetails,
         embeddedLinkDetails,
+        dragDropTargets,
         visibleTextSnippets,
     };
 }

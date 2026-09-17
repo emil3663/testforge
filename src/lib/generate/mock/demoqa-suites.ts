@@ -1,4 +1,5 @@
 import { buildActionableElementTests, buildActionPairTests } from "./actionable-elements";
+import { buildDragDropTests } from "./drag-drop";
 import { includesAny } from "./format";
 import { buildSharedBestPracticeSuites } from "./generic-suites";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -188,6 +189,9 @@ export function buildDemoQaSuites(
             );
             functionalTests.push(
                 ...linkAuditPaths.flatMap((path) => buildActionPairTests(contentProfile, path))
+            );
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildDragDropTests(contentProfile, path))
             );
         }
 

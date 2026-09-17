@@ -254,6 +254,25 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                     })
                     .filter((item) => item.url)
                 : [],
+            dragDropTargets: Array.isArray(page.dragDropTargets)
+                ? page.dragDropTargets
+                    .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+                    .map((item) => ({
+                        text: typeof item.text === "string" ? item.text.replace(/\s+/g, " ").trim() : "",
+                        containerLabel:
+                            typeof item.containerLabel === "string"
+                                ? item.containerLabel.replace(/\s+/g, " ").trim()
+                                : "",
+                        isVisible: "isVisible" in item ? Boolean(item.isVisible) : true,
+                        isDraggableSource: Boolean(item.isDraggableSource),
+                        isDropTarget: Boolean(item.isDropTarget),
+                        tagName: typeof item.tagName === "string" ? item.tagName.trim() : "",
+                        id: typeof item.id === "string" ? item.id.trim() : "",
+                        className: typeof item.className === "string" ? item.className.trim() : "",
+                        ariaLabel: typeof item.ariaLabel === "string" ? item.ariaLabel.replace(/\s+/g, " ").trim() : "",
+                    }))
+                    .filter((item) => (item.isDraggableSource || item.isDropTarget) && item.tagName)
+                : [],
             visibleTextSnippets: normalizeStringList(page.visibleTextSnippets),
         }));
 

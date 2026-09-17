@@ -5,6 +5,7 @@ import {
     buildToggleGroupTests,
     buildUsabilityElementTests,
 } from "./actionable-elements";
+import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import {
@@ -285,6 +286,10 @@ export function buildGenericSuites(
             // into their state.
             functionalTests.push(
                 ...linkAuditPaths.flatMap((path) => buildActionPairTests(contentProfile, path))
+            );
+            // TFP-061: same treatment for detected drag-and-drop targets.
+            functionalTests.push(
+                ...linkAuditPaths.flatMap((path) => buildDragDropTests(contentProfile, path))
             );
         }
 

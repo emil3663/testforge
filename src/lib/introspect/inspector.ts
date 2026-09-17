@@ -6,6 +6,7 @@ const MAX_TEXT_ITEMS = 8;
 const MAX_ACTIONABLE_ITEMS = 40;
 const MAX_LINK_DETAILS = 100;
 const MAX_EMBEDDED_LINK_DETAILS = 150;
+const MAX_DRAG_DROP_TARGETS = 10;
 
 function cleanTextList(values: unknown[]) {
     return [...new Set(
@@ -35,6 +36,7 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
                     maxActionableItems: MAX_ACTIONABLE_ITEMS,
                     maxLinkDetails: MAX_LINK_DETAILS,
                     maxEmbeddedLinkDetails: MAX_EMBEDDED_LINK_DETAILS,
+                    maxDragDropTargets: MAX_DRAG_DROP_TARGETS,
                 });
 
                 pages.push({
@@ -45,6 +47,7 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
                     actionableElements: snapshot.actionableElements,
                     linkDetails: snapshot.linkDetails,
                     embeddedLinkDetails: snapshot.embeddedLinkDetails,
+                    dragDropTargets: snapshot.dragDropTargets,
                     visibleTextSnippets: cleanTextList(snapshot.visibleTextSnippets),
                 });
             } catch (error) {

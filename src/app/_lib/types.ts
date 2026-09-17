@@ -117,6 +117,17 @@ export interface ContentProfilePage {
         sameOrigin: boolean;
         isVisible: boolean;
     }[];
+    dragDropTargets?: {
+        text: string;
+        containerLabel: string;
+        isVisible: boolean;
+        isDraggableSource: boolean;
+        isDropTarget: boolean;
+        tagName: string;
+        id: string;
+        className: string;
+        ariaLabel: string;
+    }[];
     visibleTextSnippets: string[];
 }
 

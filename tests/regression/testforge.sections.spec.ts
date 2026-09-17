@@ -222,6 +222,41 @@ test.describe("TestForge regression coverage", () => {
             expect(element.groupId === null || typeof element.groupId === "string").toBe(true);
         }
     });
+
+    test("introspect reports dragDropTargets as a well-shaped array", async ({ request }) => {
+        // TFP-061: shape check only, same reasoning as the two tests above -
+        // testforge's own landing page has no real drag-and-drop target to
+        // populate this array with, so the meaningful assertion (does it
+        // find test-assist's canvas, and only the canvas, not its
+        // descendants) was verified live against test-assist and is
+        // recorded in this commit's message: introspecting test-assist
+        // detects exactly one drop target, the real <main class="canvas-
+        // wrap">, after fixing a bubbling false positive that had
+        // initially also flagged 6 of its own descendants.
+        const response = await request.post("/api/introspect", {
+            data: { baseUrl: localAppUrl, paths: ["/"] },
+        });
+        expect(response.ok()).toBeTruthy();
+        const payload = (await response.json()) as {
+            pages: {
+                dragDropTargets: {
+                    isVisible: unknown;
+                    isDraggableSource: unknown;
+                    isDropTarget: unknown;
+                    tagName: unknown;
+                }[];
+            }[];
+        };
+        const targets = payload.pages[0]?.dragDropTargets;
+        expect(Array.isArray(targets)).toBe(true);
+        for (const target of targets ?? []) {
+            expect(typeof target.isVisible).toBe("boolean");
+            expect(typeof target.isDraggableSource).toBe("boolean");
+            expect(typeof target.isDropTarget).toBe("boolean");
+            expect(typeof target.tagName).toBe("string");
+        }
+    });
+
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
@@ -1281,6 +1316,67 @@ test.describe("TestForge regression coverage", () => {
 
         expect(payload.code).toContain("action pair: Undo / Redo are unaffected by an unrelated interaction");
         expect(payload.code.match(/action pair:/g) ?? []).toHaveLength(1);
+    });
+
+    test("generates valid- and invalid-content drag-and-drop tests for a detected drop target", async ({ request }) => {
+        // TFP-061: a detected drop target gets two tests - a valid drop
+        // asserting an observable change, and an invalid one asserting only
+        // that the page doesn't crash. Live verification against
+        // test-assist (recorded in this commit's message): introspecting
+        // test-assist's canvas (a plain <main class="canvas-wrap"> whose
+        // dragover/drop handlers are attached via addEventListener, not
+        // inline ondragover=/ondrop= attributes) is correctly detected as
+        // exactly one drop target - a first attempt without disabling
+        // event bubbling on the detection probe flagged 6 of the canvas's
+        // own descendants as false-positive drop targets too, since the
+        // probe's dispatched event bubbled up into the real listener on
+        // the ancestor. TFFU-030/TFFU-031 both pass against the real
+        // canvas.
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for a detected drag-and-drop target.",
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [],
+                        linkDetails: [],
+                        dragDropTargets: [{
+                            text: "Drop Zone",
+                            containerLabel: "",
+                            isVisible: true,
+                            isDraggableSource: false,
+                            isDropTarget: true,
+                            tagName: "div",
+                            id: "dropZoneProbe",
+                            className: "",
+                            ariaLabel: "",
+                        }],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        expect(payload.code).toContain("drag and drop: valid content dropped onto Drop Zone produces an observable change");
+        expect(payload.code).toContain("drag and drop: invalid content dropped onto Drop Zone does not crash the page");
+        expect(payload.code).toContain("new DragEvent('dragover'");
+        expect(payload.code).toContain("new DragEvent('drop'");
     });
 
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {

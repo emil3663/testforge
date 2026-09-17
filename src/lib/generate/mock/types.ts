@@ -59,6 +59,18 @@ export interface LinkDetail {
     isSecure: boolean;
 }
 
+export interface DragDropTargetDetail {
+    text: string;
+    containerLabel: string;
+    isVisible: boolean;
+    isDraggableSource: boolean;
+    isDropTarget: boolean;
+    tagName: string;
+    id: string;
+    className: string;
+    ariaLabel: string;
+}
+
 export interface GeneratedSuite {
     area: BestPracticeArea;
     title: string;
@@ -83,6 +95,7 @@ export interface ContentProfilePage {
     links: string[];
     actionableElements?: ActionableElementDetail[];
     linkDetails?: LinkDetail[];
+    dragDropTargets?: DragDropTargetDetail[];
     visibleTextSnippets: string[];
 }
 
