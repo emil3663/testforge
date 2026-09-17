@@ -326,6 +326,9 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 
 ### TFP-062 — Resolve Phase 18's scope gap on local (non-network) failure injection
 
+- **Status: Resolved.** `product-roadmap.md`'s Phase 18 section now carries
+  the addendum directly — local storage-API failure injection is in scope,
+  sized alongside the existing network-dependency map, not a placeholder.
 - **Phase:** 17 (pre-lock) / informs Phase 18
 - **Priority:** P1
 - **Suggested labels:** `investigation`, `roadmap`
@@ -360,6 +363,13 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 
 ### TFP-063 — Calibrate per-element enumeration depth against target relevance
 
+- **Status: Resolved — verdict "needs a second target first."** Full
+  reasoning in `examples/link-audit-depth-findings.md`: one data point can't
+  distinguish "uniform depth is generally wasteful" from "it happened to be
+  wasteful on test-assist's degenerate two-link case," and the two possible
+  mistakes (over-testing vs. silently under-testing something that mattered)
+  aren't symmetric enough to guess. No code change; revisit once a second
+  real target with genuine link variety has been dogfooded.
 - **Phase:** 17 (pre-lock)
 - **Priority:** P3
 - **Suggested labels:** `investigation`, `generation`
@@ -388,18 +398,18 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 
 ## Recommended Execution Order
 
+TFP-062 and TFP-063 are resolved (see their Status lines above) — the
+remaining order is code-only, nine tickets:
+
 1. TFP-053 (visibility capture — unblocks TFP-054)
 2. TFP-054 (fixes the 7 confirmed false positives — highest-value, P0)
 3. TFP-055 (ARIA state capture — unblocks TFP-057, informs TFP-056)
 4. TFP-056 (accessibility coverage from real data)
 5. TFP-057 (ARIA-state-toggle assertions — the TA-252-class catch)
-6. TFP-062 (Phase 18 scope resolution — cheap, unblocks that phase's own
-   decision record being drafted with full information)
-7. TFP-058, TFP-059 (responsive/usability from real data — independent of
+6. TFP-058, TFP-059 (responsive/usability from real data — independent of
    each other)
-8. TFP-060, TFP-061 (negative assertions, drag-and-drop — independent,
+7. TFP-060, TFP-061 (negative assertions, drag-and-drop — independent,
    lower priority)
-9. TFP-063 (investigation only, no urgency)
 
 ## Suggested Milestone Gate
 
@@ -417,21 +427,22 @@ on its own terms, it's just no longer the whole bar.
 
 The original subset this backlog proposed as functionally load-bearing for
 "honest coverage" specifically:
-- TFP-053/054 landed: regenerating TFP-040's exact suite against
+- [ ] TFP-053/054 landed: regenerating TFP-040's exact suite against
   `test-assist` produces 0 of the 7 known false positives.
-- TFP-055/056/057 landed: regenerating produces an accessibility suite
+- [ ] TFP-055/056/057 landed: regenerating produces an accessibility suite
   that would have caught TA-252's finding on its own, without needing the
   `write-playwright-test` skill run separately.
-- TFP-062 resolved: Phase 18's local-failure-injection question is
-  answered one way or the other, in writing.
+- [x] TFP-062 resolved — see its Status line above and
+  `product-roadmap.md`'s Phase 18 addendum.
 - The "What this backlog can and can't close" section above still holds —
   Phase 17's decision record cites it directly rather than re-litigating
   what a generator patch can and can't fix.
 
 The rest of this backlog, now equally required by the confirmed gate:
-- TFP-056, TFP-058, TFP-059: data-driven accessibility/responsive/usability
+- [ ] TFP-056, TFP-058, TFP-059: data-driven accessibility/responsive/usability
   generation.
-- TFP-060, TFP-061: negative-assertion and drag-and-drop detection.
-- TFP-063: the link-audit-depth investigation, resolved one way or another
-  (it can conclude "not worth doing" and still close the gate — it's the
-  investigation finishing, not a specific verdict, that's required).
+- [ ] TFP-060, TFP-061: negative-assertion and drag-and-drop detection.
+- [x] TFP-063 resolved — see its Status line above and
+  `examples/link-audit-depth-findings.md`.
+
+**Remaining for this gate: TFP-053 through TFP-061 — nine code tickets.**

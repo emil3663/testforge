@@ -102,6 +102,25 @@ breaking. This is observation plus deterministic testing, consistent with the
 product's core thesis, and requires no AI. Depends on Phase 17 for the map to
 extend the coverage denominator rather than living outside it.
 
+**Scope addendum (TFP-062, confirmed):** the paragraph above, read literally,
+only covers outbound network dependencies — `page.route()` can block or fail
+a fetch, a redirect, a third-party script, but it cannot inject a local
+browser-API failure. TFP-042's real comparison against `test-assist` found
+its own suite covers exactly that other class: a session saved under an old
+schema is discarded rather than half-read, and the app still works
+(degraded) when `IndexedDB` itself is unavailable — neither reachable by
+blocking a network request. This phase's scope is widened to include local
+storage-API failure injection alongside the outbound-dependency map above:
+seeding a corrupted/old-schema value before load, and mocking `indexedDB.open`
+(or the equivalent storage entry point) to fail, asserting the app degrades
+rather than crashing or half-reading. Sized the same way the rest of this
+phase already is — deterministic, no AI, an extension of the same
+degrade-gracefully thesis — not a general chaos-testing expansion. This
+addendum is itself Phase 18's scope answer, not a placeholder for one: this
+phase's own decision record, when drafted, locks the specifics (which
+storage entry points, which corruption shapes) but does not need to
+re-litigate whether local failure injection is in scope at all.
+
 ### Phase 19 — Path and journey mapping
 The page graph from crawl and the actionable elements from introspect combine
 into a walkable graph of the site. TestForge surfaces likely user journeys —
