@@ -1,12 +1,14 @@
-# Phase 17 Decision Record (Draft)
+# Phase 17 Decision Record (Locked)
 
 Date: 2026-09-17
-Scope: Give runs durable identity and persist them to disk; recompute coverage
-against the discovered surface from crawl/introspect instead of the tests
-that happened to run; add a "not tested, and why" report section; support
-diffing two persisted runs of the same site.
-Status: Draft — two decisions below are flagged for confirmation before this
-locks to "Approved and in implementation"
+Scope: Give runs durable identity and persist them to disk with a tiered
+retention scheme; recompute coverage against the discovered surface from
+crawl/introspect instead of the tests that happened to run; add a "not
+tested, and why" report section; support diffing two persisted runs of the
+same site.
+Status: Approved — implementation is held until
+`phase-17-walkthrough-backlog.md`'s TFP-053–063 land (Decision 6), not
+started in parallel with them
 
 ## Context
 
@@ -99,22 +101,55 @@ below, not assumed from the roadmap outline:
 - Phase 17 delivers the data and an API for this. A polished diff UI is
   explicitly deferred — out of scope for this phase's lock, not forgotten.
 
-5. Retention is manual, not automatic.
-- No automatic pruning ships in this phase. A run's directory, evidence
-  included, stays on disk until the user deletes it themselves.
-- `README.md` documents this as a stated disk-usage tradeoff, the same way
-  it already states the local-only security model plainly rather than
-  leaving it implicit.
+5. Runs have a tiered retention state: full, archived, and pinned.
+- `run.json` gains three fields: `pinned` (boolean, default `false`),
+  `retention` (`"full" | "archived"`, default `"full"` at creation), and
+  `lastAccessedAt` (timestamp, `null` until the run's report is actually
+  read via the API/UI — this is the "has this even been looked at" signal,
+  surfaced in the run listing, and is informational only in this phase: not
+  being accessed is not by itself a reason to delete something).
+- **Pinning** is an explicit user action (API/UI) and is a hard override —
+  a pinned run is never auto-archived regardless of any other rule. This is
+  the "flag important runs to keep" mechanism.
+- **Archiving** (manual or automatic) deletes only `evidence/` (traces,
+  videos, screenshots) for a run — `run.json` and `suite.spec.ts` are kept
+  in full, so history, coverage numbers, and diffing all keep working for
+  an archived run. Nothing about a run's pass/fail record or config is ever
+  deleted by archiving; only the heavy replay evidence is.
+- **Manual archiving**: a run can be archived on request at any time,
+  regardless of the automatic rule below.
+- **Automatic archiving eligibility** — a run becomes eligible when *all*
+  of the following hold: (a) it is not pinned; (b) a newer run exists for
+  the same `baseUrl`, i.e. it has been superseded; (c) none of its failed
+  tests, if any, are still failing in the newest run for that `baseUrl` —
+  in plain terms, it isn't the current evidence for a bug that's still
+  open. A same-day regression run that passed cleanly and was later
+  superseded is exactly what this prunes automatically; a run capturing a
+  reproducing, not-yet-fixed defect is exempted until a later run shows
+  that specific test passing.
+- This deliberately folds "was this a minor run" into the same mechanism
+  rather than adding a separate tag: a run that added nothing new and was
+  immediately superseded is, definitionally, what the automatic rule
+  archives — a distinct "minor" flag would just be a second name for the
+  same condition.
+- Automatic archiving runs as an on-demand sweep (triggered by an API call
+  or a manual command), not a continuous background process — this phase
+  does not add a scheduler or daemon.
+- `README.md` documents the tiered scheme and the automatic rule in plain
+  language, the same way it already states the local-only security model
+  rather than leaving retention behavior implicit.
 
-6. This phase does not wait on the `phase-17-walkthrough-backlog.md`
-   generator-hardening tickets (TFP-053–063).
-- Run persistence and coverage recomputation are decoupled from whether
-  individual generated assertions are correct or how rich the best-practice
-  templates are — a false-positive test still counts as "this element was
-  tested," which is a generation-quality question, not a persistence
-  question.
-- TFP-053–063 continue as a separate, parallel track and are not
-  re-scoped into this phase.
+6. This phase is sequenced after the `phase-17-walkthrough-backlog.md`
+   generator-hardening tickets (TFP-053–063) land, not in parallel with them.
+- Emil's stated preference: complete the generator-hardening backlog first,
+  so the product is as complete as it can be before taking on more backlog
+  — a product-priority call, not a technical dependency (the reasoning in
+  the prior draft, that persistence and generation-quality are decoupled,
+  still holds technically; it just isn't the deciding factor here).
+- This record's decisions (1–5 above) are locked now so implementation
+  can start the moment TFP-053–063 close, without a second planning pass.
+- Implementation of this phase does not begin until
+  `phase-17-walkthrough-backlog.md`'s own milestone gate is met.
 
 ## Acceptance Criteria
 
@@ -148,8 +183,19 @@ below, not assumed from the roadmap outline:
   a percentage-only summary.
 
 5. Retention
-- `README.md`'s documentation of manual retention is present and named
-  in the same section style as the existing Security Model statement.
+- Archiving a run (manual or automatic) removes `runs/<runId>/evidence/`
+  while `run.json` and `suite.spec.ts` remain readable and that run still
+  appears correctly in coverage history and diffing.
+- Pinning a run and then running the automatic-archiving sweep leaves that
+  run's `evidence/` untouched, even when it would otherwise qualify.
+- A run whose only failure is later fixed (a subsequent run shows that same
+  test passing) becomes eligible for automatic archiving on the next sweep,
+  where it was not eligible before the fix.
+- `lastAccessedAt` is `null` on a freshly persisted run and is set the
+  first time that run's report is read back.
+- `README.md` documents the tiered retention scheme (full/archived/pinned)
+  and the automatic rule, in the same section style as the existing
+  Security Model statement.
 
 ## Regression Policy
 
@@ -163,18 +209,23 @@ below, not assumed from the roadmap outline:
   category-only shape must be updated to the new discovered-surface shape as
   part of this phase, not left passing against stale behavior.
 
-## Open before this locks
+## Resolved before lock
 
-1. **[PLACEHOLDER: confirm Decision 6]** — proceeding with this phase now,
-   in parallel with the `phase-17-walkthrough-backlog.md` generator-hardening
-   tickets rather than after them, reverses that backlog's own stated
-   readiness gate ("Ready to draft Phase 17's decision record" named
-   TFP-053/054/055/057/062 as prerequisites). The reasoning above is that
-   persistence/coverage-recomputation and generation-quality are genuinely
-   decoupled — but that gate was written deliberately and only you can waive
-   it. Confirm, or hold this record until those tickets land.
-2. **[PLACEHOLDER: confirm Decision 5]** — manual-only retention is the
-   simplest option and matches the project's local-first posture, but
-   `evidence/` can include videos and traces that add up over repeated runs.
-   Confirm manual-only is acceptable, or specify a cap (e.g. keep the last N
-   runs per `baseUrl`) to add to this phase's scope instead.
+Both placeholders in the prior draft were confirmed directly by Emil rather
+than assumed:
+
+1. **Sequencing (Decision 6).** Complete `phase-17-walkthrough-backlog.md`'s
+   TFP-053–063 first — a product-completeness preference ("as complete a
+   product as possible before stepping into more backlog"), not a reversal
+   of the technical reasoning that persistence and generation-quality are
+   decoupled. This record's decisions are locked now so implementation can
+   start immediately once that backlog's own milestone gate is met, without
+   redrafting this document then.
+2. **Retention (Decision 5).** Not manual-only. A tiered scheme: pin
+   important runs explicitly; archive (evidence only, not the record)
+   everything else once superseded, automatically, unless it's the live
+   evidence for a still-open, specifically-tracked defect. This is what the
+   original manual-only draft under-specified — Emil's actual requirement
+   was closer to "don't make me manually decide on routine same-day
+   regression runs, but never touch a run I've flagged or one that's the
+   only evidence for a live bug."

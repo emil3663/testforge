@@ -403,7 +403,20 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 
 ## Suggested Milestone Gate
 
-### Gate — Ready to draft Phase 17's decision record
+### Gate — Ready to implement Phase 17
+
+`docs/decisions/phase-17-run-persistence-decision-record.md` is drafted and
+locked. Its Decision 6 raises this gate's bar beyond what this backlog
+originally proposed: Emil's confirmed preference is to finish this entire
+backlog — all of TFP-053 through TFP-063 — before Phase 17 implementation
+starts, not just the subset below, and not in parallel. That's a
+product-completeness call ("as complete a product as possible before
+stepping into more backlog"), not a technical dependency; the original,
+narrower reasoning for a subset gate is kept below because it's still true
+on its own terms, it's just no longer the whole bar.
+
+The original subset this backlog proposed as functionally load-bearing for
+"honest coverage" specifically:
 - TFP-053/054 landed: regenerating TFP-040's exact suite against
   `test-assist` produces 0 of the 7 known false positives.
 - TFP-055/056/057 landed: regenerating produces an accessibility suite
@@ -412,5 +425,13 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 - TFP-062 resolved: Phase 18's local-failure-injection question is
   answered one way or the other, in writing.
 - The "What this backlog can and can't close" section above still holds —
-  Phase 17's decision record should cite it directly rather than re-litigate
+  Phase 17's decision record cites it directly rather than re-litigating
   what a generator patch can and can't fix.
+
+The rest of this backlog, now equally required by the confirmed gate:
+- TFP-056, TFP-058, TFP-059: data-driven accessibility/responsive/usability
+  generation.
+- TFP-060, TFP-061: negative-assertion and drag-and-drop detection.
+- TFP-063: the link-audit-depth investigation, resolved one way or another
+  (it can conclude "not worth doing" and still close the gate — it's the
+  investigation finishing, not a specific verdict, that's required).
