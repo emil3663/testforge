@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Trial complete, TFP-052 landed — desktop proposal implemented (rollback marker through `UpdateChecker.interpret()`'s existing seam, 9 new tests) and toil-classified both builds. Findings live in `test-assist/docs/RELEASE_ROLLBACK_TRIAL.md`, currently on an **open, unmerged** branch/PR (`docs/ta-250-release-rollback-trial`, test-assist#24) — not yet on `main` there.
 
 ## Context
 
@@ -132,3 +132,21 @@ Single ticket.
 ### Gate A - The felt pain point has an actual answer
 - `RELEASE_ROLLBACK_TRIAL.md` exists with real findings, not a still-open
   question.
+
+## Status update (2026-09-17)
+
+TFP-052 ran for real, not deferred: both builds toil-classified against
+`sre-toil`'s six-property test (desktop 5-6/6, browser 5/6), zero rollback
+mechanism confirmed by reading `update_check.py` and `pages.yml` directly,
+and two proposals scoped to what a manual-update, no-telemetry,
+solo-maintainer project actually supports. The desktop proposal was
+implemented — a `KNOWN_GOOD:` marker read through `UpdateChecker.interpret()`'s
+existing pure seam, with 9 new tests. `skills/proposed/README.md` already
+points its `verified-release-pipeline`/`sre-release` overlap note at this
+result (commit `97e3ef2`).
+
+**Not yet done:** `test-assist` PR #24 (branch
+`docs/ta-250-release-rollback-trial`, commit `9479425`) is still open —
+the rollback marker and `RELEASE_ROLLBACK_TRIAL.md` aren't on `test-assist`'s
+`main` yet. This backlog's own Gate A isn't fully satisfied until that PR
+merges.
