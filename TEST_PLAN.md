@@ -113,7 +113,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 ## 5. Roadmap / Next Steps
 
 ### Sprint 1 (Close out Phase 16)
-- [ ] TFP-005 — delete stale `copilot/*` branches from origin
+- [x] TFP-005 — delete stale `copilot/*` branches from origin
 - [ ] TFP-031 — close the regression gap left by proxy removal (assert `/api/health` reports local in-process mode; assert each route executes without an external backend configured)
 - [x] TFP-030 — this document
 - [x] TFP-032 — `docs/decisions/saas-prerequisites.md`
