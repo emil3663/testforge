@@ -85,6 +85,13 @@ Persisted runs unlock diffing two runs of the same site against each other.
 This is the foundation every later phase depends on, including making the
 AI-vs-deterministic comparison in Phase 21 measurable rather than a guess.
 
+The pre-lock walkthrough this section's own Sequencing note calls for has
+run: TFP-040/041/042 (`examples/`) exercised the real generator against
+`test-assist`, compared against a hand-authored suite and against
+`test-assist`'s own mature suite. Findings are scoped into tickets at
+`docs/decisions/phase-17-walkthrough-backlog.md` — read that before drafting
+this phase's decision record, not just this outline.
+
 ### Phase 18 — Integration mapping and failure injection
 During crawl and introspect, TestForge records every outbound dependency a
 page talks to — XHR/fetch targets, form action hosts, third-party scripts,
