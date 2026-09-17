@@ -25,7 +25,12 @@ export interface RunRecord {
     artifactFiles: Record<string, PersistedArtifactFile>;
 }
 
-export const RUNS_ROOT = join(process.cwd(), "runs");
+// Overridable so tests never read or write the real runs/ directory a live
+// dev server is using. Default is today's exact behavior - unset, this
+// resolves identically to before the override existed.
+export const RUNS_ROOT = process.env.TESTFORGE_RUNS_ROOT
+    ? resolve(process.env.TESTFORGE_RUNS_ROOT)
+    : join(process.cwd(), "runs");
 
 export function runDir(runId: string) {
     return join(RUNS_ROOT, runId);
