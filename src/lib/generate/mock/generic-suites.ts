@@ -1,4 +1,8 @@
-import { buildActionableElementTests, buildToggleGroupTests } from "./actionable-elements";
+import {
+    buildAccessibilityElementTests,
+    buildActionableElementTests,
+    buildToggleGroupTests,
+} from "./actionable-elements";
 import { includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { findMatchingProfilePage, resolveLinkAuditPath, resolveLinkAuditPaths } from "./locators";
@@ -47,6 +51,11 @@ export function buildSharedBestPracticeSuites(
         // real per-element coverage separately.
         const accessibilityPath = resolveLinkAuditPath(baseUrl);
         const toggleGroupTests = buildToggleGroupTests(contentProfile, accessibilityPath);
+        // TFP-056: the interactive-element count check below never inspected
+        // what introspection actually found, so it passed even when real
+        // elements had no accessible name or role. Add one assertion per
+        // discovered element (existing heading check kept as-is).
+        const accessibilityElementTests = buildAccessibilityElementTests(contentProfile, accessibilityPath);
 
         const suite = createSuite("accessibility", [
             `  test('exposes basic accessible structure for assistive technologies', async ({ page }) => {
@@ -57,6 +66,7 @@ export function buildSharedBestPracticeSuites(
     const interactiveCount = await page.locator('a, button, input, textarea, select, [role="button"]').count();
     expect(interactiveCount).toBeGreaterThan(0);
   });`,
+            ...accessibilityElementTests,
             ...toggleGroupTests,
         ]);
 

@@ -1019,6 +1019,90 @@ test.describe("TestForge regression coverage", () => {
         expect(payload.code).toContain("clicking a member flips its aria-checked");
     });
 
+    test("generates per-element accessible-name and role checks, skipping hidden elements", async ({ request }) => {
+        // TFP-056: the accessibility suite previously only counted
+        // interactive elements, never checking any of them actually had a
+        // name or role. Live verification against test-assist (recorded in
+        // this commit's message): 24 of 31 discovered elements got a real
+        // accessible-name/role test, all passing including the one that
+        // exposed a genuine gap (an unlabeled file input) on a first
+        // attempt before the test itself was corrected to use Playwright's
+        // own accname computation instead of a hand-rolled heuristic.
+        const response = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Regression probe for per-element accessibility checks.",
+                selectedPractices: ["accessibility"],
+                auditMode: "fast",
+                contentRules: { paths: ["/"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: {
+                    scannedAt: new Date().toISOString(),
+                    baseUrl: localAppUrl,
+                    pages: [{
+                        path: "/",
+                        url: `${localAppUrl}/`,
+                        title: "Regression probe",
+                        metaDescription: "",
+                        headings: [],
+                        buttons: [],
+                        links: [],
+                        actionableElements: [
+                            {
+                                text: "Visible Probe Button",
+                                url: null,
+                                category: "action",
+                                elementType: "button",
+                                containerLabel: "",
+                                expectedStatus: null,
+                                isVisible: true,
+                                locator: { role: "button", name: "Visible Probe Button", label: "", placeholder: "", id: "visibleProbeButton", inputType: "" },
+                            },
+                            {
+                                text: "Hidden Probe Button",
+                                url: null,
+                                category: "action",
+                                elementType: "button",
+                                containerLabel: "",
+                                expectedStatus: null,
+                                isVisible: false,
+                                locator: { role: "button", name: "Hidden Probe Button", label: "", placeholder: "", id: "hiddenProbeButton", inputType: "" },
+                            },
+                        ],
+                        linkDetails: [],
+                        visibleTextSnippets: [],
+                    }],
+                    warnings: [],
+                },
+            },
+        });
+
+        expect(response.ok()).toBeTruthy();
+        const payload = await response.json();
+
+        // Split on Playwright test-block boundaries rather than on the
+        // element name: the accessible-name assertion's own failure
+        // message repeats the element name, so a naive
+        // `.split(elementName)[1]` only captures up to that repeat rather
+        // than the whole test body.
+        const testBlocks: string[] = payload.code
+            .split("\n  test(")
+            .slice(1)
+            .map((block: string) => `  test(${block}`);
+        // Generated titles are prefixed with a case ID (e.g. "TFAC-002: "),
+        // so match on the stable suffix rather than the block start.
+        const findBlock = (titleFragment: string) =>
+            testBlocks.find((block) => block.startsWith("  test('") && block.includes(titleFragment)) ?? "";
+
+        const visibleTest = findBlock("accessible name and role: Visible Probe Button");
+        expect(visibleTest).toContain("toHaveAccessibleName(/.+/)");
+        expect(visibleTest).toContain("ariaSnapshot");
+
+        const hiddenTest = findBlock("accessible name and role: Hidden Probe Button");
+        expect(hiddenTest).toContain("Hidden at introspection time");
+        expect(hiddenTest).toContain("toBeAttached()");
+        expect(hiddenTest).not.toContain("toHaveAccessibleName");
+    });
+
     test("does not generate content-profile SEO checks when Functional is explicitly selected", async ({ request }) => {
         const response = await request.post("/api/generate", {
             data: {
