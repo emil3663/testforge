@@ -427,9 +427,9 @@ on its own terms, it's just no longer the whole bar.
 
 The original subset this backlog proposed as functionally load-bearing for
 "honest coverage" specifically:
-- [ ] TFP-053/054 landed: regenerating TFP-040's exact suite against
+- [x] TFP-053/054 landed: regenerating TFP-040's exact suite against
   `test-assist` produces 0 of the 7 known false positives.
-- [ ] TFP-055/056/057 landed: regenerating produces an accessibility suite
+- [x] TFP-055/056/057 landed: regenerating produces an accessibility suite
   that would have caught TA-252's finding on its own, without needing the
   `write-playwright-test` skill run separately.
 - [x] TFP-062 resolved — see its Status line above and
@@ -439,10 +439,27 @@ The original subset this backlog proposed as functionally load-bearing for
   what a generator patch can and can't fix.
 
 The rest of this backlog, now equally required by the confirmed gate:
-- [ ] TFP-056, TFP-058, TFP-059: data-driven accessibility/responsive/usability
+- [x] TFP-056, TFP-058, TFP-059: data-driven accessibility/responsive/usability
   generation.
-- [ ] TFP-060, TFP-061: negative-assertion and drag-and-drop detection.
+- [x] TFP-060, TFP-061: negative-assertion and drag-and-drop detection.
 - [x] TFP-063 resolved — see its Status line above and
   `examples/link-audit-depth-findings.md`.
 
-**Remaining for this gate: TFP-053 through TFP-061 — nine code tickets.**
+**Gate closed 2026-09-17.** All nine code tickets landed
+(`43718aa`..`47446c5`), verified live against `test-assist`
+(introspect/generate/run, not just unit-level) and independently re-checked
+from Cowork: `origin/main` at `47446c5` confirmed, regression suite at 32
+tests (was 22 before this batch), `npx tsc --noEmit` clean, and two of the
+higher-risk diffs (TFP-054's visibility gating, TFP-061's non-bubbling
+drag probe) read line-for-line against their own commit messages' claims —
+both matched exactly, including the subtler technical details (dropping
+the enabled/editable/click assertions too for hidden elements, not just
+the visibility check; the bubbling-vs-non-bubbling distinction between the
+probe and the generated test's own drop simulation). The one thing not
+independently re-run here was the full regression suite itself (a live
+Playwright + Next.js server run exceeds a single verification pass in this
+environment) — noted as a gap, not silently assumed passing beyond what
+the test count and tsc check above actually prove.
+
+`docs/decisions/phase-17-run-persistence-decision-record.md` is unblocked.
+Phase 17 implementation can start.
