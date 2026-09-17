@@ -33,7 +33,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 
 | ID | Test | Expected Result | Status |
 |----|------|-----------------|--------|
-| HLT-01 | `GET /api/health` (automated: `tests/regression/testforge.sections.spec.ts` — "reports health and observability metadata") | Response is `ok`; JSON body includes `status: "ok"`, `service: "testforge-next"`, a string `environment`, a `siteUrl` containing `http`, and an ISO `timestamp`; response carries `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` restricting `camera`, and a `Content-Security-Policy` with `default-src 'self'`. | ✅ |
+| HLT-01 | `GET /api/health` (automated: `tests/regression/testforge.sections.spec.ts` — "reports health and observability metadata") | Response is `ok`; JSON body includes `status: "ok"`, `service: "testforge-next"`, a string `environment`, `mode: "local-in-process"` (TFP-031 — every route runs in-process since TFP-010/011 deleted the FastAPI proxy layer, so there is no other mode to report), a `siteUrl` containing `http`, and an ISO `timestamp`; response carries `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` restricting `camera`, and a `Content-Security-Policy` with `default-src 'self'`. | ✅ |
 
 ### 3.2 Generate (GEN)
 
@@ -48,6 +48,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | GEN-07 | Regeneration required after changing selected best-practice areas (automated: "requires regeneration before running when selected best-practice areas change") | Changing the selected best-practice areas after a suite exists disables Run until the suite is regenerated. | ✅ |
 | GEN-08 | Manual: generate with no `OPENAI_API_KEY` set | Template-based generator produces a suite; no request to OpenAI is made. | ⬜ |
 | GEN-09 | Manual: generate with `OPENAI_API_KEY` set | OpenAI GPT-4o path produces a suite with descriptive test names. | ⬜ |
+| GEN-10 | Generate executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/generate` succeeds and returns real Playwright code, with no environment variable set beyond `.env.development`. | ✅ |
 
 ### 3.3 Crawl (CRW)
 
@@ -55,6 +56,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 |----|------|-----------------|--------|
 | CRW-01 | Discovered-pages section, crawl lifecycle, and page selection (automated: "covers the discovered site pages section, crawl lifecycle, and page selection controls") | Crawl discovers same-origin pages, surfaces them for selection, and the UI reflects crawl-in-progress / crawl-complete states correctly. | ✅ |
 | CRW-02 | Manual: crawl a multi-page site | All same-origin pages reachable within crawl depth are listed; off-origin links are not crawled. | ⬜ |
+| CRW-03 | Crawl executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/crawl` starts a job that reaches `crawlStatus: "completed"`, with no environment variable set beyond `.env.development`. | ✅ |
 
 ### 3.4 Introspect (INT)
 
@@ -62,6 +64,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 |----|------|-----------------|--------|
 | INT-01 | Content rules and content-aware generation state (automated: "covers the content rules section and content-aware generation state") | Per-page introspection results (elements, roles, content) are reflected in the content rules section and inform content-aware generation. | ✅ |
 | INT-02 | Manual: introspect a page with no actionable elements | Introspection completes without error and reports an empty or near-empty actionable-element set rather than failing. | ⬜ |
+| INT-03 | Introspect executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/introspect` succeeds synchronously and returns at least one inspected page, with no environment variable set beyond `.env.development`. | ✅ |
 
 ### 3.5 Run (RUN)
 
@@ -73,6 +76,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | RUN-04 | Rerun a selected failed test from the report UI (automated: "reruns the selected failed test from the execution report") | Selecting a failed test in the execution report and triggering rerun re-executes only that test. | ✅ |
 | RUN-05 | Session evidence capture on failure (automated: "captures session evidence artifacts for failed generated runs") | A failed generated test produces captured evidence artifacts (trace/video/screenshot per `playwright.config.ts`'s `retain-on-failure`/`only-on-failure` settings). | ✅ |
 | RUN-06 | Manual: cancel a run mid-execution from the UI | Run stops promptly; already-completed test results remain visible. | ⬜ |
+| RUN-07 | Run executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/run` starts a job that reaches `runStatus: "passed"`, with no environment variable set beyond `.env.development`. | ✅ |
 
 ### 3.6 Report (RPT)
 
@@ -100,6 +104,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 |----|------|-----------------|--------|
 | SAV-01 | Generated suite section: editing and saving actions (automated: "covers the generated suite section actions for editing and saving") | Edits made to the generated suite in the in-browser editor are saved and reflected before Run uses the saved version. | ✅ |
 | SAV-02 | Add a generated suite to Playwright discovery (automated smoke: "adds a generated suite to Playwright discovery") | Saving a generated suite makes it discoverable by Playwright (e.g. VS Code Test Explorer / `playwright test --list`). | ✅ |
+| SAV-03 | Save-suite executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/save-suite` writes the file locally and returns a `.spec.ts` filename, with no environment variable set beyond `.env.development`. | ✅ |
 
 ## 4. Known Limitations & Gaps
 
@@ -114,7 +119,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 
 ### Sprint 1 (Close out Phase 16)
 - [x] TFP-005 — delete stale `copilot/*` branches from origin
-- [ ] TFP-031 — close the regression gap left by proxy removal (assert `/api/health` reports local in-process mode; assert each route executes without an external backend configured)
+- [x] TFP-031 — close the regression gap left by proxy removal (assert `/api/health` reports local in-process mode; assert each route executes without an external backend configured)
 - [x] TFP-030 — this document
 - [x] TFP-032 — `docs/decisions/saas-prerequisites.md`
 

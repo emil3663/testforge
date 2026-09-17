@@ -8,6 +8,7 @@ export async function GET() {
         status: "ok",
         service: "testforge-next",
         environment: process.env.TESTFORGE_ENV ?? process.env.NODE_ENV ?? "development",
+        mode: "local-in-process",
         siteUrl: getSiteUrl(),
         timestamp: new Date().toISOString(),
     });

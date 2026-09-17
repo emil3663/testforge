@@ -55,6 +55,7 @@ test.describe("TestForge regression coverage", () => {
             status: string;
             service: string;
             environment: string;
+            mode: string;
             siteUrl: string;
             timestamp: string;
         };
@@ -62,6 +63,9 @@ test.describe("TestForge regression coverage", () => {
         expect(payload.status).toBe("ok");
         expect(payload.service).toBe("testforge-next");
         expect(typeof payload.environment).toBe("string");
+        // TFP-031: after TFP-010/011 removed the FastAPI proxy layer, every
+        // route always runs in-process - there is no other mode to report.
+        expect(payload.mode).toBe("local-in-process");
         expect(payload.siteUrl).toContain("http");
         expect(payload.timestamp).toContain("T");
         expect(response.headers()["x-frame-options"]).toBe("DENY");
@@ -69,6 +73,83 @@ test.describe("TestForge regression coverage", () => {
         expect(response.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
         expect(response.headers()["permissions-policy"]).toContain("camera=()");
         expect(response.headers()["content-security-policy"]).toContain("default-src 'self'");
+    });
+
+    test("executes generate, run, crawl, introspect, and save-suite without an external backend configured", async ({ request }) => {
+        // TFP-031: TFP-010/011 deleted the FastAPI proxy layer and its
+        // TESTFORGE_BACKEND_BASE_URL toggle entirely - every route now has a
+        // single in-process code path, with nothing external to fall back to
+        // or proxy through. This asserts that directly against each of the
+        // five routes the proxy removal touched, rather than relying on the
+        // UI-flow tests elsewhere in this file to prove it only incidentally.
+        // No environment variable beyond .env.development is set for this run.
+
+        const crawlResponse = await request.post("/api/crawl", {
+            data: { baseUrl: localAppUrl },
+        });
+        expect(crawlResponse.status()).toBe(202);
+        const crawlJob = (await crawlResponse.json()) as { crawlId: string };
+        expect(crawlJob.crawlId).toBeTruthy();
+
+        await expect
+            .poll(
+                async () => {
+                    const response = await request.get(`/api/crawl?crawlId=${crawlJob.crawlId}`);
+                    return ((await response.json()) as { crawlStatus: string }).crawlStatus;
+                },
+                { timeout: 30_000 }
+            )
+            .toBe("completed");
+
+        const introspectResponse = await request.post("/api/introspect", {
+            data: { baseUrl: localAppUrl, paths: ["/"] },
+        });
+        expect(introspectResponse.ok()).toBeTruthy();
+        const introspectPayload = (await introspectResponse.json()) as { pages: unknown[] };
+        expect(introspectPayload.pages.length).toBeGreaterThan(0);
+
+        const generateResponse = await request.post("/api/generate", {
+            data: {
+                baseUrl: localAppUrl,
+                description: "Create a functional smoke test for the TestForge landing page.",
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+            },
+        });
+        expect(generateResponse.ok()).toBeTruthy();
+        const generatePayload = (await generateResponse.json()) as { code: string };
+        expect(generatePayload.code).toContain("import { test, expect } from '@playwright/test';");
+
+        const runResponse = await request.post("/api/run", {
+            data: {
+                code: "import { test, expect } from '@playwright/test';\ntest.describe('TFP-031 probe', () => {\n  test('trivial pass', async () => {\n    expect(true).toBe(true);\n  });\n});\n",
+                selectedPractices: ["functional"],
+                auditMode: "fast",
+            },
+        });
+        expect(runResponse.status()).toBe(202);
+        const runJob = (await runResponse.json()) as { runId: string };
+        expect(runJob.runId).toBeTruthy();
+
+        await expect
+            .poll(
+                async () => {
+                    const response = await request.get(`/api/run?runId=${runJob.runId}`);
+                    return ((await response.json()) as { runStatus: string }).runStatus;
+                },
+                { timeout: 60_000 }
+            )
+            .toBe("passed");
+
+        const saveSuiteResponse = await request.post("/api/save-suite", {
+            data: {
+                code: generatePayload.code,
+                description: "TFP-031 no-external-backend probe",
+            },
+        });
+        expect(saveSuiteResponse.ok()).toBeTruthy();
+        const saveSuitePayload = (await saveSuiteResponse.json()) as { fileName: string };
+        expect(saveSuitePayload.fileName).toMatch(/\.spec\.ts$/);
     });
 
     test("formats defect backlog and usability findings in plain language", async ({ request }) => {
