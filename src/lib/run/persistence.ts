@@ -32,6 +32,18 @@ export const RUNS_ROOT = process.env.TESTFORGE_RUNS_ROOT
     ? resolve(process.env.TESTFORGE_RUNS_ROOT)
     : join(process.cwd(), "runs");
 
+const RUN_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Real run IDs are crypto.randomUUID() output. Every path built from a
+ * runId (runDir, runJsonPath, runEvidenceDir, ...) uses path.join, which
+ * resolves ".." segments - so an unvalidated runId is a path-traversal
+ * surface. Call this before a runId reaches any of those.
+ */
+export function isValidRunId(runId: unknown): runId is string {
+    return typeof runId === "string" && RUN_ID_PATTERN.test(runId);
+}
+
 export function runDir(runId: string) {
     return join(RUNS_ROOT, runId);
 }

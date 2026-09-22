@@ -5,7 +5,7 @@ import { startRunJob } from "@/lib/run/executor";
 import type { TestAuditMode } from "@/lib/run/executor";
 import { buildRunSnapshot, runJobs } from "@/lib/run/jobs";
 import type { RunStatusPayload } from "@/lib/run/jobs";
-import { loadRunRecord, markRunAccessed, runEvidenceDir } from "@/lib/run/persistence";
+import { isValidRunId, loadRunRecord, markRunAccessed, runEvidenceDir } from "@/lib/run/persistence";
 import { buildRunSelection } from "@/lib/run/selection";
 
 export const runtime = "nodejs";
@@ -61,6 +61,10 @@ export async function GET(req: NextRequest) {
 
     if (!runId) {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });
+    }
+
+    if (!isValidRunId(runId)) {
+        return NextResponse.json({ error: "runId must be a valid UUID" }, { status: 400 });
     }
 
     const job = runJobs.get(runId);
@@ -134,6 +138,10 @@ export async function DELETE(req: NextRequest) {
 
     if (!runId || typeof runId !== "string") {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });
+    }
+
+    if (!isValidRunId(runId)) {
+        return NextResponse.json({ error: "runId must be a valid UUID" }, { status: 400 });
     }
 
     const job = runJobs.get(runId);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { archiveRun, listRunRecords, setRunPinned, sweepAutomaticArchiving } from "@/lib/run/persistence";
+import { archiveRun, isValidRunId, listRunRecords, setRunPinned, sweepAutomaticArchiving } from "@/lib/run/persistence";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +14,10 @@ export async function PATCH(req: NextRequest) {
 
     if (!runId || typeof runId !== "string") {
         return NextResponse.json({ error: "runId is required" }, { status: 400 });
+    }
+
+    if (!isValidRunId(runId)) {
+        return NextResponse.json({ error: "runId must be a valid UUID" }, { status: 400 });
     }
 
     if (archive === true) {

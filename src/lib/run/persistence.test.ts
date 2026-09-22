@@ -26,6 +26,7 @@ process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
 
 const {
     archiveRun,
+    isValidRunId,
     listRunRecords,
     loadRunRecord,
     markRunAccessed,
@@ -294,4 +295,33 @@ test("listRunRecords includes persisted runs", async () => {
 
     const records = await listRunRecords();
     assert.ok(records.some((record) => record.runId === job.id));
+});
+
+test("isValidRunId: accepts real randomUUID() output, in either case", () => {
+    assert.equal(isValidRunId(randomUUID()), true);
+    assert.equal(isValidRunId(randomUUID().toUpperCase()), true);
+});
+
+test("isValidRunId: rejects path-traversal-shaped and otherwise malformed input (TFP-066)", () => {
+    const rejected = [
+        "../../etc/evil",
+        "..\\..\\evil",
+        "/etc/passwd",
+        "C:\\Windows\\System32",
+        "valid-looking-but-not-a-uuid",
+        `${randomUUID()}/../../evil`,
+        `${randomUUID()}\u0000.txt`,
+        "",
+        "   ",
+    ];
+
+    for (const candidate of rejected) {
+        assert.equal(isValidRunId(candidate), false, `expected rejection for ${JSON.stringify(candidate)}`);
+    }
+
+    // Non-string input can reach this from an untyped query param / JSON body.
+    assert.equal(isValidRunId(null), false);
+    assert.equal(isValidRunId(undefined), false);
+    assert.equal(isValidRunId(12345), false);
+    assert.equal(isValidRunId(["../../evil"]), false);
 });
