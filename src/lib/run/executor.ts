@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import { join, relative } from "path";
+import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
@@ -77,7 +78,8 @@ export async function startRunJob(
     baseUrl?: string,
     excludedTestTitles: string[] = [],
     includedTestTitles: string[] = [],
-    description = ""
+    description = "",
+    contentProfile: ContentProfile | null = null
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -133,6 +135,7 @@ export async function startRunJob(
         description,
         auditMode,
         selectedPractices,
+        contentProfile,
         artifactFiles: new Map(),
         result: null,
     };

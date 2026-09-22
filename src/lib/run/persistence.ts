@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
 import { dirname, join, resolve } from "path";
+import type { ContentProfile } from "@/lib/generate/mock/types";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
 
 export type RunRetention = "full" | "archived";
@@ -23,6 +24,12 @@ export interface RunRecord {
     lastAccessedAt: string | null;
     result: RunResultPayload;
     artifactFiles: Record<string, PersistedArtifactFile>;
+    // Phase 17 Group 4 (TFP-073): the crawl/introspect snapshot this run
+    // used, persisted so two runs can be diffed for newly discovered/missing
+    // elements without needing the in-memory job. Null for runs that had
+    // none (e.g. persisted before this field existed, or started without
+    // generation).
+    contentProfile: ContentProfile | null;
 }
 
 // Overridable so tests never read or write the real runs/ directory a live
@@ -125,6 +132,7 @@ export async function persistRunJob(
         lastAccessedAt: null,
         result: job.result,
         artifactFiles: persistedArtifacts,
+        contentProfile: job.contentProfile,
     };
 
     await writeRunRecord(record);

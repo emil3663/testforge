@@ -189,6 +189,7 @@ export default function Home() {
         auditMode: generation.lastGeneratedAuditMode,
         baseUrl: generation.lastGeneratedBaseUrl,
         description: (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices),
+        contentProfile: generation.contentProfile,
     };
     const boundHandleRun = () => run.handleRun(runParams);
     const boundHandleContinueRun = () => run.handleContinueRun(runParams);

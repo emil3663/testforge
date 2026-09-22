@@ -3,7 +3,7 @@ import { buildReportHtmlDocument, buildResultHtmlDocument } from "@/lib/report/h
 import type { ExecutionStatus, RunReport } from "@/lib/report/types";
 import { BASE_REPORT_TABS } from "@/app/_lib/constants";
 import { getContinuationExcludedTitles } from "@/app/_lib/derive";
-import type { ReportTab, RunLifecycleStatus, RunProgressSnapshot, RunResult, RunStatusSnapshot, Step, TestAuditMode } from "@/app/_lib/types";
+import type { ContentProfile, ReportTab, RunLifecycleStatus, RunProgressSnapshot, RunResult, RunStatusSnapshot, Step, TestAuditMode } from "@/app/_lib/types";
 
 interface StartRunParams {
     code: string;
@@ -13,6 +13,7 @@ interface StartRunParams {
     description?: string;
     excludeTestTitles?: string[];
     includeTestTitles?: string[];
+    contentProfile?: ContentProfile | null;
 }
 
 export function useRun(
@@ -154,7 +155,7 @@ export function useRun(
         window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     }, [openReportInNewPage, result]);
 
-    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [] }: StartRunParams) {
+    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null }: StartRunParams) {
         if (selectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -193,6 +194,7 @@ export function useRun(
                     description,
                     excludeTestTitles,
                     includeTestTitles,
+                    contentProfile,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };

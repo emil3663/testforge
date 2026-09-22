@@ -128,6 +128,25 @@ export function buildDragDropLocatorExpression(target: DragDropTargetDetail) {
     return `page.locator('${target.tagName}').first()`;
 }
 
+// TFP-067 (Phase 17 Group 2): the exact title text a generated test for
+// this element gets, unescaped. Playwright's JSON reporter reports the
+// runtime (decoded) test title, not the JS-source-escaped form, so
+// coverage matching against ExecutionRecord.title must use this raw
+// builder - callers embedding it into generated source apply
+// escapeForSingleQuotedString to the whole result, which is equivalent to
+// the old per-field escaping since every literal separator here is
+// quote/backslash-free.
+export function buildActionableElementTitle(element: ActionableElementDetail) {
+    const elementName = getActionableElementDisplayName(element);
+    const containerSuffix = element.containerLabel ? ` [${element.containerLabel}]` : "";
+    return `${buildInteractionPrefix(element.category)}: ${elementName}${containerSuffix} [${element.elementType}]`;
+}
+
+// Same rationale as buildActionableElementTitle, for buildAccessibilityElementTests' title shape.
+export function buildAccessibilityElementTitle(element: ActionableElementDetail) {
+    return `accessible name and role: ${getActionableElementDisplayName(element)} [${element.elementType}]`;
+}
+
 export function buildInteractionPrefix(category: InteractionCategory) {
     if (category === "navigation") {
         return "navigation element check";

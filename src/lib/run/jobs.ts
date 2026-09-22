@@ -1,5 +1,6 @@
 import type { ChildProcess } from "child_process";
 import { readFile, unlink } from "fs/promises";
+import type { ContentProfile } from "@/lib/generate/mock/types";
 import { flattenSuites } from "@/lib/report/execution";
 import { buildReport } from "@/lib/report/report";
 import type { JsonReport, RunReport } from "@/lib/report/types";
@@ -78,6 +79,11 @@ export interface RunJob {
     description: string;
     auditMode: string;
     selectedPractices: string[];
+    // Phase 17 Group 2 (TFP-071): the crawl/introspect snapshot the client
+    // already has from generation, threaded through so finalizeRunJob can
+    // compute honest coverage against the discovered surface. Null for
+    // runs started without one (e.g. a client that skipped generation).
+    contentProfile: ContentProfile | null;
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
 }
@@ -139,7 +145,8 @@ export async function finalizeRunJob(job: RunJob) {
             parsedReport,
             job.selectedPractices,
             output || buildConsoleSummary(executionRecords, duration),
-            job.baseUrl
+            job.baseUrl,
+            job.contentProfile
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;

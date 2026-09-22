@@ -3,6 +3,7 @@ import { readFile } from "fs/promises";
 import { resolve } from "path";
 import { startRunJob } from "@/lib/run/executor";
 import type { TestAuditMode } from "@/lib/run/executor";
+import { normalizeContentProfile } from "@/lib/generate/normalize";
 import { buildRunSnapshot, runJobs } from "@/lib/run/jobs";
 import type { RunStatusPayload } from "@/lib/run/jobs";
 import { isValidRunId, loadRunRecord, markRunAccessed, runEvidenceDir } from "@/lib/run/persistence";
@@ -24,7 +25,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description } = await req.json();
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile } = await req.json();
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -50,7 +51,8 @@ export async function POST(req: NextRequest) {
         typeof baseUrl === "string" ? baseUrl : undefined,
         normalizedExcludedTitles,
         normalizedIncludedTitles,
-        typeof description === "string" ? description : ""
+        typeof description === "string" ? description : "",
+        normalizeContentProfile(contentProfile)
     );
     return NextResponse.json(job, { status: 202 });
 }

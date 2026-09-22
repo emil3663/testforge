@@ -1,6 +1,7 @@
 import { escapeForSingleQuotedString } from "./format";
 import {
-    buildInteractionPrefix,
+    buildAccessibilityElementTitle,
+    buildActionableElementTitle,
     buildLocatorExpression,
     buildResponseHints,
     findMatchingProfilePage,
@@ -54,12 +55,7 @@ export function buildActionableElementTests(
     }
 
     return actionableElements.map((element: ActionableElementDetail) => {
-        const elementName = getActionableElementDisplayName(element);
-        const label = escapeForSingleQuotedString(elementName);
-        const containerSuffix = element.containerLabel
-            ? ` [${escapeForSingleQuotedString(element.containerLabel)}]`
-            : "";
-        const title = `${buildInteractionPrefix(element.category)}: ${label}${containerSuffix} [${element.elementType}]`;
+        const title = escapeForSingleQuotedString(buildActionableElementTitle(element));
 
         if (element.category === "api" && element.url) {
             const url = escapeForSingleQuotedString(element.url);
@@ -300,6 +296,7 @@ export function buildAccessibilityElementTests(
 
     return elements.map((element) => {
         const name = escapeForSingleQuotedString(getActionableElementDisplayName(element));
+        const title = escapeForSingleQuotedString(buildAccessibilityElementTitle(element));
         const locatorExpression = buildLocatorExpression(element);
 
         // Elements hidden at introspection time are excluded from the
@@ -308,7 +305,7 @@ export function buildAccessibilityElementTests(
         // TFP-054 fixed for the functional suite. Assert only that they
         // exist, not that they carry a name or role right now.
         if (!element.isVisible) {
-            return `  test('accessible name and role: ${name} [${element.elementType}]', async ({ page }) => {
+            return `  test('${title}', async ({ page }) => {
     await page.goto('${escapedPath}');
     await page.waitForLoadState('domcontentloaded');
 
@@ -318,7 +315,7 @@ ${hiddenAtIntrospectionComment}
   });`;
         }
 
-        return `  test('accessible name and role: ${name} [${element.elementType}]', async ({ page }) => {
+        return `  test('${title}', async ({ page }) => {
     await page.goto('${escapedPath}');
     await page.waitForLoadState('domcontentloaded');
 

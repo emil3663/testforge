@@ -115,6 +115,31 @@ export interface CoverageMatrixItem {
     requirement: string;
     status: "covered" | "partial" | "uncovered";
     tests: string[];
+    // Phase 17 Group 2 (TFP-071): present only for practice areas matched
+    // against the discovered element surface (functional, accessibility) -
+    // names the specific discovered elements with no matching executed
+    // test, not just this row's area label.
+    uncoveredElements?: string[];
+    // Phase 17 Group 4 (TFP-073): a numeric per-area figure to diff between
+    // two runs - covered-element ratio for discovered-surface areas,
+    // passing-test ratio for the rest (0 when the area has no tests at all,
+    // matching "uncovered").
+    percentage: number;
+}
+
+// Phase 17 Group 3 (TFP-072): every discovered element with no matching
+// executed test is bucketed into exactly one of these - "generator-gap" is
+// the honest one and must not silently absorb the other two.
+export type NotTestedReason = "not-selected" | "excluded-by-generator" | "generator-gap";
+
+export interface NotTestedElement {
+    area: "functional" | "accessibility";
+    path: string;
+    elementName: string;
+    elementType: string;
+    containerLabel: string;
+    reason: NotTestedReason;
+    reasonDetail: string;
 }
 
 export interface SeoCheckRecord {
@@ -187,6 +212,11 @@ export interface RunReport {
         uncovered: string[];
         matrix: CoverageMatrixItem[];
     };
+    // Phase 17 Group 3 (TFP-072): persisted as part of the report itself,
+    // not computed only in the UI, so a stored run's report is complete on
+    // its own. Empty when no contentProfile was available for this run
+    // (e.g. runs persisted before this field existed).
+    notTested: NotTestedElement[];
     performance: {
         totalDuration: number;
         averageDuration: number;
