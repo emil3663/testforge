@@ -122,9 +122,14 @@ export async function finalizeRunJob(job: RunJob) {
     job.progress.totalTests = Math.max(job.progress.totalTests, job.progress.completedTests, estimateTestCount(await readFile(job.testFile, "utf8").catch(() => "")));
 
     const reportText = await readFile(job.jsonReportFile, "utf8").catch(() => "");
-    const parsedReport: JsonReport | null = reportText
-        ? (JSON.parse(reportText) as JsonReport)
-        : null;
+    let parsedReport: JsonReport | null = null;
+    if (reportText) {
+        try {
+            parsedReport = JSON.parse(reportText) as JsonReport;
+        } catch {
+            job.outputChunks.push("Warning: Playwright JSON report was corrupted and could not be parsed.\n");
+        }
+    }
     const output = job.outputChunks.join("").trim();
     const duration = job.finishedAt - job.createdAt;
 
