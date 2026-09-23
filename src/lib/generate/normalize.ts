@@ -104,6 +104,7 @@ export function normalizeContentRules(input: unknown): ContentRules {
             requiredHeadings: [],
             requiredText: [],
             forbiddenText: [],
+            selectedJourneyIds: [],
         };
     }
 
@@ -113,6 +114,11 @@ export function normalizeContentRules(input: unknown): ContentRules {
         requiredHeadings: normalizeStringList(rules.requiredHeadings),
         requiredText: normalizeStringList(rules.requiredText),
         forbiddenText: normalizeStringList(rules.forbiddenText),
+        // Ids are matched exactly against ContentProfile.journeys, so unlike
+        // the text lists above they are not whitespace-collapsed.
+        selectedJourneyIds: Array.isArray(rules.selectedJourneyIds)
+            ? [...new Set(rules.selectedJourneyIds.filter((id): id is string => typeof id === "string" && id.length > 0))]
+            : [],
     };
 }
 

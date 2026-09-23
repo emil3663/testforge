@@ -156,6 +156,14 @@ export function normalizeNamedFlows(input: unknown): NamedFlow[] {
     });
 }
 
+// TFP-090/091: the journeys the user selected, in rank order. An id that no
+// longer names a candidate (the profile was re-introspected and the graph
+// changed) is dropped, never guessed at; an empty selection selects nothing.
+export function selectJourneys(journeys: CandidateJourney[], selectedIds: string[]) {
+    const selected = new Set(selectedIds);
+    return journeys.filter((journey) => selected.has(journey.id));
+}
+
 // TFP-089. Automatic candidates: every path through the graph ending in a
 // form-submit action. Named candidates: one per config-named flow, resolved
 // per Decision 4 and its amendment. A named flow outranks an automatic one

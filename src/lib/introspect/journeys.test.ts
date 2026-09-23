@@ -13,8 +13,8 @@
  */
 import assert from "node:assert";
 import { test } from "node:test";
-import { identifyJourneys, MAX_JOURNEY_HOPS, MAX_JOURNEYS, normalizeNamedFlows } from "./journeys.ts";
-import { normalizeContentProfile } from "../generate/normalize.ts";
+import { identifyJourneys, MAX_JOURNEY_HOPS, MAX_JOURNEYS, normalizeNamedFlows, selectJourneys } from "./journeys.ts";
+import { normalizeContentProfile, normalizeContentRules } from "../generate/normalize.ts";
 import type { SiteGraph, SiteGraphEdge, SiteGraphEdgeKind } from "./types";
 
 function graph(...edges: [string, string, SiteGraphEdgeKind][]): SiteGraph {
@@ -189,4 +189,21 @@ test("journeys survive normalizeContentProfile; a journey whose steps don't matc
     const profile = normalizeContentProfile({ scannedAt: "", baseUrl: "http://site.test", pages: [], siteGraph: g, journeys: [...journeys, forged] });
 
     assert.deepStrictEqual(profile?.journeys, journeys);
+});
+
+// TFP-090: the selection carried in run config.
+test("selectJourneys returns exactly the selected journeys in rank order, drops unknown ids, and empty selects nothing", () => {
+    const { journeys } = identifyJourneys(chain(3));
+    const [first, , third] = journeys;
+
+    assert.deepStrictEqual(selectJourneys(journeys, [third.id, first.id, "gone"]).map((journey) => journey.id), [first.id, third.id]);
+    assert.deepStrictEqual(selectJourneys(journeys, []), []);
+});
+
+test("normalizeContentRules carries selectedJourneyIds exactly, defaulting to none", () => {
+    const id = "named|two  spaces|/a > /b";
+
+    assert.deepStrictEqual(normalizeContentRules({ paths: ["/"], selectedJourneyIds: [id, id, "", 7, "automatic||/x > /y"] }).selectedJourneyIds, [id, "automatic||/x > /y"]);
+    assert.deepStrictEqual(normalizeContentRules({ paths: ["/"] }).selectedJourneyIds, []);
+    assert.deepStrictEqual(normalizeContentRules(undefined).selectedJourneyIds, []);
 });

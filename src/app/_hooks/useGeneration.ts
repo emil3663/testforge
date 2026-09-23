@@ -12,6 +12,10 @@ interface HandleGenerateParams {
     requiredHeadingsInput: string;
     requiredTextInput: string;
     forbiddenTextInput: string;
+    // TFP-090: journey ids the user selected on the review screen. Pruned
+    // against the profile actually used before being sent, so a stale id
+    // from an earlier scan never reaches run config.
+    selectedJourneyIds: string[];
     crawlResult: CrawlResult | null;
     selectedCrawledPaths: string[];
     setCrawlError: (message: string) => void;
@@ -42,6 +46,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
     const [lastGeneratedInspectionTargets, setLastGeneratedInspectionTargets] = useState<BusyInspectionTarget[]>([]);
     const [lastGeneratedAuditMode, setLastGeneratedAuditMode] = useState<TestAuditMode>(defaultTestAuditMode);
     const [lastGeneratedPracticeSignature, setLastGeneratedPracticeSignature] = useState("[]");
+    const [lastGeneratedJourneySignature, setLastGeneratedJourneySignature] = useState("[]");
     const [isGeneratedCollapsed, setIsGeneratedCollapsed] = useState(false);
     const codeRef = useRef<HTMLTextAreaElement>(null);
 
@@ -92,7 +97,10 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
         }
     }
 
-    async function handleGenerate(params: HandleGenerateParams) {
+    // reuseProfile: "Generate selected" (TFP-090) regenerates from the scan
+    // already on screen instead of re-inspecting the site, so the journeys
+    // the user reviewed are exactly the ones the selection ids refer to.
+    async function handleGenerate(params: HandleGenerateParams, reuseProfile: ContentProfile | null = null) {
         const normalizedBaseUrl = normalizeBaseUrl(params.baseUrl);
         if (!normalizedBaseUrl.ok) {
             params.setError(normalizedBaseUrl.message);
@@ -115,7 +123,9 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
         params.setActiveTab("summary");
         params.setStatusFilter("All");
         params.setSelectedFailedRerunTitles([]);
-        setContentProfile(null);
+        if (!reuseProfile) {
+            setContentProfile(null);
+        }
         params.setIsBusyTargetListExpanded(false);
         setIsGeneratedCollapsed(false);
         params.setIsReportCollapsed(false);
@@ -139,20 +149,29 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
         };
 
         try {
-            const introspectionResponse = await fetch("/api/introspect", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    baseUrl: normalizedBaseUrl.value,
-                    paths: contentRules.paths,
-                }),
-            });
-            const introspectionData = await introspectionResponse.json();
-            if (!introspectionResponse.ok) {
-                throw new Error(introspectionData.error ?? "Page inspection failed");
+            let introspectionData: ContentProfile;
+            if (reuseProfile) {
+                introspectionData = reuseProfile;
+            } else {
+                const introspectionResponse = await fetch("/api/introspect", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        baseUrl: normalizedBaseUrl.value,
+                        paths: contentRules.paths,
+                    }),
+                });
+                introspectionData = await introspectionResponse.json();
+                if (!introspectionResponse.ok) {
+                    throw new Error((introspectionData as unknown as { error?: string }).error ?? "Page inspection failed");
+                }
             }
 
+            const candidateIds = new Set((introspectionData.journeys ?? []).map((journey) => journey.id));
+            const selectedJourneyIds = params.selectedJourneyIds.filter((id) => candidateIds.has(id));
+
             setContentProfile(introspectionData);
+            setLastGeneratedJourneySignature(JSON.stringify([...selectedJourneyIds].sort()));
             setLastGeneratedContentSignature(JSON.stringify({ contentRules, auditMode: params.auditMode }));
             setLastGeneratedBaseUrl(normalizedBaseUrl.value);
             setLastGeneratedInspectionPaths(contentRules.paths);
@@ -175,7 +194,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
                     description: effectiveDescription,
                     selectedPractices: params.effectiveSelectedPractices,
                     auditMode: params.auditMode,
-                    contentRules,
+                    contentRules: { ...contentRules, selectedJourneyIds },
                     contentProfile: introspectionData,
                 }),
             });
@@ -220,6 +239,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
         setLastGeneratedAuditMode,
         lastGeneratedPracticeSignature,
         setLastGeneratedPracticeSignature,
+        lastGeneratedJourneySignature,
         isGeneratedCollapsed,
         setIsGeneratedCollapsed,
         codeRef,

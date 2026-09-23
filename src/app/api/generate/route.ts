@@ -9,6 +9,7 @@ import {
     normalizeTestAuditMode,
 } from "@/lib/generate/normalize";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
+import { selectJourneys } from "@/lib/introspect/journeys";
 
 export async function POST(req: NextRequest) {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json().catch(() => ({}));
@@ -31,6 +32,10 @@ export async function POST(req: NextRequest) {
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
     const normalizedContentProfile = normalizeContentProfile(contentProfile);
     const normalizedContentRules = normalizeContentRules(contentRules);
+    normalizedContentRules.selectedJourneyIds = selectJourneys(
+        normalizedContentProfile?.journeys ?? [],
+        normalizedContentRules.selectedJourneyIds
+    ).map((journey) => journey.id);
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
     const apiKey = process.env.OPENAI_API_KEY;
 

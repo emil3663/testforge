@@ -5,6 +5,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, getSiteUrl } from "@/lib/seo
 import { CreationSection } from "@/app/_components/CreationSection";
 import { GeneratedSuiteSection } from "@/app/_components/GeneratedSuiteSection";
 import { HelpPanel } from "@/app/_components/HelpPanel";
+import { JourneyReviewSection } from "@/app/_components/JourneyReviewSection";
 import { ReportSection } from "@/app/_components/ReportSection";
 import { RunProgressOverlay } from "@/app/_components/RunProgressOverlay";
 import { useCrawl } from "@/app/_hooks/useCrawl";
@@ -56,6 +57,8 @@ export default function Home() {
     const [isCreationCollapsed, setIsCreationCollapsed] = useState(false);
     const [isContentRulesCollapsed, setIsContentRulesCollapsed] = useState(true);
     const [isHelpPanelOpen, setIsHelpPanelOpen] = useState(false);
+    const [selectedJourneyIds, setSelectedJourneyIds] = useState<string[]>([]);
+    const [isJourneysCollapsed, setIsJourneysCollapsed] = useState(false);
 
     const crawl = useCrawl(baseUrl);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
@@ -86,8 +89,14 @@ export default function Home() {
         }
     }
 
-    function handleGenerate() {
-        void generation.handleGenerate({
+    function toggleJourney(journeyId: string) {
+        setSelectedJourneyIds((current) =>
+            current.includes(journeyId) ? current.filter((id) => id !== journeyId) : [...current, journeyId]
+        );
+    }
+
+    function buildGenerateParams() {
+        return {
             baseUrl,
             effectiveSelectedPractices,
             isDescriptionPlaceholderActive,
@@ -97,6 +106,7 @@ export default function Home() {
             requiredHeadingsInput,
             requiredTextInput,
             forbiddenTextInput,
+            selectedJourneyIds: effectiveSelectedJourneyIds,
             crawlResult: crawl.crawlResult,
             selectedCrawledPaths: crawl.selectedCrawledPaths,
             setCrawlError: crawl.setCrawlError,
@@ -112,9 +122,23 @@ export default function Home() {
             setSelectedFailedRerunTitles: run.setSelectedFailedRerunTitles,
             setIsBusyTargetListExpanded: run.setIsBusyTargetListExpanded,
             setIsReportCollapsed: run.setIsReportCollapsed,
-        });
+        };
     }
 
+    function handleGenerate() {
+        void generation.handleGenerate(buildGenerateParams());
+    }
+
+    // TFP-090: writes the reviewed selection into run config by regenerating
+    // from the scan on screen (no re-inspection, so the ids still match).
+    function handleGenerateSelectedJourneys() {
+        void generation.handleGenerate(buildGenerateParams(), generation.contentProfile);
+    }
+
+    const candidateJourneys = generation.contentProfile?.journeys ?? [];
+    const candidateJourneyIds = new Set(candidateJourneys.map((journey) => journey.id));
+    // A selection only counts for journeys the current scan still offers.
+    const effectiveSelectedJourneyIds = selectedJourneyIds.filter((id) => candidateJourneyIds.has(id));
     const isGenerating = step === "generating";
     const isRunning = step === "running";
     const hasCode = step === "ready" || step === "done";
@@ -149,11 +173,15 @@ export default function Home() {
             generation.lastGeneratedContentSignature === JSON.stringify({ contentRules, auditMode }) &&
             hasCode);
     const isPracticeSelectionReady = generation.lastGeneratedPracticeSignature === selectedPracticeSignature;
+    const isJourneySelectionReady =
+        generation.lastGeneratedJourneySignature === JSON.stringify([...effectiveSelectedJourneyIds].sort());
     const runBlockedMessage = !isContentAwareReady
         ? "Generate the suite again after completing the content-aware inputs before running it."
         : !isPracticeSelectionReady
             ? "Generate the suite again after changing the selected best-practice areas before running it."
-            : "";
+            : !isJourneySelectionReady
+                ? "Generate the suite again after changing the selected journeys before running it."
+                : "";
     const showBusyOverlay = isGenerating || isRunning;
     const normalizedBusyTarget = normalizeBaseUrl(baseUrl);
     const busyTarget = normalizedBusyTarget.ok
@@ -318,6 +346,19 @@ export default function Home() {
                     setForbiddenTextInput={setForbiddenTextInput}
                 />
 
+                {generation.contentProfile && (
+                    <JourneyReviewSection
+                        journeys={candidateJourneys}
+                        selectedJourneyIds={effectiveSelectedJourneyIds}
+                        toggleJourney={toggleJourney}
+                        clearJourneySelection={() => setSelectedJourneyIds([])}
+                        handleGenerateSelected={handleGenerateSelectedJourneys}
+                        isBusy={isGenerating || isRunning}
+                        isCollapsed={isJourneysCollapsed}
+                        setIsCollapsed={setIsJourneysCollapsed}
+                    />
+                )}
+
                 <GeneratedSuiteSection
                     {...generation}
                     handleSaveToExplorer={boundHandleSaveToExplorer}
@@ -328,7 +369,7 @@ export default function Home() {
                     hasCode={hasCode}
                     isRunning={isRunning}
                     isContentAwareReady={isContentAwareReady}
-                    isPracticeSelectionReady={isPracticeSelectionReady}
+                    isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady}
                     canGenerateOrRun={canGenerateOrRun}
                     isGenerating={isGenerating}
                     runBlockedMessage={runBlockedMessage}
@@ -357,7 +398,7 @@ export default function Home() {
                         canGenerateOrRun={canGenerateOrRun}
                         hasCode={hasCode}
                         isContentAwareReady={isContentAwareReady}
-                        isPracticeSelectionReady={isPracticeSelectionReady}
+                        isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady}
                     />
                 )}
             </main>

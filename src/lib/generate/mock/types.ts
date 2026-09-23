@@ -86,6 +86,10 @@ export interface ContentRules {
     requiredHeadings: string[];
     requiredText: string[];
     forbiddenText: string[];
+    // TFP-090: ids of the candidate journeys (ContentProfile.journeys) the
+    // user chose on the review screen, for TFP-091 to generate tests from.
+    // Empty means no journey tests - never "all candidates".
+    selectedJourneyIds: string[];
 }
 
 export interface ContentProfilePage {

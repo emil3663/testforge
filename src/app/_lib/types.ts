@@ -1,3 +1,4 @@
+import type { CandidateJourney } from "@/lib/introspect/types";
 import type { RunReport } from "@/lib/report/types";
 import type { BEST_PRACTICE_OPTIONS } from "@/app/_lib/constants";
 
@@ -136,6 +137,8 @@ export interface ContentProfile {
     baseUrl: string;
     pages: ContentProfilePage[];
     warnings?: string[];
+    // TFP-089: ranked candidate journeys, reviewed on the journey screen.
+    journeys?: CandidateJourney[];
 }
 
 export interface CrawledPage {
