@@ -6,8 +6,9 @@ import {
     findMatchingProfilePage,
 } from "@/lib/generate/mock/locators";
 import { buildDependencyFailureTitle, isRoutableDependencyKind } from "@/lib/generate/mock/dependency-failure-injection";
+import { buildJourneyTitle } from "@/lib/generate/mock/journey-tests";
 import { buildStorageFailureTitle, STORAGE_KINDS } from "@/lib/generate/mock/storage-failure-injection";
-import type { ActionableElementDetail, ContentProfile, ContentProfilePage, DependencyMapEntry, StorageKind } from "@/lib/generate/mock/types";
+import type { ActionableElementDetail, CandidateJourney, ContentProfile, ContentProfilePage, DependencyMapEntry, StorageKind } from "@/lib/generate/mock/types";
 import { AREA_LABELS } from "./execution";
 import { inferCoverageAreas } from "./coverage";
 import type { CoverageMatrixItem, ExecutionRecord, NotTestedElement } from "./types";
@@ -34,6 +35,17 @@ export interface DiscoveredElementMatch {
     tested: boolean;
 }
 
+// Generated test titles carry a "TFxx-000: " id prefix (mock/index.ts's
+// renderSuites), and Playwright reports them with it; every title builder
+// this file matches against returns the title without it. Matching without
+// stripping made every real run report every element as untested (found
+// while building TFP-091: the unit tests used bare titles, so they never
+// exercised the prefixed form a real run produces).
+const TEST_ID_PREFIX = /^TF[A-Z]{2}-\d{3}:\s*/;
+export function stripTestIdPrefix(title: string) {
+    return title.replace(TEST_ID_PREFIX, "");
+}
+
 // A test only counts as having actually run its element's check if it
 // reached a real terminal outcome - "Blocked" (Playwright's own
 // skipped/interrupted status) means the check never actually executed,
@@ -42,7 +54,7 @@ function executedTitleSet(records: ExecutionRecord[]) {
     const titles = new Set<string>();
     for (const record of records) {
         if (record.status !== "Blocked") {
-            titles.add(record.title);
+            titles.add(stripTestIdPrefix(record.title));
         }
     }
     return titles;
@@ -118,6 +130,25 @@ function notTestedStorageEntry(
     };
 }
 
+// TFP-091: a journey is a functional-area discovered "element" - one
+// (candidate journey), not one DOM element - reported through the same
+// NotTestedElement shape.
+function notTestedJourneyEntry(
+    journey: CandidateJourney,
+    reason: NotTestedElement["reason"],
+    reasonDetail: string
+): NotTestedElement {
+    return {
+        area: "functional",
+        path: journey.path[0] ?? "/",
+        elementName: buildJourneyTitle(journey),
+        elementType: "journey",
+        containerLabel: journey.label ?? "",
+        reason,
+        reasonDetail,
+    };
+}
+
 /**
  * Phase 17 Groups 2+3 (TFP-071/072): for the practice areas whose generated
  * tests correspond 1:1 to a discovered element (functional, accessibility -
@@ -132,7 +163,11 @@ export function computeDiscoveredElementCoverage(
     selectedPractices: string[],
     contentProfile: ContentProfile | null,
     records: ExecutionRecord[],
-    baseUrl: string
+    baseUrl: string,
+    // TFP-091: the titles declared in the suite that actually ran. A journey
+    // is "selected" exactly when it was generated into that suite; null
+    // (suite source unavailable) falls back to "has an execution record".
+    declaredTestTitles: string[] | null = null
 ): { matches: DiscoveredElementMatch[]; notTested: NotTestedElement[] } {
     const matches: DiscoveredElementMatch[] = [];
     const notTested: NotTestedElement[] = [];
@@ -220,6 +255,58 @@ export function computeDiscoveredElementCoverage(
                     }
                 });
             }
+        }
+    }
+
+    // TFP-091: candidate journeys, per-baseUrl like the dependency map. A
+    // journey that wasn't generated into the suite (not selected on the
+    // review screen) is listed but not counted; one that was generated
+    // counts, and if it was skipped (interactive tests not enabled for this
+    // run) it stays uncovered with that reason - never silently "covered".
+    const functionalSelected = selectedPractices.includes("functional");
+    const declaredSet = declaredTestTitles ? new Set(declaredTestTitles.map(stripTestIdPrefix)) : null;
+    const recordsByTitle = new Map(records.map((record) => [stripTestIdPrefix(record.title), record]));
+
+    for (const journey of contentProfile.journeys ?? []) {
+        const title = buildJourneyTitle(journey);
+        const generated = declaredSet ? declaredSet.has(title) : recordsByTitle.has(title);
+
+        if (!generated) {
+            notTested.push(notTestedJourneyEntry(
+                journey, "not-selected",
+                "candidate journey was not selected on the review screen, so no test was generated for it"
+            ));
+            continue;
+        }
+
+        if (!functionalSelected) {
+            notTested.push(notTestedJourneyEntry(
+                journey, "not-selected",
+                '"functional" was not a selected practice area for this run'
+            ));
+            continue;
+        }
+
+        const record = recordsByTitle.get(title);
+        const tested = Boolean(record) && record?.status !== "Blocked";
+        matches.push({
+            area: "functional",
+            path: journey.path[0] ?? "/",
+            displayName: title,
+            title,
+            tested,
+        });
+
+        if (!tested) {
+            notTested.push(record
+                ? notTestedJourneyEntry(
+                    journey, "interactive-skipped",
+                    "generated and selected, but skipped or blocked: journey tests submit forms on the live site and only run when interactive tests are enabled for the run"
+                )
+                : notTestedJourneyEntry(
+                    journey, "generator-gap",
+                    "selected and generated, but no matching executed test was found"
+                ));
         }
     }
 

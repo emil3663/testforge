@@ -192,6 +192,7 @@ function normalizeJourneys(input: unknown, graph: SiteGraph): CandidateJourney[]
             text: typeof step.text === "string" ? step.text.replace(/\s+/g, " ").trim() : "",
             rawValue: typeof step.rawValue === "string" ? step.rawValue : "",
             tagName: typeof step.tagName === "string" ? step.tagName.trim() : "",
+            attributeName: typeof step.attributeName === "string" ? step.attributeName.trim() : "",
             containerLabel: typeof step.containerLabel === "string" ? step.containerLabel.replace(/\s+/g, " ").trim() : "",
         }));
         const aligned = path.length >= 2 && stepEdges.length === path.length - 1 &&
@@ -260,6 +261,7 @@ function normalizeSiteGraph(input: unknown): SiteGraph {
                 text: typeof item.text === "string" ? item.text.replace(/\s+/g, " ").trim() : "",
                 rawValue: typeof item.rawValue === "string" ? item.rawValue : "",
                 tagName: typeof item.tagName === "string" ? item.tagName.trim() : "",
+                attributeName: typeof item.attributeName === "string" ? item.attributeName.trim() : "",
                 containerLabel: typeof item.containerLabel === "string" ? item.containerLabel.replace(/\s+/g, " ").trim() : "",
             }];
         });

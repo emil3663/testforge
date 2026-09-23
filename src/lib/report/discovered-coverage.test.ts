@@ -21,10 +21,11 @@ import { test } from "node:test";
 import { randomUUID } from "node:crypto";
 import { buildAccessibilityElementTitle, buildActionableElementTitle } from "@/lib/generate/mock/locators";
 import { buildDependencyFailureTitle } from "@/lib/generate/mock/dependency-failure-injection";
+import { buildJourneyTitle } from "@/lib/generate/mock/journey-tests";
 import { buildStorageFailureTitle } from "@/lib/generate/mock/storage-failure-injection";
-import type { ActionableElementDetail, ContentProfile, DependencyMapEntry } from "@/lib/generate/mock/types";
+import type { ActionableElementDetail, CandidateJourney, ContentProfile, DependencyMapEntry } from "@/lib/generate/mock/types";
 import type { ExecutionRecord } from "./types";
-import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix } from "./discovered-coverage";
+import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix, stripTestIdPrefix } from "./discovered-coverage";
 
 function element(overrides: Partial<ActionableElementDetail> = {}): ActionableElementDetail {
     return {
@@ -368,4 +369,80 @@ test("TFP-086: a page with no detected storage usage contributes nothing to the 
 
     assert.equal(matches.length, 0);
     assert.equal(notTested.length, 0, "no storage kind was detected as used, so nothing should be reported at all - not a false generator-gap");
+});
+
+// TFP-091: journeys are a functional-area discovered surface.
+function candidateJourney(path: string[], overrides: Partial<CandidateJourney> = {}): CandidateJourney {
+    return { id: `automatic||${path.join(" > ")}`, source: "automatic", label: null, path, steps: [], declaredExitPath: null, exitInGraph: false, rank: 1, ...overrides };
+}
+
+function journeyProfile(journeys: CandidateJourney[]): ContentProfile {
+    return { scannedAt: "", baseUrl: BASE_URL, pages: [{ path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [], actionableElements: [], visibleTextSnippets: [] }], journeys };
+}
+
+test("TFP-091: a journey generated into the suite and executed counts as covered; one not generated is listed as not-selected and not counted", () => {
+    const run = candidateJourney(["/login", "/authenticate"]);
+    const skipped = candidateJourney(["/", "/login", "/authenticate"]);
+    const title = buildJourneyTitle(run);
+    const { matches, notTested } = computeDiscoveredElementCoverage(
+        ["functional"], journeyProfile([run, skipped]),
+        [executionRecord(`TFFU-001: ${title}`)], BASE_URL,
+        [`TFFU-001: ${title}`]
+    );
+
+    assert.deepStrictEqual(matches.filter((m) => m.title === title).map((m) => m.tested), [true]);
+    assert.strictEqual(matches.filter((m) => m.title === buildJourneyTitle(skipped)).length, 0);
+    const entry = notTested.find((n) => n.elementName === buildJourneyTitle(skipped));
+    assert.strictEqual(entry?.reason, "not-selected");
+    assert.strictEqual(entry?.elementType, "journey");
+});
+
+test("TFP-091: a generated journey that was skipped (interactive tests not enabled) stays uncovered with its own reason, never generator-gap or covered", () => {
+    const j = candidateJourney(["/login", "/authenticate"]);
+    const title = buildJourneyTitle(j);
+    const records = [executionRecord(`TFFU-001: ${title}`, "Blocked")];
+    const { matches, notTested } = computeDiscoveredElementCoverage(["functional"], journeyProfile([j]), records, BASE_URL, [`TFFU-001: ${title}`]);
+
+    assert.deepStrictEqual(matches.map((m) => [m.title, m.tested]), [[title, false]]);
+    assert.deepStrictEqual(notTested.map((n) => n.reason), ["interactive-skipped"]);
+
+    const matrix = buildDiscoveredCoverageMatrix(["functional"], records, matches);
+    assert.strictEqual(matrix.matrix[0].status, "uncovered");
+    assert.deepStrictEqual(matrix.matrix[0].uncoveredElements, [title]);
+});
+
+test("TFP-091: a generated journey with no execution record is a generator-gap; without the functional area it is not-selected", () => {
+    const j = candidateJourney(["/login", "/authenticate"]);
+    const title = buildJourneyTitle(j);
+
+    const gap = computeDiscoveredElementCoverage(["functional"], journeyProfile([j]), [], BASE_URL, [`TFFU-001: ${title}`]);
+    assert.deepStrictEqual(gap.notTested.map((n) => n.reason), ["generator-gap"]);
+
+    const noFunctional = computeDiscoveredElementCoverage(["seo/content"], journeyProfile([j]), [], BASE_URL, [`TFFU-001: ${title}`]);
+    assert.deepStrictEqual(noFunctional.matches, []);
+    assert.deepStrictEqual(noFunctional.notTested.map((n) => n.reason), ["not-selected"]);
+});
+
+test("TFP-091: the TFxx-000 id prefix on a real run's titles is stripped before matching", () => {
+    assert.strictEqual(stripTestIdPrefix("TFFU-038: journey login: /login > /authenticate"), "journey login: /login > /authenticate");
+    assert.strictEqual(stripTestIdPrefix("no prefix here"), "no prefix here");
+});
+
+// Found while building TFP-091: a real run's titles carry the "TFFU-003: "
+// id prefix (renderSuites adds it, Playwright reports it), which the title
+// builders don't include. Every test above uses bare titles, so none of them
+// could see that a real run matched nothing.
+test("Group 2: an element's check is matched to its discovered element when the executed title carries the TFxx id prefix a real run has", () => {
+    const savedElement = element({ text: "Save", containerLabel: "Toolbar" });
+    const contentProfile: ContentProfile = {
+        scannedAt: "",
+        baseUrl: BASE_URL,
+        pages: [{ path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [], actionableElements: [savedElement], visibleTextSnippets: [] }],
+    };
+    const records = [executionRecord(`TFFU-004: ${buildActionableElementTitle(savedElement)}`)];
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["functional"], contentProfile, records, BASE_URL);
+
+    assert.deepStrictEqual(matches.map((match) => match.tested), [true]);
+    assert.deepStrictEqual(notTested.filter((entry) => entry.area === "functional"), []);
 });

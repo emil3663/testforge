@@ -3,6 +3,7 @@
 import { getBestPracticeAreas, buildCoverageComment, buildManualFollowUpComment } from "./areas";
 import { buildContentSuites, buildContentProfileComment } from "./content-suites";
 import { buildDemoQaSuites } from "./demoqa-suites";
+import { buildJourneyTests, JOURNEY_HELPERS, JOURNEY_TESTS_NOTE } from "./journey-tests";
 import { escapeForSingleQuotedString, summarizeDescription, toSentenceCase } from "./format";
 import { buildGenericSuites } from "./generic-suites";
 import { SUITE_AREA_CODES } from "./suite";
@@ -77,6 +78,17 @@ export function mockGenerate(
         ? buildDemoQaSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode)
         : buildGenericSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode);
     const contentSuites = buildContentSuites(contentProfile, contentRules, bestPracticeAreas);
+    // TFP-091: selected journeys are functional-area tests (walking real
+    // flows), so they only join a functional suite that's actually being
+    // generated - a run without the functional area gets none, the same as
+    // every other functional element.
+    const journeyTests = buildJourneyTests(contentProfile, contentRules);
+    const functionalSuite = suites.find((suite) => suite.area === "functional");
+    const hasJourneyTests = journeyTests.length > 0 && Boolean(functionalSuite);
+    if (functionalSuite && hasJourneyTests) {
+        functionalSuite.tests.push(...journeyTests);
+        functionalSuite.notes = [...(functionalSuite.notes ?? []), JOURNEY_TESTS_NOTE];
+    }
     const manualFollowUpComment = buildManualFollowUpComment(bestPracticeAreas);
 
     return `import { test, expect } from '@playwright/test';
@@ -92,7 +104,9 @@ ${manualFollowUpComment ? `${manualFollowUpComment}\n` : ""}
 // Suite grouping root: ${suiteTitle}
 
 test.use({ baseURL: '${escapedBaseUrl}' });
-
+${hasJourneyTests ? `
+${JOURNEY_HELPERS}
+` : ""}
 ${renderSuites([...suites, ...contentSuites])}
 
 // NOTE: This fallback generator uses URL and keyword heuristics.

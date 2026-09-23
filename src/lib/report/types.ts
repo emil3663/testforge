@@ -130,7 +130,10 @@ export interface CoverageMatrixItem {
 // Phase 17 Group 3 (TFP-072): every discovered element with no matching
 // executed test is bucketed into exactly one of these - "generator-gap" is
 // the honest one and must not silently absorb the other two.
-export type NotTestedReason = "not-selected" | "excluded-by-generator" | "generator-gap";
+// "interactive-skipped": the test was generated and selected, but it submits
+// forms on the live site, so it only runs when the run explicitly enabled
+// interactive tests (TFP-091) - neither a generator gap nor a deselection.
+export type NotTestedReason = "not-selected" | "excluded-by-generator" | "generator-gap" | "interactive-skipped";
 
 export interface NotTestedElement {
     area: "functional" | "accessibility" | "reliability";

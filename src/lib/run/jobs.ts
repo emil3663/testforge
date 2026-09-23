@@ -84,6 +84,9 @@ export interface RunJob {
     // compute honest coverage against the discovered surface. Null for
     // runs started without one (e.g. a client that skipped generation).
     contentProfile: ContentProfile | null;
+    // TFP-091: whether this run explicitly enabled the skipped-by-default
+    // interactive (journey) tests.
+    enableInteractive: boolean;
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
 }
@@ -125,7 +128,10 @@ export async function finalizeRunJob(job: RunJob) {
     job.finishedAt = Date.now();
     finalizeInterruptedPlannedExecutions(job);
     job.progress.completedTests = Math.min(job.progress.completedTests, Math.max(job.progress.totalTests, job.progress.completedTests));
-    job.progress.totalTests = Math.max(job.progress.totalTests, job.progress.completedTests, estimateTestCount(await readFile(job.testFile, "utf8").catch(() => "")));
+    // Null (not "") when the suite source is gone: coverage then can't tell
+    // which journeys were generated and falls back to execution records.
+    const suiteCode = await readFile(job.testFile, "utf8").catch(() => null);
+    job.progress.totalTests = Math.max(job.progress.totalTests, job.progress.completedTests, estimateTestCount(suiteCode ?? ""));
 
     const reportText = await readFile(job.jsonReportFile, "utf8").catch(() => "");
     let parsedReport: JsonReport | null = null;
@@ -146,7 +152,8 @@ export async function finalizeRunJob(job: RunJob) {
             job.selectedPractices,
             output || buildConsoleSummary(executionRecords, duration),
             job.baseUrl,
-            job.contentProfile
+            job.contentProfile,
+            suiteCode
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;

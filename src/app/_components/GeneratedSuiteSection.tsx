@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { CollapsibleSection } from "@/app/_components/CollapsibleSection";
 import { Spinner } from "@/app/_components/Spinner";
 import type { TestAuditMode } from "@/app/_lib/types";
+import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 
 interface SavedSuiteResult {
     fileName: string;
@@ -16,6 +17,8 @@ interface GeneratedSuiteSectionProps {
     setOpenReportInNewPage: (value: boolean) => void;
     setReportPopupNotice: (value: string) => void;
     handleRun: () => void;
+    enableInteractive: boolean;
+    setEnableInteractive: (value: boolean) => void;
     hasCode: boolean;
     isRunning: boolean;
     isContentAwareReady: boolean;
@@ -44,6 +47,8 @@ export function GeneratedSuiteSection({
     setOpenReportInNewPage,
     setReportPopupNotice,
     handleRun,
+    enableInteractive,
+    setEnableInteractive,
     hasCode,
     isRunning,
     isContentAwareReady,
@@ -98,6 +103,22 @@ export function GeneratedSuiteSection({
                                 </span>
                                 <span>Open completed report in a new page</span>
                             </label>
+                            {editedCode.includes(INTERACTIVE_ENV_VAR) && (
+                                <label className="mt-3 flex items-start gap-3 text-xs text-zinc-400">
+                                    <input
+                                        type="checkbox"
+                                        checked={enableInteractive}
+                                        onChange={(event) => setEnableInteractive(event.target.checked)}
+                                        className="mt-0.5 h-4 w-4 rounded border-zinc-600 accent-emerald-500"
+                                    />
+                                    <span>
+                                        Run interactive tests
+                                        <span className="block text-zinc-500">
+                                            Journey tests submit forms on the live site with sample values. They are skipped unless this is on for the run.
+                                        </span>
+                                    </span>
+                                </label>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <button

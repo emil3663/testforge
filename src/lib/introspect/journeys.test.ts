@@ -26,6 +26,7 @@ function graph(...edges: [string, string, SiteGraphEdgeKind][]): SiteGraph {
         text: `${kind} ${from}->${to}`,
         rawValue: to,
         tagName: kind === "form-submit" ? "form" : "a",
+        attributeName: kind === "form-submit" ? "action" : "href",
         containerLabel: "",
     }));
 

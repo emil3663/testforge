@@ -15,6 +15,7 @@ interface StartRunParams {
     excludeTestTitles?: string[];
     includeTestTitles?: string[];
     contentProfile?: ContentProfile | null;
+    enableInteractive?: boolean;
 }
 
 export function useRun(
@@ -156,7 +157,7 @@ export function useRun(
         window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     }, [openReportInNewPage, result]);
 
-    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null }: StartRunParams) {
+    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null, enableInteractive = false }: StartRunParams) {
         if (selectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -196,6 +197,7 @@ export function useRun(
                     excludeTestTitles,
                     includeTestTitles,
                     contentProfile,
+                    enableInteractive,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };

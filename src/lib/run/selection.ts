@@ -3,7 +3,7 @@ export function estimateTestCount(code: string) {
     return Math.max(1, matches?.length ?? 0);
 }
 
-function extractDeclaredTestTitles(code: string) {
+export function extractDeclaredTestTitles(code: string) {
     const titles: string[] = [];
     const testTitlePattern = /\btest(?:\.only|\.skip|\.fixme)?\(\s*(['"`])((?:\\.|(?!\1).)*)\1/g;
 

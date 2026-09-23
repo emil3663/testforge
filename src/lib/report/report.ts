@@ -1,4 +1,5 @@
 import type { ContentProfile } from "@/lib/generate/mock/types";
+import { extractDeclaredTestTitles } from "@/lib/run/selection";
 import { flattenSuites } from "./execution";
 import { buildDefects, buildDefectTrend, buildHeatmap } from "./defects";
 import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix } from "./discovered-coverage";
@@ -13,7 +14,8 @@ export function buildReport(
     selectedPractices: string[],
     output: string,
     baseUrl?: string,
-    contentProfile: ContentProfile | null = null
+    contentProfile: ContentProfile | null = null,
+    suiteCode: string | null = null
 ): RunReport {
     const execution = flattenSuites(report.suites ?? []);
     const defects = buildDefects(execution);
@@ -21,7 +23,8 @@ export function buildReport(
         selectedPractices,
         contentProfile,
         execution,
-        baseUrl ?? ""
+        baseUrl ?? "",
+        suiteCode === null ? null : extractDeclaredTestTitles(suiteCode)
     );
     const coverage = buildDiscoveredCoverageMatrix(selectedPractices, execution, matches);
     const summary = buildSummary(execution, defects, report.stats?.duration ?? 0);

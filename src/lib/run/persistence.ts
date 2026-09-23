@@ -30,6 +30,9 @@ export interface RunRecord {
     // none (e.g. persisted before this field existed, or started without
     // generation).
     contentProfile: ContentProfile | null;
+    // TFP-091: absent on runs persisted before this field existed, which
+    // never ran an interactive test.
+    enableInteractive?: boolean;
 }
 
 // Overridable so tests never read or write the real runs/ directory a live
@@ -133,6 +136,7 @@ export async function persistRunJob(
         result: job.result,
         artifactFiles: persistedArtifacts,
         contentProfile: job.contentProfile,
+        enableInteractive: job.enableInteractive,
     };
 
     await writeRunRecord(record);

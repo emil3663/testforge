@@ -85,6 +85,7 @@ test("an internal link is an edge naming the element that produces it", () => {
         text: "Login",
         rawValue: "/login",
         tagName: "a",
+        attributeName: "href",
         containerLabel: "",
     }]);
 });

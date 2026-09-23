@@ -175,6 +175,10 @@ export interface SiteGraphEdge {
     text: string;
     rawValue: string;
     tagName: string;
+    // The attribute rawValue came from ("href", "action", "formaction",
+    // "onclick", "data-href", ...) - with tagName and rawValue this is
+    // enough to write a selector for the exact element (TFP-091).
+    attributeName: string;
     containerLabel: string;
 }
 

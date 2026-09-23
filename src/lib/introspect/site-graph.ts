@@ -57,6 +57,7 @@ function linkEdge(link: LinkDetail): Omit<SiteGraphEdge, "from" | "to"> | null {
         text: link.text,
         rawValue: link.rawHref,
         tagName: "a",
+        attributeName: "href",
         containerLabel: link.containerLabel,
     };
 }
@@ -131,6 +132,7 @@ export function buildSiteGraph(baseUrl: string, pages: PageSnapshot[]): SiteGrap
                 text: embedded.text,
                 rawValue: embedded.rawValue,
                 tagName: embedded.tagName,
+                attributeName: embedded.attributeName,
                 containerLabel: embedded.containerLabel,
             });
         }

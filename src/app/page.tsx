@@ -59,6 +59,8 @@ export default function Home() {
     const [isHelpPanelOpen, setIsHelpPanelOpen] = useState(false);
     const [selectedJourneyIds, setSelectedJourneyIds] = useState<string[]>([]);
     const [isJourneysCollapsed, setIsJourneysCollapsed] = useState(false);
+    // TFP-091: per-run opt-in for skipped-by-default interactive tests.
+    const [enableInteractive, setEnableInteractive] = useState(false);
 
     const crawl = useCrawl(baseUrl);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
@@ -220,6 +222,7 @@ export default function Home() {
         baseUrl: generation.lastGeneratedBaseUrl,
         description: (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices),
         contentProfile: generation.contentProfile,
+        enableInteractive,
     };
     const boundHandleRun = () => run.handleRun(runParams);
     const boundHandleContinueRun = () => run.handleContinueRun(runParams);
@@ -366,6 +369,8 @@ export default function Home() {
                     setOpenReportInNewPage={run.setOpenReportInNewPage}
                     setReportPopupNotice={run.setReportPopupNotice}
                     handleRun={boundHandleRun}
+                    enableInteractive={enableInteractive}
+                    setEnableInteractive={setEnableInteractive}
                     hasCode={hasCode}
                     isRunning={isRunning}
                     isContentAwareReady={isContentAwareReady}

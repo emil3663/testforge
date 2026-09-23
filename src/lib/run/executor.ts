@@ -4,6 +4,7 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, relative } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
+import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
@@ -79,7 +80,8 @@ export async function startRunJob(
     excludedTestTitles: string[] = [],
     includedTestTitles: string[] = [],
     description = "",
-    contentProfile: ContentProfile | null = null
+    contentProfile: ContentProfile | null = null,
+    enableInteractive = false
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -136,6 +138,7 @@ export async function startRunJob(
         auditMode,
         selectedPractices,
         contentProfile,
+        enableInteractive,
         artifactFiles: new Map(),
         result: null,
     };
@@ -158,6 +161,9 @@ export async function startRunJob(
             cwd: process.cwd(),
             env: {
                 ...process.env,
+                // Always set, never inherited: skipped-by-default interactive
+                // tests (journeys) run only when this run explicitly asked.
+                [INTERACTIVE_ENV_VAR]: enableInteractive ? "1" : "0",
                 PLAYWRIGHT_JSON_OUTPUT_FILE: jsonReportFile,
                 FORCE_COLOR: "0",
                 HOME:
