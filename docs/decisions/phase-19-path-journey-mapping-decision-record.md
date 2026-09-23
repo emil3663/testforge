@@ -4,7 +4,7 @@ Date: 2026-09-23
 Scope: Combine the crawl page graph and introspect's actionable elements
 into a walkable site graph, surface candidate user journeys for review,
 and generate end-to-end tests that walk selected paths.
-Status: Approved and in implementation
+Status: Approved and in implementation (Decisions 4-6 resolved 2026-09-23, before TFP-088 landed)
 
 ## Context
 
@@ -16,7 +16,12 @@ locks what's already true (independent of Phase 18; builds on data
 Phase 17/prior crawl work already produces) and marks the genuine open
 questions `[PLACEHOLDER]` for Emil to answer before the affected tickets
 start. TFP-088 (the graph itself) does not depend on any of them and can
-start immediately; TFP-089–091 are blocked until they're answered.
+start immediately; TFP-089–091 were blocked until they're answered.
+Decisions 4-6 are now resolved (Emil, 2026-09-23) — see below. All three
+were answerable without TFP-088's output (product/UX calls, not
+implementation details), except Decision 6's exact numbers, which are
+deliberately marked as a starting default rather than a tuned one; see
+Decision 6.
 
 **Standing policy for this phase:** same as Phase 18 — defects found
 while building or verifying a ticket are fixed in that ticket, not
@@ -46,28 +51,52 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
    text — sequencing between them is a scheduling choice, not a
    dependency, and this record doesn't change that.
 
-4. `[PLACEHOLDER: what makes a path a "likely user journey" worth
-  surfacing, out of however many paths a real site graph contains?
-  Candidates: shortest path between two named entry/exit pages, any
-  path ending in a form-submit action, paths matching a config-supplied
-  list of named flows (e.g. "signup", "checkout"), or some combination.
-  This is a real product decision, not an implementation detail — it
-  determines what TestForge claims to have found, the same way the
-  generator's best-practice-area selection already does. Needs an
-  answer before TFP-089 starts.]`
+4. A candidate journey is either an automatically-detected form-submit
+   path or an explicitly named config-supplied flow.
+- Resolved (Emil, 2026-09-23): two sources, both real, neither guessed.
+  Automatic: any path through the graph that ends in a form-submit
+  action is a candidate — no config required, works on any site out of
+  the box, mirrors how TFP-085's dependency tests need no per-site
+  config either. Explicit: the run config may also name specific flows
+  by label (e.g. `"signup"`, `"checkout"`) as an entry page + exit page
+  pair; TFP-089 finds the path between them the same way it finds any
+  other path (see Decision 6's length cap).
+- Ranking: a named-flow match always ranks above an automatic match —
+  it's explicit intent, not a guess, the same principle Phase 18's
+  Decision 4 correction landed on (don't treat an inferred label as
+  equivalent to a stated one). Among automatic matches, shorter paths
+  rank above longer ones (fewer hops is a stronger "this looks like a
+  real journey" signal than a long incidental one).
+- Duplicate paths (same page sequence found both ways) are surfaced
+  once, keeping the higher rank.
 
-5. `[PLACEHOLDER: how are candidate journeys "surfaced... for review"?
-  A new UI screen listing candidates with a select/generate action
-  (mirrors the existing best-practice-area selection UI), or a report
-  section the user reads and re-runs generate against manually? This
-  determines whether TFP-090 is a UI ticket or a report-only one. Needs
-  an answer before TFP-090 starts.]`
+5. Candidate journeys are surfaced through a new UI screen, not a
+   report-only list.
+- Resolved (Emil, 2026-09-23): a dedicated screen lists ranked
+  candidates from TFP-089 with a per-journey select control and a
+  "Generate selected" action, mirroring the existing best-practice-area
+  selection UI already in the app. Selecting and generating writes the
+  selection into run config for TFP-091 to read — not a report the user
+  reads and manually re-runs `generate` against.
+- This makes TFP-090 a UI ticket, not a report-section ticket.
 
-6. `[PLACEHOLDER: is there a cap on graph size / journey count / path
-  length? An uncapped walkable graph on a real multi-page site can
-  produce a combinatorial number of paths — TestForge needs a stated
-  bound (e.g. max path length, max journeys surfaced) before TFP-089 can
-  be acceptance-tested against a real target rather than a toy one.]`
+6. Starting caps: max path length 6 hops, max 20 journeys surfaced.
+- Resolved (Emil, 2026-09-23) as a starting default, explicitly
+  revisable once TFP-088 shows real graph sizes on an actual target —
+  not a final, data-backed number.
+- No separate graph-size cap is needed: `MAX_CRAWL_PAGES` already bounds
+  crawl output to 100 pages (`src/app/api/crawl/route.ts`), so TFP-088's
+  graph is already bounded to at most 100 nodes before Phase 19 adds
+  anything. The two caps that actually need a Phase-19-specific number
+  are journey path length and how many ranked candidates get surfaced.
+- Max path length 6: long enough for a realistic multi-step flow
+  (landing → category → detail → cart → checkout → confirmation is 5
+  hops) without walking into combinatorial path counts on a 100-node
+  graph. Max 20 journeys surfaced: keeps TFP-090's review screen a list
+  a person can actually read, not a data dump.
+- Both numbers are configuration, not architecture — TFP-089 should
+  read them as constants it can tune, not something hardcoded three
+  layers deep, so the "revisit after real data" step is cheap.
 
 ## Acceptance Criteria
 
@@ -76,20 +105,45 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   navigable actions on that target (a link or form-submit that really
   leads from page A to page B), not an inferred or assumed connection.
 
-2. Journey identification and review, generation (TFP-089–091 — gated on
-   Decisions 4–6 being answered)
-- Acceptance criteria for these are written when those tickets are
-  unblocked, since they depend directly on the placeholder answers —
-  writing them now would mean inventing the same specifics this record
-  is deliberately not inventing.
+2. Journey identification (TFP-089)
+- Against a real target with a known multi-step form-submit flow (e.g.
+  a 2-3 page checkout or signup), that exact path is surfaced as a
+  ranked candidate, naming its actual pages and the actionable element
+  connecting each step - not an inferred or assumed sequence.
+- A config-named flow (entry page + exit page pair) produces the
+  matching path and ranks above any automatically-detected candidate
+  covering the same pages.
+- No candidate exceeds the 6-hop path-length default; no more than 20
+  candidates are surfaced.
+
+3. Review and selection (TFP-090)
+- Candidate journeys from TFP-089 appear listed in the new UI screen,
+  each with a select control.
+- Selecting one or more journeys and using "Generate selected" carries
+  exactly that selection into run config - not every candidate, and not
+  none.
+
+4. Generation (TFP-091)
+- Against a real target, a selected multi-step journey runs as one
+  generated test that asserts each step in sequence (not a bare "page
+  loaded" check), and is skipped by default per Decision 2 like any
+  other interactive test.
 
 ## Regression Policy
 
 - `TEST_PLAN.md` gets a case for the graph matching a real target's
-  actual navigable structure as soon as TFP-088 lands. Cases for
-  journey identification, review, and generated end-to-end tests are
-  added when TFP-089–091 are unblocked and built — not stubbed in now
-  against a spec that doesn't exist yet.
+  actual navigable structure as soon as TFP-088 lands.
+- Once TFP-089 lands: a case proving a real target's known form-submit
+  flow is found and correctly ranked, and a case proving a path beyond
+  the 6-hop default is excluded (not silently truncated into a shorter,
+  wrong candidate).
+- Once TFP-090 lands: a case (in the self-test smoke or regression
+  suite, per this repo's existing UI-testing pattern) proving a
+  selection made on the review screen reaches run config unchanged.
+- Once TFP-091 lands: a case proving a real selected journey runs as
+  one test asserting every step, against a real target.
+- All landed in the same commit as the code they describe, per this
+  phase's standing policy.
 
 ## Backlog
 
@@ -122,65 +176,86 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 ### TFP-089 — Identify and rank candidate journeys
 
 - **Phase:** 19
-- **Priority:** P3 (blocked)
-- **Suggested labels:** `feature`, `blocked`
+- **Priority:** P2
+- **Suggested labels:** `feature`
 - **Problem it solves:** turns the raw graph (TFP-088) into a bounded,
   ranked list of journeys worth showing someone — without this, the
   graph is data, not a feature.
-- **Scope:** Defined once Decisions 4 and 6 are answered — the ranking
-  heuristic and the size/length bound are exactly what this ticket
-  implements, and writing its scope before those answers exist would
-  mean guessing the product decision this record deliberately left open.
-- **Deliverables:** TBD, set when unblocked.
-- **Acceptance criteria:** TBD, set when unblocked.
-- **Dependencies:** TFP-088; Decisions 4 and 6 above answered.
+- **Scope:**
+  - Automatic candidates: walk TFP-088's graph for every path ending in
+    a form-submit edge, up to Decision 6's 6-hop default.
+  - Named-flow candidates: read an optional list of `{ label, entryPath,
+    exitPath }` entries from run config; find the path between each
+    pair in the graph (same traversal, same length cap).
+  - Dedupe identical page sequences found by both sources, keeping the
+    higher-ranked (named-flow) entry.
+  - Rank: named-flow candidates first, then automatic candidates by
+    ascending path length (shorter first).
+  - Cap the ranked list at 20 candidates (Decision 6's default); both
+    the length cap and the count cap are named constants, not buried
+    magic numbers, so they're cheap to retune after real data comes in.
+- **Deliverables:**
+  - Journey-identification module + a `CandidateJourney` type (path,
+    source: automatic/named, rank).
+  - `TEST_PLAN.md` cases per Acceptance Criteria §2 above.
+- **Acceptance criteria:** per Acceptance Criteria §2 above.
+- **Dependencies:** TFP-088.
 
 ### TFP-090 — Surface candidate journeys for review
 
 - **Phase:** 19
-- **Priority:** P3 (blocked)
-- **Suggested labels:** `feature`, `ui`, `blocked`
+- **Priority:** P2
+- **Suggested labels:** `feature`, `ui`
 - **Problem it solves:** without a review step, TestForge would generate
   tests for journeys nobody asked to see — the roadmap's own text says
   "for review," not "automatically."
-- **Scope:** Defined once Decision 5 is answered (UI screen vs.
-  report-only) — that answer determines whether this is a UI ticket or
-  a report-section ticket, which are different shapes of work.
-- **Deliverables:** TBD, set when unblocked.
-- **Acceptance criteria:** TBD, set when unblocked.
-- **Dependencies:** TFP-089; Decision 5 above answered.
+- **Scope:**
+  - New screen listing TFP-089's ranked candidates: path (page
+    sequence), source (automatic vs. named-flow, per Decision 4), and a
+    per-journey select control - same interaction shape as the existing
+    best-practice-area selection UI.
+  - A "Generate selected" action that writes exactly the selected
+    journeys into run config, for TFP-091 to read.
+  - No selection means no journey tests generated - same default-off
+    posture Decision 2 already applies to interactive tests generally.
+- **Deliverables:**
+  - New review screen + selection-to-run-config wiring.
+  - A self-test case (smoke or regression suite, matching this repo's
+    existing UI-testing pattern) proving a made selection reaches run
+    config unchanged.
+- **Acceptance criteria:** per Acceptance Criteria §3 above.
+- **Dependencies:** TFP-089.
 
 ### TFP-091 — Generate end-to-end tests for selected journeys
 
 - **Phase:** 19
-- **Priority:** P3 (blocked)
-- **Suggested labels:** `feature`, `generate`, `blocked`
+- **Priority:** P2
+- **Suggested labels:** `feature`, `generate`
 - **Problem it solves:** the actual deliverable the roadmap paragraph
   promises — tests that "walk selected paths end to end rather than
   page by page."
 - **Scope:**
-  - Generate one end-to-end test per selected journey, walking the
-    path's actual pages/actions in sequence.
+  - Read TFP-090's selected journeys from run config; generate one
+    end-to-end test per selected journey, walking the path's actual
+    pages/actions in sequence.
   - Skipped by default per Decision 2 (inherited interactive-test rule),
     explicitly enabled per run like other interactive tests.
   - Counted toward discovered-surface coverage the same way TFP-085's
     dependency tests are (Phase 18's precedent), rather than living in a
     separate report section.
 - **Deliverables:**
-  - Generator changes producing journey tests from selected paths.
+  - Generator changes producing journey tests from TFP-090's selection.
   - `TEST_PLAN.md` case proving a real journey test walks a real
     multi-step path against a real target and produces a specific,
     named pass/fail.
-- **Acceptance criteria:**
-  - Against a real target, a selected two-step journey (e.g.
-    landing → form submit → confirmation) runs as one test asserting
-    each step, not a bare "page loaded" check.
+- **Acceptance criteria:** per Acceptance Criteria §4 above.
 - **Dependencies:** TFP-090.
 
 ## Recommended Execution Order
 
 1. TFP-088 (unblocked, start now)
-2. Emil answers Decisions 4–6
+2. ~~Emil answers Decisions 4–6~~ — done, 2026-09-23, before TFP-088
+   landed.
 3. TFP-089 → TFP-090 → TFP-091, in sequence (each genuinely depends on
    the previous one's output, unlike Phase 18's parallel tickets)
 
@@ -190,5 +265,7 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 - TFP-088 landed with a real `TEST_PLAN.md` case against a real target.
 
 ### Gate B — Phase 19 complete
-- Decisions 4–6 answered; TFP-089–091 landed against a real target, each
-  with a `TEST_PLAN.md` case proving real (not assumed) behavior.
+- Decisions 4–6 answered (**Met**, 2026-09-23). TFP-089–091 landed
+  against a real target, each with a `TEST_PLAN.md` case proving real
+  (not assumed) behavior — not yet met, pending TFP-088/089/090/091
+  implementation.
