@@ -1,5 +1,6 @@
 import { chromium, type Request } from "@playwright/test";
 import { captureDomSnapshot } from "./dom-snapshot";
+import { buildSiteGraph } from "./site-graph";
 import { aggregateDependencyMap, dependenciesFromEmbeddedLinks } from "./dependency-map";
 import { installStorageAccessProbe, readStorageAccessProbe } from "./storage-probe";
 import type { DependencyDetail, PageSnapshot } from "./types";
@@ -160,7 +161,12 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
             }
         }
 
-        return { pages, warnings, dependencyMap: aggregateDependencyMap(perPageDependencies) };
+        return {
+            pages,
+            warnings,
+            dependencyMap: aggregateDependencyMap(perPageDependencies),
+            siteGraph: buildSiteGraph(baseUrl, pages),
+        };
     } finally {
         await page.close().catch(() => { });
         await browser.close().catch(() => { });

@@ -8,6 +8,8 @@ import type {
     InteractionCategory,
     LinkCategory,
     LinkDetail,
+    SiteGraph,
+    SiteGraphEdgeKind,
     StorageUsage,
     TestAuditMode,
 } from "@/lib/generate/mock";
@@ -21,6 +23,8 @@ const DEPENDENCY_KINDS = new Set<string>([
     "redirect",
     "cookie",
 ]);
+
+const SITE_GRAPH_EDGE_KINDS = new Set<string>(["link", "form-submit", "action"]);
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -153,6 +157,57 @@ function normalizeDependencyMap(input: unknown): DependencyMapEntry[] {
             };
         })
         .filter((item): item is DependencyMapEntry => item.kind !== null && Boolean(item.host));
+}
+
+// TFP-088: like the dependency map, the graph is fully built server-side by
+// inspectPages (it needs embeddedLinkDetails, which the round-tripped
+// ContentProfile doesn't carry) - this only re-validates the JSON that came
+// back through the client, and drops any edge whose endpoints aren't nodes.
+function normalizeSiteGraph(input: unknown): SiteGraph {
+    if (!input || typeof input !== "object") {
+        return { nodes: [], edges: [] };
+    }
+
+    const graph = input as Record<string, unknown>;
+    const records = (value: unknown) =>
+        Array.isArray(value)
+            ? value.filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+            : [];
+
+    const nodes = records(graph.nodes)
+        .map((item) => ({
+            path: typeof item.path === "string" ? item.path.trim() : "",
+            url: typeof item.url === "string" ? item.url.trim() : "",
+            title: typeof item.title === "string" ? item.title.replace(/\s+/g, " ").trim() : "",
+            inspected: Boolean(item.inspected),
+        }))
+        .filter((item) => item.path);
+    const nodePaths = new Set(nodes.map((node) => node.path));
+
+    const edges = records(graph.edges)
+        .flatMap((item) => {
+            const kind = typeof item.kind === "string" && SITE_GRAPH_EDGE_KINDS.has(item.kind)
+                ? (item.kind as SiteGraphEdgeKind)
+                : null;
+            const from = typeof item.from === "string" ? item.from.trim() : "";
+            const to = typeof item.to === "string" ? item.to.trim() : "";
+
+            if (!kind || !nodePaths.has(from) || !nodePaths.has(to)) {
+                return [];
+            }
+
+            return [{
+                from,
+                to,
+                kind,
+                text: typeof item.text === "string" ? item.text.replace(/\s+/g, " ").trim() : "",
+                rawValue: typeof item.rawValue === "string" ? item.rawValue : "",
+                tagName: typeof item.tagName === "string" ? item.tagName.trim() : "",
+                containerLabel: typeof item.containerLabel === "string" ? item.containerLabel.replace(/\s+/g, " ").trim() : "",
+            }];
+        });
+
+    return { nodes, edges };
 }
 
 export function normalizeContentProfile(input: unknown): ContentProfile | null {
@@ -341,5 +396,6 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
         pages,
         warnings: normalizeStringList(profile.warnings),
         dependencyMap: normalizeDependencyMap(profile.dependencyMap),
+        siteGraph: normalizeSiteGraph(profile.siteGraph),
     };
 }

@@ -141,3 +141,44 @@ export interface DependencyMapEntry {
     occurrences: number;
     paths: string[];
 }
+
+// TFP-088: the walkable site graph. Nodes are pages (the introspected pages
+// plus any same-origin page an introspected page's elements lead to); edges
+// are the specific element on one page that navigates to another. Composed
+// entirely from data inspectPages already captures - no extra crawl pass.
+//
+// "link" is an <a href>; "form-submit" is a <form action> or a button's
+// formaction (the action is only known when the DOM declares it - a
+// JS-driven form with no action attribute can't be resolved without
+// actually submitting it, which introspect never does); "action" is any
+// other DOM-declared navigation (onclick location assignment, data-href,
+// routerlink, ...).
+export type SiteGraphEdgeKind = "link" | "form-submit" | "action";
+
+export interface SiteGraphNode {
+    path: string;
+    url: string;
+    title: string;
+    // False for a page only known as the target of another page's element -
+    // its own outgoing edges were never introspected, so it can end a walk
+    // but not extend one.
+    inspected: boolean;
+}
+
+export interface SiteGraphEdge {
+    from: string;
+    to: string;
+    kind: SiteGraphEdgeKind;
+    // The element's visible label, and the raw attribute value it navigates
+    // by (href / action / formaction / ...), so a generated test can locate
+    // and actually use the real element rather than a guess at it.
+    text: string;
+    rawValue: string;
+    tagName: string;
+    containerLabel: string;
+}
+
+export interface SiteGraph {
+    nodes: SiteGraphNode[];
+    edges: SiteGraphEdge[];
+}

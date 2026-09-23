@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedPaths = normalizePaths(normalizedBaseUrl.value, paths);
-    const { pages, warnings, dependencyMap } = await inspectPages(normalizedBaseUrl.value, normalizedPaths);
+    const { pages, warnings, dependencyMap, siteGraph } = await inspectPages(normalizedBaseUrl.value, normalizedPaths);
 
     return NextResponse.json({
         scannedAt: new Date().toISOString(),
@@ -80,5 +80,6 @@ export async function POST(req: NextRequest) {
         pages,
         warnings,
         dependencyMap,
+        siteGraph,
     });
 }
