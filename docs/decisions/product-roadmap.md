@@ -156,3 +156,27 @@ stepping through the crawl, introspect, generate and run flow against a real
 target — before Phase 17's decision record is drafted. Phase 17's scope above
 is a starting outline, not a lock; the walkthrough may change what "honest
 coverage" needs to mean in practice before that phase is locked.
+
+## Standing execution policy (from Phase 18 onward)
+
+Two rules, set by Emil on 2026-09-23 after repeated stale-doc cleanup
+passes cost real time across Phases 17-27 (headers claiming "Draft — not
+started" for work that had actually shipped, found and fixed in bulk
+during a 2026-09-23 verification pass rather than caught as each phase
+landed):
+
+1. **A defect found while building or verifying a ticket is fixed
+   immediately, in that ticket** — not logged for a later cleanup phase.
+   Phase 24 already drew this line for its two critical findings
+   (TFP-065/066, fixed ahead of everything else in flight); it now
+   applies to any defect found during Phase 18, 19, 20, or later, not
+   only a dedicated audit pass.
+2. **Documentation lands in the same commit as the work it describes.**
+   `TEST_PLAN.md`, this roadmap, and any phase decision record are
+   updated as part of the ticket that changes what they describe, not
+   appended afterward. A phase decision record's own Backlog section
+   states this per-ticket (see Phase 18/19/20's records) so it's visible
+   at the point of work, not only here.
+
+Both rules bind every phase from Phase 18 onward. They don't retroactively
+apply to Phases 16-17, which are already shipped.
