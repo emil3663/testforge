@@ -11,7 +11,7 @@
     "start:self-test": "dotenv -e .env.development -- next start --hostname 127.0.0.1 --port 3001",
     "serve:self-test": "npm run build:self-test && npm run start:self-test",
     "lint": "eslint",
-    "test:unit": "node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/persistence.test.ts src/lib/run/jobs.test.ts src/app/api/run/route.test.ts src/app/api/runs/route.test.ts src/lib/report/discovered-coverage.test.ts src/lib/run/diff.test.ts src/app/api/runs/diff/route.test.ts src/app/api/generate/route.test.ts src/app/api/crawl/route.test.ts src/app/api/introspect/route.test.ts src/app/api/save-suite/route.test.ts src/app/_hooks/useRun.test.ts src/app/_hooks/useCrawl.test.ts next.config.test.ts",
+    "test:unit": "node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/persistence.test.ts src/lib/run/jobs.test.ts src/app/api/run/route.test.ts src/app/api/runs/route.test.ts src/lib/report/discovered-coverage.test.ts src/lib/run/diff.test.ts src/app/api/runs/diff/route.test.ts src/app/api/generate/route.test.ts src/app/api/crawl/route.test.ts src/app/api/introspect/route.test.ts src/app/api/save-suite/route.test.ts src/app/_hooks/useRun.test.ts src/app/_hooks/useCrawl.test.ts next.config.test.ts src/lib/generate/mock/actionable-elements/index.test.ts",
     "test:self": "dotenv -e .env.development -o -- playwright test -c playwright.self-test.config.ts",
     "test:self:allure": "dotenv -e .env.development -o -- node scripts/run-allure-suite.mjs smoke playwright.self-test.config.ts",
     "test:regression": "dotenv -e .env.development -o -- playwright test -c playwright.regression.config.ts",
