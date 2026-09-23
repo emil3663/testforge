@@ -4,19 +4,20 @@ Date: 2026-09-23
 Scope: Config-driven automation-account login once per run, cached
 Playwright `storageState` reused by every generated test in that run,
 credentials referenced by name and never inlined, captured, or displayed.
-Status: Approved and in implementation
+Status: Approved and in implementation (Decisions 3, 5, 6 resolved 2026-09-24, before TFP-092 started)
 
 ## Context
 
 `docs/decisions/product-roadmap.md`'s Phase 20 paragraph, and its own
 "Explicitly out of scope" list (no autonomous login-flow discovery — this
 is config-driven, full stop), already lock most of this phase's shape.
-This record turns that into buildable decisions. Three things are
+This record turns that into buildable decisions. Three things were
 genuinely undecided and marked `[PLACEHOLDER]`: the credential-store
 mechanism beyond plain environment variables, whether the cached
 `storageState` persists to disk across separate runs or is scoped to a
 single run, and the exact content of the setup instructions doc the
-roadmap says TestForge ships.
+roadmap says TestForge ships. Resolved (Emil, 2026-09-24) — see
+Decisions 3, 5, and 6 below.
 
 **This phase is a hard dependency on Phase 19, not just a suggested
 order** — `product-roadmap.md`'s own text: "Deliberately sequenced after
@@ -50,12 +51,12 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - The immediate mechanism is an environment variable, following the
   existing `.env.development`/`.env.example` convention already in this
   repo — no new config surface for the simple case.
-- `[PLACEHOLDER: "or a local secret store" — the roadmap names this as
-  an alternative to plain env vars but doesn't say which tool, if any.
-  Confirm whether Phase 20 ships only the env-var path (simplest,
-  consistent with the rest of this local-only tool) and defers any
-  secret-store integration, or whether a specific tool needs supporting
-  now.]`
+- Resolved (Emil, 2026-09-24): env-var-only for this phase. No
+  specific secret-store tool is supported now — consistent with the
+  rest of this local-only tool, and the simplest path that still meets
+  Decision 3's "never inlined" requirement. Deferred explicitly, not
+  silently: TFP-093 states this in `TEST_PLAN.md`'s Known Limitations
+  rather than leaving the gap unmentioned.
 
 4. Credentials and `storageState` are never captured in traces,
    screenshots, or the HTML report.
@@ -64,21 +65,26 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   `storageState` content before it can reach HTML output — this is a
   redaction requirement, not an assumption that it won't come up.
 
-5. `[PLACEHOLDER: does the cached storageState persist to disk across
-  separate runs (saving a repeat login, with some invalidation/expiry
-  policy), or is it held only in memory/on-disk for the duration of a
-  single run and discarded after? This has real security weight — a
-  session token surviving on disk between runs is a different risk
-  profile than one that never leaves memory — so it needs an explicit
-  answer, not a default assumed from "caches."]`
+5. The cached `storageState` is scoped to a single run and never
+   persisted to disk across runs.
+- Resolved (Emil, 2026-09-24): single-run only. It's captured at run
+  start, held for the duration of that run (in memory, or on-disk only
+  as a transient artifact of that run's own working directory — never
+  written anywhere that outlives the run), and discarded once the run
+  finishes. No cross-run cache, no invalidation/expiry policy needed,
+  because there's nothing left to invalidate after the run ends. A
+  session token never survives on disk between runs — the safer of the
+  two risk profiles this decision named, and consistent with Decision
+  2's "one login per run" framing already locked above.
 
-6. `[PLACEHOLDER: the roadmap says TestForge "ships setup instructions...
-  the same pattern used for Selenium automation accounts" (exempted from
-  lockout, rate-limiting, MFA interruption, new-sign-in alerts). Confirm
-  this becomes a new doc (e.g. docs/AUTOMATED_ACCOUNT_SETUP.md) covering
-  those four exemption categories generically, rather than
-  platform-specific steps TestForge can't maintain for every site owner's
-  identity provider.]`
+6. The setup-instructions doc is generic, not platform-specific.
+- Resolved (Emil, 2026-09-24): a new `docs/AUTOMATED_ACCOUNT_SETUP.md`
+  covering the four named exemption categories (lockout, rate-limiting,
+  MFA interruption, new-sign-in alerts) generically, as the roadmap's
+  own "same pattern used for Selenium automation accounts" text already
+  implies. Not platform- or identity-provider-specific steps — TestForge
+  can't maintain those for every site owner's IdP, and the roadmap never
+  asked for that.
 
 ## Acceptance Criteria
 
@@ -149,11 +155,9 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   - Run config references a credential by name (env var name); the
     actual value is read from the environment at run time, following
     the `.env.development`/`.env.example` convention.
-  - Add the `[PLACEHOLDER]`-resolved secret-store path only if Decision
-    3's placeholder is answered in favor of building it now; otherwise
-    this ticket ships env-var-only and the secret-store question is
-    explicitly deferred, stated as such in `TEST_PLAN.md`'s Known
-    Limitations, not left silent.
+  - Env-var-only, per Decision 3's resolution — no secret-store
+    integration in this ticket. State the deferral explicitly in
+    `TEST_PLAN.md`'s Known Limitations, not left silent.
 - **Deliverables:**
   - Credential-reference resolution in run config.
   - `TEST_PLAN.md` regression case grepping generated output for the
@@ -197,14 +201,26 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   instructions "the same pattern used for Selenium automation accounts"
   — without this doc, Phase 20's config fields have no guidance on what
   kind of account should be behind them.
-- **Scope:** Resolved once Decision 6's `[PLACEHOLDER]` is answered;
-  covers the four named exemption categories (lockout, rate-limiting,
-  MFA interruption, new-sign-in alerts) generically, not
-  platform-specific steps.
-- **Deliverables:** TBD pending Decision 6.
-- **Acceptance criteria:** TBD pending Decision 6.
+- **Scope:** Per Decision 6's resolution — a new
+  `docs/AUTOMATED_ACCOUNT_SETUP.md` covering the four named exemption
+  categories (lockout, rate-limiting, MFA interruption, new-sign-in
+  alerts) generically, not platform- or identity-provider-specific
+  steps. Written against TFP-092's actual config field names (login
+  URL, selectors) and TFP-093's actual credential-reference shape
+  (env var name), not invented ahead of them.
+- **Deliverables:**
+  - `docs/AUTOMATED_ACCOUNT_SETUP.md`: what an automation account is,
+    why it needs the four exemptions, and how to point TestForge's run
+    config at one (referencing TFP-092/093's real field names).
+  - A pointer to it from wherever run config's login fields are
+    documented/surfaced in the app, so a user hits it before they need
+    to search for it.
+- **Acceptance criteria:**
+  - The doc names all four exemption categories and matches the real
+    config field names TFP-092/093 shipped, not a stale or assumed
+    shape.
 - **Dependencies:** TFP-092 (needs the real config shape to document
-  against).
+  against), TFP-093 (needs the real credential-reference shape).
 
 ## Recommended Execution Order
 
