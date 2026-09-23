@@ -111,6 +111,13 @@ export interface DependencyDetail {
     url: string;
     sameOrigin: boolean;
     method: string | null;
+    // The raw, unresolved DOM attribute value (e.g. a <form>'s literal
+    // action="/authenticate") for form-action/third-party-script/iframe
+    // entries - lets a generated test locate and actually trigger the real
+    // element (TFP-085's form-action test needs this to submit the form it
+    // blocked, not just reload the page). Null for network-observed kinds
+    // (xhr-fetch/redirect/cookie) with no corresponding DOM attribute.
+    rawValue: string | null;
 }
 
 // One row per distinct (host, kind) pair across every page introspected for
@@ -122,6 +129,7 @@ export interface DependencyMapEntry {
     sampleUrl: string;
     sameOrigin: boolean;
     method: string | null;
+    rawValue: string | null;
     occurrences: number;
     paths: string[];
 }

@@ -133,6 +133,7 @@ function normalizeDependencyMap(input: unknown): DependencyMapEntry[] {
                 sampleUrl: typeof item.sampleUrl === "string" ? item.sampleUrl.trim() : "",
                 sameOrigin: Boolean(item.sameOrigin),
                 method: typeof item.method === "string" ? item.method : null,
+                rawValue: typeof item.rawValue === "string" ? item.rawValue : null,
                 occurrences: typeof item.occurrences === "number" && item.occurrences > 0 ? item.occurrences : 1,
                 paths: normalizeStringList(item.paths),
             };

@@ -5,6 +5,7 @@ import {
     buildToggleGroupTests,
     buildUsabilityElementTests,
 } from "./actionable-elements";
+import { buildDependencyFailureTests, DEPENDENCY_FAILURE_INJECTION_NOTE } from "./dependency-failure-injection";
 import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -191,6 +192,19 @@ ${elementChecks}
         }
 
         const suite = createSuite("security", securityTests, securityNotes);
+
+        if (suite) {
+            suites.push(suite);
+        }
+    }
+
+    if (areas.includes("reliability")) {
+        const failureInjectionTests = buildDependencyFailureTests(contentProfile);
+        const suite = createSuite(
+            "reliability",
+            failureInjectionTests,
+            failureInjectionTests.length > 0 ? [DEPENDENCY_FAILURE_INJECTION_NOTE] : undefined
+        );
 
         if (suite) {
             suites.push(suite);

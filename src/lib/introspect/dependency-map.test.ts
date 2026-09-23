@@ -91,6 +91,7 @@ function dependency(overrides: Partial<DependencyDetail>): DependencyDetail {
         url: "https://api.example.com/data",
         sameOrigin: false,
         method: "GET",
+        rawValue: null,
         ...overrides,
     };
 }

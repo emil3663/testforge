@@ -10,6 +10,7 @@ export const BEST_PRACTICE_OPTIONS = [
     "seo/content",
     "cookie/session",
     "database",
+    "reliability",
 ] as const;
 
 export type BestPracticeArea = (typeof BEST_PRACTICE_OPTIONS)[number];

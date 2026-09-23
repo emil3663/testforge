@@ -10,6 +10,7 @@ export const SUITE_AREA_CODES: Record<BestPracticeArea, string> = {
     "seo/content": "SE",
     "cookie/session": "CS",
     database: "DB",
+    reliability: "RL",
 };
 
 export const SUITE_TITLES: Record<BestPracticeArea, string> = {
@@ -22,6 +23,7 @@ export const SUITE_TITLES: Record<BestPracticeArea, string> = {
     "seo/content": "SEO and Content Coverage",
     "cookie/session": "Cookie and Session Coverage",
     database: "Database Coverage",
+    reliability: "Reliability Coverage",
 };
 
 export function createSuite(

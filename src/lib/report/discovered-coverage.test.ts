@@ -20,7 +20,8 @@ import assert from "node:assert";
 import { test } from "node:test";
 import { randomUUID } from "node:crypto";
 import { buildAccessibilityElementTitle, buildActionableElementTitle } from "@/lib/generate/mock/locators";
-import type { ActionableElementDetail, ContentProfile } from "@/lib/generate/mock/types";
+import { buildDependencyFailureTitle } from "@/lib/generate/mock/dependency-failure-injection";
+import type { ActionableElementDetail, ContentProfile, DependencyMapEntry } from "@/lib/generate/mock/types";
 import type { ExecutionRecord } from "./types";
 import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix } from "./discovered-coverage";
 
@@ -241,4 +242,65 @@ test("areas without discovered-element data keep the prior test-based rollup unc
     assert.ok(performanceRow);
     assert.equal(performanceRow!.status, "covered", "old test-based rollup must still classify a fully-passing area as covered");
     assert.equal(performanceRow!.uncoveredElements, undefined, "an area with no discovered-element data must not claim an element-level uncovered list");
+});
+
+function dependencyEntry(overrides: Partial<DependencyMapEntry> = {}): DependencyMapEntry {
+    return {
+        host: "cdn.example.net",
+        kind: "third-party-script",
+        sampleUrl: "https://cdn.example.net/analytics.js",
+        sameOrigin: false,
+        method: null,
+        rawValue: null,
+        occurrences: 1,
+        paths: ["/"],
+        ...overrides,
+    };
+}
+
+test("TFP-085: reliability folds into the same discovered-coverage denominator as functional/accessibility", () => {
+    const blockedScript = dependencyEntry({ host: "cdn.example.net", kind: "third-party-script" });
+    const blockedApi = dependencyEntry({ host: "api.example.net", kind: "xhr-fetch", sampleUrl: "https://api.example.net/data" });
+    const contentProfile: ContentProfile = {
+        scannedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        pages: [{
+            path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [],
+            actionableElements: [], linkDetails: [], visibleTextSnippets: [],
+        }],
+        dependencyMap: [blockedScript, blockedApi],
+    };
+    // Only the script's failure-injection test actually ran.
+    const records: ExecutionRecord[] = [executionRecord(buildDependencyFailureTitle(blockedScript), "Passed")];
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, records, BASE_URL);
+    const coverage = buildDiscoveredCoverageMatrix(["reliability"], records, matches);
+
+    const reliabilityRow = coverage.matrix.find((item) => item.requirement === "Reliability");
+    assert.ok(reliabilityRow, "reliability row must exist, the same way functional/accessibility rows do");
+    assert.equal(reliabilityRow!.status, "partial", "1 of 2 recorded dependencies tested is partial, not covered");
+    assert.deepEqual(reliabilityRow!.uncoveredElements, ["api.example.net [xhr-fetch]"]);
+    assert.ok(
+        notTested.some((item) => item.area === "reliability" && item.reason === "generator-gap" && item.elementName.includes("api.example.net")),
+        "the untested dependency must be bucketed generator-gap, not silently absorbed"
+    );
+});
+
+test("TFP-085: a cookie-kind dependency is excluded-by-generator, not a false generator-gap", () => {
+    const cookie = dependencyEntry({ host: "app.example.net", kind: "cookie", sampleUrl: "session_id" });
+    const contentProfile: ContentProfile = {
+        scannedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        pages: [{
+            path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [],
+            actionableElements: [], linkDetails: [], visibleTextSnippets: [],
+        }],
+        dependencyMap: [cookie],
+    };
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, [], BASE_URL);
+
+    assert.equal(matches.length, 0, "a cookie-kind dependency has no generated test, so it must never appear as a match");
+    assert.equal(notTested.length, 1);
+    assert.equal(notTested[0]!.reason, "excluded-by-generator");
 });

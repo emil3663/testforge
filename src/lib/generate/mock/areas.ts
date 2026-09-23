@@ -2,12 +2,16 @@ import { includesAny } from "./format";
 import type { BestPracticeArea } from "./types";
 import { BEST_PRACTICE_OPTIONS } from "./types";
 
+// TFP-085: reliability's failure-injection tests are read-only from the
+// target's point of view (Decision 2), so they run by default the same as
+// functional/accessibility - included here, not left to opt-in.
 const DEFAULT_BEST_PRACTICES: BestPracticeArea[] = [
     "functional",
     "usability",
     "responsive/mobile",
     "accessibility",
     "seo/content",
+    "reliability",
 ];
 
 const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
@@ -20,6 +24,7 @@ const BEST_PRACTICE_LABELS: Record<BestPracticeArea, string> = {
     "seo/content": "SEO/Content",
     "cookie/session": "Cookie/Session",
     database: "Database",
+    reliability: "Reliability",
 };
 
 export function getBestPracticeAreas(

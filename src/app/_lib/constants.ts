@@ -47,6 +47,11 @@ export const BEST_PRACTICE_OPTIONS = [
         label: "Database",
         description: "Persistence follow-up for save/update flows",
     },
+    {
+        id: "reliability",
+        label: "Reliability",
+        description: "Graceful degradation when a dependency or local storage fails",
+    },
 ] as const;
 
 // Only correct when TestForge is testing itself - it's the form's starting
@@ -107,6 +112,7 @@ export const BEST_PRACTICE_KEYWORDS: Record<BestPracticeArea, string[]> = {
     "seo/content": ["seo", "content", "meta", "heading", "headings", "title"],
     "cookie/session": ["cookie", "cookies", "session", "login", "authentication"],
     database: ["database", "persist", "persistence", "save", "saved", "update"],
+    reliability: ["reliability", "resilience", "degrade", "graceful", "offline", "failure", "outage"],
 };
 
 export const websiteSchema = {

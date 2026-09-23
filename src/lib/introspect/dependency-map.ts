@@ -42,6 +42,7 @@ export function dependenciesFromEmbeddedLinks(embeddedLinkDetails: EmbeddedLinkD
             url: link.url,
             sameOrigin: link.sameOrigin,
             method: kind === "form-action" ? "POST" : null,
+            rawValue: link.rawValue,
         }];
     });
 }
@@ -85,6 +86,7 @@ export function aggregateDependencyMap(
                 sampleUrl: dependency.url,
                 sameOrigin: dependency.sameOrigin,
                 method: dependency.method,
+                rawValue: dependency.rawValue,
                 occurrences: 1,
                 paths: [path],
             });

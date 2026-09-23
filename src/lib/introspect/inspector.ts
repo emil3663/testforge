@@ -47,6 +47,7 @@ function trackXhrFetchRequests(request: Request, baseUrl: string, sink: Dependen
         url,
         sameOrigin: host === hostOf(baseUrl),
         method: request.method(),
+        rawValue: null,
     });
 }
 
@@ -71,6 +72,7 @@ function redirectDependenciesFromNavigation(
                 url,
                 sameOrigin: host === hostOf(baseUrl),
                 method: current.method(),
+                rawValue: null,
             });
         }
 
@@ -129,6 +131,7 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
                     url: cookie.name,
                     sameOrigin: cookie.domain.replace(/^\./, "") === hostOf(baseUrl),
                     method: null,
+                    rawValue: null,
                 }));
 
                 perPageDependencies.push({

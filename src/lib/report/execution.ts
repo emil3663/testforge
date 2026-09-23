@@ -18,6 +18,7 @@ export const AREA_LABELS: Record<string, string> = {
     "seo/content": "SEO",
     "cookie/session": "Cookies",
     database: "Database",
+    reliability: "Reliability",
 };
 
 export const SUITE_AREA_MAP: Record<string, string> = {
@@ -30,6 +31,7 @@ export const SUITE_AREA_MAP: Record<string, string> = {
     "SEO and Content Coverage": "seo/content",
     "Cookie and Session Coverage": "cookie/session",
     "Database Coverage": "database",
+    "Reliability Coverage": "reliability",
 };
 
 export function mapStatus(testStatus: JsonTest["status"]): ExecutionStatus {

@@ -5,7 +5,8 @@ import {
     resolveLinkAuditPaths,
     findMatchingProfilePage,
 } from "@/lib/generate/mock/locators";
-import type { ActionableElementDetail, ContentProfile, ContentProfilePage } from "@/lib/generate/mock/types";
+import { buildDependencyFailureTitle, isRoutableDependencyKind } from "@/lib/generate/mock/dependency-failure-injection";
+import type { ActionableElementDetail, ContentProfile, ContentProfilePage, DependencyMapEntry } from "@/lib/generate/mock/types";
 import { AREA_LABELS } from "./execution";
 import { inferCoverageAreas } from "./coverage";
 import type { CoverageMatrixItem, ExecutionRecord, NotTestedElement } from "./types";
@@ -15,13 +16,19 @@ import type { CoverageMatrixItem, ExecutionRecord, NotTestedElement } from "./ty
 // generated, which is a known, named generator limit, not a gap.
 const GENERATOR_ELEMENT_CAP = 50;
 
-export type ElementTrackedArea = "functional" | "accessibility";
-const ELEMENT_TRACKED_AREAS: ElementTrackedArea[] = ["functional", "accessibility"];
+export type ElementTrackedArea = "functional" | "accessibility" | "reliability";
+// Reliability is tracked separately below, since its discovered surface
+// (dependencyMap) is per-baseUrl, not per-page like functional/accessibility's
+// actionableElements - it doesn't fit this per-path loop's shape.
+const ELEMENT_TRACKED_AREAS: Exclude<ElementTrackedArea, "reliability">[] = ["functional", "accessibility"];
 
 export interface DiscoveredElementMatch {
     area: ElementTrackedArea;
     path: string;
-    element: ActionableElementDetail;
+    // Only set for functional/accessibility - reliability matches a
+    // DependencyMapEntry instead, which carries no ActionableElementDetail.
+    element?: ActionableElementDetail;
+    displayName: string;
     title: string;
     tested: boolean;
 }
@@ -67,6 +74,25 @@ function notTestedEntry(
         elementName: getActionableElementDisplayName(element),
         elementType: element.elementType,
         containerLabel: element.containerLabel,
+        reason,
+        reasonDetail,
+    };
+}
+
+// Reliability's discovered "elements" are DependencyMapEntry rows (TFP-084),
+// not ActionableElementDetail - same NotTestedElement shape, a different
+// source of elementName/elementType.
+function notTestedDependencyEntry(
+    entry: DependencyMapEntry,
+    reason: NotTestedElement["reason"],
+    reasonDetail: string
+): NotTestedElement {
+    return {
+        area: "reliability",
+        path: entry.paths[0] ?? "/",
+        elementName: `${entry.host} [${entry.kind}]`,
+        elementType: entry.kind,
+        containerLabel: "",
         reason,
         reasonDetail,
     };
@@ -133,7 +159,7 @@ export function computeDiscoveredElementCoverage(
 
                     const title = buildActionableElementTitle(element);
                     const tested = executedTitles.has(title);
-                    matches.push({ area, path, element, title, tested });
+                    matches.push({ area, path, element, displayName: getActionableElementDisplayName(element), title, tested });
 
                     if (!tested) {
                         notTested.push(notTestedEntry(
@@ -142,7 +168,7 @@ export function computeDiscoveredElementCoverage(
                         ));
                     }
                 });
-            } else {
+            } else if (area === "accessibility") {
                 const all = matchingPage?.actionableElements ?? [];
 
                 all.forEach((element, index) => {
@@ -164,7 +190,7 @@ export function computeDiscoveredElementCoverage(
 
                     const title = buildAccessibilityElementTitle(element);
                     const tested = executedTitles.has(title);
-                    matches.push({ area, path, element, title, tested });
+                    matches.push({ area, path, element, displayName: getActionableElementDisplayName(element), title, tested });
 
                     if (!tested) {
                         notTested.push(notTestedEntry(
@@ -174,6 +200,46 @@ export function computeDiscoveredElementCoverage(
                     }
                 });
             }
+        }
+    }
+
+    // Reliability (TFP-085): dependencyMap is per-baseUrl, not per-page, so
+    // it sits outside the path loop above rather than forcing a fake path
+    // iteration over a list that already spans every introspected page.
+    const reliabilitySelected = selectedPractices.includes("reliability");
+    for (const entry of contentProfile.dependencyMap ?? []) {
+        if (!isRoutableDependencyKind(entry.kind)) {
+            notTested.push(notTestedDependencyEntry(
+                entry, "excluded-by-generator",
+                "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+            ));
+            continue;
+        }
+
+        if (!reliabilitySelected) {
+            notTested.push(notTestedDependencyEntry(
+                entry, "not-selected",
+                '"reliability" was not a selected practice area for this run'
+            ));
+            continue;
+        }
+
+        const path = entry.paths[0] ?? "/";
+        const title = buildDependencyFailureTitle(entry);
+        const tested = executedTitles.has(title);
+        matches.push({
+            area: "reliability",
+            path,
+            displayName: `${entry.host} [${entry.kind}]`,
+            title,
+            tested,
+        });
+
+        if (!tested) {
+            notTested.push(notTestedDependencyEntry(
+                entry, "generator-gap",
+                "selected and eligible for a generated failure-injection test, but no matching executed test was found"
+            ));
         }
     }
 
@@ -201,7 +267,7 @@ export function buildDiscoveredCoverageMatrix(
 
     const matrix = targetPractices.map((practice) => {
         const label = AREA_LABELS[practice] ?? practice;
-        const areaMatches = (practice === "functional" || practice === "accessibility")
+        const areaMatches = (practice === "functional" || practice === "accessibility" || practice === "reliability")
             ? matches.filter((match) => match.area === practice)
             : [];
 
@@ -219,7 +285,7 @@ export function buildDiscoveredCoverageMatrix(
                 tests: coveredMatches.map((match) => match.title),
                 uncoveredElements: areaMatches
                     .filter((match) => !match.tested)
-                    .map((match) => getActionableElementDisplayName(match.element)),
+                    .map((match) => match.displayName),
                 percentage: Math.round((coveredMatches.length / areaMatches.length) * 100),
             } satisfies CoverageMatrixItem;
         }

@@ -133,7 +133,7 @@ export interface CoverageMatrixItem {
 export type NotTestedReason = "not-selected" | "excluded-by-generator" | "generator-gap";
 
 export interface NotTestedElement {
-    area: "functional" | "accessibility";
+    area: "functional" | "accessibility" | "reliability";
     path: string;
     elementName: string;
     elementType: string;
