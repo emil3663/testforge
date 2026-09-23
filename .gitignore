@@ -43,6 +43,9 @@ dist/
 .DS_Store
 *.pem
 
+# local, machine-specific AI-agent tooling config - not project source
+.clinerules
+
 # debug
 npm-debug.log*
 yarn-debug.log*
