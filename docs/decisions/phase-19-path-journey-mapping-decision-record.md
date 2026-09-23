@@ -4,7 +4,7 @@ Date: 2026-09-23
 Scope: Combine the crawl page graph and introspect's actionable elements
 into a walkable site graph, surface candidate user journeys for review,
 and generate end-to-end tests that walk selected paths.
-Status: Approved and in implementation (Decisions 4-6 resolved 2026-09-23, before TFP-088 landed)
+Status: Approved, implemented, Gate B met 2026-09-23 (`a9df7af`) — TFP-096 remains, not gating
 
 ## Context
 
@@ -154,6 +154,21 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   (Decision 4's amendment), the generated test's final assertion is
   that the app actually reaches `exitPath` after submitting - not just
   that the submit produced no error.
+- A selected journey joins the functional discovered surface for
+  coverage purposes, same as any other discovered element: generated
+  and run counts as covered; generated but skipped (interactive tests
+  not enabled for the run) is bucketed under a dedicated
+  `interactive-skipped` reason, never silently "covered" and never
+  conflated with `generator-gap`; not selected at all is `not-selected`.
+- Verifying this against a real run surfaced a pre-existing defect,
+  fixed in the same ticket: discovered-coverage matched executed test
+  titles against title builders that omit the `TFxx-000:` id prefix a
+  real Playwright run reports, so every discovered element across
+  functional, accessibility, reliability, and storage matching alike
+  came back uncovered/generator-gap on any real run, undetected because
+  RUN-10/RUN-11's unit tests used bare titles. See `TEST_PLAN.md`'s
+  RUN-15 for the live probe and the fix; GEN-19 covers the
+  `interactive-skipped` bucket specifically.
 
 ## Regression Policy
 
@@ -166,8 +181,10 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 - Once TFP-090 lands: a case (in the self-test smoke or regression
   suite, per this repo's existing UI-testing pattern) proving a
   selection made on the review screen reaches run config unchanged.
-- Once TFP-091 lands: a case proving a real selected journey runs as
-  one test asserting every step, against a real target.
+- TFP-091 landed (GEN-19, RUN-15): a case proving a real selected
+  journey runs as one test asserting every step, against a real target,
+  plus the coverage-bucketing case for `interactive-skipped` and the
+  id-prefix matching defect found and fixed while verifying it.
 - All landed in the same commit as the code they describe, per this
   phase's standing policy.
 
@@ -338,10 +355,15 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 - TFP-088 landed with a real `TEST_PLAN.md` case against a real target.
 
 ### Gate B — Phase 19 complete
-- Decisions 4–6 answered (**Met**, 2026-09-23). TFP-089–091 landed
-  against a real target, each with a `TEST_PLAN.md` case proving real
-  (not assumed) behavior — the roadmap paragraph's actual deliverable,
-  and what this gate requires.
+**Met, 2026-09-23 (`a9df7af`).**
+- Decisions 4–6 answered, 2026-09-23, before TFP-088 landed.
+- TFP-089–091 landed against real targets, each with a `TEST_PLAN.md`
+  case proving real (not assumed) behavior: GEN-18 (review screen,
+  fixture site), GEN-19 (journey generation, fixture site +
+  `the-internet.herokuapp.com` live), INT-09 (journey identification,
+  same live target). RUN-15 covers the coverage-bucketing side
+  specifically, including the id-prefix defect found and fixed while
+  verifying TFP-091 — see Acceptance Criteria §4.
 - TFP-096 (named-flow UI entry) is not required for this gate — named
   flows work end-to-end via the API today, and TFP-096 only closes the
   UI gap. Land it whenever convenient; don't hold the phase open for it.
