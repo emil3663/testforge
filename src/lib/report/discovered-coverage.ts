@@ -6,7 +6,8 @@ import {
     findMatchingProfilePage,
 } from "@/lib/generate/mock/locators";
 import { buildDependencyFailureTitle, isRoutableDependencyKind } from "@/lib/generate/mock/dependency-failure-injection";
-import type { ActionableElementDetail, ContentProfile, ContentProfilePage, DependencyMapEntry } from "@/lib/generate/mock/types";
+import { buildStorageFailureTitle, STORAGE_KINDS } from "@/lib/generate/mock/storage-failure-injection";
+import type { ActionableElementDetail, ContentProfile, ContentProfilePage, DependencyMapEntry, StorageKind } from "@/lib/generate/mock/types";
 import { AREA_LABELS } from "./execution";
 import { inferCoverageAreas } from "./coverage";
 import type { CoverageMatrixItem, ExecutionRecord, NotTestedElement } from "./types";
@@ -92,6 +93,25 @@ function notTestedDependencyEntry(
         path: entry.paths[0] ?? "/",
         elementName: `${entry.host} [${entry.kind}]`,
         elementType: entry.kind,
+        containerLabel: "",
+        reason,
+        reasonDetail,
+    };
+}
+
+// TFP-086: reliability's other discovered "element" - a (page, storage
+// kind) pair the introspect-time behavioral probe actually detected in use.
+function notTestedStorageEntry(
+    path: string,
+    kind: StorageKind,
+    reason: NotTestedElement["reason"],
+    reasonDetail: string
+): NotTestedElement {
+    return {
+        area: "reliability",
+        path,
+        elementName: `${kind} on ${path}`,
+        elementType: kind,
         containerLabel: "",
         reason,
         reasonDetail,
@@ -240,6 +260,50 @@ export function computeDiscoveredElementCoverage(
                 entry, "generator-gap",
                 "selected and eligible for a generated failure-injection test, but no matching executed test was found"
             ));
+        }
+    }
+
+    // TFP-086: same reliability area, a different discovered surface - one
+    // (page, storage kind) pair per kind the introspect-time behavioral
+    // probe actually detected in use. Unlike dependencyMap's cookie
+    // exclusion, every detected kind here is routable (there's no kind
+    // storage-failure-injection can't act on), so only not-selected /
+    // generator-gap apply.
+    for (const page of contentProfile.pages) {
+        const usage = page.storageUsage;
+        if (!usage) {
+            continue;
+        }
+
+        for (const kind of STORAGE_KINDS) {
+            if (!usage[kind]) {
+                continue;
+            }
+
+            if (!reliabilitySelected) {
+                notTested.push(notTestedStorageEntry(
+                    page.path, kind, "not-selected",
+                    '"reliability" was not a selected practice area for this run'
+                ));
+                continue;
+            }
+
+            const title = buildStorageFailureTitle(page.path, kind);
+            const tested = executedTitles.has(title);
+            matches.push({
+                area: "reliability",
+                path: page.path,
+                displayName: `${kind} on ${page.path}`,
+                title,
+                tested,
+            });
+
+            if (!tested) {
+                notTested.push(notTestedStorageEntry(
+                    page.path, kind, "generator-gap",
+                    "selected and eligible for a generated storage-failure test, but no matching executed test was found"
+                ));
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 import { chromium, type Request } from "@playwright/test";
 import { captureDomSnapshot } from "./dom-snapshot";
 import { aggregateDependencyMap, dependenciesFromEmbeddedLinks } from "./dependency-map";
+import { installStorageAccessProbe, readStorageAccessProbe } from "./storage-probe";
 import type { DependencyDetail, PageSnapshot } from "./types";
 
 const MAX_TEXT_ITEMS = 8;
@@ -85,6 +86,10 @@ function redirectDependenciesFromNavigation(
 export async function inspectPages(baseUrl: string, paths: string[]) {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
+    // TFP-086: runs before any of the page's own scripts, on every
+    // subsequent navigation (addInitScript persists across page.goto calls
+    // on the same page) - a fresh window.__tfStorageAccess per page load.
+    await page.addInitScript(installStorageAccessProbe);
 
     try {
         const pages: PageSnapshot[] = [];
@@ -109,6 +114,8 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
                     maxDragDropTargets: MAX_DRAG_DROP_TARGETS,
                 });
 
+                const storageUsage = await readStorageAccessProbe(page);
+
                 pages.push({
                     ...snapshot,
                     headings: cleanTextList(snapshot.headings),
@@ -119,6 +126,7 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
                     embeddedLinkDetails: snapshot.embeddedLinkDetails,
                     dragDropTargets: snapshot.dragDropTargets,
                     visibleTextSnippets: cleanTextList(snapshot.visibleTextSnippets),
+                    storageUsage,
                 });
 
                 const redirectDependencies = response

@@ -76,6 +76,13 @@ export interface DragDropTargetDetail {
     ariaLabel: string;
 }
 
+// TFP-086: which storage entry points a page's own scripts actually touched,
+// determined by a real behavioral probe during introspect (an instrumented
+// getter/wrapper the page's real code runs through, not a static source
+// grep) - see inspector.ts's addInitScript instrumentation.
+export type StorageKind = "localStorage" | "sessionStorage" | "indexedDB";
+export type StorageUsage = Record<StorageKind, boolean>;
+
 export interface PageSnapshot {
     path: string;
     url: string;
@@ -89,6 +96,7 @@ export interface PageSnapshot {
     embeddedLinkDetails: EmbeddedLinkDetail[];
     dragDropTargets: DragDropTargetDetail[];
     visibleTextSnippets: string[];
+    storageUsage: StorageUsage;
 }
 
 // TFP-084: a single outbound dependency observed for one page, before

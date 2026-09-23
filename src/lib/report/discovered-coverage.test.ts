@@ -21,6 +21,7 @@ import { test } from "node:test";
 import { randomUUID } from "node:crypto";
 import { buildAccessibilityElementTitle, buildActionableElementTitle } from "@/lib/generate/mock/locators";
 import { buildDependencyFailureTitle } from "@/lib/generate/mock/dependency-failure-injection";
+import { buildStorageFailureTitle } from "@/lib/generate/mock/storage-failure-injection";
 import type { ActionableElementDetail, ContentProfile, DependencyMapEntry } from "@/lib/generate/mock/types";
 import type { ExecutionRecord } from "./types";
 import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix } from "./discovered-coverage";
@@ -303,4 +304,48 @@ test("TFP-085: a cookie-kind dependency is excluded-by-generator, not a false ge
     assert.equal(matches.length, 0, "a cookie-kind dependency has no generated test, so it must never appear as a match");
     assert.equal(notTested.length, 1);
     assert.equal(notTested[0]!.reason, "excluded-by-generator");
+});
+
+test("TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests", () => {
+    const contentProfile: ContentProfile = {
+        scannedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        pages: [{
+            path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [],
+            actionableElements: [], linkDetails: [], visibleTextSnippets: [],
+            storageUsage: { localStorage: true, sessionStorage: false, indexedDB: true },
+        }],
+    };
+    // Only the localStorage test actually ran; indexedDB has none.
+    const records: ExecutionRecord[] = [executionRecord(buildStorageFailureTitle("/", "localStorage"), "Passed")];
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, records, BASE_URL);
+    const coverage = buildDiscoveredCoverageMatrix(["reliability"], records, matches);
+
+    const reliabilityRow = coverage.matrix.find((item) => item.requirement === "Reliability");
+    assert.ok(reliabilityRow);
+    assert.equal(reliabilityRow!.status, "partial", "1 of 2 detected storage kinds tested is partial, not covered");
+    assert.deepEqual(reliabilityRow!.uncoveredElements, ["indexedDB on /"]);
+    assert.ok(
+        notTested.some((item) => item.area === "reliability" && item.reason === "generator-gap" && item.elementName === "indexedDB on /")
+    );
+    // sessionStorage was never detected as used, so it must never appear at all - not a false generator-gap.
+    assert.ok(!notTested.some((item) => item.elementName.includes("sessionStorage")));
+});
+
+test("TFP-086: a page with no detected storage usage contributes nothing to the reliability row", () => {
+    const contentProfile: ContentProfile = {
+        scannedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        pages: [{
+            path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [],
+            actionableElements: [], linkDetails: [], visibleTextSnippets: [],
+            storageUsage: { localStorage: false, sessionStorage: false, indexedDB: false },
+        }],
+    };
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, [], BASE_URL);
+
+    assert.equal(matches.length, 0);
+    assert.equal(notTested.length, 0, "no storage kind was detected as used, so nothing should be reported at all - not a false generator-gap");
 });

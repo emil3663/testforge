@@ -24,6 +24,8 @@ export type {
     LinkCategory,
     LinkDetail,
     LocatorHint,
+    StorageKind,
+    StorageUsage,
     TestAuditMode,
 } from "./types";
 

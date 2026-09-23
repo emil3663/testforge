@@ -13,7 +13,7 @@ export interface DomSnapshotArgs {
 // access to this module's scope. Every helper it uses must stay nested in its
 // body (only real browser globals and the destructured args are available at
 // runtime), so this function cannot be split further without breaking that.
-export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkDetails, maxEmbeddedLinkDetails, maxDragDropTargets }: DomSnapshotArgs): PageSnapshot {
+export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkDetails, maxEmbeddedLinkDetails, maxDragDropTargets }: DomSnapshotArgs): Omit<PageSnapshot, "storageUsage"> {
     const cleanItems = (items: string[], limit = 8) => [...new Set(
         items
             .map((item) => item.replace(/\s+/g, " ").trim())

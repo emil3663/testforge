@@ -8,6 +8,7 @@ import type {
     InteractionCategory,
     LinkCategory,
     LinkDetail,
+    StorageUsage,
     TestAuditMode,
 } from "@/lib/generate/mock";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock";
@@ -107,6 +108,19 @@ export function normalizeContentRules(input: unknown): ContentRules {
         requiredHeadings: normalizeStringList(rules.requiredHeadings),
         requiredText: normalizeStringList(rules.requiredText),
         forbiddenText: normalizeStringList(rules.forbiddenText),
+    };
+}
+
+// TFP-086: same re-validation rationale as normalizeDependencyMap below -
+// storageUsage is a real behavioral-probe result computed server-side by
+// inspectPages, not re-derived here. Absent/malformed input defaults every
+// kind to false (no false positive coverage claim), never true.
+function normalizeStorageUsage(input: unknown): StorageUsage {
+    const usage = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
+    return {
+        localStorage: Boolean(usage.localStorage),
+        sessionStorage: Boolean(usage.sessionStorage),
+        indexedDB: Boolean(usage.indexedDB),
     };
 }
 
@@ -318,6 +332,7 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                     .filter((item) => (item.isDraggableSource || item.isDropTarget) && item.tagName)
                 : [],
             visibleTextSnippets: normalizeStringList(page.visibleTextSnippets),
+            storageUsage: normalizeStorageUsage(page.storageUsage),
         }));
 
     return {

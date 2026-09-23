@@ -6,6 +6,7 @@ import {
     buildUsabilityElementTests,
 } from "./actionable-elements";
 import { buildDependencyFailureTests, DEPENDENCY_FAILURE_INJECTION_NOTE } from "./dependency-failure-injection";
+import { buildStorageFailureTests } from "./storage-failure-injection";
 import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -200,9 +201,11 @@ ${elementChecks}
 
     if (areas.includes("reliability")) {
         const failureInjectionTests = buildDependencyFailureTests(contentProfile);
+        const storageFailureTests = buildStorageFailureTests(contentProfile);
+        const reliabilityTests = [...failureInjectionTests, ...storageFailureTests];
         const suite = createSuite(
             "reliability",
-            failureInjectionTests,
+            reliabilityTests,
             failureInjectionTests.length > 0 ? [DEPENDENCY_FAILURE_INJECTION_NOTE] : undefined
         );
 
