@@ -3,12 +3,23 @@ import type {
     BestPracticeArea,
     ContentProfile,
     ContentRules,
+    DependencyKind,
+    DependencyMapEntry,
     InteractionCategory,
     LinkCategory,
     LinkDetail,
     TestAuditMode,
 } from "@/lib/generate/mock";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock";
+
+const DEPENDENCY_KINDS = new Set<string>([
+    "xhr-fetch",
+    "form-action",
+    "third-party-script",
+    "iframe",
+    "redirect",
+    "cookie",
+]);
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -97,6 +108,36 @@ export function normalizeContentRules(input: unknown): ContentRules {
         requiredText: normalizeStringList(rules.requiredText),
         forbiddenText: normalizeStringList(rules.forbiddenText),
     };
+}
+
+// TFP-084: the dependency map is already fully aggregated server-side by
+// inspectPages before it ever reaches the client - this just re-validates
+// the round-tripped JSON the same way every other contentProfile field is
+// re-validated, not re-deriving it.
+function normalizeDependencyMap(input: unknown): DependencyMapEntry[] {
+    if (!Array.isArray(input)) {
+        return [];
+    }
+
+    return input
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+        .map((item) => {
+            const kind: DependencyKind | null =
+                typeof item.kind === "string" && DEPENDENCY_KINDS.has(item.kind)
+                    ? (item.kind as DependencyKind)
+                    : null;
+
+            return {
+                host: typeof item.host === "string" ? item.host.trim() : "",
+                kind,
+                sampleUrl: typeof item.sampleUrl === "string" ? item.sampleUrl.trim() : "",
+                sameOrigin: Boolean(item.sameOrigin),
+                method: typeof item.method === "string" ? item.method : null,
+                occurrences: typeof item.occurrences === "number" && item.occurrences > 0 ? item.occurrences : 1,
+                paths: normalizeStringList(item.paths),
+            };
+        })
+        .filter((item): item is DependencyMapEntry => item.kind !== null && Boolean(item.host));
 }
 
 export function normalizeContentProfile(input: unknown): ContentProfile | null {
@@ -283,5 +324,6 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
         baseUrl: typeof profile.baseUrl === "string" ? profile.baseUrl : "",
         pages,
         warnings: normalizeStringList(profile.warnings),
+        dependencyMap: normalizeDependencyMap(profile.dependencyMap),
     };
 }

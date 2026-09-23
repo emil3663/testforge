@@ -1,3 +1,5 @@
+import type { DependencyMapEntry } from "@/lib/introspect/types";
+
 export const BEST_PRACTICE_OPTIONS = [
     "functional",
     "responsive/mobile",
@@ -99,9 +101,15 @@ export interface ContentProfilePage {
     visibleTextSnippets: string[];
 }
 
+// TFP-084: re-exported from introspect/types.ts (not redeclared) so the
+// generator, coverage, and persistence layers share the exact same shape
+// inspectPages actually produces.
+export type { DependencyKind, DependencyMapEntry } from "@/lib/introspect/types";
+
 export interface ContentProfile {
     scannedAt: string;
     baseUrl: string;
     pages: ContentProfilePage[];
     warnings?: string[];
+    dependencyMap?: DependencyMapEntry[];
 }

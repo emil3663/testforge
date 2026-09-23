@@ -90,3 +90,38 @@ export interface PageSnapshot {
     dragDropTargets: DragDropTargetDetail[];
     visibleTextSnippets: string[];
 }
+
+// TFP-084: a single outbound dependency observed for one page, before
+// per-baseUrl aggregation. "third-party-script"/"iframe"/"form-action" come
+// from the existing DOM-level embeddedLinkDetails scan (already read-only);
+// "xhr-fetch"/"redirect"/"cookie" require real Playwright-level observation
+// during the page's own natural load - none of these trigger any additional
+// navigation or submission beyond what inspectPages already does.
+export type DependencyKind =
+    | "xhr-fetch"
+    | "form-action"
+    | "third-party-script"
+    | "iframe"
+    | "redirect"
+    | "cookie";
+
+export interface DependencyDetail {
+    kind: DependencyKind;
+    host: string;
+    url: string;
+    sameOrigin: boolean;
+    method: string | null;
+}
+
+// One row per distinct (host, kind) pair across every page introspected for
+// a baseUrl - the per-site model TFP-084 extends from
+// buildDiscoveredCoverageMatrix's own per-site aggregation shape.
+export interface DependencyMapEntry {
+    host: string;
+    kind: DependencyKind;
+    sampleUrl: string;
+    sameOrigin: boolean;
+    method: string | null;
+    occurrences: number;
+    paths: string[];
+}

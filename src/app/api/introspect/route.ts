@@ -72,12 +72,13 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedPaths = normalizePaths(normalizedBaseUrl.value, paths);
-    const { pages, warnings } = await inspectPages(normalizedBaseUrl.value, normalizedPaths);
+    const { pages, warnings, dependencyMap } = await inspectPages(normalizedBaseUrl.value, normalizedPaths);
 
     return NextResponse.json({
         scannedAt: new Date().toISOString(),
         baseUrl: normalizedBaseUrl.value,
         pages,
         warnings,
+        dependencyMap,
     });
 }

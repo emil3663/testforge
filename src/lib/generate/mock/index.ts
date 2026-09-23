@@ -16,6 +16,8 @@ export type {
     ContentProfile,
     ContentProfilePage,
     ContentRules,
+    DependencyKind,
+    DependencyMapEntry,
     DragDropTargetDetail,
     GeneratedSuite,
     InteractionCategory,
