@@ -287,6 +287,40 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 - **Acceptance criteria:** per Acceptance Criteria §4 above.
 - **Dependencies:** TFP-090.
 
+### TFP-096 — Named-flow entry in the run-config UI
+
+- **Phase:** 19
+- **Priority:** P3
+- **Suggested labels:** `feature`, `ui`
+- **Problem it solves:** TFP-089 reads named flows (Decision 4) from an
+  optional `namedFlows` body field on `/api/introspect`, but nothing in
+  the app lets a user enter one — named flows are API-only today.
+  Flagged by Claude Code while building TFP-089, and confirmed against
+  the real UI before answering: `src/app/page.tsx` already has exactly
+  this shape of field (`contentPathsInput`, `requiredHeadingsInput`,
+  `requiredTextInput`, `forbiddenTextInput`), free-text lists under a
+  collapsible advanced section (`isContentRulesCollapsed`) — a named-
+  flow field fits that same slot.
+- **Scope:**
+  - A free-text input in that same advanced section, parsed into
+    `{ label, entryPath, exitPath }` entries and passed as
+    `/api/introspect`'s `namedFlows` field — same parsing shape as the
+    existing content-rule inputs, not a new form-building pattern.
+  - Resolved (Emil, 2026-09-23): this is its own small ticket, not part
+    of TFP-090's scope. TFP-090 reviews whatever journeys TFP-089
+    already produced, automatic or named, regardless of how a named one
+    was defined — it doesn't need to know or care.
+- **Deliverables:**
+  - Input field + parsing + wiring into the introspect request.
+  - `TEST_PLAN.md` case proving a named flow entered through the UI
+    produces the same ranked candidate a direct API call with that flow
+    would.
+- **Acceptance criteria:**
+  - A named flow entered in the UI appears in TFP-090's review screen
+    exactly as it would if supplied directly to the API.
+- **Dependencies:** TFP-089 (reads the field); independent of TFP-090
+  and TFP-091 — can be built in parallel with either, or after.
+
 ## Recommended Execution Order
 
 1. TFP-088 (unblocked, start now)
@@ -294,6 +328,9 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
    landed.
 3. TFP-089 → TFP-090 → TFP-091, in sequence (each genuinely depends on
    the previous one's output, unlike Phase 18's parallel tickets)
+4. TFP-096, any time after TFP-089 — doesn't block or depend on
+   TFP-090/091, so it can slot in wherever's convenient, including in
+   parallel with them.
 
 ## Suggested Milestone Gates
 
@@ -303,5 +340,8 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 ### Gate B — Phase 19 complete
 - Decisions 4–6 answered (**Met**, 2026-09-23). TFP-089–091 landed
   against a real target, each with a `TEST_PLAN.md` case proving real
-  (not assumed) behavior — not yet met, pending TFP-088/089/090/091
-  implementation.
+  (not assumed) behavior — the roadmap paragraph's actual deliverable,
+  and what this gate requires.
+- TFP-096 (named-flow UI entry) is not required for this gate — named
+  flows work end-to-end via the API today, and TFP-096 only closes the
+  UI gap. Land it whenever convenient; don't hold the phase open for it.
