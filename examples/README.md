@@ -19,15 +19,26 @@ examples/<category>/<skill-or-app>/<target>/
   exactly as it appears under `skills/testing/` or `skills/engineering/`
   (e.g. `write-playwright-test`, `code-structure`).
 - **`<target>`** is the real external codebase or site the run was against
-  - `test-assist` so far, since it's the browser-reachable target Phase 19
-  chose deliberately (see `docs/decisions/phase-19-dogfooding-backlog.md`).
+  - `test-assist`, the browser-reachable target Phase 19 chose deliberately
+  (see `docs/decisions/phase-19-dogfooding-backlog.md`), and `cah-pwa`,
+  added in Phase 25 (`docs/decisions/phase-25-cah-pwa-dogfooding-backlog.md`)
+  specifically because it has its own automated generator
+  (`scripts/generate_playwright_tests.js`) to compare against, not just a
+  hand-written baseline.
 
-This repeats for every future skill against the same target, so results
+This repeats for every future skill against the same targets, so results
 stay comparable over time instead of each run inventing its own shape:
 
 - `examples/testforge-app/test-assist/` - TFP-040, the full pipeline.
 - `examples/skills/write-playwright-test/test-assist/` - TFP-041, the skill
   alone.
+- `examples/testforge-app/cah-pwa/` - TFP-074, the full pipeline against a
+  target with real external dependencies (Firebase, Gemini) it turns out
+  not to reach - see that folder's `notes.md` for the specific reachability
+  boundary found, not assumed.
+- `examples/skills/write-playwright-test/cah-pwa/` - TFP-075, the skill
+  alone, going considerably further into real gameplay than the app's own
+  crawl-based pipeline can reach (see that file's header comment).
 - `examples/skills/code-structure/test-assist/` - not yet run. `code-structure`
   judges where *new* code should go; it needs a real feature request against
   a codebase being actively extended, which `test-assist` (external,
