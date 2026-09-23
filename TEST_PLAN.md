@@ -148,7 +148,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 - [x] TFP-065 — guard `JSON.parse` in `finalizeRunJob` against a corrupted report (silent run hangs)
 - [x] TFP-066 — validate `runId` as a UUID before any file-path operation (path traversal)
 - [x] TFP-067 — add `req.json()` error handling to the 5 unguarded POST handlers
-- [ ] TFP-068 — polling hook retry/backoff + terminal-status safety net (`useRun`, `useCrawl`)
+- [x] TFP-068 — polling hook retry/backoff + terminal-status safety net (`useRun`, `useCrawl`)
 - [ ] TFP-069 — drop `unsafe-eval` from production CSP
 - [ ] TFP-070 — cleanups: dead `outputDir` env var, default base URL callout, `PLANE_SECRET_KEY` default callout
 

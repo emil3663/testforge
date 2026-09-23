@@ -3,6 +3,7 @@ import { buildReportHtmlDocument, buildResultHtmlDocument } from "@/lib/report/h
 import type { ExecutionStatus, RunReport } from "@/lib/report/types";
 import { BASE_REPORT_TABS } from "@/app/_lib/constants";
 import { getContinuationExcludedTitles } from "@/app/_lib/derive";
+import { pollRunUntilDone } from "@/app/_hooks/pollRun";
 import type { ContentProfile, ReportTab, RunLifecycleStatus, RunProgressSnapshot, RunResult, RunStatusSnapshot, Step, TestAuditMode } from "@/app/_lib/types";
 
 interface StartRunParams {
@@ -51,52 +52,49 @@ export function useRun(
         let ignore = false;
         let timer: number | null = null;
 
-        const pollRunStatus = async () => {
-            try {
-                const response = await fetch(`/api/run?runId=${encodeURIComponent(activeRunId)}`, {
-                    cache: "no-store",
-                });
-                const data = (await response.json()) as RunStatusSnapshot | { error?: string };
+        const sleep = (ms: number) =>
+            new Promise<void>((resolve) => {
+                timer = window.setTimeout(() => {
+                    timer = null;
+                    resolve();
+                }, ms);
+            });
 
-                if (!response.ok) {
-                    throw new Error("error" in data ? data.error ?? "Run status check failed" : "Run status check failed");
-                }
-
-                if (ignore) {
-                    return;
-                }
-
-                const snapshot = data as RunStatusSnapshot;
+        void pollRunUntilDone(activeRunId, {
+            fetchImpl: fetch,
+            sleep,
+            isCancelled: () => ignore,
+            onSnapshot: (snapshot) => {
                 setRunProgress(snapshot.progress);
                 setRunStatus(snapshot.runStatus);
                 setRunDurationMs(snapshot.duration);
                 setIsCancellingRun(snapshot.cancellationRequested);
-
-                if (snapshot.result) {
-                    setResult(snapshot.result);
-                    setStep("done");
-                    setActiveRunId(null);
-                    setIsCancellingRun(false);
-                    return;
-                }
-
-                timer = window.setTimeout(pollRunStatus, 800);
-            } catch (err: unknown) {
-                if (ignore) {
-                    return;
-                }
-
-                setError(err instanceof Error ? err.message : "Run status check failed");
+            },
+            onResult: (result) => {
+                setResult(result);
+                setStep("done");
+                setActiveRunId(null);
+                setIsCancellingRun(false);
+            },
+            onTerminalWithoutResult: () => {
+                setError("Run reached a terminal status without a result. Check the server logs.");
                 setStep("ready");
                 setActiveRunId(null);
                 setRunProgress(null);
                 setRunStatus(null);
                 setRunDurationMs(0);
                 setIsCancellingRun(false);
-            }
-        };
-
-        void pollRunStatus();
+            },
+            onFailure: (message) => {
+                setError(message);
+                setStep("ready");
+                setActiveRunId(null);
+                setRunProgress(null);
+                setRunStatus(null);
+                setRunDurationMs(0);
+                setIsCancellingRun(false);
+            },
+        });
 
         return () => {
             ignore = true;
