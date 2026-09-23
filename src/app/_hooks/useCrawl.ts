@@ -115,7 +115,10 @@ export function useCrawl(baseUrl: string) {
             });
 
         void pollCrawlUntilDone(activeCrawlId, {
-            fetchImpl: fetch,
+            // Passing the bare `fetch` reference detaches it from `window`,
+            // and native browser fetch throws "Illegal invocation" when
+            // called without that `this` binding - wrap it instead.
+            fetchImpl: (input, init) => fetch(input, init),
             sleep,
             isCancelled: () => ignore,
             onSnapshot: (snapshot) => {
