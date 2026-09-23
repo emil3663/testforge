@@ -69,6 +69,28 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   real journey" signal than a long incidental one).
 - Duplicate paths (same page sequence found both ways) are surfaced
   once, keeping the higher rank.
+- Amended (Emil, 2026-09-23, during TFP-088 verification): a named
+  flow's `exitPath` doesn't have to be a graph node. TFP-088 confirmed
+  the graph stops at a form-submit edge, because introspect never
+  submits a form - it observes, it doesn't act (real live-target
+  evidence: `the-internet.herokuapp.com`'s `/login` -> `/authenticate`
+  is an edge, but the post-login redirect to `/secure` is not, since
+  nothing actually logs in during introspection). A login-style named
+  flow (entry `/login`, exit `/secure`) would never resolve under a
+  strict "exit must be a graph node" reading of the decision above.
+  Resolved: TFP-089 matches a named flow as far as the graph goes (the
+  form-submit edge counts as reaching it) and carries the declared
+  `exitPath` on the candidate as unverified. TFP-091 - which already
+  submits the form, since journey tests are interactive/side-effecting
+  per Decision 2 - makes reaching the declared `exitPath` part of its
+  generated test's assertion. This keeps introspection read-only (no
+  new side effects added at graph-build time) and puts exit
+  verification exactly where side effects are already permitted, rather
+  than adding a new form-submitting introspection pass (rejected: would
+  break the read-only model Decisions 1 and 2 both rely on) or requiring
+  every named flow's exit to already be a graph node (rejected: would
+  silently fail to find the login/checkout-style flows named flows exist
+  for in the first place).
 
 5. Candidate journeys are surfaced through a new UI screen, not a
    report-only list.
@@ -128,6 +150,10 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   generated test that asserts each step in sequence (not a bare "page
   loaded" check), and is skipped by default per Decision 2 like any
   other interactive test.
+- For a named-flow journey with a declared `exitPath` beyond the graph
+  (Decision 4's amendment), the generated test's final assertion is
+  that the app actually reaches `exitPath` after submitting - not just
+  that the submit produced no error.
 
 ## Regression Policy
 
@@ -185,8 +211,12 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   - Automatic candidates: walk TFP-088's graph for every path ending in
     a form-submit edge, up to Decision 6's 6-hop default.
   - Named-flow candidates: read an optional list of `{ label, entryPath,
-    exitPath }` entries from run config; find the path between each
-    pair in the graph (same traversal, same length cap).
+    exitPath }` entries from run config; find the path from entryPath as
+    far as the graph goes (same traversal, same length cap) - a
+    form-submit edge counts as reaching the flow, per Decision 4's
+    amendment, even when exitPath itself isn't a graph node yet.
+    exitPath is carried on the candidate as declared-but-unverified;
+    TFP-091 is what actually verifies it.
   - Dedupe identical page sequences found by both sources, keeping the
     higher-ranked (named-flow) entry.
   - Rank: named-flow candidates first, then automatic candidates by
@@ -238,6 +268,12 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   - Read TFP-090's selected journeys from run config; generate one
     end-to-end test per selected journey, walking the path's actual
     pages/actions in sequence.
+  - For a named-flow journey whose declared `exitPath` (Decision 4's
+    amendment) isn't a graph node - i.e. it sits beyond the flow's last
+    form-submit - the generated test's final assertion is that the app
+    actually reaches `exitPath` after submitting, not just that the
+    submit didn't error. This is where the flow's exit is verified for
+    real, since TFP-089 only recorded it as declared.
   - Skipped by default per Decision 2 (inherited interactive-test rule),
     explicitly enabled per run like other interactive tests.
   - Counted toward discovered-surface coverage the same way TFP-085's
