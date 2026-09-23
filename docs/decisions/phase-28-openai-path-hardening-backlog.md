@@ -46,6 +46,18 @@ exactly where `product-roadmap.md` already has it: a separate, larger,
 not-yet-started phase, unblocked by this one but not advanced by it
 either.
 
+**Added 2026-09-23, from a narrow `sre-code` trial (`skills/proposed/`):**
+run read-only against this same file per the skill's own "language is
+code" section, on Emil's steer to try a cheap trial rather than promote
+the set wholesale. One more real, concrete finding, same shape as the
+three above: `route.ts:52` calls `model: "gpt-4o"` — a floating alias, not
+a pinned snapshot (e.g. `gpt-4o-2024-08-06`). OpenAI can move what
+`gpt-4o` resolves to with no diff anywhere in this repo, which is exactly
+the "build is not hermetic" failure `sre-code` names — generated-suite
+quality could drift silently, with nothing to bisect against. Folded into
+this ticket rather than filed separately since it's the same file, same
+call, same fix motion.
+
 ## Scope (this phase)
 
 ### In scope
@@ -102,6 +114,12 @@ either.
   - Treat an empty/missing `chat.choices[0]?.message?.content` as a
     failure, not a success — route it into the same fallback path rather
     than returning 200 with empty `code`.
+  - Pin the model string (e.g. `gpt-4o-2024-08-06` — confirm the current
+    recommended dated snapshot against OpenAI's model list rather than
+    guessing) instead of the floating `gpt-4o` alias, and record the
+    resolved model string alongside the response (fits naturally next to
+    the `generatedBy` field above) so a future output can be traced back
+    to what actually produced it.
   - Add a regression test in `src/app/api/generate/route.test.ts`
     (extends the existing TFP-067 file, doesn't replace it) covering: a
     forced OpenAI rejection falls back to `mockGenerate` output rather
@@ -130,6 +148,9 @@ either.
     diff.
   - The no-key path (`mockGenerate` called directly, no OpenAI client
     involved) is unaffected — existing tests for it still pass unchanged.
+  - The OpenAI call uses a pinned, dated model snapshot, not the floating
+    `gpt-4o` alias, and the response records which model string produced
+    it.
   - `TEST_PLAN.md` no longer implies this phase did Phase 21's evaluation
     work.
 - **Dependencies:** None.
