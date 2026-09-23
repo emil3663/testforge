@@ -10,6 +10,8 @@ import type {
 } from "@/lib/generate/mock";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock";
 
+// Only correct when TestForge is testing itself. For any other target
+// (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
 const DEFAULT_TEST_AUDIT_MODE: TestAuditMode = "fast";

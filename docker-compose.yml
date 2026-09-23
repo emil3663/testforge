@@ -38,6 +38,12 @@ services:
 
   # ────────────────────────────────────────────────────────
   # Plane — test target
+  #
+  # PLANE_SECRET_KEY defaults to "change-me-before-production" below. That's
+  # fine for the documented local-only use (a disposable test target on a
+  # single machine), but it's a hard requirement to set a real value via a
+  # PLANE_SECRET_KEY env var if this ever runs on a shared host or is
+  # reachable beyond localhost.
   # ────────────────────────────────────────────────────────
   plane-api:
     image: makeplane/plane-backend:stable

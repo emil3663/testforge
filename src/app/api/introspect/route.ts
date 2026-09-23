@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { inspectPages } from "@/lib/introspect/inspector";
 
+// Only correct when TestForge is testing itself. For any other target
+// (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_PATHS = 5;
 

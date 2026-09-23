@@ -150,7 +150,7 @@ crawl, introspect, generate, run, report, export, and save-suite.
 - [x] TFP-067 — add `req.json()` error handling to the 5 unguarded POST handlers
 - [x] TFP-068 — polling hook retry/backoff + terminal-status safety net (`useRun`, `useCrawl`)
 - [x] TFP-069 — drop `unsafe-eval` from production CSP
-- [ ] TFP-070 — cleanups: dead `outputDir` env var, default base URL callout, `PLANE_SECRET_KEY` default callout
+- [x] TFP-070 — cleanups: dead `outputDir` env var, default base URL callout, `PLANE_SECRET_KEY` default callout
 
 ## 6. GitHub Project Board Structure
 

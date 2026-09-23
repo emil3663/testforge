@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
 
+// Only correct when TestForge is testing itself. For any other target
+// (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_CRAWL_PAGES = 100;
 const MAX_DISCOVERED_LINKS_PER_PAGE = 200;
