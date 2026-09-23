@@ -306,6 +306,26 @@ test("TFP-085: a cookie-kind dependency is excluded-by-generator, not a false ge
     assert.equal(notTested[0]!.reason, "excluded-by-generator");
 });
 
+test("Decision 4 (resolved): a redirect-kind dependency is excluded-by-generator by default, not a false generator-gap", () => {
+    const redirect = dependencyEntry({ host: "login.example.net", kind: "redirect", sampleUrl: "https://login.example.net/sso" });
+    const contentProfile: ContentProfile = {
+        scannedAt: new Date().toISOString(),
+        baseUrl: BASE_URL,
+        pages: [{
+            path: "/", url: BASE_URL, title: "Home", metaDescription: "", headings: [], buttons: [], links: [],
+            actionableElements: [], linkDetails: [], visibleTextSnippets: [],
+        }],
+        dependencyMap: [redirect],
+    };
+
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, [], BASE_URL);
+
+    assert.equal(matches.length, 0, "an auth-critical redirect dependency is excluded from blocking by default, so it must never appear as a match");
+    assert.equal(notTested.length, 1);
+    assert.equal(notTested[0]!.reason, "excluded-by-generator");
+    assert.ok(notTested[0]!.reasonDetail.includes("auth-critical"));
+});
+
 test("TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests", () => {
     const contentProfile: ContentProfile = {
         scannedAt: new Date().toISOString(),

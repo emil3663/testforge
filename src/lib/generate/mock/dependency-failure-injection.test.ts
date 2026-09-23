@@ -9,6 +9,8 @@ import { test } from "node:test";
 import {
     buildDependencyFailureTests,
     buildDependencyFailureTitle,
+    isAuthCriticalDependencyKind,
+    isBlockedByDefaultDependencyKind,
     isRoutableDependencyKind,
 } from "./dependency-failure-injection.ts";
 import type { ContentProfile, DependencyMapEntry } from "./types";
@@ -38,11 +40,24 @@ test("cookie is not a routable dependency kind; every other kind is", () => {
     }
 });
 
-test("one test is generated per routable dependency, none for cookies", () => {
+// Decision 4 (resolved): redirect is routable but auth-critical, so it's
+// excluded from blanket blocking by default even though route() could
+// technically target it.
+test("redirect is routable but auth-critical, so it's excluded from blocking by default; other routable kinds aren't auth-critical", () => {
+    assert.strictEqual(isAuthCriticalDependencyKind("redirect"), true);
+    assert.strictEqual(isBlockedByDefaultDependencyKind("redirect"), false);
+    for (const kind of ["xhr-fetch", "form-action", "third-party-script", "iframe"] as const) {
+        assert.strictEqual(isAuthCriticalDependencyKind(kind), false);
+        assert.strictEqual(isBlockedByDefaultDependencyKind(kind), true);
+    }
+});
+
+test("one test is generated per routable, non-auth-critical dependency: none for cookies, none for redirects", () => {
     const tests = buildDependencyFailureTests(profile([
         entry({ kind: "third-party-script", host: "cdn.example.net" }),
         entry({ kind: "cookie", host: "app.example.com", sampleUrl: "session_id" }),
         entry({ kind: "xhr-fetch", host: "api.example.com", sampleUrl: "https://api.example.com/data?t=12345" }),
+        entry({ kind: "redirect", host: "login.example.com", sampleUrl: "https://login.example.com/sso" }),
     ]));
 
     assert.strictEqual(tests.length, 2);

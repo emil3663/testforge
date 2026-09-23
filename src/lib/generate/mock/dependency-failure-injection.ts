@@ -18,6 +18,33 @@ export function isRoutableDependencyKind(kind: DependencyKind) {
     return ROUTABLE_KINDS.has(kind);
 }
 
+// Decision 4 (phase-18-integration-mapping-decision-record.md, resolved
+// 2026-09-23): auth-critical dependencies are excluded from blanket
+// page.route() blocking by default, since blocking a login-flow redirect
+// could invalidate every later test in the same run rather than proving
+// graceful degradation. "cookie" dependencies (session-setting cookies)
+// are already excluded for a separate, mechanical reason - they aren't a
+// routable network request at all (see ROUTABLE_KINDS above). "redirect"
+// is the one routable kind that's also auth-critical, so it's the only
+// entry here; the dependency map doesn't yet distinguish a login-flow
+// redirect from an unrelated one (e.g. http->https), so the whole kind is
+// excluded by default - the closest granularity currently available. An
+// explicit opt-out list (naming specific hosts to test anyway) is the
+// likely future shape per the decision record, but isn't built yet - no
+// run config currently threads that override into this function.
+const AUTH_CRITICAL_KINDS = new Set<DependencyKind>(["redirect"]);
+
+export function isAuthCriticalDependencyKind(kind: DependencyKind) {
+    return AUTH_CRITICAL_KINDS.has(kind);
+}
+
+// A dependency gets a generated failure-injection test only if page.route()
+// can target it at all AND it isn't excluded by Decision 4's auth-critical
+// default.
+export function isBlockedByDefaultDependencyKind(kind: DependencyKind) {
+    return isRoutableDependencyKind(kind) && !isAuthCriticalDependencyKind(kind);
+}
+
 // The exact, unescaped title text the generated test below produces -
 // reused by discovered-coverage.ts to match this dependency against the
 // run's actual executed tests, the same title-matching pattern
@@ -35,14 +62,11 @@ function pathnameOf(url: string): string {
     }
 }
 
-// [PLACEHOLDER, Decision 4]: whether auth-critical dependencies (login
-// redirects, session cookies) are excluded from blanket blocking is still
-// open - until it's resolved, every routable dependency gets a test, per
-// TFP-085's own scope ("generate tests for every recorded dependency and
-// note the open question in the generated suite's header comment, not
-// silently").
+// Decision 4 (resolved 2026-09-23): auth-critical dependencies are
+// excluded from blanket blocking by default. See
+// isAuthCriticalDependencyKind above for exactly what that covers today.
 export const DEPENDENCY_FAILURE_INJECTION_NOTE =
-    "Reliability: page.route() failure-injection blocks each recorded dependency by (host, path) - see docs/decisions/phase-18-integration-mapping-decision-record.md Decision 4 [PLACEHOLDER]: auth-critical dependencies (login redirects, session cookies) are not yet excluded from blanket blocking, so a blocked login redirect may fail every later test in the same run rather than only proving degradation. Cookie-kind dependencies are recorded by introspect but have no generated test here - a cookie isn't a routable network request. A form-action test also submits its form once blocked (requestSubmit()) so the block is actually exercised, not just present during an inert page load - still read-only from the target's point of view, since the aborted request never leaves the browser.";
+    "Reliability: page.route() failure-injection blocks each recorded dependency by (host, path) - see docs/decisions/phase-18-integration-mapping-decision-record.md Decision 4 (resolved): auth-critical dependencies are excluded from blanket blocking by default, so a login-flow redirect can't fail every later test in the same run. Concretely today that means redirect-kind dependencies get no generated test - the map doesn't yet distinguish a login redirect from any other, so the whole kind is excluded as the closest available granularity; an explicit opt-out list to test specific ones anyway isn't built yet. Cookie-kind dependencies are recorded by introspect but have no generated test here for a separate, mechanical reason - a cookie isn't a routable network request. A form-action test also submits its form once blocked (requestSubmit()) so the block is actually exercised, not just present during an inert page load - still read-only from the target's point of view, since the aborted request never leaves the browser.";
 
 // form-action's request only ever fires on submit, never on page load, so
 // a reload-only test would block a dependency that nothing in the test
@@ -77,7 +101,7 @@ export function buildDependencyFailureTests(contentProfile: ContentProfile | nul
     const dependencyMap = contentProfile?.dependencyMap ?? [];
 
     return dependencyMap
-        .filter((entry) => isRoutableDependencyKind(entry.kind))
+        .filter((entry) => isBlockedByDefaultDependencyKind(entry.kind))
         .map((entry) => {
             const path = entry.paths[0] ?? "/";
             const escapedPath = escapeForSingleQuotedString(path);

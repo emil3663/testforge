@@ -5,7 +5,7 @@ Scope: Record every outbound dependency a page talks to, generate `page.route()`
 failure-injection tests against each one, and generate generic local
 storage-API failure-injection tests — extending Phase 17's discovered-surface
 coverage denominator rather than living outside it.
-Status: Approved and in implementation
+Status: Approved and in implementation (Decisions 3 and 4 resolved 2026-09-23)
 
 ## Context
 
@@ -14,13 +14,15 @@ scope addendum (confirmed, `eb4ad3f`), already lock the shape of this phase.
 This record turns that paragraph into buildable decisions and a real
 backlog — it does not re-open what the addendum already settled.
 
-Two things are genuinely undecided and are marked `[PLACEHOLDER]` below
-rather than invented: how corrupted/old-schema *seeding* generalizes to a
-target site TestForge has no schema knowledge of, and whether
+Two things were genuinely undecided when this record was first written and
+were marked `[PLACEHOLDER]`: how corrupted/old-schema *seeding* generalizes
+to a target site TestForge has no schema knowledge of, and whether
 auth-critical dependencies (login redirects, session cookies) get excluded
-from blanket blocking. Everything else in this record is derived directly
-from the roadmap paragraph, the addendum, and rules the roadmap has
-already locked elsewhere (the interactive-test skip-by-default rule).
+from blanket blocking. Both are now resolved (Emil, 2026-09-23, after
+TFP-084–086 had already landed) — see Decisions 3 and 4 below. Everything
+else in this record is derived directly from the roadmap paragraph, the
+addendum, and rules the roadmap has already locked elsewhere (the
+interactive-test skip-by-default rule).
 
 **Standing policy for this phase (Emil, 2026-09-23):** a defect found
 while building or verifying any ticket below is fixed immediately, in the
@@ -59,18 +61,33 @@ whatever follows them.
   the equivalent `localStorage`/`sessionStorage` access point) to throw,
   and asserts the app degrades rather than crashing or half-reading —
   this needs no knowledge of the target's actual schema.
-- `[PLACEHOLDER: seeding a genuinely corrupted/old-schema value, as
-  distinct from the entry point failing outright, requires knowing the
-  target's storage schema — TestForge has no generic way to infer one.
-  Confirm whether this half of the addendum ships in Phase 18 at all,
-  or stays a manual/config-supplied capability (the site owner names a
-  storage key and a "known-bad" shape) for a later phase.]`
+- Resolved (Emil, 2026-09-23): schema/corrupted-value *seeding* is
+  deferred, not built in Phase 18. TestForge has no generic way to infer
+  a target's storage schema, so this stays a manual/config-supplied
+  capability (the site owner names a storage key and a "known-bad"
+  shape) for a later phase. TFP-086 already shipped scoped this way
+  (generic entry-point-unavailable case only) — this decision confirms
+  that scoping rather than changing it.
 
-4. `[PLACEHOLDER: are auth-critical dependencies — login-flow redirects,
-  session-setting cookies — excluded from blanket page.route() blocking
-  by default, since blocking one could invalidate every later test in
-  the same run rather than testing graceful degradation? Confirm the
-  default; an opt-out list is the likely shape either way.]`
+4. Auth-critical dependencies are excluded from blanket `page.route()`
+   blocking by default.
+- Resolved (Emil, 2026-09-23): login-flow redirects and session-setting
+  cookies are excluded from blanket blocking by default, since blocking
+  one could invalidate every later test in the same run rather than
+  testing graceful degradation.
+- Concretely: cookie-kind dependencies were already excluded for a
+  separate, mechanical reason (`page.route()` has no request to target).
+  Redirect-kind dependencies are now excluded by default too — the
+  dependency map doesn't yet distinguish a login-flow redirect from any
+  other redirect, so the whole `redirect` kind is excluded as the
+  closest granularity currently available.
+- An explicit opt-out list (naming specific hosts to test anyway) is the
+  likely future shape, per this decision's own original framing, but is
+  not built in Phase 18 — no run config currently threads that override
+  through. TFP-085 was updated (commit follows this record) to apply
+  this default; it previously blocked every routable dependency,
+  redirects included, with the open question noted only in the
+  generated suite's header comment.
 
 ## Acceptance Criteria
 
@@ -216,7 +233,9 @@ whatever follows them.
 
 ### Gate A — Phase 18 complete
 - TFP-084–086 all landed against a real target, each with `TEST_PLAN.md`
-  cases proving real (not assumed) behavior, and both `[PLACEHOLDER]`
-  decisions above resolved one way or the other before their affected
-  ticket (TFP-085's exclusion policy; a follow-up ticket for schema
-  seeding, or an explicit decision not to build it).
+  cases proving real (not assumed) behavior, and both placeholder
+  decisions resolved (2026-09-23): Decision 3 (schema/corrupted-value
+  seeding deferred, not built) and Decision 4 (auth-critical dependencies
+  — concretely, the `redirect` kind — excluded from blanket blocking by
+  default), with TFP-085's exclusion policy updated to match and
+  `TEST_PLAN.md` reflecting both resolutions in the same commit. **Met.**
