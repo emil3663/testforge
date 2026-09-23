@@ -1,4 +1,4 @@
-import type { DependencyMapEntry, SiteGraph, StorageUsage } from "@/lib/introspect/types";
+import type { CandidateJourney, DependencyMapEntry, SiteGraph, StorageUsage } from "@/lib/introspect/types";
 
 export const BEST_PRACTICE_OPTIONS = [
     "functional",
@@ -106,7 +106,7 @@ export interface ContentProfilePage {
 // TFP-084/086: re-exported from introspect/types.ts (not redeclared) so the
 // generator, coverage, and persistence layers share the exact same shape
 // inspectPages actually produces.
-export type { DependencyKind, DependencyMapEntry, SiteGraph, SiteGraphEdge, SiteGraphEdgeKind, SiteGraphNode, StorageKind, StorageUsage } from "@/lib/introspect/types";
+export type { CandidateJourney, DependencyKind, JourneySource, NamedFlow, DependencyMapEntry, SiteGraph, SiteGraphEdge, SiteGraphEdgeKind, SiteGraphNode, StorageKind, StorageUsage } from "@/lib/introspect/types";
 
 export interface ContentProfile {
     scannedAt: string;
@@ -116,4 +116,6 @@ export interface ContentProfile {
     dependencyMap?: DependencyMapEntry[];
     // TFP-088: per-baseUrl walkable graph of page-to-page navigation.
     siteGraph?: SiteGraph;
+    // TFP-089: ranked candidate journeys derived from siteGraph.
+    journeys?: CandidateJourney[];
 }

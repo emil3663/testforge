@@ -182,3 +182,34 @@ export interface SiteGraph {
     nodes: SiteGraphNode[];
     edges: SiteGraphEdge[];
 }
+
+// TFP-089: a config-named flow (Decision 4). exitPath doesn't have to be a
+// graph node - see Decision 4's amendment: it may sit beyond the flow's
+// last form-submit, where only TFP-091's real submission can verify it.
+export interface NamedFlow {
+    label: string;
+    entryPath: string;
+    exitPath: string;
+}
+
+export type JourneySource = "automatic" | "named";
+
+// One ranked, reviewable journey. `path` is the page sequence; `steps[i]` is
+// the actual element that navigates path[i] -> path[i + 1], so a generated
+// test (TFP-091) can locate and use it rather than assume the connection.
+export interface CandidateJourney {
+    // Stable across recomputation for the same graph and flows, so a
+    // selection made on the review screen (TFP-090) can refer to it.
+    id: string;
+    source: JourneySource;
+    label: string | null;
+    path: string[];
+    steps: SiteGraphEdge[];
+    // Named flows only. exitInGraph is true when the graph itself reaches
+    // exitPath (path ends there); false when exitPath is declared but
+    // unverified - the path stops at the flow's last form-submit and
+    // TFP-091 verifies the exit by actually submitting.
+    declaredExitPath: string | null;
+    exitInGraph: boolean;
+    rank: number;
+}

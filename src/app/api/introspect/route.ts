@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { inspectPages } from "@/lib/introspect/inspector";
+import { normalizeNamedFlows } from "@/lib/introspect/journeys";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 });
     }
 
-    const { baseUrl, paths } = body;
+    const { baseUrl, paths, namedFlows } = body;
 
     const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
 
@@ -72,7 +73,11 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedPaths = normalizePaths(normalizedBaseUrl.value, paths);
-    const { pages, warnings, dependencyMap, siteGraph } = await inspectPages(normalizedBaseUrl.value, normalizedPaths);
+    const { pages, warnings, dependencyMap, siteGraph, journeys } = await inspectPages(
+        normalizedBaseUrl.value,
+        normalizedPaths,
+        normalizeNamedFlows(namedFlows)
+    );
 
     return NextResponse.json({
         scannedAt: new Date().toISOString(),
@@ -81,5 +86,6 @@ export async function POST(req: NextRequest) {
         warnings,
         dependencyMap,
         siteGraph,
+        journeys,
     });
 }

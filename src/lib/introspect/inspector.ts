@@ -1,9 +1,10 @@
 import { chromium, type Request } from "@playwright/test";
 import { captureDomSnapshot } from "./dom-snapshot";
+import { identifyJourneys } from "./journeys";
 import { buildSiteGraph } from "./site-graph";
 import { aggregateDependencyMap, dependenciesFromEmbeddedLinks } from "./dependency-map";
 import { installStorageAccessProbe, readStorageAccessProbe } from "./storage-probe";
-import type { DependencyDetail, PageSnapshot } from "./types";
+import type { DependencyDetail, NamedFlow, PageSnapshot } from "./types";
 
 const MAX_TEXT_ITEMS = 8;
 const MAX_ACTIONABLE_ITEMS = 40;
@@ -84,7 +85,7 @@ function redirectDependenciesFromNavigation(
     return hops;
 }
 
-export async function inspectPages(baseUrl: string, paths: string[]) {
+export async function inspectPages(baseUrl: string, paths: string[], namedFlows: NamedFlow[] = []) {
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     // TFP-086: runs before any of the page's own scripts, on every
@@ -161,11 +162,15 @@ export async function inspectPages(baseUrl: string, paths: string[]) {
             }
         }
 
+        const siteGraph = buildSiteGraph(baseUrl, pages);
+        const journeyResult = identifyJourneys(siteGraph, namedFlows);
+
         return {
             pages,
-            warnings,
+            warnings: [...warnings, ...journeyResult.warnings],
             dependencyMap: aggregateDependencyMap(perPageDependencies),
-            siteGraph: buildSiteGraph(baseUrl, pages),
+            siteGraph,
+            journeys: journeyResult.journeys,
         };
     } finally {
         await page.close().catch(() => { });
