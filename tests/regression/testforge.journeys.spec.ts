@@ -194,6 +194,60 @@ test.describe("Journey tests (TFP-091)", () => {
     });
 });
 
+test.describe("Named-flow entry (TFP-096)", () => {
+    test("a named flow entered in the UI produces the same ranked candidates as the same flow sent to the API, and shows on the review screen", async ({ page, request }) => {
+        const flows = [{ label: "signin", entryPath: "/login", exitPath: "/secure" }];
+        const direct = await (await request.post("/api/introspect", { data: { baseUrl: fixtureUrl, paths: ["/", "/login"], namedFlows: flows } })).json();
+
+        const introspectRequests: { namedFlows?: unknown }[] = [];
+        page.on("request", (req) => {
+            if (req.url().endsWith("/api/introspect") && req.method() === "POST") {
+                introspectRequests.push(req.postDataJSON());
+            }
+        });
+
+        await page.goto("/");
+        await page.getByLabel("Base URL").fill(fixtureUrl);
+        await page.getByLabel("What do you want to test?").fill("Create functional flow coverage for the sign-in journey.");
+        await page.getByRole("button", { name: /Content Rules Inspect the page before generation/i }).click();
+        await page.getByLabel("Paths to inspect").fill("/\n/login");
+        await page.getByLabel("Named flows").fill("signin: /login -> /secure");
+        await expect(page.getByTestId("named-flows-error")).toHaveCount(0);
+        await expect(page.getByText(/\d+ active/)).toBeVisible({ timeout: 15_000 });
+
+        const introspected = page.waitForResponse((response) => response.url().endsWith("/api/introspect") && response.request().method() === "POST");
+        await page.getByRole("button", { name: "Generate test suite" }).click();
+        const viaUi = await (await introspected).json();
+        await expect(page.getByRole("button", { name: /Candidate Journeys/i })).toBeVisible({ timeout: 90_000 });
+
+        // What the UI sent is exactly the flow, and what came back is exactly what the direct API call returns.
+        expect(introspectRequests[0].namedFlows).toEqual(flows);
+        expect(viaUi.journeys).toEqual(direct.journeys);
+
+        // Shown on the review screen as a named journey, ranked first, exit marked unverified.
+        const items = page.locator("[data-journey-id]");
+        await expect(items).toHaveCount(direct.journeys.length);
+        await expect(items.first()).toContainText("Named flow: signin");
+        await expect(items.first()).toContainText("/login → /authenticate");
+        await expect(items.first()).toContainText("Declared exit /secure");
+        await expect(items.first()).toHaveAttribute("data-journey-id", direct.journeys[0].id);
+
+        // Flows shape the scan, so editing them after generating makes the suite stale until regenerated.
+        await page.getByLabel("Named flows").fill("signin: /login -> /elsewhere");
+        await expect(page.getByText("Generate the suite again after completing the content-aware inputs before running it.")).toBeVisible();
+    });
+
+    test("a line that is not a flow is reported, not silently ignored", async ({ page }) => {
+        await page.goto("/");
+        await page.getByRole("button", { name: /Content Rules Inspect the page before generation/i }).click();
+        await page.getByLabel("Named flows").fill("checkout: /cart -> /confirmation\nthis has no arrow");
+
+        await expect(page.getByTestId("named-flows-error")).toContainText("This line was not understood and will be ignored: \"this has no arrow\"");
+        await page.getByLabel("Named flows").fill("checkout: /cart -> /confirmation");
+        await expect(page.getByTestId("named-flows-error")).toHaveCount(0);
+    });
+});
+
 test.describe("Coverage matching against a real run", () => {
     // Found while building TFP-091: real titles carry a "TFFU-003: " id prefix
     // that coverage matching didn't strip, so every element of every real run

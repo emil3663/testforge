@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { buildBusyInspectionTargets, buildSelectedPracticeDescription, normalizeBaseUrl, normalizeInspectionPaths, parseContentLines } from "@/app/_lib/derive";
+import { buildBusyInspectionTargets, buildSelectedPracticeDescription, normalizeBaseUrl, normalizeInspectionPaths, parseContentLines, parseNamedFlowLines } from "@/app/_lib/derive";
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, CrawlResult, SavedSuiteResult, Step, TestAuditMode } from "@/app/_lib/types";
 
 interface HandleGenerateParams {
@@ -12,6 +12,8 @@ interface HandleGenerateParams {
     requiredHeadingsInput: string;
     requiredTextInput: string;
     forbiddenTextInput: string;
+    // TFP-096: one "label: /entry -> /exit" flow per line.
+    namedFlowsInput: string;
     // TFP-090: journey ids the user selected on the review screen. Pruned
     // against the profile actually used before being sent, so a stale id
     // from an earlier scan never reaches run config.
@@ -148,6 +150,8 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             forbiddenText: parseContentLines(params.forbiddenTextInput),
         };
 
+        const { flows: namedFlows } = parseNamedFlowLines(params.namedFlowsInput);
+
         try {
             let introspectionData: ContentProfile;
             if (reuseProfile) {
@@ -159,6 +163,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
                     body: JSON.stringify({
                         baseUrl: normalizedBaseUrl.value,
                         paths: contentRules.paths,
+                        namedFlows,
                     }),
                 });
                 introspectionData = await introspectionResponse.json();
@@ -172,7 +177,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
 
             setContentProfile(introspectionData);
             setLastGeneratedJourneySignature(JSON.stringify([...selectedJourneyIds].sort()));
-            setLastGeneratedContentSignature(JSON.stringify({ contentRules, auditMode: params.auditMode }));
+            setLastGeneratedContentSignature(JSON.stringify({ contentRules, namedFlows, auditMode: params.auditMode }));
             setLastGeneratedBaseUrl(normalizedBaseUrl.value);
             setLastGeneratedInspectionPaths(contentRules.paths);
             setLastGeneratedInspectionTargets(

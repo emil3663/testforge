@@ -337,6 +337,14 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
     exactly as it would if supplied directly to the API.
 - **Dependencies:** TFP-089 (reads the field); independent of TFP-090
   and TFP-091 — can be built in parallel with either, or after.
+- **Landed:** one flow per line as `label: /entry -> /exit` (`=>` and the
+  arrow character also accepted), in the Content Rules section beside the
+  other free-text lists. Unlike those lists it splits on newlines only,
+  since a label may contain a comma. A line that does not parse is named
+  in an inline message rather than silently dropped. Editing the flows
+  after generating makes the suite stale, like the other content-aware
+  inputs. Real credentials for a flow are Phase 20's (stored, never
+  inline); this field carries only the entry and exit paths.
 
 ## Recommended Execution Order
 

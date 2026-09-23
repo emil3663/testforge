@@ -1,4 +1,5 @@
 import { BEST_PRACTICE_OPTIONS, BEST_PRACTICE_KEYWORDS, DEFAULT_BASE_URL } from "@/app/_lib/constants";
+import type { NamedFlow } from "@/lib/introspect/types";
 import { formatMilliseconds } from "@/lib/report/text";
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, ContentProfilePage, CrawledPage, RunProgressSnapshot, RunResult, TestAuditMode } from "@/app/_lib/types";
 
@@ -26,6 +27,32 @@ export function parseContentLines(value: string) {
             .map((item) => item.trim())
             .filter(Boolean)
     )];
+}
+
+// TFP-096: one named flow per line, "label: /entry -> /exit" (also accepts
+// the arrow characters and =>). Split on newlines only, unlike the other
+// content-rule lists, because a label may legitimately contain a comma.
+// A line that does not match is returned in invalidLines rather than
+// silently dropped, so the UI can say which line was not understood.
+const NAMED_FLOW_LINE = /^(.+?)\s*:\s*(\S+)\s*(?:->|=>|→)\s*(\S+)$/;
+
+export function parseNamedFlowLines(value: string) {
+    const flows: NamedFlow[] = [];
+    const invalidLines: string[] = [];
+
+    for (const line of value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean)) {
+        const match = NAMED_FLOW_LINE.exec(line);
+
+        if (!match) {
+            invalidLines.push(line);
+            continue;
+        }
+
+        const withSlash = (path: string) => (path.startsWith("/") ? path : `/${path}`);
+        flows.push({ label: match[1].trim(), entryPath: withSlash(match[2]), exitPath: withSlash(match[3]) });
+    }
+
+    return { flows, invalidLines };
 }
 
 export function includesKeyword(text: string, keyword: string) {

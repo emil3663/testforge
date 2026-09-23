@@ -21,6 +21,7 @@ import {
     normalizeBaseUrl,
     normalizeInspectionPaths,
     parseContentLines,
+    parseNamedFlowLines,
 } from "@/app/_lib/derive";
 import type { BestPracticeArea, Step } from "@/app/_lib/types";
 
@@ -53,6 +54,7 @@ export default function Home() {
     const [requiredHeadingsInput, setRequiredHeadingsInput] = useState("");
     const [requiredTextInput, setRequiredTextInput] = useState("");
     const [forbiddenTextInput, setForbiddenTextInput] = useState("");
+    const [namedFlowsInput, setNamedFlowsInput] = useState("");
     const [auditMode, setAuditMode] = useState(DEFAULT_TEST_AUDIT_MODE);
     const [isCreationCollapsed, setIsCreationCollapsed] = useState(false);
     const [isContentRulesCollapsed, setIsContentRulesCollapsed] = useState(true);
@@ -108,6 +110,7 @@ export default function Home() {
             requiredHeadingsInput,
             requiredTextInput,
             forbiddenTextInput,
+            namedFlowsInput,
             selectedJourneyIds: effectiveSelectedJourneyIds,
             crawlResult: crawl.crawlResult,
             selectedCrawledPaths: crawl.selectedCrawledPaths,
@@ -163,7 +166,9 @@ export default function Home() {
         requiredText: parseContentLines(requiredTextInput),
         forbiddenText: parseContentLines(forbiddenTextInput),
     };
+    const { flows: namedFlows, invalidLines: invalidNamedFlowLines } = parseNamedFlowLines(namedFlowsInput);
     const contentAwareRequested =
+        namedFlows.length > 0 ||
         contentRules.requiredHeadings.length > 0 ||
         contentRules.requiredText.length > 0 ||
         contentRules.forbiddenText.length > 0 ||
@@ -172,7 +177,7 @@ export default function Home() {
     const isContentAwareReady =
         !contentAwareRequested ||
         (generation.contentProfile !== null &&
-            generation.lastGeneratedContentSignature === JSON.stringify({ contentRules, auditMode }) &&
+            generation.lastGeneratedContentSignature === JSON.stringify({ contentRules, namedFlows, auditMode }) &&
             hasCode);
     const isPracticeSelectionReady = generation.lastGeneratedPracticeSignature === selectedPracticeSignature;
     const isJourneySelectionReady =
@@ -347,6 +352,9 @@ export default function Home() {
                     setRequiredTextInput={setRequiredTextInput}
                     forbiddenTextInput={forbiddenTextInput}
                     setForbiddenTextInput={setForbiddenTextInput}
+                    namedFlowsInput={namedFlowsInput}
+                    setNamedFlowsInput={setNamedFlowsInput}
+                    invalidNamedFlowLines={invalidNamedFlowLines}
                 />
 
                 {generation.contentProfile && (

@@ -29,6 +29,9 @@ interface ContentRulesSectionProps {
     setRequiredTextInput: (value: string) => void;
     forbiddenTextInput: string;
     setForbiddenTextInput: (value: string) => void;
+    namedFlowsInput: string;
+    setNamedFlowsInput: (value: string) => void;
+    invalidNamedFlowLines: string[];
 }
 
 export function ContentRulesSection({
@@ -53,6 +56,9 @@ export function ContentRulesSection({
     setRequiredTextInput,
     forbiddenTextInput,
     setForbiddenTextInput,
+    namedFlowsInput,
+    setNamedFlowsInput,
+    invalidNamedFlowLines,
 }: ContentRulesSectionProps) {
     return (
                         <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
@@ -272,6 +278,29 @@ export function ContentRulesSection({
                                                 placeholder="Lorem ipsum\nComing soon"
                                                 className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none"
                                             />
+                                        </div>
+                                        <div className="space-y-1.5 md:col-span-2">
+                                            <label htmlFor="named-flows-input" className="block text-sm font-medium text-zinc-700">
+                                                Named flows
+                                            </label>
+                                            <textarea
+                                                id="named-flows-input"
+                                                aria-label="Named flows"
+                                                aria-describedby="named-flows-help"
+                                                rows={3}
+                                                value={namedFlowsInput}
+                                                onChange={(event) => setNamedFlowsInput(event.target.value)}
+                                                placeholder="checkout: /cart -> /confirmation"
+                                                className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 resize-none"
+                                            />
+                                            <p id="named-flows-help" className="text-xs leading-5 text-zinc-500">
+                                                One flow per line as <span className="font-mono">label: /entry-page -&gt; /exit-page</span>. Named flows rank above automatically detected journeys on the Candidate Journeys screen, and the exit page is checked for real when the journey test runs.
+                                            </p>
+                                            {invalidNamedFlowLines.length > 0 && (
+                                                <div role="alert" data-testid="named-flows-error" className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+                                                    {invalidNamedFlowLines.length === 1 ? "This line was" : "These lines were"} not understood and will be ignored: {invalidNamedFlowLines.map((line) => `"${line}"`).join(", ")}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -85,6 +85,9 @@ interface CreationSectionProps {
     setRequiredTextInput: (value: string) => void;
     forbiddenTextInput: string;
     setForbiddenTextInput: (value: string) => void;
+    namedFlowsInput: string;
+    setNamedFlowsInput: (value: string) => void;
+    invalidNamedFlowLines: string[];
 }
 
 export function CreationSection({
@@ -160,6 +163,9 @@ export function CreationSection({
     setRequiredTextInput,
     forbiddenTextInput,
     setForbiddenTextInput,
+    namedFlowsInput,
+    setNamedFlowsInput,
+    invalidNamedFlowLines,
 }: CreationSectionProps) {
     return (
                 <CollapsibleSection
@@ -396,6 +402,9 @@ export function CreationSection({
                             setRequiredTextInput={setRequiredTextInput}
                             forbiddenTextInput={forbiddenTextInput}
                             setForbiddenTextInput={setForbiddenTextInput}
+                            namedFlowsInput={namedFlowsInput}
+                            setNamedFlowsInput={setNamedFlowsInput}
+                            invalidNamedFlowLines={invalidNamedFlowLines}
                         />
 
                         <button
