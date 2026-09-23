@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Shipped — content built out under Phases 18-21 (skills/README.md, skills/ROADMAP.md are the live source of truth); this doc's own header was never updated when the work landed. Corrected 2026-09-23 (Cowork verification pass) — see the Sept 22 handover note that first flagged this.
 
 ## Context
 

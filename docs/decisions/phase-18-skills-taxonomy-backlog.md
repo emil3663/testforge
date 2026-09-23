@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Shipped — TFP-039 landed (code-structure and refactor-audit calibrated/trial-run, docs/WORKING_AGREEMENTS.md now exists in this repo, skills/engineering/CALIBRATION.md has the full output); skills/ROADMAP.md marks both "Status: shipped." This doc's header was never updated when the work landed. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 

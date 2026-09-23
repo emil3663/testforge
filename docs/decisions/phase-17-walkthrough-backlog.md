@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-17
-**Status:** Draft — for review, not yet started
+**Status:** Shipped — all 11 tickets (TFP-053 through TFP-063) landed. TFP-053-061 are individually verified live against test-assist per TEST_PLAN.md's own test case table (INT-04/05/06, GEN-11 through GEN-17, all ✅); TFP-062/063 were resolved as doc-only tickets (`eb4ad3f`). This doc's header was never updated when the work landed. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 

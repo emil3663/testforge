@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Shipped as TFP-051 — skills/.claude-plugin/plugin.json + a local marketplace + a committed .claude/settings.json make every skill under skills/testing/ and skills/engineering/ a real, auto-discovered Claude Code plugin skill, confirmed present on disk and described as fixed in skills/ROADMAP.md's own Known-gaps section. This doc's header was never updated when it landed. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 

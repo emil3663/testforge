@@ -5,8 +5,7 @@ read in full, port replaces rebuild-from-spec. TFP-043/044/047/048/049
 built and verified. TFP-045 revised: names the ISTQB structural
 (white-box) testing category explicitly.
 **Date:** 2026-09-16
-**Status:** In progress — TFP-043/044/047/048/049 done, TFP-045/046/050
-remaining
+**Status:** Complete. TFP-043/044/047/048/049 done as this doc already stated; TFP-045 (find-the-hidden-platform), TFP-046 (plan-to-specs), and TFP-050 (observability-check) are also built, contrary to this doc's prior "remaining" claim — confirmed via skills/ROADMAP.md's own "Status: built" entries for all three and the real SKILL.md/support files present on disk. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 

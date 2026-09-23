@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Spike run, real findings — TFP-036 ran the comparison this doc asked for (see skills/INTROSPECT_CRAWL_SPIKE.md), and crawl-and-classify-pages was built directly from it. One genuine gap remains, honestly flagged in skills/ROADMAP.md rather than hidden: the skill has never been run against a real connected browser-automation tool, only verified by reading code and Playwright MCP's documented tool list. This doc's header was never updated to reflect any of that. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 

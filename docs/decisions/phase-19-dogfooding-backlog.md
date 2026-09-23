@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-16
-**Status:** Draft — for review, not yet started
+**Status:** Shipped — TFP-040/041/042 all landed against test-assist (examples/testforge-app/test-assist/, examples/skills/write-playwright-test/test-assist/, examples/comparison-test-assist.md all present and referenced throughout later phases). This doc's header was never updated when the work landed. Corrected 2026-09-23 (Cowork verification pass).
 
 ## Context
 
