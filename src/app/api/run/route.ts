@@ -25,7 +25,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile } = await req.json();
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile } = await req.json().catch(() => ({}));
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });

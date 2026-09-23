@@ -24,7 +24,7 @@ import { randomUUID } from "node:crypto";
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-run-route-test-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
 
-const { GET, DELETE } = await import("./route.ts");
+const { GET, DELETE, POST } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
 
 after(() => {
@@ -104,4 +104,21 @@ test("DELETE /api/run: a real but unknown UUID is unaffected by the validator (4
 
     assert.equal(res.status, 404);
     assert.equal(body.error, "Run not found");
+});
+
+// TFP-067: req.json() error handling. The existing "code is required" check
+// already returns 400 for any falsy `code`, so guarding req.json() with
+// .catch(() => ({})) is enough here - no separate malformed-body branch
+// needed, unlike crawl/introspect where baseUrl is optional.
+test("POST /api/run: truncated JSON body returns 400 with a JSON error body, not a 500", async () => {
+    const req = new NextRequest(new URL("http://localhost/api/run"), {
+        method: "POST",
+        body: "{not valid json",
+        headers: { "content-type": "application/json" },
+    });
+    const res = await POST(req);
+    const body = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(typeof body.error, "string");
 });

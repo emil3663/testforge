@@ -334,7 +334,13 @@ async function runCrawlJob(job: CrawlJob) {
 }
 
 export async function POST(req: NextRequest) {
-    const { baseUrl } = await req.json();
+    const body = await req.json().catch(() => null);
+
+    if (!body || typeof body !== "object") {
+        return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 });
+    }
+
+    const { baseUrl } = body;
 
     const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
 

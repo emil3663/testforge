@@ -55,7 +55,13 @@ function normalizePaths(baseUrl: string, input: unknown) {
 }
 
 export async function POST(req: NextRequest) {
-    const { baseUrl, paths } = await req.json();
+    const body = await req.json().catch(() => null);
+
+    if (!body || typeof body !== "object") {
+        return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 });
+    }
+
+    const { baseUrl, paths } = body;
 
     const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
 

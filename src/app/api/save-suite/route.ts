@@ -19,7 +19,7 @@ function extractSuiteTitles(code: string) {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, description } = await req.json();
+    const { code, description } = await req.json().catch(() => ({}));
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });

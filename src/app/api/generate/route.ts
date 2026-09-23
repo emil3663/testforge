@@ -11,7 +11,7 @@ import {
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 
 export async function POST(req: NextRequest) {
-    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json();
+    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json().catch(() => ({}));
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
