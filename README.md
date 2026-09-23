@@ -85,13 +85,18 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 
 - **Plain-English input** — Describe what you want to test the way you'd explain it to a colleague.
 - **AI-generated TypeScript code** — OpenAI GPT-4o generates `.spec.ts` Playwright suites with descriptive test names; a template-based generator produces a working suite when no API key is configured.
-- **Site crawl and page introspection** — TestForge can crawl the target site and inspect individual pages to generate content-aware coverage instead of guessing at selectors.
+- **Site crawl and page introspection** — TestForge can crawl the target site and inspect individual pages to generate content-aware coverage instead of guessing at selectors. Coverage is denominated against that discovered element surface, not just the tests that ran: every unmatched element is bucketed as not-selected, excluded-by-generator, or a genuine generator gap.
 - **In-browser code editor** — Review and edit the generated suite before running it.
 - **Async run lifecycle** — Runs execute in the background with live progress, cancellation, and targeted rerun of just the failed tests.
 - **Seven-tab structured report** — Summary, execution, defects, coverage, performance, usability, and (when SEO coverage is selected) SEO, each with an HTML export.
+- **Run diffing** — Compare two persisted runs of the same target: which tests flipped pass/fail, the coverage-percentage delta per practice area, and elements newly discovered or newly missing between runs.
 - **No lock-in** — The generated code is a standard Playwright TypeScript suite you can copy, version-control, and extend, or open directly in VS Code's Test Explorer.
 
 ---
+
+## Skills library
+
+Beyond the web app, `skills/` packages TestForge's own testing and engineering judgment as real Claude Code skills — 12 in total (8 under `skills/testing/`, 4 under `skills/engineering/`), installable as the `testforge-skills` plugin and invocable directly with no TestForge app involved at all, e.g. `/testforge-skills:write-playwright-test`. See [`skills/README.md`](skills/README.md) for what each one generalizes from and [`skills/ROADMAP.md`](skills/ROADMAP.md) for what's proposed next.
 
 ## Getting started
 
