@@ -18,32 +18,22 @@ export function isRoutableDependencyKind(kind: DependencyKind) {
     return ROUTABLE_KINDS.has(kind);
 }
 
-// Decision 4 (phase-18-integration-mapping-decision-record.md, resolved
-// 2026-09-23): auth-critical dependencies are excluded from blanket
-// page.route() blocking by default, since blocking a login-flow redirect
-// could invalidate every later test in the same run rather than proving
-// graceful degradation. "cookie" dependencies (session-setting cookies)
-// are already excluded for a separate, mechanical reason - they aren't a
-// routable network request at all (see ROUTABLE_KINDS above). "redirect"
-// is the one routable kind that's also auth-critical, so it's the only
-// entry here; the dependency map doesn't yet distinguish a login-flow
-// redirect from an unrelated one (e.g. http->https), so the whole kind is
-// excluded by default - the closest granularity currently available. An
-// explicit opt-out list (naming specific hosts to test anyway) is the
-// likely future shape per the decision record, but isn't built yet - no
-// run config currently threads that override into this function.
-const AUTH_CRITICAL_KINDS = new Set<DependencyKind>(["redirect"]);
-
-export function isAuthCriticalDependencyKind(kind: DependencyKind) {
-    return AUTH_CRITICAL_KINDS.has(kind);
-}
-
-// A dependency gets a generated failure-injection test only if page.route()
-// can target it at all AND it isn't excluded by Decision 4's auth-critical
-// default.
-export function isBlockedByDefaultDependencyKind(kind: DependencyKind) {
-    return isRoutableDependencyKind(kind) && !isAuthCriticalDependencyKind(kind);
-}
+// Decision 4 (phase-18-integration-mapping-decision-record.md, revised
+// 2026-09-23): earlier the same day this excluded the whole "redirect"
+// kind by default as a blanket, unpinpointed guess at "auth-critical."
+// Corrected: every generated failure-injection test already runs in its
+// own isolated Playwright page/context (playwright.config.ts sets no
+// storageState and no shared setup - confirmed, nothing in src/lib/generate
+// wires one up), so blocking a redirect inside one test cannot reach any
+// other test in the run. The risk that motivated excluding it doesn't
+// exist in this codebase today, so there is nothing to exclude - a
+// redirect dependency is tested exactly like any other routable one.
+// That risk becomes real once Phase 20 introduces a run-wide cached
+// storageState shared across every generated test. At that point the
+// fix must be pinpointed, not kind-wide: exclude only the specific
+// dependency whose host matches Phase 20's configured login URL, not
+// every "redirect"-kind entry regardless of what it actually points to.
+// That's new work for Phase 20 to scope, not something to guess at here.
 
 // The exact, unescaped title text the generated test below produces -
 // reused by discovered-coverage.ts to match this dependency against the
@@ -62,11 +52,12 @@ function pathnameOf(url: string): string {
     }
 }
 
-// Decision 4 (resolved 2026-09-23): auth-critical dependencies are
-// excluded from blanket blocking by default. See
-// isAuthCriticalDependencyKind above for exactly what that covers today.
+// Decision 4 (revised 2026-09-23): every routable dependency, including
+// redirects, gets a test by default - see the comment above
+// isRoutableDependencyKind's declaration for why the earlier blanket
+// exclusion was wrong and what would justify a real one later.
 export const DEPENDENCY_FAILURE_INJECTION_NOTE =
-    "Reliability: page.route() failure-injection blocks each recorded dependency by (host, path) - see docs/decisions/phase-18-integration-mapping-decision-record.md Decision 4 (resolved): auth-critical dependencies are excluded from blanket blocking by default, so a login-flow redirect can't fail every later test in the same run. Concretely today that means redirect-kind dependencies get no generated test - the map doesn't yet distinguish a login redirect from any other, so the whole kind is excluded as the closest available granularity; an explicit opt-out list to test specific ones anyway isn't built yet. Cookie-kind dependencies are recorded by introspect but have no generated test here for a separate, mechanical reason - a cookie isn't a routable network request. A form-action test also submits its form once blocked (requestSubmit()) so the block is actually exercised, not just present during an inert page load - still read-only from the target's point of view, since the aborted request never leaves the browser.";
+    "Reliability: page.route() failure-injection blocks each recorded dependency by (host, path) - see docs/decisions/phase-18-integration-mapping-decision-record.md Decision 4 (revised): every routable dependency gets a test by default, including redirects - each generated test runs in its own isolated Playwright context with no shared storageState today, so blocking one cannot affect any other test in the run. That changes once Phase 20 introduces a run-wide cached storageState; the fix at that point must be pinpointed to the specific dependency matching the configured login URL, not a blanket kind-wide exclusion, and isn't built yet. Cookie-kind dependencies are recorded by introspect but have no generated test here for a separate, mechanical reason - a cookie isn't a routable network request. A form-action test also submits its form once blocked (requestSubmit()) so the block is actually exercised, not just present during an inert page load - still read-only from the target's point of view, since the aborted request never leaves the browser.";
 
 // form-action's request only ever fires on submit, never on page load, so
 // a reload-only test would block a dependency that nothing in the test
@@ -101,7 +92,7 @@ export function buildDependencyFailureTests(contentProfile: ContentProfile | nul
     const dependencyMap = contentProfile?.dependencyMap ?? [];
 
     return dependencyMap
-        .filter((entry) => isBlockedByDefaultDependencyKind(entry.kind))
+        .filter((entry) => isRoutableDependencyKind(entry.kind))
         .map((entry) => {
             const path = entry.paths[0] ?? "/";
             const escapedPath = escapeForSingleQuotedString(path);

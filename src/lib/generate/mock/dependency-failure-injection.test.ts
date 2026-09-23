@@ -9,8 +9,6 @@ import { test } from "node:test";
 import {
     buildDependencyFailureTests,
     buildDependencyFailureTitle,
-    isAuthCriticalDependencyKind,
-    isBlockedByDefaultDependencyKind,
     isRoutableDependencyKind,
 } from "./dependency-failure-injection.ts";
 import type { ContentProfile, DependencyMapEntry } from "./types";
@@ -33,26 +31,20 @@ function profile(dependencyMap: DependencyMapEntry[]): ContentProfile {
     return { scannedAt: "", baseUrl: "https://app.example.com", pages: [], dependencyMap };
 }
 
-test("cookie is not a routable dependency kind; every other kind is", () => {
+// Decision 4 (revised, phase-18-integration-mapping-decision-record.md):
+// redirect is routable and gets a test by default like every other
+// routable kind - there's no shared storageState across generated tests
+// today (each runs in its own isolated Playwright context), so nothing
+// about "auth-critical" applies yet. Only cookie is excluded, and for an
+// unrelated, mechanical reason (not a routable request at all).
+test("cookie is not a routable dependency kind; every other kind, including redirect, is", () => {
     assert.strictEqual(isRoutableDependencyKind("cookie"), false);
     for (const kind of ["xhr-fetch", "form-action", "third-party-script", "iframe", "redirect"] as const) {
         assert.strictEqual(isRoutableDependencyKind(kind), true);
     }
 });
 
-// Decision 4 (resolved): redirect is routable but auth-critical, so it's
-// excluded from blanket blocking by default even though route() could
-// technically target it.
-test("redirect is routable but auth-critical, so it's excluded from blocking by default; other routable kinds aren't auth-critical", () => {
-    assert.strictEqual(isAuthCriticalDependencyKind("redirect"), true);
-    assert.strictEqual(isBlockedByDefaultDependencyKind("redirect"), false);
-    for (const kind of ["xhr-fetch", "form-action", "third-party-script", "iframe"] as const) {
-        assert.strictEqual(isAuthCriticalDependencyKind(kind), false);
-        assert.strictEqual(isBlockedByDefaultDependencyKind(kind), true);
-    }
-});
-
-test("one test is generated per routable, non-auth-critical dependency: none for cookies, none for redirects", () => {
+test("one test is generated per routable dependency, including redirect; none for cookies", () => {
     const tests = buildDependencyFailureTests(profile([
         entry({ kind: "third-party-script", host: "cdn.example.net" }),
         entry({ kind: "cookie", host: "app.example.com", sampleUrl: "session_id" }),
@@ -60,7 +52,7 @@ test("one test is generated per routable, non-auth-critical dependency: none for
         entry({ kind: "redirect", host: "login.example.com", sampleUrl: "https://login.example.com/sso" }),
     ]));
 
-    assert.strictEqual(tests.length, 2);
+    assert.strictEqual(tests.length, 3);
 });
 
 test("the generated test title exactly matches buildDependencyFailureTitle's output", () => {

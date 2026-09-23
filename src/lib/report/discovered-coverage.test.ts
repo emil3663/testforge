@@ -306,7 +306,7 @@ test("TFP-085: a cookie-kind dependency is excluded-by-generator, not a false ge
     assert.equal(notTested[0]!.reason, "excluded-by-generator");
 });
 
-test("Decision 4 (resolved): a redirect-kind dependency is excluded-by-generator by default, not a false generator-gap", () => {
+test("Decision 4 (revised): a redirect-kind dependency is tested by default like any other routable dependency, not excluded", () => {
     const redirect = dependencyEntry({ host: "login.example.net", kind: "redirect", sampleUrl: "https://login.example.net/sso" });
     const contentProfile: ContentProfile = {
         scannedAt: new Date().toISOString(),
@@ -317,13 +317,13 @@ test("Decision 4 (resolved): a redirect-kind dependency is excluded-by-generator
         }],
         dependencyMap: [redirect],
     };
+    const records: ExecutionRecord[] = [executionRecord(buildDependencyFailureTitle(redirect), "Passed")];
 
-    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, [], BASE_URL);
+    const { matches, notTested } = computeDiscoveredElementCoverage(["reliability"], contentProfile, records, BASE_URL);
 
-    assert.equal(matches.length, 0, "an auth-critical redirect dependency is excluded from blocking by default, so it must never appear as a match");
-    assert.equal(notTested.length, 1);
-    assert.equal(notTested[0]!.reason, "excluded-by-generator");
-    assert.ok(notTested[0]!.reasonDetail.includes("auth-critical"));
+    assert.equal(matches.length, 1, "a redirect dependency gets a generated test and must appear as a match, not be silently excluded");
+    assert.equal(matches[0]!.tested, true);
+    assert.equal(notTested.length, 0);
 });
 
 test("TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests", () => {

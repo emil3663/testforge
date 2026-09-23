@@ -5,7 +5,7 @@ Scope: Record every outbound dependency a page talks to, generate `page.route()`
 failure-injection tests against each one, and generate generic local
 storage-API failure-injection tests — extending Phase 17's discovered-surface
 coverage denominator rather than living outside it.
-Status: Approved and in implementation (Decisions 3 and 4 resolved 2026-09-23)
+Status: Approved and in implementation (Decision 3 resolved 2026-09-23; Decision 4 resolved and then revised same day — see below)
 
 ## Context
 
@@ -19,8 +19,10 @@ were marked `[PLACEHOLDER]`: how corrupted/old-schema *seeding* generalizes
 to a target site TestForge has no schema knowledge of, and whether
 auth-critical dependencies (login redirects, session cookies) get excluded
 from blanket blocking. Both are now resolved (Emil, 2026-09-23, after
-TFP-084–086 had already landed) — see Decisions 3 and 4 below. Everything
-else in this record is derived directly from the roadmap paragraph, the
+TFP-084–086 had already landed) — see Decisions 3 and 4 below. Decision 4
+was resolved once, then corrected the same day after Emil pushed back on
+a blanket, unpinpointed exclusion; the correction stands. Everything else
+in this record is derived directly from the roadmap paragraph, the
 addendum, and rules the roadmap has already locked elsewhere (the
 interactive-test skip-by-default rule).
 
@@ -69,25 +71,38 @@ whatever follows them.
   (generic entry-point-unavailable case only) — this decision confirms
   that scoping rather than changing it.
 
-4. Auth-critical dependencies are excluded from blanket `page.route()`
-   blocking by default.
-- Resolved (Emil, 2026-09-23): login-flow redirects and session-setting
-  cookies are excluded from blanket blocking by default, since blocking
-  one could invalidate every later test in the same run rather than
-  testing graceful degradation.
-- Concretely: cookie-kind dependencies were already excluded for a
-  separate, mechanical reason (`page.route()` has no request to target).
-  Redirect-kind dependencies are now excluded by default too — the
-  dependency map doesn't yet distinguish a login-flow redirect from any
-  other redirect, so the whole `redirect` kind is excluded as the
-  closest granularity currently available.
-- An explicit opt-out list (naming specific hosts to test anyway) is the
-  likely future shape, per this decision's own original framing, but is
-  not built in Phase 18 — no run config currently threads that override
-  through. TFP-085 was updated (commit follows this record) to apply
-  this default; it previously blocked every routable dependency,
-  redirects included, with the open question noted only in the
-  generated suite's header comment.
+4. No dependency is excluded from `page.route()` blocking for
+   auth-related reasons — the risk that would justify one doesn't exist
+   in this codebase yet.
+- First resolved (Emil, 2026-09-23) as a blanket default: exclude the
+  whole `redirect` kind (the map's closest stand-in for "login-flow
+  redirect") from blocking by default, on the theory that blocking one
+  could invalidate every later test in the same run. Implemented the
+  same day in TFP-085.
+- Revised (Emil, 2026-09-23, same day): that exclusion was a guess, not
+  a pinpointed reason, and Emil asked for the real mechanism instead of
+  a blanket carve-out. Checking the actual generated-suite architecture
+  settles it: `playwright.config.ts` sets no `storageState` and nothing
+  in `src/lib/generate` shares session state across tests — every
+  generated test already runs in its own isolated Playwright
+  page/context. Blocking a redirect inside one test's `page.route()`
+  cannot reach any other test in the run, today. The cascade risk that
+  motivated the exclusion is real only once Phase 20 introduces a
+  run-wide cached `storageState` shared across every generated test —
+  it does not exist yet, so there is nothing to exclude yet.
+- Corrected default: every routable dependency, `redirect` included,
+  gets a failure-injection test by default, exactly like
+  xhr-fetch/form-action/third-party-script/iframe. `cookie` remains
+  excluded, but for its own unrelated, mechanical reason — it isn't a
+  routable network request at all, not because it's auth-critical.
+- Forward note for Phase 20: when a run-wide cached `storageState`
+  lands, revisit this decision. The correct fix then is a *pinpointed*
+  exclusion — matching the specific dependency whose host equals Phase
+  20's configured login URL — not a kind-wide exclusion of every
+  `redirect`. That's new scope for a Phase 20 ticket to define, not
+  something this record decides in advance.
+- TFP-085 and its tests were reverted the same day to match this
+  correction; see the commit that follows this record.
 
 ## Acceptance Criteria
 
@@ -235,7 +250,8 @@ whatever follows them.
 - TFP-084–086 all landed against a real target, each with `TEST_PLAN.md`
   cases proving real (not assumed) behavior, and both placeholder
   decisions resolved (2026-09-23): Decision 3 (schema/corrupted-value
-  seeding deferred, not built) and Decision 4 (auth-critical dependencies
-  — concretely, the `redirect` kind — excluded from blanket blocking by
-  default), with TFP-085's exclusion policy updated to match and
-  `TEST_PLAN.md` reflecting both resolutions in the same commit. **Met.**
+  seeding deferred, not built) and Decision 4 (no auth-related exclusion
+  today — every routable dependency, `redirect` included, is tested by
+  default; a pinpointed, host-specific exclusion is real future scope
+  for Phase 20, not built now), with TFP-085 and `TEST_PLAN.md` updated
+  to match in the same commits. **Met.**

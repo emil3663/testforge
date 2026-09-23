@@ -5,7 +5,7 @@ import {
     resolveLinkAuditPaths,
     findMatchingProfilePage,
 } from "@/lib/generate/mock/locators";
-import { buildDependencyFailureTitle, isBlockedByDefaultDependencyKind } from "@/lib/generate/mock/dependency-failure-injection";
+import { buildDependencyFailureTitle, isRoutableDependencyKind } from "@/lib/generate/mock/dependency-failure-injection";
 import { buildStorageFailureTitle, STORAGE_KINDS } from "@/lib/generate/mock/storage-failure-injection";
 import type { ActionableElementDetail, ContentProfile, ContentProfilePage, DependencyMapEntry, StorageKind } from "@/lib/generate/mock/types";
 import { AREA_LABELS } from "./execution";
@@ -228,12 +228,10 @@ export function computeDiscoveredElementCoverage(
     // iteration over a list that already spans every introspected page.
     const reliabilitySelected = selectedPractices.includes("reliability");
     for (const entry of contentProfile.dependencyMap ?? []) {
-        if (!isBlockedByDefaultDependencyKind(entry.kind)) {
+        if (!isRoutableDependencyKind(entry.kind)) {
             notTested.push(notTestedDependencyEntry(
                 entry, "excluded-by-generator",
-                entry.kind === "cookie"
-                    ? "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
-                    : "redirect-kind dependencies are excluded from blanket blocking by default (Decision 4: auth-critical, e.g. a login-flow redirect) - the map doesn't yet distinguish which redirects are auth-critical, so the whole kind is excluded"
+                "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
             ));
             continue;
         }
