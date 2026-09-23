@@ -30,6 +30,16 @@ const eslintConfig = defineConfig([
       "skills",
       "skills/**",
       "**/skills/**",
+      // Runtime-generated, gitignored output (persisted runs / artifacts) -
+      // same scoping gap TFP-078 fixed for skills/, found once a real
+      // generate+run cycle (TFP-082's live verification) actually
+      // populated runs/ with a generated suite.spec.ts to lint.
+      "runs",
+      "runs/**",
+      "**/runs/**",
+      "artifacts",
+      "artifacts/**",
+      "**/artifacts/**",
     ],
   },
   ...nextVitals,
@@ -38,6 +48,20 @@ const eslintConfig = defineConfig([
     files: ["src/**/*.ts", "src/**/*.tsx"],
     rules: {
       "max-lines": ["error", { max: 500, skipBlankLines: false, skipComments: false }],
+    },
+  },
+  {
+    // TFP-080: dom-snapshot.ts's captureDomSnapshot is passed by reference
+    // to Playwright's page.evaluate() (see src/lib/introspect/inspector.ts),
+    // which serializes the function's own source and runs it inside the
+    // browser's isolated JS context - every helper it uses must stay nested
+    // inside its body, since no module system is available at runtime
+    // there. Splitting the file would silently break real page
+    // introspection. A single, named exception, not a general loosening of
+    // the rule - see the file's own header comment for the full rationale.
+    files: ["src/lib/introspect/dom-snapshot.ts"],
+    rules: {
+      "max-lines": "off",
     },
   },
 ]);
