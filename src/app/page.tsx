@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, getSiteUrl } from "@/lib/seo";
 import { CreationSection } from "@/app/_components/CreationSection";
 import { GeneratedSuiteSection } from "@/app/_components/GeneratedSuiteSection";
+import { HelpPanel } from "@/app/_components/HelpPanel";
 import { ReportSection } from "@/app/_components/ReportSection";
 import { RunProgressOverlay } from "@/app/_components/RunProgressOverlay";
 import { useCrawl } from "@/app/_hooks/useCrawl";
@@ -54,6 +55,7 @@ export default function Home() {
     const [auditMode, setAuditMode] = useState(DEFAULT_TEST_AUDIT_MODE);
     const [isCreationCollapsed, setIsCreationCollapsed] = useState(false);
     const [isContentRulesCollapsed, setIsContentRulesCollapsed] = useState(true);
+    const [isHelpPanelOpen, setIsHelpPanelOpen] = useState(false);
 
     const crawl = useCrawl(baseUrl);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
@@ -225,6 +227,7 @@ export default function Home() {
                     setIsBusyTargetListExpanded={run.setIsBusyTargetListExpanded}
                 />
             )}
+            <HelpPanel isOpen={isHelpPanelOpen} onClose={() => setIsHelpPanelOpen(false)} />
             <header className="border-b border-white/70 bg-white/80 backdrop-blur">
                 <div className="mx-auto flex max-w-6xl items-center gap-3 px-6 py-4">
                     <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-indigo-600 shadow-[0_10px_30px_rgba(79,70,229,0.25)]">
@@ -246,6 +249,14 @@ export default function Home() {
                             AI-native test creation with structured quality reporting
                         </div>
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => setIsHelpPanelOpen(true)}
+                        aria-label="Help"
+                        className="ml-auto flex h-9 w-9 items-center justify-center rounded-2xl border border-zinc-200 bg-white text-sm font-semibold text-indigo-600 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
+                    >
+                        ?
+                    </button>
                 </div>
             </header>
 
