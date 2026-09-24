@@ -16,6 +16,7 @@ import {
     stripCodeFence,
 } from "@/lib/generate/ollama";
 import { findTypeErrors } from "@/lib/generate/validate";
+import { LOCAL_MODEL_RULES } from "@/lib/generate/local-rules";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
@@ -137,7 +138,15 @@ async function generateWithOllama(
             return fallback(template(), "ollama_model_missing");
         }
 
-        const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });
+        // Phase 31 (TFP-106): local-only API rules, appended to the system
+        // message here so the shared SYSTEM_PROMPT (and the OpenAI path) is untouched.
+        const localMessages = messages.map((m) =>
+            m.role === "system" ? { ...m, content: `${m.content}\n\n${LOCAL_MODEL_RULES}` } : m
+        );
+        const chat = await client.chat.completions.create(
+            { model, messages: localMessages, temperature: 0.2 },
+            { signal }
+        );
 
         const raw = chat.choices[0]?.message?.content;
         const code = typeof raw === "string" ? stripCodeFence(raw) : "";

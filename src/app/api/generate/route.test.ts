@@ -31,6 +31,8 @@ import { after, afterEach, before, beforeEach, test } from "node:test";
 const { POST } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
 const { OPENAI_MODEL_CANDIDATES } = await import("../../../lib/generate/models.ts");
+const { SYSTEM_PROMPT } = await import("../../../lib/generate/prompt.ts");
+const { LOCAL_MODEL_RULES } = await import("../../../lib/generate/local-rules.ts");
 
 test("POST /api/generate: truncated JSON body returns 400 with a JSON error body, not a 500", async () => {
     const req = new NextRequest(new URL("http://localhost/api/generate"), {
@@ -67,7 +69,7 @@ type FakeHandler = (req: IncomingMessage, res: ServerResponse) => void;
 let server: Server;
 let baseUrl = "";
 let handler: FakeHandler = (_req, res) => res.writeHead(500).end();
-const chatBodies: Array<{ model?: string }> = [];
+const chatBodies: Array<{ model?: string; messages?: Array<{ role: string; content: string }> }> = [];
 
 const ENV_KEYS = [
     "OPENAI_API_KEY",
@@ -414,4 +416,39 @@ test("POST /api/generate: a local suite that does not type-check falls back as i
     assert.equal(body.model, `${LOCAL_MODEL}:latest`);
     assert.equal(body.code, expected);
     assert.match(String(logged.mock.calls.at(-1)?.arguments[0]), /toBeAccessible/, "the log must say what was wrong");
+});
+
+// --- TFP-106: local-only rules layer ----------------------------------------
+
+function accessibilityRequest() {
+    return new NextRequest(new URL("http://localhost/api/generate"), {
+        method: "POST",
+        body: JSON.stringify({
+            baseUrl: "http://localhost:3000",
+            description: "Check the login page is accessible.",
+            selectedPractices: ["accessibility"],
+        }),
+        headers: { "content-type": "application/json" },
+    });
+}
+
+test("POST /api/generate: the local path sends the shared prompt plus the local rules", async () => {
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) => json(res, 200, completion("// local")));
+    useOllama();
+
+    await POST(accessibilityRequest());
+
+    const system = chatBodies[0].messages?.find((m) => m.role === "system")?.content;
+    assert.equal(system, `${SYSTEM_PROMPT}\n\n${LOCAL_MODEL_RULES}`);
+    assert.match(system ?? "", /toHaveAccessibleName/);
+});
+
+test("POST /api/generate: the OpenAI path never sees the local rules", async () => {
+    fakeOpenAi([OPENAI_MODEL_CANDIDATES[0]], (_req, res) => json(res, 200, completion("// openai")));
+    useFake();
+
+    await POST(accessibilityRequest());
+
+    const system = chatBodies[0].messages?.find((m) => m.role === "system")?.content;
+    assert.equal(system, SYSTEM_PROMPT);
 });
