@@ -6,8 +6,8 @@ coverage for the five best-practice areas Phase 31's baseline found thin
 or broken (performance, SEO, database, reliability, security), and close
 Phase 32's one open question — whether the route should reject or repair
 suites with unawaited checks.
-Status: Approved and in implementation (TFP-110 unblocked now; TFP-111,
-TFP-112, TFP-113 unblocked, no dependency between them or on TFP-110)
+Status: Implemented; Gate A met 2026-09-24 with reliability recorded as
+short on quality (see "Implementation status" at the end)
 
 ## Context
 
@@ -254,3 +254,74 @@ issued number as of this record).
   read and recorded — a category that still falls short after this phase
   says so in `TEST_PLAN.md`, rather than the bar being lowered to close
   the gate.
+
+## Implementation status (2026-09-24)
+
+Landed: TFP-110 `aca8dfa`, TFP-111 `2d881ca`, TFP-112 `b77d696`,
+TFP-113 `4215d82`, plus `df47f8f`, a test-file split. TFP-110 had
+pushed `route.test.ts` over the 500-line lint limit without lint being
+run. It was caught before pushing, and neither intermediate commit was
+pushed.
+
+All live runs used `testforge-qwen7b` on Emil's machine through a
+production build. Every returned suite also passed a standalone strict
+`tsc` and was read, not just compiled. Every attempt is recorded in
+`TEST_PLAN.md`, not only the last one.
+
+**TFP-110: Acceptance Criterion 1 met.** Suites with an unawaited
+promise-returning assertion fall back as `unawaited_assertion`, proven
+against the fake server. An unawaited synchronous `toBe` is deliberately
+*not* rejected: it still runs, and the template generator writes that
+form itself. `invalid_output` stays distinct, because the type check
+runs first (GEN-31).
+
+**One design change beyond this record.** Guides are sent only for the
+areas `getBestPracticeAreas` puts in scope, which is the template
+generator's own notion of what a request covers. Sending all six
+examples every time would, given Phase 32's structure-copying finding,
+invite unrelated tests. A free-form request still receives the default
+guides (accessibility, SEO, reliability). The regression runs showed no
+spill-over from them.
+
+**Per-category result (Acceptance Criterion 2), 3 consecutive live runs
+each:**
+
+| Area | Result | Notes |
+| --- | --- | --- |
+| Reliability (TFP-111) | ⚠️ trait appears, quality short | Attempt 1: 0/3 genuine. The rules told the model to replace placeholders with the request's elements, so it routed `'**/email-input/**'`. Attempt 2, with the failures declared generic: 3/3 contain a real `page.route` failure simulation, but 2/3 repeat it under titles naming the email, password and button. Attempt 3, with a naming rule: 1/3 genuine, and 2/3 blocked a submit-only endpoint they never trigger. That rule was reverted and attempt 2's rules shipped. |
+| Performance (TFP-112) | ✅ 3/3 | The example near-verbatim with the URL substituted. The budgets are the example's defaults. |
+| SEO (TFP-112) | ✅ 3/3 | Title and meta description 3/3, `h1` 2/3, and one minor spill of field-visibility tests. |
+| Database (TFP-112) | ✅ 3/3 on attempt 2 | Contact-form wording, since a sign-in page has nothing to persist. Attempt 1 copied the `EXAMPLE-` prefix into test data, so the unique value is now copy-safe. On a sign-in page (1 run), the `test.skip` rule was ignored in favour of an invented sign-up flow. |
+| Security (TFP-113) | ✅ 3/3 on attempt 2 | Attempt 1's negated skip lost its `!` in 1/3, which asserted `https:` on http again. With a positive skip: 0/3 false HTTPS assertions, and 2/3 have all three checks. |
+| Accessibility (regression) | ✅ 3/3 | GEN-27 wording, with the default guides also sent: real role, name and focus checks, and nothing from the other guides spilled in. |
+| Functional (regression) | ✅ 1/1 | GEN-21 wording still passes. |
+
+`prompt.ts` has no diff, and the unit suite passes 240/240.
+
+**Gate A is met, as this record defines it.** TFP-110 is proven.
+TFP-111, TFP-112 and TFP-113 each have three consecutive live results,
+read and recorded. Reliability falls short on quality and says so
+(GEN-32 ⚠️), rather than the bar being lowered.
+
+**What this phase learned about examples:**
+
+1. Examples get copied as templates. When the example is exactly the
+   test we want, as with performance, that works for us.
+2. Anything marked as a placeholder must really be a placeholder. Data
+   meant to be copied, like a unique-value prefix, must look like real,
+   copy-safe data.
+3. Negations and conditions get dropped when copying, so write them
+   positively.
+4. A request's UI elements pull the model toward element-shaped tests,
+   even in categories where the elements are irrelevant (reliability,
+   database on a sign-in page).
+
+**Open, for Emil to prioritise:**
+
+- Reliability's element-mapping, which is the remaining quality gap. A
+  rule alone made it worse, so a different lever is needed, perhaps a
+  profile-driven dependency list rather than prose.
+- The database `test.skip` behaviour on pages that save nothing.
+- The deterministic-vs-local comparison (Phase 21), which this record
+  deferred until these results were known. Five areas now have a real
+  baseline to compare against.

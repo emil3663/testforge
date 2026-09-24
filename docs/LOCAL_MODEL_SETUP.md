@@ -113,13 +113,16 @@ This model sometimes invents Playwright APIs. Before Phase 31 it wrote
 every accessibility request. Two things now guard against that:
 
 - **Local-only rules** (`src/lib/generate/local-rules.ts`) are added to the
-  model's instructions. They list the accessibility matchers that do exist,
+  model's instructions: shared API rules, plus a worked example for each
+  requested area that has one (accessibility, reliability, performance, SEO,
+  database, security). For accessibility they list the matchers that do exist,
   forbid the invented ones, and include a worked example. Since they were
   added, accessibility requests have produced real checks (`toHaveRole`,
   `toHaveAccessibleName`, `toBeFocused`) three times running.
 - **A type check.** Every local suite is checked against the installed
-  `@playwright/test` before it is returned. A suite that doesn't compile never
-  reaches you as model output. You get the template generator's suite,
+  `@playwright/test` before it is returned, and checked for assertions that
+  are never awaited. A suite that fails either check never reaches you as
+  model output. You get the template generator's suite,
   labelled `"fallbackReason": "invalid_output"`, and the server console lists
   the exact errors.
 
@@ -127,7 +130,9 @@ Compiling is not the same as being right. The check cannot see a missing
 `await`, a wrong URL, or an assertion that fails on your real page, and some
 categories come back thin: a suite that only checks visibility, filed under a
 heading like "SEO". `TEST_PLAN.md` records a per-category baseline (GEN-28)
-and Known Limitations item 9 lists the details.
+and the Phase 33 results per area (GEN-32 to GEN-36), and Known Limitations
+item 9 lists the details. Reliability suites in particular often repeat one
+test under titles naming the page's fields, so read those closely.
 
 ## When it falls back
 
