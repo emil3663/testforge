@@ -4,8 +4,8 @@ Date: 2026-09-24
 Scope: Fix the local (Ollama) generation path's diagnosed accessibility-matcher
 defect through a local-only prompt/rules layer, and establish a real baseline
 across every best-practice category — without touching the OpenAI path.
-Status: Approved and in implementation (TFP-106 unblocked; TFP-107 sequenced
-behind it)
+Status: Implemented; Gate A met 2026-09-24 (TFP-106, TFP-107 landed; see
+"Implementation status" at the end)
 
 ## Context
 
@@ -192,3 +192,64 @@ issued number as of this record).
   `testforge-qwen7b`, TFP-107's per-category baseline is recorded in
   `TEST_PLAN.md`, and `src/lib/generate/prompt.ts` shows no diff from
   where Phase 28 left it.
+
+## Implementation status (2026-09-24)
+
+TFP-106 landed in `04ba706`; TFP-107's baseline in `d311dad`. All live runs
+were against `testforge-qwen7b` on Emil's machine (RTX 2050, 4GB VRAM),
+through a production build (`next build` + `next start`), using TFP-103's
+type check plus a standalone strict `tsc` on every suite returned as
+model output.
+
+**TFP-106: Acceptance Criterion 1 met, on the second attempt.** The
+exact wording that failed 3/3 in Phase 30 was used throughout, and every
+run is recorded:
+
+- First rules version: passed 2 of 3. The third run called
+  `expect(page).toHaveRole(...)`, the right matcher on the wrong object,
+  which the rules hadn't ruled out. It was caught as `invalid_output`.
+- Added the rule that `expect(page)` takes only page matchers, and
+  restarted the count. Three consecutive runs all returned
+  `generatedBy: "ollama"` (74-83s), and all passed strict `tsc`. Each
+  asserts `toHaveRole` and `toHaveAccessibleName` per control, and two of
+  the three also assert `toBeFocused`. They are real accessibility checks,
+  not visibility checks relabelled.
+
+**Acceptance Criterion 3 met.** `prompt.ts` has no diff. The rules live in
+`src/lib/generate/local-rules.ts`, referenced only from
+`generateWithOllama`. A route test asserts the OpenAI path's system
+message is exactly `SYSTEM_PROMPT`, and TFP-083's OpenAI tests pass
+unchanged (unit suite 198/198).
+
+**TFP-107: Acceptance Criterion 2 met.** `TEST_PLAN.md` GEN-28 has the
+per-area results. Correction to this record: `BEST_PRACTICE_OPTIONS` has
+ten areas, not nine. `reliability` was missing above, and all ten were
+surveyed. All 10 compile, so accessibility was the only invented-API
+defect. The functional request still passes (GEN-21's behaviour held).
+
+What the survey found beyond compiling, recorded and deliberately not
+fixed in this phase:
+
+- **Thin categories.** Performance measures no time. SEO and database
+  are one visibility-only test each. Security's HTTPS check is an
+  un-awaited `toHaveURL` that can't match. Reliability is title and focus
+  only. This is a content-quality problem, a different class from the
+  invented APIs this phase targeted.
+- **Probable example leakage.** 9 of 10 survey suites navigated to
+  `/login`, the rules example's path, which no request mentioned. Every
+  earlier suite used the bare base URL. The survey's wording also
+  differed, so this is likely but not proven.
+
+**Gate A is met:** three consecutive real accessibility passes, the
+baseline recorded, and `prompt.ts` untouched.
+
+Candidate follow-ups, for Emil to prioritise (none started):
+
+1. Give the rules example a neutral URL built from the request's base
+   URL, then re-run the survey to confirm or rule out the `/login`
+   leakage. Cheap.
+2. Per-area rules for the thin categories (e.g. real timing for
+   performance, `toHaveTitle` and meta checks for SEO), the same
+   mechanism as TFP-106, measured the same way.
+3. The Phase 21 rescoping this record defers: compare the local path,
+   now with a known baseline, against the deterministic generator.
