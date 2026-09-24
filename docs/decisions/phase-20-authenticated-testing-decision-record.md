@@ -197,6 +197,15 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - **Acceptance criteria:** per Acceptance Criteria §2 above (the
   grep-based check).
 - **Dependencies:** TFP-092.
+- **Landed (`622c047`):** grep of the real generated suite, persisted
+  `run.json`/`suite.spec.ts`, and API responses finds neither credential
+  value; confirmed not vacuous (a deliberately-mutated `run.json` fails
+  the check). Hardened: `usernameEnv`/`passwordEnv` must be upper-case
+  letters, digits and underscores, so a credential pasted where a name
+  belongs is refused with a 400 before lookup instead of being echoed
+  back in a "variable X is not set" error — narrows the mistake, does
+  not rule it out (an all-upper-case password would still pass), stated
+  in `TEST_PLAN.md`'s Known Limitations.
 
 ### TFP-094 — Redact credentials and storageState from traces, screenshots, and the report
 
@@ -223,6 +232,21 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
     checks.
 - **Acceptance criteria:** per Acceptance Criteria §2 above.
 - **Dependencies:** TFP-092.
+- **Landed (`dad7049`):** probed first, not assumed — a real
+  authenticated run's `trace.zip` held the whole `storageState`
+  (session cookie and value) even though the login itself ran outside
+  any traced context. Two independent layers now scrub every artifact
+  before it can reach the result, persisted evidence, or a download:
+  value-based redaction (raw/JSON-escaped/percent-encoded, rewriting
+  inside zip entries via `playwright-core`'s own bundled zip tools) and
+  a structural pass dropping any `storageState` key outright. Fails
+  closed: an artifact that can't be scrubbed is deleted, not kept. The
+  regression test deliberately tries to leak (prints the session,
+  types credentials, fails on an assertion echoing the session) and
+  found 31 leaks before the fix, 0 after, with the trace still valid
+  and useful. Screenshots/videos are binary and not scrubbed (Known
+  Limitations); values under 4 characters are not redacted (would
+  shred unrelated text).
 
 ### TFP-095 — Automation-account setup instructions
 
