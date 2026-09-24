@@ -58,9 +58,43 @@ quality could drift silently, with nothing to bisect against. Folded into
 this ticket rather than filed separately since it's the same file, same
 call, same fix motion.
 
+**Added 2026-09-24, from a Cowork research pass (not a repo read — this
+needed live/current information, not code):** a second, more urgent
+finding on the exact same call. Checking OpenAI's own current pricing and
+deprecation pages, `gpt-4o` no longer appears in the current pricing table
+at all, and multiple sources (OpenAI's own retirement announcements,
+third-party coverage) describe GPT-4o API access being wound down through
+2026. The exact retirement date and the specific recommended replacement
+model string were inconsistent across every source checked — this space
+is moving too fast for a web search alone to be the source of truth — so
+this finding does **not** hand down a replacement model string to
+hardcode. What it does establish: pinning `gpt-4o` to a dated snapshot (as
+originally scoped below) may be pinning something that no longer resolves
+at all. **The first concrete step of TFP-083, before any pinning decision,
+is a live check against the real OpenAI API** (a models-list call, or one
+minimal real request with a real key) to find out what `gpt-4o` currently
+does and what the actual available model catalog looks like today — not
+another round of public-doc research.
+
 ## Scope (this phase)
 
 ### In scope
+0. **Live-check the real OpenAI model catalog, then define a short
+   ordered candidate list from it** — a models-list call (or one minimal
+   real request) with a real key, to see what's actually callable today.
+   Don't assume any specific model name going in — 2026-09-24 research
+   found today's names unreliable to guess from public docs alone (see
+   the note above). From the real live output, define 2-3 candidates in
+   an explicit, version-controlled config, ordered cheapest-adequate tier
+   first with a known-working fallback second — not a single hardcoded
+   string, and not name-pattern matching (e.g. "anything with 'mini' in
+   it"), which breaks silently on the next OpenAI rename, the exact
+   failure this whole finding is about. Check the live catalog against
+   the candidate list and pick the first one actually present; record
+   which one was picked. Added 2026-09-24 (Cowork, at Emil's request) —
+   Phase 21's TFP-099 later scores every candidate in this list against
+   real comparison data and can reorder/prune it; this phase only needs
+   the mechanism and a reasonable starting list.
 1. Guard the OpenAI call in `src/app/api/generate/route.ts` against
    failure, timeout, and malformed responses, without changing behavior
    for the already-working no-key (`mockGenerate`) path.
@@ -71,6 +105,17 @@ call, same fix motion.
    closes — not the full Phase 21 evaluation.
 
 ### Out of scope
+- **Scoring which candidate is actually best** for this kind of work.
+  This phase builds the mechanism (an ordered candidate list, live-checked,
+  first-match-wins) and a reasonable initial list — it does not run
+  Phase 21's four-dimension comparison (coverage delta, pass/fail
+  agreement, defect-detection difference, cost & latency) to prove one
+  candidate beats another. That's TFP-099, extended to score every
+  candidate in this list, not a single AI path — see
+  `phase-21-ai-assisted-generation-decision-record.md`. This phase's job
+  is a working call on *some* real, currently-resolving model with a
+  visible, reviewable list; Phase 21 reorders or prunes that list from
+  real data without touching this phase's guard/timeout/fallback logic.
 - CI coverage that actually exercises a real OpenAI call (that requires a
   real key in CI, a cost/secrets decision Emil hasn't made — separate from
   this phase).
@@ -114,12 +159,24 @@ call, same fix motion.
   - Treat an empty/missing `chat.choices[0]?.message?.content` as a
     failure, not a success — route it into the same fallback path rather
     than returning 200 with empty `code`.
-  - Pin the model string (e.g. `gpt-4o-2024-08-06` — confirm the current
-    recommended dated snapshot against OpenAI's model list rather than
-    guessing) instead of the floating `gpt-4o` alias, and record the
-    resolved model string alongside the response (fits naturally next to
-    the `generatedBy` field above) so a future output can be traced back
-    to what actually produced it.
+  - **Live-check the real OpenAI model catalog and define a short ordered
+    candidate list from it** (2026-09-24 research found `gpt-4o` missing
+    from OpenAI's current public pricing table and described as being
+    retired through 2026 across multiple sources, with inconsistent exact
+    dates/replacement names across them — not reliable enough to hardcode
+    from). A models-list call or one real minimal request with a real key
+    settles what's actually callable in seconds, where more web research
+    won't. Build the candidate list from that real output — 2-3 entries,
+    cheapest-adequate tier first, a known-working fallback second — not a
+    single guessed string and not name-pattern matching, which breaks
+    silently on the next rename. Put the list in an explicit,
+    version-controlled config (e.g. `src/lib/generate/models.ts`), not
+    env vars or inline in the route, so it's a visible artifact Phase
+    21's TFP-099 can later read and reorder. At request time, pick the
+    first candidate present in the live catalog instead of the floating
+    `gpt-4o` alias, and record the resolved model string alongside the
+    response (fits naturally next to the `generatedBy` field above) so a
+    future output can be traced back to what actually produced it.
   - Add a regression test in `src/app/api/generate/route.test.ts`
     (extends the existing TFP-067 file, doesn't replace it) covering: a
     forced OpenAI rejection falls back to `mockGenerate` output rather
@@ -135,6 +192,7 @@ call, same fix motion.
     Also correct the Feature Status table's "Generate" row note to match.
 - **Deliverables:**
   - Fixed `src/app/api/generate/route.ts`.
+  - New candidate-model-list config (e.g. `src/lib/generate/models.ts`).
   - Extended `src/app/api/generate/route.test.ts` with the three new
     cases above.
   - Updated `TEST_PLAN.md` (Known Limitations item 5, Feature Status
@@ -148,9 +206,11 @@ call, same fix motion.
     diff.
   - The no-key path (`mockGenerate` called directly, no OpenAI client
     involved) is unaffected — existing tests for it still pass unchanged.
-  - The OpenAI call uses a pinned, dated model snapshot, not the floating
-    `gpt-4o` alias, and the response records which model string produced
-    it.
+  - The OpenAI call uses a model string chosen from an explicit,
+    version-controlled candidate list — not a single guessed snapshot
+    name, not name-pattern matching — where the chosen candidate is
+    confirmed live against the real OpenAI API to actually resolve today,
+    and the response records which model string produced it.
   - `TEST_PLAN.md` no longer implies this phase did Phase 21's evaluation
     work.
 - **Dependencies:** None.
@@ -163,6 +223,7 @@ Single ticket.
 
 ### Gate A - The existing OpenAI path fails safely
 - TFP-083 lands with real tests proving all three failure modes degrade
-  cleanly, and `TEST_PLAN.md` accurately separates "hardened" (this
-  phase) from "evaluated as a product option" (still Phase 21, still not
-  started).
+  cleanly, a real live-check confirms a working model from an explicit
+  candidate-list config (not a guessed string), and `TEST_PLAN.md`
+  accurately separates "hardened" (this phase) from "evaluated as a
+  product option" (still Phase 21, now unblocked and ready to start).
