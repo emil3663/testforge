@@ -16,7 +16,9 @@ import {
     stripCodeFence,
 } from "@/lib/generate/ollama";
 import { findTypeErrors, findUnawaitedAssertions } from "@/lib/generate/validate";
-import { LOCAL_MODEL_RULES } from "@/lib/generate/local-rules";
+import { localRulesFor } from "@/lib/generate/local-rules";
+import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
+import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
@@ -71,7 +73,10 @@ export async function POST(req: NextRequest) {
     // Phase 30 Decision 5: a configured local model wins over an OpenAI key.
     const ollamaModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
     if (ollamaModel) {
-        return generateWithOllama(ollamaModel, messages, template);
+        // Phase 33: the same areas the template generator would cover, so only
+        // the guides for those categories are sent to the local model.
+        const areas = getBestPracticeAreas(description, normalizedPractices);
+        return generateWithOllama(ollamaModel, messages, template, areas);
     }
 
     if (!apiKey) {
@@ -118,7 +123,8 @@ export async function POST(req: NextRequest) {
 async function generateWithOllama(
     configuredModel: string,
     messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-    template: () => string
+    template: () => string,
+    areas: readonly BestPracticeArea[]
 ) {
     const signal = AbortSignal.timeout(timeoutMs("TESTFORGE_OLLAMA_TIMEOUT_MS", DEFAULT_OLLAMA_TIMEOUT_MS));
     try {
@@ -138,10 +144,12 @@ async function generateWithOllama(
             return fallback(template(), "ollama_model_missing");
         }
 
-        // Phase 31 (TFP-106): local-only API rules, appended to the system
-        // message here so the shared SYSTEM_PROMPT (and the OpenAI path) is untouched.
+        // Phase 31 (TFP-106) / Phase 33: local-only API rules plus the guides
+        // for the areas in scope, appended to the system message here so the
+        // shared SYSTEM_PROMPT (and the OpenAI path) is untouched.
+        const localRules = localRulesFor(areas);
         const localMessages = messages.map((m) =>
-            m.role === "system" ? { ...m, content: `${m.content}\n\n${LOCAL_MODEL_RULES}` } : m
+            m.role === "system" ? { ...m, content: `${m.content}\n\n${localRules}` } : m
         );
         const chat = await client.chat.completions.create(
             { model, messages: localMessages, temperature: 0.2 },

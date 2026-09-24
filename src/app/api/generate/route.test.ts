@@ -32,7 +32,7 @@ const { POST } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
 const { OPENAI_MODEL_CANDIDATES } = await import("../../../lib/generate/models.ts");
 const { SYSTEM_PROMPT } = await import("../../../lib/generate/prompt.ts");
-const { LOCAL_MODEL_RULES } = await import("../../../lib/generate/local-rules.ts");
+const { localRulesFor } = await import("../../../lib/generate/local-rules.ts");
 
 test("POST /api/generate: truncated JSON body returns 400 with a JSON error body, not a 500", async () => {
     const req = new NextRequest(new URL("http://localhost/api/generate"), {
@@ -439,7 +439,7 @@ test("POST /api/generate: the local path sends the shared prompt plus the local 
     await POST(accessibilityRequest());
 
     const system = chatBodies[0].messages?.find((m) => m.role === "system")?.content;
-    assert.equal(system, `${SYSTEM_PROMPT}\n\n${LOCAL_MODEL_RULES}`);
+    assert.equal(system, `${SYSTEM_PROMPT}\n\n${localRulesFor(["accessibility"])}`);
     assert.match(system ?? "", /toHaveAccessibleName/);
 });
 
@@ -451,6 +451,29 @@ test("POST /api/generate: the OpenAI path never sees the local rules", async () 
 
     const system = chatBodies[0].messages?.find((m) => m.role === "system")?.content;
     assert.equal(system, SYSTEM_PROMPT);
+});
+
+test("POST /api/generate: the local path sends only the guides for the areas the template generator would cover (Phase 33)", async () => {
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) => json(res, 200, completion("// local")));
+    useOllama();
+
+    // Nothing selected: the template generator's defaults (which include
+    // accessibility and reliability) decide.
+    await POST(generateRequest());
+    // Only reliability selected: no other guide.
+    await POST(
+        new NextRequest(new URL("http://localhost/api/generate"), {
+            method: "POST",
+            body: JSON.stringify({ baseUrl: "http://localhost:3000", description: "x", selectedPractices: ["reliability"] }),
+            headers: { "content-type": "application/json" },
+        })
+    );
+
+    const [inferred, reliabilityOnly] = chatBodies.map((b) => b.messages?.find((m) => m.role === "system")?.content ?? "");
+    assert.match(inferred, /Example of correct accessibility tests/);
+    assert.match(inferred, /Example of correct reliability tests/);
+    assert.match(reliabilityOnly, /Example of correct reliability tests/);
+    assert.doesNotMatch(reliabilityOnly, /Example of correct accessibility tests/);
 });
 
 // --- TFP-110: unawaited-assertion gate --------------------------------------
