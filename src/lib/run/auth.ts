@@ -1,7 +1,8 @@
 import { chromium } from "@playwright/test";
-import { mkdir, readdir, rm } from "fs/promises";
+import { mkdir, readdir, readFile, rm } from "fs/promises";
 import { join } from "path";
 import { RUN_CONTEXT_OPTIONS } from "./browser-context";
+import { secretsFromStorageState } from "./redact";
 
 // Phase 20 (TFP-092): config-driven login, once per run.
 //
@@ -272,7 +273,13 @@ export async function prepareRunLogin(config: LoginConfig, runsDir: string, runI
         throw error;
     }
 
-    return { dir, stateFile };
+    // Every value that must never appear in anything the run hands back
+    // (TFP-094): the credentials themselves and everything inside the
+    // session the login produced. Held in memory for this run only.
+    const state = JSON.parse(await readFile(stateFile, "utf8").catch(() => "{}"));
+    const secrets = [credentials.username, credentials.password, ...secretsFromStorageState(state)];
+
+    return { dir, stateFile, secrets };
 }
 
 export async function removeAuthState(dir: string | null | undefined) {

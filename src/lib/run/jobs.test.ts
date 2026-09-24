@@ -57,6 +57,7 @@ function makeJob(overrides: Record<string, unknown> = {}) {
         description: "jobs unit test job",
         auditMode: "fast",
         selectedPractices: ["functional"],
+        redactions: [] as string[],
         artifactFiles: new Map(),
         result: null as { runStatus: string; passed: boolean } | null,
         ...overrides,

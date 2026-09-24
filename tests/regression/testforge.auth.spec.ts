@@ -1,9 +1,14 @@
-import { readdir } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Server } from "node:http";
 import { devices, expect, type APIRequestContext, test } from "@playwright/test";
+import { buildReportHtmlDocument } from "../../src/lib/report/html";
+import { readZipEntries } from "../../src/lib/run/redact";
 import {
+    AUTH_FIXTURE_PASS,
     AUTH_FIXTURE_PASS_ENV,
+    AUTH_FIXTURE_SESSION,
+    AUTH_FIXTURE_USER,
     AUTH_FIXTURE_URL,
     AUTH_FIXTURE_USER_ENV,
     AUTH_FIXTURE_WRONG_PASS_ENV,
@@ -154,5 +159,132 @@ test.describe("Config-driven login (TFP-092)", () => {
         const valueAsName = await startRun(request, { ...validLogin, passwordEnv: "hunter2 with spaces" });
         expect(valueAsName.status()).toBe(400);
         expect((await valueAsName.json()).error).toContain("must be the NAME of an environment variable");
+    });
+});
+
+// Phase 20 (TFP-094): a run that logged in must not hand back its credentials
+// or its session. Not "should be fine because Playwright does not capture
+// that": found by probe that a real authenticated run's trace.zip held the
+// whole storageState. So this test ACTIVELY tries to leak - the suite prints
+// the session cookie, types the credentials into fields (which the trace
+// records as action values), and fails with an assertion message that
+// contains the session - then searches everything the run hands back.
+const leakAttemptCode = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: '${AUTH_FIXTURE_URL}' });
+
+test('TFFU-001: deliberately tries to leak the session and the credentials', async ({ page, context }) => {
+  await page.goto('/secure');
+  await expect(page.locator('#logout')).toBeVisible();
+  const cookies = await context.cookies();
+  const session = cookies.find((cookie) => cookie.name === 'fixture_session')!.value;
+  console.log('LEAK-ATTEMPT stdout session=' + session);
+  await page.goto('/login');
+  await page.fill('#username', process.env.${AUTH_FIXTURE_USER_ENV}!);
+  await page.fill('#password', process.env.${AUTH_FIXTURE_PASS_ENV}!);
+  expect(session, 'LEAK-ATTEMPT assertion session=' + session).toBe('not-the-session');
+});
+`;
+
+async function entriesOf(zipFile: string) {
+    return readZipEntries(await readFile(zipFile));
+}
+
+const BINARY_FILE = /\.(png|webm)$/;
+
+test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
+    test("a run that deliberately tries to leak its credentials and session hands back none of them", async ({ request }) => {
+        const started = await request.post("/api/run", {
+            data: { code: leakAttemptCode, selectedPractices: ["functional"], auditMode: "fast", baseUrl: AUTH_FIXTURE_URL, description: "leak attempt", login: validLogin },
+        });
+        expect(started.status()).toBe(202);
+        const { runId } = await started.json();
+
+        let snapshot: { result?: { report?: Record<string, unknown>; output: string } } = {};
+        await expect.poll(async () => {
+            snapshot = await (await request.get(`/api/run?runId=${runId}`)).json();
+            return Boolean(snapshot.result?.report);
+        }, { timeout: 120_000, intervals: [2_000] }).toBe(true);
+
+        // The attempt really happened: the test failed on the assertion that echoes the session.
+        const resultText = JSON.stringify(snapshot.result);
+        expect(resultText).toContain("LEAK-ATTEMPT assertion session=");
+        expect(resultText).toContain("Failed");
+
+        const secrets = [AUTH_FIXTURE_PASS, AUTH_FIXTURE_USER, AUTH_FIXTURE_SESSION];
+        const leaks: string[] = [];
+        const scan = (label: string, text: string) => {
+            for (const secret of secrets) {
+                if (text.includes(secret) || text.includes(encodeURIComponent(secret)) || text.includes(JSON.stringify(secret).slice(1, -1))) {
+                    leaks.push(`${label} contains ${secret === AUTH_FIXTURE_SESSION ? "the session token" : secret === AUTH_FIXTURE_PASS ? "the password" : "the username"}`);
+                }
+            }
+        };
+
+        // 1. The result the API returns (report, console output, everything).
+        scan("API result", resultText);
+
+        // 2. The HTML report - what a user downloads - built from that result.
+        scan("HTML report", buildReportHtmlDocument(snapshot.result!.report as never, runId));
+
+        // 3. Everything persisted for the run, including the inside of every zip.
+        const runDir = join(process.cwd(), "runs", runId);
+        const files: string[] = [];
+        const walkDir = async (dir: string) => {
+            for (const entry of await readdir(dir, { withFileTypes: true })) {
+                const path = join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    await walkDir(path);
+                } else {
+                    files.push(path);
+                }
+            }
+        };
+        await walkDir(runDir);
+
+        const traces = files.filter((file) => file.endsWith("trace.zip"));
+        expect(traces).toHaveLength(1);
+        expect(files.some((file) => file.endsWith(".png"))).toBe(true);
+
+        for (const file of files) {
+            const label = file.slice(runDir.length + 1);
+            if (file.endsWith(".zip")) {
+                for (const entry of await entriesOf(file)) {
+                    scan(`${label}!${entry.name}`, entry.data.toString("utf8"));
+                }
+            } else if (!BINARY_FILE.test(file)) {
+                scan(label, await readFile(file, "utf8"));
+            }
+        }
+
+        // 4. What a user actually downloads: each artifact through the API.
+        const report = snapshot.result!.report as { defects: { issues: { artifacts: { artifactId: string; fileName: string }[] }[] } };
+        const downloadable = report.defects.issues.flatMap((issue) => issue.artifacts);
+        expect(downloadable.some((artifact) => artifact.fileName.endsWith("trace.zip"))).toBe(true);
+        for (const artifact of downloadable) {
+            const response = await request.get(`/api/run?runId=${runId}&artifactId=${artifact.artifactId}`);
+            expect(response.ok()).toBe(true);
+            const body = await response.body();
+
+            if (artifact.fileName.endsWith(".zip")) {
+                const temp = join(runDir, `download-${artifact.artifactId}.zip`);
+                await writeFile(temp, body);
+                for (const entry of await entriesOf(temp)) {
+                    scan(`download ${artifact.fileName}!${entry.name}`, entry.data.toString("utf8"));
+                }
+            } else if (!BINARY_FILE.test(artifact.fileName)) {
+                scan(`download ${artifact.fileName}`, body.toString("utf8"));
+            }
+        }
+
+        expect(leaks).toEqual([]);
+
+        // The trace was scrubbed, not deleted: it is still a valid, useful
+        // trace, and it says where it was redacted.
+        const traceText = (await entriesOf(traces[0])).map((entry) => entry.data.toString("utf8")).join("\n");
+        expect(traceText).toContain("[redacted]");
+        expect(traceText).toContain("context-options");
+        expect(traceText).toContain("LEAK-ATTEMPT assertion session=");
+        expect(snapshot.result!.output).toContain("redacted this run's login credentials and session from");
     });
 });

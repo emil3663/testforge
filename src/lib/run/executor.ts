@@ -112,7 +112,8 @@ export async function startRunJob(
     // the run never starts). Any left behind by a crashed run are swept first.
     await removeStaleAuthDirs(runsDir, runJobs.keys());
     const authDir = login ? authDirFor(runsDir, runId) : null;
-    const storageStateFile = login ? (await prepareRunLogin(login, runsDir, runId)).stateFile : null;
+    const preparedLogin = login ? await prepareRunLogin(login, runsDir, runId) : null;
+    const storageStateFile = preparedLogin?.stateFile ?? null;
     const testFile = join(runsDir, `test-${runId}.spec.ts`);
     const jsonReportFile = join(runsDir, `report-${runId}.json`);
     const reporterFile = join(runsDir, `progress-reporter-${runId}.cjs`);
@@ -152,6 +153,7 @@ export async function startRunJob(
         contentProfile,
         enableInteractive,
         login,
+        redactions: preparedLogin?.secrets ?? [],
         artifactFiles: new Map(),
         result: null,
     };

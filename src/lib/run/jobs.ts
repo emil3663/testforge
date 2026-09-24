@@ -7,6 +7,7 @@ import type { JsonReport, RunReport } from "@/lib/report/types";
 import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedExecutions, withArtifactDownloadPath } from "@/lib/run/output";
 import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
+import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
 import { estimateTestCount } from "@/lib/run/selection";
 
 export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
@@ -91,6 +92,10 @@ export interface RunJob {
     // TFP-092: the login this run used - references only (URL, selectors, and
     // the NAMES of the credential environment variables), never a value.
     login: LoginConfig | null;
+    // TFP-094: the run's secret values (credentials and session contents),
+    // used to scrub everything the run produces. In memory only: never on a
+    // snapshot, never persisted, and cleared once the run is finalized.
+    redactions: string[];
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
 }
@@ -129,7 +134,40 @@ export function buildRunSnapshot(job: RunJob): RunStatusPayload {
 }
 
 export async function finalizeRunJob(job: RunJob) {
+    try {
+        await finalizeRunJobUnredacted(job);
+    } finally {
+        job.redactions = [];
+    }
+}
+
+// Second, independent layer: the assembled result is scrubbed once more as a
+// whole, and any storageState key dropped, right before it is exposed or
+// persisted - so a secret that reached it by a path the first pass did not
+// cover still cannot leave.
+function sealResult(job: RunJob, redactor: ReturnType<typeof buildRedactor>) {
+    if (job.result) {
+        job.result = redactDeep(job.result, redactor);
+        job.progress = job.result.progress;
+    }
+}
+
+async function finalizeRunJobUnredacted(job: RunJob) {
     job.finishedAt = Date.now();
+
+    // TFP-094: scrub every artifact the run produced, in place, before
+    // anything is collected, served, or persisted (a real authenticated
+    // run's trace.zip held the whole storageState). Anything that cannot be
+    // scrubbed is removed rather than kept.
+    const redactor = buildRedactor(job.redactions ?? []);
+    const scrubNotes = await scrubArtifactDirectory(job.artifactDir, redactor);
+    if (scrubNotes.length > 0) {
+        const removed = scrubNotes.filter((note) => note.action === "removed").length;
+        job.outputChunks.push(
+            `TestForge redacted this run's login credentials and session from ${scrubNotes.length - removed} captured artifact(s)${removed > 0 ? ` and removed ${removed} that could not be scrubbed` : ""}.\n`
+        );
+    }
+
     finalizeInterruptedPlannedExecutions(job);
     job.progress.completedTests = Math.min(job.progress.completedTests, Math.max(job.progress.totalTests, job.progress.completedTests));
     // Null (not "") when the suite source is gone: coverage then can't tell
@@ -146,7 +184,12 @@ export async function finalizeRunJob(job: RunJob) {
             job.outputChunks.push("Warning: Playwright JSON report was corrupted and could not be parsed.\n");
         }
     }
-    const output = job.outputChunks.join("").trim();
+    // Also the parsed report and the console output: a failing assertion's
+    // message can echo whatever the page did.
+    if (parsedReport) {
+        parsedReport = redactDeep(parsedReport, redactor);
+    }
+    const output = redactor.redact(job.outputChunks.join("").trim());
     const duration = job.finishedAt - job.createdAt;
 
     if (parsedReport) {
@@ -195,6 +238,7 @@ export async function finalizeRunJob(job: RunJob) {
             job.status = job.result.runStatus;
             job.process = null;
 
+            sealResult(job, redactor);
             job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
 
             await Promise.all([
@@ -268,6 +312,7 @@ export async function finalizeRunJob(job: RunJob) {
 
     job.process = null;
 
+    sealResult(job, redactor);
     job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
 
     await Promise.all([
