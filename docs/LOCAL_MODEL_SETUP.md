@@ -19,8 +19,8 @@ TestForge at it.
 - Ollama installed and running (`ollama --version` answers; the server listens
   on `http://localhost:11434` by default).
 - About 5GB of disk for the model.
-- Patience: one generation took 74-91s across three runs on the reference
-  machine (RTX 2050, 4GB VRAM). A 7B model does not fit entirely in 4GB of VRAM, so part of it
+- Patience: one generation took 29-91s across five runs on the reference
+  machine (RTX 2050, 4GB VRAM). Short functional requests are the fast end. A 7B model does not fit entirely in 4GB of VRAM, so part of it
   runs on the CPU. More VRAM is faster; no GPU at all is much slower.
 
 ## 1. Pull the base model
@@ -106,18 +106,23 @@ produced it:
 - `"generatedBy": "fallback"` — the local call failed and you got the template
   generator's suite instead. `fallbackReason` says why (next section).
 
-## Known problem: check the suite before you run it
+## Known problem: accessibility requests fall back
 
-The path runs end to end, but the suites it writes are **not yet reliably
-valid Playwright**. In both live runs on 2026-09-24, the model asserted
-accessibility with `await expect(locator).toBeAccessible()`. Playwright has no
-such matcher, so the suite fails to compile. Everything else in both suites was
-valid. TestForge does not yet check generated code before returning it, so the
-response still says `"generatedBy": "ollama"`. This is tracked as an open
-defect (`TEST_PLAN.md`, Known Limitations item 9).
+This model sometimes invents Playwright APIs. Asked to check that a page "is
+accessible", it has so far always written
+`await expect(locator).toBeAccessible()`, a matcher Playwright doesn't have.
 
-Until it is fixed, review a local suite in the Generated Suite editor before
-running it, and remove or rewrite any `toBeAccessible()` line.
+TestForge type-checks every local suite against the installed
+`@playwright/test` before returning it, so a suite like that never reaches you
+as model output. You get the template generator's suite, labelled
+`"fallbackReason": "invalid_output"`, and the server console lists the exact
+errors. The check takes well under a second.
+
+In practice: functional requests have produced valid suites, while
+accessibility-worded requests currently get the template. The check proves a
+suite calls real APIs, not that its assumptions about your site are right
+(for example, which page a sign-in lands on), so still read a suite before
+trusting its results. See `TEST_PLAN.md`, Known Limitations item 9.
 
 ## When it falls back
 
@@ -132,6 +137,7 @@ model output, and logs the cause on the server console.
 | `ollama_error` | Ollama answered with an error, e.g. the model failed to load. | Check Ollama's own log; often not enough memory. |
 | `timeout` | No answer within `TESTFORGE_OLLAMA_TIMEOUT_MS`. | Raise the timeout, or close other GPU-heavy programs. |
 | `empty_completion` | The model returned nothing usable. | Retry; if it repeats, report it. |
+| `invalid_output` | The model returned a suite, but it doesn't type-check against Playwright (for example, it calls a matcher Playwright doesn't have). The server console lists the errors. | See Known problem above. Retrying, or wording the request differently, can help. |
 
 ## Checklist
 

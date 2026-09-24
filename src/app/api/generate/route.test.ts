@@ -389,3 +389,29 @@ test("POST /api/generate: a local completion that is only a fence falls back as 
     assert.equal(body.fallbackReason, "empty_completion");
     assert.notEqual(body.code, "");
 });
+
+test("POST /api/generate: a local suite that does not type-check falls back as invalid_output", async (t) => {
+    const logged = t.mock.method(console, "error", () => {});
+    // What testforge-qwen7b actually produced on 2026-09-24: a matcher Playwright doesn't have.
+    const invented = [
+        "```typescript",
+        "import { test, expect } from '@playwright/test';",
+        "test('Sign in is accessible', async ({ page }) => {",
+        "  await expect(page.getByRole('button', { name: 'Sign in' })).toBeAccessible();",
+        "});",
+        "```",
+    ].join("\n");
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) => json(res, 200, completion(invented)));
+    const expected = await templateCode();
+    useOllama();
+
+    const res = await POST(generateRequest());
+    const body = await res.json();
+
+    assert.equal(res.status, 200);
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "invalid_output");
+    assert.equal(body.model, `${LOCAL_MODEL}:latest`);
+    assert.equal(body.code, expected);
+    assert.match(String(logged.mock.calls.at(-1)?.arguments[0]), /toBeAccessible/, "the log must say what was wrong");
+});

@@ -15,6 +15,7 @@ import {
     resolveOllamaModel,
     stripCodeFence,
 } from "@/lib/generate/ollama";
+import { findTypeErrors } from "@/lib/generate/validate";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
@@ -143,6 +144,22 @@ async function generateWithOllama(
         if (code === "") {
             return fallback(template(), "empty_completion", model);
         }
+
+        // Phase 30 Acceptance Criterion 1: the local model has invented
+        // Playwright APIs (toBeAccessible), so its suite must type-check before
+        // it is labelled model output. Fails closed if the check can't run.
+        let typeErrors: string[];
+        try {
+            typeErrors = findTypeErrors(code);
+        } catch (checkError) {
+            typeErrors = [`type check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
+        }
+        if (typeErrors.length > 0) {
+            console.error(
+                `[api/generate] ${model} returned a suite that does not type-check against @playwright/test, using template generator:\n  ${typeErrors.slice(0, 5).join("\n  ")}`
+            );
+            return fallback(template(), "invalid_output", model);
+        }
         return NextResponse.json({ code, generatedBy: "ollama", model });
     } catch (error) {
         console.error(
@@ -168,7 +185,8 @@ type FallbackReason =
     | "no_candidate_model"
     | "ollama_unreachable"
     | "ollama_model_missing"
-    | "ollama_error";
+    | "ollama_error"
+    | "invalid_output";
 
 function fallback(code: string, fallbackReason: FallbackReason, model?: string) {
     return NextResponse.json({ code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) });
