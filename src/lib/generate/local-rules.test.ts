@@ -41,6 +41,15 @@ test("local rules: the worked example awaits every assertion (TFP-108)", () => {
     assert.deepEqual(findUnawaitedAssertions(ACCESSIBILITY_EXAMPLE), []);
 });
 
+test("local rules: the worked example only navigates to an unmistakable placeholder (TFP-109)", () => {
+    // Live, same wording: /login in the example -> 3/3 suites went to /login; placeholder -> 0/3.
+    // A realistic URL here gets copied into real suites.
+    const targets = [...ACCESSIBILITY_EXAMPLE.matchAll(/goto\('([^']+)'\)/g)].map((m) => m[1]);
+    assert.ok(targets.length > 0);
+    for (const url of targets) assert.equal(new URL(url).hostname, "example.invalid", `example navigates to ${url}`);
+    assert.doesNotMatch(LOCAL_MODEL_RULES, /localhost/);
+});
+
 test("local rules: the shared block requires await on every expect (TFP-108)", () => {
     const shared = section("Playwright API rules", "There is NO accessibility matcher");
     assert.match(shared, /Always write await before every expect\(\.\.\.\) call/);

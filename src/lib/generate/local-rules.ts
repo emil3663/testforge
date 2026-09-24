@@ -19,14 +19,14 @@ export const ACCESSIBILITY_EXAMPLE = `import { test, expect } from '@playwright/
 
 test.describe('Accessibility', () => {
   test('Sign in button has an accessible role and name', async ({ page }) => {
-    await page.goto('http://localhost:3000/login');
+    await page.goto('https://example.invalid/EXAMPLE-ONLY');
     const signIn = page.getByRole('button', { name: 'Sign in' });
     await expect(signIn).toHaveRole('button');
     await expect(signIn).toHaveAccessibleName('Sign in');
   });
 
   test('Email field is labelled and reachable by keyboard', async ({ page }) => {
-    await page.goto('http://localhost:3000/login');
+    await page.goto('https://example.invalid/EXAMPLE-ONLY');
     const email = page.getByLabel('Email');
     await expect(email).toBeVisible();
     await email.focus();
@@ -34,7 +34,7 @@ test.describe('Accessibility', () => {
   });
 
   test('Page has exactly one main heading', async ({ page }) => {
-    await page.goto('http://localhost:3000/login');
+    await page.goto('https://example.invalid/EXAMPLE-ONLY');
     await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   });
 });`;
