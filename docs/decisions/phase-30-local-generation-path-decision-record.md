@@ -4,8 +4,8 @@ Date: 2026-09-24
 Scope: Add an Ollama-backed local generation path alongside the existing
 deterministic and OpenAI paths, using a real-tested model and configuration
 rather than an assumed one.
-Status: Approved and in implementation (all decisions locked; TFP-103,
-TFP-104, TFP-105 unblocked)
+Status: Implemented; Gate A met 2026-09-24 (TFP-103, TFP-104, TFP-105
+landed; see "Implementation status" at the end)
 
 ## Context
 
@@ -266,7 +266,7 @@ TFP-083 used): unreachable, model missing, Ollama error, timeout, empty
 completion, and the local model winning over an OpenAI key. None of these
 failure modes was forced against the real instance.
 
-**Gate A is not met.** Acceptance Criterion 1 requires valid Playwright
+**Gate A was not met at this point** (resolved below). Acceptance Criterion 1 requires valid Playwright
 TypeScript. Both live suites called `expect(locator).toBeAccessible()`,
 which Playwright does not have; `tsc` against `@playwright/test` rejects
 both, three errors each, and nothing else in either suite. That
@@ -287,3 +287,61 @@ guessed at in code. The options, roughly in order of cost:
 3. **Accept and document:** keep the current warning in
    `docs/LOCAL_MODEL_SETUP.md` and `TEST_PLAN.md` (GEN-21 ❌, Known
    Limitations item 9) and close Gate A with the criterion amended.
+
+### Resolution: option 2, validate then fall back (decided 2026-09-24)
+
+Emil chose option 2. It serves Acceptance Criterion 1 as written, leaves
+the OpenAI path's prompt alone, and keeps the rule the project has
+followed since Phase 24: return a working suite or a clearly labelled
+fallback, never a broken suite labelled as success.
+
+**How it validates** (`src/lib/generate/validate.ts`): the TypeScript
+compiler API, in-process, against the installed `@playwright/test` type
+definitions, with module resolution from the project root. No temp file
+and no child process. Settings are deliberately lenient (`strict: false`,
+`skipLibCheck`), and only error diagnostics in the generated file count,
+so the check asks "does this call real APIs and load", not "is it tidy".
+Library typings are parsed once and cached. Measured: about 0.8s for the
+first check in a process, about 0.1s after that, against a 29-91s
+generation. If the check itself cannot run, it fails closed.
+`typescript` moved from devDependencies to dependencies, because the
+route now needs it at runtime.
+
+**New `fallbackReason`: `"invalid_output"`**, with `model` still reported
+and the first five errors logged on the server. It applies to the local
+path only; the OpenAI path is unchanged.
+
+**Guarding against false positives:** the template generator's own suite
+for every coverage area passes the check (`validate.test.ts`), as does the
+invented-matcher suite once rewritten with a real matcher
+(`toHaveAccessibleName`).
+
+**Verified live, through a production build** (`next build` +
+`next start`, real Ollama, `testforge-qwen7b`). That is where bundling a
+compiler import into a route would break, and it didn't:
+
+- An accessibility-worded request produced `toBeAccessible()` again (a
+  third time). It was caught (the same three TS2339 errors standalone
+  `tsc` reports) and returned as `fallbackReason: "invalid_output"` in
+  74s.
+- A functional request ("the email and password fields accept input and
+  the Sign in button submits the form") returned `generatedBy: "ollama"`
+  in 29s, fence-free. That suite also passes a standalone strict `tsc`.
+
+Option 2's predicted cost ("would mostly get the template") turned out
+narrower than feared: so far it is accessibility requests that fall back,
+while functional ones pass. That rests on three accessibility samples
+and one functional one, so it is not a measured rate.
+
+**Gate A is met:**
+
+- Criterion 1: a real call produced valid Playwright TypeScript with no
+  fence, and nothing invalid is ever labelled model output.
+- Criterion 2: every failure mode, `invalid_output` included, is proven
+  against a fake server, and `invalid_output` also live.
+- Criterion 3: the setup doc exists, and `TEST_PLAN.md` separates "works"
+  (GEN-21 to GEN-26) from "accessibility requests currently fall back"
+  (Known Limitations item 9) and from the deferred tuning and comparison.
+
+Getting accessibility coverage out of the local model is the deferred
+model/prompt tuning follow-up, not a gap in this gate.
