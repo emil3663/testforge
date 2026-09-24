@@ -1,6 +1,7 @@
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
 import { dirname, join, resolve } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
+import type { LoginConfig } from "@/lib/run/auth";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
 
 export type RunRetention = "full" | "archived";
@@ -33,6 +34,10 @@ export interface RunRecord {
     // TFP-091: absent on runs persisted before this field existed, which
     // never ran an interactive test.
     enableInteractive?: boolean;
+    // TFP-092: the login config this run used, references only. Absent/null
+    // for a run that did not log in. Never carries a credential value or the
+    // login's storageState (Decision 5).
+    login?: LoginConfig | null;
 }
 
 // Overridable so tests never read or write the real runs/ directory a live
@@ -137,6 +142,7 @@ export async function persistRunJob(
         artifactFiles: persistedArtifacts,
         contentProfile: job.contentProfile,
         enableInteractive: job.enableInteractive,
+        login: job.login,
     };
 
     await writeRunRecord(record);

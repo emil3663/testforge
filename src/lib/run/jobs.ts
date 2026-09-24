@@ -5,6 +5,7 @@ import { flattenSuites } from "@/lib/report/execution";
 import { buildReport } from "@/lib/report/report";
 import type { JsonReport, RunReport } from "@/lib/report/types";
 import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedExecutions, withArtifactDownloadPath } from "@/lib/run/output";
+import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
 import { estimateTestCount } from "@/lib/run/selection";
 
@@ -87,6 +88,9 @@ export interface RunJob {
     // TFP-091: whether this run explicitly enabled the skipped-by-default
     // interactive (journey) tests.
     enableInteractive: boolean;
+    // TFP-092: the login this run used - references only (URL, selectors, and
+    // the NAMES of the credential environment variables), never a value.
+    login: LoginConfig | null;
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
     result: RunResultPayload | null;
 }

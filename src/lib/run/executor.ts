@@ -4,6 +4,8 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, relative } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
+import { authDirFor, prepareRunLogin, removeAuthState, removeStaleAuthDirs, STORAGE_STATE_ENV_VAR } from "@/lib/run/auth";
+import type { LoginConfig } from "@/lib/run/auth";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
@@ -81,7 +83,8 @@ export async function startRunJob(
     includedTestTitles: string[] = [],
     description = "",
     contentProfile: ContentProfile | null = null,
-    enableInteractive = false
+    enableInteractive = false,
+    login: LoginConfig | null = null
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -101,6 +104,15 @@ export async function startRunJob(
     const runsDir = join(process.cwd(), ".playwright-runs");
     await mkdir(runsDir, { recursive: true });
     const runId = randomUUID();
+
+    // TFP-092: log in once, before any test starts. A failure throws a named
+    // RunLoginError and the run never starts - there is no fallback to an
+    // unauthenticated run. The state file is per-run, outside the evidence
+    // directory, and removed when the run's process closes (or right here if
+    // the run never starts). Any left behind by a crashed run are swept first.
+    await removeStaleAuthDirs(runsDir, runJobs.keys());
+    const authDir = login ? authDirFor(runsDir, runId) : null;
+    const storageStateFile = login ? (await prepareRunLogin(login, runsDir, runId)).stateFile : null;
     const testFile = join(runsDir, `test-${runId}.spec.ts`);
     const jsonReportFile = join(runsDir, `report-${runId}.json`);
     const reporterFile = join(runsDir, `progress-reporter-${runId}.cjs`);
@@ -139,9 +151,29 @@ export async function startRunJob(
         selectedPractices,
         contentProfile,
         enableInteractive,
+        login,
         artifactFiles: new Map(),
         result: null,
     };
+
+    const childEnv: NodeJS.ProcessEnv = {
+        ...process.env,
+        // Always set, never inherited: skipped-by-default interactive tests
+        // (journeys) run only when this run explicitly asked.
+        [INTERACTIVE_ENV_VAR]: enableInteractive ? "1" : "0",
+        PLAYWRIGHT_JSON_OUTPUT_FILE: jsonReportFile,
+        FORCE_COLOR: "0",
+        HOME:
+            process.env.HOME ??
+            process.env.USERPROFILE ??
+            process.cwd(),
+    };
+    // Likewise never inherited: only this run's own login state, if any.
+    if (storageStateFile) {
+        childEnv[STORAGE_STATE_ENV_VAR] = storageStateFile;
+    } else {
+        delete childEnv[STORAGE_STATE_ENV_VAR];
+    }
 
     const child = spawn(
         process.execPath,
@@ -159,18 +191,7 @@ export async function startRunJob(
         ],
         {
             cwd: process.cwd(),
-            env: {
-                ...process.env,
-                // Always set, never inherited: skipped-by-default interactive
-                // tests (journeys) run only when this run explicitly asked.
-                [INTERACTIVE_ENV_VAR]: enableInteractive ? "1" : "0",
-                PLAYWRIGHT_JSON_OUTPUT_FILE: jsonReportFile,
-                FORCE_COLOR: "0",
-                HOME:
-                    process.env.HOME ??
-                    process.env.USERPROFILE ??
-                    process.cwd(),
-            },
+            env: childEnv,
             windowsHide: true,
             stdio: ["ignore", "pipe", "pipe"],
         }
@@ -215,6 +236,7 @@ export async function startRunJob(
             clearTimeout(forceStopTimer);
         }
         appendProcessOutput(job, "", true);
+        void removeAuthState(authDir);
         void finalizeRunJob(job);
     });
 

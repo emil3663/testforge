@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import os from "node:os";
+import { AUTH_FIXTURE_ENV } from "./tests/regression/auth-fixture";
 
 export default defineConfig({
     testDir: "tests/regression",
@@ -37,5 +38,8 @@ export default defineConfig({
         url: "http://127.0.0.1:3001",
         reuseExistingServer: false,
         timeout: 120_000,
+        // Phase 20: test-only credentials for tests/regression/auth-fixture.ts.
+        // A credential only ever reaches TestForge as an environment variable.
+        env: AUTH_FIXTURE_ENV,
     },
 });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import { resolve } from "path";
+import { normalizeLoginConfig, RunLoginError } from "@/lib/run/auth";
 import { startRunJob } from "@/lib/run/executor";
 import type { TestAuditMode } from "@/lib/run/executor";
 import { normalizeContentProfile } from "@/lib/generate/normalize";
@@ -25,7 +26,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile, enableInteractive } = await req.json().catch(() => ({}));
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile, enableInteractive, login } = await req.json().catch(() => ({}));
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -44,17 +45,35 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: normalizedIncludedTitles.length > 0 ? "No selected tests are available to rerun." : "No remaining tests are available to continue." }, { status: 400 });
     }
 
-    const job = await startRunJob(
-        code,
-        normalizedPractices,
-        normalizedAuditMode,
-        typeof baseUrl === "string" ? baseUrl : undefined,
-        normalizedExcludedTitles,
-        normalizedIncludedTitles,
-        typeof description === "string" ? description : "",
-        normalizeContentProfile(contentProfile),
-        enableInteractive === true
-    );
+    // TFP-092: a login the request asked for must be valid and must succeed.
+    // Any failure is a named error and the run does not start - never a quiet
+    // fall back to unauthenticated tests.
+    let job;
+    try {
+        const loginConfig = normalizeLoginConfig(login, typeof baseUrl === "string" ? baseUrl : undefined);
+        job = await startRunJob(
+            code,
+            normalizedPractices,
+            normalizedAuditMode,
+            typeof baseUrl === "string" ? baseUrl : undefined,
+            normalizedExcludedTitles,
+            normalizedIncludedTitles,
+            typeof description === "string" ? description : "",
+            normalizeContentProfile(contentProfile),
+            enableInteractive === true,
+            loginConfig
+        );
+    } catch (error) {
+        if (error instanceof RunLoginError) {
+            return NextResponse.json(
+                { error: error.message, errorKind: error.kind },
+                { status: error.kind === "config-invalid" ? 400 : 422 }
+            );
+        }
+
+        throw error;
+    }
+
     return NextResponse.json(job, { status: 202 });
 }
 
