@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import OpenAI, { APIConnectionError } from "openai";
 import { mockGenerate } from "@/lib/generate/mock";
 import {
     normalizeBaseUrl,
@@ -9,6 +9,12 @@ import {
     normalizeTestAuditMode,
 } from "@/lib/generate/normalize";
 import { pickModel } from "@/lib/generate/models";
+import {
+    DEFAULT_OLLAMA_BASE_URL,
+    OLLAMA_PLACEHOLDER_API_KEY,
+    resolveOllamaModel,
+    stripCodeFence,
+} from "@/lib/generate/ollama";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
@@ -50,6 +56,22 @@ export async function POST(req: NextRequest) {
             normalizedAuditMode
         );
 
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+        { role: "system", content: SYSTEM_PROMPT },
+        {
+            role: "user",
+            content: `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${normalizedPractices.length > 0 ? normalizedPractices.join(
+                ", "
+            ) : "infer from prompt"}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}`,
+        },
+    ];
+
+    // Phase 30 Decision 5: a configured local model wins over an OpenAI key.
+    const ollamaModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+    if (ollamaModel) {
+        return generateWithOllama(ollamaModel, messages, template);
+    }
+
     if (!apiKey) {
         return NextResponse.json({ code: template() });
     }
@@ -58,7 +80,7 @@ export async function POST(req: NextRequest) {
     // usable model, empty completion) degrades to the template generator and
     // is labelled, so template output is never passed off as AI output.
     // One budget covers the catalog lookup and the completion together.
-    const signal = AbortSignal.timeout(openAiTimeoutMs());
+    const signal = AbortSignal.timeout(timeoutMs("TESTFORGE_OPENAI_TIMEOUT_MS", DEFAULT_OPENAI_TIMEOUT_MS));
     try {
         // maxRetries: 0 - the SDK would otherwise retry timeouts and 5xx,
         // silently multiplying the wait beyond the budget above.
@@ -70,22 +92,7 @@ export async function POST(req: NextRequest) {
             return fallback(template(), "no_candidate_model");
         }
 
-        const chat = await client.chat.completions.create(
-            {
-                model,
-                messages: [
-                    { role: "system", content: SYSTEM_PROMPT },
-                    {
-                        role: "user",
-                        content: `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${normalizedPractices.length > 0 ? normalizedPractices.join(
-                            ", "
-                        ) : "infer from prompt"}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}`,
-                    },
-                ],
-                temperature: 0.2,
-            },
-            { signal }
-        );
+        const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });
 
         const code = chat.choices[0]?.message?.content;
         if (typeof code !== "string" || code.trim() === "") {
@@ -101,16 +108,78 @@ export async function POST(req: NextRequest) {
     }
 }
 
-type FallbackReason = "openai_error" | "timeout" | "empty_completion" | "no_candidate_model";
+/**
+ * Phase 30 (TFP-103): the same guard/fallback shape as the OpenAI path, pointed
+ * at a local Ollama through its OpenAI-compatible endpoint. Only the base URL,
+ * the time budget and the failure labels differ.
+ */
+async function generateWithOllama(
+    configuredModel: string,
+    messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+    template: () => string
+) {
+    const signal = AbortSignal.timeout(timeoutMs("TESTFORGE_OLLAMA_TIMEOUT_MS", DEFAULT_OLLAMA_TIMEOUT_MS));
+    try {
+        const client = new OpenAI({
+            apiKey: OLLAMA_PLACEHOLDER_API_KEY,
+            baseURL: process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || DEFAULT_OLLAMA_BASE_URL,
+            maxRetries: 0,
+        });
+
+        const catalog = await client.models.list({ signal });
+        const model = resolveOllamaModel(
+            catalog.data.map((m) => m.id),
+            configuredModel
+        );
+        if (!model) {
+            console.error(`[api/generate] Ollama has no model "${configuredModel}", using template generator.`);
+            return fallback(template(), "ollama_model_missing");
+        }
+
+        const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });
+
+        const raw = chat.choices[0]?.message?.content;
+        const code = typeof raw === "string" ? stripCodeFence(raw) : "";
+        if (code === "") {
+            return fallback(template(), "empty_completion", model);
+        }
+        return NextResponse.json({ code, generatedBy: "ollama", model });
+    } catch (error) {
+        console.error(
+            "[api/generate] Ollama call failed, using template generator:",
+            error instanceof Error ? error.message : error
+        );
+        // A refused connection surfaces as APIConnectionError; anything else
+        // (e.g. Ollama answering 500 because the model failed to load) got a
+        // response, so it is not "unreachable".
+        const reason: FallbackReason = signal.aborted
+            ? "timeout"
+            : error instanceof APIConnectionError
+              ? "ollama_unreachable"
+              : "ollama_error";
+        return fallback(template(), reason);
+    }
+}
+
+type FallbackReason =
+    | "openai_error"
+    | "timeout"
+    | "empty_completion"
+    | "no_candidate_model"
+    | "ollama_unreachable"
+    | "ollama_model_missing"
+    | "ollama_error";
 
 function fallback(code: string, fallbackReason: FallbackReason, model?: string) {
     return NextResponse.json({ code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) });
 }
 
 const DEFAULT_OPENAI_TIMEOUT_MS = 30_000;
+// Phase 30 Decision 3: a local 7B model measured 53-74s per generation.
+const DEFAULT_OLLAMA_TIMEOUT_MS = 180_000;
 
 // Overridable so tests can prove the timeout path without waiting it out.
-function openAiTimeoutMs(): number {
-    const raw = Number(process.env.TESTFORGE_OPENAI_TIMEOUT_MS);
-    return Number.isFinite(raw) && raw > 0 ? raw : DEFAULT_OPENAI_TIMEOUT_MS;
+function timeoutMs(envName: string, fallbackMs: number): number {
+    const raw = Number(process.env[envName]);
+    return Number.isFinite(raw) && raw > 0 ? raw : fallbackMs;
 }

@@ -14,13 +14,19 @@
  * OPENAI_BASE_URL (read when the route builds its client), so the route runs
  * unmodified - no module mocking, no network.
  *
+ * TFP-103/105 (Phase 30): the local Ollama path gets the same treatment - the
+ * same fake server stands in for Ollama's OpenAI-compatible endpoint through
+ * TESTFORGE_OLLAMA_BASE_URL. Every test starts with all generation env vars
+ * cleared, so a developer's own TESTFORGE_OLLAMA_MODEL or OPENAI_API_KEY can
+ * never route a test down the wrong path.
+ *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/app/api/generate/route.test.ts
  */
 import assert from "node:assert";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
-import { after, afterEach, before, test } from "node:test";
+import { after, afterEach, before, beforeEach, test } from "node:test";
 
 const { POST } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
@@ -63,7 +69,14 @@ let baseUrl = "";
 let handler: FakeHandler = (_req, res) => res.writeHead(500).end();
 const chatBodies: Array<{ model?: string }> = [];
 
-const ENV_KEYS = ["OPENAI_API_KEY", "OPENAI_BASE_URL", "TESTFORGE_OPENAI_TIMEOUT_MS"] as const;
+const ENV_KEYS = [
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "TESTFORGE_OPENAI_TIMEOUT_MS",
+    "TESTFORGE_OLLAMA_MODEL",
+    "TESTFORGE_OLLAMA_BASE_URL",
+    "TESTFORGE_OLLAMA_TIMEOUT_MS",
+] as const;
 const savedEnv = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
 
 before(async () => {
@@ -75,13 +88,17 @@ before(async () => {
 after(async () => {
     server.closeAllConnections();
     await new Promise<void>((resolve) => server.close(() => resolve()));
-});
-
-afterEach(() => {
     for (const k of ENV_KEYS) {
         if (savedEnv[k] === undefined) delete process.env[k];
         else process.env[k] = savedEnv[k];
     }
+});
+
+beforeEach(() => {
+    for (const k of ENV_KEYS) delete process.env[k];
+});
+
+afterEach(() => {
     chatBodies.length = 0;
 });
 
@@ -245,4 +262,130 @@ test("POST /api/generate: a completion with no choices falls back", async (t) =>
 
     assert.equal(body.generatedBy, "fallback");
     assert.equal(body.fallbackReason, "empty_completion");
+});
+
+// --- TFP-103/105: local Ollama path ------------------------------------------
+
+const LOCAL_MODEL = "testforge-qwen7b";
+
+function useOllama(opts: { timeoutMs?: number; baseUrl?: string } = {}) {
+    process.env.TESTFORGE_OLLAMA_MODEL = LOCAL_MODEL;
+    process.env.TESTFORGE_OLLAMA_BASE_URL = opts.baseUrl ?? baseUrl;
+    if (opts.timeoutMs) process.env.TESTFORGE_OLLAMA_TIMEOUT_MS = String(opts.timeoutMs);
+}
+
+/** A base URL nothing is listening on: bind an ephemeral port, then release it. */
+async function closedBaseUrl(): Promise<string> {
+    const probe = createServer();
+    await new Promise<void>((resolve) => probe.listen(0, "127.0.0.1", resolve));
+    const { port } = probe.address() as AddressInfo;
+    await new Promise<void>((resolve) => probe.close(() => resolve()));
+    return `http://127.0.0.1:${port}/v1`;
+}
+
+test("POST /api/generate: a local model generates, fence stripped, labelled with the catalog id", async () => {
+    // Ollama lists tagged ids; the configured name is untagged.
+    fakeOpenAi(["qwen2.5-coder:7b", `${LOCAL_MODEL}:latest`], (_req, res) =>
+        json(res, 200, completion("```typescript\nimport { test } from '@playwright/test';\n```"))
+    );
+    useOllama();
+
+    const res = await POST(generateRequest());
+    const body = await res.json();
+
+    assert.equal(res.status, 200);
+    assert.equal(body.generatedBy, "ollama");
+    assert.equal(body.model, `${LOCAL_MODEL}:latest`);
+    assert.equal(body.code, "import { test } from '@playwright/test';");
+    assert.equal(chatBodies[0].model, `${LOCAL_MODEL}:latest`);
+});
+
+test("POST /api/generate: a configured local model wins over an OpenAI key", async () => {
+    fakeOpenAi([`${LOCAL_MODEL}:latest`, ...OPENAI_MODEL_CANDIDATES], (_req, res) =>
+        json(res, 200, completion("// local"))
+    );
+    useFake();
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "ollama");
+    assert.equal(chatBodies.length, 1);
+    assert.equal(chatBodies[0].model, `${LOCAL_MODEL}:latest`);
+});
+
+test("POST /api/generate: Ollama not running falls back as ollama_unreachable", async (t) => {
+    t.mock.method(console, "error", () => {});
+    const expected = await templateCode();
+    useOllama({ baseUrl: await closedBaseUrl() });
+
+    const started = Date.now();
+    const res = await POST(generateRequest());
+    const body = await res.json();
+
+    assert.equal(res.status, 200);
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "ollama_unreachable");
+    assert.equal(body.code, expected);
+    assert.ok(Date.now() - started < 5_000, "a refused connection must not wait out the budget");
+});
+
+test("POST /api/generate: the local model never created falls back as ollama_model_missing", async (t) => {
+    t.mock.method(console, "error", () => {});
+    // The raw pulled model is present, the Modelfile-defined one is not.
+    fakeOpenAi(["qwen2.5-coder:7b"], (_req, res) => json(res, 200, completion("never asked")));
+    const expected = await templateCode();
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "ollama_model_missing");
+    assert.equal(body.code, expected);
+    assert.equal(chatBodies.length, 0, "must not fall through to the raw model name");
+});
+
+test("POST /api/generate: a hung local model times out within its own budget and falls back", async (t) => {
+    t.mock.method(console, "error", () => {});
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], () => {
+        /* never responds */
+    });
+    const expected = await templateCode();
+    // The OpenAI budget must not apply to the local path.
+    process.env.TESTFORGE_OPENAI_TIMEOUT_MS = "60000";
+    useOllama({ timeoutMs: 300 });
+
+    const started = Date.now();
+    const body = await (await POST(generateRequest())).json();
+    const elapsed = Date.now() - started;
+
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "timeout");
+    assert.equal(body.code, expected);
+    assert.ok(elapsed < 5_000, `expected a bounded wait, took ${elapsed}ms`);
+});
+
+test("POST /api/generate: Ollama answering with an error falls back as ollama_error, not unreachable", async (t) => {
+    t.mock.method(console, "error", () => {});
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) =>
+        json(res, 500, { error: { message: "model failed to load", type: "api_error" } })
+    );
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "ollama_error");
+});
+
+test("POST /api/generate: a local completion that is only a fence falls back as empty_completion", async (t) => {
+    t.mock.method(console, "error", () => {});
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) => json(res, 200, completion("```typescript\n```")));
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "empty_completion");
+    assert.notEqual(body.code, "");
 });
