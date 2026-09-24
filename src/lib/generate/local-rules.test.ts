@@ -177,3 +177,46 @@ test("local rules: the shared block forbids passing a promise to expect (Phase 3
 test("local rules [reliability]: the example never asserts a specific fallback message", () => {
     assert.doesNotMatch(RELIABILITY_EXAMPLE, /getByText\(|toHaveText\(|toContainText\(/);
 });
+
+// --- performance, SEO, database (TFP-112) -----------------------------------
+
+const { PERFORMANCE_EXAMPLE, SEO_EXAMPLE, DATABASE_EXAMPLE } = await import("./local-rules.ts");
+
+function testBodies(example: string): string[] {
+    return example.split(/\n  test\(/).slice(1);
+}
+
+test("local rules [performance/load]: every example test measures time against a budget", () => {
+    // Baseline: asserted a 200 status, measured nothing.
+    for (const body of testBodies(PERFORMANCE_EXAMPLE)) {
+        assert.match(body, /Date\.now\(\)|getEntriesByType\('navigation'\)/, `no measurement in: ${body.slice(0, 50)}`);
+        assert.match(body, /toBeLessThan\(\d+\)/, `no budget in: ${body.slice(0, 50)}`);
+    }
+});
+
+test("local rules [seo/content]: the example checks title, meta description and heading structure", () => {
+    assert.match(SEO_EXAMPLE, /toHaveTitle\(/);
+    assert.match(SEO_EXAMPLE, /meta\[name="description"\]/);
+    assert.match(SEO_EXAMPLE, /getByRole\('heading', \{ level: 1 \}\)\)\.toHaveCount\(1\)/);
+    assert.doesNotMatch(SEO_EXAMPLE, /toBeVisible\(/, "visibility is what the baseline did instead of SEO");
+});
+
+test("local rules [database]: the example checks a unique value survives a reload", () => {
+    const body = testBodies(DATABASE_EXAMPLE)[0];
+    const created = body.indexOf(".click()");
+    const reloaded = body.indexOf("page.reload()");
+    assert.match(body, /Date\.now\(\)/, "the value must be unique per run");
+    assert.ok(created >= 0 && reloaded > created, "save first, then reload");
+    assert.match(body.slice(reloaded), /getByText\(value\)\)\.toBeVisible\(\)/, "the value must be checked after the reload");
+});
+
+test("local rules [database]: the rules say not to fake persistence on a page with no saving form", () => {
+    assert.match(CATEGORY_GUIDES.database?.rules ?? "", /do not pretend: write test\.skip/);
+});
+
+test("local rules [database]: the unique value is copy-safe data, not a placeholder", () => {
+    // Live 2026-09-24: EXAMPLE-VALUE came back as EXAMPLE-NAME / EXAMPLE-MESSAGE data.
+    const value = DATABASE_EXAMPLE.match(/const value = `([^`]*)`/)?.[1] ?? "";
+    assert.ok(value.includes("Date.now()"));
+    assert.doesNotMatch(value, /EXAMPLE/);
+});

@@ -106,6 +106,65 @@ test.describe('Reliability', () => {
   });
 });`;
 
+// TFP-112. BEST_PRACTICE_GUIDANCE asks for "lightweight browser timing
+// assertions"; the baseline asserted a 200 status and measured nothing.
+export const PERFORMANCE_EXAMPLE = `import { test, expect } from '@playwright/test';
+
+test.describe('Performance/Load', () => {
+  test('page finishes loading within 3 seconds', async ({ page }) => {
+    const start = Date.now();
+    await page.goto('https://example.invalid/EXAMPLE-PAGE', { waitUntil: 'load' });
+    await expect(Date.now() - start).toBeLessThan(3000);
+  });
+
+  test('server responds and the page is ready quickly', async ({ page }) => {
+    await page.goto('https://example.invalid/EXAMPLE-PAGE');
+    const timing = await page.evaluate(() => {
+      const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+      return { firstByte: navigation.responseStart, domReady: navigation.domContentLoadedEventEnd };
+    });
+    await expect(timing.firstByte).toBeLessThan(800);
+    await expect(timing.domReady).toBeLessThan(2000);
+  });
+});`;
+
+// TFP-112. Guidance: "title, meta description, heading structure". The
+// baseline had one visibility-only test.
+export const SEO_EXAMPLE = `import { test, expect } from '@playwright/test';
+
+test.describe('SEO/Content', () => {
+  test('page has a title', async ({ page }) => {
+    await page.goto('https://example.invalid/EXAMPLE-PAGE');
+    await expect(page).toHaveTitle(/.+/);
+  });
+
+  test('page has a meta description', async ({ page }) => {
+    await page.goto('https://example.invalid/EXAMPLE-PAGE');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.+/);
+  });
+
+  test('page has exactly one main heading', async ({ page }) => {
+    await page.goto('https://example.invalid/EXAMPLE-PAGE');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+  });
+});`;
+
+// TFP-112. Guidance: "validate data persistence indirectly through
+// user-visible create/read/update flows". The baseline had no such flow.
+export const DATABASE_EXAMPLE = `import { test, expect } from '@playwright/test';
+
+test.describe('Database', () => {
+  test('a new record is still shown after reloading the page', async ({ page }) => {
+    const value = \`TestForge check \${Date.now()}\`;
+    await page.goto('https://example.invalid/EXAMPLE-FORM-PAGE');
+    await page.getByLabel('EXAMPLE-FIELD-LABEL').fill(value);
+    await page.getByRole('button', { name: 'EXAMPLE-SAVE-BUTTON' }).click();
+    await expect(page.getByText(value)).toBeVisible();
+    await page.reload();
+    await expect(page.getByText(value)).toBeVisible();
+  });
+});`;
+
 export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> = {
     accessibility: {
         rules: `Accessibility:
@@ -127,6 +186,28 @@ export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> =
 - The three failures in the example are generic and are NOT placeholders: '**/api/**', every request to another host, and localStorage. Reuse them exactly as written. Only if the page inspection profile lists dependencies, block those exact hosts and paths instead.
 - Keep const response = await page.goto(...) - the status check needs response.- Then assert only that the page survived: the response status is below 500, the body is still visible, and no uncaught page errors were recorded with page.on('pageerror'). Never assert a specific error message or fallback text - you cannot know it.`,
         example: RELIABILITY_EXAMPLE,
+    },
+    "performance/load": {
+        rules: `Performance/load:
+- A performance test measures time and asserts it is under a budget. Checking a status code or that something is visible is not a performance test.
+- Measure with Date.now() around page.goto, or read the Navigation Timing API with page.evaluate and performance.getEntriesByType('navigation').
+- The budgets in the example (3000 ms load, 800 ms first byte, 2000 ms DOM ready) are reasonable defaults - use the user's own numbers if the request gives any.
+- Do not invent Lighthouse or JMeter output.`,
+        example: PERFORMANCE_EXAMPLE,
+    },
+    "seo/content": {
+        rules: `SEO/content:
+- Check what search engines read: the page title (expect(page).toHaveTitle), the meta description (the content attribute of meta[name="description"]), and the heading structure (exactly one level-1 heading).
+- If the request or page inspection profile gives the real title or heading text, assert that exact text instead of /.+/.
+- A test that only checks that inputs or buttons are visible is not an SEO test.`,
+        example: SEO_EXAMPLE,
+    },
+    database: {
+        rules: `Database:
+- Check persistence through the page, not the database: create or update something with a unique value (include Date.now()), reload the page, and assert the same value is still shown. The 'TestForge check' prefix in the example is real test data, not a placeholder - reuse it.
+- A test that only checks that a form is visible is not a database test.
+- If the request's page has no form that saves data (for example a sign-in page), do not pretend: write test.skip('database persistence', ...) with a comment naming the kind of page that would be needed.`,
+        example: DATABASE_EXAMPLE,
     },
 };
 
