@@ -50,9 +50,28 @@ export function mapStatus(testStatus: JsonTest["status"]): ExecutionStatus {
     return "Passed";
 }
 
+// Phase 21 (TFP-098): model-written suites follow SYSTEM_PROMPT's "test.describe
+// blocks named after each coverage area" and name them "Accessibility",
+// "Performance/Load", "SEO/Content"... - never the template generator's
+// "... Coverage" suite names above. Without this every model-written test was
+// filed as Functional, which made per-area reporting (and any comparison
+// against the template generator) meaningless. Exact, case-insensitive match
+// of a whole describe title against an area key or label only - never a
+// substring, so a describe named "Login security notes" stays Functional.
+const AREA_NAME_MAP: Record<string, string> = Object.fromEntries(
+    Object.entries(AREA_LABELS).flatMap(([key, label]) => [
+        [key.toLowerCase(), key],
+        [label.toLowerCase(), key],
+    ])
+);
+
+function areaForSuiteTitle(title: string): string | undefined {
+    return SUITE_AREA_MAP[title] ?? AREA_NAME_MAP[title.trim().toLowerCase()];
+}
+
 export function deriveArea(pathTitles: string[]) {
-    const matchedSuite = pathTitles.find((title) => SUITE_AREA_MAP[title]);
-    const area = matchedSuite ? SUITE_AREA_MAP[matchedSuite] : "functional";
+    const matchedSuite = pathTitles.find((title) => areaForSuiteTitle(title));
+    const area = matchedSuite ? areaForSuiteTitle(matchedSuite)! : "functional";
     return {
         key: area,
         label: AREA_LABELS[area] ?? "Functional",
