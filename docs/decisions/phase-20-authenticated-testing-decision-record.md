@@ -4,7 +4,7 @@ Date: 2026-09-23
 Scope: Config-driven automation-account login once per run, cached
 Playwright `storageState` reused by every generated test in that run,
 credentials referenced by name and never inlined, captured, or displayed.
-Status: Approved and in implementation (Decisions 3, 5, 6 resolved 2026-09-24, before TFP-092 started)
+Status: Approved, implemented, Gate B met 2026-09-24 (`227002b`) — TFP-097 remains, not gating
 
 ## Context
 
@@ -323,15 +323,22 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 ## Suggested Milestone Gates
 
 ### Gate A — Authenticated runs work and leak nothing
-- TFP-092–094 landed against a real target with a real login form, each
-  with a `TEST_PLAN.md` case proving real (not assumed) behavior,
-  including the negative case (grep finds no credential, no
-  storageState in report/trace).
+**Met, 2026-09-24 (`dad7049`).** TFP-092–094 landed against real targets
+(`the-internet.herokuapp.com` and a local fixture), each with a
+`TEST_PLAN.md` case proving real (not assumed) behavior — RUN-16/RUN-17
+(login + failure handling), RUN-18 (nothing leaks, including the
+negative case: 31 leaks found with scrubbing disabled, 0 with it), and
+RUN-19 (grep finds no credential, not vacuous — a deliberately-mutated
+`run.json` fails the check).
 
 ### Gate B — Phase 20 complete
-- TFP-095 landed; Decisions 3 and 5 above answered and reflected in
-  `TEST_PLAN.md`'s Known Limitations if either was deferred rather than
-  built.
+**Met, 2026-09-24 (`227002b`).** TFP-095 landed (RUN-20): a generic
+setup doc covering all four exemption categories, kept from drifting by
+a unit test that fails if the doc's field table, JSON example, quoted
+error messages, or parallelism claim stop matching the real code.
+Decisions 3 and 5 are reflected in `TEST_PLAN.md`'s Known Limitations
+(env-var-only credentials, single-run `storageState`); Decision 5 was
+built, not deferred.
 - TFP-097 (login config UI) is not required for this gate — named
   config works end-to-end via the API today, and TFP-097 only closes
   the UI gap, same precedent as Phase 19's TFP-096. Land it whenever
