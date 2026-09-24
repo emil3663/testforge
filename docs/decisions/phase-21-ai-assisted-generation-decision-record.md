@@ -6,8 +6,10 @@ development — real CI coverage, and evaluated against the deterministic
 generator on the same sites using Phase 17's run persistence and diffing.
 The product decision (default generator, opt-in, or user's choice per run)
 is made from that comparison, not in advance of it.
-Status: Approved and in implementation (all Decisions resolved
-2026-09-24; TFP-098 unblocked now, TFP-099/100 sequenced behind it)
+Status: Approved and in implementation. Retargeted 2026-09-24 (see
+Amendment, below) at the local (Ollama) path — TFP-098-100 now compare the
+deterministic generator against testforge-qwen7b, not OpenAI. TFP-098
+unblocked now, TFP-099/100 sequenced behind it.
 
 ## Context
 
@@ -227,5 +229,102 @@ backlog before filing, since other work may have claimed numbers since.
 ### Gate — Phase 21 complete
 - TFP-098–100 landed against a real target, with a `TEST_PLAN.md` case
   proving the comparison reflects real (not assumed) behavior on both
-  paths, a manually-triggered CI run proven to work, and the product
+  paths, a manually-triggered run proven to work on Emil's machine (see
+  Amendment: no CI job exists for this comparison), and the product
   decision recorded in `product-roadmap.md`'s own text.
+
+
+---
+
+## Amendment (2026-09-24) — Retargeted at the local (Ollama) path
+
+**Why.** Emil's OpenAI account remains unfunded, with no near-term plan to
+fund it (Phase 28's live-check found the account rejects any real
+completion at $0 balance). Separately, Phases 30-33 built and tuned a
+local generation path (`testforge-qwen7b` via Ollama) that now has a real,
+honestly-measured baseline across nine of the ten best-practice
+categories — only reliability remains partial (Phase 33, GEN-32, recorded
+`⚠️`, not fixed, not hidden). Emil's own steer at the end of that work:
+retarget this phase's comparison at the local model now that it has a
+fair baseline to be measured from, rather than continue waiting on a
+funded OpenAI account to do the comparison this record originally
+described.
+
+**A technical fact, not a preference, forces one more change.** Ollama
+runs only on Emil's own machine and is unreachable from this session's
+tools or any hosted CI runner — confirmed repeatedly across Phases 30-33,
+where every live check had to run inside Emil's own environment (via the
+device bridge or Code directly). Decision 3a's CI-wiring plan (a GitHub
+Actions job with a `schedule` and a manual `workflow_dispatch` trigger)
+cannot be built for the local path at all, not just deprioritized —
+there is no network path from a hosted runner to Emil's GPU. This is
+recorded and routed around, not re-decided.
+
+### Decisions (retargeted)
+
+Decisions 1, 2, 4, and 5 above are unchanged and apply to the local path
+exactly as written. Decisions 3a and 3b are superseded, for this
+comparison specifically, as follows:
+
+3a (retargeted). No CI job exists for this comparison, and none is
+planned. It runs on demand, on Emil's own machine, the same way every
+Phase 30-33 live check already has — triggered manually by Emil or Code,
+not on a schedule. TFP-098's deliverable is a repeatable script/command,
+not a workflow file.
+
+3b (retargeted). The bring-your-own-key cost model is moot for the local
+path — every run costs $0 by construction, no key, no billing surface.
+Cost stays one of the four Decision-4 dimensions the report scores (for
+contrast against what the same comparison would show if OpenAI is ever
+funded), but needs no BYOK or hosted-key design work to get there.
+
+Decision 4's four dimensions still apply, reweighted in practice: latency
+is the dimension that actually differentiates local generation (29-96s
+per suite, Phase 33) from the deterministic generator's near-instant
+output — OpenAI would have been the fast comparison point instead.
+Coverage delta and pass/fail agreement matter most given how much
+category-by-category tuning Phase 33 just did. Defect-detection is scored
+exactly as originally decided: stated as skipped when there's no injected
+defect to test against, never guessed.
+
+**New note on reliability.** TFP-099's report states reliability's
+Phase 33 weakness plainly as a caveat on that category's results, rather
+than waiting for it to be fixed first. An honest, current baseline for
+nine categories is more useful now than a complete one later.
+
+### Backlog (retargeted; same ticket numbers, updated scope)
+
+#### TFP-098 (retargeted) — Build a repeatable local-generation comparison run
+
+- **Scope:** Not CI-wired (Decision 3a, retargeted). A script or command
+  that, given a target, runs both the deterministic generator and
+  `testforge-qwen7b` against it and produces a comparable pair of runs,
+  reusing Phase 17's run-diffing (Decision 2, unchanged).
+- **Deliverables:** The script; a short doc note on how Emil or Code runs
+  it (matching the pattern `docs/LOCAL_MODEL_SETUP.md` already set).
+- **Acceptance criteria:** A manually-triggered run against a real target
+  produces a real comparison result end to end, on Emil's machine — not
+  mocked.
+- **Dependencies:** None — the local path (Phases 30-33) already exists
+  and is proven live.
+
+#### TFP-099 (retargeted) — Build the deterministic-vs-local comparison report
+
+- **Scope:** Score all four Decision-4 dimensions (coverage delta,
+  pass/fail agreement, defect-detection or a stated skip, latency & cost)
+  against `testforge-qwen7b`, reusing Phase 17's diffing. State
+  reliability's known weakness as a caveat on its own results rather than
+  fixing or hiding it.
+- **Deliverables:** The comparison report; a `TEST_PLAN.md` case proving
+  it against a real target with a real diff.
+- **Acceptance criteria:** A completed comparison against a real target
+  produces all four scored dimensions (or a specific stated reason for
+  any it can't score), and the report is enough on its own to inform
+  TFP-100's decision.
+- **Dependencies:** TFP-098.
+
+#### TFP-100 (retargeted) — Record the default/opt-in/user's-choice product decision
+
+- Unchanged in shape from the original ticket above: set from TFP-099's
+  real output, not written in advance.
+- **Dependencies:** TFP-099.
