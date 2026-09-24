@@ -6,8 +6,8 @@ baseline (GEN-28), both sequenced ahead of the broader thin-category
 tuning work: fix the missing-`await` defect found in the generated
 security suite (and check whether it recurs elsewhere), and test whether
 the worked example's concrete URL leaked into 9 of 10 baseline suites.
-Status: Approved and in implementation (TFP-108 and TFP-109 both
-unblocked, no dependency between them)
+Status: Implemented; Gate A met 2026-09-24 (TFP-108, TFP-109 landed; see
+"Implementation status" at the end)
 
 ## Context
 
@@ -171,3 +171,70 @@ issued number as of this record).
   recorded audit of the other 9 baseline suites.
 - TFP-109 lands with a neutralized example and a recorded, real result —
   leak confirmed or gone — from re-running the live check.
+
+## Implementation status (2026-09-24)
+
+TFP-108 landed in `190ffdf` and TFP-109 in `d5ab750`. All live runs were
+against `testforge-qwen7b` on Emil's machine, through a production build,
+with TFP-103's type check and a standalone strict `tsc` on every suite.
+
+**TFP-108: Acceptance Criterion 1 met.**
+
+- The shared block of `LOCAL_MODEL_RULES` requires `await` on every
+  `expect(...)`, and a test asserts the rule sits in that block.
+- The mechanical check is `findUnawaitedAssertions` in `validate.ts`. It
+  walks the AST, and the type checker separates a silent no-op (the
+  matcher returns a promise) from an unawaited synchronous `toBe`, which
+  still runs. A test asserts the worked example is clean.
+- **Audit result: isolated.** The audit ran over all 18 live suites kept
+  from Phases 30-31, a superset of the other 9 GEN-28 suites. The security
+  sample was the only silent no-op. Performance had two unawaited
+  synchronous `toBe` calls, which break the rule but still check. The
+  other 16 are clean, and so are all 9 suites generated in this phase.
+
+**TFP-109: Acceptance Criterion 2 met. The leak is confirmed, and the
+placeholder removes it.**
+
+This departs from the record's method on purpose. The record asked for
+the GEN-27 wording, but that wording never leaked, even with `/login` in
+the example (Phase 31's three GEN-27 runs all used the base URL), so it
+could not settle the question. The diagnostic instead used the GEN-28
+accessibility wording that had leaked, as a controlled pair with only
+the example's URL changed:
+
+| Example URL | Suites navigating to `/login` | To the request's base URL | To the placeholder |
+| --- | --- | --- | --- |
+| `http://localhost:3000/login` (control) | 3/3 | 0/3 | n/a |
+| `https://example.invalid/EXAMPLE-ONLY` | 0/3 | 3/3 | 0/3 |
+
+The record's literal bar was also run: three consecutive GEN-27-wording
+requests with the placeholder, all `generatedBy: "ollama"`, all on the
+base URL.
+
+**The bigger finding Decision 2 anticipated is half true.** The model
+does not copy the example's *content* blindly: it replaced the URL
+correctly and never copied the placeholder. But it does copy the
+example's *structure*. With the GEN-28 wording, all 6 suites reused the
+example's test names word for word, extended its pattern to the password
+field, and added a near-tautological `getByRole('main')` →
+`toHaveRole('main')` check. The GEN-27 wording produced the model's own
+test names.
+
+**Implications for Phase 33** (category examples):
+
+1. Put only placeholder data in examples (`example.invalid` URLs,
+   obviously generic names), since data that looks real gets copied.
+2. Treat an example as a template the model will fill in, not an
+   illustration. Its test names and shape will be reused, so each example
+   should show exactly the tests we'd want, in the form we'd want them.
+3. Measure with the wording that exposes copying (the GEN-28 style), not
+   only free-form requests.
+
+**Gate A is met:** the await rule, its mechanical test and the audit are
+recorded, and the leak question is settled by a controlled live
+comparison.
+
+Left open deliberately: the route does not reject or repair unawaited
+assertions. The detector now makes that a few lines of code. Whether to
+reject, repair or keep rule-only is Emil's call, and could sit naturally
+in Phase 33.
