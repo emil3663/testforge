@@ -14,7 +14,7 @@ import assert from "node:assert";
 import { test } from "node:test";
 
 const { ACCESSIBILITY_EXAMPLE, LOCAL_MODEL_RULES } = await import("./local-rules.ts");
-const { findTypeErrors } = await import("./validate.ts");
+const { findTypeErrors, findUnawaitedAssertions } = await import("./validate.ts");
 
 /** Type-checks a bare property access, so a matcher's existence is tested without guessing its arguments. */
 function locatorMatcherExists(name: string): boolean {
@@ -34,6 +34,16 @@ function section(start: string, end: string): string {
 
 test("local rules: the worked example compiles against the installed Playwright", () => {
     assert.deepEqual(findTypeErrors(ACCESSIBILITY_EXAMPLE), []);
+});
+
+test("local rules: the worked example awaits every assertion (TFP-108)", () => {
+    // The model copies the example's style; an unawaited expect there would teach the defect.
+    assert.deepEqual(findUnawaitedAssertions(ACCESSIBILITY_EXAMPLE), []);
+});
+
+test("local rules: the shared block requires await on every expect (TFP-108)", () => {
+    const shared = section("Playwright API rules", "There is NO accessibility matcher");
+    assert.match(shared, /Always write await before every expect\(\.\.\.\) call/);
 });
 
 test("local rules: every recommended matcher exists", () => {

@@ -60,3 +60,42 @@ test("findTypeErrors: the template generator's own suites pass, for every covera
         assert.deepEqual(findTypeErrors(code), [], `template suite for "${practice}" failed the check`);
     }
 });
+
+// --- TFP-108: unawaited assertions --------------------------------------------
+
+const { findUnawaitedAssertions } = await import("./validate.ts");
+
+function suite(body: string): string {
+    return `import { test, expect } from '@playwright/test';\ntest('t', async ({ page }) => {\n${body}\n});\n`;
+}
+
+test("findUnawaitedAssertions: finds the unawaited page assertion from the Phase 31 security sample", () => {
+    const hits = findUnawaitedAssertions(suite("  expect(page).toHaveURL('https://localhost:3000/login');"));
+    assert.equal(hits.length, 1);
+    assert.equal(hits[0].line, 3);
+    assert.equal(hits[0].returnsPromise, true, "a web-first matcher returns a promise: unawaited, it never checks");
+});
+
+test("findUnawaitedAssertions: a synchronous value matcher is reported, but not as a silent no-op", () => {
+    const hits = findUnawaitedAssertions(suite("  const status = 200;\n  expect(status).toBe(200);"));
+    assert.equal(hits.length, 1);
+    assert.equal(hits[0].returnsPromise, false);
+});
+
+test("findUnawaitedAssertions: sees through .not, expect.soft and parentheses", () => {
+    const hits = findUnawaitedAssertions(
+        suite("  expect(page.getByText('x')).not.toBeVisible();\n  expect.soft(page).toHaveTitle('t');\n  (expect(page).toHaveURL('u'));")
+    );
+    assert.deepEqual(hits.map((h) => h.returnsPromise), [true, true, true]);
+});
+
+test("findUnawaitedAssertions: awaited and returned assertions are clean", () => {
+    assert.deepEqual(
+        findUnawaitedAssertions(
+            suite(
+                "  await expect(page).toHaveURL('u');\n  await expect(page.getByText('x')).not.toBeVisible();\n  await expect(1).toBe(1);\n  const f = () => expect(page).toHaveTitle('t');\n  await f();"
+            )
+        ),
+        []
+    );
+});

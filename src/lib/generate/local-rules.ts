@@ -41,6 +41,7 @@ test.describe('Accessibility', () => {
 
 export const LOCAL_MODEL_RULES = `Playwright API rules (these override any habit you have):
 - Only use matchers that exist in @playwright/test. Never invent one.
+- Always write await before every expect(...) call: await expect(page).toHaveURL(url), await expect(locator).toBeVisible(). An expect on page or a locator without await never runs - the test passes while checking nothing.
 - There is NO accessibility matcher that checks a whole element or page at once. These do NOT exist and must never be used: toBeAccessible, toHaveAccessibleRole, toPassAxe, toHaveNoViolations, toBeAccessibilityCompliant.
 - expect(page) only supports page matchers: toHaveURL, toHaveTitle. Never call an element matcher such as toHaveRole or toBeVisible on page - always on a locator, e.g. expect(page.getByRole('main')).toHaveRole('main').
 - Check accessibility with these real locator matchers instead (each is called on a locator, never on page):
