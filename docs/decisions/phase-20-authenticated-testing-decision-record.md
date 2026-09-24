@@ -86,6 +86,16 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   can't maintain those for every site owner's IdP, and the roadmap never
   asked for that.
 
+7. Login config entry is API-only for Phase 20; a UI field is deferred,
+   not required for this phase's gate.
+- Raised by Claude Code while building TFP-092: TFP-095's setup doc
+  assumed a UI location for login fields to point a user at, and no
+  such UI exists — `/api/run`'s `login` block is API-only today.
+- Resolved (Emil, 2026-09-24): API-only for this phase, same precedent
+  as Phase 19's named flows (API first in TFP-089, UI added after in
+  TFP-096, not gating). See TFP-097 below — added to the backlog, not
+  required for Gate A or Gate B.
+
 ## Acceptance Criteria
 
 1. Config-driven login
@@ -142,6 +152,28 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - **Acceptance criteria:** per Acceptance Criteria §1 above.
 - **Dependencies:** Phase 19 Gate B met (this phase's hard sequencing
   rule).
+- **Landed (`ca4e10c`):** `/api/run` accepts a `login` block (URL, three
+  selectors, `usernameEnv`/`passwordEnv` credential-variable *names*, a
+  post-login path or selector); the executor logs in once in Chromium
+  before Playwright starts and every test reuses the resulting
+  `storageState` via `playwright.config.ts`. The state file lives in a
+  per-run directory outside the evidence directory, removed when the
+  run's process ends (Decision 5: single-run only), with a sweep for
+  any left by a crashed run. A bad selector, wrong credential,
+  unreachable page, or unset credential variable is a named 422 with no
+  run started; a malformed config (inline credentials under any field
+  name, a non-origin-matching `loginUrl`, neither post-login check set)
+  is a 400. **Defect found and fixed live:** a target that binds a
+  session to the User-Agent and Accept-Language it was issued to
+  reported a "successful" login that every test still failed, because
+  the login ran in a default browser context while tests ran as Desktop
+  Chrome/`en-US` — login and tests now share one options object
+  (`src/lib/run/browser-context.ts`). **Judgment call, not escalated:**
+  `usernameEnv`/`passwordEnv` accept any syntactically valid environment
+  variable name, with no allow-list restricting which names — consistent
+  with Phase 16's already-locked unsandboxed, local-only execution
+  model (`/api/run` already runs caller-supplied code with the user's
+  own privileges), not a new risk this ticket introduces.
 
 ### TFP-093 — Named credential references, never inlined
 
@@ -212,9 +244,9 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   - `docs/AUTOMATED_ACCOUNT_SETUP.md`: what an automation account is,
     why it needs the four exemptions, and how to point TestForge's run
     config at one (referencing TFP-092/093's real field names).
-  - A pointer to it from wherever run config's login fields are
-    documented/surfaced in the app, so a user hits it before they need
-    to search for it.
+  - A pointer to it from `README.md` and `.env.example` (config entry
+    is API-only for this phase per Decision 7 below — there is no
+    run-config UI field to attach a pointer to yet).
 - **Acceptance criteria:**
   - The doc names all four exemption categories and matches the real
     config field names TFP-092/093 shipped, not a stale or assumed
@@ -222,12 +254,47 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - **Dependencies:** TFP-092 (needs the real config shape to document
   against), TFP-093 (needs the real credential-reference shape).
 
+### TFP-097 — Login config entry in the run-config UI
+
+- **Phase:** 20
+- **Priority:** P3
+- **Suggested labels:** `feature`, `ui`
+- **Problem it solves:** TFP-092's `login` block is API-only —
+  `/api/run` accepts it, but nothing in the app lets a user enter it, so
+  authenticated runs are only reachable by hand-building a request body.
+  Raised by Claude Code while building TFP-092, resolved by Decision 7
+  above (2026-09-24): API-only for this phase, UI deferred to this
+  ticket.
+- **Scope:**
+  - A login-config section in the run-config UI (URL, three selectors,
+    the two credential *variable names*, post-login path/selector) —
+    same shape as the existing content-rules fields, wired to
+    `/api/run`'s real `login` field names once this lands.
+  - The two credential fields take a variable *name* only, never a
+    value — the UI must not become a place to type a real password.
+- **Deliverables:**
+  - Login-config UI section + wiring into the run request.
+  - `TEST_PLAN.md` case proving a login entered through the UI produces
+    the same authenticated run a direct API call with the same config
+    would.
+  - Update TFP-095's `docs/AUTOMATED_ACCOUNT_SETUP.md` pointer once a UI
+    location exists to point at.
+- **Acceptance criteria:**
+  - A login config entered in the UI authenticates a real run exactly as
+    the equivalent `/api/run` request body would.
+- **Dependencies:** TFP-092 (needs the real config shape); independent
+  of TFP-093/094/095 — can be built in parallel with any of them, or
+  after.
+
 ## Recommended Execution Order
 
 1. TFP-092 (the core capability)
 2. TFP-093 and TFP-094 in parallel once TFP-092 lands (different
    concerns, no shared files)
-3. TFP-095 last (documents the settled shape, not a moving target)
+3. TFP-095 after TFP-092/093 land (documents the settled shape, not a
+   moving target)
+4. TFP-097, any time after TFP-092 — doesn't block or depend on
+   TFP-093/094/095, so it can slot in wherever's convenient
 
 ## Suggested Milestone Gates
 
@@ -241,3 +308,7 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - TFP-095 landed; Decisions 3 and 5 above answered and reflected in
   `TEST_PLAN.md`'s Known Limitations if either was deferred rather than
   built.
+- TFP-097 (login config UI) is not required for this gate — named
+  config works end-to-end via the API today, and TFP-097 only closes
+  the UI gap, same precedent as Phase 19's TFP-096. Land it whenever
+  convenient; don't hold the phase open for it.
