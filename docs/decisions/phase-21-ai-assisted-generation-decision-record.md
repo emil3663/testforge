@@ -328,3 +328,39 @@ nine categories is more useful now than a complete one later.
 - Unchanged in shape from the original ticket above: set from TFP-099's
   real output, not written in advance.
 - **Dependencies:** TFP-099.
+
+## Implementation status (2026-09-24)
+
+**A correction to the Amendment's premise.** Ollama is *not* unreachable
+from Claude Code's session: every Phase 30-33 live check, and every run in
+this phase, ran from Claude Code against Emil's Ollama on localhost. That
+changes nothing decided here. A hosted CI runner still can't reach it, so
+3a (retargeted) stands, but "needs Emil's machine" means this machine,
+reachable by Code, not "only Emil can run it".
+
+**TFP-098: met.** `npm run compare:generators -- --config <file>`
+(`scripts/compare-generators.mjs`, `docs/GENERATOR_COMPARISON.md`). One
+command per target. Both generators get the same request and introspection
+data and go through the real `/api/generate`. Both suites run through
+`/api/run`, and the clean pair is diffed with `/api/runs/diff` (Decision 2).
+Run end to end against two real targets, nothing mocked. There is no
+workflow file, per 3a (retargeted).
+
+**TFP-099: met.** The report is
+`docs/decisions/phase-21-comparison-report.md`, with `TEST_PLAN.md` GEN-37.
+All four Decision-4 dimensions are scored for every case, or explicitly
+skipped with a reason:
+- defect detection is skipped on the real site, which has no injected
+  defect;
+- the run report's coverage is shown with its title-matching bias and
+  paired with a title-independent proxy rather than trusted alone.
+Reliability's Phase 33 weakness is stated as a caveat, not fixed first.
+
+Two defects were found and fixed along the way:
+- `fix(report)`: model-written tests had all been filed under Functional
+  (TEST_PLAN RPT-09);
+- a bug in the comparison's own fixture, which hid its database defect.
+
+**TFP-100: proposed, not recorded as decided.** See the next section. The
+product decision is Emil's, so it is not yet written into
+`product-roadmap.md`.
