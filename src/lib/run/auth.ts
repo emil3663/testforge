@@ -61,7 +61,9 @@ export class RunLoginError extends Error {
     }
 }
 
-const ALLOWED_KEYS = new Set<string>([
+// The only fields a login block may carry. docs/AUTOMATED_ACCOUNT_SETUP.md
+// documents exactly these, and setup-doc.test.ts fails if the two drift.
+export const LOGIN_CONFIG_FIELDS = [
     "loginUrl",
     "usernameSelector",
     "passwordSelector",
@@ -70,7 +72,9 @@ const ALLOWED_KEYS = new Set<string>([
     "passwordEnv",
     "postLoginPath",
     "postLoginSelector",
-]);
+] as const;
+
+const ALLOWED_KEYS = new Set<string>(LOGIN_CONFIG_FIELDS);
 
 function requiredString(config: Record<string, unknown>, key: string) {
     const value = config[key];

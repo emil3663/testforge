@@ -55,6 +55,23 @@ anything.
 
 ---
 
+## Authenticated runs
+
+A run can log in once and start every test already signed in, so pages behind
+a login get tested too. It uses a dedicated **automation account** you
+provision for the purpose — never a real user's — which needs four exemptions
+(account lockout, rate limiting, MFA, new-sign-in alerts) to work reliably.
+Credentials are read from environment variables by *name* and are never put
+in a request, generated code, or a committed file; the session is used for
+that run only and, like the credentials, is scrubbed from the report and the
+saved traces.
+
+Setup, the exact `login` fields for `POST /api/run`, and what each failure
+means are in [`docs/AUTOMATED_ACCOUNT_SETUP.md`](docs/AUTOMATED_ACCOUNT_SETUP.md).
+Read it before configuring a login. There is no UI for this yet.
+
+---
+
 ## The problem TestForge solves
 
 There's a gap in software testing that nobody talks about honestly.
