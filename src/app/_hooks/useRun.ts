@@ -16,6 +16,8 @@ interface StartRunParams {
     includeTestTitles?: string[];
     contentProfile?: ContentProfile | null;
     enableInteractive?: boolean;
+    // TFP-097: the login block (references only) when the run should log in.
+    login?: Record<string, string> | null;
 }
 
 export function useRun(
@@ -157,7 +159,7 @@ export function useRun(
         window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     }, [openReportInNewPage, result]);
 
-    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null, enableInteractive = false }: StartRunParams) {
+    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null, enableInteractive = false, login = null }: StartRunParams) {
         if (selectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -198,6 +200,7 @@ export function useRun(
                     includeTestTitles,
                     contentProfile,
                     enableInteractive,
+                    login: login ?? undefined,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };

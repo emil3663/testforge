@@ -1,5 +1,7 @@
 import { BEST_PRACTICE_OPTIONS, BEST_PRACTICE_KEYWORDS, DEFAULT_BASE_URL } from "@/app/_lib/constants";
 import type { NamedFlow } from "@/lib/introspect/types";
+import { ENV_NAME_PATTERN, ENV_NAME_RULE_MESSAGE, LOGIN_CONFIG_FIELDS, LOGIN_FIELD_LABELS } from "@/lib/run/login-fields";
+import type { LoginConfigField } from "@/lib/run/login-fields";
 import { formatMilliseconds } from "@/lib/report/text";
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, ContentProfilePage, CrawledPage, RunProgressSnapshot, RunResult, TestAuditMode } from "@/app/_lib/types";
 
@@ -53,6 +55,37 @@ export function parseNamedFlowLines(value: string) {
     }
 
     return { flows, invalidLines };
+}
+
+// TFP-097: the run's login block from what the user typed into the
+// "Authenticated Run" section. Nothing typed means no login. Anything typed is
+// sent as it is, and an incomplete or invalid block is answered by the
+// server's named error rather than quietly run without a login - except that
+// a credential *value* pasted where a variable NAME belongs never leaves the
+// browser: the two variable-name fields must look like names, or the run is
+// blocked here with the reason.
+export type LoginInputs = Record<LoginConfigField, string>;
+
+export const EMPTY_LOGIN_INPUTS: LoginInputs = Object.fromEntries(LOGIN_CONFIG_FIELDS.map((field) => [field, ""])) as LoginInputs;
+
+export function buildLoginBlock(inputs: LoginInputs) {
+    const entries = LOGIN_CONFIG_FIELDS
+        .map((field) => [field, inputs[field].trim()] as const)
+        .filter(([, value]) => value.length > 0);
+
+    if (entries.length === 0) {
+        return { login: null, problem: "" };
+    }
+
+    for (const field of ["usernameEnv", "passwordEnv"] as const) {
+        const value = inputs[field].trim();
+
+        if (value && !ENV_NAME_PATTERN.test(value)) {
+            return { login: null, problem: `"${LOGIN_FIELD_LABELS[field]}" ${ENV_NAME_RULE_MESSAGE}` };
+        }
+    }
+
+    return { login: Object.fromEntries(entries) as Partial<Record<LoginConfigField, string>>, problem: "" };
 }
 
 export function includesKeyword(text: string, keyword: string) {

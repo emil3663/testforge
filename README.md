@@ -68,7 +68,7 @@ saved traces.
 
 Setup, the exact `login` fields for `POST /api/run`, and what each failure
 means are in [`docs/AUTOMATED_ACCOUNT_SETUP.md`](docs/AUTOMATED_ACCOUNT_SETUP.md).
-Read it before configuring a login. There is no UI for this yet.
+Read it before configuring a login. Enter the login in the app's **Authenticated Run** section, or as the `login` field of the API request.
 
 ---
 

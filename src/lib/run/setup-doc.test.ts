@@ -12,10 +12,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 import { LOGIN_CONFIG_FIELDS, normalizeLoginConfig } from "./auth.ts";
+import { LOGIN_FIELD_LABELS } from "./login-fields.ts";
 
 const root = process.cwd();
 const doc = readFileSync(join(root, "docs", "AUTOMATED_ACCOUNT_SETUP.md"), "utf8");
-const authSource = readFileSync(join(root, "src", "lib", "run", "auth.ts"), "utf8");
+// The messages live in auth.ts and, for the shared name rule, login-fields.ts.
+const authSource = ["auth.ts", "login-fields.ts"].map((file) => readFileSync(join(root, "src", "lib", "run", file), "utf8")).join("\n");
 
 test("the doc names all four exemption categories", () => {
     for (const heading of ["### 1. Account lockout", "### 2. Rate limiting", "### 3. MFA interruption", "### 4. New-sign-in alerts"]) {
@@ -27,6 +29,26 @@ test("the doc documents every field a login block accepts, and no field that doe
     const tableFields = [...doc.matchAll(/^\| `([A-Za-z]+)` \|/gm)].map((match) => match[1]);
 
     assert.deepStrictEqual([...tableFields].sort(), [...LOGIN_CONFIG_FIELDS].sort());
+});
+
+test("the doc tells you what each field is called in the app, and the app's section really carries those labels", () => {
+    const section = readFileSync(join(root, "src", "app", "_components", "LoginConfigSection.tsx"), "utf8");
+
+    for (const field of LOGIN_CONFIG_FIELDS) {
+        const row = new RegExp(`^\\| \`${field}\` \\| ${LOGIN_FIELD_LABELS[field]} \\|`, "m");
+        assert.match(doc, row, `the doc's table does not give ${field}'s UI label "${LOGIN_FIELD_LABELS[field]}"`);
+    }
+
+    // The section is built from those labels, and is named as the doc says.
+    assert.ok(section.includes("LOGIN_FIELD_LABELS"));
+    assert.ok(section.includes('title="Authenticated Run"') && doc.includes("**Authenticated Run**"));
+});
+
+test("the section has no field that takes a credential value", () => {
+    const section = readFileSync(join(root, "src", "app", "_components", "LoginConfigSection.tsx"), "utf8");
+
+    assert.ok(!/type=["']password["']/.test(section), "no input in the login section may be type=password");
+    assert.ok(section.includes('type="text"'));
 });
 
 test("the doc's JSON example is a login block TestForge accepts, using every field", () => {

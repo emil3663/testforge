@@ -133,22 +133,31 @@ Environment variables are the only credential source TestForge supports today.
 There is no integration with a secret manager; that is a deliberate deferral,
 not an oversight.
 
-### 2. Add a `login` block to the run
+### 2. Configure the login
 
-Authenticated runs are configured through the `login` field of a `POST
-/api/run` request. (There is no field for it in the app's UI yet.) The block
-uses these fields:
+**In the app**, open the **Authenticated Run** section (above the generated
+suite) and fill it in; leave it blank to run signed out. It applies to the next
+run you start, including reruns and continued runs. It is the same block a
+direct `POST /api/run` request would carry as its `login` field — the app just
+builds it for you. The fields are:
 
-| Field | Required | What it is |
-|---|---|---|
-| `loginUrl` | yes | The login page. A full URL, or a path resolved against the run's `baseUrl`. **Must be on the same origin as `baseUrl`** — the credentials are typed into this page. |
-| `usernameSelector` | yes | CSS selector for the username (or email) field. |
-| `passwordSelector` | yes | CSS selector for the password field. |
-| `submitSelector` | yes | CSS selector for the submit button. |
-| `usernameEnv` | yes | The **name** of the environment variable holding the username. |
-| `passwordEnv` | yes | The **name** of the environment variable holding the password. |
-| `postLoginPath` | one of these two | A path that is only reached once signed in (e.g. `/dashboard`). |
-| `postLoginSelector` | one of these two | A selector for an element that is only visible once signed in (e.g. a "Log out" link). |
+| Field | In the app | Required | What it is |
+|---|---|---|---|
+| `loginUrl` | Login URL | yes | The login page. A full URL, or a path resolved against the run's `baseUrl`. **Must be on the same origin as `baseUrl`** — the credentials are typed into this page. |
+| `usernameSelector` | Username field selector | yes | CSS selector for the username (or email) field. |
+| `passwordSelector` | Password field selector | yes | CSS selector for the password field. |
+| `submitSelector` | Submit button selector | yes | CSS selector for the submit button. |
+| `usernameEnv` | Username environment variable name | yes | The **name** of the environment variable holding the username. |
+| `passwordEnv` | Password environment variable name | yes | The **name** of the environment variable holding the password. |
+| `postLoginPath` | Signed-in page path | one of these two | A path that is only reached once signed in (e.g. `/dashboard`). |
+| `postLoginSelector` | Signed-in element selector | one of these two | A selector for an element that is only visible once signed in (e.g. a "Log out" link). |
+
+The section has no password field, and it will not become one: the two
+credential fields take a variable **name**. If what you type in them does not
+look like a name (upper case, digits, underscores), the run is blocked in the
+app and nothing is sent — so a password pasted there never leaves your browser.
+If you fill in some of the login settings but not all, the run is not started
+signed out: the missing field is reported by name.
 
 At least one of `postLoginPath` / `postLoginSelector` is required. Without a
 signal that only exists when signed in, TestForge could not tell a failed login
@@ -158,7 +167,7 @@ for a stricter check.
 No other field is accepted. In particular there is no `username` or
 `password` field: an inline credential is rejected, whatever it is called.
 
-An example (the `login` part of the request body):
+If you call the API directly instead, this is the `login` part of the request body:
 
 ```json
 {

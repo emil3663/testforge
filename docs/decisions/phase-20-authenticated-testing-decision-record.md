@@ -309,6 +309,18 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
 - **Dependencies:** TFP-092 (needs the real config shape); independent
   of TFP-093/094/095 — can be built in parallel with any of them, or
   after.
+- **Landed:** an "Authenticated Run" section above the generated suite,
+  one text input per `login` field, labelled as `docs/AUTOMATED_ACCOUNT_SETUP.md`
+  labels them (shared `LOGIN_FIELD_LABELS`; a unit test fails if doc,
+  section, and `LOGIN_CONFIG_FIELDS` drift). The two credential fields
+  take a variable *name* and there is no password field: a value typed
+  where a name belongs (the same upper-case rule the server applies)
+  blocks Run in the app with a message that does not echo it, and is
+  never sent. An incomplete block is sent as typed so the server's named
+  error reaches the user rather than a quiet signed-out run. The block
+  applies to reruns and continued runs too. The setup doc's field table
+  gained an "In the app" column and its "no UI yet" note became
+  instructions; README updated the same way.
 
 ## Recommended Execution Order
 

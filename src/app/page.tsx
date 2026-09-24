@@ -6,6 +6,7 @@ import { CreationSection } from "@/app/_components/CreationSection";
 import { GeneratedSuiteSection } from "@/app/_components/GeneratedSuiteSection";
 import { HelpPanel } from "@/app/_components/HelpPanel";
 import { JourneyReviewSection } from "@/app/_components/JourneyReviewSection";
+import { LoginConfigSection } from "@/app/_components/LoginConfigSection";
 import { ReportSection } from "@/app/_components/ReportSection";
 import { RunProgressOverlay } from "@/app/_components/RunProgressOverlay";
 import { useCrawl } from "@/app/_hooks/useCrawl";
@@ -13,16 +14,19 @@ import { useGeneration } from "@/app/_hooks/useGeneration";
 import { useRun } from "@/app/_hooks/useRun";
 import { DEFAULT_BASE_URL, DEFAULT_DESCRIPTION_EXAMPLE, DEFAULT_TEST_AUDIT_MODE } from "@/app/_lib/constants";
 import {
+    buildLoginBlock,
     buildSelectedPracticeDescription,
     deriveBusyInspectionTargets,
     deriveContentInsights,
     deriveRunProgressDisplay,
+    EMPTY_LOGIN_INPUTS,
     inferBestPracticesFromDescription,
     normalizeBaseUrl,
     normalizeInspectionPaths,
     parseContentLines,
     parseNamedFlowLines,
 } from "@/app/_lib/derive";
+import type { LoginInputs } from "@/app/_lib/derive";
 import type { BestPracticeArea, Step } from "@/app/_lib/types";
 
 const websiteSchema = {
@@ -63,6 +67,9 @@ export default function Home() {
     const [isJourneysCollapsed, setIsJourneysCollapsed] = useState(false);
     // TFP-091: per-run opt-in for skipped-by-default interactive tests.
     const [enableInteractive, setEnableInteractive] = useState(false);
+    // TFP-097: the run's login, entered as references (never a credential).
+    const [loginInputs, setLoginInputs] = useState<LoginInputs>({ ...EMPTY_LOGIN_INPUTS });
+    const [isLoginCollapsed, setIsLoginCollapsed] = useState(true);
 
     const crawl = useCrawl(baseUrl);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
@@ -182,7 +189,10 @@ export default function Home() {
     const isPracticeSelectionReady = generation.lastGeneratedPracticeSignature === selectedPracticeSignature;
     const isJourneySelectionReady =
         generation.lastGeneratedJourneySignature === JSON.stringify([...effectiveSelectedJourneyIds].sort());
-    const runBlockedMessage = !isContentAwareReady
+    const { login: loginBlock, problem: loginProblem } = buildLoginBlock(loginInputs);
+    const runBlockedMessage = loginProblem
+        ? `Fix the login settings before running: ${loginProblem}`
+        : !isContentAwareReady
         ? "Generate the suite again after completing the content-aware inputs before running it."
         : !isPracticeSelectionReady
             ? "Generate the suite again after changing the selected best-practice areas before running it."
@@ -228,6 +238,7 @@ export default function Home() {
         description: (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices),
         contentProfile: generation.contentProfile,
         enableInteractive,
+        login: loginBlock,
     };
     const boundHandleRun = () => run.handleRun(runParams);
     const boundHandleContinueRun = () => run.handleContinueRun(runParams);
@@ -370,6 +381,14 @@ export default function Home() {
                     />
                 )}
 
+                <LoginConfigSection
+                    loginInputs={loginInputs}
+                    setLoginInputs={setLoginInputs}
+                    loginProblem={loginProblem}
+                    isCollapsed={isLoginCollapsed}
+                    setIsCollapsed={setIsLoginCollapsed}
+                />
+
                 <GeneratedSuiteSection
                     {...generation}
                     handleSaveToExplorer={boundHandleSaveToExplorer}
@@ -382,7 +401,7 @@ export default function Home() {
                     hasCode={hasCode}
                     isRunning={isRunning}
                     isContentAwareReady={isContentAwareReady}
-                    isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady}
+                    isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && !loginProblem}
                     canGenerateOrRun={canGenerateOrRun}
                     isGenerating={isGenerating}
                     runBlockedMessage={runBlockedMessage}
@@ -411,7 +430,7 @@ export default function Home() {
                         canGenerateOrRun={canGenerateOrRun}
                         hasCode={hasCode}
                         isContentAwareReady={isContentAwareReady}
-                        isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady}
+                        isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && !loginProblem}
                     />
                 )}
             </main>
