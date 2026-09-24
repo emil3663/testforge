@@ -1,0 +1,12 @@
+{
+  "name": "the-internet",
+  "target": "https://the-internet.herokuapp.com",
+  "paths": ["/login"],
+  "cases": [
+    { "name": "functional", "practices": ["functional"], "description": "Check the login page: the username and password fields accept input and the Login button submits the form." },
+    { "name": "accessibility", "practices": ["accessibility"], "description": "Check the login page (username and password fields, Login button) for accessibility coverage." },
+    { "name": "seo", "practices": ["seo/content"], "description": "Check the login page for SEO/content coverage." },
+    { "name": "security", "practices": ["security"], "description": "Check the login page (username and password fields, Login button) for security coverage." },
+    { "name": "free-form", "practices": [], "description": "Check the login page: logging in with the wrong password shows an error, and the page is accessible." }
+  ]
+}

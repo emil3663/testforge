@@ -1,0 +1,15 @@
+{
+  "name": "fixture",
+  "target": "http://127.0.0.1:4410",
+  "fixtureControl": "http://127.0.0.1:4410",
+  "paths": ["/", "/login", "/notes"],
+  "cases": [
+    { "name": "functional", "practices": ["functional"], "description": "Check the sign-in page: the email and password fields accept input and the Sign in button submits the form." },
+    { "name": "accessibility", "practices": ["accessibility"], "defect": "a11y-unlabelled-field", "description": "Check the sign-in page (email and password fields, Sign in button) for accessibility coverage." },
+    { "name": "seo", "practices": ["seo/content"], "defect": "seo-missing-meta", "description": "Check the Acme Notes home page for SEO/content coverage." },
+    { "name": "performance", "practices": ["performance/load"], "defect": "performance-slow", "description": "Check the Acme Notes home page for performance/load coverage." },
+    { "name": "database", "practices": ["database"], "defect": "database-notes-not-saved", "description": "Check the notes page form (Note field, Save note button) for database coverage." },
+    { "name": "security", "practices": ["security"], "defect": "security-unescaped-note", "description": "Check the notes page form (Note field, Save note button) for security coverage." },
+    { "name": "reliability", "practices": ["reliability"], "defect": "reliability-api-crash", "description": "Check the Acme Notes home page for reliability coverage." }
+  ]
+}
