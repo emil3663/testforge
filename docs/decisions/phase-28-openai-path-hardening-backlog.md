@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-23
-**Status:** Draft — for review, not yet started
+**Status:** TFP-083 landed (`8308b0b`); Gate A open — the live catalog check passed, but no live completion has succeeded yet (see "Live-check result" below)
 
 ## Context
 
@@ -227,3 +227,27 @@ Single ticket.
   candidate-list config (not a guessed string), and `TEST_PLAN.md`
   accurately separates "hardened" (this phase) from "evaluated as a
   product option" (still Phase 21, now unblocked and ready to start).
+
+## Live-check result (2026-09-24)
+
+`npm run check:openai-models`, run with a real key from `.env.local`:
+
+- **Catalog:** 126 models listed. All three candidates in
+  `src/lib/generate/models.ts` are exact entries: `gpt-4.1-mini`,
+  `gpt-4o-mini`, `gpt-4o`. The order is kept; the route picks
+  `gpt-4.1-mini`. (`gpt-4o` still resolves on this account today,
+  despite the retirement coverage noted above.)
+- **Completion:** refused with `429 You have no credits remaining` — a
+  billing state on the account, not a model or request-shape problem. So
+  it is not yet shown that `gpt-4.1-mini` accepts the route's request
+  (`temperature: 0.2` included).
+- **Fallback, against the real API:** calling the route handler with the
+  same key returned 200 with the template labelled
+  `generatedBy: "fallback"`, `fallbackReason: "openai_error"` in ~2.4s —
+  not a 500.
+
+**Gate A stays open** until the check is re-run on a funded account and
+the completion succeeds. That's a re-run, not new work: if it passes, the
+list needs no change; if `gpt-4.1-mini` rejects the request, reorder
+`models.ts` from the output. TFP-098 should reuse that same re-run,
+not duplicate it.
