@@ -15,7 +15,7 @@ import {
     resolveOllamaModel,
     stripCodeFence,
 } from "@/lib/generate/ollama";
-import { findTypeErrors } from "@/lib/generate/validate";
+import { findTypeErrors, findUnawaitedAssertions } from "@/lib/generate/validate";
 import { LOCAL_MODEL_RULES } from "@/lib/generate/local-rules";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
@@ -169,6 +169,26 @@ async function generateWithOllama(
             );
             return fallback(template(), "invalid_output", model);
         }
+
+        // Phase 33 (TFP-110): an unawaited web-first assertion is not a type
+        // error, but it never runs - the test passes while checking nothing.
+        // Only promise-returning ones are rejected: an unawaited synchronous
+        // expect(value).toBe(...) still checks (the template generator writes
+        // those itself). Detect and fall back, never rewrite; fails closed.
+        let unawaited: string[];
+        try {
+            unawaited = findUnawaitedAssertions(code)
+                .filter((a) => a.returnsPromise)
+                .map((a) => `line ${a.line}: ${a.text}`);
+        } catch (checkError) {
+            unawaited = [`await check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
+        }
+        if (unawaited.length > 0) {
+            console.error(
+                `[api/generate] ${model} returned a suite with assertions that are never awaited, using template generator:\n  ${unawaited.slice(0, 5).join("\n  ")}`
+            );
+            return fallback(template(), "unawaited_assertion", model);
+        }
         return NextResponse.json({ code, generatedBy: "ollama", model });
     } catch (error) {
         console.error(
@@ -195,7 +215,8 @@ type FallbackReason =
     | "ollama_unreachable"
     | "ollama_model_missing"
     | "ollama_error"
-    | "invalid_output";
+    | "invalid_output"
+    | "unawaited_assertion";
 
 function fallback(code: string, fallbackReason: FallbackReason, model?: string) {
     return NextResponse.json({ code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) });

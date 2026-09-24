@@ -452,3 +452,60 @@ test("POST /api/generate: the OpenAI path never sees the local rules", async () 
     const system = chatBodies[0].messages?.find((m) => m.role === "system")?.content;
     assert.equal(system, SYSTEM_PROMPT);
 });
+
+// --- TFP-110: unawaited-assertion gate --------------------------------------
+
+function localSuite(lines: string[]): string {
+    return [
+        "import { test, expect } from '@playwright/test';",
+        "test('t', async ({ page }) => {",
+        "  await page.goto('http://localhost:3000');",
+        ...lines,
+        "});",
+    ].join("\n");
+}
+
+test("POST /api/generate: a local suite with an unawaited web-first assertion falls back as unawaited_assertion", async (t) => {
+    const logged = t.mock.method(console, "error", () => {});
+    // The Phase 31 security sample: compiles, but never checks anything.
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) =>
+        json(res, 200, completion(localSuite(["  expect(page).toHaveURL('https://localhost:3000/login');"])))
+    );
+    const expected = await templateCode();
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "unawaited_assertion");
+    assert.equal(body.model, `${LOCAL_MODEL}:latest`);
+    assert.equal(body.code, expected);
+    assert.match(String(logged.mock.calls.at(-1)?.arguments[0]), /line 4: expect\(page\)\.toHaveURL/);
+});
+
+test("POST /api/generate: an unawaited synchronous value assertion is not rejected - it still checks", async () => {
+    const code = localSuite(["  const status = 200;", "  expect(status).toBe(200);", "  await expect(page).toHaveTitle('x');"]);
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) => json(res, 200, completion(code)));
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.generatedBy, "ollama");
+    assert.equal(body.code, code);
+});
+
+test("POST /api/generate: an invented API is still invalid_output even when an assertion is also unawaited", async (t) => {
+    t.mock.method(console, "error", () => {});
+    fakeOpenAi([`${LOCAL_MODEL}:latest`], (_req, res) =>
+        json(
+            res,
+            200,
+            completion(localSuite(["  expect(page).toHaveURL('u');", "  await expect(page.locator('main')).toBeAccessible();"]))
+        )
+    );
+    useOllama();
+
+    const body = await (await POST(generateRequest())).json();
+
+    assert.equal(body.fallbackReason, "invalid_output", "the type check runs first; the two failures stay distinct");
+});
