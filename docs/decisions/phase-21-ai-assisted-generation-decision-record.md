@@ -364,3 +364,47 @@ Two defects were found and fixed along the way:
 **TFP-100: proposed, not recorded as decided.** See the next section. The
 product decision is Emil's, so it is not yet written into
 `product-roadmap.md`.
+
+## TFP-100 — Proposed decision (awaiting Emil; drawn from TFP-099's results)
+
+Decision 5 says this is decided *from* the comparison, so the options are
+set against what the comparison actually showed
+(`phase-21-comparison-report.md`), not argued in the abstract.
+
+**What the data rules out.** Making the local model the default, or keeping
+today's all-or-nothing switch as the main way to use it:
+- `TESTFORGE_OLLAMA_MODEL` set means *every* suite comes from the local
+  model, which trades the template's breadth (31 functional tests, 19 SEO
+  checks) for 1-3 tests per area;
+- it adds a median 67 s per generation;
+- it fell back on a timeout in 2 of 16 generations.
+
+**What the data supports.** The local model filled exactly the areas where
+the template wrote no executable tests (performance, database, security)
+and caught the injected defect in each. That points to it adding to the
+template rather than replacing it.
+
+| Option | Shape | For | Against |
+| --- | --- | --- | --- |
+| A. Keep as is | Env var switches all generation to the local model | No work | The data above: breadth lost in every area the template covers |
+| **B. Additive, gap-filling (recommended)** | The template always generates. The local model is asked only for the selected areas where the template produced no tests, and its describe blocks are appended. The local tests keep their own label, so a run shows which tests came from where. | Keeps the template's breadth and speed. Adds real coverage where there was none. Latency is only paid when such an area is selected. | New work: merging two suites, and deciding which areas count as gaps. Local tests are still one sample per area and carry Phase 33's reliability caveat, so reliability stays template-only in this shape. |
+| C. User's choice per run | A UI toggle picks one generator for the whole suite | Simple mental model | Reproduces A's trade-off per run, and the user must know which areas the template skips |
+
+**Recommendation: B.**
+- **Default:** the deterministic template generator (Decision 1, unchanged).
+- **Local model:** opt-in and additive.
+- **Exposure, first step:** keep the existing opt-in (`TESTFORGE_OLLAMA_MODEL`)
+  and API only, with no UI toggle, until B is built and measured with the
+  same comparison script. A UI control is worth adding once the merged
+  suites prove out, because a minute-plus wait needs visible progress, which
+  the UI doesn't have for generation today.
+- **Implementation:** B is new scope, a follow-up phase, not part of Phase
+  21. Phase 21's own deliverable is this decision plus its evidence.
+
+**Not decided here, deliberately:**
+- whether reliability joins the gap-filling set (it depends on fixing Phase
+  33's element-mapping weakness first);
+- any OpenAI candidate choice, since the account stays unfunded.
+
+Once Emil confirms or changes this, the chosen option is recorded in
+`product-roadmap.md`'s Phase 21 text, as the Gate requires.
