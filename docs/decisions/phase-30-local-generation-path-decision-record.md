@@ -251,3 +251,39 @@ issued number as of this record).
   accurately separates "a working local path exists" (this phase) from
   "compared against the other two paths" (still Phase 21) and "tuned for
   speed/accuracy beyond the 7B baseline" (explicitly deferred, above).
+
+## Implementation status (2026-09-24)
+
+TFP-103, TFP-104 and TFP-105 landed together in `7cfc2ce`.
+
+**Verified live, against a real Ollama with `testforge-qwen7b`** (RTX 2050,
+4GB VRAM, two `/api/generate` calls through the real route): 200,
+`generatedBy: "ollama"`, `model: "testforge-qwen7b:latest"`, no markdown
+fence in `code`, in 91s and 78s.
+
+**Verified against a fake server only** (`route.test.ts`, the same method
+TFP-083 used): unreachable, model missing, Ollama error, timeout, empty
+completion, and the local model winning over an OpenAI key. None of these
+failure modes was forced against the real instance.
+
+**Gate A is not met.** Acceptance Criterion 1 requires valid Playwright
+TypeScript. Both live suites called `expect(locator).toBeAccessible()`,
+which Playwright does not have; `tsc` against `@playwright/test` rejects
+both, three errors each, and nothing else in either suite. That
+contradicts the spike's "no invented APIs" result for this model, on the
+same kind of prompt ("...and the page is accessible").
+
+Resolving it needs a decision this record doesn't contain, so it was not
+guessed at in code. The options, roughly in order of cost:
+
+1. **Prompt:** name the accessibility API to use in `SYSTEM_PROMPT`
+   (e.g. `toHaveAccessibleName`/`toHaveRole` on locators). Cheapest, but it
+   changes the OpenAI path's prompt too, and it is the "tuning" this phase
+   deferred.
+2. **Validate, then fall back:** type-check or matcher-check the generated
+   code and return the template with a new `fallbackReason` when it fails.
+   Honest, but a user of the local path would then mostly get the
+   template.
+3. **Accept and document:** keep the current warning in
+   `docs/LOCAL_MODEL_SETUP.md` and `TEST_PLAN.md` (GEN-21 ❌, Known
+   Limitations item 9) and close Gate A with the criterion amended.
