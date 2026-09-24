@@ -178,9 +178,9 @@ test("local rules [reliability]: the example never asserts a specific fallback m
     assert.doesNotMatch(RELIABILITY_EXAMPLE, /getByText\(|toHaveText\(|toContainText\(/);
 });
 
-// --- performance, SEO, database (TFP-112) -----------------------------------
+// --- performance, SEO, database (TFP-112) and security (TFP-113) --------------
 
-const { PERFORMANCE_EXAMPLE, SEO_EXAMPLE, DATABASE_EXAMPLE } = await import("./local-rules.ts");
+const { PERFORMANCE_EXAMPLE, SEO_EXAMPLE, DATABASE_EXAMPLE, SECURITY_EXAMPLE } = await import("./local-rules.ts");
 
 function testBodies(example: string): string[] {
     return example.split(/\n  test\(/).slice(1);
@@ -214,9 +214,30 @@ test("local rules [database]: the rules say not to fake persistence on a page wi
     assert.match(CATEGORY_GUIDES.database?.rules ?? "", /do not pretend: write test\.skip/);
 });
 
+test("local rules [security]: an https: assertion only ever runs behind a positive plain-HTTP skip (TFP-113)", () => {
+    // Baseline: expect(page).toHaveURL('https://...') against an http:// base URL.
+    // Live 2026-09-24: copying test.skip(!url.startsWith('https://')) the model
+    // dropped the "!" (skip on HTTPS, assert https on HTTP). The condition is
+    // now positive, so there is no negation to lose.
+    for (const body of testBodies(SECURITY_EXAMPLE)) {
+        const httpsCheck = body.search(/toHaveURL[(][/][\^]https:/);
+        if (httpsCheck < 0) continue;
+        const skip = body.indexOf("test.skip(pageUrl.startsWith('http://')");
+        assert.ok(skip >= 0 && skip < httpsCheck, "the https check must be guarded by a plain-HTTP skip first");
+    }
+    assert.doesNotMatch(SECURITY_EXAMPLE, /test[.]skip[(]!/, "no negated skip condition to drop");
+    assert.match(CATEGORY_GUIDES.security?.rules ?? "", /Copy the skip line exactly/);
+});
+
 test("local rules [database]: the unique value is copy-safe data, not a placeholder", () => {
     // Live 2026-09-24: EXAMPLE-VALUE came back as EXAMPLE-NAME / EXAMPLE-MESSAGE data.
     const value = DATABASE_EXAMPLE.match(/const value = `([^`]*)`/)?.[1] ?? "";
     assert.ok(value.includes("Date.now()"));
     assert.doesNotMatch(value, /EXAMPLE/);
+});
+
+test("local rules [security]: the example covers invalid input and script injection too", () => {
+    assert.match(SECURITY_EXAMPLE, /not-an-email/);
+    assert.match(SECURITY_EXAMPLE, /page\.on\('dialog'/);
+    assert.match(SECURITY_EXAMPLE, /toEqual\(\[\]\)/);
 });

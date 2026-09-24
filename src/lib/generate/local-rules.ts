@@ -165,6 +165,38 @@ test.describe('Database', () => {
   });
 });`;
 
+// TFP-113. The baseline's HTTPS check asserted https:// against an http://
+// base URL (and was never awaited). Only check HTTPS where the site uses it.
+export const SECURITY_EXAMPLE = `import { test, expect } from '@playwright/test';
+
+test.describe('Security', () => {
+  test('page stays on HTTPS when the site uses HTTPS', async ({ page }) => {
+    const pageUrl = 'https://example.invalid/EXAMPLE-PAGE';
+    test.skip(pageUrl.startsWith('http://'), 'the site under test is served over plain HTTP');
+    await page.goto(pageUrl);
+    await expect(page).toHaveURL(/^https:/);
+  });
+
+  test('invalid input is not accepted', async ({ page }) => {
+    await page.goto('https://example.invalid/EXAMPLE-FORM-PAGE');
+    await page.getByLabel('EXAMPLE-EMAIL-FIELD').fill('not-an-email');
+    await page.getByRole('button', { name: 'EXAMPLE-SUBMIT-BUTTON' }).click();
+    await expect(page).toHaveURL('https://example.invalid/EXAMPLE-FORM-PAGE');
+  });
+
+  test('input that looks like a script is not executed', async ({ page }) => {
+    const dialogs: string[] = [];
+    page.on('dialog', async (dialog) => {
+      dialogs.push(dialog.message());
+      await dialog.dismiss();
+    });
+    await page.goto('https://example.invalid/EXAMPLE-FORM-PAGE');
+    await page.getByLabel('EXAMPLE-TEXT-FIELD').fill('<img src=x onerror=alert(1)>');
+    await page.getByRole('button', { name: 'EXAMPLE-SUBMIT-BUTTON' }).click();
+    await expect(dialogs).toEqual([]);
+  });
+});`;
+
 export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> = {
     accessibility: {
         rules: `Accessibility:
@@ -194,6 +226,14 @@ export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> =
 - The budgets in the example (3000 ms load, 800 ms first byte, 2000 ms DOM ready) are reasonable defaults - use the user's own numbers if the request gives any.
 - Do not invent Lighthouse or JMeter output.`,
         example: PERFORMANCE_EXAMPLE,
+    },
+    security: {
+        rules: `Security:
+- Never assume the site uses HTTPS. Only assert an https: URL inside a test that first skips itself on plain HTTP. Copy the skip line exactly: test.skip(pageUrl.startsWith('http://'), ...) - it skips when the base URL starts with http://, so on an http:// site the https check never runs.
+- Check invalid input is not accepted: fill a real field on the page with a clearly invalid value, submit, and assert the page did not move on.
+- Check input that looks like a script is not executed: record page.on('dialog') and assert no dialog appeared after submitting it.
+- Only use fields and buttons that the request or page inspection profile actually names.`,
+        example: SECURITY_EXAMPLE,
     },
     "seo/content": {
         rules: `SEO/content:
