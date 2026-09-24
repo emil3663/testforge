@@ -160,6 +160,17 @@ test.describe("Config-driven login (TFP-092)", () => {
         expect(valueAsName.status()).toBe(400);
         expect((await valueAsName.json()).error).toContain("must be the NAME of an environment variable");
     });
+
+    test("a credential pasted where a variable name belongs is refused before it is looked up, and never echoed back", async ({ request }) => {
+        for (const pasted of ["hunter2", "Hunter2Hunter2", AUTH_FIXTURE_PASS]) {
+            const response = await startRun(request, { ...validLogin, passwordEnv: pasted });
+            const text = await response.text();
+
+            expect(response.status()).toBe(400);
+            expect(text).toContain("must be the NAME of an environment variable");
+            expect(text).not.toContain(pasted);
+        }
+    });
 });
 
 // Phase 20 (TFP-094): a run that logged in must not hand back its credentials
@@ -286,5 +297,75 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
         expect(traceText).toContain("context-options");
         expect(traceText).toContain("LEAK-ATTEMPT assertion session=");
         expect(snapshot.result!.output).toContain("redacted this run's login credentials and session from");
+    });
+});
+
+// Phase 20 (TFP-093): the login config references credentials by the NAME of
+// an environment variable and never carries a value. So the literal values
+// must appear nowhere TestForge writes or returns that is not scrubbed by
+// design: the generated suite, the run config it persists, and the API's own
+// responses. (RUN-18 covers what the run *captures*; this covers what
+// TestForge itself produces, which no scrubbing pass should be needed for.)
+test.describe("Credentials are referenced by name, never inlined (TFP-093)", () => {
+    test("the literal credentials appear in no generated code, persisted run config, or API response", async ({ request }) => {
+        const values = [AUTH_FIXTURE_PASS, AUTH_FIXTURE_USER];
+        const leaks: string[] = [];
+        const grep = (label: string, text: string) => {
+            for (const value of values) {
+                if (text.includes(value)) {
+                    leaks.push(`${label} contains ${value === AUTH_FIXTURE_PASS ? "the password" : "the username"}`);
+                }
+            }
+        };
+
+        // Generated output: introspect the fixture's login page, generate a suite for it.
+        const introspected = await request.post("/api/introspect", { data: { baseUrl: AUTH_FIXTURE_URL, paths: ["/login"] } });
+        grep("introspect response", await introspected.text());
+        const generated = await request.post("/api/generate", {
+            data: {
+                baseUrl: AUTH_FIXTURE_URL,
+                description: "Create functional coverage for the sign-in form.",
+                selectedPractices: ["functional"],
+                contentRules: { paths: ["/login"], requiredHeadings: [], requiredText: [], forbiddenText: [] },
+                contentProfile: JSON.parse(await introspected.text()),
+            },
+        });
+        const generatedCode = (await generated.json()).code as string;
+        expect(generatedCode.length).toBeGreaterThan(200);
+        grep("generated suite", generatedCode);
+
+        // A run with a login: the API's start response, its final status, and what is persisted for it.
+        const started = await request.post("/api/run", {
+            data: { code: suiteCode, selectedPractices: ["functional"], auditMode: "fast", baseUrl: AUTH_FIXTURE_URL, description: "reference by name", login: validLogin },
+        });
+        expect(started.status()).toBe(202);
+        grep("run start response", await started.text());
+        const { runId } = JSON.parse(await started.text());
+
+        let finalText = "";
+        await expect.poll(async () => {
+            finalText = await (await request.get(`/api/run?runId=${runId}`)).text();
+            return finalText.includes('"report"');
+        }, { timeout: 120_000, intervals: [2_000] }).toBe(true);
+        grep("run status response", finalText);
+
+        const runDir = join(process.cwd(), "runs", runId);
+        const record = JSON.parse(await readFile(join(runDir, "run.json"), "utf8"));
+        grep("run.json", JSON.stringify(record));
+        grep("persisted suite.spec.ts", await readFile(join(runDir, "suite.spec.ts"), "utf8"));
+
+        // The run config that IS persisted names the variables, and only them.
+        expect(record.login).toEqual({
+            loginUrl: `${AUTH_FIXTURE_URL}/login`,
+            usernameSelector: "#username",
+            passwordSelector: "#password",
+            submitSelector: "#submit",
+            usernameEnv: AUTH_FIXTURE_USER_ENV,
+            passwordEnv: AUTH_FIXTURE_PASS_ENV,
+            postLoginPath: "/secure",
+            postLoginSelector: "#logout",
+        });
+
+        expect(leaks).toEqual([]);
     });
 });

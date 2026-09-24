@@ -66,6 +66,18 @@ test("a credential reference must be an environment variable NAME, so a pasted v
     rejects({ ...valid, usernameEnv: "9starts-with-digit" }, "config-invalid", /NAME of an environment variable/);
 });
 
+test("a credential pasted where a name belongs is refused, so it is never looked up or echoed back", () => {
+    // Mixed-case or lower-case values are the usual shape of a real password.
+    for (const pasted of ["hunter2", "Hunter2Hunter2", "correct-horse-battery", "p@ssw0rd"]) {
+        assert.throws(
+            () => normalizeLoginConfig({ ...valid, passwordEnv: pasted }, BASE),
+            (error: unknown) => error instanceof RunLoginError && error.kind === "config-invalid" && !error.message.includes(pasted)
+        );
+    }
+
+    assert.ok(normalizeLoginConfig({ ...valid, passwordEnv: "MYAPP_TEST_PASS2" }, BASE));
+});
+
 test("every field a login needs is required", () => {
     for (const key of ["loginUrl", "usernameSelector", "passwordSelector", "submitSelector", "usernameEnv", "passwordEnv"]) {
         rejects({ ...valid, [key]: "" }, "config-invalid", new RegExp(`"${key}" is required`));

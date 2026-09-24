@@ -21,7 +21,13 @@ import { secretsFromStorageState } from "./redact";
 export const STORAGE_STATE_ENV_VAR = "TESTFORGE_STORAGE_STATE";
 
 const AUTH_DIR_PREFIX = "auth-";
-const ENV_NAME_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+// Upper-case letters, digits and underscores: the convention every variable in
+// this repo's .env files already follows. Stricter than the OS allows on
+// purpose (TFP-093): a credential pasted where a NAME belongs - the exact
+// mistake this field invites - is usually mixed-case or has punctuation, so
+// it is refused before it is ever looked up, and never echoed back in a
+// "variable X is not set" message.
+const ENV_NAME_PATTERN = /^[A-Z_][A-Z0-9_]*$/;
 const NAVIGATION_TIMEOUT_MS = 30_000;
 const STEP_TIMEOUT_MS = 10_000;
 const SUCCESS_TIMEOUT_MS = 15_000;
@@ -110,7 +116,7 @@ export function normalizeLoginConfig(input: unknown, baseUrl: string | undefined
         if (!ENV_NAME_PATTERN.test(name)) {
             throw new RunLoginError(
                 "config-invalid",
-                `Login config: "${key}" must be the NAME of an environment variable (letters, digits, underscore), not a credential value.`
+                `Login config: "${key}" must be the NAME of an environment variable in upper case (letters, digits, underscore - e.g. MYAPP_TEST_PASS), not a credential value.`
             );
         }
     }
