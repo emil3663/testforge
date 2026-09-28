@@ -1,4 +1,7 @@
-export type ExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky";
+// "Not run" (Phase 34 Option C): the test skipped itself with a stated reason -
+// not run by choice, e.g. interactive tests off. "Blocked" is a skip or
+// interruption nobody explained.
+export type ExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky" | "Not run";
 export type DefectSeverity = "Critical" | "Major" | "Minor";
 export type FallbackExecutionStatus = "Passed" | "Failed" | "Blocked" | "Flaky" | "Interrupted" | "Not run";
 
@@ -79,6 +82,8 @@ export interface ExecutionRecord {
      * "Local model (<model>)"; everything else is the template's.
      */
     generator?: "template" | "local model";
+    /** Phase 34 Option C: why a "Not run" test did not run (its skip annotation). */
+    skipReason?: string;
     rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];
@@ -203,6 +208,11 @@ export interface RunReport {
         failed: number;
         blocked: number;
         flaky: number;
+        /** Phase 34 Option C: tests that skipped themselves with a reason. */
+        notRun: number;
+        notRunReasons: { reason: string; count: number }[];
+        /** e.g. "4 tests not run: interactive tests are off"; empty when none. */
+        notRunNote: string;
         duration: number;
         releaseRecommendation: string;
         defectDistribution: {

@@ -191,13 +191,14 @@ export function buildExecutionOutcomeSummary(
         return `Passed after retry. ${simplifiedTitle} did not succeed on the first attempt, so this behavior should be monitored for instability.`;
     }
 
+    // Phase 34 (TFP-117, Option C): a test that skipped itself on purpose
+    // (e.g. a form-submitting test with interactive tests off) says why,
+    // instead of being reported as an interrupted run.
+    if (status === "Not run") {
+        return `Not run. ${simplifiedTitle} did not run: ${skipReason ?? "it skipped itself"}.`;
+    }
+
     if (status === "Blocked") {
-        // Phase 34 (TFP-117): a test that skipped itself on purpose (e.g. a
-        // form-submitting test with interactive tests off) says why, instead
-        // of being reported as an interrupted run.
-        if (skipReason) {
-            return `Skipped. ${simplifiedTitle} did not run: ${skipReason}.`;
-        }
         return `Blocked. ${simplifiedTitle} could not be completed because the run was interrupted or a required dependency was unavailable.`;
     }
 
@@ -305,7 +306,9 @@ export function flattenSuites(
                 const latestResult = [...(test.results ?? [])].sort(
                     (left, right) => left.retry - right.retry
                 ).at(-1);
-                const status = mapStatus(test.status);
+                const skipReason = test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null;
+                // Option C: a skip with a stated reason was a choice, not a failure.
+                const status: ExecutionStatus = test.status === "skipped" && skipReason ? "Not run" : mapStatus(test.status);
                 const message = latestResult ? extractMessage(latestResult) : "No result captured.";
                 const interactionType = deriveInteractionType(spec.title);
 
@@ -329,7 +332,7 @@ export function flattenSuites(
                                 spec.title,
                                 status,
                                 message,
-                                test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                                skipReason
                             ),
                             findingsOf(test)
                         ),
@@ -337,6 +340,7 @@ export function flattenSuites(
                     ),
                     findings: findingsOf(test),
                     generator: localModel ? "local model" : "template",
+                    ...(status === "Not run" && skipReason ? { skipReason } : {}),
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,

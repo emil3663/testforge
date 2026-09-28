@@ -66,6 +66,11 @@ export function SummaryTab({ report }: SummaryTabProps) {
                                             <p className="mt-2 text-sm leading-6 text-zinc-500">
                                                 Planned {report.summary.planned} tests, executed {report.summary.executed}, with {report.summary.failed} failing and {report.summary.blocked} blocked outcomes.
                                             </p>
+                                            {report.summary.notRunNote ? (
+                                                <p className="mt-2 text-sm leading-6 text-zinc-600">
+                                                    {report.summary.notRunNote}. Not run by choice, so they do not count against the recommendation, and they are not coverage either.
+                                                </p>
+                                            ) : null}
                                         </div>
                                     </ReportPanel>
                                 </div>

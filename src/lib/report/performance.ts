@@ -1,7 +1,7 @@
 import type { ExecutionRecord } from "./types";
 
 export function buildPerformanceReport(records: ExecutionRecord[], duration: number) {
-    const executedRecords = records.filter((record) => record.status !== "Blocked");
+    const executedRecords = records.filter((record) => record.status !== "Blocked" && record.status !== "Not run");
     const averageDuration = executedRecords.length === 0
         ? 0
         : Math.round(

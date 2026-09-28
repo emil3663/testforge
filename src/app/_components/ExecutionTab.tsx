@@ -34,7 +34,7 @@ export function ExecutionTab({
                                     description="Filterable execution detail for QA teams to inspect individual failures and remarks."
                                 >
                                     <div className="mb-4 flex flex-wrap gap-2">
-                                        {(["All", "Passed", "Failed", "Blocked", "Flaky"] as const).map(
+                                        {(["All", "Passed", "Failed", "Blocked", "Not run", "Flaky"] as const).map(
                                             (status) => (
                                                 <button
                                                     key={status}

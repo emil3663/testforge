@@ -53,7 +53,7 @@ export function stripTestIdPrefix(title: string) {
 function executedTitleSet(records: ExecutionRecord[]) {
     const titles = new Set<string>();
     for (const record of records) {
-        if (record.status !== "Blocked") {
+        if (record.status !== "Blocked" && record.status !== "Not run") {
             titles.add(stripTestIdPrefix(record.title));
         }
     }
@@ -288,7 +288,7 @@ export function computeDiscoveredElementCoverage(
         }
 
         const record = recordsByTitle.get(title);
-        const tested = Boolean(record) && record?.status !== "Blocked";
+        const tested = Boolean(record) && record?.status !== "Blocked" && record?.status !== "Not run";
         matches.push({
             area: "functional",
             path: journey.path[0] ?? "/",

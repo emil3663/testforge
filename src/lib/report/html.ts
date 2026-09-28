@@ -12,7 +12,7 @@ interface RunResultLike {
 
 export function buildReportHtmlDocument(report: RunReport, runId: string) {
     function statusBadge(status: string) {
-        const map: Record<string, string> = { Passed: "badge-passed", Failed: "badge-failed", Blocked: "badge-blocked", Flaky: "badge-flaky" };
+        const map: Record<string, string> = { Passed: "badge-passed", Failed: "badge-failed", Blocked: "badge-blocked", Flaky: "badge-flaky", "Not run": "badge-not-run" };
         const cls = map[status] ?? "badge-neutral";
         return `<span class="badge ${cls}">${escapeReportHtml(status)}</span>`;
     }
@@ -151,6 +151,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         .rec-passed .rec-text { color: #15803d; }
         .rec-failed .rec-text { color: #b91c1c; }
         .rec-blocked .rec-text { color: #c2410c; }
+        .rec-note { font-size: 13px; color: #52525b; margin-top: 4px; }
         /* Tables */
         .table-wrap { overflow-x: auto; margin-top: 4px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -162,6 +163,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         .badge-passed { background: #dcfce7; color: #15803d; }
         .badge-failed { background: #fee2e2; color: #dc2626; }
         .badge-blocked { background: #fef3c7; color: #b45309; }
+        .badge-not-run { background: #f4f4f5; color: #3f3f46; }
         .badge-flaky { background: #ede9fe; color: #7c3aed; }
         .badge-neutral { background: #f4f4f5; color: #71717a; }
         .badge-covered { background: #dcfce7; color: #15803d; }
@@ -225,12 +227,14 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
                     <div class="metric"><div class="metric-value">${report.summary.passed + report.summary.flaky}</div><div class="metric-label">Passed</div></div>
                     <div class="metric"><div class="metric-value">${report.summary.failed}</div><div class="metric-label">Failed</div></div>
                     <div class="metric"><div class="metric-value">${report.summary.blocked}</div><div class="metric-label">Blocked</div></div>
+                    <div class="metric"><div class="metric-value">${report.summary.notRun ?? 0}</div><div class="metric-label">Not run</div></div>
                     <div class="metric"><div class="metric-value">${report.summary.flaky}</div><div class="metric-label">Flaky</div></div>
                     <div class="metric"><div class="metric-value">${escapeReportHtml(formatMilliseconds(report.summary.duration))}</div><div class="metric-label">Duration</div></div>
                 </div>
                 <div class="rec-banner ${recClass}">
                     <div class="rec-label">Release Recommendation</div>
                     <div class="rec-text">${escapeReportHtml(report.summary.releaseRecommendation)}</div>
+                    ${report.summary.notRunNote ? `<div class="rec-note">${escapeReportHtml(report.summary.notRunNote)}</div>` : ""}
                 </div>
             </div>
         </div>

@@ -75,15 +75,19 @@ function skippedSpec(annotations?: Array<{ type: string; description?: string }>
 test("flattenSuites: a test that skipped itself reports its own reason, not an interrupted run", () => {
     const reason = "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
     const [record] = flattenSuites(skippedSpec([{ type: "skip", description: reason }]));
-    assert.equal(record.status, "Blocked");
+    // Phase 34 Option C: a skip with a stated reason is "Not run", not "Blocked".
+    assert.equal(record.status, "Not run");
+    assert.equal(record.skipReason, reason);
     assert.equal(record.area, "Database");
-    assert.match(record.remarks, /^Skipped\. .* did not run: database round trip: saves data through a form on the live site/);
+    assert.match(record.remarks, /^Not run\. .* did not run: database round trip: saves data through a form on the live site/);
     assert.doesNotMatch(record.remarks, /interrupted/);
 });
 
 test("flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording", () => {
     for (const annotations of [undefined, [], [{ type: "skip" }], [{ type: "issue", description: "not a skip" }]]) {
         const [record] = flattenSuites(skippedSpec(annotations));
+        assert.equal(record.status, "Blocked", "nobody chose an unexplained skip");
+        assert.equal(record.skipReason, undefined);
         assert.match(record.remarks, /^Blocked\. .* could not be completed because the run was interrupted/);
     }
 });

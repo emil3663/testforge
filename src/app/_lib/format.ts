@@ -21,7 +21,9 @@ export function formatExecutionRemark(record: ExecutionRecord) {
                 ? "Passed after retry. The observed result was unstable before it recovered."
                 : record.status === "Blocked"
                     ? "Blocked. The test could not be completed."
-                    : "Failed. The observed result did not match the expected result.";
+                    : record.status === "Not run"
+                        ? "Not run. The test skipped itself."
+                        : "Failed. The observed result did not match the expected result.";
     }
 
     return ensureSentence(trimmed);
@@ -33,7 +35,7 @@ export function summarizeSuite(records: ExecutionRecord[]) {
             summary[record.status] += 1;
             return summary;
         },
-        { Passed: 0, Failed: 0, Blocked: 0, Flaky: 0 } as Record<ExecutionStatus, number>
+        { Passed: 0, Failed: 0, Blocked: 0, Flaky: 0, "Not run": 0 } as Record<ExecutionStatus, number>
     );
 }
 
@@ -48,6 +50,11 @@ export function statusClasses(status: ExecutionStatus) {
 
     if (status === "Blocked") {
         return "bg-amber-100 text-amber-800 border-amber-200";
+    }
+
+    // Phase 34 Option C: skipped by choice - neutral, neither pass nor problem.
+    if (status === "Not run") {
+        return "bg-zinc-100 text-zinc-700 border-zinc-200";
     }
 
     return "bg-sky-100 text-sky-800 border-sky-200";
