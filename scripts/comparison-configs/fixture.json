@@ -62,7 +62,8 @@
         "security"
       ],
       "defect": "security-unescaped-note",
-      "description": "Check the notes page form (Note field, Save note button) for security coverage."
+      "description": "Check the notes page form (Note field, Save note button) for security coverage.",
+      "enableInteractive": true
     },
     {
       "name": "reliability",

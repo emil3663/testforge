@@ -9,6 +9,7 @@ import { buildDependencyFailureTests, DEPENDENCY_FAILURE_INJECTION_NOTE } from "
 import { buildStorageFailureTests } from "./storage-failure-injection";
 import { buildDatabaseRoundTripTests } from "./database-round-trip";
 import { buildPerformanceChecks } from "./performance-checks";
+import { buildSecurityChecks } from "./security-checks";
 import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -165,22 +166,11 @@ ${elementChecks}
         }
     }
 
-    if (areas.includes("security")) {
-        const securityTests: string[] = [];
-        const securityNotes: string[] = [];
-
-        if (new URL(baseUrl).protocol === "https:") {
-            securityTests.push(`  test('uses HTTPS for the requested public test target', async ({ page }) => {
-    await page.goto('/');
-    expect(new URL(page.url()).protocol).toBe('https:');
-  });`);
-        } else {
-            securityNotes.push(
-                "This target is not HTTPS by default, so deeper transport-security validation should be handled outside this browser suite."
-            );
-        }
-
-        const suite = createSuite("security", securityTests, securityNotes);
+    if (areas.includes("security") && !coveredAreas.includes("security")) {
+        // TFP-116: HTTPS (https targets only), header and cookie-flag
+        // findings, and a script-payload check per discovered form.
+        const { tests, notes } = buildSecurityChecks(baseUrl, contentProfile);
+        const suite = createSuite("security", tests, notes);
 
         if (suite) {
             suites.push(suite);

@@ -1,5 +1,8 @@
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
-import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./format";
+import { escapeForSingleQuotedString } from "./format";
+import { discoverForms, fieldLocator, fieldName, submitButton } from "./forms";
+
+export { fieldLocator };
 import type { ActionableElementDetail, ContentProfile } from "./types";
 
 // TFP-117 (Phase 34, Decision 4): the database area had no template at all -
@@ -26,10 +29,6 @@ export interface PersistenceForm {
     submit: ActionableElementDetail | null;
 }
 
-function fieldName(field: ActionableElementDetail) {
-    return field.locator.label || field.locator.name || field.locator.placeholder || field.locator.id;
-}
-
 /**
  * A field whose value a site would plausibly store and show again: a plain
  * text input or a textarea, visible, and not a search box (searching is not
@@ -52,40 +51,18 @@ function isPersistableField(element: ActionableElementDetail) {
  */
 export function findPersistenceForms(contentProfile: ContentProfile | null): PersistenceForm[] {
     const found: PersistenceForm[] = [];
-    for (const page of contentProfile?.pages ?? []) {
-        const elements = page.actionableElements ?? [];
-        for (let i = 0; i < elements.length; i++) {
-            if (elements[i].elementType !== "form") continue;
-            const group: ActionableElementDetail[] = [];
-            for (let j = i + 1; j < elements.length && elements[j].category === "form" && elements[j].elementType !== "form"; j++) {
-                group.push(elements[j]);
-            }
-            if (group.some((element) => element.locator.inputType === "password")) continue;
-            const field = group.find(isPersistableField);
-            if (!field) continue;
-            const submit = group.find((element) => element.elementType === "button" && (element.text || element.locator.name)) ?? null;
-            found.push({ path: page.path, field, submit });
-            if (found.length >= MAX_FORMS) return found;
-        }
+    for (const form of discoverForms(contentProfile)) {
+        if (form.elements.some((element) => element.locator.inputType === "password")) continue;
+        const field = form.elements.find(isPersistableField);
+        if (!field) continue;
+        found.push({ path: form.path, field, submit: submitButton(form) });
+        if (found.length >= MAX_FORMS) return found;
     }
     return found;
 }
 
 export function buildDatabaseRoundTripTitle(form: PersistenceForm) {
     return `persistence round trip: ${fieldName(form.field)} on ${form.path}`;
-}
-
-export function fieldLocator(field: ActionableElementDetail) {
-    // `#id` breaks on ids with `.` or `:` or a leading digit; `[id="..."]` is
-    // the form locators.ts uses. Escaped twice: once for the CSS string, then
-    // for the single-quoted JS string it is written into.
-    if (field.locator.id) {
-        const selector = `[id="${escapeForDoubleQuotedSelector(field.locator.id)}"]`;
-        return `page.locator('${escapeForSingleQuotedString(selector)}')`;
-    }
-    if (field.locator.label) return `page.getByLabel('${escapeForSingleQuotedString(field.locator.label)}', { exact: true })`;
-    if (field.locator.placeholder) return `page.getByPlaceholder('${escapeForSingleQuotedString(field.locator.placeholder)}', { exact: true })`;
-    return `page.getByRole('textbox', { name: '${escapeForSingleQuotedString(field.locator.name)}', exact: true })`;
 }
 
 function roundTripTest(form: PersistenceForm) {
