@@ -8,7 +8,8 @@ generates, and the local model fills only the selected areas the template
 still leaves empty.
 Status: Approved and in implementation (Option B confirmed by Emil
 2026-09-28; performance budgets and security-finding handling decided the
-same day). TFP-114 landed.
+same day). Gates A and B met; Decisions 10 and 11 (TFP-121, TFP-122) and the
+RPT-14 follow-up added 2026-09-28 from TFP-120's findings, not yet built.
 
 ## Context
 
@@ -232,7 +233,49 @@ model is no longer asked for those areas on that target.
   two full runs. Gap-filling stays opt-in through `TESTFORGE_OLLAMA_MODEL`
   only. Revisit if a target's sweep shows gaps with page data, or if Phase
   35 gives the local model a depth role. Recorded by Claude Code from the
-  measurement, for Emil to confirm or overturn.
+  measurement; **confirmed by Emil 2026-09-28.**
+
+10. The template's accessibility checks catch a form field with no
+    accessible name (TFP-121).
+- TFP-120 found the template's 5 accessibility tests pass with the
+  fixture's `a11y-unlabelled-field` defect on. Weak coverage inside a
+  covered area is not a gap (Decision 6), so the fix belongs in the
+  template, not in gap-filling, and it does not wait for Phase 35.
+- Every visible form field on the inspected pages (text-like inputs,
+  `select`, `textarea`; not hidden, submit, button or image inputs) must
+  have an accessible name. A field with none fails the test, and the
+  message names each field (its id, name or type, and page).
+- A field whose only name comes from its placeholder is recorded as a
+  finding, not a failure: a placeholder vanishes as the user types, so it is
+  a weak label, but it is not a missing one.
+- The name is the one the browser computes (as Playwright's role queries
+  and aria snapshots see it), not a hand-rolled approximation, so the check
+  agrees with what a screen reader is told.
+- It is read-only and runs with the default accessibility area. It
+  deliberately changes accessibility output; every other area's output must
+  stay unchanged by measurement.
+
+11. Generation inspects the pages itself when a request brings no page data
+    (TFP-122).
+- TFP-120 found the one remaining gap is database without page data, where
+  the local model's answer was one catch on the biased fixture and one false
+  failure on the real site. With page data the template either writes a real
+  round trip (about 1 ms) or reports the area not applicable.
+- When `/api/generate` receives no content profile, it runs the same
+  introspection the app's own flow runs, for the base URL, before
+  generating, using the introspection code directly rather than an HTTP
+  call to `/api/introspect`.
+- The response says the page data was gathered automatically, and the
+  report shows it.
+- If introspection fails (site unreachable, timeout), generation continues
+  exactly as today without page data, and the reason is reported. It never
+  blocks generation.
+- Callers can opt out with an explicit flag. The Phase 21 and 34 comparison
+  scripts' no-page-data cases need it to stay reproducible.
+- Introspection only reads pages. It follows the existing introspection
+  rules, including authenticated targets (Phase 20).
+- Consequence: with this in place, gap-filling runs only when inspection was
+  opted out of or failed. That is expected, not something to work around.
 
 ## Acceptance Criteria
 
@@ -278,6 +321,22 @@ model is no longer asked for those areas on that target.
 - A comparison report records template-only vs. template-plus-gap-fill on
   the fixture and at least one real target, with the fixture-bias caveat
   stated, not smoothed over.
+
+5. Follow-ups from TFP-120
+- A run in which no test executed, whether every test was "Not run" or
+  every test was Blocked (interrupted or skipped without a reason), reads
+  "No recommendation: no test ran", and its status badge is neutral, not
+  green.
+- With the fixture's `a11y-unlabelled-field` defect on, the template's
+  accessibility suite fails and names the field; with it off, it passes. On
+  the-internet it produces no false failure, or the result is recorded as it
+  is rather than smoothed over.
+- Only the accessibility area's output changes for TFP-121, by measurement
+  on fixed inputs.
+- A generate request with no content profile returns suites built from
+  automatically gathered page data and says so; with introspection forced to
+  fail, it returns today's output plus the reason; with the opt-out flag, it
+  behaves exactly as today.
 
 ## Regression Policy
 
@@ -463,8 +522,62 @@ issued number as of this record).
   the Phase 21 targets. That is a result to report, not a reason to widen
   what counts as a gap.
 - **Status:** Measured 2026-09-28 (TEST_PLAN GEN-45). Report:
-  `phase-34-option-b-measurement-report.md`; outcome under Decision 9. Not
-  yet independently verified.
+  `phase-34-option-b-measurement-report.md`; outcome under Decision 9,
+  confirmed by Emil. Independently verified 2026-09-28 (see Gate B).
+
+### RPT-14 follow-up — "No test ran" must not count interrupted tests
+
+- **Phase:** 34
+- **Priority:** P2
+- **Suggested labels:** `bug`, `report`
+- **Problem it solves:** `buildSummary` counts `passed + flaky + failed +
+  blocked` as tests that ran. Since Option C, `Blocked` means interrupted or
+  skipped without a reason, so those did not run either. A run where every
+  test was interrupted still reads "Ready with caution". The status badge
+  also stays green beside "No recommendation", because Playwright treats an
+  all-skipped run as passed.
+- **Scope:** Count only `passed + flaky + failed` as run. A mix of run and
+  Blocked tests still reads "Ready with caution". Neutral badge when no test
+  ran.
+- **Deliverables:** `summary.ts` and badge change; summary tests for
+  all-Blocked and all-Not-run; `TEST_PLAN.md` RPT-14 update.
+- **Acceptance criteria:** Acceptance Criteria 5, first bullet.
+- **Dependencies:** None.
+
+### TFP-121 — Accessibility: every form field has an accessible name
+
+- **Phase:** 34
+- **Priority:** P2
+- **Suggested labels:** `enhancement`, `generate`, `template`
+- **Problem it solves:** the template's accessibility tests miss a form
+  field with no label (TFP-120: `a11y-unlabelled-field` undetected).
+- **Scope:** Decision 10.
+- **Deliverables:** Template check in the accessibility builder(s), using
+  discovered form fields from page data; unit tests including a
+  real-browser case with labelled, `aria-label`, `aria-labelledby`,
+  placeholder-only and unlabelled fields; `TEST_PLAN.md` GEN case; output
+  measured before and after on fixed inputs.
+- **Acceptance criteria:** Acceptance Criteria 5, second and third bullets.
+- **Dependencies:** None.
+
+### TFP-122 — Inspect automatically when a request has no page data
+
+- **Phase:** 34
+- **Priority:** P2
+- **Suggested labels:** `enhancement`, `generate`, `introspection`
+- **Problem it solves:** the one remaining gap (database without page data)
+  sends the local model after a flow it has to invent; inspecting the pages
+  answers it deterministically, and gives every other area's template real
+  page data too.
+- **Scope:** Decision 11.
+- **Deliverables:** `/api/generate` change calling the introspection code
+  directly; the opt-out flag; response and report fields saying page data
+  was gathered automatically, or why it failed; comparison scripts updated
+  to use the opt-out for their no-page-data cases; route tests for all three
+  paths; `TEST_PLAN.md` GEN case.
+- **Acceptance criteria:** Acceptance Criteria 5, last bullet.
+- **Dependencies:** None. Build after TFP-121 if done in sequence, so each
+  output measurement changes only one thing.
 
 ## Recommended Execution Order
 
@@ -472,7 +585,9 @@ issued number as of this record).
 2. TFP-117, TFP-115, TFP-116 in any order (all decisions resolved
    2026-09-28).
 3. TFP-118, with TFP-119 alongside.
-4. TFP-120 last.
+4. TFP-120.
+5. The RPT-14 follow-up (a defect, fixed first), then TFP-121, then
+   TFP-122.
 
 ## Suggested Milestone Gates
 
@@ -484,8 +599,19 @@ default areas' output unchanged by measurement).
   default areas' output is shown unchanged.
 
 ### Gate B — Option B built and measured
-**Built and measured 2026-09-28; awaiting independent verification of the
-GEN-43 follow-up and TFP-120.**
+**Met 2026-09-28.** Built and measured, and independently verified: the
+GEN-43 follow-up (`17651f2`), RPT-14 (`238f406`), the route-test fix
+(`a564543`) and TFP-120 (`6618501`, `f799b7a`) were checked against the
+repository (typecheck and lint clean, 316 unit tests, template output
+unchanged on fixed inputs, the report consistent with its tables). The live
+Ollama runs could not be reproduced from the verifying session and are
+taken from Claude Code's run. The Decision 9 outcome (no UI control) was
+confirmed by Emil the same day.
 - TFP-118-120 landed; the measurement report exists with the fixture-bias
   caveat and at least one real target; `product-roadmap.md` records the
   outcome.
+
+### Gate C — TFP-120's follow-ups landed
+- The RPT-14 follow-up, TFP-121 and TFP-122 landed, each with its
+  `TEST_PLAN.md` case and independently verified; TFP-121's and TFP-122's
+  output changes shown by measurement to be only the intended ones.

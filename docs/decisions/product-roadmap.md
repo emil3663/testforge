@@ -157,8 +157,11 @@ the model on neither target.** The template now covers every area, or
 reports it not applicable, on the fixture and on the-internet, and it catches
 5 of the fixture's 6 defects (2 of 6 in Phase 21). The one remaining gap,
 database without page data, gave one caught defect on the biased fixture and
-one false failure on the real site. No UI control; gap-filling stays an
-env-var opt-in (`phase-34-option-b-measurement-report.md`). A depth role for
+one false failure on the real site. No UI control, confirmed by Emil; gap-filling
+stays an env-var opt-in (`phase-34-option-b-measurement-report.md`). Phase 34
+then closes that gap and the template's one missed defect directly: generation
+inspects pages itself when none are supplied (TFP-122), and the accessibility
+template checks every form field has an accessible name (TFP-121). A depth role for
 the local model is Phase 35's question, not a wider definition of a gap.
 
 ### Phase 35 — Comprehensive testing (outline, added 2026-09-28; not locked)
