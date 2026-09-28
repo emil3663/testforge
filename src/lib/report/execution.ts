@@ -265,6 +265,20 @@ export function extractMessage(result: JsonTestResult) {
     );
 }
 
+// Phase 34 (TFP-116): what a test recorded without failing - e.g. "no
+// Content-Security-Policy header". Playwright keeps runtime annotations on the
+// test, so they arrive here with the result.
+function findingsOf(test: JsonTest): string[] {
+    const found = (test.annotations ?? [])
+        .filter((annotation) => annotation.type === "finding" && annotation.description)
+        .map((annotation) => annotation.description!.trim());
+    return [...new Set(found)];
+}
+
+function withFindings(remark: string, findings: string[]) {
+    return findings.length > 0 ? `${remark} Findings: ${findings.join("; ")}.` : remark;
+}
+
 export function flattenSuites(
     suites: JsonSuite[],
     lineage: string[] = [],
@@ -301,12 +315,16 @@ export function flattenSuites(
                     browser: test.projectName || "chromium",
                     status,
                     duration: latestResult?.duration ?? 0,
-                    remarks: buildExecutionOutcomeSummary(
-                        spec.title,
-                        status,
-                        message,
-                        test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                    remarks: withFindings(
+                        buildExecutionOutcomeSummary(
+                            spec.title,
+                            status,
+                            message,
+                            test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                        ),
+                        findingsOf(test)
                     ),
+                    findings: findingsOf(test),
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,

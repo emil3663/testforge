@@ -87,3 +87,37 @@ test("flattenSuites: a skipped or interrupted test with no stated reason keeps t
         assert.match(record.remarks, /^Blocked\. .* could not be completed because the run was interrupted/);
     }
 });
+
+// --- Phase 34 (TFP-116): findings recorded without failing -------------------
+
+function passedSpec(annotations: Array<{ type: string; description?: string }>) {
+    const [root] = skippedSpec();
+    const spec = root.suites![0].specs[0];
+    spec.title = "TFSC-002: landing page security headers (recorded as findings)";
+    spec.tests = [{ projectName: "chromium", status: "expected" as never, annotations, results: [{ duration: 5, retry: 0, errors: [], status: "passed" }] }];
+    root.suites![0].title = "Security Coverage";
+    return [root];
+}
+
+test("flattenSuites: finding annotations are kept on the record and appended to the remark, and the test still passes", () => {
+    const [record] = flattenSuites(
+        passedSpec([
+            { type: "finding", description: "no Content-Security-Policy header: nothing limits what an injected script could do" },
+            { type: "finding", description: 'cookie "sid" has no HttpOnly (scripts can read it)' },
+            { type: "finding", description: 'cookie "sid" has no HttpOnly (scripts can read it)' },
+            { type: "issue", description: "not a finding" },
+        ])
+    );
+    assert.equal(record.status, "Passed");
+    assert.deepEqual(record.findings, [
+        "no Content-Security-Policy header: nothing limits what an injected script could do",
+        'cookie "sid" has no HttpOnly (scripts can read it)',
+    ]);
+    assert.match(record.remarks, /^Passed\. .* Findings: no Content-Security-Policy header: .*; cookie "sid" has no HttpOnly \(scripts can read it\)\.$/);
+});
+
+test("flattenSuites: a test with no findings has an empty list and an unchanged remark", () => {
+    const [record] = flattenSuites(passedSpec([]));
+    assert.deepEqual(record.findings, []);
+    assert.doesNotMatch(record.remarks, /Findings:/);
+});

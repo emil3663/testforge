@@ -67,6 +67,12 @@ export interface ExecutionRecord {
     status: ExecutionStatus;
     duration: number;
     remarks: string;
+    /**
+     * Phase 34 (TFP-116): things a test recorded without failing (Playwright
+     * `finding` annotations), e.g. a missing security header. Also appended to
+     * `remarks`, so every view that shows remarks shows them.
+     */
+    findings?: string[];
     rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];
