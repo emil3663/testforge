@@ -148,6 +148,23 @@ model is no longer asked for those areas on that target.
   (`src/lib/report/discovered-coverage.ts`); whether it extends that
   structure or adds an area-level equivalent is decided when TFP-119 is
   built.
+- A test that skipped itself with a stated reason is "not run by choice",
+  not a failure (Emil, 2026-09-28, Option C). Today every skip becomes
+  status `Blocked`, which counts on the failed side of the pass/fail ratio
+  and turns a clean run into "Ready with caution". Every run with
+  interactive tests off, the safe default, therefore could never read
+  "Ready for release".
+  - A skip with a reason (Playwright's `skip` annotation, read since
+    `915b69c`) gets its own status. It is left out of the pass/fail ratio
+    and does not downgrade the release recommendation.
+  - The summary says beside the recommendation what was not run and why,
+    e.g. "4 tests not run: interactive tests are off", so a run whose
+    meaningful tests were all skipped cannot read as full coverage.
+  - A skip or interruption with no stated reason stays `Blocked` and still
+    means "Ready with caution": nobody chose it.
+  - Rejected: leaving it (caution becomes the normal state of a healthy
+    site and gets ignored) and ignoring every skip (a run could read "Ready
+    for release" with its important tests skipped).
 
 8. Every generation gate's verdict is recorded with the run, with its
    stated bar and its evidence (Martin's review, 2026-09-28).
@@ -208,6 +225,10 @@ model is no longer asked for those areas on that target.
 - A rejected or timed-out local suite leaves the template suite intact and
   the area is reported empty with its reason.
 - Reliability is never sent to the local model.
+- A run with interactive tests off and no failures reads "Ready for
+  release", with its not-run tests counted and named beside the
+  recommendation and excluded from the pass/fail ratio; an unexplained skip
+  still yields "Ready with caution".
 - A generation that ran any gate shows each gate's bar, measured result,
   verdict and evidence in the persisted run and its report, including when
   the local output was rejected.
@@ -302,6 +323,7 @@ issued number as of this record).
 - **Deliverables:** Updated suite builders; unit tests; `TEST_PLAN.md`.
 - **Acceptance criteria:** Acceptance Criteria 2.
 - **Dependencies:** TFP-114 (landed).
+- **Status:** Landed `a2b0c57`, independently verified 2026-09-28.
 
 ### TFP-116 — Security template checks
 
@@ -317,6 +339,7 @@ issued number as of this record).
   tests; `TEST_PLAN.md`.
 - **Acceptance criteria:** Acceptance Criteria 2.
 - **Dependencies:** None.
+- **Status:** Landed `5231b64`, `d496c58`, independently verified 2026-09-28; follow-up `9393f12` (the payload test no longer passes when validation blocks the submit).
 
 ### TFP-117 — Database persistence round-trip template
 
@@ -330,6 +353,7 @@ issued number as of this record).
   better, like `storage-failure-injection.ts`); unit tests; `TEST_PLAN.md`.
 - **Acceptance criteria:** Acceptance Criteria 2.
 - **Dependencies:** None.
+- **Status:** Landed `3b0345d` (GEN-39), independently verified 2026-09-28.
 
 ### TFP-118 — Option B: additive gap-filling
 
@@ -356,9 +380,11 @@ issued number as of this record).
   applies, or the local model is unavailable or rejected) disappears from
   the report instead of saying why; and every gate verdict is discarded
   after `/api/generate` returns, with its evidence.
-- **Scope:** Decisions 7 and 8: area-level "not tested and why", plus each
-  gate's bar, measured result, verdict and evidence persisted with the run
-  and shown in the report.
+- **Scope:** Decisions 7 and 8: area-level "not tested and why"; deliberate
+  skips as their own "not run by choice" status in the summary, ratio and
+  release recommendation (`src/lib/report/summary.ts`, `execution.ts`); and
+  each gate's bar, measured result, verdict and evidence persisted with the
+  run and shown in the report.
 - **Deliverables:** Generate-route and run-persistence changes to carry the
   verdicts; report changes; tests (including a rejected local suite whose
   evidence appears in the saved run); `TEST_PLAN.md` RPT cases.
@@ -391,6 +417,8 @@ issued number as of this record).
 ## Suggested Milestone Gates
 
 ### Gate A — The template covers all three areas
+**Met 2026-09-28** (TFP-114 to 117 landed and independently verified; the six
+default areas' output unchanged by measurement).
 - TFP-114-117 landed; the Phase 21 fixture requests for performance,
   security and database each produce executable template tests; the six
   default areas' output is shown unchanged.
