@@ -7,6 +7,7 @@ import {
 } from "./actionable-elements";
 import { buildDependencyFailureTests, DEPENDENCY_FAILURE_INJECTION_NOTE } from "./dependency-failure-injection";
 import { buildStorageFailureTests } from "./storage-failure-injection";
+import { buildDatabaseRoundTripTests } from "./database-round-trip";
 import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -223,6 +224,17 @@ ${elementChecks}
     expect(Array.isArray(cookies)).toBeTruthy();
   });`,
         ]);
+
+        if (suite) {
+            suites.push(suite);
+        }
+    }
+
+    // TFP-117: a user-visible persistence round trip per discovered form -
+    // or a note saying why there is none, so the area is visibly empty.
+    if (areas.includes("database") && !coveredAreas.includes("database")) {
+        const { tests, notes } = buildDatabaseRoundTripTests(contentProfile);
+        const suite = createSuite("database", tests, notes);
 
         if (suite) {
             suites.push(suite);

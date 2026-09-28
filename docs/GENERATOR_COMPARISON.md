@@ -57,6 +57,10 @@ npm run compare:generators -- --config scripts/comparison-configs/fixture.json
 Options: `--server http://127.0.0.1:3100` (default), `--model testforge-qwen7b`
 (default), and `--only functional,accessibility` to run some cases only.
 
+A case can set `"enableInteractive": true`. Tests that submit forms on the
+site (journeys, and the template's database round trip) are skipped unless a
+run enables interactive tests, so without it they show up as skipped.
+
 For each case, the command:
 
 1. Inspects the target once, so both generators get the same page data.

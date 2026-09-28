@@ -106,6 +106,9 @@ async function runSuite(code, testCase, contentProfile) {
         selectedPractices: testCase.practices ?? [],
         contentProfile,
         auditMode: "fast",
+        // Phase 34: tests that submit forms (journeys, database round trips)
+        // are skipped unless the run enables interactive tests.
+        enableInteractive: testCase.enableInteractive === true,
     });
     for (;;) {
         await new Promise((r) => setTimeout(r, 2000));
