@@ -73,6 +73,12 @@ export interface ExecutionRecord {
      * `remarks`, so every view that shows remarks shows them.
      */
     findings?: string[];
+    /**
+     * Phase 34 (TFP-118): which generator wrote the test. Option B appends the
+     * local model's tests to the template suite inside a describe titled
+     * "Local model (<model>)"; everything else is the template's.
+     */
+    generator?: "template" | "local model";
     rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];

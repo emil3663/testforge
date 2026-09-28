@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI, { APIConnectionError } from "openai";
-import { mockGenerate } from "@/lib/generate/mock";
+import OpenAI from "openai";
+import { mockGenerate, mockGenerateDetailed } from "@/lib/generate/mock";
 import {
     normalizeBaseUrl,
     normalizeContentProfile,
@@ -9,15 +9,10 @@ import {
     normalizeTestAuditMode,
 } from "@/lib/generate/normalize";
 import { pickModel } from "@/lib/generate/models";
-import {
-    DEFAULT_OLLAMA_BASE_URL,
-    OLLAMA_PLACEHOLDER_API_KEY,
-    resolveOllamaModel,
-    stripCodeFence,
-} from "@/lib/generate/ollama";
-import { findTypeErrors, findUnawaitedAssertions } from "@/lib/generate/validate";
-import { localRulesFor } from "@/lib/generate/local-rules";
-import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
+import { countGate, type GateVerdict } from "@/lib/generate/gates";
+import { findGapAreas, mergeLocalSuite } from "@/lib/generate/gap-fill";
+import { generateLocalSuite, type LocalFailureReason } from "@/lib/generate/local-generation";
+import { findTypeErrors } from "@/lib/generate/validate";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
@@ -60,23 +55,65 @@ export async function POST(req: NextRequest) {
             normalizedAuditMode
         );
 
+    const userMessage = (coverage: string, extra = "") =>
+        `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${coverage}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}${extra}`;
+
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
         { role: "system", content: SYSTEM_PROMPT },
         {
             role: "user",
-            content: `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${normalizedPractices.length > 0 ? normalizedPractices.join(
-                ", "
-            ) : "infer from prompt"}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}`,
+            content: userMessage(normalizedPractices.length > 0 ? normalizedPractices.join(", ") : "infer from prompt"),
         },
     ];
 
     // Phase 30 Decision 5: a configured local model wins over an OpenAI key.
+    // Phase 34 (TFP-118): it no longer replaces the template - it fills only
+    // the areas the template left without tests (Phase 21 TFP-100, Option B).
     const ollamaModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
     if (ollamaModel) {
-        // Phase 33: the same areas the template generator would cover, so only
-        // the guides for those categories are sent to the local model.
-        const areas = getBestPracticeAreas(description, normalizedPractices);
-        return generateWithOllama(ollamaModel, messages, template, areas);
+        const generated = mockGenerateDetailed(
+            normalizedBaseUrl.value,
+            description,
+            normalizedPractices,
+            normalizedContentProfile,
+            normalizedContentRules,
+            normalizedAuditMode
+        );
+        const gapAreas = findGapAreas(generated.areas, generated.testsByArea);
+        if (gapAreas.length === 0) {
+            return NextResponse.json({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps" }, gates: [] });
+        }
+
+        const gapMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+            { role: "system", content: SYSTEM_PROMPT },
+            {
+                role: "user",
+                content: userMessage(
+                    gapAreas.join(", "),
+                    `\n\nWrite tests only for these coverage areas: ${gapAreas.join(", ")}. The other areas are already covered by another generator - do not write tests for them.`
+                ),
+            },
+        ];
+        const local = await generateLocalSuite(ollamaModel, gapMessages, gapAreas);
+        if (!local.ok) {
+            return gapFillFallback(generated.code, local.reason, gapAreas, local.gates, local.model);
+        }
+
+        // The merged file is checked again: the wrapping can fail on code the
+        // standalone check accepted (another import, a clashing name).
+        const merged = mergeLocalSuite(generated.code, local.code, local.model, gapAreas);
+        let mergeErrors: string[];
+        try {
+            mergeErrors = findTypeErrors(merged);
+        } catch (checkError) {
+            mergeErrors = [`type check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
+        }
+        const gates = [...local.gates, countGate("merged suite type check", "type errors", mergeErrors)];
+        if (mergeErrors.length > 0) {
+            console.error(`[api/generate] ${local.model}'s tests do not type-check once appended to the template suite, using template alone:\n  ${mergeErrors.slice(0, 5).join("\n  ")}`);
+            return gapFillFallback(generated.code, "invalid_output", gapAreas, gates, local.model);
+        }
+        return NextResponse.json({ code: merged, generatedBy: "template+ollama", model: local.model, gapFill: { gapAreas, outcome: "added" }, gates });
     }
 
     if (!apiKey) {
@@ -115,124 +152,28 @@ export async function POST(req: NextRequest) {
     }
 }
 
-/**
- * Phase 30 (TFP-103): the same guard/fallback shape as the OpenAI path, pointed
- * at a local Ollama through its OpenAI-compatible endpoint. Only the base URL,
- * the time budget and the failure labels differ.
- */
-async function generateWithOllama(
-    configuredModel: string,
-    messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-    template: () => string,
-    areas: readonly BestPracticeArea[]
-) {
-    const signal = AbortSignal.timeout(timeoutMs("TESTFORGE_OLLAMA_TIMEOUT_MS", DEFAULT_OLLAMA_TIMEOUT_MS));
-    try {
-        const client = new OpenAI({
-            apiKey: OLLAMA_PLACEHOLDER_API_KEY,
-            baseURL: process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || DEFAULT_OLLAMA_BASE_URL,
-            maxRetries: 0,
-        });
-
-        const catalog = await client.models.list({ signal });
-        const model = resolveOllamaModel(
-            catalog.data.map((m) => m.id),
-            configuredModel
-        );
-        if (!model) {
-            console.error(`[api/generate] Ollama has no model "${configuredModel}", using template generator.`);
-            return fallback(template(), "ollama_model_missing");
-        }
-
-        // Phase 31 (TFP-106) / Phase 33: local-only API rules plus the guides
-        // for the areas in scope, appended to the system message here so the
-        // shared SYSTEM_PROMPT (and the OpenAI path) is untouched.
-        const localRules = localRulesFor(areas);
-        const localMessages = messages.map((m) =>
-            m.role === "system" ? { ...m, content: `${m.content}\n\n${localRules}` } : m
-        );
-        const chat = await client.chat.completions.create(
-            { model, messages: localMessages, temperature: 0.2 },
-            { signal }
-        );
-
-        const raw = chat.choices[0]?.message?.content;
-        const code = typeof raw === "string" ? stripCodeFence(raw) : "";
-        if (code === "") {
-            return fallback(template(), "empty_completion", model);
-        }
-
-        // Phase 30 Acceptance Criterion 1: the local model has invented
-        // Playwright APIs (toBeAccessible), so its suite must type-check before
-        // it is labelled model output. Fails closed if the check can't run.
-        let typeErrors: string[];
-        try {
-            typeErrors = findTypeErrors(code);
-        } catch (checkError) {
-            typeErrors = [`type check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
-        }
-        if (typeErrors.length > 0) {
-            console.error(
-                `[api/generate] ${model} returned a suite that does not type-check against @playwright/test, using template generator:\n  ${typeErrors.slice(0, 5).join("\n  ")}`
-            );
-            return fallback(template(), "invalid_output", model);
-        }
-
-        // Phase 33 (TFP-110): an unawaited web-first assertion is not a type
-        // error, but it never runs - the test passes while checking nothing.
-        // Only promise-returning ones are rejected: an unawaited synchronous
-        // expect(value).toBe(...) still checks (the template generator writes
-        // those itself). Detect and fall back, never rewrite; fails closed.
-        let unawaited: string[];
-        try {
-            unawaited = findUnawaitedAssertions(code)
-                .filter((a) => a.returnsPromise)
-                .map((a) => `line ${a.line}: ${a.text}`);
-        } catch (checkError) {
-            unawaited = [`await check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
-        }
-        if (unawaited.length > 0) {
-            console.error(
-                `[api/generate] ${model} returned a suite with assertions that are never awaited, using template generator:\n  ${unawaited.slice(0, 5).join("\n  ")}`
-            );
-            return fallback(template(), "unawaited_assertion", model);
-        }
-        return NextResponse.json({ code, generatedBy: "ollama", model });
-    } catch (error) {
-        console.error(
-            "[api/generate] Ollama call failed, using template generator:",
-            error instanceof Error ? error.message : error
-        );
-        // A refused connection surfaces as APIConnectionError; anything else
-        // (e.g. Ollama answering 500 because the model failed to load) got a
-        // response, so it is not "unreachable".
-        const reason: FallbackReason = signal.aborted
-            ? "timeout"
-            : error instanceof APIConnectionError
-              ? "ollama_unreachable"
-              : "ollama_error";
-        return fallback(template(), reason);
-    }
-}
-
-type FallbackReason =
-    | "openai_error"
-    | "timeout"
-    | "empty_completion"
-    | "no_candidate_model"
-    | "ollama_unreachable"
-    | "ollama_model_missing"
-    | "ollama_error"
-    | "invalid_output"
-    | "unawaited_assertion";
+type FallbackReason = "openai_error" | "timeout" | "empty_completion" | "no_candidate_model" | LocalFailureReason;
 
 function fallback(code: string, fallbackReason: FallbackReason, model?: string) {
     return NextResponse.json({ code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) });
 }
 
+/**
+ * Option B's failure shape: the template suite, unchanged, with why the gap
+ * areas stayed empty and every gate verdict that led there.
+ */
+function gapFillFallback(code: string, fallbackReason: LocalFailureReason, gapAreas: BestPracticeArea[], gates: GateVerdict[], model?: string) {
+    return NextResponse.json({
+        code,
+        generatedBy: "fallback",
+        fallbackReason,
+        ...(model ? { model } : {}),
+        gapFill: { gapAreas, outcome: "rejected" },
+        gates,
+    });
+}
+
 const DEFAULT_OPENAI_TIMEOUT_MS = 30_000;
-// Phase 30 Decision 3: a local 7B model measured 53-74s per generation.
-const DEFAULT_OLLAMA_TIMEOUT_MS = 180_000;
 
 // Overridable so tests can prove the timeout path without waiting it out.
 function timeoutMs(envName: string, fallbackMs: number): number {

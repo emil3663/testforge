@@ -121,3 +121,42 @@ test("flattenSuites: a test with no findings has an empty list and an unchanged 
     assert.deepEqual(record.findings, []);
     assert.doesNotMatch(record.remarks, /Findings:/);
 });
+
+// --- Phase 34 (TFP-118): which generator wrote each test ----------------------
+
+test("flattenSuites: tests inside Option B's 'Local model (...)' block are labelled local model, filed under their area", () => {
+    const suites = [
+        {
+            title: "suite.spec.ts",
+            specs: [],
+            suites: [
+                {
+                    title: "Functional Coverage",
+                    specs: [{ id: "t1", title: "TFFU-001: loads", tests: [{ projectName: "chromium", status: "expected" as never, results: [{ duration: 1, retry: 0, errors: [], status: "passed" }] }] }],
+                },
+                {
+                    title: "Local model (testforge-qwen7b:latest)",
+                    specs: [],
+                    suites: [
+                        {
+                            title: "Database Coverage",
+                            specs: [],
+                            suites: [
+                                {
+                                    title: "Database",
+                                    specs: [{ id: "l1", title: "a saved note is still shown after a reload", tests: [{ projectName: "chromium", status: "expected" as never, results: [{ duration: 1, retry: 0, errors: [], status: "passed" }] }] }],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
+    ];
+    const [template, local] = flattenSuites(suites);
+    assert.equal(template.generator, "template");
+    assert.doesNotMatch(template.remarks, /local model/);
+    assert.equal(local.generator, "local model");
+    assert.equal(local.area, "Database");
+    assert.match(local.remarks, /Written by the local model \(testforge-qwen7b:latest\)\.$/);
+});

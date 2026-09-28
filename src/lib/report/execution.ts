@@ -1,5 +1,6 @@
 import { normalizeExecutionTitle, sanitizeDiagnosticText, simplifyExecutionTarget, classifyFailureReason } from "./text";
 import { createExecutionArtifacts } from "./artifacts";
+import { LOCAL_MODEL_SUITE_PREFIX } from "@/lib/generate/gap-fill";
 import type {
     ExecutionRecord,
     ExecutionStatus,
@@ -275,6 +276,10 @@ function findingsOf(test: JsonTest): string[] {
     return [...new Set(found)];
 }
 
+function withGenerator(remark: string, localModel: string | null) {
+    return localModel ? `${remark} Written by the local model (${localModel}).` : remark;
+}
+
 function withFindings(remark: string, findings: string[]) {
     return findings.length > 0 ? `${remark} Findings: ${findings.join("; ")}.` : remark;
 }
@@ -288,6 +293,9 @@ export function flattenSuites(
 
     for (const suite of suites) {
         const nextLineage = suite.title ? [...lineage, suite.title] : lineage;
+
+        // Phase 34 (TFP-118): Option B's appended block, e.g. "Local model (testforge-qwen7b:latest)".
+        const localModel = nextLineage.find((title) => title.startsWith(LOCAL_MODEL_SUITE_PREFIX))?.slice(LOCAL_MODEL_SUITE_PREFIX.length, -1) ?? null;
 
         for (const spec of suite.specs ?? []) {
             const area = deriveArea(nextLineage);
@@ -315,16 +323,20 @@ export function flattenSuites(
                     browser: test.projectName || "chromium",
                     status,
                     duration: latestResult?.duration ?? 0,
-                    remarks: withFindings(
-                        buildExecutionOutcomeSummary(
-                            spec.title,
-                            status,
-                            message,
-                            test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                    remarks: withGenerator(
+                        withFindings(
+                            buildExecutionOutcomeSummary(
+                                spec.title,
+                                status,
+                                message,
+                                test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                            ),
+                            findingsOf(test)
                         ),
-                        findingsOf(test)
+                        localModel
                     ),
                     findings: findingsOf(test),
+                    generator: localModel ? "local model" : "template",
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,
