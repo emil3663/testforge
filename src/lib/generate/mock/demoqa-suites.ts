@@ -256,5 +256,9 @@ export function buildDemoQaSuites(
         suites.push(usabilitySuite);
     }
 
-    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas, contentProfile)];
+    // TFP-114: tell the shared builder which areas already have a DemoQA
+    // suite, so it doesn't add a second one (it used to infer this from the
+    // description's wording, which broke every non-DemoQA target).
+    const coveredAreas = suites.filter((suite) => suite.tests.length > 0).map((suite) => suite.area);
+    return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas, contentProfile, coveredAreas)];
 }

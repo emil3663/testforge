@@ -24,9 +24,10 @@ export function buildSharedBestPracticeSuites(
     baseUrl: string,
     description: string,
     areas: BestPracticeArea[],
-    contentProfile: ContentProfile | null = null
+    contentProfile: ContentProfile | null = null,
+    /** Areas the calling target-specific builder already wrote a suite for. */
+    coveredAreas: BestPracticeArea[] = []
 ) {
-    const lowerDescription = description.toLowerCase();
     const suites: GeneratedSuite[] = [];
 
     if (areas.includes("responsive/mobile")) {
@@ -147,15 +148,13 @@ ${elementChecks}
         }
     }
 
-    if (
-        areas.includes("performance/load") &&
-        !includesAny(lowerDescription, [
-            "response time",
-            "performance",
-            "load time",
-            "speed",
-        ])
-    ) {
+    // TFP-114: this used to be gated on the description NOT naming
+    // performance - a stand-in for "the DemoQA builder already wrote a
+    // performance test", since that builder writes its own only when the
+    // description does. On every other target nothing else writes one, so
+    // asking for performance by name produced no performance test at all.
+    // The target-specific builder now says which areas it already covered.
+    if (areas.includes("performance/load") && !coveredAreas.includes("performance/load")) {
         const suite = createSuite("performance/load", [
             `  test('captures a simple load-time budget for the landing page', async ({ page }) => {
     const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
