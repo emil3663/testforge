@@ -1,5 +1,6 @@
 import { escapeReportHtml, formatMilliseconds } from "./text";
 import { buildFallbackExecutionHtmlMarkup } from "./status";
+import { noTestRan } from "./summary";
 import type { RunReport } from "./types";
 
 interface RunResultLike {
@@ -31,7 +32,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         const cls = map[priority] ?? "";
         return `<span class="${cls}">${escapeReportHtml(priority)}</span>`;
     }
-    const recClass = report.summary.failed > 0 ? "rec-failed" : report.summary.blocked > 0 ? "rec-blocked" : "rec-passed";
+    const recClass = noTestRan(report.summary) ? "rec-none" : report.summary.failed > 0 ? "rec-failed" : report.summary.blocked > 0 ? "rec-blocked" : "rec-passed";
     const executionRowsMarkup = report.execution.map((record) => `
             <tr>
                 <td>${escapeReportHtml(record.title)}</td>
@@ -161,14 +162,17 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         .rec-passed { background: #f0fdf4; border: 1px solid #bbf7d0; }
         .rec-failed { background: #fff1f2; border: 1px solid #fecdd3; }
         .rec-blocked { background: #fff7ed; border: 1px solid #fed7aa; }
+        .rec-none { background: #fafafa; border: 1px solid #e4e4e7; }
         .rec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; }
         .rec-passed .rec-label { color: #16a34a; }
         .rec-failed .rec-label { color: #dc2626; }
         .rec-blocked .rec-label { color: #ea580c; }
+        .rec-none .rec-label { color: #71717a; }
         .rec-text { font-size: 14px; font-weight: 600; margin-top: 4px; }
         .rec-passed .rec-text { color: #15803d; }
         .rec-failed .rec-text { color: #b91c1c; }
         .rec-blocked .rec-text { color: #c2410c; }
+        .rec-none .rec-text { color: #3f3f46; }
         .rec-note { font-size: 13px; color: #52525b; margin-top: 4px; }
         /* Tables */
         .table-wrap { overflow-x: auto; margin-top: 4px; }

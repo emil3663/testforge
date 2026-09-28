@@ -15,6 +15,7 @@ import { UsabilityTab } from "@/app/_components/UsabilityTab";
 import { toSentenceCase } from "@/app/_lib/format";
 import type { ExecutionRecord, ExecutionStatus, RunReport, SeoPageGroup, SeoRecommendation } from "@/lib/report/types";
 import type { ReportTab, RunResult } from "@/app/_lib/types";
+import { noTestRan } from "@/lib/report/summary";
 
 interface ReportSectionProps {
     result: RunResult;
@@ -114,6 +115,8 @@ export function ReportSection({
                                         <span
                                             className={`rounded-full border px-3 py-1 text-xs font-semibold ${result.runStatus === "cancelled"
                                                 ? "border-amber-200 bg-amber-50 text-amber-800"
+                                                : noTestRan(report.summary)
+                                                    ? "border-zinc-200 bg-zinc-50 text-zinc-700"
                                                 : result.passed
                                                     ? "border-emerald-200 bg-emerald-50 text-emerald-800"
                                                     : "border-rose-200 bg-rose-50 text-rose-800"

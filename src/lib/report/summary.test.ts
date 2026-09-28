@@ -59,3 +59,39 @@ test("GEN-43: a run where every test was not run gives no recommendation, not Re
     assert.equal(summary.executed, 0);
     assert.equal(summary.notRunNote, `1 test not run: ${gapFill}`);
 });
+
+// --- RPT-14 follow-up (Phase 34 Acceptance Criteria 5) -----------------------
+
+const { noTestRan, NO_TEST_RAN } = await import("./summary.ts");
+const { buildReport } = await import("./report.ts");
+const { buildReportHtmlDocument } = await import("./html.ts");
+
+test("RPT-14: an all-interrupted run gives no recommendation - Blocked tests did not run either", () => {
+    const summary = buildSummary([record("Blocked"), record("Blocked")], [], 1);
+    assert.equal(summary.releaseRecommendation, NO_TEST_RAN);
+    assert.ok(noTestRan(summary));
+});
+
+test("RPT-14: a mix of run and Blocked tests still reads Ready with caution", () => {
+    const summary = buildSummary([record("Passed"), record("Blocked"), record("Not run", INTERACTIVE_OFF)], [], 1);
+    assert.equal(summary.releaseRecommendation, "Ready with caution");
+    assert.ok(!noTestRan(summary));
+});
+
+test("RPT-14: noTestRan counts passed, flaky and failed only", () => {
+    assert.ok(noTestRan(buildSummary([record("Not run", INTERACTIVE_OFF), record("Blocked")], [], 1)));
+    assert.ok(noTestRan(buildSummary([], [], 1)));
+    assert.ok(!noTestRan(buildSummary([record("Flaky")], [], 1)));
+    assert.ok(!noTestRan(buildSummary([record("Failed")], [], 1)));
+});
+
+test("RPT-14: the HTML export's recommendation banner is neutral when no test ran, not green or orange", () => {
+    const base = buildReport({ suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } }, [], "");
+    const banner = (records: ExecutionRecord[]) =>
+        buildReportHtmlDocument({ ...base, summary: { ...base.summary, ...buildSummary(records, [], 1) } }, "r").match(/rec-banner (rec-\w+)/)?.[1];
+    assert.equal(banner([record("Not run", INTERACTIVE_OFF)]), "rec-none");
+    assert.equal(banner([record("Blocked")]), "rec-none");
+    assert.equal(banner([record("Passed"), record("Blocked")]), "rec-blocked");
+    assert.equal(banner([record("Passed")]), "rec-passed");
+    assert.equal(banner([record("Failed")]), "rec-failed");
+});

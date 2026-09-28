@@ -1,4 +1,16 @@
-import type { DefectRecord, ExecutionRecord } from "./types";
+import type { DefectRecord, ExecutionRecord, RunReport } from "./types";
+
+export const NO_TEST_RAN = "No recommendation: no test ran";
+
+/**
+ * True when no test executed: every test was Not run (skipped with a reason)
+ * or Blocked (interrupted, or skipped without one). Playwright calls such a
+ * run passed, so a badge coloured by its pass/fail would read green; callers
+ * show a neutral badge instead.
+ */
+export function noTestRan(summary: Pick<RunReport["summary"], "passed" | "flaky" | "failed">) {
+    return summary.passed + summary.flaky + summary.failed === 0;
+}
 
 function releaseRecommendation(
     ran: number,
@@ -8,10 +20,10 @@ function releaseRecommendation(
     major: number
 ) {
     // GEN-43: with interactive tests off, a suite can be all "Not run" (e.g.
-    // only the local model's gap-fill block). Nothing executed is no evidence
-    // for a release, so it must not read "Ready for release".
+    // only the local model's gap-fill block); an interrupted run can be all
+    // Blocked. Nothing executed is no evidence for a release either way.
     if (ran === 0) {
-        return "No recommendation: no test ran";
+        return NO_TEST_RAN;
     }
 
     if (critical > 0 || failed > 0) {
@@ -63,7 +75,7 @@ export function buildSummary(
         notRunReasons,
         notRunNote,
         duration,
-        releaseRecommendation: releaseRecommendation(passed + flaky + failed + blocked, failed, blocked, critical, major),
+        releaseRecommendation: releaseRecommendation(passed + flaky + failed, failed, blocked, critical, major),
         defectDistribution: {
             Critical: critical,
             Major: major,
