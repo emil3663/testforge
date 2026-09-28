@@ -543,6 +543,8 @@ issued number as of this record).
   all-Blocked and all-Not-run; `TEST_PLAN.md` RPT-14 update.
 - **Acceptance criteria:** Acceptance Criteria 5, first bullet.
 - **Dependencies:** None.
+- **Status:** Landed `2c9ecea` (TEST_PLAN RPT-14). Not yet independently
+  verified.
 
 ### TFP-121 — Accessibility: every form field has an accessible name
 
@@ -559,6 +561,11 @@ issued number as of this record).
   measured before and after on fixed inputs.
 - **Acceptance criteria:** Acceptance Criteria 5, second and third bullets.
 - **Dependencies:** None.
+- **Status:** Landed `99f90f3` (TEST_PLAN GEN-46). Live: fixture fails with
+  the defect on, naming `#email` on /login, and passes clean; the-internet
+  passes with no finding. 240 of 264 fixed inputs byte-identical, the 24
+  changed only gaining the new accessibility tests. Not yet independently
+  verified.
 
 ### TFP-122 — Inspect automatically when a request has no page data
 
@@ -578,6 +585,10 @@ issued number as of this record).
 - **Acceptance criteria:** Acceptance Criteria 5, last bullet.
 - **Dependencies:** None. Build after TFP-121 if done in sequence, so each
   output measurement changes only one thing.
+- **Status:** Landed `cc7a810` (TEST_PLAN GEN-47). Full route responses for
+  264 fixed inputs (supplied page data or opt-out) byte-identical. Live: the
+  inspected-without-page-data, failed-inspection and opt-out paths all
+  behave as Acceptance Criteria 5 states. Not yet independently verified.
 
 ## Recommended Execution Order
 
@@ -612,6 +623,8 @@ confirmed by Emil the same day.
   outcome.
 
 ### Gate C — TFP-120's follow-ups landed
+**Built 2026-09-28 (`2c9ecea`, `99f90f3`, `cc7a810`); awaiting independent
+verification. Not pushed.**
 - The RPT-14 follow-up, TFP-121 and TFP-122 landed, each with its
   `TEST_PLAN.md` case and independently verified; TFP-121's and TFP-122's
   output changes shown by measurement to be only the intended ones.
