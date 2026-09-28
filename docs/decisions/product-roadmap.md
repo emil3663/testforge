@@ -146,6 +146,12 @@ development: given CI coverage, and evaluated against the deterministic
 generator on the same sites using Phase 17's run persistence and diffing.
 The product decision — default generator, opt-in, or user's choice per run —
 is made from that comparison rather than in advance of it.
+**Decided 2026-09-28 (TFP-100): Option B, additive gap-filling.** Retargeted
+at the local (Ollama) model, since the OpenAI account is unfunded. The
+deterministic template stays the default and always generates; the local
+model is opt-in and fills only selected areas where the template wrote no
+tests, with its tests labelled separately. Built in Phase 34, which first
+gives the template its own performance, security and database coverage.
 
 ---
 

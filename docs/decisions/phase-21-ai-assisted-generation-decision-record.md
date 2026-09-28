@@ -6,10 +6,11 @@ development — real CI coverage, and evaluated against the deterministic
 generator on the same sites using Phase 17's run persistence and diffing.
 The product decision (default generator, opt-in, or user's choice per run)
 is made from that comparison, not in advance of it.
-Status: Approved and in implementation. Retargeted 2026-09-24 (see
-Amendment, below) at the local (Ollama) path — TFP-098-100 now compare the
-deterministic generator against testforge-qwen7b, not OpenAI. TFP-098
-unblocked now, TFP-099/100 sequenced behind it.
+Status: Complete. Retargeted 2026-09-24 (see Amendment, below) at the
+local (Ollama) path — TFP-098-100 compare the deterministic generator
+against testforge-qwen7b, not OpenAI. TFP-098 and TFP-099 met 2026-09-24;
+TFP-100 decided 2026-09-28: Option B (see "TFP-100 — Decision recorded").
+Option B is built in Phase 34.
 
 ## Context
 
@@ -365,7 +366,7 @@ Two defects were found and fixed along the way:
 product decision is Emil's, so it is not yet written into
 `product-roadmap.md`.
 
-## TFP-100 — Proposed decision (awaiting Emil; drawn from TFP-099's results)
+## TFP-100 — Proposed decision (drawn from TFP-099's results; decided below)
 
 Decision 5 says this is decided *from* the comparison, so the options are
 set against what the comparison actually showed
@@ -408,3 +409,35 @@ template rather than replacing it.
 
 Once Emil confirms or changes this, the chosen option is recorded in
 `product-roadmap.md`'s Phase 21 text, as the Gate requires.
+
+## TFP-100 — Decision recorded (2026-09-28)
+
+**Emil chose Option B: additive, gap-filling.** Recorded as proposed above,
+unchanged:
+- **Default:** the deterministic template generator (Decision 1).
+- **Local model:** opt-in and additive. The template always generates; the
+  local model is asked only for selected areas where the template wrote no
+  executable tests, and its tests are appended with their own label.
+- **Reliability** stays template-only until GEN-32 is fixed.
+- **Exposure:** the existing `TESTFORGE_OLLAMA_MODEL` opt-in, API only, no
+  UI toggle until Option B is built and measured.
+
+Options A and C are not taken, for the reasons in the table above.
+
+**Follow-up found while deciding.** Reading `src/lib/generate/mock/` on
+2026-09-28 answered the comparison report's caveat 2 (whether other wording
+changes "template: no tests"):
+- performance/load: an inverted condition in `generic-suites.ts` skips the
+  performance test whenever the request mentions performance;
+- security: the only template is an HTTPS check, skipped on `http://`
+  targets;
+- database: no template exists.
+
+Emil decided the template should cover these three areas itself. That work,
+and building Option B, is Phase 34
+(`phase-34-template-coverage-and-gap-filling-decision-record.md`). Because
+the template work changes which areas are gaps, Phase 34 sequences it
+before Option B.
+
+**Gate — Phase 21 complete: met 2026-09-28.** The decision is recorded
+here and in `product-roadmap.md`'s Phase 21 text.
