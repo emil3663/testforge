@@ -51,3 +51,11 @@ test("a failure still means Not ready, whatever was not run", () => {
     const summary = buildSummary([record("Failed"), record("Not run", INTERACTIVE_OFF)], [], 1);
     assert.equal(summary.releaseRecommendation, "Not ready for release");
 });
+
+test("GEN-43: a run where every test was not run gives no recommendation, not Ready for release", () => {
+    const gapFill = "gap-fill test written by the local model (m): it may submit forms on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
+    const summary = buildSummary([record("Not run", gapFill)], [], 1);
+    assert.equal(summary.releaseRecommendation, "No recommendation: no test ran");
+    assert.equal(summary.executed, 0);
+    assert.equal(summary.notRunNote, `1 test not run: ${gapFill}`);
+});

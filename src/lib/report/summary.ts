@@ -1,11 +1,19 @@
 import type { DefectRecord, ExecutionRecord } from "./types";
 
 function releaseRecommendation(
+    ran: number,
     failed: number,
     blocked: number,
     critical: number,
     major: number
 ) {
+    // GEN-43: with interactive tests off, a suite can be all "Not run" (e.g.
+    // only the local model's gap-fill block). Nothing executed is no evidence
+    // for a release, so it must not read "Ready for release".
+    if (ran === 0) {
+        return "No recommendation: no test ran";
+    }
+
     if (critical > 0 || failed > 0) {
         return "Not ready for release";
     }
@@ -55,7 +63,7 @@ export function buildSummary(
         notRunReasons,
         notRunNote,
         duration,
-        releaseRecommendation: releaseRecommendation(failed, blocked, critical, major),
+        releaseRecommendation: releaseRecommendation(passed + flaky + failed + blocked, failed, blocked, critical, major),
         defectDistribution: {
             Critical: critical,
             Major: major,
