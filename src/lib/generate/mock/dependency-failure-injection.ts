@@ -1,4 +1,4 @@
-import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./format";
+import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString, quoteSelector } from "./format";
 import type { ContentProfile, DependencyKind, DependencyMapEntry } from "./types";
 
 // TFP-085: cookies are recorded by TFP-084 (a real dependency worth
@@ -73,7 +73,7 @@ function triggerStepFor(entry: DependencyMapEntry): string {
 
     const formSelector = `form[action="${escapeForDoubleQuotedSelector(entry.rawValue)}"]`;
     return `
-    const form = page.locator('${formSelector}').first();
+    const form = page.locator(${quoteSelector(formSelector)}).first();
     if (await form.count() > 0) {
       await form.evaluate((el) => (el as HTMLFormElement).requestSubmit());
     }

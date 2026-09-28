@@ -1,4 +1,4 @@
-import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./format";
+import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString, quoteSelector } from "./format";
 import type {
     ActionableElementDetail,
     ContentProfile,
@@ -60,7 +60,7 @@ export function getActionableElementDisplayName(element: ActionableElementDetail
 
 export function buildLocatorExpression(element: ActionableElementDetail) {
     if (element.locator.id) {
-        return `page.locator('[id="${escapeForDoubleQuotedSelector(element.locator.id)}"]').first()`;
+        return `page.locator(${quoteSelector(`[id="${escapeForDoubleQuotedSelector(element.locator.id)}"]`)}).first()`;
     }
 
     if (element.locator.role && element.locator.name) {
@@ -97,7 +97,7 @@ export function buildLocatorExpression(element: ActionableElementDetail) {
 
     if (element.elementType === "input") {
         const inputType = element.locator.inputType || "text";
-        return `page.locator('input[type="${escapeForDoubleQuotedSelector(inputType)}"]').first()`;
+        return `page.locator(${quoteSelector(`input[type="${escapeForDoubleQuotedSelector(inputType)}"]`)}).first()`;
     }
 
     return "page.locator('a[href]').first()";
@@ -114,7 +114,7 @@ export function getDragDropTargetDisplayName(target: DragDropTargetDetail) {
 
 export function buildDragDropLocatorExpression(target: DragDropTargetDetail) {
     if (target.id) {
-        return `page.locator('[id="${escapeForDoubleQuotedSelector(target.id)}"]').first()`;
+        return `page.locator(${quoteSelector(`[id="${escapeForDoubleQuotedSelector(target.id)}"]`)}).first()`;
     }
 
     if (target.ariaLabel) {
@@ -122,10 +122,10 @@ export function buildDragDropLocatorExpression(target: DragDropTargetDetail) {
     }
 
     if (target.className) {
-        return `page.locator('${target.tagName}[class~="${escapeForDoubleQuotedSelector(target.className)}"]').first()`;
+        return `page.locator(${quoteSelector(`${target.tagName}[class~="${escapeForDoubleQuotedSelector(target.className)}"]`)}).first()`;
     }
 
-    return `page.locator('${target.tagName}').first()`;
+    return `page.locator(${quoteSelector(target.tagName)}).first()`;
 }
 
 // TFP-067 (Phase 17 Group 2): the exact title text a generated test for
@@ -232,10 +232,10 @@ export function buildLinkLocatorExpression(link: LinkDetail) {
     }
 
     if (link.rawHref) {
-        return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:visible').first()`;
+        return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:visible`)}).first()`;
     }
 
-    return `page.locator('a[href="${escapeForDoubleQuotedSelector(link.url)}"]:visible').first()`;
+    return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.url)}"]:visible`)}).first()`;
 }
 
 export function buildLinkTitle(link: LinkDetail) {

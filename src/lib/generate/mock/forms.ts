@@ -1,4 +1,4 @@
-import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./format";
+import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString, quoteSelector } from "./format";
 import type { ActionableElementDetail, ContentProfile } from "./types";
 
 // Introspection lists a form as a `form` element followed by its fields and
@@ -43,8 +43,7 @@ export function fieldLocator(field: ActionableElementDetail) {
     // the form locators.ts uses. Escaped twice: once for the CSS string, then
     // for the single-quoted JS string it is written into.
     if (field.locator.id) {
-        const selector = `[id="${escapeForDoubleQuotedSelector(field.locator.id)}"]`;
-        return `page.locator('${escapeForSingleQuotedString(selector)}')`;
+        return `page.locator(${quoteSelector(`[id="${escapeForDoubleQuotedSelector(field.locator.id)}"]`)})`;
     }
     if (field.locator.label) return `page.getByLabel('${escapeForSingleQuotedString(field.locator.label)}', { exact: true })`;
     if (field.locator.placeholder) return `page.getByPlaceholder('${escapeForSingleQuotedString(field.locator.placeholder)}', { exact: true })`;

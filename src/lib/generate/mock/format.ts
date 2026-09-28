@@ -2,6 +2,17 @@ export function escapeForSingleQuotedString(value: string) {
     return value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
 
+/**
+ * A CSS selector as a single-quoted JS string literal for generated code.
+ * Values inside the selector must already be escaped for CSS
+ * (escapeForDoubleQuotedSelector); this then escapes the whole selector for
+ * the JS string. Skipping this step broke generated code for any value
+ * containing ' and halved every backslash.
+ */
+export function quoteSelector(selector: string) {
+    return `'${escapeForSingleQuotedString(selector)}'`;
+}
+
 export function escapeForDoubleQuotedSelector(value: string) {
     return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
