@@ -3,7 +3,7 @@ import { readFile, unlink } from "fs/promises";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { flattenSuites } from "@/lib/report/execution";
 import { buildReport } from "@/lib/report/report";
-import type { JsonReport, RunReport } from "@/lib/report/types";
+import type { GenerationRecord, JsonReport, RunReport } from "@/lib/report/types";
 import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedExecutions, withArtifactDownloadPath } from "@/lib/run/output";
 import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
@@ -92,6 +92,9 @@ export interface RunJob {
     // TFP-092: the login this run used - references only (URL, selectors, and
     // the NAMES of the credential environment variables), never a value.
     login: LoginConfig | null;
+    // Phase 34 (TFP-119): how the suite was generated (gap-fill outcome and
+    // gate verdicts), as the client received it from /api/generate.
+    generation: GenerationRecord | null;
     // TFP-094: the run's secret values (credentials and session contents),
     // used to scrub everything the run produces. In memory only: never on a
     // snapshot, never persisted, and cleared once the run is finalized.
@@ -200,7 +203,9 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             output || buildConsoleSummary(executionRecords, duration),
             job.baseUrl,
             job.contentProfile,
-            suiteCode
+            suiteCode,
+            job.generation,
+            job.description
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;

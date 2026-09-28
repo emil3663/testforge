@@ -1,3 +1,4 @@
+import { GenerationPanels } from "@/app/_components/GenerationPanels";
 import { MetricCard } from "@/app/_components/MetricCard";
 import { ReportPanel } from "@/app/_components/ReportPanel";
 import { TrendBars } from "@/app/_components/TrendBars";
@@ -73,6 +74,8 @@ export function SummaryTab({ report }: SummaryTabProps) {
                                             ) : null}
                                         </div>
                                     </ReportPanel>
+
+                                    <GenerationPanels report={report} />
                                 </div>
     );
 }

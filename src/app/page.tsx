@@ -239,6 +239,7 @@ export default function Home() {
         contentProfile: generation.contentProfile,
         enableInteractive,
         login: loginBlock,
+        generation: generation.lastGeneration,
     };
     const boundHandleRun = () => run.handleRun(runParams);
     const boundHandleContinueRun = () => run.handleContinueRun(runParams);

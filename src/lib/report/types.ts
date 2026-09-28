@@ -244,6 +244,13 @@ export interface RunReport {
     // its own. Empty when no contentProfile was available for this run
     // (e.g. runs persisted before this field existed).
     notTested: NotTestedElement[];
+    // Phase 34 (TFP-119): how the suite was generated - the gap-fill outcome
+    // and every gate's verdict - as recorded at generation (Decision 8). Null
+    // when the run was started without one (template-only, or older runs).
+    generation?: GenerationRecord | null;
+    // Phase 34 (TFP-119, Decision 7): each area in scope that ended up with no
+    // test at all, and why - never silently dropped.
+    emptyAreas?: EmptyAreaRecord[];
     performance: {
         totalDuration: number;
         averageDuration: number;
@@ -285,4 +292,29 @@ export interface RunReport {
         recommendations: SeoRecommendation[];
     };
     rawOutput: string;
+}
+
+// Phase 34 Decision 8: one gate's verdict, as the generate route recorded it.
+export interface GenerationGateVerdict {
+    gate: string;
+    bar: string;
+    measured: string;
+    verdict: "kept" | "rejected";
+    evidence: string[];
+}
+
+// Phase 34 (TFP-119): what /api/generate reported about how this suite was
+// made, carried by the client into /api/run and persisted with the run.
+export interface GenerationRecord {
+    generatedBy: string;
+    model?: string;
+    fallbackReason?: string;
+    gapFill?: { gapAreas: string[]; outcome: string };
+    gates: GenerationGateVerdict[];
+}
+
+export interface EmptyAreaRecord {
+    area: string;
+    /** Why the area has no tests, most specific first. */
+    reasons: string[];
 }

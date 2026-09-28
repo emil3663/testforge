@@ -1,3 +1,4 @@
+import type { GenerationRecord } from "@/lib/report/types";
 import { spawn } from "child_process";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
@@ -84,7 +85,8 @@ export async function startRunJob(
     description = "",
     contentProfile: ContentProfile | null = null,
     enableInteractive = false,
-    login: LoginConfig | null = null
+    login: LoginConfig | null = null,
+    generation: GenerationRecord | null = null
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -153,6 +155,7 @@ export async function startRunJob(
         contentProfile,
         enableInteractive,
         login,
+        generation,
         redactions: preparedLogin?.secrets ?? [],
         artifactFiles: new Map(),
         result: null,

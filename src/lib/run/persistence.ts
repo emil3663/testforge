@@ -1,3 +1,4 @@
+import type { GenerationRecord } from "@/lib/report/types";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
 import { dirname, join, resolve } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
@@ -38,6 +39,9 @@ export interface RunRecord {
     // for a run that did not log in. Never carries a credential value or the
     // login's storageState (Decision 5).
     login?: LoginConfig | null;
+    // Phase 34 (TFP-119): how the suite was generated - gap-fill outcome and
+    // gate verdicts with their evidence (Decision 8). Absent on older runs.
+    generation?: GenerationRecord | null;
 }
 
 // Overridable so tests never read or write the real runs/ directory a live
@@ -143,6 +147,7 @@ export async function persistRunJob(
         contentProfile: job.contentProfile,
         enableInteractive: job.enableInteractive,
         login: job.login,
+        generation: job.generation,
     };
 
     await writeRunRecord(record);

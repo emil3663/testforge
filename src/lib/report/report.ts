@@ -7,7 +7,11 @@ import { buildPerformanceReport } from "./performance";
 import { buildUsabilityReport } from "./usability";
 import { buildSeoReport } from "./seo";
 import { buildSummary } from "./summary";
-import type { JsonReport, RunReport } from "./types";
+import { computeEmptyAreas } from "./empty-areas";
+import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
+import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock/types";
+import type { BestPracticeArea } from "@/lib/generate/mock/types";
+import type { GenerationRecord, JsonReport, RunReport } from "./types";
 
 export function buildReport(
     report: JsonReport,
@@ -15,7 +19,9 @@ export function buildReport(
     output: string,
     baseUrl?: string,
     contentProfile: ContentProfile | null = null,
-    suiteCode: string | null = null
+    suiteCode: string | null = null,
+    generation: GenerationRecord | null = null,
+    description = ""
 ): RunReport {
     const execution = flattenSuites(report.suites ?? []);
     const defects = buildDefects(execution);
@@ -31,6 +37,9 @@ export function buildReport(
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
     const usability = buildUsabilityReport(execution, defects);
     const seo = buildSeoReport(execution, selectedPractices, baseUrl);
+    // Phase 34 (TFP-119): the same areas the template generator put in scope.
+    const knownPractices = selectedPractices.filter((p): p is BestPracticeArea => (BEST_PRACTICE_OPTIONS as readonly string[]).includes(p));
+    const emptyAreas = computeEmptyAreas(getBestPracticeAreas(description, knownPractices), execution, suiteCode, generation);
 
     return {
         summary: {
@@ -44,6 +53,8 @@ export function buildReport(
         },
         coverage,
         notTested,
+        generation,
+        emptyAreas,
         performance,
         usability,
         seo,

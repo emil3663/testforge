@@ -37,6 +37,10 @@ interface HandleGenerateParams {
 
 export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: TestAuditMode) {
     const [editedCode, setEditedCode] = useState("");
+    // Phase 34 (TFP-119): how the suite was generated (gap-fill outcome, gate
+    // verdicts), passed on to /api/run so the run records it. Null when the
+    // generate response carried none (template-only).
+    const [lastGeneration, setLastGeneration] = useState<Record<string, unknown> | null>(null);
     const [editing, setEditing] = useState(false);
     const [copyLabel, setCopyLabel] = useState("Copy");
     const [saveLabel, setSaveLabel] = useState("Add to Test Explorer");
@@ -206,6 +210,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Generation failed");
             setEditedCode(data.code);
+            setLastGeneration(typeof data.generatedBy === "string" ? { generatedBy: data.generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates } : null);
             if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {
                 params.setBaseUrl(defaultBaseUrl);
                 params.setIsBaseUrlPlaceholderActive(true);
@@ -222,6 +227,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
 
     return {
         editedCode,
+        lastGeneration,
         setEditedCode,
         editing,
         setEditing,

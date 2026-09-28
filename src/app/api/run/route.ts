@@ -9,6 +9,7 @@ import { buildRunSnapshot, runJobs } from "@/lib/run/jobs";
 import type { RunStatusPayload } from "@/lib/run/jobs";
 import { isValidRunId, loadRunRecord, markRunAccessed, runEvidenceDir } from "@/lib/run/persistence";
 import { buildRunSelection } from "@/lib/run/selection";
+import { normalizeGenerationRecord } from "@/lib/run/generation-record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,7 +27,7 @@ function normalizeTestAuditMode(input: unknown): TestAuditMode {
 }
 
 export async function POST(req: NextRequest) {
-    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile, enableInteractive, login } = await req.json().catch(() => ({}));
+    const { code, selectedPractices, auditMode, baseUrl, excludeTestTitles, includeTestTitles, description, contentProfile, enableInteractive, login, generation } = await req.json().catch(() => ({}));
 
     if (!code || typeof code !== "string") {
         return NextResponse.json({ error: "code is required" }, { status: 400 });
@@ -61,7 +62,9 @@ export async function POST(req: NextRequest) {
             typeof description === "string" ? description : "",
             normalizeContentProfile(contentProfile),
             enableInteractive === true,
-            loginConfig
+            loginConfig,
+            // Phase 34 (TFP-119): untrusted input, so only the known shape, capped.
+            normalizeGenerationRecord(generation)
         );
     } catch (error) {
         if (error instanceof RunLoginError) {
