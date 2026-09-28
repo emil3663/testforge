@@ -41,7 +41,15 @@ export function installFakeServer() {
     const savedEnv = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
 
     before(async () => {
-        server = createServer((req, res) => handler(req, res));
+        // Connection: close on every response, so the SDK never reuses a pooled
+        // socket. Under full-suite load a reused keep-alive socket could hit the
+        // server's 5 s idle close mid-request, and the route then reported
+        // "ollama_unreachable" for a server that was up (seen twice in ~25 runs,
+        // always on the first request after a gap between tests).
+        server = createServer((req, res) => {
+            res.setHeader("connection", "close");
+            handler(req, res);
+        });
         await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
         baseUrl = `http://127.0.0.1:${(server.address() as AddressInfo).port}/v1`;
     });
