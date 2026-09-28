@@ -72,3 +72,32 @@ change does not do.
   same reused-socket reset the fake server did (`a564543`). The failure mode
   is safe: the template suite is returned and `ollama_unreachable` is
   recorded. No change unless it is seen live.
+
+---
+
+## Update 2026-09-29 — Gate C verified, one condition
+
+The five Gate C commits (`13b74fc`, `2c9ecea`, `99f90f3`, `cc7a810`,
+`6426766`) were independently checked in Cowork:
+
+- **Checks:** typecheck and lint clean. 325 unit tests pass there, plus the
+  7 that need a real browser (none there), for your 332.
+- **Template output:** unchanged on fixed inputs without page data.
+- **Code:** the RPT-14 fix, TFP-121 and TFP-122 match Decisions 10 and 11.
+- **Your two interpretation calls are accepted:** checkboxes and radios
+  count as fields, and an unnamed `select` fails.
+- **Also accepted:** the page data is not returned in the response, and
+  Playwright noise is stripped from the reason.
+
+**Before pushing: one test.** TFP-121 decides "has a name" by parsing the
+first line of each field's aria snapshot, but its real-browser test only
+covers text-like fields, `select` and `textarea`. Add real-browser cases for
+labelled and unlabelled checkbox, radio, password, number, date, range,
+color and file inputs. They must show the parse is right for each, so no
+site gets a false "no accessible name" from an input type whose snapshot
+line looks different. If a type's snapshot can't be parsed reliably, fix
+the parse rather than dropping the type.
+
+**Then:** commit the updated Phase 34 record (Gate C verified, the
+condition, and a known limitation), and push. The limitation: automatic
+inspection doesn't pass named flows; no action needed.

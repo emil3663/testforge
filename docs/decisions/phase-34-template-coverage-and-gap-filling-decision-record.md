@@ -623,8 +623,32 @@ confirmed by Emil the same day.
   outcome.
 
 ### Gate C — TFP-120's follow-ups landed
-**Built 2026-09-28 (`2c9ecea`, `99f90f3`, `cc7a810`); awaiting independent
-verification. Not pushed.**
+**Built 2026-09-28 (`2c9ecea`, `99f90f3`, `cc7a810`); independently verified
+2026-09-29 with one condition before pushing.** Typecheck and lint clean;
+325 unit tests pass in the verifying session plus the 7 that need a real
+browser there, for 332; template output unchanged on fixed inputs without
+page data; the code matches Decisions 10 and 11. The live runs are taken
+from Claude Code's run.
+- **Condition (TFP-121):** the check decides "has a name" by parsing the
+  first line of each field's aria snapshot, and it counts checkboxes and
+  radios. The real-browser test covers text-like fields, `select` and
+  `textarea` only. A real-browser case must also show labelled and unlabelled
+  checkbox, radio, password, number, date, range, color and file inputs
+  parsed correctly, so no real site gets a false "no accessible name" from
+  an input type whose snapshot line looks different.
+  **Met 2026-09-29 (TEST_PLAN GEN-46).** The parse is correct for every
+  listed type, including checked, wrapped-label and value-bearing variants
+  (`- checkbox [checked]`, `- slider: "50"` read as unnamed; `- slider
+  "Volume": "50"` as named). The case found the opposite error for `file`:
+  Chromium names an unlabelled file input by its button text ("Choose
+  File"), so it passed as named. Fixed, not dropped: a file input whose
+  name equals that of a throwaway unlabelled file input in the same page
+  (so any locale) counts as unnamed. The new case fails on exactly the two
+  unlabelled file inputs without the fix.
+- **Known, not acted on (TFP-122):** automatic inspection does not pass
+  named flows, so journeys that come from named flows are not built from
+  automatically gathered data. A generate request has no named-flow input
+  today, so nothing is lost; revisit if one is added.
 - The RPT-14 follow-up, TFP-121 and TFP-122 landed, each with its
   `TEST_PLAN.md` case and independently verified; TFP-121's and TFP-122's
   output changes shown by measurement to be only the intended ones.
