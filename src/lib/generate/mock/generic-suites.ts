@@ -11,6 +11,7 @@ import { buildDatabaseRoundTripTests } from "./database-round-trip";
 import { buildPerformanceChecks } from "./performance-checks";
 import { buildSecurityChecks } from "./security-checks";
 import { buildDragDropTests } from "./drag-drop";
+import { buildFormFieldNameTests } from "./form-field-names";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import {
@@ -124,6 +125,8 @@ ${elementChecks}
   });`,
             ...accessibilityElementTests,
             ...toggleGroupTests,
+            // TFP-121: every inspected page with form fields, not only the landing page.
+            ...buildFormFieldNameTests(contentProfile),
         ]);
 
         if (suite) {
