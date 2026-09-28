@@ -60,12 +60,13 @@ function titles(code: string) {
     return (code.match(/test\('TFSC-\d+: [^']+'/g) ?? []).map((t) => t.replace(/^test\('TFSC-\d+: /, "").replace(/'$/, ""));
 }
 
-test("security suite on an http:// target: header and cookie checks plus a payload test per form, not just a note", () => {
+test("security suite on an http:// target: header and cookie checks plus a payload test per form with a free-text field, not just a note", () => {
     const code = generate("http://127.0.0.1:4410", FIXTURE);
+    // The sign-in form has only email and password fields: no free-text field
+    // can carry the payload validly, so it gets no payload test.
     assert.deepEqual(titles(code), [
         "landing page security headers (recorded as findings)",
         "cookies set by the site carry protective flags (recorded as findings)",
-        "script-shaped input is not executed: Email on /login",
         "script-shaped input is not executed: Note on /notes",
     ]);
     assert.match(code, /\/\/ This target is not HTTPS by default/);
@@ -102,7 +103,7 @@ test("security suite: payload tests never type into passwords, and are skipped u
     const code = generate("http://127.0.0.1:4410", FIXTURE);
     assert.doesNotMatch(code, /\[id="password"\]'\)\.fill\(payload\)/);
     const payloadTests = code.split("test('TFSC-").filter((t) => t.includes("script-shaped input is not executed"));
-    assert.equal(payloadTests.length, 2);
+    assert.equal(payloadTests.length, 1);
     for (const body of payloadTests) {
         assert.match(body.slice(0, 400), /test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1'/);
         assert.match(body, /the page renders user input as HTML \(cross-site scripting\)/);
@@ -129,4 +130,48 @@ test("findPayloadForms: text-like visible fields only, at most 3 forms", () => {
 test("security suite: no inspection data or no form is said in a note", () => {
     assert.match(buildSecurityChecks("http://x.test", null).notes.join(" "), /no page inspection data/);
     assert.match(buildSecurityChecks("http://x.test", { ...FIXTURE, pages: [] }).notes.join(" "), /no form with a text field was found/);
+});
+
+// --- the payload test must not pass having tested nothing -------------------
+
+const CONTACT: ContentProfile = {
+    ...FIXTURE,
+    pages: [
+        page("/contact", [
+            el("form", {}),
+            el("input", { label: "Email", name: "Email", id: "email", inputType: "email" }),
+            el("input", { label: "Website", name: "Website", id: "site", inputType: "url" }),
+            el("input", { label: "Phone", name: "Phone", id: "phone", inputType: "tel" }),
+            el("input", { label: "Name", name: "Name", id: "name", inputType: "text" }),
+            el("textarea", { label: "Message", name: "Message", id: "message" }),
+            el("button", { text: "Send" }),
+        ]),
+    ],
+};
+
+test("payload goes only into free-text fields; email, url and tel get valid dummy values (so validation can't block the submit)", () => {
+    const [form] = findPayloadForms(CONTACT);
+    assert.deepEqual(form.fields.map((f) => f.locator.id), ["name", "message"]);
+    assert.deepEqual(form.dummyFields.map((f) => f.locator.id), ["email", "site", "phone"]);
+
+    const code = generate("http://127.0.0.1:4410", CONTACT);
+    assert.match(code, /\[id="name"\]'\)\.fill\(payload\)/);
+    assert.match(code, /\[id="message"\]'\)\.fill\(payload\)/);
+    assert.doesNotMatch(code, /\[id="email"\]'\)\.fill\(payload\)/, "an email field must never get the payload");
+    assert.match(code, /\[id="email"\]'\)\.fill\('testforge-check@example\.com'\)/);
+    assert.match(code, /\[id="site"\]'\)\.fill\('https:\/\/example\.com\/'\)/);
+    assert.match(code, /\[id="phone"\]'\)\.fill\('5550100'\)/);
+    assert.deepEqual(findTypeErrors(code), []);
+});
+
+test("payload test skips, with the reason, when validation would block the submit or no request is sent", () => {
+    const code = generate("http://127.0.0.1:4410", CONTACT);
+    const body = code.slice(code.indexOf("script-shaped input is not executed"));
+    const invalidSkip = body.indexOf("test.skip(invalid.length > 0, 'the form on /contact would not submit (browser validation rejects: '");
+    const click = body.indexOf(".click();");
+    const sentSkip = body.indexOf("test.skip(!(await submitted), 'submitting the form on /contact sent no request");
+    const verdict = body.indexOf("the page renders user input as HTML");
+    assert.ok(invalidSkip > 0 && invalidSkip < click, "check validity before submitting");
+    assert.ok(click > 0 && sentSkip > click, "check a request was sent after submitting");
+    assert.ok(sentSkip < verdict, "only judge execution once the payload really reached the site");
 });

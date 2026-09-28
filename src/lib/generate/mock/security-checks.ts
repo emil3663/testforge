@@ -28,18 +28,41 @@ export const SCRIPT_PAYLOAD = `"><img src=x onerror="window.__testforgeXss=(wind
 
 const PAYLOAD_SKIP_REASON = `script-payload check: submits a form on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`;
 
-const TEXT_INPUT_TYPES = new Set(["", "text", "search", "email", "url", "tel"]);
+// Only free-text fields take the payload. An email, url or tel field would
+// fail the browser's own validation with it, block the submit, and let the
+// test "pass" having tested nothing - so those get a valid dummy value instead.
+const PAYLOAD_INPUT_TYPES = new Set(["", "text", "search"]);
 
-/** Fields a script payload is typed into: visible text-like fields, never passwords. */
-function isPayloadField(element: ActionableElementDetail) {
-    if (!element.isVisible || !fieldName(element)) return false;
-    if (element.elementType === "textarea") return true;
-    return element.elementType === "input" && TEXT_INPUT_TYPES.has(element.locator.inputType);
+/** Valid values for typed fields that would otherwise block the submit. */
+export const DUMMY_VALUES: Record<string, string> = {
+    email: "testforge-check@example.com",
+    url: "https://example.com/",
+    tel: "5550100",
+};
+
+function isVisibleNamed(element: ActionableElementDetail) {
+    return element.isVisible && Boolean(fieldName(element));
 }
 
-export function findPayloadForms(contentProfile: ContentProfile | null): Array<DiscoveredForm & { fields: ActionableElementDetail[] }> {
+/** Fields a script payload is typed into: visible free-text fields, never passwords. */
+function isPayloadField(element: ActionableElementDetail) {
+    if (!isVisibleNamed(element)) return false;
+    if (element.elementType === "textarea") return true;
+    return element.elementType === "input" && PAYLOAD_INPUT_TYPES.has(element.locator.inputType);
+}
+
+function isDummyField(element: ActionableElementDetail) {
+    return isVisibleNamed(element) && element.elementType === "input" && element.locator.inputType in DUMMY_VALUES;
+}
+
+export interface PayloadForm extends DiscoveredForm {
+    fields: ActionableElementDetail[];
+    dummyFields: ActionableElementDetail[];
+}
+
+export function findPayloadForms(contentProfile: ContentProfile | null): PayloadForm[] {
     return discoverForms(contentProfile)
-        .map((form) => ({ ...form, fields: form.elements.filter(isPayloadField) }))
+        .map((form) => ({ ...form, fields: form.elements.filter(isPayloadField), dummyFields: form.elements.filter(isDummyField) }))
         .filter((form) => form.fields.length > 0)
         .slice(0, MAX_FORMS);
 }
@@ -88,15 +111,18 @@ function cookieFlagsTest() {
   });`;
 }
 
-function payloadTest(form: DiscoveredForm & { fields: ActionableElementDetail[] }) {
+function payloadTest(form: PayloadForm) {
     const path = escapeForSingleQuotedString(form.path);
     const names = form.fields.map((field) => escapeForSingleQuotedString(fieldName(field)));
     const title = escapeForSingleQuotedString(`script-shaped input is not executed: ${form.fields.map(fieldName).join(", ")} on ${form.path}`);
     const submit = submitButton(form);
-    const fill = form.fields.map((field) => `    await ${fieldLocator(field)}.fill(payload);`).join("\n");
+    const fill = [
+        ...form.fields.map((field) => `    await ${fieldLocator(field)}.fill(payload);`),
+        ...form.dummyFields.map((field) => `    await ${fieldLocator(field)}.fill('${escapeForSingleQuotedString(DUMMY_VALUES[field.locator.inputType])}');`),
+    ].join("\n");
     const submitStep = submit
-        ? `await ${fieldLocator(form.fields[0])}.locator('xpath=ancestor::form').first().getByRole('button', { name: '${escapeForSingleQuotedString(submit.text || submit.locator.name)}' }).first().click();`
-        : `await ${fieldLocator(form.fields[0])}.locator('xpath=ancestor::form').first().evaluate((el) => (el as HTMLFormElement).requestSubmit());`;
+        ? `await form.getByRole('button', { name: '${escapeForSingleQuotedString(submit.text || submit.locator.name)}' }).first().click();`
+        : `await form.evaluate((el) => (el as HTMLFormElement).requestSubmit());`;
 
     return `  test('${title}', async ({ page }) => {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(PAYLOAD_SKIP_REASON)}');
@@ -109,7 +135,23 @@ function payloadTest(form: DiscoveredForm & { fields: ActionableElementDetail[] 
     });
     await page.goto('${path}', { waitUntil: 'domcontentloaded' });
 ${fill}
+    const form = ${fieldLocator(form.fields[0])}.locator('xpath=ancestor::form').first();
+
+    // If the browser's own validation would block the submit, nothing gets
+    // tested - say so and skip, rather than pass having checked nothing.
+    const invalid = await form.evaluate((el) =>
+      Array.from((el as HTMLFormElement).elements)
+        .filter((field) => 'checkValidity' in field && !(field as HTMLInputElement).checkValidity())
+        .map((field) => (field as HTMLInputElement).name || (field as HTMLInputElement).id || field.tagName.toLowerCase())
+    );
+    test.skip(invalid.length > 0, 'the form on ${path} would not submit (browser validation rejects: ' + invalid.join(', ') + '), so the payload could not be tested');
+
+    const submitted = page
+      .waitForRequest((request) => request.isNavigationRequest() || request.method() !== 'GET', { timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
     ${submitStep}
+    test.skip(!(await submitted), 'submitting the form on ${path} sent no request, so the payload never reached the site');
     await page.waitForLoadState('load').catch(() => {});
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
