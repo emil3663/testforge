@@ -222,6 +222,17 @@ model is no longer asked for those areas on that target.
   those same defects. Fixture detection is therefore biased toward *both*
   generators now, and is not the acceptance evidence. At least one real
   target the checks were not designed against is required.
+- Outcome 2026-09-28 (TFP-120, `phase-34-option-b-measurement-report.md`):
+  **no UI control for gap-filling.** With page data, gap-filling called the
+  model on neither target: the gap sweep found 0 gaps across every area on
+  both, and 15 of 17 comparison cases were the template's suite byte for
+  byte. The only remaining gap is database without page data. There the
+  model's test caught the fixture's defect (biased, see above) and failed
+  falsely on the-internet (an invented login-and-reload flow), in both of
+  two full runs. Gap-filling stays opt-in through `TESTFORGE_OLLAMA_MODEL`
+  only. Revisit if a target's sweep shows gaps with page data, or if Phase
+  35 gives the local model a depth role. Recorded by Claude Code from the
+  measurement, for Emil to confirm or overturn.
 
 ## Acceptance Criteria
 
@@ -257,7 +268,8 @@ model is no longer asked for those areas on that target.
 - A run with interactive tests off and no failures reads "Ready for
   release", with its not-run tests counted and named beside the
   recommendation and excluded from the pass/fail ratio; an unexplained skip
-  still yields "Ready with caution".
+  still yields "Ready with caution". A run where no test ran at all (every
+  test Not run) gives "No recommendation: no test ran" (RPT-14).
 - A generation that ran any gate shows each gate's bar, measured result,
   verdict and evidence in the persisted run and its report, including when
   the local output was rejected.
@@ -405,8 +417,11 @@ issued number as of this record).
 - **Dependencies:** TFP-114-117 (they define which areas remain gaps).
 - **Status:** Landed `ef736c5`, independently verified 2026-09-28. Follow-up
   for Decision 6's two GEN-43 amendments (template-reported "nothing
-  applicable" is not a gap; gap-fill tests skip unless interactive) is
-  still to build, before TFP-120.
+  applicable" is not a gap; gap-fill tests skip unless interactive) landed
+  in `17651f2` (TEST_PLAN GEN-44), with `a564543` (the test fake's
+  keep-alive race behind GEN-43's unexplained failure) and `238f406` (a run
+  where nothing ran gives no recommendation, RPT-14). Not yet
+  independently verified.
 
 ### TFP-119 — Report areas that end up with no tests
 
@@ -447,6 +462,9 @@ issued number as of this record).
 - **Note:** after the GEN-43 amendments, expect few or no gap-fill calls on
   the Phase 21 targets. That is a result to report, not a reason to widen
   what counts as a gap.
+- **Status:** Measured 2026-09-28 (TEST_PLAN GEN-45). Report:
+  `phase-34-option-b-measurement-report.md`; outcome under Decision 9. Not
+  yet independently verified.
 
 ## Recommended Execution Order
 
@@ -466,6 +484,8 @@ default areas' output unchanged by measurement).
   default areas' output is shown unchanged.
 
 ### Gate B — Option B built and measured
+**Built and measured 2026-09-28; awaiting independent verification of the
+GEN-43 follow-up and TFP-120.**
 - TFP-118-120 landed; the measurement report exists with the fixture-bias
   caveat and at least one real target; `product-roadmap.md` records the
   outcome.
