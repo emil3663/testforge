@@ -2,6 +2,7 @@ import { buildActionableElementTests, buildActionPairTests } from "./actionable-
 import { buildDragDropTests } from "./drag-drop";
 import { includesAny } from "./format";
 import { buildSharedBestPracticeSuites } from "./generic-suites";
+import { buildPerformanceChecks } from "./performance-checks";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { findMatchingProfilePage, resolveLinkAuditPaths } from "./locators";
 import { createSuite } from "./suite";
@@ -214,21 +215,10 @@ export function buildDemoQaSuites(
             "speed",
         ])
     ) {
-        const performanceSuite = createSuite("performance/load", [
-            `  test('captures a simple response-time check for the requested page', async ({ page }) => {
-    const response = await page.goto('/elements', { waitUntil: 'domcontentloaded' });
-
-    await expect(response).not.toBeNull();
-    expect(response?.status()).toBeLessThan(400);
-
-    const navigationDuration = await page.evaluate(() => {
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-      return navigationEntry?.duration ?? 0;
-    });
-
-    expect(navigationDuration).toBeLessThan(5000);
-  });`,
-        ]);
+        // TFP-115: the shared read-only checks on the DemoQA page. The old
+        // navigation test here loaded with "domcontentloaded" and read the
+        // navigation duration, which is 0 until the load event ends.
+        const performanceSuite = createSuite("performance/load", buildPerformanceChecks({ path: "/elements" }));
 
         if (performanceSuite) {
             suites.push(performanceSuite);

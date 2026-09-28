@@ -8,6 +8,7 @@ import {
 import { buildDependencyFailureTests, DEPENDENCY_FAILURE_INJECTION_NOTE } from "./dependency-failure-injection";
 import { buildStorageFailureTests } from "./storage-failure-injection";
 import { buildDatabaseRoundTripTests } from "./database-round-trip";
+import { buildPerformanceChecks } from "./performance-checks";
 import { buildDragDropTests } from "./drag-drop";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
@@ -156,21 +157,8 @@ ${elementChecks}
     // asking for performance by name produced no performance test at all.
     // The target-specific builder now says which areas it already covered.
     if (areas.includes("performance/load") && !coveredAreas.includes("performance/load")) {
-        const suite = createSuite("performance/load", [
-            `  test('captures a simple load-time budget for the landing page', async ({ page }) => {
-    const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
-
-    await expect(response).not.toBeNull();
-    expect(response?.status()).toBeLessThan(400);
-
-    const navigationDuration = await page.evaluate(() => {
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-      return navigationEntry?.duration ?? 0;
-    });
-
-    expect(navigationDuration).toBeLessThan(5000);
-  });`,
-        ]);
+        // TFP-115: Decision 2's read-only checks, the navigation budget included.
+        const suite = createSuite("performance/load", buildPerformanceChecks());
 
         if (suite) {
             suites.push(suite);
