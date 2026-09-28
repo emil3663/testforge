@@ -30,6 +30,8 @@ export interface JsonTest {
     projectName: string;
     results: JsonTestResult[];
     status: "expected" | "unexpected" | "flaky" | "skipped";
+    /** e.g. { type: "skip", description } from test.skip(condition, description). */
+    annotations?: Array<{ type: string; description?: string }>;
 }
 
 export interface JsonTestResult {

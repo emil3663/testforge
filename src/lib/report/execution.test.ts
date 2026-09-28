@@ -46,3 +46,44 @@ test("deriveArea: only whole titles match - a describe that merely mentions an a
         assert.equal(deriveArea(["", "suite.spec.ts", title]).key, "functional", title);
     }
 });
+
+// --- Phase 34 (TFP-117): skipped tests say why ------------------------------
+
+const { flattenSuites } = await import("./execution.ts");
+
+function skippedSpec(annotations?: Array<{ type: string; description?: string }>) {
+    return [
+        {
+            title: "suite.spec.ts",
+            specs: [],
+            suites: [
+                {
+                    title: "Database Coverage",
+                    specs: [
+                        {
+                            id: "s1",
+                            title: "TFDB-001: persistence round trip: Note on /notes",
+                            tests: [{ projectName: "chromium", status: "skipped" as const, annotations, results: [{ duration: 0, retry: 0, errors: [], status: "skipped" }] }],
+                        },
+                    ],
+                },
+            ],
+        },
+    ];
+}
+
+test("flattenSuites: a test that skipped itself reports its own reason, not an interrupted run", () => {
+    const reason = "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
+    const [record] = flattenSuites(skippedSpec([{ type: "skip", description: reason }]));
+    assert.equal(record.status, "Blocked");
+    assert.equal(record.area, "Database");
+    assert.match(record.remarks, /^Skipped\. .* did not run: database round trip: saves data through a form on the live site/);
+    assert.doesNotMatch(record.remarks, /interrupted/);
+});
+
+test("flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording", () => {
+    for (const annotations of [undefined, [], [{ type: "skip" }], [{ type: "issue", description: "not a skip" }]]) {
+        const [record] = flattenSuites(skippedSpec(annotations));
+        assert.match(record.remarks, /^Blocked\. .* could not be completed because the run was interrupted/);
+    }
+});

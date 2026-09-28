@@ -158,7 +158,8 @@ export function extractNamedFailures(rawMessage: string, prefix: string) {
 export function buildExecutionOutcomeSummary(
     title: string,
     status: ExecutionStatus,
-    rawMessage: string
+    rawMessage: string,
+    skipReason: string | null = null
 ) {
     const simplifiedTitle = simplifyExecutionTarget(title);
     const brokenLinks = extractNamedFailures(rawMessage, "Broken link detected for ");
@@ -190,6 +191,12 @@ export function buildExecutionOutcomeSummary(
     }
 
     if (status === "Blocked") {
+        // Phase 34 (TFP-117): a test that skipped itself on purpose (e.g. a
+        // form-submitting test with interactive tests off) says why, instead
+        // of being reported as an interrupted run.
+        if (skipReason) {
+            return `Skipped. ${simplifiedTitle} did not run: ${skipReason}.`;
+        }
         return `Blocked. ${simplifiedTitle} could not be completed because the run was interrupted or a required dependency was unavailable.`;
     }
 
@@ -294,7 +301,12 @@ export function flattenSuites(
                     browser: test.projectName || "chromium",
                     status,
                     duration: latestResult?.duration ?? 0,
-                    remarks: buildExecutionOutcomeSummary(spec.title, status, message),
+                    remarks: buildExecutionOutcomeSummary(
+                        spec.title,
+                        status,
+                        message,
+                        test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null
+                    ),
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,
