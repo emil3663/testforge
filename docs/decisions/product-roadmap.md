@@ -153,6 +153,40 @@ model is opt-in and fills only selected areas where the template wrote no
 tests, with its tests labelled separately. Built in Phase 34, which first
 gives the template its own performance, security and database coverage.
 
+### Phase 35 — Area deep dive (outline, added 2026-09-28; not locked)
+The best-practice suite is breadth: the same checks for every site, a few
+tests per area, safe to run anywhere. A deep dive is depth: a separate run
+the user starts for one area they are concerned about, such as security,
+that goes as far into that area as the site allows. It is tailored to the
+site (every page, every form, the journeys from Phase 19, the logged-in
+state from Phase 20), writes many more tests, takes longer, and may need a
+person to review what it finds. It is organised in levels of intrusiveness,
+each opted into separately. For security, as the first example: **passive**
+(read-only, safe on any site: headers and cookies on every page and after
+login, mixed content, sensitive data in URLs, error pages that leak server
+details); **authenticated** (needs the Phase 20 automation account: logout
+really ends the session, logged-out users cannot reach logged-in pages, the
+session cookie changes at login, and with two accounts one user cannot see
+another's data); **active** (attack-shaped input into every field and URL
+parameter, open redirects, probing for exposed files, login rate limiting).
+Active testing of a site the user does not own or have written permission
+to test is unauthorised security testing, which is illegal in most
+countries, including South Africa. That level therefore requires an
+explicit ownership or permission confirmation, recorded with the run. The
+deterministic template supplies each level's core checks; this is where the
+local model earns a role Option B could not give it after Phase 34: writing
+site-specific scenarios on top of that core, behind the same gates, with its
+tests labelled. Deep dives produce more ambiguous failures, so Phase 34's
+deferred failure-triage gate becomes relevant here. Other areas follow the
+same shape (performance: every page, repeated runs, a throttled network;
+accessibility: a full automated scan and keyboard traversal of every page;
+database: full create/read/update/delete per form). Open questions for its
+decision record: which area comes after security; whether TestForge drives
+an established scanner (such as OWASP ZAP) for the active level rather than
+rebuilding one; how a deep dive's results sit alongside the best-practice
+report; and its name in the UI, since "deep" already names the link-audit
+mode.
+
 ---
 
 ## Sequencing note

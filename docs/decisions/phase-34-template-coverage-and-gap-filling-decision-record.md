@@ -138,6 +138,35 @@ model is no longer asked for those areas on that target.
 - Reliability is never a gap-fill area in this phase (GEN-32 is still open).
 - Exposure stays as TFP-100 recorded: env-var opt-in, API only, no UI
   toggle.
+- Amended 2026-09-28 (GEN-43, Emil): an area the template checked and
+  correctly found nothing to test is not a gap. A gap is an area the
+  template could not test, not one where it looked and found nothing
+  applicable. Built and measured, the usual gap after Gate A was database
+  on a page with no form that saves anything; asked to fill it, the model
+  invented a login-and-reload flow with a guessed username that failed
+  falsely. Such an area is reported empty with the template's own reason
+  (Decision 7) and the local model is not called.
+  - Rejected: keeping it a gap but making the local test skip itself (the
+    model's latency is paid for a test that never runs by default, and the
+    invented flow still fails falsely with interactive tests on); keeping
+    it as is (false failures from invented flows).
+  - Consequence, stated rather than worked around: with Gate A's templates
+    covering every area, gap-filling will rarely trigger. The template
+    closed the gaps Option B was meant to fill. TFP-120 measures and
+    reports this plainly. A different role for the local model (adding
+    depth to areas the template already covers) is a new decision: see
+    the roadmap's area deep dive.
+- Amended 2026-09-28 (GEN-43, Emil): every gap-fill test is skipped unless
+  interactive tests are on. The local model's tests ignore the interactive
+  rule (live, one submitted a real login form with interactive tests off),
+  and Option B points it at exactly the areas that submit forms. The block
+  TestForge wraps around the model's tests carries one `test.skip(...)`
+  with a stated reason, so under Decision 7 its tests report as "Not run"
+  with that reason.
+  - Rejected: skipping only the local tests that submit or change
+    something. That needs recognising a submit in model-written code (a
+    click on a button can submit), and getting it wrong writes data to a
+    live site, the one mistake Decision 5 exists to prevent.
 
 7. An area that ends up with no tests is reported, never silently dropped.
 - The run report names each selected area with zero tests and the reason:
@@ -259,6 +288,10 @@ model is no longer asked for those areas on that target.
   duplication weakness).
 - **A UI control for gap-filling** waits on Decision 9's measurement, as
   TFP-100 recorded.
+- **An area deep dive** (Emil, 2026-09-28): a separate, user-chosen run that
+  goes deep into one area of concern, such as security, beyond the
+  best-practice suite. Outlined in `product-roadmap.md` as Phase 35; it gets
+  its own decision record when picked up.
 - **A failure-triage gate: "is this failure real or an artifact of the
   test?"** (Martin's review, 2026-09-28). A Choice-shaped judgement (real
   defect / test bug / environment or flake / inconclusive) with a score, a
@@ -370,6 +403,10 @@ issued number as of this record).
   gates; `TEST_PLAN.md`.
 - **Acceptance criteria:** Acceptance Criteria 3.
 - **Dependencies:** TFP-114-117 (they define which areas remain gaps).
+- **Status:** Landed `ef736c5`, independently verified 2026-09-28. Follow-up
+  for Decision 6's two GEN-43 amendments (template-reported "nothing
+  applicable" is not a gap; gap-fill tests skip unless interactive) is
+  still to build, before TFP-120.
 
 ### TFP-119 — Report areas that end up with no tests
 
@@ -392,6 +429,8 @@ issued number as of this record).
   including gate verdicts).
 - **Dependencies:** Can be built alongside TFP-118; its local-model reasons
   depend on TFP-118's fallback shape.
+- **Status:** Landed `de26bf1` and `13fdffb`, independently verified
+  2026-09-28.
 
 ### TFP-120 — Measure Option B
 
@@ -404,7 +443,10 @@ issued number as of this record).
 - **Deliverables:** A comparison report under `docs/decisions/`; decision
   on whether a UI control is justified recorded in this record.
 - **Acceptance criteria:** Acceptance Criteria 4.
-- **Dependencies:** TFP-118, TFP-119.
+- **Dependencies:** TFP-118 (including its GEN-43 follow-up), TFP-119.
+- **Note:** after the GEN-43 amendments, expect few or no gap-fill calls on
+  the Phase 21 targets. That is a result to report, not a reason to widen
+  what counts as a gap.
 
 ## Recommended Execution Order
 
