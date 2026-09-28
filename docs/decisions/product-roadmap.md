@@ -153,7 +153,7 @@ model is opt-in and fills only selected areas where the template wrote no
 tests, with its tests labelled separately. Built in Phase 34, which first
 gives the template its own performance, security and database coverage.
 
-### Phase 35 — Area deep dive (outline, added 2026-09-28; not locked)
+### Phase 35 — Comprehensive testing (outline, added 2026-09-28; not locked)
 The best-practice suite is breadth: the same checks for every site, a few
 tests per area, safe to run anywhere. A deep dive is depth: a separate run
 the user starts for one area they are concerned about, such as security,
@@ -180,12 +180,32 @@ tests labelled. Deep dives produce more ambiguous failures, so Phase 34's
 deferred failure-triage gate becomes relevant here. Other areas follow the
 same shape (performance: every page, repeated runs, a throttled network;
 accessibility: a full automated scan and keyboard traversal of every page;
-database: full create/read/update/delete per form). Open questions for its
-decision record: which area comes after security; whether TestForge drives
-an established scanner (such as OWASP ZAP) for the active level rather than
-rebuilding one; how a deep dive's results sit alongside the best-practice
-report; and its name in the UI, since "deep" already names the link-audit
-mode.
+database: full create/read/update/delete per form). 
+
+Direction so far (Emil, 2026-09-28; to be locked in the decision record):
+- **Name:** "Comprehensive testing", beside the "Standard" best-practice
+  run. This also avoids a clash with the existing "Deep" link-audit mode.
+- **Order of areas:** security first, then SEO, then whichever areas prove
+  highest-risk or most error-prone. The last should be decided from run
+  history (which areas produce the most real failures), with reliability a
+  candidate once GEN-32 is fixed. Still to discuss.
+- **Reports:** comprehensive testing of a single area reports only that
+  area. Comprehensive testing of all areas produces the summary report plus
+  a per-area report for whoever wants the detail behind each issue.
+- **Security standards (proposed):** OWASP ASVS 5.0 (May 2025) defines what
+  is checked, the OWASP Web Security Testing Guide (v4.2) describes how, and
+  findings are grouped in the report by OWASP Top 10:2025 category. The
+  coverage statement lists which requirements were tested and which cannot
+  be verified from a browser, the same "not tested and why" rule as Phase 34.
+- **Active level (proposed):** drive ZAP (free, open source, Apache 2.0,
+  runs headless in Docker) rather than build a scanner. TestForge scopes the
+  scan, supplies the Phase 20 logged-in session, requires the ownership or
+  permission confirmation, and translates ZAP's alerts into its own report.
+- **Still open:** timing. A standard run on a real site measured about 70-80
+  s for ~30 tests (2-5 s per test); comprehensive runs will be far longer, so
+  the phase measures real durations for one area and for all areas, and
+  decides whether all-areas runs are offered as a scheduled or overnight
+  run, each area as its own job so partial results survive.
 
 ---
 

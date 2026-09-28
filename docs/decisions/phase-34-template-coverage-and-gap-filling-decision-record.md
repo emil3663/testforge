@@ -155,7 +155,7 @@ model is no longer asked for those areas on that target.
     closed the gaps Option B was meant to fill. TFP-120 measures and
     reports this plainly. A different role for the local model (adding
     depth to areas the template already covers) is a new decision: see
-    the roadmap's area deep dive.
+    the roadmap's Phase 35, comprehensive testing.
 - Amended 2026-09-28 (GEN-43, Emil): every gap-fill test is skipped unless
   interactive tests are on. The local model's tests ignore the interactive
   rule (live, one submitted a real login form with interactive tests off),
@@ -288,7 +288,7 @@ model is no longer asked for those areas on that target.
   duplication weakness).
 - **A UI control for gap-filling** waits on Decision 9's measurement, as
   TFP-100 recorded.
-- **An area deep dive** (Emil, 2026-09-28): a separate, user-chosen run that
+- **Comprehensive testing (area deep dive)** (Emil, 2026-09-28): a separate, user-chosen run that
   goes deep into one area of concern, such as security, beyond the
   best-practice suite. Outlined in `product-roadmap.md` as Phase 35; it gets
   its own decision record when picked up.
