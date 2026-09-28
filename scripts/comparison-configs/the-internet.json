@@ -44,6 +44,24 @@
         "performance/load"
       ],
       "description": "Check the login page for performance/load coverage."
+    },
+    {
+      "name": "database",
+      "practices": [
+        "database"
+      ],
+      "description": "Check that data entered on the login page is saved.",
+      "note": "Phase 34 TFP-120 (GEN-44): the only form is a sign-in, so the template reports database not applicable and gap-fill makes no local call."
+    },
+    {
+      "name": "database-no-page-data",
+      "practices": [
+        "database"
+      ],
+      "description": "Check that data entered on the login page is saved.",
+      "noContentProfile": true,
+      "enableInteractive": true,
+      "note": "Phase 34 TFP-120: without page data database is a gap. Interactive tests are on so the local test runs: the-internet is a public practice site built for automated form submission."
     }
   ]
 }

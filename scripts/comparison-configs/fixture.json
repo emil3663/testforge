@@ -72,6 +72,17 @@
       ],
       "defect": "reliability-api-crash",
       "description": "Check the Acme Notes home page for reliability coverage."
+    },
+    {
+      "name": "database-no-page-data",
+      "practices": [
+        "database"
+      ],
+      "defect": "database-notes-not-saved",
+      "description": "Check the notes page form (Note field, Save note button) for database coverage.",
+      "noContentProfile": true,
+      "enableInteractive": true,
+      "note": "Phase 34 TFP-120: without page data the template cannot look for a saving form, so database is a gap and gap-fill calls the local model."
     }
   ]
 }
