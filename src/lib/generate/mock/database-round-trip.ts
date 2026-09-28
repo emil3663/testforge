@@ -94,7 +94,7 @@ function roundTripTest(form: PersistenceForm) {
 }
 
 /** Tests plus the notes that explain them - or why there are none. */
-export function buildDatabaseRoundTripTests(contentProfile: ContentProfile | null): { tests: string[]; notes: string[] } {
+export function buildDatabaseRoundTripTests(contentProfile: ContentProfile | null): { tests: string[]; notes: string[]; notApplicable?: string } {
     if (!contentProfile) {
         return {
             tests: [],
@@ -103,12 +103,11 @@ export function buildDatabaseRoundTripTests(contentProfile: ContentProfile | nul
     }
     const forms = findPersistenceForms(contentProfile);
     if (forms.length === 0) {
-        return {
-            tests: [],
-            notes: [
-                "Database: no form that saves visible text was found on the inspected pages (sign-in forms, search boxes and forms without a text field are left out), so no persistence round trip was generated.",
-            ],
-        };
+        const reason =
+            "Database: no form that saves visible text was found on the inspected pages (sign-in forms, search boxes and forms without a text field are left out), so no persistence round trip was generated.";
+        // GEN-43: the pages were inspected and there is nothing to persist -
+        // not a gap. (No page data at all, above, is a gap: nothing was looked at.)
+        return { tests: [], notes: [reason], notApplicable: reason };
     }
     return {
         tests: forms.map(roundTripTest),

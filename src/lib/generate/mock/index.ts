@@ -72,8 +72,10 @@ export interface TemplateGeneration {
     code: string;
     /** Every area in scope: selected, or keyword-triggered / default. */
     areas: BestPracticeArea[];
-    /** Executable test(...) calls written per area (0 = the area is a gap). */
+    /** Executable test(...) calls written per area. */
     testsByArea: Record<BestPracticeArea, number>;
+    /** GEN-43: areas the template inspected and found nothing to test, with why. */
+    notApplicable: Partial<Record<BestPracticeArea, string>>;
 }
 
 /**
@@ -116,8 +118,10 @@ export function mockGenerateDetailed(
     const manualFollowUpComment = buildManualFollowUpComment(bestPracticeAreas);
     const allSuites = [...suites, ...contentSuites];
     const testsByArea = Object.fromEntries(bestPracticeAreas.map((area) => [area, 0])) as Record<BestPracticeArea, number>;
+    const notApplicable: Partial<Record<BestPracticeArea, string>> = {};
     for (const suite of allSuites) {
         testsByArea[suite.area] = (testsByArea[suite.area] ?? 0) + suite.tests.length;
+        if (suite.notApplicable) notApplicable[suite.area] = suite.notApplicable;
     }
 
     const code = `import { test, expect } from '@playwright/test';
@@ -141,5 +145,5 @@ ${renderSuites(allSuites)}
 // NOTE: This fallback generator uses URL and keyword heuristics.
 // Add OPENAI_API_KEY in your .env to generate tests tailored more deeply to the scenario.`;
 
-    return { code, areas: bestPracticeAreas, testsByArea };
+    return { code, areas: bestPracticeAreas, testsByArea, notApplicable };
 }

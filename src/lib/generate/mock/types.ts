@@ -79,6 +79,13 @@ export interface GeneratedSuite {
     title: string;
     tests: string[];
     notes?: string[];
+    /**
+     * Phase 34 (GEN-43, amended Decision 6): set when the builder looked and
+     * correctly found nothing to test here (e.g. no form that saves visible
+     * text), as opposed to being unable to look (e.g. no page data). Such an
+     * area is not a gap, so the local model is never asked to fill it.
+     */
+    notApplicable?: string;
 }
 
 export interface ContentRules {

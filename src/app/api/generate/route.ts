@@ -79,9 +79,10 @@ export async function POST(req: NextRequest) {
             normalizedContentRules,
             normalizedAuditMode
         );
-        const gapAreas = findGapAreas(generated.areas, generated.testsByArea);
+        const gapAreas = findGapAreas(generated.areas, generated.testsByArea, generated.notApplicable);
+        const notApplicableAreas = Object.keys(generated.notApplicable);
         if (gapAreas.length === 0) {
-            return NextResponse.json({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps" }, gates: [] });
+            return NextResponse.json({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps", notApplicableAreas }, gates: [] });
         }
 
         const gapMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
         ];
         const local = await generateLocalSuite(ollamaModel, gapMessages, gapAreas);
         if (!local.ok) {
-            return gapFillFallback(generated.code, local.reason, gapAreas, local.gates, local.model);
+            return gapFillFallback(generated.code, local.reason, gapAreas, notApplicableAreas, local.gates, local.model);
         }
 
         // The merged file is checked again: the wrapping can fail on code the
@@ -111,9 +112,9 @@ export async function POST(req: NextRequest) {
         const gates = [...local.gates, countGate("merged suite type check", "type errors", mergeErrors)];
         if (mergeErrors.length > 0) {
             console.error(`[api/generate] ${local.model}'s tests do not type-check once appended to the template suite, using template alone:\n  ${mergeErrors.slice(0, 5).join("\n  ")}`);
-            return gapFillFallback(generated.code, "invalid_output", gapAreas, gates, local.model);
+            return gapFillFallback(generated.code, "invalid_output", gapAreas, notApplicableAreas, gates, local.model);
         }
-        return NextResponse.json({ code: merged, generatedBy: "template+ollama", model: local.model, gapFill: { gapAreas, outcome: "added" }, gates });
+        return NextResponse.json({ code: merged, generatedBy: "template+ollama", model: local.model, gapFill: { gapAreas, outcome: "added", notApplicableAreas }, gates });
     }
 
     if (!apiKey) {
@@ -162,13 +163,13 @@ function fallback(code: string, fallbackReason: FallbackReason, model?: string) 
  * Option B's failure shape: the template suite, unchanged, with why the gap
  * areas stayed empty and every gate verdict that led there.
  */
-function gapFillFallback(code: string, fallbackReason: LocalFailureReason, gapAreas: BestPracticeArea[], gates: GateVerdict[], model?: string) {
+function gapFillFallback(code: string, fallbackReason: LocalFailureReason, gapAreas: BestPracticeArea[], notApplicableAreas: string[], gates: GateVerdict[], model?: string) {
     return NextResponse.json({
         code,
         generatedBy: "fallback",
         fallbackReason,
         ...(model ? { model } : {}),
-        gapFill: { gapAreas, outcome: "rejected" },
+        gapFill: { gapAreas, outcome: "rejected", notApplicableAreas },
         gates,
     });
 }

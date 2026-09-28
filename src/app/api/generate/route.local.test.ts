@@ -87,7 +87,7 @@ async function expectFallback(reason: string, practices = GAP) {
     assert.equal(body.generatedBy, "fallback");
     assert.equal(body.fallbackReason, reason);
     assert.equal(body.code, expected, "a rejected local suite leaves the template suite unchanged");
-    assert.deepEqual(body.gapFill, { gapAreas: practices.filter((p) => p !== "reliability"), outcome: "rejected" });
+    assert.deepEqual(body.gapFill, { gapAreas: practices.filter((p) => p !== "reliability"), outcome: "rejected", notApplicableAreas: [] });
     return body;
 }
 
@@ -105,7 +105,7 @@ test("Option B: no gap area means no local call - the template suite is returned
     const body = await (await POST(request(["functional"]))).json();
     assert.equal(chatBodies.length, 0, "the local model must not be called");
     assert.equal(body.generatedBy, "template");
-    assert.deepEqual(body.gapFill, { gapAreas: [], outcome: "no-gaps" });
+    assert.deepEqual(body.gapFill, { gapAreas: [], outcome: "no-gaps", notApplicableAreas: [] });
     assert.equal(body.code, await templateFor(["functional"]));
 });
 
@@ -122,6 +122,38 @@ test("Option B: reliability is never sent to the local model, even when the temp
     assert.doesNotMatch(user, /Write tests only for these coverage areas: .*reliability/);
 });
 
+test("GEN-43: an area the template inspected and found nothing to test in is not a gap - no local call", async () => {
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(GOOD)));
+    useOllama();
+    // Page data with only a sign-in form: the template looked, and there is
+    // nothing that saves visible text. (No page data at all stays a gap: GAP.)
+    const signInOnly = {
+        scannedAt: "2026-09-28T00:00:00.000Z",
+        baseUrl: "http://localhost:3000",
+        pages: [
+            {
+                path: "/login", url: "http://localhost:3000/login", title: "Sign in", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [],
+                actionableElements: [
+                    { text: "", url: null, category: "form", elementType: "form", containerLabel: "", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: "form", name: "", label: "", placeholder: "", id: "", inputType: "" } },
+                    { text: "", url: null, category: "form", elementType: "input", containerLabel: "", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: "textbox", name: "Password", label: "Password", placeholder: "", id: "password", inputType: "password" } },
+                ],
+            },
+        ],
+    };
+    const body = await (
+        await POST(
+            new NextRequest(new URL("http://localhost/api/generate"), {
+                method: "POST",
+                body: JSON.stringify({ baseUrl: "http://localhost:3000", description: "Check the site.", selectedPractices: ["database"], contentProfile: signInOnly }),
+                headers: { "content-type": "application/json" },
+            })
+        )
+    ).json();
+    assert.equal(chatBodies.length, 0, "the local model must not be asked to invent a persistence flow");
+    assert.equal(body.generatedBy, "template");
+    assert.deepEqual(body.gapFill, { gapAreas: [], outcome: "no-gaps", notApplicableAreas: ["database"] });
+});
+
 // --- a gap filled ------------------------------------------------------------
 
 test("Option B: a gap is filled - template suite first, then the local tests in a block labelled with the model", async () => {
@@ -130,14 +162,17 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     const expectedTemplate = await templateFor(GAP);
     const body = await (await POST(request(GAP))).json();
 
-    assert.equal(body.generatedBy, "template+ollama");
+    assert.equal(body.generatedBy, "template+ollama", JSON.stringify({ fallbackReason: body.fallbackReason, gates: body.gates }));
     assert.equal(body.model, CATALOG_ID);
-    assert.deepEqual(body.gapFill, { gapAreas: ["database"], outcome: "added" });
+    assert.deepEqual(body.gapFill, { gapAreas: ["database"], outcome: "added", notApplicableAreas: [] });
     // Compared as strings (not startsWith) so a failure prints the diff: this
     // failed once in 19 full-suite runs on 2026-09-28 and did not reproduce.
     assert.equal(body.code.slice(0, expectedTemplate.length), expectedTemplate, "the template suite is kept whole, first");
     const appended = body.code.slice(expectedTemplate.length);
-    assert.match(appended, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.describe\('Database Coverage'/);
+    assert.match(
+        appended,
+        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
+    );
     assert.match(appended, /a saved note is still shown after a reload/);
     assert.doesNotMatch(appended, /import |```/, "the local import and fence are dropped");
     assert.deepEqual(findTypeErrors(body.code), []);

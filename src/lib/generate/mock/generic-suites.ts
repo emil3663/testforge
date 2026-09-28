@@ -211,10 +211,11 @@ ${elementChecks}
     // TFP-117: a user-visible persistence round trip per discovered form -
     // or a note saying why there is none, so the area is visibly empty.
     if (areas.includes("database") && !coveredAreas.includes("database")) {
-        const { tests, notes } = buildDatabaseRoundTripTests(contentProfile);
+        const { tests, notes, notApplicable } = buildDatabaseRoundTripTests(contentProfile);
         const suite = createSuite("database", tests, notes);
 
         if (suite) {
+            if (notApplicable) suite.notApplicable = notApplicable;
             suites.push(suite);
         }
     }

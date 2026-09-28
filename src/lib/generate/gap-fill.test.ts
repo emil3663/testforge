@@ -32,7 +32,7 @@ test("mergeLocalSuite: template kept whole; every @playwright/test import form d
     const merged = mergeLocalSuite(TEMPLATE, local, "testforge-qwen7b:latest", ["database"]);
     assert.ok(merged.startsWith(TEMPLATE));
     assert.equal((merged.match(/@playwright\/test/g) ?? []).length, 1, "only the template's import remains");
-    assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
+    assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
     assert.deepEqual(findTypeErrors(merged), []);
 });
 
@@ -40,10 +40,29 @@ test("mergeLocalSuite: several gap areas are not forced under one area block", (
     const local = "test.describe('Security', () => {});\ntest.describe('Database', () => {});";
     const merged = mergeLocalSuite(TEMPLATE, local, "m", ["security", "database"]);
     assert.doesNotMatch(merged, /Security Coverage|Database Coverage/);
-    assert.match(merged, /test\.describe\('Local model \(m\)', \(\) => \{\n    test\.describe\('Security'/);
+    assert.match(merged, /test\.describe\('Local model \(m\)', \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Security'/);
     assert.match(merged, /for the selected areas the template\n\/\/ generator left without tests: security, database/);
 });
 
 test("localModelSuiteTitle: the prefix the run report recognises", () => {
     assert.equal(localModelSuiteTitle("testforge-qwen7b:latest"), "Local model (testforge-qwen7b:latest)");
+});
+
+// --- GEN-43 (amended Decision 6) ---------------------------------------------
+
+test("findGapAreas: an area the template inspected and found nothing to test in is not a gap", () => {
+    const noForm = "Database: no form that saves visible text was found on the inspected pages";
+    assert.deepEqual(findGapAreas(["database", "security"], { database: 0, security: 0 }, { database: noForm }), ["security"]);
+});
+
+test("mergeLocalSuite: the whole local block skips unless interactive tests are on, with a stated reason", () => {
+    const merged = mergeLocalSuite(TEMPLATE, "test('x', async () => {});", "testforge-qwen7b:latest", ["database"]);
+    const wrapper = merged.slice(merged.indexOf("test.describe('Local model"));
+    const firstStatement = wrapper.split("\n")[1].trim();
+    assert.equal(
+        firstStatement,
+        "test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model (testforge-qwen7b:latest): it may submit forms on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run');"
+    );
+    assert.ok(!TEMPLATE.includes("test.skip"), "the template's own tests are not touched by it");
+    assert.deepEqual(findTypeErrors(merged), []);
 });
