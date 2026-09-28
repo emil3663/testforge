@@ -98,6 +98,15 @@ test("buildReport carries the generation record and the empty areas, and the HTM
     assert.match(html, /Property toBeAccessible does not exist/);
 });
 
+test("TFP-122: the HTML export says the page data was gathered automatically, or why it could not be", () => {
+    const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
+    const withInspection = (pageInspection: GenerationRecord["pageInspection"]) =>
+        buildReportHtmlDocument(buildReport(json, [], "", "http://x", null, "", { generatedBy: "template", gates: [], pageInspection }, "d"), "r");
+    assert.match(withInspection({ status: "inspected", paths: ["/notes"], pages: 1, warnings: [] }), /TestForge inspected \/notes automatically \(1 page\)/);
+    assert.match(withInspection({ status: "failed", paths: ["/"], pages: 0, warnings: [], reason: "Could not inspect http://x/: refused" }), /automatic inspection of \/ failed \(Could not inspect http:\/\/x\/: refused\)/);
+    assert.doesNotMatch(withInspection(undefined), /No page data was supplied/);
+});
+
 test("buildReport without a generation record: no generation section, and older callers still work", () => {
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const report = buildReport(json, [], "");

@@ -43,3 +43,39 @@ test("normalizeGenerationRecord: long strings and long lists are capped", () => 
     assert.equal(record!.gates[0].evidence.length, 6);
     assert.equal(record!.gates[0].evidence[0].length, 400);
 });
+
+// --- Phase 34 TFP-122: automatic page inspection ------------------------------
+
+const { describePageInspection } = await import("../report/page-inspection-text.ts");
+
+test("normalizeGenerationRecord: an automatic inspection record is kept, and capped", () => {
+    const inspected = { status: "inspected", paths: ["/", "/notes"], pages: 2, warnings: [] };
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: inspected })?.pageInspection, inspected);
+
+    const failed = { status: "failed", paths: ["/"], pages: 0, warnings: ["Could not inspect http://x/: net::ERR_CONNECTION_REFUSED"], reason: "Could not inspect http://x/: net::ERR_CONNECTION_REFUSED" };
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: failed })?.pageInspection, failed);
+
+    const hostile = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: { status: "inspected", paths: Array(50).fill("/p"), pages: 1e9, warnings: Array(50).fill("x".repeat(5000)), extra: 1 } })!.pageInspection!;
+    assert.equal(hostile.paths.length, 5);
+    assert.equal(hostile.pages, 1000);
+    assert.equal(hostile.warnings.length, 5);
+    assert.ok(hostile.warnings.every((w) => w.length <= 400));
+    assert.ok(!("extra" in hostile));
+
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: { status: "maybe" } })?.pageInspection, undefined);
+});
+
+test("describePageInspection: one sentence saying where the page data came from, or why there is none", () => {
+    assert.equal(
+        describePageInspection({ status: "inspected", paths: ["/", "/notes"], pages: 2, warnings: [] }),
+        "No page data was supplied, so TestForge inspected /, /notes automatically (2 pages) and generated from it."
+    );
+    assert.equal(
+        describePageInspection({ status: "inspected", paths: ["/", "/gone"], pages: 1, warnings: ["Could not inspect http://x/gone: 404"] }),
+        "No page data was supplied, so TestForge inspected /, /gone automatically (1 page) and generated from it. Not inspected: Could not inspect http://x/gone: 404."
+    );
+    assert.equal(
+        describePageInspection({ status: "failed", paths: ["/"], pages: 0, warnings: [], reason: "Could not inspect http://x/: net::ERR_CONNECTION_REFUSED at http://x/" }),
+        "No page data was supplied and automatic inspection of / failed (Could not inspect http://x/: net::ERR_CONNECTION_REFUSED at http://x/), so the suite was generated without page data."
+    );
+});

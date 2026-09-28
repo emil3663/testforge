@@ -13,12 +13,14 @@ import { countGate, type GateVerdict } from "@/lib/generate/gates";
 import { findGapAreas, mergeLocalSuite } from "@/lib/generate/gap-fill";
 import { generateLocalSuite, type LocalFailureReason } from "@/lib/generate/local-generation";
 import { findTypeErrors } from "@/lib/generate/validate";
+import { inspectForGeneration } from "@/lib/generate/page-inspection";
+import type { PageInspectionRecord } from "@/lib/report/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
 export async function POST(req: NextRequest) {
-    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode } = await req.json().catch(() => ({}));
+    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect } = await req.json().catch(() => ({}));
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
@@ -36,7 +38,24 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
-    const normalizedContentProfile = normalizeContentProfile(contentProfile);
+    let normalizedContentProfile = normalizeContentProfile(contentProfile);
+
+    // Phase 34 TFP-122 (Decision 11): no page data in the request means the
+    // pages are inspected here, as the app's own flow would, unless the caller
+    // opts out with `autoInspect: false`. A failed inspection never blocks
+    // generation: it continues without page data and says why.
+    let pageInspection: PageInspectionRecord | undefined;
+    if (!normalizedContentProfile && autoInspect !== false) {
+        const requestedPaths = contentRules && typeof contentRules === "object" ? (contentRules as { paths?: unknown }).paths : undefined;
+        const inspection = await inspectForGeneration(normalizedBaseUrl.value, requestedPaths);
+        pageInspection = inspection.record;
+        normalizedContentProfile = normalizeContentProfile(inspection.profile);
+    }
+    // Every response below goes through here. Without an automatic inspection
+    // it is exactly what it was before TFP-122; with one, it says so.
+    const respond = (body: Record<string, unknown>) =>
+        NextResponse.json(pageInspection ? { ...body, generatedBy: body.generatedBy ?? "template", pageInspection } : body);
+
     const normalizedContentRules = normalizeContentRules(contentRules);
     normalizedContentRules.selectedJourneyIds = selectJourneys(
         normalizedContentProfile?.journeys ?? [],
@@ -82,7 +101,7 @@ export async function POST(req: NextRequest) {
         const gapAreas = findGapAreas(generated.areas, generated.testsByArea, generated.notApplicable);
         const notApplicableAreas = Object.keys(generated.notApplicable);
         if (gapAreas.length === 0) {
-            return NextResponse.json({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps", notApplicableAreas }, gates: [] });
+            return respond({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps", notApplicableAreas }, gates: [] });
         }
 
         const gapMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -97,7 +116,7 @@ export async function POST(req: NextRequest) {
         ];
         const local = await generateLocalSuite(ollamaModel, gapMessages, gapAreas);
         if (!local.ok) {
-            return gapFillFallback(generated.code, local.reason, gapAreas, notApplicableAreas, local.gates, local.model);
+            return respond(gapFillFallback(generated.code, local.reason, gapAreas, notApplicableAreas, local.gates, local.model));
         }
 
         // The merged file is checked again: the wrapping can fail on code the
@@ -112,13 +131,13 @@ export async function POST(req: NextRequest) {
         const gates = [...local.gates, countGate("merged suite type check", "type errors", mergeErrors)];
         if (mergeErrors.length > 0) {
             console.error(`[api/generate] ${local.model}'s tests do not type-check once appended to the template suite, using template alone:\n  ${mergeErrors.slice(0, 5).join("\n  ")}`);
-            return gapFillFallback(generated.code, "invalid_output", gapAreas, notApplicableAreas, gates, local.model);
+            return respond(gapFillFallback(generated.code, "invalid_output", gapAreas, notApplicableAreas, gates, local.model));
         }
-        return NextResponse.json({ code: merged, generatedBy: "template+ollama", model: local.model, gapFill: { gapAreas, outcome: "added", notApplicableAreas }, gates });
+        return respond({ code: merged, generatedBy: "template+ollama", model: local.model, gapFill: { gapAreas, outcome: "added", notApplicableAreas }, gates });
     }
 
     if (!apiKey) {
-        return NextResponse.json({ code: template() });
+        return respond({ code: template() });
     }
 
     // TFP-083: every failure of the OpenAI call (rejection, timeout, no
@@ -134,29 +153,29 @@ export async function POST(req: NextRequest) {
         const catalog = await client.models.list({ signal });
         const model = pickModel(catalog.data.map((m) => m.id));
         if (!model) {
-            return fallback(template(), "no_candidate_model");
+            return respond(fallback(template(), "no_candidate_model"));
         }
 
         const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });
 
         const code = chat.choices[0]?.message?.content;
         if (typeof code !== "string" || code.trim() === "") {
-            return fallback(template(), "empty_completion", model);
+            return respond(fallback(template(), "empty_completion", model));
         }
-        return NextResponse.json({ code, generatedBy: "openai", model });
+        return respond({ code, generatedBy: "openai", model });
     } catch (error) {
         console.error(
             "[api/generate] OpenAI call failed, using template generator:",
             error instanceof Error ? error.message : error
         );
-        return fallback(template(), signal.aborted ? "timeout" : "openai_error");
+        return respond(fallback(template(), signal.aborted ? "timeout" : "openai_error"));
     }
 }
 
 type FallbackReason = "openai_error" | "timeout" | "empty_completion" | "no_candidate_model" | LocalFailureReason;
 
 function fallback(code: string, fallbackReason: FallbackReason, model?: string) {
-    return NextResponse.json({ code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) });
+    return { code, generatedBy: "fallback", fallbackReason, ...(model ? { model } : {}) };
 }
 
 /**
@@ -164,14 +183,14 @@ function fallback(code: string, fallbackReason: FallbackReason, model?: string) 
  * areas stayed empty and every gate verdict that led there.
  */
 function gapFillFallback(code: string, fallbackReason: LocalFailureReason, gapAreas: BestPracticeArea[], notApplicableAreas: string[], gates: GateVerdict[], model?: string) {
-    return NextResponse.json({
+    return {
         code,
         generatedBy: "fallback",
         fallbackReason,
         ...(model ? { model } : {}),
         gapFill: { gapAreas, outcome: "rejected", notApplicableAreas },
         gates,
-    });
+    };
 }
 
 const DEFAULT_OPENAI_TIMEOUT_MS = 30_000;

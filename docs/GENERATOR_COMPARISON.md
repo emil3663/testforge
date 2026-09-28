@@ -67,7 +67,9 @@ site (journeys, the template's database round trip, and every test the local
 model writes) are skipped unless a run enables interactive tests, so without
 it they show up as Not run. A case can set `"noContentProfile": true` to
 generate without page data. That's the one situation in which the template
-still leaves an area (database) empty.
+still leaves an area (database) empty. The command then sends
+`autoInspect: false`, because since TFP-122 the route would otherwise inspect
+the pages itself.
 
 The command first inspects the target once, so both sides get the same page
 data. Then it runs a **gap sweep**: every area requested alone, with and

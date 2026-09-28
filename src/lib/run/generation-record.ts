@@ -1,4 +1,4 @@
-import type { GenerationGateVerdict, GenerationRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord } from "@/lib/report/types";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
 // from /api/generate and persists it with the run. It comes from the request
@@ -51,5 +51,28 @@ export function normalizeGenerationRecord(input: unknown): GenerationRecord | nu
             };
         }
     }
+    const pageInspection = normalizePageInspection(v.pageInspection);
+    if (pageInspection) record.pageInspection = pageInspection;
+    return record;
+}
+
+const MAX_PATHS = 5;
+const MAX_WARNINGS = 5;
+
+/** TFP-122: whether generation gathered page data itself, and why not if it failed. */
+function normalizePageInspection(value: unknown): PageInspectionRecord | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    if (v.status !== "inspected" && v.status !== "failed") return null;
+    const list = (items: unknown, max: number, length = MAX_TEXT) =>
+        Array.isArray(items) ? items.map((item) => text(item, length)).filter((item): item is string => Boolean(item)).slice(0, max) : [];
+    const record: PageInspectionRecord = {
+        status: v.status,
+        paths: list(v.paths, MAX_PATHS),
+        pages: typeof v.pages === "number" && Number.isInteger(v.pages) && v.pages >= 0 ? Math.min(v.pages, 1000) : 0,
+        warnings: list(v.warnings, MAX_WARNINGS, MAX_EVIDENCE_LINE),
+    };
+    const reason = text(v.reason, MAX_EVIDENCE_LINE);
+    if (reason) record.reason = reason;
     return record;
 }

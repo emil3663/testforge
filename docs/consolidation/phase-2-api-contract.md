@@ -82,6 +82,13 @@ Notes:
 - description is required.
 - baseUrl normalizes to default when omitted/empty.
 - selectedPractices and content sections are optional inputs with normalization defaults.
+- Phase 34 TFP-122: with no `contentProfile`, the route inspects the pages
+  itself (the `contentRules.paths`, or the base URL's own path) and adds
+  `"generatedBy"` (`"template"` unless another generator set it) and
+  `"pageInspection": { "status": "inspected" | "failed", "paths": [...],
+  "pages": n, "warnings": [...], "reason"?: "string" }` to the response. A
+  failed inspection never blocks generation. Send `"autoInspect": false` to opt
+  out; the response is then exactly as before.
 
 ## 2) Introspect Contract
 

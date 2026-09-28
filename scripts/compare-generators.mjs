@@ -100,6 +100,9 @@ async function generateWith(generator, testCase, contentProfile, { ollamaBaseUrl
                 description: testCase.description,
                 selectedPractices: testCase.practices ?? [],
                 contentProfile,
+                // Phase 34 TFP-122: without this the route would inspect the
+                // pages itself, and a "no page data" case would silently get some.
+                ...(contentProfile ? {} : { autoInspect: false }),
             }),
         })
     );

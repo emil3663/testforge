@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { inspectPages } from "@/lib/introspect/inspector";
 import { normalizeNamedFlows } from "@/lib/introspect/journeys";
+import { normalizeInspectionPathList } from "@/lib/introspect/paths";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
-const MAX_PATHS = 5;
 
 function normalizeBaseUrl(baseUrl: unknown) {
     if (typeof baseUrl !== "string" || !baseUrl.trim()) {
@@ -32,31 +32,6 @@ function normalizeBaseUrl(baseUrl: unknown) {
     }
 }
 
-function getDefaultInspectionPath(baseUrl: string) {
-    try {
-        const pathname = new URL(baseUrl).pathname || "/";
-        return pathname === "/" ? "/" : pathname.replace(/\/$/, "");
-    } catch {
-        return "/";
-    }
-}
-
-function normalizePaths(baseUrl: string, input: unknown) {
-    if (!Array.isArray(input)) {
-        return [getDefaultInspectionPath(baseUrl)];
-    }
-
-    const uniquePaths = [...new Set(
-        input
-            .filter((item): item is string => typeof item === "string")
-            .map((item) => item.trim())
-            .filter(Boolean)
-            .map((item) => (item.startsWith("/") ? item : `/${item}`))
-    )].slice(0, MAX_PATHS);
-
-    return uniquePaths.length > 0 ? uniquePaths : [getDefaultInspectionPath(baseUrl)];
-}
-
 export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
 
@@ -72,7 +47,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: normalizedBaseUrl.message }, { status: 400 });
     }
 
-    const normalizedPaths = normalizePaths(normalizedBaseUrl.value, paths);
+    const normalizedPaths = normalizeInspectionPathList(normalizedBaseUrl.value, paths);
     const { pages, warnings, dependencyMap, siteGraph, journeys } = await inspectPages(
         normalizedBaseUrl.value,
         normalizedPaths,

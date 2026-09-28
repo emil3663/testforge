@@ -50,7 +50,7 @@ async function closedBaseUrl(): Promise<string> {
 function request(practices: string[], description = "Check the notes page.") {
     return new NextRequest(new URL("http://localhost/api/generate"), {
         method: "POST",
-        body: JSON.stringify({ baseUrl: "http://localhost:3000", description, selectedPractices: practices }),
+        body: JSON.stringify({ baseUrl: "http://localhost:3000", description, selectedPractices: practices, autoInspect: false }),
         headers: { "content-type": "application/json" },
     });
 }

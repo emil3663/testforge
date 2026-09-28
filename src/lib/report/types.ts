@@ -311,6 +311,18 @@ export interface GenerationRecord {
     fallbackReason?: string;
     gapFill?: { gapAreas: string[]; outcome: string };
     gates: GenerationGateVerdict[];
+    /** Phase 34 TFP-122: present only when the request brought no page data and TestForge inspected the pages itself. */
+    pageInspection?: PageInspectionRecord;
+}
+
+export interface PageInspectionRecord {
+    /** "inspected": page data was gathered automatically; "failed": generated without it, for `reason`. */
+    status: "inspected" | "failed";
+    paths: string[];
+    /** Pages actually inspected (a path can fail while others succeed). */
+    pages: number;
+    warnings: string[];
+    reason?: string;
 }
 
 export interface EmptyAreaRecord {
