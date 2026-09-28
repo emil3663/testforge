@@ -10,7 +10,16 @@ import type { ActionableElementDetail, ContentProfile } from "./types";
 // The name is the one the browser computes, read from the field's aria
 // snapshot (`- textbox "Email"` has a name, `- textbox` has none), the same
 // computation Playwright's role queries and toHaveAccessibleName use - not a
-// hand-rolled label/aria-label/placeholder heuristic.
+// hand-rolled label/aria-label/placeholder heuristic. Only the first line
+// counts, and a name is a quoted string straight after the role. Proven per
+// input type in a real browser: an unnamed field's line is `- checkbox
+// [checked]`, `- slider: "50"`, `- spinbutton: "7"` or `- textbox: "#000000"`
+// (state or value, never a name), a named one `- slider "Volume": "50"`.
+//
+// The exception is `file`: with no label of its own, Chromium names it by its
+// button text (`- button "Choose File"`, localised). So a file input whose
+// name is that default counts as unnamed - compared against a throwaway
+// unlabelled file input in the same page, not a hard-coded English string.
 //
 // - A field with no name fails the test; the message names each field (id,
 //   name or type) and the page.
@@ -50,8 +59,26 @@ function formFieldNamesTest(path: string) {
     await page.goto('${p}');
     await page.waitForLoadState('domcontentloaded');
 
-    // A field has a name when its aria snapshot's first line quotes one.
-    const hasName = (snapshot: string) => /^-\\s+[^\\s:"]+\\s+"/.test(snapshot.trim().split('\\n')[0]);
+    // A field has a name when its aria snapshot's first line quotes one
+    // straight after the role; state ([checked]) and values (: "50") are not names.
+    const firstLine = (snapshot: string) => snapshot.trim().split('\\n')[0];
+    const hasName = (snapshot: string) => /^-\\s+[^\\s:"]+\\s+"/.test(firstLine(snapshot));
+    // An unlabelled file input is named by its button text ("Choose File",
+    // localised): read that default from a throwaway unlabelled file input.
+    let fileDefault: string | null = null;
+    const isFileDefault = async (snapshot: string) => {
+      if (fileDefault === null) {
+        await page.evaluate(() => {
+          const probe = document.createElement('input');
+          probe.type = 'file';
+          probe.setAttribute('data-testforge-probe', '');
+          document.body.appendChild(probe);
+        });
+        fileDefault = firstLine(await page.locator('[data-testforge-probe]').ariaSnapshot());
+        await page.evaluate(() => document.querySelector('[data-testforge-probe]')?.remove());
+      }
+      return firstLine(snapshot) === fileDefault;
+    };
     const unnamed: string[] = [];
     const placeholderOnly: string[] = [];
     for (const field of await page.locator('${escapeForSingleQuotedString(FORM_FIELD_SELECTOR)}').all()) {
@@ -63,7 +90,9 @@ function formFieldNamesTest(path: string) {
         if (name) return el.tagName.toLowerCase() + '[name="' + name + '"]';
         return el.tagName.toLowerCase() + (el.getAttribute('type') ? '[type="' + el.getAttribute('type') + '"]' : '');
       });
-      if (!hasName(await field.ariaSnapshot())) {
+      const snapshot = await field.ariaSnapshot();
+      const isFile = (await field.getAttribute('type'))?.toLowerCase() === 'file';
+      if (!hasName(snapshot) || (isFile && (await isFileDefault(snapshot)))) {
         unnamed.push(described);
         continue;
       }
