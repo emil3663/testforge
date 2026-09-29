@@ -16,7 +16,7 @@ import { findTypeErrors } from "@/lib/generate/validate";
 import { inspectForGeneration } from "@/lib/generate/page-inspection";
 import type { PageInspectionRecord } from "@/lib/report/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
-import { SYSTEM_PROMPT } from "@/lib/generate/prompt";
+import { buildGapFillMessages, buildGenerationMessages, type GenerationRequestContext } from "@/lib/generate/messages";
 import { selectJourneys } from "@/lib/introspect/journeys";
 
 export async function POST(req: NextRequest) {
@@ -74,16 +74,14 @@ export async function POST(req: NextRequest) {
             normalizedAuditMode
         );
 
-    const userMessage = (coverage: string, extra = "") =>
-        `Base URL: ${normalizedBaseUrl.value}\nAudit mode: ${normalizedAuditMode}\nSelected best-practice coverage: ${coverage}\nContent rules: ${JSON.stringify(normalizedContentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(normalizedContentProfile, null, 2)}\n\nTest description:\n${description}${extra}`;
-
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-            role: "user",
-            content: userMessage(normalizedPractices.length > 0 ? normalizedPractices.join(", ") : "infer from prompt"),
-        },
-    ];
+    const requestContext: GenerationRequestContext = {
+        baseUrl: normalizedBaseUrl.value,
+        auditMode: normalizedAuditMode,
+        contentRules: normalizedContentRules,
+        contentProfile: normalizedContentProfile,
+        description,
+    };
+    const messages = buildGenerationMessages(requestContext, normalizedPractices);
 
     // Phase 30 Decision 5: a configured local model wins over an OpenAI key.
     // Phase 34 (TFP-118): it no longer replaces the template - it fills only
@@ -104,16 +102,7 @@ export async function POST(req: NextRequest) {
             return respond({ code: generated.code, generatedBy: "template", gapFill: { gapAreas, outcome: "no-gaps", notApplicableAreas }, gates: [] });
         }
 
-        const gapMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-            { role: "system", content: SYSTEM_PROMPT },
-            {
-                role: "user",
-                content: userMessage(
-                    gapAreas.join(", "),
-                    `\n\nWrite tests only for these coverage areas: ${gapAreas.join(", ")}. The other areas are already covered by another generator - do not write tests for them.`
-                ),
-            },
-        ];
+        const gapMessages = buildGapFillMessages(requestContext, gapAreas);
         const local = await generateLocalSuite(ollamaModel, gapMessages, gapAreas);
         if (!local.ok) {
             return respond(gapFillFallback(generated.code, local.reason, gapAreas, notApplicableAreas, local.gates, local.model));
