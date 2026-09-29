@@ -93,12 +93,19 @@ can promise depends on this measurement.
 | C4 | qwen2.5-coder 3B | q4_K_M, 1.93 GB | N | Installed |
 | C5 | qwen3.5 4B | q4_K_M, 3.4 GB | N | Download approved; newest small Qwen |
 | C6 | llama3.1 8B | q4_K_M, 4.92 GB | N | Installed; general model, control |
-| C7 | Best of C2-C6 on the Decision 7 rule | as chosen | N | With `OLLAMA_FLASH_ATTENTION=1` and `OLLAMA_KV_CACHE_TYPE=q8_0` |
+| C7 | Best of C2-C6 and C8 on the Decision 7 rule | as chosen | as chosen | With `OLLAMA_FLASH_ATTENTION=1` and `OLLAMA_KV_CACHE_TYPE=q8_0` |
+| C8 | `testforge-qwen7b` (qwen2.5-coder 7B) | q4_K_M, 4.68 GB | 16384 | `num_gpu` raised to the largest value that loads without error. Added 2026-09-29: C1 left 1.6 GB of VRAM unused while running 59% of the model on the CPU |
 
-- **N** is set from C1's measured prompt sizes: the smallest of 4096, 6144
-  and 8192 that holds the largest measured prompt plus `num_predict`. It is
-  never set so low that a prompt is cut off. A cut-off prompt makes a run
-  invalid, not a failure.
+- **N = 12288** for C2-C6: it holds the largest measured prompt (6,608)
+  plus `num_predict` 4,096 with about 1,600 spare. Decided by Emil
+  2026-09-29; the original rule (the smallest of 4096, 6144 and 8192 that
+  holds the largest measured prompt plus `num_predict`) could not be met,
+  because it reserved the full output ceiling while measured output never
+  passed 481 tokens. A cut-off prompt still makes a run invalid, not a
+  failure.
+- **C8's `num_gpu`** is found by stepping it up and recording each attempt.
+  An out-of-memory failure is a result, not something to work around. C8 is
+  judged by the same Decision 7 rule.
 - `temperature` stays 0.2 and `num_predict` stays 4096 for every
   configuration, so only the model, quantisation and context change.
 - Approved downloads (Emil, 2026-09-29): `qwen2.5-coder:7b-instruct-q3_K_M`
@@ -162,7 +169,7 @@ can promise depends on this measurement.
   is missing.
 
 3. Measurement
-- `benchmarks/<date>/` holds the raw per-call results for C1-C7, the
+- `benchmarks/<date>/` holds the raw per-call results for C1-C8, the
   Modelfiles, and the machine details.
 - A report (`docs/decisions/phase-36-local-model-measurement-report.md`)
   gives each configuration's speed, memory fit and quality numbers, applies
@@ -246,7 +253,7 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Phase:** 36 · **Priority:** P1 · **Labels:** `measurement`, `local`
 - **Problem it solves:** Phase 35 needs to know what the local model can do
   on this machine.
-- **Scope:** Decisions 5 and 7: pull the two approved models, run C1-C6,
+- **Scope:** Decisions 5 and 7: pull the two approved models, run C1-C6 and C8,
   pick C7's base, run C7, apply the rule.
 - **Deliverables:** `benchmarks/<date>/`; the measurement report;
   `docs/LOCAL_MODEL_SETUP.md` updated if a new configuration wins.
