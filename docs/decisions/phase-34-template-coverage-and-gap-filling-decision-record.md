@@ -6,10 +6,11 @@ best-practice areas where it writes none today (performance/load, security,
 database), then build Phase 21's chosen Option B: the template always
 generates, and the local model fills only the selected areas the template
 still leaves empty.
-Status: Approved and in implementation (Option B confirmed by Emil
-2026-09-28; performance budgets and security-finding handling decided the
-same day). Gates A and B met; Decisions 10 and 11 (TFP-121, TFP-122) and the
-RPT-14 follow-up added 2026-09-28 from TFP-120's findings, not yet built.
+Status: Complete 2026-09-29. Gates A, B and C met and independently
+verified; everything through `3c4fe40` pushed. Option B confirmed by Emil
+2026-09-28, with performance budgets, security-finding handling, Option C
+skips, GEN-43 and Decisions 10-11 decided the same day. Next: Phase 35,
+comprehensive testing (roadmap outline, not yet locked).
 
 ## Context
 

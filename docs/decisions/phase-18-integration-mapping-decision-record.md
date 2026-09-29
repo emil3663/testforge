@@ -5,7 +5,7 @@ Scope: Record every outbound dependency a page talks to, generate `page.route()`
 failure-injection tests against each one, and generate generic local
 storage-API failure-injection tests — extending Phase 17's discovered-surface
 coverage denominator rather than living outside it.
-Status: Approved and in implementation (Decision 3 resolved 2026-09-23; Decision 4 resolved and then revised same day — see below)
+Status: Complete. TFP-084/085 `1b6a4f3` and TFP-086 `5cb1fc8` (2026-09-23). Decision 3 resolved 2026-09-23; Decision 4 resolved and then revised the same day (see below). Reconciled with git 2026-09-29.
 
 ## Context
 

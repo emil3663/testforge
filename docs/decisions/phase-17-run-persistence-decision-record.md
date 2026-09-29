@@ -6,9 +6,7 @@ retention scheme; recompute coverage against the discovered surface from
 crawl/introspect instead of the tests that happened to run; add a "not
 tested, and why" report section; support diffing two persisted runs of the
 same site.
-Status: Approved — implementation is held until
-`phase-17-walkthrough-backlog.md`'s TFP-053–063 land (Decision 6), not
-started in parallel with them
+Status: Complete. TFP-064 `482454d` (2026-09-17), TFP-071/072 `8cd901f` and TFP-073 `6a0ca45` (2026-09-22); independently re-verified 2026-09-22. The hold on TFP-053-063 (Decision 6) was met first. Reconciled with git 2026-09-29.
 
 ## Context
 

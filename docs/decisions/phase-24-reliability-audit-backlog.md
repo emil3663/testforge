@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-22
-**Status:** Approved and in implementation (TFP-065/066 only; TFP-067–070 are roadmapped, not locked for this pass)
+**Status:** Complete. TFP-065/066 `d19c165` (2026-09-22); TFP-067/068 `a95027a` and TFP-069/070 `2bd1b32` (2026-09-23). Reconciled with git 2026-09-29.
 
 ## Context
 

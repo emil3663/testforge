@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-22
-**Status:** Draft — for review, not yet started
+**Status:** Complete. TFP-074 `1222cf5`, TFP-075 `47c33a1`, TFP-076 `d39ff34` (all 2026-09-23); results under `examples/`. Reconciled with git 2026-09-29.
 
 ## Context
 

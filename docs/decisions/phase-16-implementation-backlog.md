@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-08-26
-**Status:** Decision locked — see `docs/decisions/phase-16-local-first-decision-record.md`
+**Status:** Complete. TFP-001-004 and 010-026 landed 2026-08-28 (`af0492d` through `69e996f`); TFP-033 `cce15cf` (2026-08-29); TFP-030 `92b921b`, TFP-032 `c965442`, TFP-005 and 031 `4d58947` (all 2026-09-17). Decision record: `docs/decisions/phase-16-local-first-decision-record.md`. Reconciled with git 2026-09-29.
 
 Ticket prefix is `TFP-`. This is distinct from the `TFXX-NNN` identifiers
 TestForge assigns to tests inside generated suites at runtime.

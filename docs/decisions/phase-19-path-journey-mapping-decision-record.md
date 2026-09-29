@@ -4,7 +4,7 @@ Date: 2026-09-23
 Scope: Combine the crawl page graph and introspect's actionable elements
 into a walkable site graph, surface candidate user journeys for review,
 and generate end-to-end tests that walk selected paths.
-Status: Approved, implemented, Gate B met 2026-09-23 (`a9df7af`) — TFP-096 remains, not gating
+Status: Complete. Gate B met 2026-09-23 (`a9df7af`); TFP-096, the non-gating follow-up, landed 2026-09-24 (`1c3c130`). Reconciled with git 2026-09-29.
 
 ## Context
 

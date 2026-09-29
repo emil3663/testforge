@@ -2,7 +2,7 @@
 
 Date: 2026-08-26
 Scope: Establish TestForge as a local-only tool — remove the FastAPI/proxy backend, scope execution to Chromium, and decompose the three oversized source files
-Status: Approved and in implementation
+Status: Complete. Every Phase 16 ticket landed 2026-08-28 to 2026-09-17; see `phase-16-implementation-backlog.md` for commits. Reconciled with git 2026-09-29.
 
 ## Context
 

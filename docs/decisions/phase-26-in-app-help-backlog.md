@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-23
-**Status:** Draft — for review, not yet started
+**Status:** Complete. TFP-077 landed 2026-09-23 (`8be5dd7`). Reconciled with git 2026-09-29.
 
 ## Context
 

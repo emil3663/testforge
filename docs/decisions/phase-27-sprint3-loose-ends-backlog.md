@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-09-23
-**Status:** Draft — for review, not yet started
+**Status:** Complete. TFP-078/079 `955601e`, TFP-080 `abb94f0`, TFP-082 `6f90a0e` (all 2026-09-23). TFP-081's three pieces landed separately: the help panel in `8be5dd7`, the README update in `e231a8b`, and `.clinerules` is in `.gitignore`. Reconciled with git 2026-09-29.
 
 ## Context
 

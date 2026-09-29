@@ -218,6 +218,16 @@ Direction so far (Emil, 2026-09-28; to be locked in the decision record):
   decides whether all-areas runs are offered as a scheduled or overnight
   run, each area as its own job so partial results survive.
 
+### Phase 36 — Trust in results, and measuring the local model (locked 2026-09-29)
+Before comprehensive testing leans on the local model, TestForge stops
+turning healthy sites red and finds out what the model can do on this
+machine. Four suspected false failures on the-internet are resolved, not
+suppressed; optional SEO items become findings; three small defects are
+fixed. A committed benchmark then measures seven model and settings
+configurations for speed, memory fit and code quality, and picks a winner
+by a rule fixed in advance. See
+`phase-36-trust-and-local-model-measurement-decision-record.md`.
+
 ---
 
 ## Sequencing note

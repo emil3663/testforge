@@ -4,7 +4,7 @@ Date: 2026-09-23
 Scope: Config-driven automation-account login once per run, cached
 Playwright `storageState` reused by every generated test in that run,
 credentials referenced by name and never inlined, captured, or displayed.
-Status: Approved, implemented, Gate B met 2026-09-24 (`227002b`) — TFP-097 remains, not gating
+Status: Complete. Gate B met 2026-09-24 (`227002b`); TFP-097, the non-gating login UI, landed 2026-09-24 (`14dd256`). Reconciled with git 2026-09-29.
 
 ## Context
 
