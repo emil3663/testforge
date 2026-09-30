@@ -13,23 +13,26 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/jobs.test.ts
  */
 import assert from "node:assert";
-import { mkdtempSync, rmSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { after, before, test } from "node:test";
+import { after, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-jobs-test-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { createEmptyProgress, finalizeRunJob } = await import("./jobs.ts");
+// Every module is loaded here, before the first test() is registered: on
+// Node 22 a top-level await between tests lets the file's after() hook run
+// early, removing scratchRoot before the tests registered after it.
+const { mockGenerate } = await import("../generate/mock/index.ts");
+const { normalizeContentRules, normalizeTestAuditMode } = await import("../generate/normalize.ts");
 
+// Created at load; nothing asynchronous needs to happen before the tests.
 const jobFilesRoot = join(scratchRoot, "job-files");
-
-before(async () => {
-    await mkdir(jobFilesRoot, { recursive: true });
-});
+mkdirSync(jobFilesRoot, { recursive: true });
 
 after(() => {
     rmSync(scratchRoot, { recursive: true, force: true });
@@ -105,9 +108,6 @@ test("corrupted JSON report while cancelled: terminal status is 'cancelled', not
 });
 
 // --- Phase 36 TFP-125: a suite with nothing to run is not a failed run ------
-
-const { mockGenerate } = await import("../generate/mock/index.ts");
-const { normalizeContentRules, normalizeTestAuditMode } = await import("../generate/normalize.ts");
 
 const NO_TESTS_REPORT = JSON.stringify({ suites: [], errors: [{ message: "Error: No tests found.\nMake sure that arguments are regular expressions matching test files." }], stats: { duration: 1, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } });
 
