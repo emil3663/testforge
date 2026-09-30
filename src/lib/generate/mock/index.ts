@@ -38,6 +38,10 @@ export type {
 } from "./types";
 
 function renderSuites(suites: GeneratedSuite[]) {
+    // Numbering runs on across suites that share an area code, so no two
+    // tests in one generated file share an ID (Phase 36 Gate A follow-up:
+    // the landing-page and per-page SEO suites both began at TFSE-001).
+    const lastIdByAreaCode = new Map<string, number>();
     return suites
         .map((suite) => {
             const notes = suite.notes?.length
@@ -45,8 +49,10 @@ function renderSuites(suites: GeneratedSuite[]) {
                 : "";
 
             const areaCode = SUITE_AREA_CODES[suite.area] ?? "GN";
+            const firstId = (lastIdByAreaCode.get(areaCode) ?? 0) + 1;
+            lastIdByAreaCode.set(areaCode, firstId + suite.tests.length - 1);
             const numberedTests = suite.tests.map((testStr, index) => {
-                const id = `TF${areaCode}-${String(index + 1).padStart(3, "0")}`;
+                const id = `TF${areaCode}-${String(firstId + index).padStart(3, "0")}`;
                 return testStr.replace(/^(\s*test\(['"])/, (match) => `${match}${id}: `);
             });
 
