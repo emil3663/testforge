@@ -305,8 +305,10 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 earlier the same day). Still owed before Phase 35: the Phase 33 per-category
 check on C8.
 
-Follow-ups from the verification, one commit each, awaiting verification,
-not pushed:
+Follow-ups from the verification, one commit each, verified independently
+and pushed 2026-09-30 with the record update `fe834d3` (jobs.test.ts 6/6 on
+Node 22; duplicate test IDs 4 -> 0 on inputs with page data; only the
+intended lines change). Phase 36 is complete.
 - `a264f46` (GEN-51): a session cookie whose domain starts with "." for the
   site's own host is shared with its subdomains. It passes with a named
   finding; the parent-domain case still fails. Before, it passed silently.
