@@ -4,7 +4,7 @@ Date: 2026-09-30
 Scope: Restore the local model's category quality on the gap-fill path, and
 catch two known model failures mechanically, before Phase 35 relies on the
 model.
-Status: Approved (Emil, 2026-09-30).
+Status: Complete 2026-09-30. Gate A met and independently verified; TFP-128 to 131 pushed (`b684c00`, `a3c52fc`, `9a08267`, `c3eafb9`). Approved by Emil 2026-09-30.
 
 ## Context
 

@@ -164,7 +164,18 @@ inspects pages itself when none are supplied (TFP-122), and the accessibility
 template checks every form field has an accessible name (TFP-121). A depth role for
 the local model is Phase 35's question, not a wider definition of a gap.
 
-### Phase 35 — Comprehensive testing (outline, added 2026-09-28; not locked)
+### Phase 35 — Comprehensive testing (outline added 2026-09-28; first slice locked 2026-09-30)
+**First slice locked 2026-09-30** (`phase-35-comprehensive-testing-decision-record.md`):
+- a Comprehensive run for one chosen area, beside the unchanged Standard run;
+- passive security on every inspected page;
+- an axe-core WCAG 2.2 scan;
+- the local model's scenarios labelled and kept out of the verdict;
+- a fixed "what this run did not test" statement closing every report.
+
+The permission confirmation for active testing is decided (a typed domain,
+saved with the run) and will be built with the active level. The outline
+below remains the longer-term direction.
+
 The best-practice suite is breadth: the same checks for every site, a few
 tests per area, safe to run anywhere. A deep dive is depth: a separate run
 the user starts for one area they are concerned about, such as security,
