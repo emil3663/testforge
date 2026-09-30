@@ -247,6 +247,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   removed.
 - **Acceptance criteria:** A C1-only run produces every Decision 6 measure.
 - **Dependencies:** None.
+- **Status:** Landed `142e937` (TEST_PLAN GEN-48); the C1-only run was
+  independently verified 2026-09-29. C8 support and the `num_gpu` probe
+  land with TFP-127. Not yet verified as a whole.
 
 ### TFP-127 — Run the benchmark and choose the model
 
@@ -259,6 +262,12 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   `docs/LOCAL_MODEL_SETUP.md` updated if a new configuration wins.
 - **Acceptance criteria:** Acceptance Criteria 3.
 - **Dependencies:** TFP-126.
+- **Status:** Run 2026-09-29/30 (TEST_PLAN GEN-49). C2-C8 measured, plus a
+  back-to-back confirmation of C1 and the winner requested by Emil. Winner:
+  C8 (`num_gpu 29`), adopted in `ollama/Modelfile.testforge-qwen7b` and
+  `docs/LOCAL_MODEL_SETUP.md`. Report:
+  `phase-36-local-model-measurement-report.md`. The Phase 33 category bar
+  on C8 is still owed. Not yet independently verified.
 
 ## Recommended Execution Order
 

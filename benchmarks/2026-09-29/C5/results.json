@@ -1,0 +1,847 @@
+{
+  "config": "C5",
+  "model": "testforge-bench-c5",
+  "base": "qwen3.5:4b",
+  "numCtx": 12288,
+  "numGpu": null,
+  "numPredict": 4096,
+  "temperature": 0.2,
+  "timeoutMs": 180000,
+  "warmUp": {
+    "case": "reliability",
+    "ms": 180006,
+    "error": "timeout"
+  },
+  "memory": {
+    "ollamaPs": "NAME                         ID              SIZE      PROCESSOR          CONTEXT    UNTIL              \ntestforge-bench-c5:latest    126fd23f9ecb    4.0 GB    54%/46% CPU/GPU    12288      4 minutes from now",
+    "gpuMemoryUsed": "2609 MiB, 4096 MiB"
+  },
+  "finishedAt": "2026-09-29T19:51:27.312Z",
+  "results": [
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 1,
+      "openai": {
+        "ms": 180004,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180012,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 1,
+      "openai": {
+        "ms": 180003,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180011,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 1,
+      "openai": {
+        "ms": 166809,
+        "outcome": "ok",
+        "promptTokens": 7011,
+        "completionTokens": 853,
+        "gates": [
+          "time budget: 165831 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 180010,
+        "error": "timeout"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 9,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "3b58779d-c129-4e91-ba3b-601c7fbb0156",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 9,
+          "passed": 9,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "077ed653-fe1f-4312-95cf-439e5f2429bc",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 9,
+          "passed": 8,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has meta description",
+            "status": "Failed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 1,
+      "openai": {
+        "ms": 180011,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180008,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 1,
+      "openai": {
+        "ms": 159501,
+        "outcome": "ok",
+        "promptTokens": 7012,
+        "completionTokens": 821,
+        "gates": [
+          "time budget: 159289 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 163762,
+        "loadMs": 21,
+        "promptEvalCount": 7012,
+        "promptEvalMs": 325,
+        "evalCount": 856,
+        "evalMs": 162991,
+        "totalMs": 163758,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "f585d746-53e6-48d4-9040-dafb5a1fffb6",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Passed"
+          },
+          {
+            "title": "a new note with special characters is still shown after reloading",
+            "status": "Passed"
+          },
+          {
+            "title": "a new note is still shown after navigating away and back",
+            "status": "Failed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "55e098f9-98a7-487f-92dc-1bbdbfc7a017",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 0,
+          "failed": 3,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Failed"
+          },
+          {
+            "title": "a new note with special characters is still shown after reloading",
+            "status": "Failed"
+          },
+          {
+            "title": "a new note is still shown after navigating away and back",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": false,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 1,
+      "openai": {
+        "ms": 180008,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180005,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 1,
+      "openai": {
+        "ms": 180008,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180016,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 2,
+      "openai": {
+        "ms": 180015,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180016,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 2,
+      "openai": {
+        "ms": 180002,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180006,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 2,
+      "openai": {
+        "ms": 173820,
+        "outcome": "ok",
+        "promptTokens": 7011,
+        "completionTokens": 917,
+        "gates": [
+          "time budget: 173627 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 153490,
+        "loadMs": 8,
+        "promptEvalCount": 7011,
+        "promptEvalMs": 323,
+        "evalCount": 806,
+        "evalMs": 152735,
+        "totalMs": 153486,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 9,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "fe9b104d-6132-4225-aa07-ffe68438a9ee",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 9,
+          "passed": 9,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "f7e477d1-5f54-4ac3-8bb0-ceec72d27cb2",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 9,
+          "passed": 8,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has meta description",
+            "status": "Failed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "login page has exactly one main heading",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has correct title",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 2,
+      "openai": {
+        "ms": 180007,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180007,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 2,
+      "openai": {
+        "ms": 170001,
+        "outcome": "ok",
+        "promptTokens": 7012,
+        "completionTokens": 894,
+        "gates": [
+          "time budget: 169840 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 180002,
+        "error": "timeout"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "535e0c5c-ff5d-47a2-8d53-0df51c40ffdd",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is persisted after reloading the page",
+            "status": "Passed"
+          },
+          {
+            "title": "a note with special characters is persisted correctly",
+            "status": "Passed"
+          },
+          {
+            "title": "a note is persisted when using keyboard navigation",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "afab5885-acb1-4f4e-97d7-73fce4a501e1",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 0,
+          "failed": 3,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is persisted after reloading the page",
+            "status": "Failed"
+          },
+          {
+            "title": "a note with special characters is persisted correctly",
+            "status": "Failed"
+          },
+          {
+            "title": "a note is persisted when using keyboard navigation",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 2,
+      "openai": {
+        "ms": 180013,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180002,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 2,
+      "openai": {
+        "ms": 180017,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180009,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 3,
+      "openai": {
+        "ms": 180013,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180001,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 3,
+      "openai": {
+        "ms": 180015,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180007,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 3,
+      "openai": {
+        "ms": 180011,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180002,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 3,
+      "openai": {
+        "ms": 180012,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180004,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 3,
+      "openai": {
+        "ms": 176073,
+        "outcome": "ok",
+        "promptTokens": 7012,
+        "completionTokens": 928,
+        "gates": [
+          "time budget: 175900 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 180009,
+        "error": "timeout"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 4,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "d860e488-e2bb-4b5f-8712-c732b6e4f3ca",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 4,
+          "passed": 4,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Passed"
+          },
+          {
+            "title": "a new note with unique timestamp is created and persisted",
+            "status": "Passed"
+          },
+          {
+            "title": "note creation fails gracefully when form is empty",
+            "status": "Passed"
+          },
+          {
+            "title": "note with special characters is saved and persisted",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "4ab8282d-fc9a-46be-824b-d366f3222b43",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 4,
+          "passed": 1,
+          "failed": 3,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Failed"
+          },
+          {
+            "title": "a new note with unique timestamp is created and persisted",
+            "status": "Failed"
+          },
+          {
+            "title": "note creation fails gracefully when form is empty",
+            "status": "Passed"
+          },
+          {
+            "title": "note with special characters is saved and persisted",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 3,
+      "openai": {
+        "ms": 180007,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180016,
+        "error": "timeout"
+      },
+      "quality": null
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 3,
+      "openai": {
+        "ms": 180013,
+        "outcome": "timeout",
+        "promptTokens": null,
+        "completionTokens": null,
+        "gates": [
+          "time budget: no answer within 180000 ms -> rejected"
+        ]
+      },
+      "native": {
+        "ms": 180005,
+        "error": "timeout"
+      },
+      "quality": null
+    }
+  ]
+}

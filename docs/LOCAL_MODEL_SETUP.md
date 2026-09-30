@@ -19,9 +19,9 @@ TestForge at it.
 - Ollama installed and running (`ollama --version` answers; the server listens
   on `http://localhost:11434` by default).
 - About 5GB of disk for the model.
-- Patience: one generation took 29-96s across 20 live runs on the reference
-  machine (RTX 2050, 4GB VRAM), usually about a minute. A 7B model does not
-  fit entirely in 4GB of VRAM, so part of it runs on the CPU. More VRAM is faster; no GPU at all is much slower.
+- Patience: on the reference machine (RTX 2050, 4GB VRAM) one suite takes
+  about 40s with this setup (median of 21 measured, p90 57s; Phase 36
+  benchmark). More VRAM is faster; no GPU at all is much slower.
 
 ## 1. Pull the base model
 
@@ -40,6 +40,7 @@ FROM qwen2.5-coder:7b
 PARAMETER num_ctx 16384
 PARAMETER num_predict 4096
 PARAMETER temperature 0.2
+PARAMETER num_gpu 29
 ```
 
 This is not optional tuning. Ollama's OpenAI-compatible endpoint, which
@@ -47,6 +48,20 @@ TestForge uses, **silently drops a `num_ctx` sent with a request** and picks a
 context size from available VRAM instead. TestForge's prompt carries the whole
 page-inspection profile, so a small automatic context would cut it off without
 any error. Baking the sizes into the model is the only way to guarantee them.
+
+`num_gpu 29` puts all 29 of the model's layers on the GPU. Left to itself,
+Ollama put 11 there on the reference machine and ran 59% of the model on the
+CPU while 1.6GB of VRAM sat unused. The Phase 36 benchmark
+(`docs/decisions/phase-36-local-model-measurement-report.md`) measured the
+median suite at 39.5s instead of 68.2s, with the same quality, and a
+back-to-back rerun confirmed it (39.4s against 65.5s). On a 4GB card the full
+model does not quite fit: from about 22 layers the VRAM is full, and Windows'
+NVIDIA driver moves the overflow into shared system memory rather than
+failing, so a first, cold prompt is slower (about 32s to read, against 9s).
+Every later request reuses most of that work, so a normal run is faster
+overall. With more VRAM everything fits and the setting simply applies. With
+less, or on a system without that driver fallback, remove the line and let
+Ollama choose.
 
 From the repository root:
 

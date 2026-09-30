@@ -1,0 +1,4 @@
+FROM qwen2.5-coder:7b-instruct-q3_K_M
+PARAMETER num_ctx 12288
+PARAMETER num_predict 4096
+PARAMETER temperature 0.2

@@ -1,0 +1,6 @@
+num_ctx                        12288
+num_predict                    4096
+stop                           "<|start_header_id|>"
+stop                           "<|end_header_id|>"
+stop                           "<|eot_id|>"
+temperature                    0.2

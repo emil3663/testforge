@@ -1,0 +1,4 @@
+num_gpu                        29
+num_predict                    4096
+temperature                    0.2
+num_ctx                        16384

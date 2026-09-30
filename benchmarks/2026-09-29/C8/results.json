@@ -1,0 +1,1692 @@
+{
+  "config": "C8",
+  "model": "testforge-bench-c8",
+  "base": "qwen2.5-coder:7b",
+  "numCtx": 16384,
+  "numGpu": 29,
+  "numPredict": 4096,
+  "temperature": 0.2,
+  "timeoutMs": 180000,
+  "warmUp": {
+    "case": "reliability",
+    "ms": 91113,
+    "loadMs": 9096,
+    "promptEvalCount": 6608,
+    "promptEvalMs": 32240,
+    "evalCount": 468,
+    "evalMs": 49628,
+    "totalMs": 91064,
+    "doneReason": "stop"
+  },
+  "memory": {
+    "ollamaPs": "NAME                         ID              SIZE      PROCESSOR    CONTEXT    UNTIL              \ntestforge-bench-c8:latest    b53e7242ef75    5.5 GB    100% GPU     16384      4 minutes from now",
+    "gpuMemoryUsed": "3923 MiB, 4096 MiB"
+  },
+  "finishedAt": "2026-09-29T21:59:11.772Z",
+  "results": [
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 1,
+      "openai": {
+        "ms": 97104,
+        "outcome": "ok",
+        "promptTokens": 5918,
+        "completionTokens": 678,
+        "gates": [
+          "time budget: 96126 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 71771,
+        "loadMs": 27,
+        "promptEvalCount": 5918,
+        "promptEvalMs": 107,
+        "evalCount": 687,
+        "evalMs": 71144,
+        "totalMs": 71768,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 4,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "d2f91284-3dae-4d27-ade1-a6477fe7f862",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 4,
+          "passed": 3,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should navigate to the sign-in page",
+            "status": "Passed"
+          },
+          {
+            "title": "should allow input in email and password fields",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the sign-in form",
+            "status": "Passed"
+          },
+          {
+            "title": "should handle invalid input in email and password fields",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": false,
+      "detected": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 1,
+      "openai": {
+        "ms": 62776,
+        "outcome": "ok",
+        "promptTokens": 6359,
+        "completionTokens": 321,
+        "gates": [
+          "time budget: 62554 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 35179,
+        "loadMs": 32,
+        "promptEvalCount": 6359,
+        "promptEvalMs": 107,
+        "evalCount": 332,
+        "evalMs": 34703,
+        "totalMs": 35177,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 4,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "832bb0a2-79d8-4ed1-ae89-0504fb3cccc2",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 4,
+          "passed": 4,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Passed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          },
+          {
+            "title": "Page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "3cff59ee-5849-435a-8430-4c4f9f104a3e",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 4,
+          "passed": 3,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Failed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          },
+          {
+            "title": "Page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 1,
+      "openai": {
+        "ms": 50080,
+        "outcome": "ok",
+        "promptTokens": 6199,
+        "completionTokens": 213,
+        "gates": [
+          "time budget: 49881 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 22279,
+        "loadMs": 10,
+        "promptEvalCount": 6199,
+        "promptEvalMs": 106,
+        "evalCount": 211,
+        "evalMs": 21795,
+        "totalMs": 22276,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "8a407574-1435-4702-9620-0321beee4bab",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has a meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "95f6ef12-7d71-463f-83cf-6c9598e54a40",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "home page has a meta description",
+            "status": "Failed"
+          },
+          {
+            "title": "home page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 1,
+      "openai": {
+        "ms": 52370,
+        "outcome": "ok",
+        "promptTokens": 6266,
+        "completionTokens": 229,
+        "gates": [
+          "time budget: 52180 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 24184,
+        "loadMs": 12,
+        "promptEvalCount": 6266,
+        "promptEvalMs": 108,
+        "evalCount": 229,
+        "evalMs": 23750,
+        "totalMs": 24182,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "e53d728f-f7b7-4f2a-9d4b-0bba862e2067",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "77a237e6-2b71-4432-9e4c-2056bc7688db",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 2,
+          "passed": 0,
+          "failed": 2,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 1,
+      "openai": {
+        "ms": 42760,
+        "outcome": "ok",
+        "promptTokens": 6202,
+        "completionTokens": 141,
+        "gates": [
+          "time budget: 42509 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 14974,
+        "loadMs": 16,
+        "promptEvalCount": 6202,
+        "promptEvalMs": 106,
+        "evalCount": 141,
+        "evalMs": 14537,
+        "totalMs": 14971,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 1,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "5300f725-177d-4bac-9a0a-b2b8fe5af31c",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "316e7f1d-5c2a-439e-98ce-4b0132889fb1",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 1,
+          "passed": 0,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 1,
+      "openai": {
+        "ms": 55684,
+        "outcome": "ok",
+        "promptTokens": 6399,
+        "completionTokens": 251,
+        "gates": [
+          "time budget: 55495 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 26851,
+        "loadMs": 28,
+        "promptEvalCount": 6399,
+        "promptEvalMs": 105,
+        "evalCount": 253,
+        "evalMs": 26405,
+        "totalMs": 26847,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "f2e02258-7f14-404f-a15f-e333f1d92875",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "18b82601-f9c8-4182-a9c7-27788a69af46",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": false
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 1,
+      "openai": {
+        "ms": 50490,
+        "outcome": "ok",
+        "promptTokens": 6608,
+        "completionTokens": 468,
+        "gates": [
+          "time budget: 50266 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 50134,
+        "loadMs": 49,
+        "promptEvalCount": 6608,
+        "promptEvalMs": 106,
+        "evalCount": 468,
+        "evalMs": 49625,
+        "totalMs": 50127,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "9cac5d86-d223-4b95-9d0c-4396c9e676d2",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "20eba2ba-a843-40b7-b078-d6a0495d5b27",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Failed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 2,
+      "openai": {
+        "ms": 56340,
+        "outcome": "ok",
+        "promptTokens": 5918,
+        "completionTokens": 539,
+        "gates": [
+          "time budget: 56140 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 34647,
+        "loadMs": 48,
+        "promptEvalCount": 5918,
+        "promptEvalMs": 106,
+        "evalCount": 332,
+        "evalMs": 34082,
+        "totalMs": 34645,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "839b9188-9321-4342-8a3a-f5e3d5fe253a",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should accept email and password input",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the form with valid credentials",
+            "status": "Passed"
+          },
+          {
+            "title": "should display error message for invalid credentials",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": false,
+      "detected": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 2,
+      "openai": {
+        "ms": 28021,
+        "outcome": "ok",
+        "promptTokens": 6359,
+        "completionTokens": 260,
+        "gates": [
+          "time budget: 27802 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 34011,
+        "loadMs": 35,
+        "promptEvalCount": 6359,
+        "promptEvalMs": 105,
+        "evalCount": 321,
+        "evalMs": 33560,
+        "totalMs": 34007,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "8f6cadb5-726a-402b-91c9-a1224865015f",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Passed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "e9551718-bde1-46bf-b154-3e17ae6afd89",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Failed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 2,
+      "openai": {
+        "ms": 22551,
+        "outcome": "ok",
+        "promptTokens": 6199,
+        "completionTokens": 210,
+        "gates": [
+          "time budget: 22391 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 22496,
+        "loadMs": 34,
+        "promptEvalCount": 6199,
+        "promptEvalMs": 106,
+        "evalCount": 213,
+        "evalMs": 22034,
+        "totalMs": 22493,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "f9eb2b7e-e8f6-455f-bcf1-0be0812822a2",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "page has a meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "1a412647-0852-4f57-b371-6423f5c78a41",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "page has a meta description",
+            "status": "Failed"
+          },
+          {
+            "title": "page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 2,
+      "openai": {
+        "ms": 24587,
+        "outcome": "ok",
+        "promptTokens": 6266,
+        "completionTokens": 229,
+        "gates": [
+          "time budget: 24374 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 24193,
+        "loadMs": 24,
+        "promptEvalCount": 6266,
+        "promptEvalMs": 106,
+        "evalCount": 229,
+        "evalMs": 23754,
+        "totalMs": 24191,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "11ba2bcb-f782-4aaa-9da4-7c008fcce283",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "9001ab35-c503-4802-970a-fd11615fb60b",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 2,
+          "passed": 0,
+          "failed": 2,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 2,
+      "openai": {
+        "ms": 15465,
+        "outcome": "ok",
+        "promptTokens": 6202,
+        "completionTokens": 141,
+        "gates": [
+          "time budget: 15237 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 14963,
+        "loadMs": 10,
+        "promptEvalCount": 6202,
+        "promptEvalMs": 106,
+        "evalCount": 141,
+        "evalMs": 14518,
+        "totalMs": 14961,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 1,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "e63f999b-8a85-476f-9ec6-502e7a0beedf",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "e005c2e0-b768-4bbe-a278-0ccd3cd68b49",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 1,
+          "passed": 0,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 2,
+      "openai": {
+        "ms": 27057,
+        "outcome": "ok",
+        "promptTokens": 6399,
+        "completionTokens": 251,
+        "gates": [
+          "time budget: 26878 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 26642,
+        "loadMs": 18,
+        "promptEvalCount": 6399,
+        "promptEvalMs": 105,
+        "evalCount": 251,
+        "evalMs": 26208,
+        "totalMs": 26639,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "a77326bd-7df2-445c-9513-a9ba776c90d5",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "48b8dbe1-b874-4b11-8ad2-f3f2bde9363f",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": false
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 2,
+      "openai": {
+        "ms": 50452,
+        "outcome": "ok",
+        "promptTokens": 6608,
+        "completionTokens": 468,
+        "gates": [
+          "time budget: 50262 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 49652,
+        "loadMs": 21,
+        "promptEvalCount": 6608,
+        "promptEvalMs": 106,
+        "evalCount": 464,
+        "evalMs": 49192,
+        "totalMs": 49646,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "060a902c-ef4b-4c53-ad6b-f0944a558b73",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "d4030cb0-5eff-448a-87a0-8ef30bd519f9",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Failed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "call": 3,
+      "openai": {
+        "ms": 39495,
+        "outcome": "ok",
+        "promptTokens": 5918,
+        "completionTokens": 377,
+        "gates": [
+          "time budget: 39254 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 35006,
+        "loadMs": 63,
+        "promptEvalCount": 5918,
+        "promptEvalMs": 107,
+        "evalCount": 334,
+        "evalMs": 34298,
+        "totalMs": 34999,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "ba8fe2f3-0ad8-4d6e-b189-0e8d5147dc36",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should accept email and password input",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the form when Sign in button is clicked",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": null
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "call": 3,
+      "openai": {
+        "ms": 27950,
+        "outcome": "ok",
+        "promptTokens": 6359,
+        "completionTokens": 260,
+        "gates": [
+          "time budget: 27721 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 27535,
+        "loadMs": 11,
+        "promptEvalCount": 6359,
+        "promptEvalMs": 105,
+        "evalCount": 260,
+        "evalMs": 27113,
+        "totalMs": 27533,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "c4de7c46-9d0f-4e60-9fc9-2b0342f50e7d",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Passed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "d911ffa3-15c4-4e4f-8edf-edc967a6d3b0",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "Sign in button has an accessible role and name",
+            "status": "Passed"
+          },
+          {
+            "title": "Email field is labelled and reachable by keyboard",
+            "status": "Failed"
+          },
+          {
+            "title": "Password field is labelled and reachable by keyboard",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "call": 3,
+      "openai": {
+        "ms": 24223,
+        "outcome": "ok",
+        "promptTokens": 6199,
+        "completionTokens": 208,
+        "gates": [
+          "time budget: 23997 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 22150,
+        "loadMs": 30,
+        "promptEvalCount": 6199,
+        "promptEvalMs": 108,
+        "evalCount": 210,
+        "evalMs": 21694,
+        "totalMs": 22146,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "7a5246bb-c6dc-45c0-b5fc-429dfb6f9efb",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "page has a meta description",
+            "status": "Passed"
+          },
+          {
+            "title": "page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "e12cca47-1df5-46a4-bbe9-459507979301",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page has a title",
+            "status": "Passed"
+          },
+          {
+            "title": "page has a meta description",
+            "status": "Failed"
+          },
+          {
+            "title": "page has exactly one main heading",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "call": 3,
+      "openai": {
+        "ms": 24553,
+        "outcome": "ok",
+        "promptTokens": 6266,
+        "completionTokens": 229,
+        "gates": [
+          "time budget: 24388 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 24205,
+        "loadMs": 9,
+        "promptEvalCount": 6266,
+        "promptEvalMs": 107,
+        "evalCount": 229,
+        "evalMs": 23755,
+        "totalMs": 24203,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "4460cebf-ddcc-4450-8570-ef4f9ac81114",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "7128dcfb-be90-4a16-96fb-7a9531bc46bb",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 2,
+          "passed": 0,
+          "failed": 2,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page finishes loading within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the home page is ready quickly",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "call": 3,
+      "openai": {
+        "ms": 15466,
+        "outcome": "ok",
+        "promptTokens": 6202,
+        "completionTokens": 141,
+        "gates": [
+          "time budget: 15243 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 14994,
+        "loadMs": 14,
+        "promptEvalCount": 6202,
+        "promptEvalMs": 106,
+        "evalCount": 141,
+        "evalMs": 14548,
+        "totalMs": 14992,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 1,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "35877e57-8de4-461e-bd1d-423ef890bdce",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "a09133c2-2361-4056-9f9e-0b12e69fb061",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 1,
+          "passed": 0,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "a new note is still shown after reloading the page",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "call": 3,
+      "openai": {
+        "ms": 27047,
+        "outcome": "ok",
+        "promptTokens": 6399,
+        "completionTokens": 251,
+        "gates": [
+          "time budget: 26827 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 26623,
+        "loadMs": 10,
+        "promptEvalCount": 6399,
+        "promptEvalMs": 106,
+        "evalCount": 251,
+        "evalMs": 26214,
+        "totalMs": 26621,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 2,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "537f119d-8865-4dc6-94df-b96c1193cbd6",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "11d61717-8e9a-43d4-ac09-ae7788884196",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 2,
+          "passed": 1,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "invalid input is not accepted",
+            "status": "Passed"
+          },
+          {
+            "title": "input that looks like a script is not executed",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "call": 3,
+      "openai": {
+        "ms": 50497,
+        "outcome": "ok",
+        "promptTokens": 6608,
+        "completionTokens": 468,
+        "gates": [
+          "time budget: 50309 ms -> kept",
+          "type check: 0 type errors -> kept",
+          "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+        ]
+      },
+      "native": {
+        "ms": 50110,
+        "loadMs": 29,
+        "promptEvalCount": 6608,
+        "promptEvalMs": 106,
+        "evalCount": 468,
+        "evalMs": 49641,
+        "totalMs": 50107,
+        "doneReason": "stop"
+      },
+      "quality": {
+        "typeErrors": 0,
+        "unawaitedAssertions": 0,
+        "gatesPassed": true,
+        "tests": 3,
+        "categorySignal": true,
+        "leakedExampleData": false,
+        "duplicateTitles": []
+      },
+      "clean": {
+        "runId": "baed7525-735e-47bd-a504-23cd7ad82981",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "bc6d2dec-d0b4-482e-ac36-ad51b7199684",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page still works when its API requests fail",
+            "status": "Failed"
+          },
+          {
+            "title": "page still works when third-party requests fail",
+            "status": "Passed"
+          },
+          {
+            "title": "page still works when localStorage is unavailable",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-09-29T17:41:21.823Z",
+  "windows": "Microsoft Windows [Version 10.0.26200.9457]",
+  "osRelease": "10.0.26200",
+  "gpu": "NVIDIA GeForce RTX 2050, 610.78, 4096 MiB",
+  "gpuPrograms": "3436, C:\\Users\\MSI workstation\\AppData\\Local\\Programs\\Ollama\\lib\\ollama\\llama-server.exe, [N/A]",
+  "otherGpuPrograms": "none",
+  "ollama": "ollama version is 0.34.4",
+  "ollamaEnv": {
+    "OLLAMA_FLASH_ATTENTION": null,
+    "OLLAMA_KV_CACHE_TYPE": null
+  },
+  "node": "v24.14.1"
+}
