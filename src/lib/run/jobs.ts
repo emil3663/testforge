@@ -9,6 +9,7 @@ import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
 import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
 import { estimateTestCount } from "@/lib/run/selection";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled" | "empty";
 
@@ -95,6 +96,11 @@ export interface RunJob {
     // Phase 34 (TFP-119): how the suite was generated (gap-fill outcome and
     // gate verdicts), as the client received it from /api/generate.
     generation: GenerationRecord | null;
+    // Phase 35 (TFP-132): Standard, or Comprehensive for one area. Optional
+    // so jobs built before it existed (and in tests) read as Standard.
+    runMode?: RunMode;
+    // The Playwright worker count the run used (Decision 2's one-worker rule).
+    workerCount?: number;
     // TFP-094: the run's secret values (credentials and session contents),
     // used to scrub everything the run produces. In memory only: never on a
     // snapshot, never persisted, and cleared once the run is finalized.
@@ -205,7 +211,9 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             job.contentProfile,
             suiteCode,
             job.generation,
-            job.description
+            job.description,
+            job.runMode,
+            job.workerCount
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;

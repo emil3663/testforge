@@ -277,6 +277,20 @@ function findingsOf(test: JsonTest): string[] {
     return [...new Set(found)];
 }
 
+// Phase 35 (TFP-132): a Comprehensive test's page, its OWASP/WCAG group and
+// its ASVS requirement IDs, from static annotations. Standard tests carry
+// none, so their records don't change.
+function annotationValues(test: JsonTest, type: string): string[] {
+    return [...new Set((test.annotations ?? []).filter((a) => a.type === type && a.description).map((a) => a.description!.trim()))];
+}
+
+function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "category" | "asvs"> {
+    const [page] = annotationValues(test, "page");
+    const [category] = annotationValues(test, "category");
+    const asvs = annotationValues(test, "asvs");
+    return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(asvs.length > 0 ? { asvs } : {}) };
+}
+
 function withGenerator(remark: string, localModel: string | null) {
     return localModel ? `${remark} Written by the local model (${localModel}).` : remark;
 }
@@ -341,6 +355,7 @@ export function flattenSuites(
                     findings: findingsOf(test),
                     generator: localModel ? "local model" : "template",
                     ...(status === "Not run" && skipReason ? { skipReason } : {}),
+                    ...comprehensiveTags(test),
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(
                         spec.title,

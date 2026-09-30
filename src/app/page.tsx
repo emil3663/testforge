@@ -9,6 +9,8 @@ import { JourneyReviewSection } from "@/app/_components/JourneyReviewSection";
 import { LoginConfigSection } from "@/app/_components/LoginConfigSection";
 import { ReportSection } from "@/app/_components/ReportSection";
 import { RunProgressOverlay } from "@/app/_components/RunProgressOverlay";
+import { RunTypeSection, type RunTypeChoice } from "@/app/_components/RunTypeSection";
+import { DEFAULT_PAGE_CAP, MAX_PAGE_CAP, STANDARD_RUN, type ComprehensiveArea, type RunMode } from "@/lib/comprehensive/run-mode";
 import { useCrawl } from "@/app/_hooks/useCrawl";
 import { useGeneration } from "@/app/_hooks/useGeneration";
 import { useRun } from "@/app/_hooks/useRun";
@@ -70,6 +72,11 @@ export default function Home() {
     // TFP-097: the run's login, entered as references (never a credential).
     const [loginInputs, setLoginInputs] = useState<LoginInputs>({ ...EMPTY_LOGIN_INPUTS });
     const [isLoginCollapsed, setIsLoginCollapsed] = useState(true);
+    // Phase 35 (TFP-132): Standard (unchanged) or Comprehensive for one area.
+    const [runType, setRunType] = useState<RunTypeChoice>("standard");
+    const [comprehensiveArea, setComprehensiveArea] = useState<ComprehensiveArea>("security");
+    const [pageCapInput, setPageCapInput] = useState(String(DEFAULT_PAGE_CAP));
+    const [isRunTypeCollapsed, setIsRunTypeCollapsed] = useState(true);
 
     const crawl = useCrawl(baseUrl);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
@@ -109,7 +116,8 @@ export default function Home() {
     function buildGenerateParams() {
         return {
             baseUrl,
-            effectiveSelectedPractices,
+            effectiveSelectedPractices: practicesInScope,
+            runMode,
             isDescriptionPlaceholderActive,
             description,
             auditMode,
@@ -158,6 +166,15 @@ export default function Home() {
     const inferredPractices = inferBestPracticesFromDescription(effectiveDescriptionText);
     const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...(selectedPractices.length > 0 ? [] : inferredPractices)])]
         .filter((practice) => !deselectedPractices.includes(practice));
+    const pageCap = Number(pageCapInput);
+    const pageCapProblem = runType === "comprehensive" && (!Number.isInteger(pageCap) || pageCap < 1 || pageCap > MAX_PAGE_CAP)
+        ? `The page cap must be a whole number from 1 to ${MAX_PAGE_CAP}.`
+        : "";
+    const runMode: RunMode = runType === "comprehensive"
+        ? { kind: "comprehensive", area: comprehensiveArea, level: comprehensiveArea === "security" ? "passive" : null, pageCap: pageCapProblem ? DEFAULT_PAGE_CAP : pageCap }
+        : STANDARD_RUN;
+    // A Comprehensive run covers its one area; a Standard run the selected ones.
+    const practicesInScope: BestPracticeArea[] = runMode.kind === "comprehensive" ? [runMode.area] : effectiveSelectedPractices;
     const normalizedBaseUrlForDisplay = normalizeBaseUrl(baseUrl);
     const parsedDisplayPaths = parseContentLines(contentPathsInput).map((item) =>
         item.startsWith("/") ? item : `/${item}`
@@ -180,7 +197,8 @@ export default function Home() {
         contentRules.requiredText.length > 0 ||
         contentRules.forbiddenText.length > 0 ||
         contentRules.paths.some((path) => path !== "/");
-    const selectedPracticeSignature = JSON.stringify([...effectiveSelectedPractices].sort());
+    const selectedPracticeSignature = JSON.stringify([...practicesInScope].sort());
+    const isRunModeReady = JSON.stringify(generation.lastGeneratedRunMode) === JSON.stringify(runMode);
     const isContentAwareReady =
         !contentAwareRequested ||
         (generation.contentProfile !== null &&
@@ -192,6 +210,10 @@ export default function Home() {
     const { login: loginBlock, problem: loginProblem } = buildLoginBlock(loginInputs);
     const runBlockedMessage = loginProblem
         ? `Fix the login settings before running: ${loginProblem}`
+        : pageCapProblem
+        ? pageCapProblem
+        : !isRunModeReady
+        ? "Generate the suite again after changing the run type before running it."
         : !isContentAwareReady
         ? "Generate the suite again after completing the content-aware inputs before running it."
         : !isPracticeSelectionReady
@@ -214,7 +236,7 @@ export default function Home() {
             ? "Stopping generated Playwright suite..."
             : "Running generated Playwright suite...";
     const activeRunProgress = isRunning ? run.runProgress : null;
-    const canGenerateOrRun = effectiveSelectedPractices.length > 0;
+    const canGenerateOrRun = practicesInScope.length > 0 && !pageCapProblem;
     const contentInsights = deriveContentInsights(generation.contentProfile, auditMode);
     const { busyInspectionTargetsPreview, remainingBusyInspectionTargets } = deriveBusyInspectionTargets(
         isRunning,
@@ -232,14 +254,15 @@ export default function Home() {
 
     const runParams = {
         code: generation.editedCode,
-        selectedPractices: effectiveSelectedPractices,
+        selectedPractices: practicesInScope,
         auditMode: generation.lastGeneratedAuditMode,
         baseUrl: generation.lastGeneratedBaseUrl,
-        description: (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(effectiveSelectedPractices),
+        description: (isDescriptionPlaceholderActive ? "" : description).trim() || buildSelectedPracticeDescription(practicesInScope),
         contentProfile: generation.contentProfile,
         enableInteractive,
         login: loginBlock,
         generation: generation.lastGeneration,
+        runMode: generation.lastGeneratedRunMode,
     };
     const boundHandleRun = () => run.handleRun(runParams);
     const boundHandleContinueRun = () => run.handleContinueRun(runParams);
@@ -382,6 +405,18 @@ export default function Home() {
                     />
                 )}
 
+                <RunTypeSection
+                    runType={runType}
+                    setRunType={setRunType}
+                    comprehensiveArea={comprehensiveArea}
+                    setComprehensiveArea={setComprehensiveArea}
+                    pageCapInput={pageCapInput}
+                    setPageCapInput={setPageCapInput}
+                    pageCapProblem={pageCapProblem}
+                    isCollapsed={isRunTypeCollapsed}
+                    setIsCollapsed={setIsRunTypeCollapsed}
+                />
+
                 <LoginConfigSection
                     loginInputs={loginInputs}
                     setLoginInputs={setLoginInputs}
@@ -402,7 +437,7 @@ export default function Home() {
                     hasCode={hasCode}
                     isRunning={isRunning}
                     isContentAwareReady={isContentAwareReady}
-                    isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && !loginProblem}
+                    isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && isRunModeReady && !loginProblem}
                     canGenerateOrRun={canGenerateOrRun}
                     isGenerating={isGenerating}
                     runBlockedMessage={runBlockedMessage}
@@ -431,7 +466,7 @@ export default function Home() {
                         canGenerateOrRun={canGenerateOrRun}
                         hasCode={hasCode}
                         isContentAwareReady={isContentAwareReady}
-                        isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && !loginProblem}
+                        isPracticeSelectionReady={isPracticeSelectionReady && isJourneySelectionReady && isRunModeReady && !loginProblem}
                     />
                 )}
             </main>

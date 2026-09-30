@@ -11,6 +11,8 @@ import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
+import { comprehensiveLabel, isComprehensive, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type TestAuditMode = "fast" | "deep";
 
@@ -86,7 +88,8 @@ export async function startRunJob(
     contentProfile: ContentProfile | null = null,
     enableInteractive = false,
     login: LoginConfig | null = null,
-    generation: GenerationRecord | null = null
+    generation: GenerationRecord | null = null,
+    runMode: RunMode = STANDARD_RUN
 ) {
     const browserProjects = ["chromium"];
     const runSelection = buildRunSelection(code, excludedTestTitles, includedTestTitles);
@@ -95,7 +98,9 @@ export async function startRunJob(
         throw new Error("No remaining tests are available to run.");
     }
 
-    const workerCount = calculateWorkerCount(auditMode);
+    // Phase 35 (TFP-132, Decision 2): a Comprehensive run on anyone else's
+    // host runs one test at a time.
+    const workerCount = workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode));
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
@@ -156,6 +161,8 @@ export async function startRunJob(
         enableInteractive,
         login,
         generation,
+        runMode,
+        workerCount,
         redactions: preparedLogin?.secrets ?? [],
         artifactFiles: new Map(),
         result: null,
@@ -207,6 +214,11 @@ export async function startRunJob(
     job.outputChunks.push(
         `Run budget: up to ${Math.round(runTimeout / 1000)}s for ~${estimatedExecutions} execution(s) across ${browserProjects.length} browser project(s) in ${auditMode} mode.\n`
     );
+    if (isComprehensive(runMode)) {
+        job.outputChunks.push(
+            `${comprehensiveLabel(runMode)} run with ${workerCount} worker${workerCount === 1 ? " (one at a time: this is not a local development host)" : "s (local development host)"}.\n`
+        );
+    }
 
     child.stdout?.setEncoding("utf8");
     child.stderr?.setEncoding("utf8");

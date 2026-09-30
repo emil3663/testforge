@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { buildBusyInspectionTargets, buildSelectedPracticeDescription, normalizeBaseUrl, normalizeInspectionPaths, parseContentLines, parseNamedFlowLines } from "@/app/_lib/derive";
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, CrawlResult, SavedSuiteResult, Step, TestAuditMode } from "@/app/_lib/types";
+import { STANDARD_RUN, type RunMode } from "@/lib/comprehensive/run-mode";
 
 interface HandleGenerateParams {
     baseUrl: string;
@@ -18,6 +19,8 @@ interface HandleGenerateParams {
     // against the profile actually used before being sent, so a stale id
     // from an earlier scan never reaches run config.
     selectedJourneyIds: string[];
+    // Phase 35 (TFP-132): Standard, or Comprehensive for one area.
+    runMode: RunMode;
     crawlResult: CrawlResult | null;
     selectedCrawledPaths: string[];
     setCrawlError: (message: string) => void;
@@ -41,6 +44,9 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
     // verdicts), passed on to /api/run so the run records it. Null when the
     // generate response carried none (template-only).
     const [lastGeneration, setLastGeneration] = useState<Record<string, unknown> | null>(null);
+    // Phase 35 (TFP-132): the run mode the suite on screen was generated for;
+    // a run always uses this one, and changing the choice asks for a regenerate.
+    const [lastGeneratedRunMode, setLastGeneratedRunMode] = useState<RunMode>(STANDARD_RUN);
     const [editing, setEditing] = useState(false);
     const [copyLabel, setCopyLabel] = useState("Copy");
     const [saveLabel, setSaveLabel] = useState("Add to Test Explorer");
@@ -205,11 +211,13 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
                     auditMode: params.auditMode,
                     contentRules: { ...contentRules, selectedJourneyIds },
                     contentProfile: introspectionData,
+                    ...(params.runMode.kind === "comprehensive" ? { runMode: params.runMode } : {}),
                 }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Generation failed");
             setEditedCode(data.code);
+            setLastGeneratedRunMode(params.runMode);
             setLastGeneration(typeof data.generatedBy === "string" ? { generatedBy: data.generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates } : null);
             if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {
                 params.setBaseUrl(defaultBaseUrl);
@@ -228,6 +236,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
     return {
         editedCode,
         lastGeneration,
+        lastGeneratedRunMode,
         setEditedCode,
         editing,
         setEditing,

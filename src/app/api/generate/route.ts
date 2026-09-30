@@ -18,9 +18,12 @@ import type { PageInspectionRecord } from "@/lib/report/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { buildGapFillMessages, buildGenerationMessages, type GenerationRequestContext } from "@/lib/generate/messages";
 import { selectJourneys } from "@/lib/introspect/journeys";
+import { isComprehensive, normalizeRunMode, RunModeError, type RunMode } from "@/lib/comprehensive/run-mode";
+import { selectComprehensivePages } from "@/lib/comprehensive/pages";
+import { buildComprehensiveSuite } from "@/lib/generate/comprehensive";
 
 export async function POST(req: NextRequest) {
-    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect } = await req.json().catch(() => ({}));
+    const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect, runMode } = await req.json().catch(() => ({}));
 
     if (!description || typeof description !== "string") {
         return NextResponse.json(
@@ -35,6 +38,17 @@ export async function POST(req: NextRequest) {
             { error: normalizedBaseUrl.message },
             { status: 400 }
         );
+    }
+
+    // Phase 35 (TFP-132): absent means a Standard run, handled exactly as
+    // before. An invalid Comprehensive request is refused, never run as
+    // something else.
+    let normalizedRunMode: RunMode;
+    try {
+        normalizedRunMode = normalizeRunMode(runMode);
+    } catch (error) {
+        if (error instanceof RunModeError) return NextResponse.json({ error: error.message }, { status: 400 });
+        throw error;
     }
 
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
@@ -55,6 +69,19 @@ export async function POST(req: NextRequest) {
     // it is exactly what it was before TFP-122; with one, it says so.
     const respond = (body: Record<string, unknown>) =>
         NextResponse.json(pageInspection ? { ...body, generatedBy: body.generatedBy ?? "template", pageInspection } : body);
+
+    // Phase 35 (TFP-132, Decisions 1 and 2): one area, every known page up to
+    // the cap, its own suite. The local model's scenarios for it are TFP-135.
+    if (isComprehensive(normalizedRunMode)) {
+        const pageScope = selectComprehensivePages(normalizedContentProfile, normalizedBaseUrl.value, normalizedRunMode.pageCap);
+        return respond({
+            code: buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope),
+            generatedBy: "template",
+            runMode: normalizedRunMode,
+            pageScope,
+            gates: [],
+        });
+    }
 
     const normalizedContentRules = normalizeContentRules(contentRules);
     normalizedContentRules.selectedJourneyIds = selectJourneys(

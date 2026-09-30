@@ -5,6 +5,7 @@ import { BASE_REPORT_TABS } from "@/app/_lib/constants";
 import { getContinuationExcludedTitles } from "@/app/_lib/derive";
 import { pollRunUntilDone } from "@/app/_hooks/pollRun";
 import type { ContentProfile, ReportTab, RunLifecycleStatus, RunProgressSnapshot, RunResult, RunStatusSnapshot, Step, TestAuditMode } from "@/app/_lib/types";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 interface StartRunParams {
     code: string;
@@ -20,6 +21,8 @@ interface StartRunParams {
     login?: Record<string, string> | null;
     // Phase 34 (TFP-119): what /api/generate reported about this suite.
     generation?: Record<string, unknown> | null;
+    // Phase 35 (TFP-132): the run mode the suite was generated for.
+    runMode?: RunMode;
 }
 
 export function useRun(
@@ -161,7 +164,7 @@ export function useRun(
         window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
     }, [openReportInNewPage, result]);
 
-    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null, enableInteractive = false, login = null, generation = null }: StartRunParams) {
+    async function startRun({ code, selectedPractices, auditMode, baseUrl, description = "", excludeTestTitles = [], includeTestTitles = [], contentProfile = null, enableInteractive = false, login = null, generation = null, runMode }: StartRunParams) {
         if (selectedPractices.length === 0) {
             setError("Select at least one best-practice area before running tests.");
             return;
@@ -204,6 +207,7 @@ export function useRun(
                     enableInteractive,
                     login: login ?? undefined,
                     generation: generation ?? undefined,
+                    runMode: runMode?.kind === "comprehensive" ? runMode : undefined,
                 }),
             });
             const data = (await res.json()) as RunStatusSnapshot | { error?: string };

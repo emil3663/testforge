@@ -12,6 +12,8 @@ import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import type { GenerationRecord, JsonReport, RunReport } from "./types";
+import { buildComprehensiveReport } from "./comprehensive";
+import { isComprehensive, type RunMode } from "@/lib/comprehensive/run-mode";
 
 export function buildReport(
     report: JsonReport,
@@ -21,7 +23,9 @@ export function buildReport(
     contentProfile: ContentProfile | null = null,
     suiteCode: string | null = null,
     generation: GenerationRecord | null = null,
-    description = ""
+    description = "",
+    runMode: RunMode | undefined = undefined,
+    workerCount: number | undefined = undefined
 ): RunReport {
     const execution = flattenSuites(report.suites ?? []);
     const defects = buildDefects(execution);
@@ -58,6 +62,11 @@ export function buildReport(
         performance,
         usability,
         seo,
+        // Phase 35 (TFP-132): only on a Comprehensive run, so a Standard
+        // report is exactly what it was.
+        ...(isComprehensive(runMode)
+            ? { comprehensive: buildComprehensiveReport(execution, runMode, contentProfile, baseUrl ?? "", workerCount ?? null) }
+            : {}),
         rawOutput: output,
     };
 }

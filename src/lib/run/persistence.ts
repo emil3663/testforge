@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import type { LoginConfig } from "@/lib/run/auth";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
+import { isComprehensive, type RunMode } from "@/lib/comprehensive/run-mode";
 
 export type RunRetention = "full" | "archived";
 
@@ -42,6 +43,9 @@ export interface RunRecord {
     // Phase 34 (TFP-119): how the suite was generated - gap-fill outcome and
     // gate verdicts with their evidence (Decision 8). Absent on older runs.
     generation?: GenerationRecord | null;
+    // Phase 35 (TFP-132): present only on Comprehensive runs, so a Standard
+    // run's record is exactly what it was.
+    runMode?: RunMode;
 }
 
 // Overridable so tests never read or write the real runs/ directory a live
@@ -148,6 +152,7 @@ export async function persistRunJob(
         enableInteractive: job.enableInteractive,
         login: job.login,
         generation: job.generation,
+        ...(isComprehensive(job.runMode) ? { runMode: job.runMode } : {}),
     };
 
     await writeRunRecord(record);

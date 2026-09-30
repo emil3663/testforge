@@ -156,3 +156,40 @@ test("an empty suite with any other error is still a failed run", async () => {
     const job = await finalizeWithSuite(suite, report);
     assert.equal(job.status, "failed");
 });
+
+// --- Phase 35 TFP-132: a Comprehensive run is reported and saved as one ----
+
+const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
+const { loadRunRecord } = await import("./persistence.ts");
+
+function passingReport(page: string) {
+    return JSON.stringify({
+        suites: [{ title: "s.spec.ts", specs: [], suites: [{ title: "Security Coverage", specs: [], suites: [{ title: `Page ${page}`, suites: [], specs: [{ id: "a", title: `TFSC-001: ${page} loads`, tests: [{ projectName: "chromium", status: "expected", annotations: [{ type: "page", description: page }], results: [{ duration: 5, retry: 0, errors: [] }] }] }] }] }] }],
+        errors: [],
+        stats: { duration: 5, expected: 1, unexpected: 0, flaky: 0, skipped: 0 },
+    });
+}
+
+test("a Comprehensive run's report carries its area section, and its saved record names the run mode", async () => {
+    const runMode = normalizeRunMode({ kind: "comprehensive", area: "security" });
+    const job = makeJob({ runMode, workerCount: 1, selectedPractices: ["security"], contentProfile: null });
+    await writeFile(job.testFile, "import { test } from '@playwright/test';\ntest('x', async () => {});\n", "utf8");
+    await writeFile(job.jsonReportFile, passingReport("/"), "utf8");
+    await finalizeRunJob(job as never);
+    const result = (job as unknown as { result: { runStatus: string; report: { comprehensive?: { label: string; pages: unknown[]; workerNote: string } } } }).result;
+    assert.equal(result.runStatus, "passed");
+    assert.equal(result.report.comprehensive?.label, "Comprehensive security (passive)");
+    assert.deepEqual(result.report.comprehensive?.pages, [{ path: "/", tests: 1, passed: 1, failed: 0, notRun: 0, findings: 0 }]);
+    assert.match(result.report.comprehensive!.workerNote, /^One worker/);
+    assert.deepEqual((await loadRunRecord(job.id))?.runMode, runMode);
+});
+
+test("a Standard run's report and saved record carry nothing new", async () => {
+    const job = makeJob({ contentProfile: null });
+    await writeFile(job.testFile, "import { test } from '@playwright/test';\ntest('x', async () => {});\n", "utf8");
+    await writeFile(job.jsonReportFile, passingReport("/"), "utf8");
+    await finalizeRunJob(job as never);
+    const report = (job as unknown as { result: { report: Record<string, unknown> } }).result.report;
+    assert.equal("comprehensive" in report, false);
+    assert.equal("runMode" in ((await loadRunRecord(job.id)) as object), false);
+});

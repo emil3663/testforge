@@ -84,6 +84,12 @@ export interface ExecutionRecord {
     generator?: "template" | "local model";
     /** Phase 34 Option C: why a "Not run" test did not run (its skip annotation). */
     skipReason?: string;
+    /** Phase 35 (TFP-132): the page a Comprehensive test checked (`page` annotation). */
+    page?: string;
+    /** Phase 35: its OWASP Top 10 category or WCAG criterion (`category` annotation). */
+    category?: string;
+    /** Phase 35: ASVS 5.0 requirement IDs it verifies (`asvs` annotations), e.g. "3.4.1". */
+    asvs?: string[];
     rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];
@@ -277,6 +283,9 @@ export interface RunReport {
         tasksCompleted: number;
         totalTasks: number;
     };
+    // Phase 35 (TFP-132, Decision 7): present only on a Comprehensive run;
+    // the report then shows this area alone. Absent on Standard runs.
+    comprehensive?: ComprehensiveReport;
     seo: {
         requested: boolean;
         score: number;
@@ -329,4 +338,70 @@ export interface EmptyAreaRecord {
     area: string;
     /** Why the area has no tests, most specific first. */
     reasons: string[];
+}
+
+/** Phase 35 (TFP-132, Decision 7): one row of a Comprehensive run's per-page table. */
+export interface ComprehensivePageRow {
+    path: string;
+    tests: number;
+    passed: number;
+    failed: number;
+    notRun: number;
+    findings: number;
+}
+
+/** A failure or finding, naming the page and the test (and so the element). */
+export interface ComprehensiveIssue {
+    page: string;
+    title: string;
+    detail: string;
+}
+
+/** Failures and findings under one OWASP Top 10 category or WCAG criterion. */
+export interface ComprehensiveGroup {
+    category: string;
+    failures: ComprehensiveIssue[];
+    findings: ComprehensiveIssue[];
+}
+
+export interface ComprehensiveAsvsRow {
+    id: string;
+    name: string;
+    passiveReach: "in reach" | "out of reach";
+    why: string;
+    /** From the ASVS tags on checks that actually ran in this run. */
+    testedInRun: boolean;
+}
+
+export interface ComprehensiveReport {
+    area: "security" | "accessibility";
+    level: "passive" | null;
+    /** e.g. "Comprehensive security (passive)". */
+    label: string;
+    pageCap: number;
+    pagesCovered: string[];
+    pagesNotCovered: string[];
+    /** Playwright workers the run used, and why (Decision 2). */
+    workerCount: number | null;
+    workerNote: string;
+    summary: {
+        pages: number;
+        tests: number;
+        passed: number;
+        failed: number;
+        notRun: number;
+        findings: number;
+        /** One line: what the run found, never "the area is fine". */
+        headline: string;
+    };
+    pages: ComprehensivePageRow[];
+    groups: ComprehensiveGroup[];
+    /** Decision 5: the local model's scenarios, outside the verdict. */
+    model: { status: "not-asked"; note: string };
+    /** Decision 6: the fixed statement of what this run did not test. */
+    notTested: {
+        statements: string[];
+        pagesNotCovered: string | null;
+        asvs: { source: string; chapters: ComprehensiveAsvsRow[] } | null;
+    };
 }

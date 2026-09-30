@@ -1,4 +1,5 @@
 import { CollapsibleSection } from "@/app/_components/CollapsibleSection";
+import { ComprehensiveReportView } from "@/app/_components/ComprehensiveReportView";
 import { CoverageTab } from "@/app/_components/CoverageTab";
 import { DefectsTab } from "@/app/_components/DefectsTab";
 import { DonutChart } from "@/app/_components/DonutChart";
@@ -89,7 +90,36 @@ export function ReportSection({
     rawOutputExportLabel,
 }: ReportSectionProps) {
     return (
-                result && report ? (
+                result && report?.comprehensive ? (
+                    // Phase 35 (TFP-132): a Comprehensive run's report shows its area only.
+                    <CollapsibleSection
+                        title="Test Reports"
+                        subtitle={`${report.comprehensive.label}: this area only.`}
+                        collapsed={isReportCollapsed}
+                        onToggle={() => setIsReportCollapsed((value) => !value)}
+                    >
+                        <div className="space-y-6">
+                            <ComprehensiveReportView report={report.comprehensive} />
+                            <RawConsolePanel
+                                result={result}
+                                report={report}
+                                handleContinueRun={handleContinueRun}
+                                hasCode={hasCode}
+                                isRunning={isRunning}
+                                isContentAwareReady={isContentAwareReady}
+                                isPracticeSelectionReady={isPracticeSelectionReady}
+                                canGenerateOrRun={canGenerateOrRun}
+                                canContinueCancelledRun={canContinueCancelledRun}
+                                handleCopyRawOutput={handleCopyRawOutput}
+                                rawOutputCopyLabel={rawOutputCopyLabel}
+                                handleExportHtmlReport={handleExportHtmlReport}
+                                htmlReportExportLabel={htmlReportExportLabel}
+                                handleExportRawOutput={handleExportRawOutput}
+                                rawOutputExportLabel={rawOutputExportLabel}
+                            />
+                        </div>
+                    </CollapsibleSection>
+                ) : result && report ? (
                     <CollapsibleSection
                         title="Test Reports"
                         subtitle="Review the structured Allure-inspired report from the latest execution."

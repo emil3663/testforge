@@ -3,6 +3,7 @@ import { buildFallbackExecutionHtmlMarkup } from "./status";
 import { describePageInspection } from "./page-inspection-text";
 import { noTestRan } from "./summary";
 import type { RunReport } from "./types";
+import { buildComprehensiveHtmlDocument } from "./comprehensive-html";
 
 interface RunResultLike {
     runId: string;
@@ -13,6 +14,8 @@ interface RunResultLike {
 }
 
 export function buildReportHtmlDocument(report: RunReport, runId: string) {
+    // Phase 35 (TFP-132): a Comprehensive run's report shows its area only.
+    if (report.comprehensive) return buildComprehensiveHtmlDocument(report, runId);
     function statusBadge(status: string) {
         const map: Record<string, string> = { Passed: "badge-passed", Failed: "badge-failed", Blocked: "badge-blocked", Flaky: "badge-flaky", "Not run": "badge-not-run" };
         const cls = map[status] ?? "badge-neutral";
