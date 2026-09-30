@@ -13,19 +13,34 @@ generated suite, machine details, the Modelfile Ollama ran) and
 Reproduce: `npm run benchmark:local -- --config <id> ...`, then
 `node scripts/benchmark-summary.mjs benchmarks/<date>/<id>`.
 
+> **Correction, 2026-09-30 (after independent verification).** The benchmark
+> ran each model suite on its own, without the `test.use({ baseURL })` that
+> TestForge's merged gap-fill suite gives it. Suites that navigated to a
+> relative URL (`page.goto('/login')`) therefore failed with "Cannot
+> navigate to invalid URL", which would have worked in TestForge. Only C3
+> (3 suites) and C6 (2) wrote relative URLs. Those 5 suites were re-run
+> with the base URL, with no new model calls (`--rerun-relative`,
+> `benchmarks/2026-09-29/C3|C6/rerun-with-base-url.json`). Corrected:
+> **C3 now meets the bar** (19 clean-run passes, not 17); C6 still does
+> not. **The choice is unchanged:** C8 is still the fastest qualifier,
+> and still C7's base. The original figures stay in `results.json`; the
+> tables below show both where they differ. The benchmark now adds the
+> base URL itself.
+
 ## Bottom line
 
 **C8 wins: `testforge-qwen7b` unchanged except `num_gpu 29`**, which puts
-all 29 of the model's layers on the GPU (Ollama chose 11 by itself). It is
-the only configuration that meets Decision 7's quality bar, and it is the
-fastest of all that do: median **39.5 s** per suite against C1's **68.2 s**
+all 29 of the model's layers on the GPU (Ollama chose 11 by itself). It
+meets Decision 7's quality bar, and it is the fastest of all that do
+(C3 also qualifies, after the correction above, at 56.9 s): median **39.5 s** per suite against C1's **68.2 s**
 (p90 56.3 s against 129.9 s), with the same code quality and defect
 detection. A back-to-back confirmation run on the same machine gave the
 same result: C8 39.4 s, C1 65.5 s.
 
-- No smaller, lower-precision or different model qualified. Each was faster
-  or smaller, but lost suites to the gates, to false failures on the
-  healthy fixture, or to timeouts.
+- Of the smaller, lower-precision or different models, only the q3_K_M 7B
+  (C3) qualified, after the correction, and it is slower than C8. The rest
+  lost suites to the gates, to false failures on the healthy fixture, or to
+  timeouts.
 - `qwen3.5:4b` (C5) timed out on 16 of 21 calls: it reasons before
   answering by default, and at under 5 tokens per second that doesn't fit
   in TestForge's 180 s budget. The 5 it finished were good.
@@ -48,10 +63,10 @@ no more timeouts than C1.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | **C1** | qwen2.5-coder 7B q4_K_M, 16384 (today) | 68.2 / 129.9 s | 0 | 21 | 21 | 20 | 16 of 18 | 5.8 GB, 59/41 | baseline |
 | C2 | same, 12288 | 65.9 / 118.6 s | 0 | 21 | 21 | 18 | 16 of 18 | 5.6 GB, 59/41 | ✗ clean −2 |
-| C3 | qwen2.5-coder 7B q3_K_M, 12288 | 56.9 / 106.4 s | 0 | 21 | 21 | 17 | 15 of 18 | 4.7 GB, 52/48 | ✗ clean −3 |
+| C3 | qwen2.5-coder 7B q3_K_M, 12288 | 56.9 / 106.4 s | 0 | 21 | 21 | ~~17~~ **19** | 15 of 18 | 4.7 GB, 52/48 | ~~✗ clean −3~~ **✓** (corrected) |
 | C4 | qwen2.5-coder 3B q4_K_M, 12288 | 12.3 / 148.7 s | 0 | 16 | 21 | 12 | 12 of 15 | 2.8 GB, 14/86 | ✗ gates −5 |
 | C5 | qwen3.5 4B q4_K_M, 12288 | 180 / 180 s | 16 | 5 | 5 | 4 | 5 of 5 | 4.0 GB, 54/46 | ✗ timeouts |
-| C6 | llama3.1 8B q4_K_M, 12288 | 117.7 / 177.1 s | 2 | 19 | 19 | 10 | 11 of 16 | 6.7 GB, 67/33 | ✗ |
+| C6 | llama3.1 8B q4_K_M, 12288 | 117.7 / 177.1 s | 2 | 19 | 19 | ~~10~~ **12** | ~~11~~ **13** of 16 | 6.7 GB, 67/33 | ✗ |
 | C7 | C8 + flash attention + q8_0 KV cache | 92.8 / 135.7 s | 0 | 19 | 21 | 17 | 13 of 16 | 5.0 GB, 100% GPU | ✗ gates −2 |
 | **C8** | C1 + `num_gpu 29` | **39.5 / 56.3 s** | 0 | 21 | 21 | 19 | 16 of 18 | 5.5 GB, 100% GPU | **✓** |
 
@@ -60,10 +75,12 @@ gates; a suite rejected by a gate is never run. "Defects caught" is out of
 the gate-passing suites whose case has an injected defect (functional has
 none).
 
-**Applying Decision 7:** C8 is the only qualifier (clean-run passes 19,
-one fewer than C1, within the bar; every other measure equal), so it is
-also C7's base, and C7 does not qualify. Among qualifiers the lowest median
-wins: **C8**.
+**Applying Decision 7:** C8 qualifies (clean-run passes 19, one fewer than
+C1, within the bar; every other measure equal), and so, after the
+correction, does C3 (clean-run passes 19 and detections 15, each one fewer
+than C1). C7's base is the faster of the two, C8, and C7 does not qualify.
+Among qualifiers the lowest median wins: **C8** (39.5 s against C3's
+56.9 s).
 
 ### Confirmation run (added at Emil's request)
 
@@ -87,10 +104,12 @@ The result holds: C8 is 40% faster, and no worse on quality.
 - **C2.** A smaller context saved 0.2 GB and changed nothing else about the
   split; the small speed-up is within run-to-run variation.
 - **C3.** Smaller and a little faster (the prompt is read at half the speed,
-  output slightly faster). The extra clean-run failures are the functional
-  case's invented "error message for invalid credentials" test, which every
-  7B configuration writes some of the time (see Caveats), plus one
-  accessibility suite.
+  output slightly faster). Its functional suites navigated to relative
+  URLs, so as first run all three failed on the missing base URL (see the
+  correction). Re-run with it, two pass; the third fails on a guessed form
+  role named "Sign in" that the page doesn't expose. One accessibility
+  suite also failed clean. Corrected, C3 meets the bar, and is slower than
+  C8.
 - **C4.** Fast whenever it answers normally (median 12.3 s, 86% on the GPU),
   but 5 suites failed the gates: 3 accessibility suites invented APIs, 2
   functional suites left assertions unawaited. Two accessibility calls ran to
@@ -151,10 +170,10 @@ The result holds: C8 is 40% faster, and no worse on quality.
 
 - **Run-to-run variation is about the size of the bar.** C1 scored 20
   clean-run passes in the first run and 18 in the confirmation run, with the
-  same settings. Decision 7 allows one fewer than C1. C2 (18) and C3 (17)
-  were ruled out by margins of that size, so "C2 and C3 are worse than C1"
-  is not established by this data; it is only that they did not meet the
-  bar in this run. C8 was never below C1 (19 then 21).
+  same settings. Decision 7 allows one fewer than C1. C2 (18) was ruled
+  out by a margin of that size, so "C2 is worse than C1" is not
+  established by this data; it is only that it did not meet the bar in
+  this run. C8 was never below C1 (19 then 21).
 - **Most clean-run failures come from one case.** Functional suites
   invented a check for an "error message for invalid credentials" that the
   fixture's sign-in page doesn't show. The model writes it some of the time,

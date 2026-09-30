@@ -1,0 +1,111 @@
+{
+  "reason": "suites run without the base URL TestForge gives them; see withBaseUrl",
+  "rerunAt": "2026-09-30T01:26:13.333Z",
+  "reruns": [
+    {
+      "case": "functional",
+      "call": 1,
+      "before": {
+        "cleanPassed": false,
+        "detected": null
+      },
+      "clean": {
+        "runId": "b37b8547-0c84-4b6b-8d68-d328f72d0ef4",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should display the sign-in page with email and password fields",
+            "status": "Passed"
+          },
+          {
+            "title": "should allow input in email and password fields",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the sign-in form when the Sign in button is clicked",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": null
+    },
+    {
+      "case": "functional",
+      "call": 2,
+      "before": {
+        "cleanPassed": false,
+        "detected": null
+      },
+      "clean": {
+        "runId": "248395b2-4d9f-4993-bebb-efa6449848c4",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 3,
+          "passed": 2,
+          "failed": 1,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should navigate to the sign-in page",
+            "status": "Failed"
+          },
+          {
+            "title": "should accept email and password input",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the sign-in form",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": false,
+      "detected": null
+    },
+    {
+      "case": "functional",
+      "call": 3,
+      "before": {
+        "cleanPassed": false,
+        "detected": null
+      },
+      "clean": {
+        "runId": "36bb862c-e1b3-4bf5-a700-8b0d249c66c7",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 3,
+          "passed": 3,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "should navigate to the sign-in page",
+            "status": "Passed"
+          },
+          {
+            "title": "should accept input in email and password fields",
+            "status": "Passed"
+          },
+          {
+            "title": "should submit the sign-in form",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": null
+    }
+  ]
+}

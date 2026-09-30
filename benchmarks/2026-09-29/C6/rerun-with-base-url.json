@@ -1,0 +1,158 @@
+{
+  "reason": "suites run without the base URL TestForge gives them; see withBaseUrl",
+  "rerunAt": "2026-09-30T01:27:44.568Z",
+  "reruns": [
+    {
+      "case": "performance",
+      "call": 2,
+      "before": {
+        "cleanPassed": false,
+        "detected": false
+      },
+      "clean": {
+        "runId": "de11dd62-46a3-465c-a487-3c0c4a55e202",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page loads within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the page is ready quickly",
+            "status": "Passed"
+          },
+          {
+            "title": "login page loads within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the login page is ready quickly",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page loads within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the notes page is ready quickly",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "e1512920-7fcb-4419-972d-d802fadfdb0c",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 6,
+          "passed": 0,
+          "failed": 6,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "home page loads within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the page is ready quickly",
+            "status": "Failed"
+          },
+          {
+            "title": "login page loads within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the login page is ready quickly",
+            "status": "Failed"
+          },
+          {
+            "title": "notes page loads within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the notes page is ready quickly",
+            "status": "Failed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    },
+    {
+      "case": "performance",
+      "call": 3,
+      "before": {
+        "cleanPassed": false,
+        "detected": false
+      },
+      "clean": {
+        "runId": "bce043c4-7ddf-40f1-a1f6-22dbdc71fd64",
+        "runStatus": "passed",
+        "summary": {
+          "executed": 4,
+          "passed": 4,
+          "failed": 0,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "server responds and the page is ready quickly",
+            "status": "Passed"
+          },
+          {
+            "title": "login page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page finishes loading within 3 seconds",
+            "status": "Passed"
+          }
+        ]
+      },
+      "defect": {
+        "runId": "43a3d512-c67d-4052-b35d-6f8665ca0996",
+        "runStatus": "failed",
+        "summary": {
+          "executed": 4,
+          "passed": 2,
+          "failed": 2,
+          "blocked": 0,
+          "notRun": 0
+        },
+        "tests": [
+          {
+            "title": "page finishes loading within 3 seconds",
+            "status": "Failed"
+          },
+          {
+            "title": "server responds and the page is ready quickly",
+            "status": "Failed"
+          },
+          {
+            "title": "login page finishes loading within 3 seconds",
+            "status": "Passed"
+          },
+          {
+            "title": "notes page finishes loading within 3 seconds",
+            "status": "Passed"
+          }
+        ]
+      },
+      "cleanPassed": true,
+      "detected": true
+    }
+  ]
+}

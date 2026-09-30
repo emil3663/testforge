@@ -74,3 +74,15 @@ test("hasCategorySignal: each area's trait is present in a suite that has it and
 test("hasCategorySignal: an area with no defined trait is null, not a pass", () => {
     assert.equal(hasCategorySignal("usability", "await page.click('a');"), null);
 });
+
+const { withBaseUrl } = await import("./benchmark-quality.ts");
+const { findTypeErrors } = await import("./validate.ts");
+
+test("withBaseUrl: runs a model suite as TestForge does, with the site as the base for relative URLs", () => {
+    const code = "import { test, expect } from '@playwright/test';\ntest('a', async ({ page }) => { await page.goto('/login'); });\n";
+    const run = withBaseUrl(code, "http://127.0.0.1:4410");
+    assert.equal(run.split("\n")[1], "test.use({ baseURL: 'http://127.0.0.1:4410' });", "right after the imports");
+    assert.deepEqual(findTypeErrors(run), []);
+    assert.equal(withBaseUrl("import { test } from '@playwright/test';\ntest.use({ baseURL: 'https://other.test' });\n", "http://x"), "import { test } from '@playwright/test';\ntest.use({ baseURL: 'https://other.test' });\n", "a suite with its own baseURL is left alone");
+    assert.ok(withBaseUrl(code, "http://x/it's").includes("baseURL: 'http://x/it\\'s'"), "quotes escaped");
+});

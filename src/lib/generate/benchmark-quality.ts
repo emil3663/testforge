@@ -84,3 +84,20 @@ export function scoreSuite(area: BestPracticeArea, code: string): SuiteQuality {
         duplicateTitles: [...duplicates],
     };
 }
+
+/**
+ * The suite as TestForge runs it. A gap-fill suite is appended to the
+ * template's, which opens with test.use({ baseURL }), so relative URLs
+ * resolve against the site. Run on its own, a model suite with
+ * page.goto('/login') failed with "Cannot navigate to invalid URL" (C3 and C6
+ * in the Phase 36 benchmark), penalising a suite that works in TestForge.
+ * A suite that sets its own baseURL is left alone.
+ */
+export function withBaseUrl(code: string, baseUrl: string): string {
+    if (/test\.use\(\s*\{[^}]*baseURL/.test(code)) return code;
+    const use = `test.use({ baseURL: '${baseUrl.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}' });`;
+    const lines = code.split("\n");
+    const lastImport = lines.reduce((at, line, i) => (/^\s*import\s/.test(line) ? i : at), -1);
+    lines.splice(lastImport + 1, 0, use);
+    return lines.join("\n");
+}

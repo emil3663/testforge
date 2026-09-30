@@ -31,7 +31,7 @@ import { join } from "node:path";
 
 const { generateLocalSuite, withLocalRules, ollamaTimeoutMs } = await import("../src/lib/generate/local-generation.ts");
 const { buildGapFillMessages } = await import("../src/lib/generate/messages.ts");
-const { scoreSuite } = await import("../src/lib/generate/benchmark-quality.ts");
+const { scoreSuite, withBaseUrl } = await import("../src/lib/generate/benchmark-quality.ts");
 const { normalizeBaseUrl, normalizeContentProfile, normalizeContentRules, normalizeSelectedPractices, normalizeTestAuditMode } = await import("../src/lib/generate/normalize.ts");
 const { selectJourneys } = await import("../src/lib/introspect/journeys.ts");
 
@@ -69,6 +69,9 @@ if (!config) {
     console.error(`usage: npm run benchmark:local -- --config <${Object.keys(CONFIGS).join("|")}> [--num-ctx N] [--base <model> (C7)] [--calls 3] [--date YYYY-MM-DD]`);
     process.exit(2);
 }
+// --rerun-relative only re-runs saved suites: it must not touch the measured
+// configuration's model, machine record or Modelfile.
+const rerunRelative = process.argv.includes("--rerun-relative");
 const numCtx = arg("num-ctx") ?? (config.numCtx ? String(config.numCtx) : undefined);
 const numGpu = arg("num-gpu");
 const probeNumGpu = arg("probe-num-gpu");
@@ -80,7 +83,7 @@ if (config.base === null && configId !== "C1") {
     console.error(`${configId} needs --base <model>`);
     process.exit(2);
 }
-if (config.base && !numCtx) {
+if (config.base && !numCtx && !rerunRelative) {
     console.error(`${configId} needs --num-ctx N (Decision 5: set from C1's measured prompt sizes)`);
     process.exit(2);
 }
@@ -132,14 +135,14 @@ const machine = {
     ollamaEnv: { OLLAMA_FLASH_ATTENTION: process.env.OLLAMA_FLASH_ATTENTION ?? null, OLLAMA_KV_CACHE_TYPE: process.env.OLLAMA_KV_CACHE_TYPE ?? null },
     node: process.version,
 };
-writeFileSync(join(outDir, "machine.json"), JSON.stringify(machine, null, 2));
+if (!rerunRelative) writeFileSync(join(outDir, "machine.json"), JSON.stringify(machine, null, 2));
 if (machine.otherGpuPrograms !== "none") log(`WARNING: other GPU programs are running: ${machine.otherGpuPrograms}`);
 if (configId === "C7") log(`C7: the Ollama server must have been started with OLLAMA_FLASH_ATTENTION=1 OLLAMA_KV_CACHE_TYPE=q8_0 (this shell has ${JSON.stringify(machine.ollamaEnv)})`);
 
 const modelfilePath = join(root, "modelfiles", `${configId}.Modelfile`);
 const modelfile = (gpuLayers) =>
     `FROM ${config.base}\nPARAMETER num_ctx ${numCtx}\nPARAMETER num_predict ${NUM_PREDICT}\nPARAMETER temperature ${TEMPERATURE}\n${gpuLayers ? `PARAMETER num_gpu ${gpuLayers}\n` : ""}`;
-if (config.base && !probeNumGpu) {
+if (config.base && !probeNumGpu && !rerunRelative) {
     writeFileSync(modelfilePath, modelfile(numGpu));
     log(`creating ${config.model} from ${modelfilePath}`);
     execFileSync("ollama", ["create", config.model, "-f", modelfilePath], { stdio: "inherit" });
@@ -184,9 +187,9 @@ async function probeGpuLayers(range) {
 }
 
 // What Ollama will actually run, for every configuration (C1 included).
-writeFileSync(join(outDir, "modelfile.shown.txt"), run("ollama", ["show", "--modelfile", config.model]));
+if (!rerunRelative) writeFileSync(join(outDir, "modelfile.shown.txt"), run("ollama", ["show", "--modelfile", config.model]));
 const parameters = run("ollama", ["show", "--parameters", config.model]);
-writeFileSync(join(outDir, "parameters.txt"), parameters);
+if (!rerunRelative) writeFileSync(join(outDir, "parameters.txt"), parameters);
 const shownCtx = Number(/num_ctx\s+(\d+)/.exec(parameters)?.[1]);
 
 // --- 2. requests ----------------------------------------------------------------
@@ -241,7 +244,7 @@ async function runSuite(code, testCase, defect) {
     if (defect) await setDefect(defect);
     try {
         const { runId } = await json("POST", "/api/run", {
-            code,
+            code: withBaseUrl(code, fixtureConfig.target),
             baseUrl: fixtureConfig.target,
             description: testCase.description,
             selectedPractices: testCase.practices,
@@ -300,6 +303,27 @@ async function measuredCall(testCase, index) {
         record.detected = detected(record.clean, record.defect);
     }
     return record;
+}
+
+// --rerun-relative: re-run, with the base URL, only the already-measured
+// suites that navigate to a relative URL - the ones the missing base URL
+// affected - writing the new outcomes beside results.json, never over it.
+if (rerunRelative) {
+    const measured = JSON.parse(readFileSync(join(outDir, "results.json"), "utf8"));
+    const reruns = [];
+    for (const record of measured.results.filter((r) => r.quality?.gatesPassed)) {
+        const code = readFileSync(join(outDir, `${record.case}-${record.call}.spec.ts`), "utf8");
+        if (!/page\.goto\(\s*['"`]\//.test(code)) continue;
+        const testCase = cases.find((c) => c.name === record.case);
+        const clean = await runSuite(code, testCase, null);
+        const defect = testCase.defect ? await runSuite(code, testCase, testCase.defect) : undefined;
+        const rerun = { case: record.case, call: record.call, before: { cleanPassed: record.cleanPassed, detected: record.detected }, clean, defect, cleanPassed: cleanPassed(clean), detected: detected(clean, defect) };
+        reruns.push(rerun);
+        log(`${record.case} #${record.call}: clean ${record.cleanPassed ? "pass" : "FAIL"} -> ${rerun.cleanPassed ? "pass" : "FAIL"}${testCase.defect ? `, detected ${record.detected} -> ${rerun.detected}` : ""}`);
+    }
+    writeFileSync(join(outDir, "rerun-with-base-url.json"), JSON.stringify({ reason: "suites run without the base URL TestForge gives them; see withBaseUrl", rerunAt: new Date().toISOString(), reruns }, null, 2));
+    log(`${reruns.length} suite(s) re-run -> ${join(outDir, "rerun-with-base-url.json")}`);
+    process.exit(0);
 }
 
 if (probeNumGpu) {
