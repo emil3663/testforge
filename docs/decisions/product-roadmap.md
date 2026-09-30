@@ -228,6 +228,16 @@ configurations for speed, memory fit and code quality, and picks a winner
 by a rule fixed in advance. See
 `phase-36-trust-and-local-model-measurement-decision-record.md`.
 
+### Phase 37 — Gap-fill prompt fix and two new model gates (locked 2026-09-30)
+Phase 36's hand-read check found the local model's reliability and database
+suites dropped from 3/3 to 1/3, and a six-call diagnostic traced the drop to
+one sentence the gap-fill request appends. The request now names only the
+gap areas, as a plain request would. Two failures the gates missed are now
+caught mechanically: a Promise handed to a plain matcher, and tests with
+identical bodies under different titles (GEN-32). The fix is measured by the
+same hand-read check before Phase 35 relies on the model. See
+`phase-37-gap-fill-prompt-and-model-gates-decision-record.md`.
+
 ---
 
 ## Sequencing note
