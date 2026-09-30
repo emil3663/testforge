@@ -1,0 +1,126 @@
+{
+  "model": "testforge-qwen7b",
+  "date": "2026-09-30T05:25:45.491Z",
+  "path": "buildGenerationMessages (Phase 33's full-generation request) + generateLocalSuite, guides for getBestPracticeAreas",
+  "results": [
+    {
+      "case": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "request": {
+        "areas": [
+          "reliability"
+        ],
+        "sha256": "9cd4994ed9cc30b0",
+        "chars": 7264
+      },
+      "call": 1,
+      "ms": 52211,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 51364 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "request": {
+        "areas": [
+          "reliability"
+        ],
+        "sha256": "9cd4994ed9cc30b0",
+        "chars": 7264
+      },
+      "call": 2,
+      "ms": 40588,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 40450 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "request": {
+        "areas": [
+          "reliability"
+        ],
+        "sha256": "9cd4994ed9cc30b0",
+        "chars": 7264
+      },
+      "call": 3,
+      "ms": 36597,
+      "outcome": "invalid_output",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 36513 ms -> kept",
+        "type check: 1 type errors -> rejected"
+      ]
+    },
+    {
+      "case": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "request": {
+        "areas": [
+          "database"
+        ],
+        "sha256": "343f11bd11534d52",
+        "chars": 5384
+      },
+      "call": 1,
+      "ms": 19725,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 19588 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "request": {
+        "areas": [
+          "database"
+        ],
+        "sha256": "343f11bd11534d52",
+        "chars": 5384
+      },
+      "call": 2,
+      "ms": 16592,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 16472 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "request": {
+        "areas": [
+          "database"
+        ],
+        "sha256": "343f11bd11534d52",
+        "chars": 5384
+      },
+      "call": 3,
+      "ms": 18253,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18120 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    }
+  ]
+}

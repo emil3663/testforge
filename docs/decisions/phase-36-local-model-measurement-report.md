@@ -51,8 +51,10 @@ same result: C8 39.4 s, C1 65.5 s.
   model name, `testforge-qwen7b`, is unchanged.
 - **Phase 33's category bar on C8, run 2026-09-30:** performance, SEO,
   security and accessibility meet it (3/3). Reliability (1/3), database
-  (1/3) and functional (0/3 without an invented destination) do not. See
-  "Phase 33 category bar on C8" below.
+  (1/3) and functional (0/3 without an invented destination) do not. A
+  diagnostic on the same model with Phase 33's full-generation request
+  brings reliability to 2/3 and database to 3/3: the drop follows the
+  gap-fill prompt, not C8. See "Phase 33 category bar on C8" below.
 
 ## The comparison
 
@@ -247,11 +249,9 @@ No suite contains an `example.invalid` URL or an `EXAMPLE-` name.
 - **Not attributable to C8 alone.** Two things changed since Phase 33: the
   model's settings (C8), and the prompt: Phase 34's gap-fill messages
   (`ef736c5`) replaced the full-generation request. The local rules
-  themselves are unchanged since Phase 33 (`4215d82`). This run doesn't
-  separate the two. C8 changes only where
-  the layers run and the context size, so the prompt is the likelier cause
-  of the reliability and database drop, but that is a reading, not a
-  measurement.
+  themselves are unchanged since Phase 33 (`4215d82`). This run alone
+  doesn't separate the two; the diagnostic below does, and the drop follows
+  the prompt.
 - **What production sees.** With page data (since Phase 34 a request that
   brings none has the site inspected), the template itself writes reliability tests and,
   where a suitable form exists, a database round trip, so the model is
@@ -261,6 +261,42 @@ No suite contains an `example.invalid` URL or an `EXAMPLE-` name.
   fixture's page data and wordings) did not predict this. It detects that a
   category's trait is present, not whether the test can pass on a correct
   site.
+
+### Diagnostic: does the drop follow the prompt or the model?
+
+Approved by Emil 2026-09-30. Reliability and database again, 3 calls each,
+on the same model (C8, 100% GPU), same wordings, no page data, read by hand
+against the same bar, but with **Phase 33's full-generation request**
+(`buildGenerationMessages`, with the rules for the areas
+`getBestPracticeAreas` picks, as the route did at `4215d82`). `prompt.ts`,
+`normalize.ts`, `local-rules.ts` and `mock/areas.ts` are unchanged since
+then, so this is Phase 33's request exactly. Measured, not assumed: for
+both categories the system message (prompt and rules) is identical to the
+gap-fill run's, and the gap-fill user message is this one plus a single
+sentence: "Write tests only for these coverage areas: <area>. The other
+areas are already covered by another generator - do not write tests for
+them." No prompt or rule was changed. Evidence: `*-full-*.spec.ts`,
+`results-full.json` and `run-full.mts` beside the first run.
+
+| Category | Full-generation request (Phase 33's) | Gap-fill request (above) |
+| --- | --- | --- |
+| Reliability | ✅ 2/3. Suites 1 and 2 are identical and genuine: API requests aborted, third-party hosts aborted, `localStorage` made to throw, each before load, each under an accurate title, each asserting the page survived (no page error; the controls still visible, by guessed `input[name=…]` selectors). Suite 3 is rejected at the type-check gate and has the same invented "disabled field" tests as gap-fill suites 1 and 3. | ❌ 1/3 |
+| Database | ✅ 3/3: save a unique `TestForge check …` value, see it, reload, see it again. Suites 1 and 3 are identical. | ❌ 1/3 |
+
+**Answer: the drop follows the prompt, not the model.** On the same C8
+model, Phase 33's request gives Phase 33's result (database 3/3, as then;
+reliability 2/3 with all three failure kinds under accurate names, which
+Phase 33 reached in only 1 of 3), and the gap-fill request, which differs
+by one sentence, gives 1/3 in both. The model's settings are the same in
+both runs, so C8 is not the cause.
+
+Limits: three calls per cell, at temperature 0.2, so each cell is close to
+one or two distinct answers; the direction is clear, the size is not. The
+"disabled field" reliability pattern also appears once with the
+full-generation request, so the gap-fill sentence makes it more likely
+rather than creating it. Which part of the sentence does it, and whether
+another wording avoids it, is not measured: that would be a prompt change,
+left for Emil's decision.
 
 ---
 
