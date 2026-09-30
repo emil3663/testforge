@@ -212,6 +212,10 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** None.
+- **Status:** Landed `7678490` (TEST_PLAN GEN-50). All four reproduced and read
+  by hand; all four template errors, fixed. Live: functional 13/13, free-form
+  28/33 (the 5 left are real SEO gaps). Labelled set:
+  `docs/decisions/data/labelled-failures.md`. Not yet independently verified.
 
 ### TFP-124 — Optional SEO items as findings
 
@@ -223,6 +227,11 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Acceptance criteria:** Missing optional items appear as findings and
   don't fail the run; the three baseline checks still fail when missing.
 - **Dependencies:** None.
+- **Status:** Landed `960bc3d` (TEST_PLAN GEN-52). Live on the-internet: the two
+  optional items pass with named findings, the three baseline gaps fail by
+  name. Found, not fixed: test IDs restart per suite, so two SEO suites both
+  number a TFSE-001; renumbering would shift cited IDs, so it waits for a
+  decision. Not yet independently verified.
 
 ### TFP-125 — Small defects from the audit
 
@@ -233,6 +242,10 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Deliverables:** One commit per defect; tests; `TEST_PLAN.md` updates.
 - **Acceptance criteria:** Acceptance Criteria 2.
 - **Dependencies:** None.
+- **Status:** Landed as one commit per defect: cookie/session `46476e6` (GEN-51),
+  nothing to run `d86c8d1` (RPT-15), browser-test skipping `a7276c2` (TST-01);
+  the spikes and the 3B Modelfile moved with TFP-126 (`142e937`). Not yet
+  independently verified.
 
 ### TFP-126 — Build the local model benchmark
 
@@ -262,6 +275,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   `docs/LOCAL_MODEL_SETUP.md` updated if a new configuration wins.
 - **Acceptance criteria:** Acceptance Criteria 3.
 - **Dependencies:** TFP-126.
+- **Correction:** `061a5b9`. The benchmark ran model suites without the base
+  URL TestForge gives them; the 5 affected suites (C3, C6) were re-run. C3
+  now also qualifies; the choice (C8) is unchanged. The report says so.
 - **Status:** Run 2026-09-29/30 (TEST_PLAN GEN-49). C2-C8 measured, plus a
   back-to-back confirmation of C1 and the winner requested by Emil. Winner:
   C8 (`num_gpu 29`), adopted in `ollama/Modelfile.testforge-qwen7b` and
@@ -280,6 +296,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 ## Suggested Milestone Gate
 
 ### Gate A — Trust fixes landed and the model measured
+**Built 2026-09-30 (`7678490`, `46476e6`, `d86c8d1`, `a7276c2`, `960bc3d`, and the
+benchmark correction `061a5b9`); awaiting independent verification. Not
+pushed.** TFP-126 and TFP-127 were verified and pushed 2026-09-30.
 - TFP-123 to 127 landed and independently verified; the measurement report
   names the chosen configuration or says C1 stays; no suspected false
   failure is left unresolved.
