@@ -40,7 +40,9 @@ async function runGenerated(baseURL: string) {
     const { chromium, expect } = await import("@playwright/test");
     const js = ts.transpileModule(buildCookieSessionTests()[0], { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
     let body: ((fixtures: { page: unknown; context: unknown }) => Promise<void>) | null = null;
+    const annotations: Array<{ type: string; description?: string }> = [];
     const fakeTest = Object.assign((_title: string, fn: typeof body) => { body = fn; }, {
+        info: () => ({ annotations }),
         skip: (condition: boolean, reason: string) => {
             if (condition) throw new Skipped(reason);
         },
@@ -52,13 +54,14 @@ async function runGenerated(baseURL: string) {
     try {
         const context = await browser.newContext({ baseURL });
         const page = await context.newPage();
+        const findings = () => annotations.filter((a) => a.type === "finding").map((a) => a.description);
         try {
             await body!({ page, context });
-            return { outcome: "passed" as const, message: "" };
+            return { outcome: "passed" as const, message: "", findings: findings() };
         } catch (error) {
-            if (error instanceof Skipped) return { outcome: "skipped" as const, message: error.message };
+            if (error instanceof Skipped) return { outcome: "skipped" as const, message: error.message, findings: findings() };
             const actual = (error as { matcherResult?: { actual?: unknown } }).matcherResult?.actual;
-            return { outcome: "failed" as const, message: JSON.stringify(actual ?? (error as Error).message) };
+            return { outcome: "failed" as const, message: JSON.stringify(actual ?? (error as Error).message), findings: findings() };
         }
     } finally {
         await browser.close();
@@ -78,9 +81,9 @@ async function withCookies(setCookie: string[], run: (baseURL: string) => Promis
     }
 }
 
-test("in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, skips when there is none", { skip: needsChromium }, async () => {
+test("in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, records one shared with the host's subdomains as a finding, skips when there is none", { skip: needsChromium }, async () => {
     await withCookies(["rack.session=abc; Path=/; HttpOnly"], async (baseURL) => {
-        assert.deepEqual(await runGenerated(baseURL), { outcome: "passed", message: "" });
+        assert.deepEqual(await runGenerated(baseURL), { outcome: "passed", message: "", findings: [] });
     });
     await withCookies(["sid=abc; Path=/; Max-Age=86400"], async (baseURL) => {
         assert.equal((await runGenerated(baseURL)).outcome, "passed", "one day is within the limit");
@@ -94,6 +97,14 @@ test("in a real browser: passes a browser-session cookie scoped to the site, fai
         const result = await runGenerated(baseURL);
         assert.equal(result.outcome, "failed");
         assert.match(result.message, /\\"sid\\" is set for \.site\.test, so every subdomain of site\.test receives it, not only app\.site\.test/);
+        assert.deepEqual(result.findings, [], "a parent-domain cookie is a failure, not also a finding");
+    });
+    await withCookies(["sid=abc; Path=/; Domain=app.site.test"], async (baseURL) => {
+        assert.deepEqual(await runGenerated(baseURL), {
+            outcome: "passed",
+            message: "",
+            findings: ['session cookie "sid" is set for .app.site.test, so subdomains of app.site.test also receive it'],
+        }, "a cookie shared with the host's own subdomains passes with a named finding");
     });
     await withCookies(["_ga=1; Path=/; Max-Age=63072000"], async (baseURL) => {
         const result = await runGenerated(baseURL);

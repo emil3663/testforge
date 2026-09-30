@@ -7,6 +7,10 @@
 //   session outlive any reasonable idle or absolute timeout.
 // - Scope: a session cookie set for a parent domain is sent to every sibling
 //   subdomain, so a weaker neighbour can read or overwrite it.
+// - Shared with subdomains: a session cookie whose domain starts with "."
+//   but is the site's own host (Domain=<host>) is also sent to that host's
+//   subdomains. That is often intended, so it is a named finding, not a
+//   failure; the parent-domain case above still fails.
 //
 // "Session cookie" is decided by name (session, sess, sid, auth, token, jwt,
 // and the common framework names). TestForge cannot tell a session cookie
@@ -47,6 +51,7 @@ export function buildCookieSessionTests(): string[] {
       }
       const domain = cookie.domain.replace(/^\\./, '');
       if (domain !== host) problems.push('"' + cookie.name + '" is set for ' + cookie.domain + ', so every subdomain of ' + domain + ' receives it, not only ' + host);
+      else if (cookie.domain.startsWith('.')) test.info().annotations.push({ type: 'finding', description: 'session cookie "' + cookie.name + '" is set for ' + cookie.domain + ', so subdomains of ' + host + ' also receive it' });
     }
     expect(problems, 'session cookies that break expiry or scope: ' + problems.join('; ')).toEqual([]);
   });`,
