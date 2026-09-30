@@ -12,6 +12,11 @@ import { test } from "node:test";
 const { buildCookieSessionTests, SESSION_COOKIE_NAME } = await import("./cookie-session-checks.ts");
 const { findTypeErrors, findUnawaitedAssertions } = await import("../validate.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 test("SESSION_COOKIE_NAME: framework session names and session-ish words, not analytics cookies", () => {
     for (const name of ["JSESSIONID", "PHPSESSID", "connect.sid", "rack.session", "laravel_session", "session", "app_session", "sid", "auth-token", "jwt"]) {
         assert.ok(SESSION_COOKIE_NAME.test(name), name);
@@ -73,7 +78,7 @@ async function withCookies(setCookie: string[], run: (baseURL: string) => Promis
     }
 }
 
-test("in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, skips when there is none", async () => {
+test("in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, skips when there is none", { skip: needsChromium }, async () => {
     await withCookies(["rack.session=abc; Path=/; HttpOnly"], async (baseURL) => {
         assert.deepEqual(await runGenerated(baseURL), { outcome: "passed", message: "" });
     });

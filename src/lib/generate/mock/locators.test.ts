@@ -15,6 +15,11 @@ import type { ActionableElementDetail, DragDropTargetDetail, LinkDetail } from "
 const { buildLocatorExpression, buildDragDropLocatorExpression, buildLinkLocatorExpression } = await import("./locators.ts");
 const { findTypeErrors } = await import("../validate.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 const AWKWARD = [`it's`, "back\\slash", "note.body", "form:note", `"quoted"`];
 
 function element(id: string): ActionableElementDetail {
@@ -41,7 +46,7 @@ test("plain values produce exactly the same locator as before", () => {
     assert.equal(buildLinkLocatorExpression(link("/about")), `page.locator('a[href="/about"]:visible, a[href="/about"]:has(:visible)').first()`);
 });
 
-test("awkward ids, classes and hrefs compile and select exactly the right element in a real browser", async () => {
+test("awkward ids, classes and hrefs compile and select exactly the right element in a real browser", { skip: needsChromium }, async () => {
     const { chromium } = await import("@playwright/test");
     const escapeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
     const browser = await chromium.launch();

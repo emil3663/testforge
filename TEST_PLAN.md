@@ -174,6 +174,12 @@ crawl, introspect, generate, run, report, export, and save-suite.
 | SAV-02 | Add a generated suite to Playwright discovery (automated smoke: "adds a generated suite to Playwright discovery") | Saving a generated suite makes it discoverable by Playwright (e.g. VS Code Test Explorer / `playwright test --list`). | ✅ |
 | SAV-03 | Save-suite executes with no external backend configured (automated: `tests/regression/testforge.sections.spec.ts` — "executes generate, run, crawl, introspect, and save-suite without an external backend configured") | `POST /api/save-suite` writes the file locally and returns a `.spec.ts` filename, with no environment variable set beyond `.env.development`. | ✅ |
 
+### 3.9 Test suite (TST)
+
+| ID | Test | Expected Result | Status |
+|----|------|-----------------|--------|
+| TST-01 | Unit tests that need a real browser skip, with the reason, where Chromium isn't installed (TFP-125, Phase 36 Decision 3; `src/test-support/chromium.ts`) | Ten unit tests drive a real Chromium: six launch it directly (accessible names, the per-type check, link locators, the image-link case, database field locators, session cookies), and four route tests make the route inspect a page. Where Playwright's Chromium isn't installed they failed, for a reason that had nothing to do with the code, as the Gate C verification sandbox showed. Each now passes node:test's `skip` option the reason from `chromiumSkipReason()`: "needs a real browser, and Playwright's Chromium is not installed (expected at <path>); install it with: npx playwright install chromium". The other tests in the same files still run. **Measured, 2026-09-30:** with `PLAYWRIGHT_BROWSERS_PATH` pointed at an empty folder, `npm run test:unit` gives 340 passed, 10 skipped with the reason, 0 failed; with Chromium installed, 350 passed, 0 skipped. | ✅ |
+
 ## 4. Known Limitations & Gaps
 
 1. **`/api/run`'s execution model is unsandboxed, in-process code execution.** It runs caller-supplied Playwright code with the privileges of the user running the dev server — no authentication, no sandboxing, no multi-tenant isolation. This is documented, intended behavior under TestForge's local-only posture (see `README.md`'s Security Model), not a defect, and it is why TestForge must never be bound to a non-loopback interface or exposed through a tunnel.

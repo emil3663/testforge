@@ -23,6 +23,11 @@ const { mockGenerate } = await import("./index.ts");
 const { normalizeContentRules, normalizeTestAuditMode } = await import("../normalize.ts");
 const { findTypeErrors } = await import("../validate.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 function el(elementType: ActionableElementDetail["elementType"], fields: { text?: string; name?: string; inputType?: string }): ActionableElementDetail {
     return {
         text: fields.text ?? "", url: null, category: "form", elementType, containerLabel: "", expectedStatus: null, isVisible: true,
@@ -64,7 +69,7 @@ const RIBBON_PAGE = `<!doctype html><title>t</title>
 
 const hrefLink = (rawHref: string) => ({ text: "", url: rawHref, rawHref }) as LinkDetail;
 
-test("in a real browser: an image link whose anchor has no box is found and seen; truly hidden links are not", async () => {
+test("in a real browser: an image link whose anchor has no box is found and seen; truly hidden links are not", { skip: needsChromium }, async () => {
     const { chromium } = await import("@playwright/test");
     const browser = await chromium.launch();
     try {

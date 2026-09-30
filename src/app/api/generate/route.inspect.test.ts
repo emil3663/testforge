@@ -17,6 +17,11 @@ const { NextRequest } = await import("next/server");
 const { mockGenerate } = await import("../../../lib/generate/mock/index.ts");
 const { normalizeContentRules, normalizeTestAuditMode } = await import("../../../lib/generate/normalize.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 installFakeServer();
 
 const NOTES_FORM = `<!doctype html><title>Notes</title><h1>Notes</h1>
@@ -50,7 +55,7 @@ function withoutPageData(baseUrl: string, practices: string[]) {
     return mockGenerate(baseUrl, "Check that notes are saved.", practices as never, null, normalizeContentRules(undefined), normalizeTestAuditMode(undefined));
 }
 
-test("no page data: the pages are inspected, the suite is built from them, and the response says so", async () => {
+test("no page data: the pages are inspected, the suite is built from them, and the response says so", { skip: needsChromium }, async () => {
     const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"] });
     assert.equal(body.generatedBy, "template");
     assert.deepEqual(body.pageInspection, { status: "inspected", paths: ["/"], pages: 1, warnings: [] });
@@ -58,7 +63,7 @@ test("no page data: the pages are inspected, the suite is built from them, and t
     assert.doesNotMatch(withoutPageData(siteUrl, ["database"]), /test\('TFDB-/, "which generation without page data could not write one");
 });
 
-test("the request's content-rule paths are the ones inspected", async () => {
+test("the request's content-rule paths are the ones inspected", { skip: needsChromium }, async () => {
     const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"], contentRules: { paths: ["notes"] } });
     assert.deepEqual(body.pageInspection, { status: "inspected", paths: ["/notes"], pages: 1, warnings: [] });
     assert.match(body.code, /persistence round trip: Note on \/notes/);
@@ -73,7 +78,7 @@ async function closedPort() {
     return port;
 }
 
-test("inspection fails: today's output without page data, plus the reason - generation is never blocked", async () => {
+test("inspection fails: today's output without page data, plus the reason - generation is never blocked", { skip: needsChromium }, async () => {
     const closed = `http://127.0.0.1:${await closedPort()}`;
     const body = await generate({ baseUrl: closed, description: "Check that notes are saved.", selectedPractices: ["database"] });
     assert.deepEqual(Object.keys(body).sort(), ["code", "generatedBy", "pageInspection"]);
@@ -95,7 +100,7 @@ test("supplied page data is used as-is and nothing is inspected", async () => {
     assert.deepEqual(Object.keys(body), ["code"]);
 });
 
-test("with a local model configured, an inspected database request is no gap: the model is not called", async () => {
+test("with a local model configured, an inspected database request is no gap: the model is not called", { skip: needsChromium }, async () => {
     let chatCalls = 0;
     fakeOpenAi(["testforge-qwen7b:latest"], (_req, res) => {
         chatCalls += 1;

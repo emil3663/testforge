@@ -13,6 +13,11 @@ import type { ActionableElementDetail, ContentProfile, ContentProfilePage } from
 const { buildFormFieldNameTests, findFormFieldPages } = await import("./form-field-names.ts");
 const { findTypeErrors, findUnawaitedAssertions } = await import("../validate.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 function el(elementType: ActionableElementDetail["elementType"], inputType = ""): ActionableElementDetail {
     return {
         text: "", url: null, category: "form", elementType, containerLabel: "", expectedStatus: null, isVisible: true,
@@ -111,7 +116,7 @@ function failingFields(error: Error | null) {
     return (error as (Error & { matcherResult?: { actual?: unknown } }) | null)?.matcherResult?.actual;
 }
 
-test("in a real browser: an unlabelled field fails and is named; a placeholder-only one is a finding; labelled ones pass", async () => {
+test("in a real browser: an unlabelled field fails and is named; a placeholder-only one is a finding; labelled ones pass", { skip: needsChromium }, async () => {
     await withSite({ "/fields": FIELDS_PAGE, "/labelled": LABELLED_PAGE }, async (baseURL) => {
         const [fieldsTest, labelledTest] = buildFormFieldNameTests(profile([page("/fields", [el("input", "email")]), page("/labelled", [el("input", "text")])]));
 
@@ -154,7 +159,7 @@ ${INPUT_TYPES.map((type) => `<label for="labelled-${type}">A ${type}</label> <in
 <span id="photo">Photo</span> <input id="labelledby-file" type="file" aria-labelledby="photo">
 </form>`;
 
-test("in a real browser: every input type is named correctly, labelled or not, whatever its snapshot line shows", async () => {
+test("in a real browser: every input type is named correctly, labelled or not, whatever its snapshot line shows", { skip: needsChromium }, async () => {
     await withSite({ "/types": TYPES_PAGE }, async (baseURL) => {
         const [typesTest] = buildFormFieldNameTests(profile([page("/types", [el("input", "checkbox")])]));
         const { error, annotations } = await runGenerated(typesTest, baseURL);

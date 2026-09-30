@@ -18,6 +18,11 @@ const { mockGenerate } = await import("./index.ts");
 const { normalizeContentRules, normalizeTestAuditMode } = await import("../normalize.ts");
 const { findTypeErrors, findUnawaitedAssertions } = await import("../validate.ts");
 
+// Phase 36 (TFP-125): tests that need a real browser skip, with the reason,
+// where Playwright's Chromium is not installed.
+const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const needsChromium = await chromiumSkipReason();
+
 function el(elementType: ActionableElementDetail["elementType"], fields: Partial<ActionableElementDetail["locator"]> & { text?: string; visible?: boolean }): ActionableElementDetail {
     return {
         text: fields.text ?? "",
@@ -146,7 +151,7 @@ test("database suite: not generated when database is neither selected nor trigge
     assert.doesNotMatch(code, /TFDB-|Database Coverage/);
 });
 
-test("fieldLocator: ids with '.', ':', a leading digit, quotes or a backslash select exactly that field in a real browser", async () => {
+test("fieldLocator: ids with '.', ':', a leading digit, quotes or a backslash select exactly that field in a real browser", { skip: needsChromium }, async () => {
     // `#id` would be a CSS syntax error (or match nothing) for all of these;
     // the [id="..."] form, escaped for CSS and then for the JS string, must not.
     const { chromium } = await import("@playwright/test");
