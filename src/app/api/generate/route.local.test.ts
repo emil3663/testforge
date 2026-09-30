@@ -178,7 +178,7 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     assert.deepEqual(findTypeErrors(body.code), []);
     assert.deepEqual(
         body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`),
-        ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "merged suite type check: kept"]
+        ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "duplicate tests: kept", "merged suite type check: kept"]
     );
 });
 
@@ -304,6 +304,21 @@ test("Phase 37: a Promise handed to a plain matcher - template kept, promise_to_
     );
     assert.match(gate.evidence[0], /^line 5: expect\(page\.locator\('input\[name="email"\]'\)\.isDisabled\(\)\)\.toBe\(true\)$/);
     assert.deepEqual(body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`), ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: rejected"]);
+});
+
+// Phase 37 (TFP-130): GEN-54's reliability-2 shape - one body, several titles.
+test("Phase 37: tests repeating one body under different titles - template kept, duplicate_tests, with the tests as evidence", async (t) => {
+    t.mock.method(console, "error", () => {});
+    const body = "async ({ page }) => {\n    await page.goto('/notes');\n    await expect(page.locator('body')).toBeVisible();\n  }";
+    const suite = ["import { test, expect } from '@playwright/test';", "test.describe('Database', () => {", `  test('the name is saved', ${body});`, `  test('the message is saved', ${body});`, "});"].join("\n");
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(suite)));
+    useOllama();
+    const response = await expectFallback("duplicate_tests");
+    const gate = response.gates.find((g: { gate: string }) => g.gate === "duplicate tests");
+    assert.deepEqual(
+        { bar: gate.bar, measured: gate.measured, verdict: gate.verdict, evidence: gate.evidence },
+        { bar: "0 tests sharing one body", measured: "1 tests sharing one body", verdict: "rejected", evidence: ["lines 3, 7: 2 tests share one body ('the name is saved', 'the message is saved')"] }
+    );
 });
 
 test("Option B: an unawaited synchronous value assertion still checks, so it is not rejected", async () => {

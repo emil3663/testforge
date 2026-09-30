@@ -139,6 +139,81 @@ export function findUnawaitedAssertions(code: string, projectDir: string = proce
     return found;
 }
 
+const TEST_MODIFIERS = new Set(["only", "skip", "fixme", "fail", "slow"]);
+const SETUP_CALLS = new Set(["use", "beforeEach", "beforeAll"]);
+
+/** `test(title, fn)` or `test.only/skip/fixme/fail/slow(title, fn)`: the test's function, else null. */
+function testFunction(node: ts.Node): ts.FunctionLikeDeclaration | null {
+    if (!ts.isCallExpression(node)) return null;
+    const callee = node.expression;
+    const isTest =
+        (ts.isIdentifier(callee) && callee.text === "test") ||
+        (ts.isPropertyAccessExpression(callee) && ts.isIdentifier(callee.expression) && callee.expression.text === "test" && TEST_MODIFIERS.has(callee.name.text));
+    const fn = node.arguments[node.arguments.length - 1];
+    return isTest && node.arguments.length >= 2 && fn && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn)) ? fn : null;
+}
+
+/** `test.use(...)`, `test.beforeEach(...)`, `test.beforeAll(...)` as a statement. */
+function isSetupStatement(statement: ts.Statement): boolean {
+    if (!ts.isExpressionStatement(statement)) return false;
+    const call = statement.expression;
+    return (
+        ts.isCallExpression(call) &&
+        ts.isPropertyAccessExpression(call.expression) &&
+        ts.isIdentifier(call.expression.expression) &&
+        call.expression.expression.text === "test" &&
+        SETUP_CALLS.has(call.expression.name.text)
+    );
+}
+
+/**
+ * Phase 37 (TFP-130, Decision 3; GEN-32's duplication half): tests in one
+ * suite whose bodies are identical once whitespace and comments are
+ * normalised, whatever their titles, as `lines A, B: N tests share one body
+ * (titles)`. GEN-54's reliability-2 had three tests with one body under
+ * titles naming three different fields, so the suite claimed three checks and
+ * made one. Bodies are compared with the setup that applies to them (test.use,
+ * beforeEach and beforeAll in the enclosing blocks), so the same body under
+ * different setup is not a duplicate. Syntax only; no type information.
+ */
+export function findDuplicateTests(code: string): string[] {
+    const source = ts.createSourceFile("__testforge_generated__.spec.ts", code, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    // The node's tokens, trivia (whitespace, comments) skipped: layout never
+    // makes two bodies differ. (ts.Printer keeps line breaks in call chains.)
+    const print = (node: ts.Node) => {
+        const scanner = ts.createScanner(ts.ScriptTarget.ES2022, true, ts.LanguageVariant.Standard, node.getText(source));
+        const tokens: string[] = [];
+        while (scanner.scan() !== ts.SyntaxKind.EndOfFileToken) tokens.push(scanner.getTokenText());
+        return tokens.join(" ");
+    };
+    const groups = new Map<string, { line: number; title: string }[]>();
+
+    const visit = (node: ts.Node) => {
+        const fn = testFunction(node);
+        if (fn?.body) {
+            const setup: string[] = [];
+            for (let block: ts.Node | undefined = node.parent; block; block = block.parent) {
+                if (ts.isBlock(block) || ts.isSourceFile(block)) {
+                    setup.unshift(...block.statements.filter(isSetupStatement).map(print));
+                }
+            }
+            const key = `${setup.join("\n")}\n---\n${print(fn.body)}`;
+            const call = node as ts.CallExpression;
+            const title = call.arguments[0];
+            const entry = {
+                line: source.getLineAndCharacterOfPosition(call.getStart(source)).line + 1,
+                title: ts.isStringLiteralLike(title) ? title.text : title.getText(source),
+            };
+            groups.set(key, [...(groups.get(key) ?? []), entry]);
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return [...groups.values()]
+        .filter((tests) => tests.length > 1)
+        .map((tests) => `lines ${tests.map((t) => t.line).join(", ")}: ${tests.length} tests share one body (${tests.map((t) => `'${t.title}'`).join(", ")})`);
+}
+
 function isThenable(checker: ts.TypeChecker, type: ts.Type): boolean {
     return checker.getPropertyOfType(type, "then") !== undefined;
 }

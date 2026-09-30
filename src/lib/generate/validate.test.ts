@@ -143,6 +143,67 @@ test("findPromisesToPlainMatchers: web-first matchers, resolves/rejects, awaited
     );
 });
 
+// --- Phase 37 TFP-130: duplicate test bodies ----------------------------------
+
+const { findDuplicateTests } = await import("./validate.ts");
+
+test("findDuplicateTests: rejects reliability-2 from the 2026-09-30 C8 run - three titles, one body", () => {
+    const code = readFileSync("benchmarks/2026-09-30-phase33-c8/reliability-2.spec.ts", "utf8");
+    assert.deepEqual(findTypeErrors(code), [], "precondition: it type-checks");
+    assert.deepEqual(findDuplicateTests(code), [
+        "lines 4, 14, 24: 3 tests share one body ('page still works when email input is disabled', 'page still works when password input is disabled', 'page still works when Sign in button is disabled')",
+    ]);
+});
+
+test("findDuplicateTests: whitespace and comments don't make a body different; titles don't matter", () => {
+    const code = [
+        "import { test, expect } from '@playwright/test';",
+        "test('a', async ({ page }) => {",
+        "  await page.goto('/');",
+        "  await expect(page.locator('body')).toBeVisible();",
+        "});",
+        "test('b', async ({ page }) => {",
+        "  // the same check, reworded only in its title",
+        "  await page.goto( '/' );",
+        "",
+        "  await expect(page.locator('body'))",
+        "    .toBeVisible();",
+        "});",
+    ].join("\n");
+    assert.deepEqual(findDuplicateTests(code), ["lines 2, 6: 2 tests share one body ('a', 'b')"]);
+});
+
+test("findDuplicateTests: the same body under different setup is not a duplicate; different bodies are clean", () => {
+    const body = "async ({ page }) => {\n    await page.goto('/');\n    await expect(page.locator('body')).toBeVisible();\n  }";
+    const code = [
+        "import { test, expect } from '@playwright/test';",
+        "test.describe('desktop', () => {",
+        "  test.use({ viewport: { width: 1280, height: 800 } });",
+        `  test('home renders', ${body});`,
+        "});",
+        "test.describe('mobile', () => {",
+        "  test.use({ viewport: { width: 375, height: 667 } });",
+        `  test('home renders', ${body});`,
+        "});",
+        "test.describe('blocked API', () => {",
+        "  test.beforeEach(async ({ page }) => { await page.route('**/api/**', (route) => route.abort('failed')); });",
+        `  test('home renders', ${body});`,
+        "});",
+        "test('another page renders', async ({ page }) => {",
+        "  await page.goto('/about');",
+        "  await expect(page.locator('body')).toBeVisible();",
+        "});",
+    ].join("\n");
+    assert.deepEqual(findTypeErrors(code), []);
+    assert.deepEqual(findDuplicateTests(code), []);
+});
+
+test("findDuplicateTests: the full-request reliability suites from the diagnostic, with three different failures, are clean", () => {
+    for (const name of ["reliability-full-1", "reliability-full-2"]) {
+        assert.deepEqual(findDuplicateTests(readFileSync(`benchmarks/2026-09-30-phase33-c8/${name}.spec.ts`, "utf8")), [], name);
+    }
+});
+
 test("findPromisesToPlainMatchers: the template generator's own suites are clean, for every coverage area", () => {
     for (const practice of BEST_PRACTICE_OPTIONS) {
         const code = mockGenerate("https://example.com", "Check the page.", [practice], null, normalizeContentRules(undefined), normalizeTestAuditMode("deep"));
