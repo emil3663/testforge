@@ -103,8 +103,8 @@ export function buildLinkExperienceTests(
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
             await locator.focus();
             await expect(locator).toBeFocused();
             const urlBeforeInteraction = page.url();
@@ -114,19 +114,21 @@ export function buildLinkExperienceTests(
                 await page.keyboard.press('Enter');
                 const popup = await popupPromise;
                 await popup.waitForLoadState('domcontentloaded').catch(() => {});
-                expect(popup.url()).toContain(link.url.replace(/[#?].*$/, ''));
+                // Same host and path; a site that upgrades http to https (the-internet's
+                // Elemental Selenium link, a 301) has still opened the right page.
+                expect(popup.url().replace(/^https?:\\/\\//, '')).toContain(link.url.replace(/[#?].*$/, '').replace(/^https?:\\/\\//, ''));
                 await popup.close().catch(() => {});
             } else {
                 await page.keyboard.press('Enter');
-                await page.waitForLoadState('domcontentloaded').catch(() => {});
+                // Enter only starts the navigation: waiting for the old page's
+                // load state returned at once, the URL looked unchanged, and the
+                // next link was then looked for on the new site (TFP-123).
+                await page.waitForURL((url) => url.href !== urlBeforeInteraction, { timeout: 5000 }).catch(() => {});
 
                 if (page.url() !== urlBeforeInteraction) {
-                    await page.goBack().catch(async () => {
-                        await revisitLinksPage();
-                    });
-                    await page.waitForLoadState('domcontentloaded').catch(async () => {
-                        await revisitLinksPage();
-                    });
+                    // Straight back to the links page: after a cross-site
+                    // redirect, goBack() can land on a hop in between.
+                    await revisitLinksPage();
                 }
             }
         }

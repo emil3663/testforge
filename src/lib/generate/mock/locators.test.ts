@@ -37,7 +37,8 @@ test("plain values produce exactly the same locator as before", () => {
     assert.equal(buildLocatorExpression(element("save")), `page.locator('[id="save"]').first()`);
     assert.equal(buildDragDropLocatorExpression(dragTarget({ id: "drop" })), `page.locator('[id="drop"]').first()`);
     assert.equal(buildDragDropLocatorExpression(dragTarget({ className: "canvas-wrap", tagName: "main" })), `page.locator('main[class~="canvas-wrap"]').first()`);
-    assert.equal(buildLinkLocatorExpression(link("/about")), `page.locator('a[href="/about"]:visible').first()`);
+    // TFP-123: a link also counts as rendered when only its content renders.
+    assert.equal(buildLinkLocatorExpression(link("/about")), `page.locator('a[href="/about"]:visible, a[href="/about"]:has(:visible)').first()`);
 });
 
 test("awkward ids, classes and hrefs compile and select exactly the right element in a real browser", async () => {

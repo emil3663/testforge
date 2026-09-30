@@ -232,10 +232,10 @@ export function buildLinkLocatorExpression(link: LinkDetail) {
     }
 
     if (link.rawHref) {
-        return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:visible`)}).first()`;
+        return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:visible, a[href="${escapeForDoubleQuotedSelector(link.rawHref)}"]:has(:visible)`)}).first()`;
     }
 
-    return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.url)}"]:visible`)}).first()`;
+    return `page.locator(${quoteSelector(`a[href="${escapeForDoubleQuotedSelector(link.url)}"]:visible, a[href="${escapeForDoubleQuotedSelector(link.url)}"]:has(:visible)`)}).first()`;
 }
 
 export function buildLinkTitle(link: LinkDetail) {

@@ -1,0 +1,73 @@
+# Labelled Failure Set
+
+The seed for the failure-triage gate Phase 34 deferred (its "Related,
+deferred" section): every test failure TestForge has hand-classified, with
+its verdict, the evidence, and its source run. Started 2026-09-30 in Phase 36
+(TFP-123, Decision 1).
+
+**Verdicts**
+
+- **Real:** the site has the problem the test names.
+- **Template error:** the template generator's test is wrong about the page.
+- **Model error:** a local-model test is wrong about the page.
+- **Unclear:** a real observation whose importance is a judgement call.
+
+**Sources.** `comparisons/` and `runs/` are gitignored, so a source run
+exists only on the machine that made it; the evidence column carries what a
+reader needs without it. `benchmarks/` and `examples/` are committed.
+
+**Status** says whether a rule has since removed the cause (Phase 34's "rule
+first": a pattern a deterministic rule can recognise is handled by the rule,
+and a classifier only sees what is left).
+
+## Template errors
+
+| # | Site | Test | Evidence | Source run | Status |
+| --- | --- | --- | --- | --- | --- |
+| T1-T7 | test-assist | 7 "action/form element check" tests: `#btnRecord`, `#btnClearSession`, `#uploadImage`, `#btnStopRecord`, `#textInput`, `#btnTextOk`, `#btnTextCancel` | `toBeVisible()` failed with `Received: hidden` on elements hidden by the app's design until a user action (Video mode, a restored session, the Text tool); `#uploadImage` is a styled-invisible file input inside a visible label | TFP-040, `examples/testforge-app/test-assist/run-report.json`; analysis in `notes.md` there | Fixed by rule: TFP-053/054 (hidden at inspection means an attached check, not a visibility claim) |
+| T8 | comparison fixture | reliability: dependency failure injection on `/login` | Blocking the `/login` form action's route also blocked the page's own navigation to `/login` | TFP-099, `comparisons/2026-09-24T16-*-fixture` (Phase 21 report, "Results by area, fixture") | Open |
+| T9 | the-internet | TFFU-002 "surfaces a sign-in related control for the described flow" | Visited `/`; read by hand, `/` is a list of examples with no sign-in control (0 matches), while `/login`, the page inspected for the request, has 3, all visible | TFP-099 (2026-09-24) and `comparisons/2026-09-28T20-19-37-582Z-the-internet`, runs `0a73a87b`, `f2fd9c89`; reproduced 2026-09-30, runs `15dbf0fd`, `04f40ce8` | **Fixed, TFP-123:** the test visits the first inspected page with a sign-in control. Passes on run `03bae90c` |
+| T10 | the-internet | TFFU-007 "navigation link health: Untitled link to https://github.com/tourdedave/the-internet" | `a[href=…]:visible` found nothing. Read by hand: the link is `<a><img style="position:absolute…" alt="Fork me on GitHub"></a>`, so the anchor's own box is 0x0 and Playwright calls it hidden, while the 149x149 image is on screen, uncovered, clickable, and the anchor is the first Tab stop | as T9 | **Fixed, TFP-123:** a link counts as rendered when it or its content renders; visibility checks and clicks use what renders it. Passes on `ae16b41c`, `03bae90c` |
+| T11 | the-internet | TFFU-010 "link types: … classified correctly" | Same link and cause as T10 | as T9 | **Fixed, TFP-123**, as T10 |
+| T12 | the-internet | TFFU-015 "keyboard navigation: links can receive focus and activate with Enter" (30 s timeout) | Three layered causes, each found only once the one before was fixed. (1) The T10 locator never matched, so `focus()` waited out the test. (2) Pressing Enter only starts a navigation: the test's next `waitForLoadState` returned at once on the old page, the URL looked unchanged, and the next link was then sought on github.com until the timeout. (3) The Elemental Selenium link is `http://…`, the site answers 301 to `https://`, and the test compared URLs including the scheme | as T9; (2) and (3) measured 2026-09-30, runs `db67113c`, `5c1c8351` | **Fixed, TFP-123:** (1) as T10; (2) waits up to 5 s for the URL to change, then reloads the links page; (3) compares host and path, allowing an http-to-https upgrade. Passes on `03bae90c` |
+
+## Model errors
+
+| # | Site | Test | Evidence | Source run | Status |
+| --- | --- | --- | --- | --- | --- |
+| M1 | the-internet | local accessibility test, exact accessible name "Login" | The button's accessible name is " Login" (with a leading space); an exact match on "Login" failed | TFP-099, `comparisons/2026-09-24T16-47-24-029Z-the-internet` | Open |
+| M2 | the-internet | local free-form test, a guessed `form` role name | The model named a form role the page doesn't expose | as M1 | Open |
+| M3 | the-internet | gap-fill database test "data entered on the login page is saved" | Invented a login-and-reload flow: typed a username and password, submitted, reloaded, expected the fields to keep the values. A sign-in form doesn't save input. Passed all four generation gates. Repeated in two runs | TFP-120, `comparisons/2026-09-28T20-08-32-878Z-the-internet`, `…20-19-37-582Z-the-internet` | Avoided, not fixed: with page data (TFP-122 inspects automatically) the template reports database not applicable and the model isn't asked |
+| M4 | comparison fixture | local functional test "should display/show an error message for invalid credentials" | Asserts an error message the fixture's sign-in page doesn't show. Checked per suite: 7 clean-run failures (C1 once, C2 twice, C7 twice, C8 once, the confirmation C1 twice) | Phase 36 benchmark, `benchmarks/2026-09-29*/*/functional-*.spec.ts` | Open: moves clean-run counts by 1-2 per configuration |
+| M5 | comparison fixture | local security test "input that looks like a script is not executed" | Detects the injected defect only sometimes: it checks for an alert immediately after clicking Save, without waiting for the saved page to render. C1's three suites were byte-identical and caught the defect once | Phase 36 benchmark, `benchmarks/2026-09-29/C1/security-*.spec.ts` | Open: a detection race, not a false failure |
+
+## Real
+
+| # | Site | Test(s) | Evidence | Source run | Status |
+| --- | --- | --- | --- | --- | --- |
+| R1 | comparison fixture | 9 template SEO test failures | The fixture has no canonical link, structured data, robots.txt, sitemap or web-app manifest | TFP-099, `comparisons/2026-09-24T16-*-fixture` | Real. TFP-124 makes a missing manifest and missing structured data findings, not failures |
+| R2 | the-internet | template SEO: meta description, canonical, sitemap reference in robots.txt | The page has no meta description or canonical link; robots.txt has no `Sitemap:` line | TFP-099 and every later the-internet run, most recently `03bae90c` (2026-09-30) | Real, and stay failures (Phase 36 Decision 2) |
+| R3 | the-internet | template SEO: structured data, web-app manifest | Neither exists | as R2 | Real, but optional: findings from TFP-124 (Decision 2) |
+
+## Unclear
+
+| # | Site | Test | Evidence | Source run | Status |
+| --- | --- | --- | --- | --- | --- |
+| U1 | test-assist | TFFU-036 `:visited` link styling | The stylesheet defines no `:visited` rule; the page has two links, both external. A real observation, but whether it matters is a judgement call | TFP-040, `examples/testforge-app/test-assist/` | Recorded as a real but unclear finding |
+
+## What this set is, and isn't
+
+- 3 sites: 12 template-error failures (7 of them one cause, fixed by rule),
+  5 model-error patterns (M4 alone covers 7 suites), 14 real SEO failures
+  and 1 unclear finding. Too few, and too dominated by the two sites
+  TestForge was built against, to set a classifier threshold. Phase 34's
+  plan stands: add labelled failures from later runs, and hold some back
+  from threshold-setting.
+- **Left out on purpose:** C3's and C6's benchmark suites that navigated to
+  relative URLs and failed with "Cannot navigate to invalid URL". That was
+  the benchmark running a model suite without the `test.use({ baseURL })`
+  TestForge's merged gap-fill suite gives it, not a mistake about the page.
+- Every template error found so far came from the generator assuming
+  something about the page that one real page contradicted: visibility by
+  design, a zero-size anchor, a root page that isn't the flow's page, a
+  navigation that hasn't committed yet, an https upgrade.

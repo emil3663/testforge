@@ -25,7 +25,9 @@ export function buildBrowserInteractionLinkTests(
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const expectedUrl = new URL('${linkUrl}');
         const responsePromise = page.waitForResponse((response) => {
@@ -38,7 +40,7 @@ export function buildBrowserInteractionLinkTests(
             );
         }, { timeout: ${linkAuditTimeoutMs} });
 
-        await locator.click();
+        await rendered.click();
         const response = await responsePromise;
 
 ${expectedStatusAssertion}
@@ -53,7 +55,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
         await expect(locator).toHaveAttribute('href', '${rawHref}');
     });`);
 
@@ -66,7 +70,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
         await expect(locator).toHaveAttribute('href', '${rawHref}');
     });`);
 
@@ -79,8 +85,10 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
-        await locator.click();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
+        await rendered.click();
 
         expect(new URL(page.url()).hash).toBe('${rawHref}');
     });`);
@@ -94,7 +102,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const response = await request.get('${linkUrl}', { failOnStatusCode: false, timeout: ${linkAuditTimeoutMs} });
         expect(response.status()).toBeLessThan(400);
@@ -111,7 +121,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
@@ -129,7 +141,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
@@ -139,7 +153,7 @@ ${expectedStatusAssertion}
         expect(response.status()).toBeLessThan(400);
 
         const popupPromise = context.waitForEvent('page');
-        await locator.click();
+        await rendered.click();
         const popup = await popupPromise;
         await popup.waitForLoadState('domcontentloaded').catch(() => {});
         expect(popup.url()).toContain('${escapeForSingleQuotedString(link.url.replace(/[#?].*$/, ""))}');
@@ -155,7 +169,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
@@ -174,7 +190,9 @@ ${expectedStatusAssertion}
         await page.waitForLoadState('domcontentloaded');
 
         const locator = ${locatorExpression};
-        await expect(locator).toBeVisible();
+        // The link, or what renders it: an anchor around a positioned image has no box of its own.
+        const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
+        await expect(rendered).toBeVisible();
 
         const response = await request.get('${linkUrl}', {
             failOnStatusCode: false,
@@ -183,7 +201,7 @@ ${expectedStatusAssertion}
         });
         expect(response.status()).toBeLessThan(400);
 
-        await locator.click();
+        await rendered.click();
         await page.waitForLoadState('domcontentloaded').catch(() => {});
         expect(page.url()).toContain('${escapeForSingleQuotedString(link.url.replace(/[#?].*$/, ""))}');
     });`);

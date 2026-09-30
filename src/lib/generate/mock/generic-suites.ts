@@ -22,7 +22,7 @@ import {
     resolveLinkAuditPaths,
 } from "./locators";
 import { createSuite } from "./suite";
-import type { BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
+import type { ActionableElementDetail, BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
 export function buildSharedBestPracticeSuites(
     baseUrl: string,
@@ -226,6 +226,15 @@ ${elementChecks}
     return suites;
 }
 
+/** The first inspected page with a sign-in control: a password field, or a Log in / Sign in button or link. */
+export function findSignInPath(contentProfile: ContentProfile | null): string | null {
+    const isSignIn = (element: ActionableElementDetail) =>
+        (element.elementType === "input" && element.locator.inputType === "password") ||
+        ((element.elementType === "button" || element.elementType === "link") &&
+            /\b(log ?in|sign ?in)\b/i.test(`${element.text} ${element.locator.name}`));
+    return contentProfile?.pages.find((page) => (page.actionableElements ?? []).some(isSignIn))?.path ?? null;
+}
+
 export function buildGenericSuites(
     baseUrl: string,
     description: string,
@@ -262,8 +271,13 @@ export function buildGenericSuites(
                 "username",
             ])
         ) {
+            // TFP-123: on a site whose sign-in lives on its own page (the-internet:
+            // /login, while / is a list of examples) the root has no sign-in
+            // control, so this failed on a healthy site. It visits the first
+            // inspected page that has one, and / only when none does.
+            const signInPath = escapeForSingleQuotedString(findSignInPath(contentProfile) ?? "/");
             functionalTests.push(`  test('surfaces a sign-in related control for the described flow', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('${signInPath}');
     await page.waitForLoadState('domcontentloaded');
 
     const authControls = page.locator('input[type="password"], input[name*="user" i], input[name*="email" i], button:has-text("Login"), button:has-text("Sign in"), a:has-text("Login"), a:has-text("Sign in")');

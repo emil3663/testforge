@@ -41,14 +41,16 @@ export function buildLinkCoverageTests(
             const linkLocator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+            // The link, or what renders it: an anchor around a positioned image has no box of its own.
+            const renderedLink = linkLocator.or(linkLocator.locator('*')).filter({ visible: true }).first();
 
-            await expect(linkLocator).toBeVisible();
+            await expect(renderedLink).toBeVisible();
             const urlBeforeInteraction = page.url();
 
             if (link.linkType === 'anchor') {
-                await linkLocator.click();
+                await renderedLink.click();
                 expect(new URL(page.url()).hash).toBe(link.rawHref);
                 if (page.url() !== urlBeforeInteraction) {
                     await page.goBack().catch(async () => {
@@ -63,7 +65,7 @@ export function buildLinkCoverageTests(
 
             if (link.targetBehavior === 'new-tab') {
                 const popupPromise = context.waitForEvent('page');
-                await linkLocator.click();
+                await renderedLink.click();
                 const popup = await popupPromise;
                 await popup.waitForLoadState('domcontentloaded').catch(() => {});
                 expect(popup.url()).toContain(link.url.replace(/[#?].*$/, ''));
@@ -71,7 +73,7 @@ export function buildLinkCoverageTests(
                 continue;
             }
 
-            await linkLocator.click();
+            await renderedLink.click();
             await page.waitForLoadState('domcontentloaded').catch(() => {});
             expect(page.url()).toContain(link.url.replace(/[#?].*$/, ''));
 
@@ -96,10 +98,12 @@ export function buildLinkCoverageTests(
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+            // The link, or what renders it: an anchor around a positioned image has no box of its own.
+            const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
 
-            await expect(locator).toBeVisible();
+            await expect(rendered).toBeVisible();
 
             if (link.linkType === 'internal') {
                 expect(new URL(link.url).origin).toBe(new URL('${escapedCurrentPageUrl}').origin);
