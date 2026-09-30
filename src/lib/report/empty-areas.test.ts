@@ -98,6 +98,29 @@ test("buildReport carries the generation record and the empty areas, and the HTM
     assert.match(html, /Property toBeAccessible does not exist/);
 });
 
+// Phase 37 (TFP-129): the Promise gate's verdict survives the save (the
+// untrusted-input normaliser /api/run applies) and reaches the report.
+test("Phase 37: a promise_to_plain_matcher rejection is saved with the run, named in the empty area, and shown in the report", async () => {
+    const { normalizeGenerationRecord } = await import("../run/generation-record.ts");
+    const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
+    const saved = normalizeGenerationRecord({
+        generatedBy: "fallback",
+        model: "testforge-qwen7b:latest",
+        fallbackReason: "promise_to_plain_matcher",
+        gapFill: { gapAreas: ["database"], outcome: "rejected" },
+        gates: [
+            { gate: "unawaited assertions", bar: "0 never-awaited web-first assertions", measured: "0 never-awaited web-first assertions", verdict: "kept", evidence: [] },
+            { gate: "promise to plain matcher", bar: "0 Promises handed to a plain matcher", measured: "1 Promises handed to a plain matcher", verdict: "rejected", evidence: ["line 5: expect(page.getByText('x').isDisabled()).toBe(true)"] },
+        ],
+    })!;
+    assert.equal(saved.gates.length, 2);
+    const report = buildReport(json, ["database"], "", "http://x", null, SUITE, saved, "d");
+    assert.match(report.emptyAreas![0].reasons.at(-1)!, /compares a Promise instead of its value/);
+    const html = buildReportHtmlDocument(report, "r");
+    assert.match(html, /promise to plain matcher<\/td><td>0 Promises handed to a plain matcher<\/td><td>1 Promises handed to a plain matcher<\/td><td>rejected/);
+    assert.match(html, /isDisabled\(\)\)\.toBe\(true\)/);
+});
+
 test("TFP-122: the HTML export says the page data was gathered automatically, or why it could not be", () => {
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const withInspection = (pageInspection: GenerationRecord["pageInspection"]) =>

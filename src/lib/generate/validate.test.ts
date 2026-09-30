@@ -99,3 +99,53 @@ test("findUnawaitedAssertions: awaited and returned assertions are clean", () =>
         []
     );
 });
+
+// --- Phase 37 TFP-129: a Promise handed to a plain matcher ---------------------
+
+const { findPromisesToPlainMatchers } = await import("./validate.ts");
+const { readFileSync } = await import("node:fs");
+
+test("findPromisesToPlainMatchers: rejects reliability-3 from the 2026-09-30 C8 run, every isDisabled() line", () => {
+    const code = readFileSync("benchmarks/2026-09-30-phase33-c8/reliability-3.spec.ts", "utf8");
+    assert.deepEqual(findTypeErrors(code), [], "precondition: it type-checks");
+    assert.deepEqual(findUnawaitedAssertions(code).filter((a) => a.returnsPromise), [], "precondition: the await gate keeps it");
+    const hits = findPromisesToPlainMatchers(code);
+    assert.deepEqual(hits.map((h) => h.split(":")[0]), ["line 9", "line 10", "line 11", "line 21", "line 22", "line 23", "line 33", "line 34", "line 35"]);
+    assert.match(hits[0], /^line 9: expect\(page\.locator\('input\[name="email"\]'\)\.isDisabled\(\)\)\.toBe\(true\)$/);
+});
+
+test("findPromisesToPlainMatchers: sees .not, expect.soft, toBeTruthy and an unawaited plain matcher", () => {
+    const hits = findPromisesToPlainMatchers(
+        suite(
+            "  await expect(page.getByText('x').isVisible()).not.toBe(false);\n  expect.soft(page.title()).toEqual('t');\n  expect(page.getByRole('button').count()).toBeTruthy();\n  const p = page.getByText('x').textContent();\n  expect(p).toBe('x');"
+        )
+    );
+    assert.deepEqual(hits.map((h) => h.split(":")[0]), ["line 3", "line 4", "line 5", "line 7"]);
+});
+
+test("findPromisesToPlainMatchers: web-first matchers, resolves/rejects, awaited values and expect.poll are clean", () => {
+    assert.deepEqual(
+        findPromisesToPlainMatchers(
+            suite(
+                [
+                    "  await expect(page.getByText('x')).toBeVisible();",
+                    "  await expect(page).toHaveURL('u');",
+                    "  await expect(page.getByText('x').isVisible()).resolves.toBe(true);",
+                    "  await expect(page.goto('u')).rejects.toThrow();",
+                    "  expect(await page.getByText('x').isDisabled()).toBe(false);",
+                    "  await expect.poll(() => page.getByRole('button').count()).toBe(1);",
+                    "  const response = await page.goto('u');",
+                    "  expect(response?.status() ?? 0).toBeLessThan(500);",
+                ].join("\n")
+            )
+        ),
+        []
+    );
+});
+
+test("findPromisesToPlainMatchers: the template generator's own suites are clean, for every coverage area", () => {
+    for (const practice of BEST_PRACTICE_OPTIONS) {
+        const code = mockGenerate("https://example.com", "Check the page.", [practice], null, normalizeContentRules(undefined), normalizeTestAuditMode("deep"));
+        assert.deepEqual(findPromisesToPlainMatchers(code), [], practice);
+    }
+});

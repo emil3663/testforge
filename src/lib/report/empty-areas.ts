@@ -14,6 +14,7 @@ const LOCAL_FAILURE_REASONS: Record<string, string> = {
     timeout: "the local model did not answer within its time budget",
     invalid_output: "the local model's tests were rejected: they do not type-check (see the type check gate)",
     unawaited_assertion: "the local model's tests were rejected: an assertion in them is never awaited (see the unawaited assertions gate)",
+    promise_to_plain_matcher: "the local model's tests were rejected: one compares a Promise instead of its value, so it can never pass (see the promise to plain matcher gate)",
     empty_completion: "the local model answered with nothing usable",
     ollama_unreachable: "the local model could not be reached (is Ollama running?)",
     ollama_model_missing: "the configured local model is not installed in Ollama",

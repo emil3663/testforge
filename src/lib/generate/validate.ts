@@ -138,3 +138,50 @@ export function findUnawaitedAssertions(code: string, projectDir: string = proce
     visit(source);
     return found;
 }
+
+function isThenable(checker: ts.TypeChecker, type: ts.Type): boolean {
+    return checker.getPropertyOfType(type, "then") !== undefined;
+}
+
+/**
+ * Phase 37 (TFP-129, Decision 2): every assertion that hands a Promise to a
+ * plain matcher, as `line N: text`. `expect(locator.isDisabled()).toBe(true)`
+ * compares the Promise object itself, not the value it resolves to, so the
+ * test can never pass (or, with toBeTruthy, can never fail). It type-checks
+ * and is awaited, so neither earlier gate sees it (Phase 36, GEN-54's
+ * reliability-3). A plain matcher is one that returns no promise; web-first
+ * (auto-retrying) matchers return one and are never flagged, nor is
+ * `expect(promise).resolves` / `.rejects`, which unwrap the Promise first.
+ */
+export function findPromisesToPlainMatchers(code: string, projectDir: string = process.cwd()): string[] {
+    const loaded = loadGenerated(code, projectDir);
+    if (!loaded) return [];
+    const { program, source } = loaded;
+    const checker = program.getTypeChecker();
+    const found: string[] = [];
+
+    const visit = (node: ts.Node) => {
+        if (isAssertion(node)) {
+            const modifiers: string[] = [];
+            let target = (node.expression as ts.PropertyAccessExpression).expression;
+            while (ts.isPropertyAccessExpression(target) && MATCHER_MODIFIERS.has(target.name.text)) {
+                modifiers.push(target.name.text);
+                target = target.expression;
+            }
+            const actual = (target as ts.CallExpression).arguments[0];
+            if (
+                actual &&
+                !modifiers.includes("resolves") &&
+                !modifiers.includes("rejects") &&
+                isThenable(checker, checker.getTypeAtLocation(actual)) &&
+                !isThenable(checker, checker.getTypeAtLocation(node))
+            ) {
+                const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
+                found.push(`line ${line}: ${node.getText(source).replace(/\s+/g, " ").slice(0, 120)}`);
+            }
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return found;
+}

@@ -164,6 +164,7 @@ model output, and logs the cause on the server console.
 | `empty_completion` | The model returned nothing usable. | Retry; if it repeats, report it. |
 | `invalid_output` | The model returned a suite, but it doesn't type-check against Playwright (for example, it calls a matcher Playwright doesn't have). The server console lists the errors. | See [Read a local suite before trusting it](#read-a-local-suite-before-trusting-it). Retrying, or wording the request differently, can help. |
 | `unawaited_assertion` | The suite compiled, but has a check on the page or an element without `await`, which never runs. The server console lists the lines. | Retry. The rules already tell the model to await every check. |
+| `promise_to_plain_matcher` | The suite compiled, but a check hands a Promise to a plain matcher, e.g. `expect(locator.isDisabled()).toBe(true)`, which compares the Promise, not its value, and can never pass. The server console lists the lines. | Retry. |
 
 ## Checklist
 

@@ -178,7 +178,7 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     assert.deepEqual(findTypeErrors(body.code), []);
     assert.deepEqual(
         body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`),
-        ["time budget: kept", "type check: kept", "unawaited assertions: kept", "merged suite type check: kept"]
+        ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "merged suite type check: kept"]
     );
 });
 
@@ -289,6 +289,21 @@ test("Option B: a never-awaited web-first assertion - template kept, unawaited_a
     const gate = body.gates.find((g: { gate: string }) => g.gate === "unawaited assertions");
     assert.equal(gate.verdict, "rejected");
     assert.match(gate.evidence[0], /^line 5: expect\(page\)\.toHaveURL/);
+});
+
+// Phase 37 (TFP-129): GEN-54's reliability-3 shape - type-checks, awaited, can never pass.
+test("Phase 37: a Promise handed to a plain matcher - template kept, promise_to_plain_matcher, with the line as evidence", async (t) => {
+    t.mock.method(console, "error", () => {});
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(localSuite(["    await expect(page.locator('input[name=\"email\"]').isDisabled()).toBe(true);"]))));
+    useOllama();
+    const body = await expectFallback("promise_to_plain_matcher");
+    const gate = body.gates.find((g: { gate: string }) => g.gate === "promise to plain matcher");
+    assert.deepEqual(
+        { bar: gate.bar, measured: gate.measured, verdict: gate.verdict },
+        { bar: "0 Promises handed to a plain matcher", measured: "1 Promises handed to a plain matcher", verdict: "rejected" }
+    );
+    assert.match(gate.evidence[0], /^line 5: expect\(page\.locator\('input\[name="email"\]'\)\.isDisabled\(\)\)\.toBe\(true\)$/);
+    assert.deepEqual(body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`), ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: rejected"]);
 });
 
 test("Option B: an unawaited synchronous value assertion still checks, so it is not rejected", async () => {
