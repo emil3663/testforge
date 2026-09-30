@@ -1,0 +1,300 @@
+{
+  "model": "testforge-qwen7b",
+  "date": "2026-09-30T05:09:41.167Z",
+  "path": "buildGapFillMessages(one area, no page data) + generateLocalSuite",
+  "results": [
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 1,
+      "ms": 49007,
+      "outcome": "invalid_output",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 48234 ms -> kept",
+        "type check: 1 type errors -> rejected"
+      ]
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 2,
+      "ms": 33108,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 32965 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 3,
+      "ms": 41067,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 40938 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 1,
+      "ms": 19420,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 19268 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 2,
+      "ms": 17686,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 17566 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 3,
+      "ms": 17644,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 17504 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 1,
+      "ms": 16158,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 16046 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 2,
+      "ms": 14834,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14702 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 3,
+      "ms": 14644,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14534 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 1,
+      "ms": 18497,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18386 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 2,
+      "ms": 11784,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 11676 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 3,
+      "ms": 18589,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18469 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 1,
+      "ms": 34444,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 34332 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 2,
+      "ms": 32227,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 32111 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 3,
+      "ms": 32296,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 32158 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 1,
+      "ms": 23418,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 23305 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 2,
+      "ms": 21344,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 21225 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 3,
+      "ms": 21317,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 21194 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 1,
+      "ms": 38938,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 38819 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 2,
+      "ms": 24311,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 24181 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 3,
+      "ms": 14484,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14376 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept"
+      ]
+    }
+  ]
+}

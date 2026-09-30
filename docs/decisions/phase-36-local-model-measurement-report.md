@@ -48,9 +48,11 @@ same result: C8 39.4 s, C1 65.5 s.
   **slower** (median 92.8 s) and cost two suites to type errors.
 - Adopted per Decision 7: `ollama/Modelfile.testforge-qwen7b` gains
   `num_gpu 29`, and `docs/LOCAL_MODEL_SETUP.md` explains it. The default
-  model name, `testforge-qwen7b`, is unchanged. **Still owed before
-  Phase 35 relies on it:** the Phase 33 category bar (three consecutive
-  real generations per category, read, not only compiled).
+  model name, `testforge-qwen7b`, is unchanged.
+- **Phase 33's category bar on C8, run 2026-09-30:** performance, SEO,
+  security and accessibility meet it (3/3). Reliability (1/3), database
+  (1/3) and functional (0/3 without an invented destination) do not. See
+  "Phase 33 category bar on C8" below.
 
 ## The comparison
 
@@ -204,7 +206,61 @@ The result holds: C8 is 40% faster, and no worse on quality.
   up re-runs `ollama create testforge-qwen7b -f ollama/Modelfile.testforge-qwen7b`
   once.
 - `TESTFORGE_OLLAMA_MODEL` stays `testforge-qwen7b`.
-- **Before Phase 35 relies on it:** the Phase 33 category bar on C8.
+- **Phase 33 category bar on C8:** run, recorded below; three categories
+  fall short.
+
+## Phase 33 category bar on C8
+
+Run 2026-09-30 on the rebuilt `testforge-qwen7b` (C8: `num_gpu 29`,
+`ollama ps` 100% GPU, context 16384). Evidence:
+`benchmarks/2026-09-30-phase33-c8/` (the 21 suites, `results.json`, and
+`run.mts`, which repeats the run). TEST_PLAN GEN-54.
+
+**Method.** Phase 33's bar: three consecutive real generations per
+category, each suite read by hand for a check that belongs to the category
+as `BEST_PRACTICE_GUIDANCE` describes it, clean under both gates, and free
+of example data. Reliability needs a working `page.route()` failure
+simulation. Phase 33's own wordings, with no page data, as Phase 33 ran.
+Since Phase 34 the model is called only for areas the template leaves
+without tests, so each call is the production gap-fill call for that one
+area: `buildGapFillMessages` then `generateLocalSuite`, the route's own
+call and gates. Each accepted suite also passed a standalone strict `tsc`.
+No suite contains an `example.invalid` URL or an `EXAMPLE-` name.
+
+| Category | Result | What the three suites do | Phase 33 (2026-09-24) |
+| --- | --- | --- | --- |
+| Reliability | ❌ 1/3 | 1: rejected at the type-check gate (`.disabled` on an `SVGElement`). 2: aborts `'**/api/**'` before load and asserts the page survived (status < 500, body visible, no page error): the real trait, but its three tests are identical, under titles naming a "disabled" email field, password field and button, and it covers one failure kind of three. 3: passes both gates but can never pass: `expect(locator.isDisabled()).toBe(true)` compares a Promise with `true`, and it expects the fields to be disabled, which nothing asked for. | ⚠️ 3/3 had the trait, 1/3 with accurate names |
+| Performance | ✅ 3/3 | Load time under 3000 ms, first byte under 800 ms and DOM ready under 2000 ms from Navigation Timing. The example's budgets, near-verbatim. | ✅ 3/3 |
+| SEO | ✅ 3/3 | Title, meta description and exactly one `h1`, in every suite. | ✅ 3/3 (`h1` 2/3) |
+| Database | ❌ 1/3 | 1: saves a unique `TestForge check …` value, sees it, reloads, sees it again: genuine. 2: saves and sees it, never reloads, so persistence is not checked. 3: reloads, then asserts the form fields still hold the typed values (fails on a correct form that clears) and waits for an invented "Thank you for your message!". | ✅ 3/3 |
+| Security | ✅ 3/3 | HTTPS behind the positive skip, invalid email and invalid password stay on the page, script-like input opens no dialog. All three checks in every suite. | ✅ 3/3 (all three checks 2/3) |
+| Accessibility | ✅ 3/3 | Role and accessible name for the email field, password field and Sign in button. No focus check (Phase 31/33 suites had one). `toHaveRole('textbox')` on the password field was checked in Chromium: Playwright gives it that role, so it is not a false failure. | ✅ 3/3 |
+| Functional | ⚠️ 0/3 clean | All three fill the fields and click Sign in, and all three assert a guessed `/dashboard` destination, with a comment saying so, which fails on any site that goes elsewhere. Suite 2's first test (fields accept input, checked with `toHaveValue`) is sound. The one Phase 33 functional suite guessed `/dashboard` too; Phase 33 counted it as passing on the gates alone. | ✅ 1/1 (gates) |
+
+**Read together.**
+
+- **Three runs are close to one.** At temperature 0.2 the SEO and
+  security suites are byte-identical across all three calls, accessibility
+  differs only by a trailing `/`, and performance only by one title. For
+  those categories, "3/3" is one answer given three times, not three
+  independent samples.
+- **Not attributable to C8 alone.** Two things changed since Phase 33: the
+  model's settings (C8), and the prompt: Phase 34's gap-fill messages
+  (`ef736c5`) replaced the full-generation request. The local rules
+  themselves are unchanged since Phase 33 (`4215d82`). This run doesn't
+  separate the two. C8 changes only where
+  the layers run and the context size, so the prompt is the likelier cause
+  of the reliability and database drop, but that is a reading, not a
+  measurement.
+- **What production sees.** With page data (since Phase 34 a request that
+  brings none has the site inspected), the template itself writes reliability tests and,
+  where a suitable form exists, a database round trip, so the model is
+  called for those areas only when the template wrote nothing. The drop
+  matters exactly there.
+- **The benchmark's automated category signal** (21/21 for C8, with the
+  fixture's page data and wordings) did not predict this. It detects that a
+  category's trait is present, not whether the test can pass on a correct
+  site.
 
 ---
 

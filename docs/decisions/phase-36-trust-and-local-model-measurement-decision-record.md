@@ -284,10 +284,13 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   back-to-back confirmation of C1 and the winner requested by Emil. Winner:
   C8 (`num_gpu 29`), adopted in `ollama/Modelfile.testforge-qwen7b` and
   `docs/LOCAL_MODEL_SETUP.md`. Report:
-  `phase-36-local-model-measurement-report.md`. The Phase 33 category bar
-  on C8 is still owed before Phase 35. Independently verified and pushed
-  2026-09-30, the correction included (reproduced: C3 19 clean passes, 15/18;
-  C6 12; C8 stays).
+  `phase-36-local-model-measurement-report.md`. Independently verified and
+  pushed 2026-09-30, the correction included (reproduced: C3 19 clean
+  passes, 15/18; C6 12; C8 stays).
+- **Phase 33 category bar on C8:** run 2026-09-30 (GEN-54). Performance,
+  SEO, security and accessibility 3/3; reliability 1/3, database 1/3,
+  functional 0/3 without a guessed destination. Recorded in the report;
+  awaiting verification.
 
 ## Recommended Execution Order
 
@@ -302,8 +305,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 ### Gate A — Trust fixes landed and the model measured
 **Verified independently and pushed 2026-09-30** (`7678490`, `061a5b9`,
 `46476e6`, `d86c8d1`, `a7276c2`, `960bc3d`, `25ae0cc`; TFP-126 and TFP-127
-earlier the same day). Still owed before Phase 35: the Phase 33 per-category
-check on C8.
+earlier the same day). The Phase 33 per-category check on C8, owed before
+Phase 35, ran 2026-09-30 (GEN-54); three categories fall short. See the
+measurement report. Awaiting verification.
 
 Follow-ups from the verification, one commit each, verified independently
 and pushed 2026-09-30 with the record update `fe834d3` (jobs.test.ts 6/6 on
