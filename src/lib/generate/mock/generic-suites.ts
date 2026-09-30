@@ -12,6 +12,7 @@ import { buildPerformanceChecks } from "./performance-checks";
 import { buildSecurityChecks } from "./security-checks";
 import { buildDragDropTests } from "./drag-drop";
 import { buildFormFieldNameTests } from "./form-field-names";
+import { buildCookieSessionTests } from "./cookie-session-checks";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import {
@@ -196,15 +197,9 @@ ${elementChecks}
     }
 
     if (areas.includes("cookie/session")) {
-        const suite = createSuite("cookie/session", [
-            `  test('can inspect browser cookies for the session flow', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-
-    const cookies = await page.context().cookies();
-    expect(Array.isArray(cookies)).toBeTruthy();
-  });`,
-        ]);
+        // TFP-125: a check that can fail, replacing one that asserted the
+        // cookie list is an array.
+        const suite = createSuite("cookie/session", buildCookieSessionTests());
 
         if (suite) {
             suites.push(suite);
