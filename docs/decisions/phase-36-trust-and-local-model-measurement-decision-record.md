@@ -215,7 +215,8 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Status:** Landed `7678490` (TEST_PLAN GEN-50). All four reproduced and read
   by hand; all four template errors, fixed. Live: functional 13/13, free-form
   28/33 (the 5 left are real SEO gaps). Labelled set:
-  `docs/decisions/data/labelled-failures.md`. Not yet independently verified.
+  `docs/decisions/data/labelled-failures.md`. Independently verified and
+  pushed 2026-09-30.
 
 ### TFP-124 — Optional SEO items as findings
 
@@ -229,9 +230,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Dependencies:** None.
 - **Status:** Landed `960bc3d` (TEST_PLAN GEN-52). Live on the-internet: the two
   optional items pass with named findings, the three baseline gaps fail by
-  name. Found, not fixed: test IDs restart per suite, so two SEO suites both
-  number a TFSE-001; renumbering would shift cited IDs, so it waits for a
-  decision. Not yet independently verified.
+  name. Independently verified and pushed 2026-09-30. Found in it: test IDs
+  restarted per suite, so two SEO suites both numbered a TFSE-001. Emil
+  accepted a one-time renumbering; see the Gate A follow-ups.
 
 ### TFP-125 — Small defects from the audit
 
@@ -244,8 +245,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Dependencies:** None.
 - **Status:** Landed as one commit per defect: cookie/session `46476e6` (GEN-51),
   nothing to run `d86c8d1` (RPT-15), browser-test skipping `a7276c2` (TST-01);
-  the spikes and the 3B Modelfile moved with TFP-126 (`142e937`). Not yet
-  independently verified.
+  the spikes and the 3B Modelfile moved with TFP-126 (`142e937`).
+  Independently verified and pushed 2026-09-30; two follow-ups from the
+  verification are listed under Gate A.
 
 ### TFP-126 — Build the local model benchmark
 
@@ -262,7 +264,7 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Dependencies:** None.
 - **Status:** Landed `142e937` (TEST_PLAN GEN-48); the C1-only run was
   independently verified 2026-09-29. C8 support and the `num_gpu` probe
-  land with TFP-127. Not yet verified as a whole.
+  land with TFP-127. Verified as a whole and pushed 2026-09-30.
 
 ### TFP-127 — Run the benchmark and choose the model
 
@@ -283,7 +285,9 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   C8 (`num_gpu 29`), adopted in `ollama/Modelfile.testforge-qwen7b` and
   `docs/LOCAL_MODEL_SETUP.md`. Report:
   `phase-36-local-model-measurement-report.md`. The Phase 33 category bar
-  on C8 is still owed. Not yet independently verified.
+  on C8 is still owed before Phase 35. Independently verified and pushed
+  2026-09-30, the correction included (reproduced: C3 19 clean passes, 15/18;
+  C6 12; C8 stays).
 
 ## Recommended Execution Order
 
@@ -296,9 +300,27 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 ## Suggested Milestone Gate
 
 ### Gate A — Trust fixes landed and the model measured
-**Built 2026-09-30 (`7678490`, `46476e6`, `d86c8d1`, `a7276c2`, `960bc3d`, and the
-benchmark correction `061a5b9`); awaiting independent verification. Not
-pushed.** TFP-126 and TFP-127 were verified and pushed 2026-09-30.
+**Verified independently and pushed 2026-09-30** (`7678490`, `061a5b9`,
+`46476e6`, `d86c8d1`, `a7276c2`, `960bc3d`, `25ae0cc`; TFP-126 and TFP-127
+earlier the same day). Still owed before Phase 35: the Phase 33 per-category
+check on C8.
+
+Follow-ups from the verification, one commit each, awaiting verification,
+not pushed:
+- `a264f46` (GEN-51): a session cookie whose domain starts with "." for the
+  site's own host is shared with its subdomains. It passes with a named
+  finding; the parent-domain case still fails. Before, it passed silently.
+- `199900b`: the three TFP-125 tests in `jobs.test.ts` failed on Node 22
+  with ENOENT. `jobFilesRoot` is now created with `mkdirSync` at load, as
+  asked, but that alone did not fix it: on Node 22 the file's `after()` ran
+  during a top-level `await import` between tests and removed the scratch
+  folder. The imports moved above the first test. Unit suite 354/354 on
+  Node 22.
+- `66204b9` (GEN-53): suites sharing an area code are numbered on from each
+  other, so no two tests in one generated file share an ID. Only the
+  per-page SEO suite moves (TFSE-001…008 become 002…009); past records keep
+  the old numbers.
+
 - TFP-123 to 127 landed and independently verified; the measurement report
   names the chosen configuration or says C1 stays; no suspected false
   failure is left unresolved.
