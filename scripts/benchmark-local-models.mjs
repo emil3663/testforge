@@ -2,7 +2,9 @@
 // this machine with the real local generation path, repeatably.
 //
 //   npm run benchmark:local -- --config C1
-//   npm run benchmark:local -- --config C2 --num-ctx 8192
+//   npm run benchmark:local -- --config C2 --num-ctx 12288
+//   npm run benchmark:local -- --config C8 --probe-num-gpu 12-29   (record each step, then stop)
+//   npm run benchmark:local -- --config C8 --num-gpu <largest that loaded>
 //
 // Needs Ollama, a TestForge server (default http://127.0.0.1:3100, any build;
 // it only runs suites) and the comparison fixture (`npm run comparison:fixture`,
@@ -39,8 +41,9 @@ function arg(name, fallback) {
 }
 
 // Decision 5. C1 is today's model, unchanged; the rest are built from a
-// Modelfile with the measured context N. temperature and num_predict are the
-// same everywhere, so only model, quantisation and context change.
+// Modelfile with the context N (12288, amended 2026-09-29). temperature and
+// num_predict are the same everywhere, so only model, quantisation, context
+// and (C8) the GPU layer count change.
 const NUM_PREDICT = 4096;
 const TEMPERATURE = 0.2;
 const CONFIGS = {
@@ -53,6 +56,10 @@ const CONFIGS = {
     // C7's base is chosen from C2-C6 by Decision 7; its Ollama server must run
     // with OLLAMA_FLASH_ATTENTION=1 and OLLAMA_KV_CACHE_TYPE=q8_0.
     C7: { model: "testforge-bench-c7", base: arg("base", null) },
+    // C1's model and context with more layers on the GPU (added 2026-09-29):
+    // C1 ran 11 of 29 layers there, 59% of the model on the CPU, with 1.6 GB
+    // of VRAM unused. num_gpu is the largest value --probe-num-gpu loaded.
+    C8: { model: "testforge-bench-c8", base: "qwen2.5-coder:7b", numCtx: 16384, needsNumGpu: true },
 };
 const CASES = ["functional", "accessibility", "seo", "performance", "database", "security", "reliability"];
 
@@ -62,7 +69,13 @@ if (!config) {
     console.error(`usage: npm run benchmark:local -- --config <${Object.keys(CONFIGS).join("|")}> [--num-ctx N] [--base <model> (C7)] [--calls 3] [--date YYYY-MM-DD]`);
     process.exit(2);
 }
-const numCtx = arg("num-ctx");
+const numCtx = arg("num-ctx") ?? (config.numCtx ? String(config.numCtx) : undefined);
+const numGpu = arg("num-gpu");
+const probeNumGpu = arg("probe-num-gpu");
+if (config.needsNumGpu && !numGpu && !probeNumGpu) {
+    console.error(`${configId} needs --num-gpu <layers> or --probe-num-gpu <from-to>`);
+    process.exit(2);
+}
 if (config.base === null && configId !== "C1") {
     console.error(`${configId} needs --base <model>`);
     process.exit(2);
@@ -124,11 +137,52 @@ if (machine.otherGpuPrograms !== "none") log(`WARNING: other GPU programs are ru
 if (configId === "C7") log(`C7: the Ollama server must have been started with OLLAMA_FLASH_ATTENTION=1 OLLAMA_KV_CACHE_TYPE=q8_0 (this shell has ${JSON.stringify(machine.ollamaEnv)})`);
 
 const modelfilePath = join(root, "modelfiles", `${configId}.Modelfile`);
-if (config.base) {
-    writeFileSync(modelfilePath, `FROM ${config.base}\nPARAMETER num_ctx ${numCtx}\nPARAMETER num_predict ${NUM_PREDICT}\nPARAMETER temperature ${TEMPERATURE}\n`);
+const modelfile = (gpuLayers) =>
+    `FROM ${config.base}\nPARAMETER num_ctx ${numCtx}\nPARAMETER num_predict ${NUM_PREDICT}\nPARAMETER temperature ${TEMPERATURE}\n${gpuLayers ? `PARAMETER num_gpu ${gpuLayers}\n` : ""}`;
+if (config.base && !probeNumGpu) {
+    writeFileSync(modelfilePath, modelfile(numGpu));
     log(`creating ${config.model} from ${modelfilePath}`);
     execFileSync("ollama", ["create", config.model, "-f", modelfilePath], { stdio: "inherit" });
 }
+// --- C8: find the largest num_gpu that loads --------------------------------------
+// Each step builds the model with that many GPU layers, unloads whatever is
+// loaded, and makes one real request - the largest case's prompt, so the full
+// context and a real prompt evaluation are allocated - with a short output.
+// Every attempt is recorded. An out-of-memory failure is a result (Decision 5
+// amendment), so a failing step is recorded and the probe goes on to the next.
+async function probeGpuLayers(range) {
+    const [from, to] = range.split("-").map(Number);
+    const biggest = cases[cases.length - 1];
+    const steps = [];
+    for (let layers = from; layers <= to; layers++) {
+        const path = join(outDir, `probe-num-gpu-${layers}.Modelfile`);
+        writeFileSync(path, modelfile(layers));
+        for (const loaded of run("ollama", ["ps"]).split("\n").slice(1)) {
+            const name = loaded.split(/\s+/)[0];
+            if (name) run("ollama", ["stop", name]);
+        }
+        let created = "ok";
+        try {
+            execFileSync("ollama", ["create", config.model, "-f", path], { stdio: ["ignore", "pipe", "pipe"] });
+        } catch (error) {
+            created = String(error.stderr ?? error.message).trim().split("\n").pop();
+        }
+        const { areas, messages } = request(biggest);
+        const result = created === "ok" ? await nativeChat(withLocalRules(messages, areas), { num_predict: 16 }) : { error: `create failed: ${created}` };
+        const step = {
+            numGpu: layers,
+            ...result,
+            ollamaPs: run("ollama", ["ps"]),
+            gpuMemoryUsed: run("nvidia-smi", ["--query-gpu=memory.used,memory.total", "--format=csv,noheader"]),
+        };
+        steps.push(step);
+        writeFileSync(join(outDir, "num-gpu-steps.json"), JSON.stringify({ base: config.base, numCtx: Number(numCtx), probeCase: biggest.name, steps }, null, 2));
+        const split = /(\d+%\/\d+% CPU\/GPU|\d+% GPU|\d+% CPU)/.exec(step.ollamaPs)?.[1] ?? "not loaded";
+        log(`num_gpu ${layers}: ${step.error ? `ERROR ${step.error}` : `loaded in ${step.loadMs} ms, prompt ${step.promptEvalCount} tok in ${step.promptEvalMs} ms`}; ${split}; GPU ${step.gpuMemoryUsed}`);
+    }
+    return steps;
+}
+
 // What Ollama will actually run, for every configuration (C1 included).
 writeFileSync(join(outDir, "modelfile.shown.txt"), run("ollama", ["show", "--modelfile", config.model]));
 const parameters = run("ollama", ["show", "--parameters", config.model]);
@@ -154,13 +208,13 @@ function request(testCase) {
 }
 
 // --- helpers ----------------------------------------------------------------------
-async function nativeChat(messages) {
+async function nativeChat(messages, extraOptions = {}) {
     const started = performance.now();
     try {
         const res = await fetch(`${ollamaHost}/api/chat`, {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ model: config.model, messages, stream: false, options: { temperature: TEMPERATURE } }),
+            body: JSON.stringify({ model: config.model, messages, stream: false, options: { temperature: TEMPERATURE, ...extraOptions } }),
             signal: AbortSignal.timeout(ollamaTimeoutMs()),
         });
         const body = await res.json();
@@ -248,6 +302,13 @@ async function measuredCall(testCase, index) {
     return record;
 }
 
+if (probeNumGpu) {
+    const steps = await probeGpuLayers(probeNumGpu);
+    const loaded = steps.filter((step) => !step.error).map((step) => step.numGpu);
+    log(`probe done: loaded at ${loaded.join(", ") || "none"}; largest ${loaded.length ? Math.max(...loaded) : "none"} -> ${join(outDir, "num-gpu-steps.json")}`);
+    process.exit(0);
+}
+
 // --- 3-5. warm-up, memory, measured calls ---------------------------------------
 log(`${configId}: ${config.model}${config.base ? ` (FROM ${config.base}, num_ctx ${numCtx})` : ""}, num_ctx as loaded ${shownCtx || "(model default)"}, ${cases.length} cases x ${calls} calls -> ${outDir}`);
 // The warm-up is not scored. It is made on the native endpoint with the model
@@ -267,7 +328,7 @@ log(`memory after warm-up:\n${memory.ollamaPs}\n  GPU: ${memory.gpuMemoryUsed}`)
 
 const results = [];
 const save = (finishedAt) =>
-    writeFileSync(join(outDir, "results.json"), JSON.stringify({ config: configId, model: config.model, base: config.base, numCtx: numCtx ? Number(numCtx) : shownCtx || null, numPredict: NUM_PREDICT, temperature: TEMPERATURE, timeoutMs: ollamaTimeoutMs(), warmUp, memory, finishedAt, results }, null, 2));
+    writeFileSync(join(outDir, "results.json"), JSON.stringify({ config: configId, model: config.model, base: config.base, numCtx: numCtx ? Number(numCtx) : shownCtx || null, numGpu: numGpu ? Number(numGpu) : null, numPredict: NUM_PREDICT, temperature: TEMPERATURE, timeoutMs: ollamaTimeoutMs(), warmUp, memory, finishedAt, results }, null, 2));
 // Call order. Ollama reuses its cached prompt when a request repeats the one
 // before it: measured in the first smoke test, a native call made straight
 // after the identical OpenAI-compatible call evaluated a 6202-token prompt in

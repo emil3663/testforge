@@ -12,9 +12,6 @@ if (dirs.length === 0) {
     process.exit(2);
 }
 
-// Decision 5: N is the smallest of these that holds the largest prompt plus num_predict.
-const CONTEXT_CHOICES = [4096, 6144, 8192];
-
 function quantile(values, q) {
     const v = values.filter((x) => typeof x === "number" && Number.isFinite(x)).sort((a, b) => a - b);
     if (v.length === 0) return null;
@@ -38,7 +35,6 @@ for (const dir of dirs) {
     const nativeWall = r.map((x) => x.native?.ms);
     const prompts = r.map((x) => x.native?.promptEvalCount ?? x.openai.promptTokens);
     const maxPrompt = Math.max(...prompts.filter((p) => typeof p === "number"));
-    const n_ = CONTEXT_CHOICES.find((c) => c >= maxPrompt + data.numPredict) ?? null;
     const both = r.filter((x) => x.native?.promptEvalCount != null && x.openai.promptTokens != null);
     const promptAgree = both.filter((x) => x.native?.promptEvalCount === x.openai.promptTokens).length;
     // The two endpoints write different outputs (temperature 0.2), so wall
@@ -54,7 +50,11 @@ for (const dir of dirs) {
     console.log();
     console.log(`Machine: ${machine.windows} | GPU ${machine.gpu} | ${machine.ollama} | other GPU programs: ${machine.otherGpuPrograms} | finished ${data.finishedAt ?? "(incomplete)"}`);
     const w = data.warmUp;
-    console.log(`Cold warm-up (native, model unloaded first, not scored): ${s(w.ms)} total; load ${s(w.loadMs)}; prompt ${w.promptEvalCount} tokens in ${s(w.promptEvalMs)} (${one(rate(w.promptEvalCount, w.promptEvalMs))} tokens per s in); output ${w.evalCount} tokens at ${one(rate(w.evalCount, w.evalMs))} per s.`);
+    console.log(
+        w.error
+            ? `Cold warm-up (native, model unloaded first, not scored): no answer (${w.error}) after ${s(w.ms)}, so no cold timings.`
+            : `Cold warm-up (native, model unloaded first, not scored): ${s(w.ms)} total; load ${s(w.loadMs)}; prompt ${w.promptEvalCount} tokens in ${s(w.promptEvalMs)} (${one(rate(w.promptEvalCount, w.promptEvalMs))} tokens per s in); output ${w.evalCount} tokens at ${one(rate(w.evalCount, w.evalMs))} per s.`
+    );
     console.log("Memory after warm-up:");
     console.log("```");
     console.log(data.memory.ollamaPs);
@@ -85,7 +85,9 @@ for (const dir of dirs) {
     console.log(`| **Clean-run passes** (of suites passing both gates) | **${count((x) => x.cleanPassed)} of ${count((x) => x.quality?.gatesPassed)}** |`);
     const withDefect = r.filter((x) => x.defect);
     console.log(`| **Defect detections** (of gate-passing suites with a defect to find) | **${count((x) => x.detected === true)} of ${withDefect.length}** |`);
-    console.log(`| Context N (smallest of ${CONTEXT_CHOICES.join(", ")} holding max prompt ${maxPrompt} + num_predict ${data.numPredict}) | ${n_ ?? `none: ${maxPrompt + data.numPredict} tokens needed`} |`);
+    // Decision 5 (amended 2026-09-29): a cut-off prompt makes a run invalid,
+    // so the context must hold the largest prompt plus num_predict.
+    console.log(`| Context holds the largest prompt (${maxPrompt}) + num_predict (${data.numPredict}) = ${maxPrompt + data.numPredict} | ${data.numCtx >= maxPrompt + data.numPredict ? "yes" : "NO"}: num_ctx ${data.numCtx} |`);
     console.log();
     console.log("| Case | Wall median | Prompt tokens | Gates | Signal | Clean | Detected |");
     console.log("| --- | --- | --- | --- | --- | --- | --- |");
