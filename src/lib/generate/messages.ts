@@ -17,8 +17,8 @@ export interface GenerationRequestContext {
 
 type Messages = OpenAI.Chat.Completions.ChatCompletionMessageParam[];
 
-function userMessage(ctx: GenerationRequestContext, coverage: string, extra = "") {
-    return `Base URL: ${ctx.baseUrl}\nAudit mode: ${ctx.auditMode}\nSelected best-practice coverage: ${coverage}\nContent rules: ${JSON.stringify(ctx.contentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(ctx.contentProfile, null, 2)}\n\nTest description:\n${ctx.description}${extra}`;
+function userMessage(ctx: GenerationRequestContext, coverage: string) {
+    return `Base URL: ${ctx.baseUrl}\nAudit mode: ${ctx.auditMode}\nSelected best-practice coverage: ${coverage}\nContent rules: ${JSON.stringify(ctx.contentRules, null, 2)}\nPage inspection profile: ${JSON.stringify(ctx.contentProfile, null, 2)}\n\nTest description:\n${ctx.description}`;
 }
 
 /** The OpenAI path: the whole suite, for the selected areas or the prompt's. */
@@ -29,17 +29,16 @@ export function buildGenerationMessages(ctx: GenerationRequestContext, selectedP
     ];
 }
 
-/** Option B (Phase 34): the local model is asked only for the gap areas. */
+/**
+ * Option B (Phase 34): the local model is asked only for the gap areas.
+ * Phase 37 (TFP-128, Decision 1): as a plain request for those areas alone,
+ * exactly what a full-generation request selecting them sends. Phase 34
+ * appended "Write tests only for these coverage areas: … The other areas are
+ * already covered by another generator - do not write tests for them.", and
+ * that one sentence took reliability and database from 3/3 to 1/3 on the
+ * same model (Phase 36 diagnostic, d59c2cf). The other areas never appear
+ * in the request, so the model still hears nothing about them.
+ */
 export function buildGapFillMessages(ctx: GenerationRequestContext, gapAreas: readonly string[]): Messages {
-    return [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-            role: "user",
-            content: userMessage(
-                ctx,
-                gapAreas.join(", "),
-                `\n\nWrite tests only for these coverage areas: ${gapAreas.join(", ")}. The other areas are already covered by another generator - do not write tests for them.`
-            ),
-        },
-    ];
+    return buildGenerationMessages(ctx, gapAreas);
 }

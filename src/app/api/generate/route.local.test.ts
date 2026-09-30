@@ -119,7 +119,7 @@ test("Option B: reliability is never sent to the local model, even when the temp
     await POST(request(["reliability", "database"]));
     const user = chatBodies[0].messages?.find((m) => m.role === "user")?.content ?? "";
     assert.match(user, /Selected best-practice coverage: database\n/);
-    assert.doesNotMatch(user, /Write tests only for these coverage areas: .*reliability/);
+    assert.doesNotMatch(user, /reliability/);
 });
 
 test("GEN-43: an area the template inspected and found nothing to test in is not a gap - no local call", async () => {
@@ -191,7 +191,27 @@ test("Option B: the local model is asked only for the gap areas, with only their
     assert.equal(messages.find((m) => m.role === "system")?.content, `${SYSTEM_PROMPT}\n\n${localRulesFor(["database"])}`);
     const user = messages.find((m) => m.role === "user")?.content ?? "";
     assert.match(user, /Selected best-practice coverage: database\n/);
-    assert.match(user, /Write tests only for these coverage areas: database\. The other areas are already covered/);
+    assert.doesNotMatch(user, /functional/i, "an area the template covered never appears in the request");
+    assert.doesNotMatch(user, /Write tests only|already covered by another generator/, "Phase 37: the appended sentence is gone");
+});
+
+// Phase 37 (TFP-128, Decision 1): with that sentence appended, reliability
+// and database fell from 3/3 to 1/3 on the same model (d59c2cf).
+test("Phase 37: a single-area gap-fill request is exactly the full-generation request for that area", async () => {
+    fakeOpenAi([CATALOG_ID, ...OPENAI_MODEL_CANDIDATES], (_req, res) => json(res, 200, completion(GOOD)));
+    // Full generation: the OpenAI path, which sends the whole-suite request.
+    useFake();
+    await POST(request(GAP));
+    // Gap fill: the same request with the local model configured.
+    useOllama();
+    await POST(request(GAP));
+
+    assert.equal(chatBodies.length, 2);
+    const [full, gapFill] = chatBodies.map((body) => body.messages ?? []);
+    assert.deepEqual(gapFill.map((m) => m.role), full.map((m) => m.role));
+    assert.equal(gapFill[1].content, full[1].content, "the user message is identical");
+    assert.equal(full[0].content, SYSTEM_PROMPT);
+    assert.equal(gapFill[0].content, `${SYSTEM_PROMPT}\n\n${localRulesFor(["database"])}`, "the system message differs only by the local rules, as it always has");
 });
 
 test("Option B: a configured local model fills gaps even when an OpenAI key is set - OpenAI is not called", async () => {
