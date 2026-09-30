@@ -55,6 +55,11 @@ same result: C8 39.4 s, C1 65.5 s.
   diagnostic on the same model with Phase 33's full-generation request
   brings reliability to 2/3 and database to 3/3: the drop follows the
   gap-fill prompt, not C8. See "Phase 33 category bar on C8" below.
+- **After Phase 37's fix** (the gap-fill request made a plain request, two
+  new gates): reliability 2/3, database 3/3, the others unchanged, so the
+  Decision 4 rule keeps the fix. Reliability's second suite has misleading
+  titles, and accessibility now checks labels and focus instead of roles
+  and names. See "After the fix" below.
 
 ## The comparison
 
@@ -297,6 +302,49 @@ full-generation request, so the gap-fill sentence makes it more likely
 rather than creating it. Which part of the sentence does it, and whether
 another wording avoids it, is not measured: that would be a prompt change,
 left for Emil's decision.
+
+### After the fix (Phase 37, TFP-131)
+
+Run 2026-09-30, after the gap-fill request became a plain request for the
+gap areas (`b684c00`, Phase 37 Decision 1) and the two new gates landed
+(Promise to a plain matcher `a3c52fc`, duplicate tests `9a08267`). Same
+model (`testforge-qwen7b`, C8, 100% GPU), same wordings, no page data, the
+production gap-fill call with the final gates, every suite read by hand
+against Phase 33's bar. Every suite also passed a standalone strict `tsc`;
+none contains example data. Median 20.4 s per call (21.3 s before the
+fix). Evidence: `benchmarks/2026-09-30-gap-fill-fix/` (21 suites,
+`results.json` with every gate verdict, `run.mts`, a copy of the first
+run's script with only the output folder changed).
+
+| Category | After the fix | Before (this report, above) | What the suites do |
+| --- | --- | --- | --- |
+| Reliability | ✅ 2/3 | ❌ 1/3 | 2: the worked example - API requests, third-party hosts and `localStorage` fail in turn, under accurate titles, and the page must survive. 1: every test aborts `'**/api/**'` before load and asserts survival (the trait), but two of its three titles ("when email field is missing", "… password field is missing") don't describe what the test does; the bodies differ, so the duplicate gate rightly keeps it. 3: **rejected by the new Promise gate** (`expect(locator.textContent()).toBe('Sign in')`, three times); it also routes invented element URLs (`'**/email-input'`) that block nothing. |
+| Database | ✅ 3/3 | ❌ 1/3 | Every suite saves a unique `TestForge check …` value, sees it, reloads, sees it again. Suites 1 and 3 are identical. |
+| Performance | ✅ 3/3 | ✅ 3/3 | Byte-identical to the run before the fix. |
+| SEO | ✅ 3/3 | ✅ 3/3 | Title, meta description and one `h1` in every suite; suites 1 and 3 also add two field-visibility tests, a minor spill-over like one Phase 33 recorded. |
+| Security | ✅ 3/3 | ✅ 3/3 | All three checks in every suite; suite 1 is byte-identical to before, 2 and 3 differ only in titles. |
+| Accessibility | ✅ 3/3 | ✅ 3/3 | **What is checked changed.** Before: role and accessible name per control, no focus. Now: each control found by its label and focused (`focus()` then `toBeFocused()`), no role or name. Both are in the category as `BEST_PRACTICE_GUIDANCE` and the local rules define it (labels, roles, keyboard-reachable controls); neither suite has both. |
+| Functional | ⚠️ 0/3 clean | ⚠️ 0/3 clean | All three still assert a guessed `/dashboard` after sign-in. 2/3 now also have a sound "fields accept input" test (`toHaveValue`). |
+
+**Decision 4 rule, applied as written: the fix is kept.** Reliability
+reaches 2/3 and database 3/3, the diagnostic's full-request result, and no
+other category is below its 2026-09-30 C8 result (performance, SEO,
+security and accessibility 3/3 as before; functional 0/3 clean as
+before). Nothing was tuned.
+
+Recorded with it, for Emil to weigh:
+
+- **Reliability's 2/3 is thinner than the diagnostic's 2/3.** Both
+  diagnostic suites covered all three failure kinds under accurate titles.
+  Here only suite 2 does; suite 1 counts by Phase 33's bar (a working
+  `page.route()` failure simulation) but carries GEN-32's naming problem,
+  which is not gated. Counted by the diagnostic's quality, it is 1/3.
+- **Accessibility kept its count but swapped its checks** (role and name
+  → label and focus). A per-count rule can't see that.
+- **The new gates worked on live output.** Reliability-3 would have been
+  kept before `a3c52fc`; it is a test that can never pass.
+- **Three calls per category at temperature 0.2**, so each cell is one or
+  two distinct answers, as before.
 
 ---
 

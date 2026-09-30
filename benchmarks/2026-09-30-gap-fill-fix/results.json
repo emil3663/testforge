@@ -1,0 +1,342 @@
+{
+  "model": "testforge-qwen7b",
+  "date": "2026-09-30T06:06:56.452Z",
+  "path": "buildGapFillMessages(one area, no page data) + generateLocalSuite",
+  "results": [
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 1,
+      "ms": 47118,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 46233 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 2,
+      "ms": 31804,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 31565 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "reliability",
+      "area": "reliability",
+      "description": "Check the login page (email and password fields, Sign in button) for reliability coverage.",
+      "call": 3,
+      "ms": 37598,
+      "outcome": "promise_to_plain_matcher",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 37401 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 3 Promises handed to a plain matcher -> rejected"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 1,
+      "ms": 19465,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 19292 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 2,
+      "ms": 17622,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 17404 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "performance",
+      "area": "performance/load",
+      "description": "Check the login page (email and password fields, Sign in button) for performance/load coverage.",
+      "call": 3,
+      "ms": 17955,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 17777 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 1,
+      "ms": 25298,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 25111 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 2,
+      "ms": 14728,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14567 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "seo",
+      "area": "seo/content",
+      "description": "Check the login page (email and password fields, Sign in button) for seo/content coverage.",
+      "call": 3,
+      "ms": 23844,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 23683 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 1,
+      "ms": 20351,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 20169 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 2,
+      "ms": 16528,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 16368 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "database",
+      "area": "database",
+      "description": "Check the contact page form (name and message fields, Send button) for database coverage.",
+      "call": 3,
+      "ms": 18888,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18731 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 1,
+      "ms": 34335,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 34181 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 2,
+      "ms": 32211,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 32044 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "security",
+      "area": "security",
+      "description": "Check the login page (email and password fields, Sign in button) for security coverage.",
+      "call": 3,
+      "ms": 32371,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 32212 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 1,
+      "ms": 18469,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18311 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 2,
+      "ms": 18686,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 18519 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "accessibility",
+      "area": "accessibility",
+      "description": "Check the login page: the email and password fields and the Sign in button work, and the page is accessible.",
+      "call": 3,
+      "ms": 15131,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14973 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 1,
+      "ms": 24824,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 24674 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 2,
+      "ms": 15092,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 14919 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    },
+    {
+      "case": "functional",
+      "area": "functional",
+      "description": "Check the login page: the email and password fields accept input and the Sign in button submits the form.",
+      "call": 3,
+      "ms": 25003,
+      "outcome": "ok",
+      "model": "testforge-qwen7b:latest",
+      "gates": [
+        "time budget: 24845 ms -> kept",
+        "type check: 0 type errors -> kept",
+        "unawaited assertions: 0 never-awaited web-first assertions -> kept",
+        "promise to plain matcher: 0 Promises handed to a plain matcher -> kept",
+        "duplicate tests: 0 tests sharing one body -> kept"
+      ]
+    }
+  ]
+}

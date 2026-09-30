@@ -119,6 +119,7 @@ TFP-127 was the last issued ticket.
 - **Deliverables:** `messages.ts` change; route tests; `TEST_PLAN.md` case.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** None.
+- **Status:** Landed `b684c00` (TEST_PLAN GEN-55). Not yet independently verified.
 
 ### TFP-129 — Gate: a Promise passed to a plain matcher
 
@@ -129,6 +130,7 @@ TFP-127 was the last issued ticket.
   gates; unit tests; `TEST_PLAN.md` case.
 - **Acceptance criteria:** Acceptance Criteria 2, first and third bullets.
 - **Dependencies:** None.
+- **Status:** Landed `a3c52fc` (TEST_PLAN GEN-56). Rejects only reliability-3 among the 210 suites on disk the earlier gates keep. Not yet independently verified.
 
 ### TFP-130 — Gate: duplicate test bodies
 
@@ -139,6 +141,7 @@ TFP-127 was the last issued ticket.
   `TEST_PLAN.md` case, and GEN-32 updated.
 - **Acceptance criteria:** Acceptance Criteria 2, second and third bullets.
 - **Dependencies:** None.
+- **Status:** Landed `9a08267` (TEST_PLAN GEN-57, GEN-32 updated). Rejects only reliability-2 among the same 210. Not yet independently verified.
 
 ### TFP-131 — Measure the fix
 
@@ -149,6 +152,7 @@ TFP-127 was the last issued ticket.
   GEN-54 update.
 - **Acceptance criteria:** Acceptance Criteria 3.
 - **Dependencies:** TFP-128, TFP-129, TFP-130 (so the measurement sees the
+- **Status:** Run 2026-09-30 (`benchmarks/2026-09-30-gap-fill-fix/`, GEN-54, measurement report "After the fix"). Reliability 2/3, database 3/3, performance, SEO, security and accessibility 3/3, functional 0/3 clean. Decision 4 rule met: the fix is kept. Reliability's second suite has misleading titles, and accessibility now checks labels and focus instead of roles and names; both recorded. Not yet independently verified.
   final gates).
 
 ## Recommended Execution Order
@@ -159,5 +163,6 @@ TFP-127 was the last issued ticket.
 ## Suggested Milestone Gate
 
 ### Gate A — Prompt fixed, gates added, fix measured
+**Built 2026-09-30** (`b684c00`, `a3c52fc`, `9a08267`, and TFP-131's measurement); the Decision 4 rule keeps the fix. Awaiting independent verification. Not pushed.
 - TFP-128 to 131 landed and independently verified, with the Decision 4
   rule applied and its result recorded either way.
