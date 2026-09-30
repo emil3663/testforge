@@ -10,7 +10,7 @@ import { persistRunJob } from "@/lib/run/persistence";
 import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
 import { estimateTestCount } from "@/lib/run/selection";
 
-export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
+export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled" | "empty";
 
 export interface ActiveExecution {
     id: string;
@@ -214,6 +214,43 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             const reportedErrors = (parsedReport.errors ?? [])
                 .map((error) => error.message?.trim())
                 .filter((message): message is string => Boolean(message));
+
+            // Phase 36 TFP-125: a suite that declares no test at all - every
+            // area in scope was not applicable, e.g. database on a site with
+            // no form that saves text - has nothing to run. That is not a
+            // failed run: it keeps its report, whose empty areas say why.
+            // Any other error, or a suite that declares tests yet ran none,
+            // is still a failure.
+            const nothingToRun =
+                !job.cancellationRequested &&
+                suiteCode !== null &&
+                (suiteCode.match(/\btest\s*\(/g) ?? []).length === 0 &&
+                reportedErrors.every((message) => /^(Error: )?No tests found/.test(message));
+            if (nothingToRun) {
+                const reasons = (aggregatedReport.emptyAreas ?? []).flatMap((area) => area.reasons);
+                job.result = {
+                    runId: job.id,
+                    runStatus: "empty",
+                    passed: false,
+                    output: ["Nothing to run: the generated suite has no tests.", ...reasons].join("\n"),
+                    duration,
+                    progress: { ...job.progress, totalTests: 0, completedTests: 0, passedTests: 0, failedTests: 0, flakyTests: 0, blockedTests: 0 },
+                    report: aggregatedReport,
+                };
+                job.progress = job.result.progress;
+                job.status = "empty";
+                job.process = null;
+
+                sealResult(job, redactor);
+                job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
+
+                await Promise.all([
+                    unlink(job.testFile).catch(() => { }),
+                    unlink(job.jsonReportFile).catch(() => { }),
+                    unlink(job.reporterFile).catch(() => { }),
+                ]);
+                return;
+            }
             const finalOutput = [
                 ...reportedErrors,
                 output,

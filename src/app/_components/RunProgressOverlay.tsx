@@ -93,7 +93,7 @@ export function RunProgressOverlay({
                                         <div className="font-semibold text-zinc-800">Overall progress</div>
                                         <div className="mt-1 text-zinc-500">
                                             {runCompletedTests} of {runTotalTests || activeRunProgress?.startedTests || 0} tests finished
-                                            {runStatus ? ` · ${toSentenceCase(runStatus)}` : ""}
+                                            {runStatus ? ` · ${runStatus === "empty" ? "Nothing to run" : toSentenceCase(runStatus)}` : ""}
                                         </div>
                                     </div>
                                     <button

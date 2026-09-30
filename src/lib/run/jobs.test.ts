@@ -103,3 +103,56 @@ test("corrupted JSON report while cancelled: terminal status is 'cancelled', not
     assert.ok(job.result);
     assert.equal(job.result?.runStatus, "cancelled");
 });
+
+// --- Phase 36 TFP-125: a suite with nothing to run is not a failed run ------
+
+const { mockGenerate } = await import("../generate/mock/index.ts");
+const { normalizeContentRules, normalizeTestAuditMode } = await import("../generate/normalize.ts");
+
+const NO_TESTS_REPORT = JSON.stringify({ suites: [], errors: [{ message: "Error: No tests found.\nMake sure that arguments are regular expressions matching test files." }], stats: { duration: 1, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } });
+
+// A sign-in page only: database is inspected and found not applicable, so the
+// template writes no test at all, just the note saying why.
+const SIGN_IN_ONLY = {
+    pages: [{
+        path: "/login", url: "https://jobs-test.example/login", title: "Login", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [],
+        actionableElements: [
+            { text: "", url: null, category: "form", elementType: "form", containerLabel: "", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: null, name: "", label: "", placeholder: "", id: "", inputType: "" } },
+            { text: "", url: null, category: "form", elementType: "input", containerLabel: "", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: null, name: "password", label: "Password", placeholder: "", id: "password", inputType: "password" } },
+        ],
+    }],
+};
+
+async function finalizeWithSuite(suite: string, report: string, overrides: Record<string, unknown> = {}) {
+    const job = makeJob({ selectedPractices: ["database"], contentProfile: SIGN_IN_ONLY, ...overrides });
+    await writeFile(job.testFile, suite, "utf8");
+    await writeFile(job.jsonReportFile, report, "utf8");
+    await finalizeRunJob(job as never);
+    return job as typeof job & { result: { runStatus: string; passed: boolean; output: string; report?: { summary: { releaseRecommendation: string }; emptyAreas?: Array<{ area: string; reasons: string[] }> } } };
+}
+
+test("a suite that declares no test has nothing to run: status 'empty', its report kept, the area's reason in the output", async () => {
+    const suite = mockGenerate("https://jobs-test.example", "Check that data entered is saved.", ["database"], SIGN_IN_ONLY as never, normalizeContentRules(undefined), normalizeTestAuditMode(undefined));
+    assert.equal((suite.match(/\btest\s*\(/g) ?? []).length, 0, "precondition: the template wrote no test");
+    const job = await finalizeWithSuite(suite, NO_TESTS_REPORT);
+    assert.equal(job.status, "empty");
+    assert.equal(job.result.runStatus, "empty");
+    assert.equal(job.result.passed, false);
+    assert.match(job.result.output, /^Nothing to run: the generated suite has no tests\.\nDatabase: no form that saves visible text was found/);
+    assert.equal(job.result.report?.summary.releaseRecommendation, "Nothing to run: the suite has no tests");
+    assert.deepEqual(job.result.report?.emptyAreas?.map((a) => a.area), ["Database"]);
+});
+
+test("a suite that declares tests yet ran none is still a failed run", async () => {
+    const suite = "import { test } from '@playwright/test';\ntest('a', async () => {});\n";
+    const job = await finalizeWithSuite(suite, NO_TESTS_REPORT);
+    assert.equal(job.status, "failed");
+    assert.equal(job.result.report, undefined);
+});
+
+test("an empty suite with any other error is still a failed run", async () => {
+    const suite = "import { test } from '@playwright/test';\n// no tests\n";
+    const report = JSON.stringify({ suites: [], errors: [{ message: "SyntaxError: Unexpected token" }], stats: { duration: 1, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } });
+    const job = await finalizeWithSuite(suite, report);
+    assert.equal(job.status, "failed");
+});

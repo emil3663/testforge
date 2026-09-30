@@ -8,7 +8,7 @@ export type CrawlLifecycleStatus = "running" | "completed" | "failed" | "cancell
 
 export type TestAuditMode = "fast" | "deep";
 
-export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled";
+export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled" | "empty";
 
 export type ReportTab =
     | "summary"

@@ -8,7 +8,7 @@ export const POLL_RETRY_DELAYS_MS = [500, 1000, 2000];
 // being set, so a future finalize path that reaches a terminal status
 // without a result (the exact class of bug TFP-065 fixed once already)
 // can't leave this hook polling forever - see TFP-068.
-const TERMINAL_RUN_STATUSES = new Set<RunLifecycleStatus>(["passed", "failed", "cancelled"]);
+const TERMINAL_RUN_STATUSES = new Set<RunLifecycleStatus>(["passed", "failed", "cancelled", "empty"]);
 
 export interface RunPollDeps {
     fetchImpl: typeof fetch;

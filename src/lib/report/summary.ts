@@ -1,6 +1,8 @@
 import type { DefectRecord, ExecutionRecord, RunReport } from "./types";
 
 export const NO_TEST_RAN = "No recommendation: no test ran";
+/** TFP-125: the suite declared no test at all (every area in scope was not applicable). */
+export const NOTHING_TO_RUN = "Nothing to run: the suite has no tests";
 
 /**
  * True when no test executed: every test was Not run (skipped with a reason)
@@ -13,6 +15,7 @@ export function noTestRan(summary: Pick<RunReport["summary"], "passed" | "flaky"
 }
 
 function releaseRecommendation(
+    planned: number,
     ran: number,
     failed: number,
     blocked: number,
@@ -23,7 +26,7 @@ function releaseRecommendation(
     // only the local model's gap-fill block); an interrupted run can be all
     // Blocked. Nothing executed is no evidence for a release either way.
     if (ran === 0) {
-        return NO_TEST_RAN;
+        return planned === 0 ? NOTHING_TO_RUN : NO_TEST_RAN;
     }
 
     if (critical > 0 || failed > 0) {
@@ -75,7 +78,7 @@ export function buildSummary(
         notRunReasons,
         notRunNote,
         duration,
-        releaseRecommendation: releaseRecommendation(passed + flaky + failed, failed, blocked, critical, major),
+        releaseRecommendation: releaseRecommendation(records.length, passed + flaky + failed, failed, blocked, critical, major),
         defectDistribution: {
             Critical: critical,
             Major: major,
