@@ -31,6 +31,9 @@ export const DEFECTS = {
     "security-stack-trace": "a page that does not exist answers with a stack trace and server file paths",
     "security-version-header": "every response names the server software and its version (X-Powered-By)",
     "security-weak-session-cookie": "the home page sets a session cookie without HttpOnly that lasts 400 days",
+    // TFP-144: one session cookie and two that are not, none with HttpOnly.
+    // The Standard and passive-security checks must name the same one: sid.
+    "security-mixed-cookies": "the home page sets a session cookie and two analytics-style cookies, none with HttpOnly",
     // Phase 35 (TFP-134): WCAG defects for the axe-core scan, beside
     // a11y-unlabelled-field above. The clean site's responses are unchanged.
     "a11y-missing-alt": "the home page shows an image with no alternative text",
@@ -156,7 +159,10 @@ const server = createServer(async (req, res) => {
 
     if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json");
     if (url.pathname === "/" && req.method === "GET") {
-        const cookie = defect === "security-weak-session-cookie" ? { "set-cookie": "sid=acme-4f9c2a1e7b; Path=/; Max-Age=34560000" } : {};
+        const cookie =
+            defect === "security-weak-session-cookie" ? { "set-cookie": "sid=acme-4f9c2a1e7b; Path=/; Max-Age=34560000" }
+            : defect === "security-mixed-cookies" ? { "set-cookie": ["sid=acme-4f9c2a1e7b; Path=/", "_ga=GA1.1.1234567890; Path=/", "theme=dark; Path=/"] }
+            : {};
         return send(200, home(), undefined, cookie);
     }
     if (url.pathname === "/login" && req.method === "GET") return send(200, login());

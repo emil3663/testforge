@@ -1,5 +1,6 @@
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { escapeForSingleQuotedString } from "./format";
+import { SESSION_COOKIE_NAME } from "./cookie-session-checks";
 import { discoverForms, fieldLocator, fieldName, submitButton, type DiscoveredForm } from "./forms";
 import type { ActionableElementDetail, ContentProfile } from "./types";
 
@@ -90,22 +91,32 @@ function securityHeadersTest() {
   });`;
 }
 
+// TFP-144: in scope are the site's own cookies named like a session - the
+// rule the Comprehensive passive-security check and the cookie/session check
+// use (SESSION_COOKIE_NAME). Flagging every cookie made the two runs disagree
+// on the same site: on rizonetech.com this check named 6 cookies, passive
+// security none. All 6 were analytics or consent cookies (_clck, _fbp,
+// FCCDCF, ...) whose own scripts must read them, so HttpOnly is not theirs to
+// have.
 function cookieFlagsTest() {
-    return `  test('cookies set by the site carry protective flags (recorded as findings)', async ({ page, context }) => {
+    return `  test('session cookies set by the site carry protective flags (recorded as findings)', async ({ page, context }) => {
     await page.goto('/', { waitUntil: 'load' });
     const url = new URL(page.url());
     const isHttps = url.protocol === 'https:';
+    const sessionName = ${SESSION_COOKIE_NAME.toString()};
     const own = (await context.cookies()).filter((cookie) => {
       const domain = cookie.domain.replace(/^\\./, '');
       return url.hostname === domain || url.hostname.endsWith('.' + domain);
     });
-    for (const cookie of own) {
+    const sessionCookies = own.filter((cookie) => sessionName.test(cookie.name));
+    test.skip(sessionCookies.length === 0, 'no session cookie on the landing page (' + own.length + ' cookie(s) set by the site, none named like a session), so there is nothing to check');
+    for (const cookie of sessionCookies) {
       const missing: string[] = [];
       if (!cookie.httpOnly) missing.push('HttpOnly (scripts can read it)');
       if (isHttps && !cookie.secure) missing.push('Secure (it can be sent over plain HTTP)');
       if (cookie.sameSite === 'None') missing.push('a restrictive SameSite (it is sent on cross-site requests)');
       if (missing.length > 0) {
-        test.info().annotations.push({ type: 'finding', description: 'cookie "' + cookie.name + '" has no ' + missing.join(', no ') });
+        test.info().annotations.push({ type: 'finding', description: 'session cookie "' + cookie.name + '" has no ' + missing.join(', no ') });
       }
     }
   });`;

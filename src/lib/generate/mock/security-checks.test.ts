@@ -66,7 +66,7 @@ test("security suite on an http:// target: header and cookie checks plus a paylo
     // can carry the payload validly, so it gets no payload test.
     assert.deepEqual(titles(code), [
         "landing page security headers (recorded as findings)",
-        "cookies set by the site carry protective flags (recorded as findings)",
+        "session cookies set by the site carry protective flags (recorded as findings)",
         "script-shaped input is not executed: Note on /notes",
     ]);
     assert.match(code, /\/\/ This target is not HTTPS by default/);
