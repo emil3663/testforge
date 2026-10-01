@@ -279,7 +279,14 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
     `wcag21a`, `wcag21aa`, `wcag22aa`). Drop it. The scan still selects
     the same 70 rules. WCAG 2.2's new level-A criteria have no axe rule,
     which the "need a person" statement already covers.
-- **Gate B finding fixed (2026-10-01), not yet verified, not pushed:** the Comprehensive copy of TFP-121's check is Not run on a page answering 400 or more, with the reason; `wcag22a` is dropped (axe-core 4.13.0's level tags checked: `wcag2a`, `wcag2aa`, `wcag2aaa`, `wcag21a`, `wcag21aa`, `wcag22aa`; 70 rules selected before and after). The template stays 166 of 166 identical. The-internet counts are corrected to 14 passed, 20 failed, 6 not run, derived from the committed evidence and confirmed by a live re-run (`a7540ac8`).
+- **Gate B finding fixed in `ab60f46` (2026-10-01), verified in Cowork the same day:** the Comprehensive copy of TFP-121's check is Not run on a page answering 400 or more, with the reason; `wcag22a` is dropped (axe-core 4.13.0's level tags checked: `wcag2a`, `wcag2aa`, `wcag2aaa`, `wcag21a`, `wcag21aa`, `wcag22aa`; 70 rules selected before and after). The template stays 166 of 166 identical. The-internet counts are corrected to 14 passed, 20 failed, 6 not run, derived from the committed evidence and confirmed by a live re-run (`a7540ac8`).
+  - **Verification:**
+    - A built Comprehensive accessibility suite skips both checks on an answer of 400 or more, for each page, including a path with a quote, and loads each page once.
+    - The suite passes the type check, and its scan's tags are the five axe has.
+    - The new run's evidence gives 40 tests: 14 passed, 20 failed, and 6 not run, which are the three 401 pages with both checks each. Its 20 failures are the same as the first run's.
+    - The template is 166 of 166 identical from 094d52d to ab60f46.
+    - `tsc` and ESLint are clean.
+    - The real-browser test skips in the VM (no Chromium), so it rests on the builder's run.
 
 ### TFP-135 — Model scenarios, labelled and outside the verdict
 
@@ -496,8 +503,8 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
 
 ### Gate B — First slice built and measured
 **Built 2026-10-01** (`a7fae28` TFP-133, `7c8b979` TFP-134, `8c5b1e4` TFP-135, `198dbec` the fix found by TFP-136, and TFP-136's measurement). Not pushed.
-- **Verified 2026-10-01 (Cowork), passing once TFP-134's Gate B finding is
-  fixed and checked:**
+- **Verified and passed 2026-10-01 (Cowork).** TFP-134's Gate B finding was
+  fixed in `ab60f46` and checked:
   - The template is 166 of 166 identical from 094d52d to 7f7829b, on Linux.
   - Unit suite: 413 tests, 388 passed, 25 skipped (real-browser tests; the
     VM has no Chromium), none failed. `tsc` and ESLint are clean on the 26

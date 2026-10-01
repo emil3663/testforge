@@ -1,4 +1,4 @@
-# Handover to Claude Code — Phase 35 (2026-09-30, updated 2026-10-01 at Gate B)
+# Handover to Claude Code — Phase 35 (2026-09-30, updated 2026-10-01, Gate B passed)
 
 Supersedes `docs/HANDOVER_TO_CLAUDE_CODE_2026-09-30-phase37.md` (Phase 37
 is complete).
@@ -12,27 +12,23 @@ Gate and verification reference: `docs/QUALITY_GATES.md`.
 
 1. Gate A: TFP-132 (134b183) and TFP-137 (53d3391), verified and pushed.
 2. TFP-138 (163b4c7), verified and pushed.
-3. TFP-133 to 136 and `198dbec` (a7fae28..7f7829b), not pushed.
-   **Verified at Gate B in Cowork, 2026-10-01, except for one finding**
-   (see TFP-134's status entry). Emil accepted Decision 5's amendment and
-   `198dbec`.
+3. **Gate B verified and passed 2026-10-01 in Cowork:**
+   - TFP-133 to 136 and `198dbec` (a7fae28..7f7829b);
+   - the Gate B finding's fix (`ab60f46`).
+
+   Emil accepted Decision 5's amendment and `198dbec`. Phase 35's first
+   slice is complete.
 
 ## Do next, in this order
 
-1. **Fix TFP-134's Gate B finding** in one new commit, before any push.
-   Don't amend the earlier commits.
-   - The Comprehensive copy of TFP-121's field-name check is Not run on a
-     page answering 400 or more, as the axe scan already is. The Standard
-     template stays 166 of 166 identical.
-   - Drop `wcag22a` from `WCAG_TAGS`.
-   - Correct the measurement report's accessibility counts on the-internet
-     (14 passed, 20 failed, 6 not run), from a re-run or from the committed
-     evidence, saying which.
-   - Commit it together with this handover and the updated Phase 35 record
-     (Decision 5 amended; Gate B verification; TFP-139 and TFP-140 added).
-2. **Stop and report** with the commit, the template check and the
-   corrected counts. When that is verified, push everything.
-3. Then **TFP-139** and **TFP-140**, in any order.
+1. **Commit the Gate B verification docs** as one `docs(decisions)` commit:
+   - the Phase 35 record (Gate B passed, TFP-134's status entry);
+   - `product-roadmap.md` (Gate B verified);
+   - this handover.
+
+   Then **push** all seven commits.
+2. **TFP-139** and **TFP-140**, in any order, one commit each. Stop and
+   report for verification before pushing.
 
 Watch for:
 - **ASVS 5.0 requirement IDs** must be copied from the published ASVS 5.0

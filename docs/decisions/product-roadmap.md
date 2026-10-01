@@ -176,6 +176,13 @@ the local model is Phase 35's question, not a wider definition of a gap.
 the Standard run's output proved unchanged by the committed check (TFP-137).
 TFP-138 (the Standard HTML export's tabs) was added at the gate.
 
+**Gate B verified 2026-10-01: the first slice is complete.** It covers
+passive security (TFP-133), the axe-core scan (TFP-134), and the model's
+scenarios kept outside the verdict (TFP-135), measured on the fixture and
+on the-internet (TFP-136). There is no unexplained failure on the real
+site. Two follow-ups were added at the gate: TFP-139 (a model accessibility
+suite that imports axe) and TFP-140 (server-error pages checked for leaks).
+
 The permission confirmation for active testing is decided (a typed domain,
 saved with the run) and will be built with the active level. The outline
 below remains the longer-term direction.
