@@ -194,7 +194,7 @@ Standards used (as of 2026-09-30):
 
 ## Backlog
 
-TFP-131 was the last issued ticket.
+TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
 
 ### TFP-132 — Comprehensive run mode
 
@@ -206,7 +206,7 @@ TFP-131 was the last issued ticket.
   shape; tests; `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 1 and 5.
 - **Dependencies:** None.
-- **Status:** Built 2026-09-30 (TEST_PLAN RUN-22 to RUN-24, RPT-16); Standard output measured unchanged. Each page gets one check, that it loads, until TFP-133/134 add the area checks. Awaiting independent verification. Not pushed.
+- **Status:** Built 2026-09-30 (TEST_PLAN RUN-22 to RUN-24, RPT-16); Standard output measured unchanged, and by TFP-137's check on 2026-10-01: 166 of 166 identical. Each page gets one check, that it loads, until TFP-133/134 add the area checks. Awaiting independent verification. Not pushed.
 
 ### TFP-133 — Passive security checks
 
@@ -255,17 +255,100 @@ TFP-131 was the last issued ticket.
 - **Acceptance criteria:** Acceptance Criteria 2 (real site) and 6.
 - **Dependencies:** TFP-133, TFP-134, TFP-135.
 
+### TFP-137 — Commit the check that proves the template's output unchanged
+
+- **Phase:** 35 · **Priority:** P1 · **Labels:** `test`, `tooling`,
+  `generate`
+- **Problem it solves:** Gate A, and every regression policy since Phase 34,
+  needs the template's output shown byte-identical on fixed inputs. The
+  scripts that do this exist only on the verifier's side, so nobody else can
+  repeat the check, and the builder can't run it before reporting
+  (`docs/QUALITY_GATES.md`, section 6).
+- **Context:** the verifier's scripts import `mockGenerate` from each
+  commit's own source, run it on 166 fixed inputs, and compare the JSON
+  byte for byte.
+  - **144 inputs without page data.** 3 targets (`http://127.0.0.1:4410`,
+    `https://the-internet.herokuapp.com`, `https://demoqa.com`) × 2 audit
+    modes (`fast`, `deep`) × 24 requests:
+    - "Check the home page." with each of the 10 areas alone, and with no
+      areas;
+    - "Check the <w> of the home page." for each of "performance", "load
+      time", "speed" and "response time", with `performance/load`, with no
+      areas, and with `functional`;
+    - "Check security and save data, update cookies, accessibility and
+      seo." with no areas.
+  - **22 inputs with page data.** `benchmarks/2026-09-29/content-profile.json`
+    on `http://127.0.0.1:4410`, "Check the site.", 2 modes × (each of the
+    10 areas alone, and no areas).
+  - Content rules are the defaults (`normalizeContentRules(undefined)`).
+- **Scope:**
+  - `npm run check:template-unchanged -- <base-ref> [<head-ref>]`. The head
+    defaults to the working tree.
+  - For each ref, extract `src/`, `scripts/` and `package.json` with
+    `git archive` into a temporary folder and link the working tree's
+    `node_modules` (a directory junction on Windows, so no admin rights are
+    needed). Then import that ref's `mockGenerate`, `normalizeContentRules`,
+    `normalizeTestAuditMode` and, where it exists, `normalizeContentProfile`.
+  - The inputs and the content profile come from the working tree, never
+    from the refs, so both sides run the same inputs. The input list lives
+    in one committed file and is exactly the 166 above.
+  - The output gives the number of inputs run, identical and different,
+    and, for each different input, its key and the first differing line.
+    Exit code 0 only when every input is identical. Both outputs are kept
+    under `comparisons/template-unchanged/<base>-<head>/` (gitignored) for
+    inspection.
+  - If a ref's exports or `mockGenerate`'s parameters don't match, stop
+    with a named error. Never adapt the call to make it run.
+  - No browser, no network, no model: it runs wherever Node runs, including
+    the verifier's VM.
+- **Deliverables:** the script, its input file and the npm script; unit
+  tests of the comparison; `TEST_PLAN.md` case GEN-58; `docs/QUALITY_GATES.md`
+  sections 3 and 5 naming the command, and section 6's gap closed.
+- **Acceptance criteria:**
+  1. `npm run check:template-unchanged -- 66e08bf 20bd60d` (a docs-only
+     commit) reports 166 of 166 identical and exits 0.
+  2. `npm run check:template-unchanged -- 960bc3d~1 960bc3d` (optional SEO
+     items became findings) reports exactly 4 of 166 different and exits 1.
+     The 4 are the page-data inputs for `seo/content` and for no areas, in
+     both modes. All 144 inputs without page data are identical, which is
+     why the page-data inputs are part of the check.
+  - Criteria 1 and 2 were measured by the verifier's scripts on 2026-10-01,
+    and the committed check must reproduce them.
+  3. `npm run check:template-unchanged -- 20bd60d 134b183` is run and its
+     result reported as it is. This is Gate A's measurement for TFP-132. A
+     result other than 166 of 166 is a TFP-132 defect, fixed in TFP-132
+     (standing execution policy).
+  4. The same counts on Windows (Emil's machine) and Linux (the verifier's
+     VM).
+  5. The working tree is unchanged afterwards: temporary folders are
+     removed, and `git status` shows nothing new outside gitignored output.
+  6. Unit tests: identical outputs pass; a single changed character in one
+     input is reported with that input's key; a missing export stops with
+     its name.
+- **Not in this ticket:**
+  - A committed golden snapshot. Comparing ref against ref needs none and
+    can't go stale.
+  - CI wiring.
+  - Local-model or real-browser output.
+  - Changing the input set. That is its own decision, so results stay
+    comparable with earlier checks.
+- **Dependencies:** none. Gate A's verification of TFP-132 depends on it.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-58). Measured on Windows: criterion 1, 166 of 166 identical, exit 0; criterion 2, exactly the 4 named inputs different, exit 1; criterion 3 on 134b183, 166 of 166 identical, exit 0; criterion 5, working tree unchanged; criterion 6, unit tests pass. Criterion 4's Linux run is the verifier's. Awaiting independent verification. Not pushed.
+
 ## Recommended Execution Order
 
 1. TFP-132.
-2. TFP-133, TFP-134 and TFP-135, in any order.
-3. TFP-136 last.
+2. TFP-137 (added 2026-10-01, after TFP-132 was built), then Gate A's
+   verification of TFP-132 with it.
+3. TFP-133, TFP-134 and TFP-135, in any order.
+4. TFP-136 last.
 
 ## Suggested Milestone Gates
 
 ### Gate A — Comprehensive run mode, with Standard unchanged
-- TFP-132 landed and independently verified, with the Standard run's output
-  shown unchanged by measurement.
+- TFP-132 and TFP-137 landed and independently verified, with the Standard
+  run's output shown unchanged by TFP-137's check (its Acceptance Criterion
+  3), run by the builder and repeated by the verifier.
 
 ### Gate B — First slice built and measured
 - TFP-133 to 136 landed and independently verified, with no unexplained
