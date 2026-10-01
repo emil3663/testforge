@@ -365,6 +365,10 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
             <pre style="margin-top:8px">${escapeReportHtml(report.rawOutput)}</pre>
         </details>
     </main>
+    <script>
+        function showTab(btn, id) {
+            document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+            document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
             btn.classList.add('active');
             document.getElementById(id).classList.add('active');
         }

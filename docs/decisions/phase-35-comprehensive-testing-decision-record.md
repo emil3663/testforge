@@ -393,6 +393,7 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
 - **Not in this ticket:** any other change to the export or its styling;
   the Comprehensive export, which has no tabs.
 - **Dependencies:** none.
+- **Status:** Built 2026-10-01 (TEST_PLAN RPT-17). Criterion 1: the real-browser test passes, and fails on the previous code at the second tab. Criterion 2: the 11 exports differ only by the 4 restored lines. Criterion 3: 166 of 166 identical. Not yet independently verified. Not pushed.
 
 ## Recommended Execution Order
 
