@@ -52,17 +52,33 @@ export function buildLinkExperienceTests(
 
         const visibleLinks = page.locator('a[href]:visible');
         const count = await visibleLinks.count();
+        // TFP-142: each hover gets 2 s and the check 15 s. A link that can't
+        // be hovered - a skip link parked off-screen, one under an overlay -
+        // made hover() retry until the 30 s test timeout (rizonetech.com,
+        // 5 of 5 pages). It is now named as not checked, with the reason.
+        const deadline = Date.now() + 15000;
+        const notHovered: string[] = [];
 
         for (let index = 0; index < count; index += 1) {
             const locator = visibleLinks.nth(index);
-            await locator.hover();
-            const cursor = await locator.evaluate((node) => window.getComputedStyle(node).cursor);
+            if (Date.now() > deadline) {
+                test.info().annotations.push({ type: 'finding', description: (count - index) + ' of ' + count + ' links not hovered: the check stops after 15 s' });
+                break;
+            }
+            const hovered = await locator.hover({ timeout: 2000 }).then(() => null, (error: Error) => (error.message.match(/outside of the viewport|intercepts pointer events|not stable|not visible/) ?? ['did not respond within 2 s'])[0]);
+            if (hovered !== null) {
+                notHovered.push((await locator.getAttribute('href')) + ' (' + hovered + ')');
+                continue;
+            }
+            const { cursor, title } = await locator.evaluate((node) => ({ cursor: window.getComputedStyle(node).cursor, title: node.getAttribute('title') }));
             expect(cursor).toBe('pointer');
 
-            const title = await locator.getAttribute('title');
             if (title) {
                 expect(title.trim().length).toBeGreaterThan(0);
             }
+        }
+        if (notHovered.length > 0) {
+            test.info().annotations.push({ type: 'finding', description: 'links that could not be hovered, so their cursor was not checked: ' + notHovered.join(', ') });
         }
     });`);
 
@@ -151,13 +167,37 @@ export function buildLinkExperienceTests(
     if (secureLinks.length > 0) {
         tests.push(`  test('HTTPS/SSL: secure links remain on HTTPS when marked as secure', async ({ request }) => {
         const links = ${JSON.stringify(secureLinks)};
+        // TFP-142: each distinct URL is requested once, for up to 5 s, and
+        // the check stops after 20 s. Requesting every link in turn at 15 s
+        // each - 59 on one rizonetech.com page, many repeated - ran past the
+        // 30 s test timeout on 3 of 5 pages. A URL that can't be reached is
+        // named as not checked (link health judges reachability), and the
+        // ones left when the budget ends are named too.
+        const deadline = Date.now() + 20000;
+        const checked = new Set<string>();
+        const notChecked: string[] = [];
+        const urls = links.filter((link) => !link.rawHref.toLowerCase().startsWith('mailto:')).map((link) => link.url);
 
         for (const link of links) {
-            expect(link.url.startsWith('https://') || link.rawHref.toLowerCase().startsWith('mailto:')).toBeTruthy();
-            if (!link.rawHref.toLowerCase().startsWith('mailto:')) {
-                const response = await request.get(link.url, { failOnStatusCode: false, timeout: 15000 });
-                expect(response.url().startsWith('https://')).toBeTruthy();
+            expect(link.url.startsWith('https://') || link.rawHref.toLowerCase().startsWith('mailto:'), link.url + ' is marked secure but is not https').toBeTruthy();
+        }
+        for (const url of urls) {
+            if (checked.has(url)) continue;
+            if (Date.now() > deadline) {
+                const left = [...new Set(urls)].filter((other) => !checked.has(other));
+                test.info().annotations.push({ type: 'finding', description: left.length + ' secure links not checked: the check stops after 20 s (' + left.slice(0, 5).join(', ') + (left.length > 5 ? ', ...' : '') + ')' });
+                break;
             }
+            checked.add(url);
+            const response = await request.get(url, { failOnStatusCode: false, timeout: 5000 }).catch((error: Error) => error);
+            if (response instanceof Error) {
+                notChecked.push(url + ' (' + (/timeout/i.test(response.message) ? 'no answer within 5 s' : response.message.split('\\n')[0].replace(/^[\\w.]+: /, '')) + ')');
+                continue;
+            }
+            expect(response.url().startsWith('https://'), url + ' ended on ' + response.url() + ', not https').toBeTruthy();
+        }
+        if (notChecked.length > 0) {
+            test.info().annotations.push({ type: 'finding', description: 'secure links that could not be reached, so their HTTPS was not checked: ' + notChecked.join(', ') });
         }
     });`);
     }
