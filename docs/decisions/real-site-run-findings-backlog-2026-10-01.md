@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** Draft — for review, not yet started
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 open (2026-10-01)
 
 ## Context
 
@@ -88,6 +88,16 @@ TFP-140 was the last issued ticket.
   - A single missing-name link produces one reported issue, not two, on a
     Comprehensive accessibility run.
 - **Dependencies:** None. Judgement call for Emil and Martin before building.
+- **Resolution (2026-10-01): closed, already met; not built.** Measured in
+  Cowork: a Comprehensive accessibility suite runs only the axe scan and the
+  field-name check, so the Standard checks this ticket names
+  (TFAC-008/009/018/038) never run there — axe is already the single source
+  for link names. The acceptance criterion holds as it stands. The one axe
+  overlap (`image-alt` 1.1.1 and `link-name` 2.4.4 on the same image link) is
+  two distinct WCAG failures; merging them would hide a real one, so they are
+  left separate. The real duplication the ticket gestured at lives in
+  **Standard** runs, which this ticket's criterion never covered; it moves to
+  TFP-145.
 
 ### TFP-144 — One cookie-scope rule across the Standard and passive-security checks
 
@@ -110,16 +120,42 @@ TFP-140 was the last issued ticket.
     flags, the Standard and passive-security runs report the same set.
 - **Dependencies:** None.
 
+### TFP-145 — Standard accessibility run double-reports the same nav link
+
+- **Phase:** 35 (follow-up) · **Priority:** P3
+- **Suggested labels:** `enhancement`, `generate`, `accessibility`
+- **Problem it solves:** split out of TFP-143. In a **Standard** run the
+  hand-written accessible-name checks, located by `getByText`, report the
+  same link more than once and misreport named links. On rizonetech.com,
+  TFAC-018 and TFAC-038 both flagged the one "AI" nav link, and the
+  `getByText` lookup flagged "Home" as having no accessible name. This is
+  Standard-run noise, separate from the Comprehensive axe scan.
+- **Scope:**
+  - De-duplicate the Standard accessible-name checks so one element is
+    reported once.
+  - Review the `getByText` locator strategy for the named-link false
+    positives.
+- **Deliverables:**
+  - The change and a `TEST_PLAN.md` case on a page with a repeated nav link.
+- **Acceptance criteria:**
+  - On a Standard run of a page whose nav link appears in two places, that
+    link is reported at most once.
+  - A link that has an accessible name is not flagged as missing one.
+- **Dependencies:** None.
+
 ## Recommended Execution Order
 
-1. TFP-141 (a crash; highest value).
-2. TFP-142.
-3. TFP-144.
-4. TFP-143 (needs a design decision first).
+1. TFP-141 (a crash; highest value). **Done, `32e8eae`, verified.**
+2. TFP-142. **Done, `6c484de`, verified.**
+3. TFP-144. **Done, `4a81655`, verified.**
+4. TFP-143. **Closed 2026-10-01, already met — see its Resolution; not built.**
+5. TFP-145 (split from TFP-143), when picked up.
 
 ## Suggested Milestone Gate
 
 ### Gate — Real-site noise removed
-- TFP-141, TFP-142 and TFP-144 landed and independently verified, with the
-  template's output on fixed inputs measured unchanged apart from the named
-  checks. TFP-143 either done or explicitly deferred with its reason.
+- **Met 2026-10-01.** TFP-141, TFP-142 and TFP-144 landed and independently
+  verified in Cowork, with the template's output on fixed inputs measured
+  unchanged apart from the named checks (166 / 164 / 152 identical, every
+  differing input changed only in its named check). TFP-143 closed as
+  already met. TFP-145 split off and left in the backlog.
