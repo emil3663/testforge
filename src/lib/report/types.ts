@@ -378,6 +378,22 @@ export interface ComprehensiveGroup {
     findings: ComprehensiveIssue[];
 }
 
+/** A test the local model wrote: shown, never counted. */
+export interface ComprehensiveModelTest {
+    title: string;
+    /** "passed", "failed: needs review" (never a defect in the site), or "not run". */
+    outcome: "passed" | "failed: needs review" | "not run";
+    detail: string;
+}
+
+export interface ComprehensiveModelSection {
+    /** not-configured: no local model; rejected: asked, but its suite fell back; added: its tests are below. */
+    status: "not-configured" | "rejected" | "added";
+    model?: string;
+    note: string;
+    tests: ComprehensiveModelTest[];
+}
+
 export interface ComprehensiveAsvsRow {
     id: string;
     name: string;
@@ -415,8 +431,8 @@ export interface ComprehensiveReport {
      * person to review, never counted as passed.
      */
     manualReview: ComprehensiveIssue[];
-    /** Decision 5: the local model's scenarios, outside the verdict. */
-    model: { status: "not-asked"; note: string };
+    /** Decision 5 (TFP-135): the local model's scenarios, outside the verdict. */
+    model: ComprehensiveModelSection;
     /** Decision 6: the fixed statement of what this run did not test. */
     notTested: {
         statements: string[];

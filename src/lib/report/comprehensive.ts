@@ -3,7 +3,7 @@ import { NOT_TESTED_STATEMENTS, notCoveredPagesStatement } from "@/lib/comprehen
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
 import { comprehensiveLabel, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
 import type { ContentProfile } from "@/lib/generate/mock/types";
-import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensivePageRow, ComprehensiveReport, ExecutionRecord } from "./types";
+import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensiveModelSection, ComprehensivePageRow, ComprehensiveReport, ExecutionRecord, GenerationRecord } from "./types";
 
 // Phase 35 (TFP-132, Decision 7): a single-area run's report shows only that
 // area - a summary, a per-page table, failures and findings grouped by OWASP
@@ -13,8 +13,48 @@ import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensivePageRow, Comp
 
 export const UNCATEGORISED = "Not categorised";
 
-export const MODEL_NOT_ASKED_NOTE =
-    "The local model was not asked for scenarios in this run. The template's checks stand on their own.";
+export const MODEL_NOT_CONFIGURED_NOTE =
+    "No local model is configured (TESTFORGE_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own.";
+
+const MODEL_REJECTED_REASONS: Record<string, string> = {
+    timeout: "it did not answer within its time budget",
+    invalid_output: "its tests do not type-check",
+    unawaited_assertion: "an assertion in them is never awaited",
+    promise_to_plain_matcher: "one compares a Promise instead of its value",
+    duplicate_tests: "several repeat one body under different titles",
+    empty_completion: "it answered with nothing usable",
+    ollama_unreachable: "it could not be reached",
+    ollama_model_missing: "the configured model is not installed",
+    ollama_error: "Ollama answered with an error",
+};
+
+/** Decision 5: what happened to the local model's scenarios, and the tests it wrote - none counted. */
+function modelSection(modelRecords: ExecutionRecord[], generation: GenerationRecord | null, area: string): ComprehensiveModelSection {
+    const tests = modelRecords.map((record) => ({
+        title: record.title,
+        outcome: record.status === "Passed" || record.status === "Flaky" ? ("passed" as const) : record.status === "Not run" ? ("not run" as const) : ("failed: needs review" as const),
+        detail: record.status === "Not run" ? record.skipReason ?? "" : record.status === "Passed" || record.status === "Flaky" ? "" : firstLine(record.rawMessage),
+    }));
+    const model = generation?.model;
+    if (generation?.generatedBy === "template+ollama" || tests.length > 0) {
+        return {
+            status: "added",
+            ...(model ? { model } : {}),
+            note: `Written by the local model${model ? ` (${model})` : ""} for this site's ${area}, and not yet trusted: these tests count toward no pass or fail, no recommendation and no coverage figure. A failure here needs review; it is not a defect in the site.`,
+            tests,
+        };
+    }
+    if (generation?.fallbackReason) {
+        const why = MODEL_REJECTED_REASONS[generation.fallbackReason] ?? generation.fallbackReason;
+        return {
+            status: "rejected",
+            ...(model ? { model } : {}),
+            note: `The local model${model ? ` (${model})` : ""} was asked for ${area} scenarios, but its suite was not used: ${why} (see the gate verdicts). The template's checks stand on their own.`,
+            tests: [],
+        };
+    }
+    return { status: "not-configured", note: MODEL_NOT_CONFIGURED_NOTE, tests: [] };
+}
 
 const FAILED_STATUSES = new Set(["Failed", "Blocked"]);
 
@@ -32,12 +72,16 @@ function chapterOf(requirementId: string): string | null {
 }
 
 export function buildComprehensiveReport(
-    execution: ExecutionRecord[],
+    allExecution: ExecutionRecord[],
     mode: ComprehensiveRunMode,
     contentProfile: ContentProfile | null,
     baseUrl: string,
-    workerCount: number | null
+    workerCount: number | null,
+    generation: GenerationRecord | null = null
 ): ComprehensiveReport {
+    // Decision 5: the local model's tests are outside everything below.
+    const execution = allExecution.filter((record) => record.generator !== "local model");
+    const modelRecords = allExecution.filter((record) => record.generator === "local model");
     const scope = selectComprehensivePages(contentProfile, baseUrl, mode.pageCap);
 
     // The covered pages, then any other page a test reported under - the
@@ -130,7 +174,7 @@ export function buildComprehensiveReport(
         pages,
         groups: [...groups.values()],
         manualReview,
-        model: { status: "not-asked", note: MODEL_NOT_ASKED_NOTE },
+        model: modelSection(modelRecords, generation, mode.area),
         notTested: {
             statements: [...NOT_TESTED_STATEMENTS[mode.area]],
             pagesNotCovered: notCoveredPagesStatement(scope.notCovered, scope.pageCap),

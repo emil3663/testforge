@@ -20,7 +20,7 @@ import { buildGapFillMessages, buildGenerationMessages, type GenerationRequestCo
 import { selectJourneys } from "@/lib/introspect/journeys";
 import { isComprehensive, normalizeRunMode, RunModeError, type RunMode } from "@/lib/comprehensive/run-mode";
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
-import { buildComprehensiveSuite } from "@/lib/generate/comprehensive";
+import { buildComprehensiveSuite, mergeComprehensiveScenarios } from "@/lib/generate/comprehensive";
 
 export async function POST(req: NextRequest) {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect, runMode } = await req.json().catch(() => ({}));
@@ -70,19 +70,6 @@ export async function POST(req: NextRequest) {
     const respond = (body: Record<string, unknown>) =>
         NextResponse.json(pageInspection ? { ...body, generatedBy: body.generatedBy ?? "template", pageInspection } : body);
 
-    // Phase 35 (TFP-132, Decisions 1 and 2): one area, every known page up to
-    // the cap, its own suite. The local model's scenarios for it are TFP-135.
-    if (isComprehensive(normalizedRunMode)) {
-        const pageScope = selectComprehensivePages(normalizedContentProfile, normalizedBaseUrl.value, normalizedRunMode.pageCap);
-        return respond({
-            code: buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope),
-            generatedBy: "template",
-            runMode: normalizedRunMode,
-            pageScope,
-            gates: [],
-        });
-    }
-
     const normalizedContentRules = normalizeContentRules(contentRules);
     normalizedContentRules.selectedJourneyIds = selectJourneys(
         normalizedContentProfile?.journeys ?? [],
@@ -108,6 +95,33 @@ export async function POST(req: NextRequest) {
         contentProfile: normalizedContentProfile,
         description,
     };
+    // Phase 35 (TFP-132, Decisions 1 and 2): one area, every known page up to
+    // the cap, its own suite. TFP-135 (Decision 5): with a local model
+    // configured, it is also asked for site-specific scenarios for that area
+    // - Phase 37's plain request for the one area - under every existing
+    // gate; they are appended in their own block and kept outside the
+    // verdict. Rejected or timed out, the template's checks stand alone.
+    if (isComprehensive(normalizedRunMode)) {
+        const pageScope = selectComprehensivePages(normalizedContentProfile, normalizedBaseUrl.value, normalizedRunMode.pageCap);
+        const suite = buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope);
+        const scope = { runMode: normalizedRunMode, pageScope };
+        const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+        if (!localModel) return respond({ code: suite, generatedBy: "template", ...scope, gates: [] });
+        const area = [normalizedRunMode.area];
+        const local = await generateLocalSuite(localModel, buildGenerationMessages(requestContext, area), area);
+        if (!local.ok) return respond({ code: suite, generatedBy: "fallback", fallbackReason: local.reason, ...(local.model ? { model: local.model } : {}), ...scope, gates: local.gates });
+        const merged = mergeComprehensiveScenarios(suite, local.code, local.model, normalizedRunMode);
+        let mergeErrors: string[];
+        try {
+            mergeErrors = findTypeErrors(merged);
+        } catch (checkError) {
+            mergeErrors = [`type check could not run: ${checkError instanceof Error ? checkError.message : checkError}`];
+        }
+        const gates = [...local.gates, countGate("merged suite type check", "type errors", mergeErrors)];
+        if (mergeErrors.length > 0) return respond({ code: suite, generatedBy: "fallback", fallbackReason: "invalid_output", model: local.model, ...scope, gates });
+        return respond({ code: merged, generatedBy: "template+ollama", model: local.model, ...scope, gates });
+    }
+
     const messages = buildGenerationMessages(requestContext, normalizedPractices);
 
     // Phase 30 Decision 5: a configured local model wins over an OpenAI key.

@@ -27,7 +27,12 @@ export function buildReport(
     runMode: RunMode | undefined = undefined,
     workerCount: number | undefined = undefined
 ): RunReport {
-    const execution = flattenSuites(report.suites ?? []);
+    const allExecution = flattenSuites(report.suites ?? []);
+    // Phase 35 (TFP-135, Decision 5): in a Comprehensive run the local
+    // model's tests count toward nothing - no pass/fail, recommendation or
+    // coverage figure. They stay in the execution list and get their own
+    // report section. A Standard run is unchanged: this is all of them.
+    const execution = isComprehensive(runMode) ? allExecution.filter((record) => record.generator !== "local model") : allExecution;
     const defects = buildDefects(execution);
     const { matches, notTested } = computeDiscoveredElementCoverage(
         selectedPractices,
@@ -50,7 +55,7 @@ export function buildReport(
             ...summary,
             defectTrend: buildDefectTrend(execution),
         },
-        execution,
+        execution: allExecution,
         defects: {
             issues: defects,
             heatmap: buildHeatmap(defects),
@@ -65,7 +70,7 @@ export function buildReport(
         // Phase 35 (TFP-132): only on a Comprehensive run, so a Standard
         // report is exactly what it was.
         ...(isComprehensive(runMode)
-            ? { comprehensive: buildComprehensiveReport(execution, runMode, contentProfile, baseUrl ?? "", workerCount ?? null) }
+            ? { comprehensive: buildComprehensiveReport(allExecution, runMode, contentProfile, baseUrl ?? "", workerCount ?? null, generation) }
             : {}),
         rawOutput: output,
     };

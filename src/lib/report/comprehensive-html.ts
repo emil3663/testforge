@@ -70,6 +70,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
         <section id="model">
             <h2>Local model scenarios</h2>
             <p>${e(c.model.note)}</p>
+            ${c.model.tests.length > 0 ? `<ul>${c.model.tests.map((t) => `<li><strong>${e(t.outcome)}</strong> - ${e(t.title)}${t.detail ? `: ${e(t.detail)}` : ""}</li>`).join("")}</ul>` : ""}
         </section>
         <section id="not-tested">
             <h2>What this run did not test</h2>

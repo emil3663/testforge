@@ -67,6 +67,15 @@ export function ComprehensiveReportView({ report }: { report: ComprehensiveRepor
             <section className="rounded-[28px] border border-zinc-200 bg-white p-5">
                 <h3 className="text-sm font-semibold text-zinc-900">Local model scenarios</h3>
                 <p className="mt-2 text-sm text-zinc-600">{report.model.note}</p>
+                {report.model.tests.length > 0 ? (
+                    <ul className="mt-2 space-y-1 text-sm">
+                        {report.model.tests.map((modelTest, index) => (
+                            <li key={index} className={modelTest.outcome === "failed: needs review" ? "text-amber-800" : "text-zinc-700"}>
+                                {modelTest.outcome} · {modelTest.title}{modelTest.detail ? `: ${modelTest.detail}` : ""}
+                            </li>
+                        ))}
+                    </ul>
+                ) : null}
             </section>
 
             <section className="rounded-[28px] border border-amber-200 bg-amber-50/60 p-5">

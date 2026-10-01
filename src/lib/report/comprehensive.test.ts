@@ -21,7 +21,7 @@ const { selectComprehensivePages } = await import("../comprehensive/pages.ts");
 const { ASVS_CHAPTERS } = await import("../comprehensive/asvs.ts");
 const { NOT_TESTED_STATEMENTS } = await import("../comprehensive/not-tested.ts");
 const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts");
-const { buildComprehensiveReport, UNCATEGORISED, MODEL_NOT_ASKED_NOTE } = await import("./comprehensive.ts");
+const { buildComprehensiveReport, UNCATEGORISED, MODEL_NOT_CONFIGURED_NOTE } = await import("./comprehensive.ts");
 const { buildReport } = await import("./report.ts");
 const { buildReportHtmlDocument } = await import("./html.ts");
 const { findTypeErrors, findUnawaitedAssertions, findPromisesToPlainMatchers, findDuplicateTests } = await import("../generate/validate.ts");
@@ -84,7 +84,7 @@ test("the report: per-page counts, failures and findings grouped by category nam
     ]);
     assert.equal(report.summary.headline, "2 failures on 2 of 3 pages, 1 finding. Read what this run did not test before relying on it.");
     assert.equal(report.workerNote, "One worker: tests ran one at a time, as the suite itself requires on every host.");
-    assert.deepEqual(report.model, { status: "not-asked", note: MODEL_NOT_ASKED_NOTE });
+    assert.deepEqual(report.model, { status: "not-configured", note: MODEL_NOT_CONFIGURED_NOTE, tests: [] });
     assert.deepEqual(report.notTested.statements, [...NOT_TESTED_STATEMENTS.security]);
     assert.equal(report.notTested.pagesNotCovered, "1 known page was beyond the 3-page cap and not covered: /d.");
     const asvs = report.notTested.asvs!;

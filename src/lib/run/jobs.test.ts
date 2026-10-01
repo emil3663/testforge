@@ -193,3 +193,23 @@ test("a Standard run's report and saved record carry nothing new", async () => {
     assert.equal("comprehensive" in report, false);
     assert.equal("runMode" in ((await loadRunRecord(job.id)) as object), false);
 });
+
+// Phase 35 TFP-135 (Decision 5): a failing local-model test changes no verdict.
+test("a Comprehensive run whose only failure is a local-model test is saved as passed, the failure shown as needing review", async () => {
+    const runMode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" });
+    const job = makeJob({ runMode, workerCount: 1, selectedPractices: ["accessibility"], contentProfile: null, generation: { generatedBy: "template+ollama", model: "testforge-qwen7b:latest", gates: [] } });
+    const report = JSON.parse(passingReport("/"));
+    report.suites.push({
+        title: "Local model (testforge-qwen7b:latest)",
+        specs: [{ id: "m", title: "the home page greets the user by name", tests: [{ projectName: "chromium", status: "unexpected", results: [{ duration: 5, retry: 0, errors: [{ message: "Error: the greeting: expected 'Welcome back, Ada'" }] }] }] }],
+        suites: [],
+    });
+    report.stats.unexpected = 1;
+    await writeFile(job.testFile, "import { test } from '@playwright/test';\ntest('x', async () => {});\n", "utf8");
+    await writeFile(job.jsonReportFile, JSON.stringify(report), "utf8");
+    await finalizeRunJob(job as never);
+    const result = (job as unknown as { result: { runStatus: string; report: { summary: { failed: number }; comprehensive: { model: { tests: { outcome: string }[] } } } } }).result;
+    assert.equal(result.runStatus, "passed");
+    assert.equal(result.report.summary.failed, 0);
+    assert.deepEqual(result.report.comprehensive.model.tests.map((t) => t.outcome), ["failed: needs review"]);
+});

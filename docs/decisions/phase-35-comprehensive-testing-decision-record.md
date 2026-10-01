@@ -268,6 +268,7 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
   `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 4.
 - **Dependencies:** TFP-132.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-62; RPT-16 updated). Acceptance Criteria 4: with the model configured its tests appear only in their own section and change no count; a deliberately failing model test leaves the verdict unchanged (proven in a real browser and in a finalised job); without the model, or with its suite rejected, the report says so. **One choice beyond the record, for review:** in a passive security run the model's scenarios are listed and never run, because a model-written test may send input (the live model wrote invalid-input and script-injection tests), which is the active level and needs Decision 8's permission; in accessibility they run only with interactive tests on, as gap-fill tests do. Not yet independently verified. Not pushed.
 
 ### TFP-136 — Measure the first slice
 

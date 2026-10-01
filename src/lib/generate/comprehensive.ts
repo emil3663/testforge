@@ -5,6 +5,8 @@ import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
 import { passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { ACCESSIBILITY_HELPERS, accessibilityPageTests, AXE_IMPORT } from "./comprehensive-accessibility";
 import { escapeForSingleQuotedString } from "./mock/format";
+import { localModelSuiteTitle } from "./gap-fill";
+import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 
 // Phase 35 (TFP-132, Decisions 1, 2 and 7): the suite a Comprehensive run
@@ -61,6 +63,44 @@ const IMPORTS: Record<ComprehensiveArea, string> = {
     security: "",
     accessibility: `\n${AXE_IMPORT}`,
 };
+
+/**
+ * Phase 35 (TFP-135, Decision 5): why the local model's scenarios in a
+ * Comprehensive run are not run, or run only on request. A passive security
+ * run sends no input (Decision 3), and a model-written test may - submitting
+ * a form or attack-shaped input is the active level, which needs Decision 8's
+ * permission - so there they are listed and never run. In other areas they
+ * may still submit forms, so they run only with interactive tests on.
+ */
+export function scenarioSkip(mode: ComprehensiveRunMode, model: string): string {
+    return mode.area === "security"
+        ? `test.skip(true, '${escapeForSingleQuotedString(`written by the local model (${model}): a passive security run sends no input and a model-written test may, so it is listed, not run`)}');`
+        : `test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(`written by the local model (${model}): it may submit forms on the live site, so it runs only when ${INTERACTIVE_ENV_VAR}=1 is set for the run`)}');`;
+}
+
+/**
+ * Appends the local model's scenarios to a Comprehensive suite, in their own
+ * describe titled as Option B's ("Local model (<model>)"), so the report
+ * knows them as the model's and keeps them outside the verdict.
+ */
+export function mergeComprehensiveScenarios(suiteCode: string, localCode: string, model: string, mode: ComprehensiveRunMode): string {
+    const body = localCode
+        .split("\n")
+        .filter((line) => !/^\s*import\s+[^;]*from\s+['"]@playwright\/test['"];?\s*$/.test(line))
+        .map((line) => (line.trim() === "" ? "" : `    ${line}`))
+        .join("\n")
+        .trim();
+    return `${suiteCode}
+// Written by the local model (${model}): site-specific ${mode.area} scenarios,
+// shown in their own report section and kept outside the verdict (Phase 35
+// Decision 5).
+test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', () => {
+    ${scenarioSkip(mode, model)}
+
+    ${body}
+});
+`;
+}
 
 export function buildComprehensiveSuite(baseUrl: string, mode: ComprehensiveRunMode, scope: ComprehensivePageScope): string {
     const areaCode = SUITE_AREA_CODES[mode.area];

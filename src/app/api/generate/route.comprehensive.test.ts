@@ -12,6 +12,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
+import { chatBodies, completion, fakeBaseUrl, fakeOpenAi, installFakeServer, json } from "./route-test-helpers.ts";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-comprehensive-route-test-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
@@ -21,6 +22,8 @@ const { POST: generate } = await import("./route.ts");
 const { POST: run } = await import("../run/route.ts");
 const { NextRequest } = await import("next/server");
 const { findTypeErrors } = await import("../../../lib/generate/validate.ts");
+
+installFakeServer();
 
 function post(url: string, body: unknown) {
     return new NextRequest(new URL(url), { method: "POST", body: JSON.stringify(body), headers: { "content-type": "application/json" } });
@@ -46,17 +49,67 @@ test("generate: a Comprehensive security request returns its own suite, the page
     assert.deepEqual(findTypeErrors(body.code), []);
 });
 
-test("generate: with the local model configured, a Comprehensive request still does not call it (its scenarios are TFP-135)", async () => {
-    process.env.TESTFORGE_OLLAMA_MODEL = "testforge-qwen7b";
-    process.env.TESTFORGE_OLLAMA_BASE_URL = "http://127.0.0.1:9/v1";
-    try {
-        const body = await (await generate(post("http://localhost/api/generate", generateBody({ kind: "comprehensive", area: "accessibility" })))).json();
-        assert.equal(body.generatedBy, "template");
-        assert.equal(body.gapFill, undefined);
-    } finally {
-        delete process.env.TESTFORGE_OLLAMA_MODEL;
-        delete process.env.TESTFORGE_OLLAMA_BASE_URL;
-    }
+// --- TFP-135 (Decision 5): the local model's scenarios ------------------------
+
+const LOCAL_MODEL = "testforge-qwen7b";
+const CATALOG_ID = `${LOCAL_MODEL}:latest`;
+const SCENARIO = [
+    "import { test, expect } from '@playwright/test';",
+    "test('the login page has a heading', async ({ page }) => {",
+    "  await page.goto('/login');",
+    "  await expect(page.locator('h1')).toBeVisible();",
+    "});",
+].join("\n");
+
+function useOllama() {
+    process.env.TESTFORGE_OLLAMA_MODEL = LOCAL_MODEL;
+    process.env.TESTFORGE_OLLAMA_BASE_URL = fakeBaseUrl();
+}
+
+async function comprehensive(area: string) {
+    return (await generate(post("http://localhost/api/generate", generateBody({ kind: "comprehensive", area })))).json();
+}
+
+test("TFP-135: with a local model, a Comprehensive request asks it for that area alone and appends its scenarios in their own block", async () => {
+    const templateOnly = await comprehensive("accessibility");
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(SCENARIO)));
+    useOllama();
+    const body = await comprehensive("accessibility");
+    assert.equal(body.generatedBy, "template+ollama");
+    assert.equal(body.model, CATALOG_ID);
+    assert.ok(body.code.startsWith(templateOnly.code), "the template's suite is kept whole, first");
+    assert.match(body.code, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n {4}test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'written by the local model \(testforge-qwen7b:latest\): it may submit forms/);
+    assert.deepEqual(findTypeErrors(body.code), []);
+    assert.equal(chatBodies.length, 1);
+    const user = chatBodies[0].messages?.find((m) => m.role === "user")?.content ?? "";
+    assert.match(user, /Selected best-practice coverage: accessibility\n/, "Phase 37's plain request for the one area");
+    assert.deepEqual(body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`), ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "duplicate tests: kept", "merged suite type check: kept"]);
+});
+
+test("TFP-135: in a passive security run the model's scenarios are listed and never run - they may send input", async () => {
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(SCENARIO)));
+    useOllama();
+    const body = await comprehensive("security");
+    assert.equal(body.generatedBy, "template+ollama");
+    assert.match(body.code, /test\.skip\(true, 'written by the local model \(testforge-qwen7b:latest\): a passive security run sends no input and a model-written test may, so it is listed, not run'\);/);
+});
+
+test("TFP-135: a rejected model suite leaves the template's suite alone, labelled with why", async (t) => {
+    t.mock.method(console, "error", () => {});
+    const templateOnly = await comprehensive("accessibility");
+    fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(SCENARIO.replace("toBeVisible()", "toBeAccessible()"))));
+    useOllama();
+    const body = await comprehensive("accessibility");
+    assert.equal(body.generatedBy, "fallback");
+    assert.equal(body.fallbackReason, "invalid_output");
+    assert.equal(body.code, templateOnly.code);
+});
+
+test("TFP-135: with no local model configured, the template's suite alone, and the model is not called", async () => {
+    const body = await comprehensive("security");
+    assert.equal(body.generatedBy, "template");
+    assert.equal(body.model, undefined);
+    assert.equal(chatBodies.length, 0);
 });
 
 test("generate: a Standard request - no run mode, or { kind: 'standard' } - is answered exactly as before", async () => {
