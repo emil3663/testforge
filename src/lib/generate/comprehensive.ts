@@ -1,5 +1,8 @@
 import type { ComprehensivePageScope } from "@/lib/comprehensive/pages";
 import { comprehensiveLabel, type ComprehensiveArea, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
+import { standardAnnotations, type CheckStandard } from "@/lib/comprehensive/standards";
+import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
+import { passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 
@@ -9,11 +12,12 @@ import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 // submits script payloads to forms, which the passive level must never do
 // (Decision 3). One describe per covered page, nested in the area's usual
 // suite title so the report files every test under that area; every test is
-// tagged with its page (a `page` annotation) for the per-page table.
+// tagged with its page (a `page` annotation) for the per-page table, and with
+// its OWASP/WCAG `category` and ASVS requirements where they apply.
 //
-// TFP-132 builds the run mode, so each page gets one check: that it loads.
-// The area checks - passive security (TFP-133) and the axe-core scan
-// (TFP-134) - register in PAGE_CHECKS.
+// The suite runs its tests one at a time in a single worker by itself
+// (TFP-133, added at Gate A): the one-worker rule of Decision 2 must not
+// depend on the caller sending runMode, or on the host the request named.
 
 /** Static annotation type naming the page a Comprehensive test belongs to. */
 export const PAGE_ANNOTATION = "page";
@@ -22,15 +26,15 @@ export interface PageCheckContext {
     path: string;
     /** The path, escaped for a single-quoted string in generated code. */
     escapedPath: string;
-    /** `{ annotation: [...] }` for the test's details argument. */
-    details: string;
+    /** `{ annotation: [...] }`: the page, plus a standard's tags when given. */
+    details: (standard?: CheckStandard) => string;
 }
 
 type PageCheck = (context: PageCheckContext) => string[];
 
 function pageLoads({ escapedPath, details }: PageCheckContext): string[] {
     return [
-        `    test('${escapedPath} loads', ${details}, async ({ page }) => {
+        `    test('${escapedPath} loads', ${details()}, async ({ page }) => {
       const response = await page.goto('${escapedPath}');
       expect(response, 'no response for ${escapedPath}').not.toBeNull();
       expect(response!.status(), '${escapedPath} answered HTTP ' + response!.status()).toBeLessThan(400);
@@ -38,30 +42,46 @@ function pageLoads({ escapedPath, details }: PageCheckContext): string[] {
     ];
 }
 
+function detailsFor(escapedPage: string) {
+    return (standard?: CheckStandard) =>
+        `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPage}' }${standard ? `, ${standardAnnotations(standard)}` : ""}] }`;
+}
+
 export const PAGE_CHECKS: Record<ComprehensiveArea, PageCheck[]> = {
-    security: [pageLoads],
+    // TFP-133: the passive checks; "the page responds" is the first of them.
+    security: [({ escapedPath, details }) => passiveSecurityPageTests({ escapedPath, details: (standard) => details(standard) })],
     accessibility: [pageLoads],
+};
+
+/** Checks made once per run, not per page, each in its own describe. */
+const RUN_CHECKS: Record<ComprehensiveArea, { title: string; tests: () => string[] }[]> = {
+    security: [{ title: "Missing page probe", tests: () => passiveSecurityRunTests((standard) => detailsFor(PROBE_PAGE)(standard)) }],
+    accessibility: [],
+};
+
+const HELPERS: Record<ComprehensiveArea, string> = {
+    security: PASSIVE_SECURITY_HELPERS,
+    accessibility: "",
 };
 
 export function buildComprehensiveSuite(baseUrl: string, mode: ComprehensiveRunMode, scope: ComprehensivePageScope): string {
     const areaCode = SUITE_AREA_CODES[mode.area];
     let lastId = 0;
+    const numbered = (tests: string[]) =>
+        tests.map((testSource) => testSource.replace(/^(\s*test\(['"])/, (match) => `${match}TF${areaCode}-${String(++lastId).padStart(3, "0")}: `));
+
     const pageBlocks = scope.covered.map((path) => {
         const escapedPath = escapeForSingleQuotedString(path);
-        const context: PageCheckContext = {
-            path,
-            escapedPath,
-            details: `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPath}' }] }`,
-        };
-        const tests = PAGE_CHECKS[mode.area].flatMap((check) => check(context)).map((testSource) =>
-            testSource.replace(/^(\s*test\(['"])/, (match) => `${match}TF${areaCode}-${String(++lastId).padStart(3, "0")}: `)
-        );
+        const context: PageCheckContext = { path, escapedPath, details: detailsFor(escapedPath) };
+        const tests = numbered(PAGE_CHECKS[mode.area].flatMap((check) => check(context)));
         return `  test.describe('Page ${escapedPath}', () => {\n${tests.join("\n\n")}\n  });`;
     });
+    const runBlocks = RUN_CHECKS[mode.area].map(({ title, tests }) => `  test.describe('${title}', () => {\n${numbered(tests()).join("\n\n")}\n  });`);
 
     const notCovered = scope.notCovered.length > 0
         ? `// Not covered (beyond the ${scope.pageCap}-page cap): ${scope.notCovered.join(", ")}\n`
         : "";
+    const helpers = HELPERS[mode.area] ? `\n${HELPERS[mode.area]}` : "";
     return `import { test, expect } from '@playwright/test';
 
 // Generated by TestForge: ${comprehensiveLabel(mode)} run.
@@ -69,8 +89,12 @@ export function buildComprehensiveSuite(baseUrl: string, mode: ComprehensiveRunM
 ${notCovered}
 test.use({ baseURL: '${escapeForSingleQuotedString(baseUrl)}' });
 
+// One test at a time, in one worker, whatever the run's settings: this run
+// must not load someone's site like an attack would (Phase 35 Decision 2).
+test.describe.configure({ mode: 'default' });
+${helpers}
 test.describe('${SUITE_TITLES[mode.area]}', () => {
-${pageBlocks.join("\n\n")}
+${[...pageBlocks, ...runBlocks].join("\n\n")}
 });
 `;
 }

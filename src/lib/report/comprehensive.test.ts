@@ -49,8 +49,8 @@ test("the suite: one describe per covered page under the area's title, every tes
     assert.deepEqual(findDuplicateTests(code), []);
     assert.match(code, /test\.describe\('Security Coverage', \(\) => \{/);
     assert.deepEqual([...code.matchAll(/test\.describe\('Page ([^']|\\')*'/g)].length, 3);
-    assert.deepEqual([...code.matchAll(/test\('(TFSC-\d{3}):/g)].map((m) => m[1]), ["TFSC-001", "TFSC-002", "TFSC-003"]);
-    assert.match(code, /\{ annotation: \[\{ type: 'page', description: '\/it\\'s' \}\] \}/);
+    assert.deepEqual([...code.matchAll(/test\('(TFSC-\d{3}):/g)].map((m) => m[1]), Array.from({ length: 13 }, (_, i) => `TFSC-${String(i + 1).padStart(3, "0")}`), "3 pages x 4 passive checks, then the one missing-page probe");
+    assert.match(code, /\{ annotation: \[\{ type: 'page', description: '\/it\\'s' \}, \{ type: 'category', description: 'A02:2025 Security Misconfiguration' \}/);
     assert.match(code, /\/\/ Not covered \(beyond the 3-page cap\): \/d/);
     assert.doesNotMatch(code, /fill\(|click\(|submit|onerror/, "the passive level sends no input");
 });
@@ -83,7 +83,7 @@ test("the report: per-page counts, failures and findings grouped by category nam
         { category: UNCATEGORISED, failures: [{ page: "/c", title: "TFSC-004: /c loads", detail: "Blocked: Test timeout of 30000ms exceeded." }], findings: [] },
     ]);
     assert.equal(report.summary.headline, "2 failures on 2 of 3 pages, 1 finding. Read what this run did not test before relying on it.");
-    assert.equal(report.workerNote, "One worker: tests ran one at a time, because this is not a local development host.");
+    assert.equal(report.workerNote, "One worker: tests ran one at a time, as the suite itself requires on every host.");
     assert.deepEqual(report.model, { status: "not-asked", note: MODEL_NOT_ASKED_NOTE });
     assert.deepEqual(report.notTested.statements, [...NOT_TESTED_STATEMENTS.security]);
     assert.equal(report.notTested.pagesNotCovered, "1 known page was beyond the 3-page cap and not covered: /d.");
@@ -97,7 +97,7 @@ test("the report: per-page counts, failures and findings grouped by category nam
 test("the report: a clean run never reads as a clean bill of health; accessibility has no ASVS table", () => {
     const report = buildComprehensiveReport([record({ page: "/", status: "Passed" })], ACCESSIBILITY, null, "http://localhost:3000", 2);
     assert.equal(report.summary.headline, "No failures on 1 page, 0 findings. That is not a clean bill of health: read what this run did not test.");
-    assert.equal(report.workerNote, "2 workers: a local development host.");
+    assert.equal(report.workerNote, "2 workers.", "a count other than one is stated as it is");
     assert.equal(report.notTested.asvs, null);
     assert.match(report.notTested.statements[0], /axe-core states it finds 57% of them on average/);
     assert.equal(buildComprehensiveReport([], ACCESSIBILITY, null, "http://localhost:3000", 2).summary.headline, "No check ran.");
@@ -142,10 +142,12 @@ test("in a real browser: a generated Comprehensive run's report shows the area o
         const json = await runWithPlaywright(code);
         const report = buildReport(json, ["security"], "", origin, pageData as never, code, null, "", SECURITY, 4);
 
-        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 1, 0], ["/about", 1, 0], ["/gone", 0, 1]]);
-        assert.match(report.comprehensive!.groups[0].failures[0].detail, /\/gone answered HTTP 404/);
+        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 4, 0], ["/about", 4, 0], ["/gone", 3, 1], ["(missing-page probe)", 1, 0]]);
+        const failure = report.comprehensive!.groups.flatMap((group) => group.failures)[0];
+        assert.equal(failure.page, "/gone");
+        assert.match(failure.detail, /\/gone answered HTTP 404/);
         assert.deepEqual(report.comprehensive!.pagesNotCovered, ["/beyond-the-cap"]);
-        assert.equal(report.comprehensive!.workerNote, "4 workers: a local development host.");
+        assert.equal(report.comprehensive!.workerNote, "4 workers.");
 
         const html = buildReportHtmlDocument(report, "run-1");
         assert.doesNotMatch(html, /Release readiness|Traceability matrix|tab-btn/, "a single-area report shows only that area");

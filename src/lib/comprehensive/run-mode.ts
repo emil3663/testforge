@@ -88,10 +88,12 @@ export function isLocalDevelopmentHost(baseUrl: string | undefined): boolean {
 }
 
 /**
- * Decision 2: a Comprehensive run on any host that isn't a local
- * development host uses one Playwright worker, so it doesn't load the site
- * like an attack would. Standard runs keep their audit-mode worker count.
+ * Decision 2: a Comprehensive run uses one Playwright worker, so it doesn't
+ * load a site like an attack would. Since TFP-133 the generated suite
+ * enforces this itself on every host (added at Gate A: the rule must not
+ * depend on the caller), so a Comprehensive run is one worker everywhere and
+ * says so. Standard runs keep their audit-mode worker count.
  */
-export function workerCountFor(mode: RunMode, baseUrl: string | undefined, standardWorkers: number): number {
-    return isComprehensive(mode) && !isLocalDevelopmentHost(baseUrl) ? 1 : standardWorkers;
+export function workerCountFor(mode: RunMode, _baseUrl: string | undefined, standardWorkers: number): number {
+    return isComprehensive(mode) ? 1 : standardWorkers;
 }

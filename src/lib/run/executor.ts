@@ -216,7 +216,7 @@ export async function startRunJob(
     );
     if (isComprehensive(runMode)) {
         job.outputChunks.push(
-            `${comprehensiveLabel(runMode)} run with ${workerCount} worker${workerCount === 1 ? " (one at a time: this is not a local development host)" : "s (local development host)"}.\n`
+            `${comprehensiveLabel(runMode)} run with ${workerCount} worker: one test at a time, on every host.\n`
         );
     }
 

@@ -49,10 +49,10 @@ test("isLocalDevelopmentHost: localhost, .localhost and loopback only", () => {
     }
 });
 
-test("workerCountFor: one worker for a Comprehensive run on anyone else's host; Standard runs keep theirs", () => {
+test("workerCountFor: one worker for a Comprehensive run on every host (TFP-133); Standard runs keep theirs", () => {
     const comprehensive = normalizeRunMode({ kind: "comprehensive", area: "security" });
     assert.equal(workerCountFor(comprehensive, "https://the-internet.herokuapp.com", 4), 1);
-    assert.equal(workerCountFor(comprehensive, "http://127.0.0.1:4410", 4), 4);
+    assert.equal(workerCountFor(comprehensive, "http://127.0.0.1:4410", 4), 1, "the suite enforces one worker locally too, so the count says so");
     assert.equal(workerCountFor(STANDARD_RUN, "https://the-internet.herokuapp.com", 4), 4);
     assert.equal(workerCountFor(STANDARD_RUN, "https://the-internet.herokuapp.com", 2), 2);
 });

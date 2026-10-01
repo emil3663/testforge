@@ -239,6 +239,7 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
     a test proves it. This matters little while the checks only load
     pages, but it must hold before the active level exists.
 - **Dependencies:** TFP-132.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-59, GEN-60; RUN-24 and RPT-16 updated). On the fixture each injected passive defect fails or is a finding as Decision 3 sets, naming page and element; the clean fixture has no failures. Both Gate A criteria: the missing-page probe exists, so the statement is true; the suite enforces one worker itself (proven under `--workers=4 --fully-parallel`), so a Comprehensive run is one worker on every host. Acceptance Criteria 2's the-internet check is TFP-136's. Not yet independently verified. Not pushed.
 
 ### TFP-134 — axe-core accessibility scan
 

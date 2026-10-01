@@ -20,6 +20,17 @@ export const DEFECTS = {
     "performance-slow": "every page responds 4 seconds late",
     "reliability-api-crash": "the home page throws an uncaught error when /api/status fails",
     "security-unescaped-note": "a saved note is rendered as raw HTML, so markup in it runs",
+    // Phase 35 (TFP-133): passive-security defects. Each is visible to a run
+    // that only loads pages; the clean site's responses are unchanged.
+    // (A password field on a plain-HTTP page can't be injected here: the
+    // fixture is on loopback, which browsers treat as a secure context.
+    // Reach the clean fixture by a non-loopback name such as
+    // http://localtest.me:4410 to see that failure.)
+    "security-password-to-http": "the sign-in form sends the password to a plain-HTTP address on another host",
+    "security-token-in-url": "the home page links to the notes with a session id in the URL",
+    "security-stack-trace": "a page that does not exist answers with a stack trace and server file paths",
+    "security-version-header": "every response names the server software and its version (X-Powered-By)",
+    "security-weak-session-cookie": "the home page sets a session cookie without HttpOnly that lasts 400 days",
 };
 
 const portArg = process.argv.indexOf("--port");
@@ -65,7 +76,7 @@ function home() {
         `<h1>Acme Notes</h1>
 <p>Write short notes and find them again later.</p>
 <p id="status">Checking status...</p>
-<p><a href="/notes">Go to your notes</a></p>`,
+<p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>`,
         { meta: defect !== "seo-missing-meta", script: crashScript }
     );
 }
@@ -78,7 +89,7 @@ function login(error = "") {
     return page(
         "Sign in",
         `<h1>Sign in</h1>
-<form method="post" action="/login">
+<form method="post" action="${defect === "security-password-to-http" ? "http://login.acme-notes.invalid/session" : "/login"}">
 <p>${emailField}</p>
 <p><label for="password">Password</label> <input id="password" name="password" type="password"></p>
 ${error ? `<p role="alert">${escapeHtml(error)}</p>` : ""}
@@ -117,7 +128,8 @@ function readForm(req) {
 const server = createServer(async (req, res) => {
     const url = new URL(req.url ?? "/", `http://127.0.0.1:${port}`);
     const send = (status, body, type = "text/html; charset=utf-8", headers = {}) => {
-        res.writeHead(status, { "content-type": type, ...headers }).end(body);
+        const defectHeaders = defect === "security-version-header" ? { "x-powered-by": "Express/4.18.2" } : {};
+        res.writeHead(status, { "content-type": type, ...defectHeaders, ...headers }).end(body);
     };
 
     if (url.pathname === "/__fixture/defect") {
@@ -138,7 +150,10 @@ const server = createServer(async (req, res) => {
     if (defect === "performance-slow") await new Promise((r) => setTimeout(r, 4000));
 
     if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json");
-    if (url.pathname === "/" && req.method === "GET") return send(200, home());
+    if (url.pathname === "/" && req.method === "GET") {
+        const cookie = defect === "security-weak-session-cookie" ? { "set-cookie": "sid=acme-4f9c2a1e7b; Path=/; Max-Age=34560000" } : {};
+        return send(200, home(), undefined, cookie);
+    }
     if (url.pathname === "/login" && req.method === "GET") return send(200, login());
     if (url.pathname === "/login" && req.method === "POST") {
         const form = await readForm(req);
@@ -161,6 +176,12 @@ const server = createServer(async (req, res) => {
             }
         }
         return send(303, "", "text/plain", { location: "/notes" });
+    }
+    if (defect === "security-stack-trace") {
+        return send(404, page("Not found", `<h1>Not found</h1>
+<pre>Error: ENOENT: no such file or directory, open '/srv/acme-notes/views${escapeHtml(url.pathname)}.html'
+    at Object.openSync (node:fs:573:18)
+    at renderView (/srv/acme-notes/server/render.js:41:17)</pre>`));
     }
     send(404, page("Not found", "<h1>Not found</h1>"));
 });

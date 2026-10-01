@@ -109,7 +109,7 @@ export function RunTypeSection({
                             />
                             <p className="text-xs text-zinc-500">
                                 Pages come from the crawl and page inspection. Any beyond the cap are named in the report as not covered.
-                                On any host that isn&apos;t a local development host, tests run one at a time.
+                                Tests run one at a time, on every host.
                             </p>
                             {pageCapProblem ? <p className="text-xs text-rose-600">{pageCapProblem}</p> : null}
                         </div>

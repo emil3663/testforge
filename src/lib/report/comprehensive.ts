@@ -1,7 +1,7 @@
 import { ASVS_CHAPTERS, ASVS_SOURCE } from "@/lib/comprehensive/asvs";
 import { NOT_TESTED_STATEMENTS, notCoveredPagesStatement } from "@/lib/comprehensive/not-tested";
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
-import { comprehensiveLabel, isLocalDevelopmentHost, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
+import { comprehensiveLabel, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensivePageRow, ComprehensiveReport, ExecutionRecord } from "./types";
 
@@ -40,7 +40,10 @@ export function buildComprehensiveReport(
 ): ComprehensiveReport {
     const scope = selectComprehensivePages(contentProfile, baseUrl, mode.pageCap);
 
-    const pages: ComprehensivePageRow[] = scope.covered.map((path) => {
+    // The covered pages, then any other page a test reported under - the
+    // security run's missing-page probe (TFP-133) - so every check counts.
+    const extraPages = [...new Set(execution.map((record) => record.page).filter((page): page is string => Boolean(page) && !scope.covered.includes(page!)))];
+    const pages: ComprehensivePageRow[] = [...scope.covered, ...extraPages].map((path) => {
         const records = execution.filter((record) => record.page === path);
         return {
             path,
@@ -80,12 +83,11 @@ export function buildComprehensiveReport(
             ? `${plural(failed, "failure")} on ${pagesWithFailures} of ${plural(pages.length, "page")}, ${plural(findings, "finding")}. Read what this run did not test before relying on it.`
             : `No failures on ${plural(pages.length, "page")}, ${plural(findings, "finding")}. That is not a clean bill of health: read what this run did not test.`;
 
-    const local = isLocalDevelopmentHost(baseUrl);
     const workerNote = workerCount === null
         ? "Worker count not recorded."
-        : workerCount === 1 && !local
-            ? "One worker: tests ran one at a time, because this is not a local development host."
-            : `${plural(workerCount, "worker")}: a local development host.`;
+        : workerCount === 1
+            ? "One worker: tests ran one at a time, as the suite itself requires on every host."
+            : `${plural(workerCount, "worker")}.`;
 
     const testedChapters = new Set(
         execution
