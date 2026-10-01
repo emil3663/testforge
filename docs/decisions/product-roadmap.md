@@ -172,6 +172,10 @@ the local model is Phase 35's question, not a wider definition of a gap.
 - the local model's scenarios labelled and kept out of the verdict;
 - a fixed "what this run did not test" statement closing every report.
 
+**Gate A verified 2026-10-01:** the Comprehensive run mode (TFP-132), with
+the Standard run's output proved unchanged by the committed check (TFP-137).
+TFP-138 (the Standard HTML export's tabs) was added at the gate.
+
 The permission confirmation for active testing is decided (a typed domain,
 saved with the run) and will be built with the active level. The outline
 below remains the longer-term direction.

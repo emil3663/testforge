@@ -194,7 +194,7 @@ Standards used (as of 2026-09-30):
 
 ## Backlog
 
-TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
+TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01.
 
 ### TFP-132 — Comprehensive run mode
 
@@ -206,7 +206,15 @@ TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
   shape; tests; `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 1 and 5.
 - **Dependencies:** None.
-- **Status:** Built 2026-09-30 (TEST_PLAN RUN-22 to RUN-24, RPT-16); Standard output measured unchanged, and by TFP-137's check on 2026-10-01: 166 of 166 identical. Each page gets one check, that it loads, until TFP-133/134 add the area checks. Awaiting independent verification. Not pushed.
+- **Status:** Built 2026-09-30 (TEST_PLAN RUN-22 to RUN-24, RPT-16); Standard output measured unchanged, and by TFP-137's check on 2026-10-01: 166 of 166 identical. Each page gets one check, that it loads, until TFP-133/134 add the area checks.
+- **Verified:** 2026-10-01, Gate A, independently in Cowork.
+  - 166 of 166 identical by TFP-137's check on Linux, matching Windows.
+  - The verifier's own scripts give the same result on the same inputs, value for value.
+  - Unit suite: 392 tests, 379 passed, 13 skipped (real-browser tests; the VM has no Chromium), none failed.
+  - `tsc` is clean, and so is ESLint on all 31 changed files.
+  - All 17 ASVS chapter names, and requirements 12.2.1, 13.4.6, 14.2.1 and 16.5.1, were checked against the v5.0.0_release files.
+  - Not checkable in the VM: the live runs (the fixture, the-internet, the UI) and the real-browser report test. They rest on the builder's Windows run.
+  - Found: the Standard HTML export's tabs have never worked (TFP-138); the fixed statements describe checks not yet built (TFP-133 and TFP-134); and the one-worker rule depends on the caller sending `runMode` (TFP-133).
 
 ### TFP-133 — Passive security checks
 
@@ -218,6 +226,18 @@ TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
 - **Deliverables:** Checks; ASVS/Top 10 tags from the source; the
   request-recording test; fixture defects; `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 2.
+  - **Added at Gate A (2026-10-01):** the security "not tested" statement
+    is true of the run. Today it says a missing-page probe was sent, which
+    only becomes true when this ticket adds the probe.
+  - **Added at Gate A (2026-10-01):** the one-worker rule no longer depends
+    on the caller. Today `/api/run` applies it only when the request
+    carries `runMode`, and judges the host from the request's `baseUrl`. A
+    Comprehensive suite posted without `runMode`, or with a local `baseUrl`
+    but pages on another host, runs with the Standard worker count. The
+    generated suite enforces one worker itself (for example
+    `test.describe.configure({ mode: "serial" })` in its single file), and
+    a test proves it. This matters little while the checks only load
+    pages, but it must hold before the active level exists.
 - **Dependencies:** TFP-132.
 
 ### TFP-134 — axe-core accessibility scan
@@ -230,6 +250,9 @@ TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
 - **Deliverables:** Dependency; scan; impact split; "incomplete" list;
   fixture defects; `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 3.
+  - **Added at Gate A (2026-10-01):** the accessibility "not tested"
+    statement is true of the run. Today it describes a scan and its
+    "could not decide" list, which don't exist until this ticket.
 - **Dependencies:** TFP-132.
 
 ### TFP-135 — Model scenarios, labelled and outside the verdict
@@ -333,15 +356,52 @@ TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
   - Changing the input set. That is its own decision, so results stay
     comparable with earlier checks.
 - **Dependencies:** none. Gate A's verification of TFP-132 depends on it.
-- **Status:** Built 2026-10-01 (TEST_PLAN GEN-58). Measured on Windows: criterion 1, 166 of 166 identical, exit 0; criterion 2, exactly the 4 named inputs different, exit 1; criterion 3 on 134b183, 166 of 166 identical, exit 0; criterion 5, working tree unchanged; criterion 6, unit tests pass. Criterion 4's Linux run is the verifier's. Awaiting independent verification. Not pushed.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-58). Measured on Windows: criterion 1, 166 of 166 identical, exit 0; criterion 2, exactly the 4 named inputs different, exit 1; criterion 3 on 134b183, 166 of 166 identical, exit 0; criterion 5, working tree unchanged; criterion 6, unit tests pass. Criterion 4's Linux run is the verifier's.
+- **Verified:** 2026-10-01, Gate A, in Cowork.
+  - On Linux: criterion 1 gives 166 of 166 identical, exit 0. Criterion 2 gives exactly the 4 named inputs different, exit 1. Criterion 3 gives 166 of 166 identical, exit 0. A bad ref exits 2.
+  - `node_modules` is intact (417 entries before and after), no temporary folder is left, and `git status` is clean.
+  - The check's outputs for 134b183 equal the verifier's own scripts' outputs on all 166 inputs, so it runs the same inputs.
+  - The 6 unit tests pass.
+
+### TFP-138 — The Standard HTML export's tabs switch
+
+- **Phase:** 35 · **Priority:** P2 · **Labels:** `bug`, `report`
+- **Problem it solves:** the exported Standard report can't be read
+  beyond its first tab.
+  - Its tab buttons call `showTab`, but the script at the end of
+    `src/lib/report/html.ts` has neither its opening `<script>` tag nor
+    the `function showTab(btn, id) {` line. The function's body shows as
+    page text and no tab switches.
+  - Found by the builder during TFP-132; the 134b183 message says it dates
+    from 9fbfab9. Confirmed by reading `html.ts` at Gate A, 2026-10-01.
+  - RPT-08 checks that the export is available, not that its tabs work.
+- **Scope:**
+  - Restore the missing script lines, and nothing else in the export.
+  - Decision 1 keeps the Standard report from changing by accident. This
+    is a named fix, measured to change nothing else.
+- **Deliverables:**
+  - The fix.
+  - A real-browser test that opens an exported Standard report, clicks
+    every tab, and checks that its panel shows, the others hide, and no
+    script text appears as page content.
+  - `TEST_PLAN.md` RPT-17.
+- **Acceptance criteria:**
+  1. The new test passes.
+  2. Exports of the same Standard runs before and after the fix (TFP-132's
+     11 suites) differ only in the restored script lines.
+  3. TFP-137's check still gives 166 of 166 identical.
+- **Not in this ticket:** any other change to the export or its styling;
+  the Comprehensive export, which has no tabs.
+- **Dependencies:** none.
 
 ## Recommended Execution Order
 
 1. TFP-132.
 2. TFP-137 (added 2026-10-01, after TFP-132 was built), then Gate A's
    verification of TFP-132 with it.
-3. TFP-133, TFP-134 and TFP-135, in any order.
-4. TFP-136 last.
+3. TFP-138 (added at Gate A, 2026-10-01).
+4. TFP-133, TFP-134 and TFP-135, in any order.
+5. TFP-136 last.
 
 ## Suggested Milestone Gates
 
@@ -349,6 +409,8 @@ TFP-131 was the last issued ticket. TFP-137 was added on 2026-10-01.
 - TFP-132 and TFP-137 landed and independently verified, with the Standard
   run's output shown unchanged by TFP-137's check (its Acceptance Criterion
   3), run by the builder and repeated by the verifier.
+- **Verified 2026-10-01** (Cowork): passed. See the TFP-132 and TFP-137
+  status entries.
 
 ### Gate B — First slice built and measured
 - TFP-133 to 136 landed and independently verified, with no unexplained
