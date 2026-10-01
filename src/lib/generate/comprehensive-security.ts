@@ -31,10 +31,11 @@ function fill(template: string, page: SecurityCheckPage, standard: CheckStandard
     return template.split("__PATH__").join(page.escapedPath).split("__DETAILS__").join(page.details(standard));
 }
 
-const HEADERS_AND_COOKIES = String.raw`    test('__PATH__ responds, with its security headers and session cookies', __DETAILS__, async ({ page, context }) => {
+const HEADERS_AND_COOKIES = String.raw`    test('__PATH__ sends its security headers and session cookies', __DETAILS__, async ({ page, context }) => {
       const response = await page.goto('__PATH__');
       expect(response, 'no response for __PATH__').not.toBeNull();
-      expect(response!.status(), '__PATH__ answered HTTP ' + response!.status()).toBeLessThan(400);
+      const notAPage = tfNotAPage(response!.status());
+      test.skip(notAPage !== null, '__PATH__ ' + notAPage);
       const headers = response!.headers();
       const https = new URL(page.url()).protocol === 'https:';
       const found: string[] = [];
@@ -84,7 +85,9 @@ const VERSION = String.raw`    test('__PATH__ names no software version in its r
     });`;
 
 const TRANSPORT = String.raw`    test('__PATH__ keeps passwords off plain HTTP', __DETAILS__, async ({ page }) => {
-      await page.goto('__PATH__');
+      const response = await page.goto('__PATH__');
+      const notAPage = response ? tfNotAPage(response.status()) : null;
+      test.skip(notAPage !== null, '__PATH__ ' + notAPage);
       const problems: string[] = [];
       const secure = await page.evaluate(() => window.isSecureContext);
       const fields = await page.locator('input[type="password"]').evaluateAll((elements) => elements.map((element) => (element as HTMLInputElement).name || element.id || 'unnamed'));
@@ -109,6 +112,8 @@ const TRANSPORT = String.raw`    test('__PATH__ keeps passwords off plain HTTP',
 
 const URL_SECRETS = String.raw`    test('__PATH__ puts no password or session token in a URL', __DETAILS__, async ({ page }) => {
       const response = await page.goto('__PATH__');
+      const notAPage = response ? tfNotAPage(response.status()) : null;
+      test.skip(notAPage !== null, '__PATH__ ' + notAPage);
       const problems: string[] = [];
       const chain: string[] = [];
       for (let request = response?.request() ?? null; request; request = request.redirectedFrom()) chain.push(request.url());

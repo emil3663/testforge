@@ -1,3 +1,4 @@
+import { NOT_A_PAGE_HELPER } from "./comprehensive-security-helpers";
 import { formFieldNamesTest } from "./mock/form-field-names";
 
 // Phase 35 (TFP-134, Decision 4): Comprehensive accessibility - an axe-core
@@ -25,7 +26,7 @@ export const FORM_FIELD_NAMES_CRITERION = "WCAG 4.1.2";
 
 export const AXE_IMPORT = "import AxeBuilder from '@axe-core/playwright';";
 
-export const ACCESSIBILITY_HELPERS = String.raw`// The WCAG criterion axe tags a rule with: wcag143 -> "WCAG 1.4.3".
+export const ACCESSIBILITY_HELPERS = NOT_A_PAGE_HELPER + String.raw`// The WCAG criterion axe tags a rule with: wcag143 -> "WCAG 1.4.3".
 function tfCriterion(tags: string[]): string {
   const tag = tags.find((candidate) => /^wcag\d{3,}$/.test(candidate));
   return tag ? 'WCAG ' + tag.slice(4, 5) + '.' + tag.slice(5, 6) + '.' + tag.slice(6) : 'WCAG (no criterion tagged by axe)';
@@ -46,7 +47,9 @@ export interface AccessibilityCheckPage {
 }
 
 const AXE_SCAN = String.raw`    test('__PATH__ passes the WCAG 2.2 A and AA scan', __DETAILS__, async ({ page }) => {
-      await page.goto('__PATH__');
+      const response = await page.goto('__PATH__');
+      const notAPage = response ? tfNotAPage(response.status()) : null;
+      test.skip(notAPage !== null, '__PATH__ ' + notAPage);
       await page.waitForLoadState('load');
       const results = await new AxeBuilder({ page }).withTags(__TAGS__).analyze();
       const failures: string[] = [];

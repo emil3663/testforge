@@ -85,9 +85,13 @@ interface Fake {
 interface Outcome {
     title: string;
     passed: boolean;
+    /** Set when the test skipped itself, with its reason (a page answering 400 or above). */
+    skipped?: string;
     message: string;
     findings: string[];
 }
+
+class Skipped extends Error {}
 
 /**
  * Runs a generated suite's page tests the way Playwright would, against
@@ -106,6 +110,9 @@ async function runPageTests(code: string, site: Record<string, Fake>): Promise<O
         {
             use: () => {},
             info: () => ({ annotations }),
+            skip: (condition: boolean, reason: string) => {
+                if (condition) throw new Skipped(reason);
+            },
             describe: Object.assign((_title: string, fn: () => void) => fn(), { configure: () => {} }),
         }
     );
@@ -126,7 +133,8 @@ async function runPageTests(code: string, site: Record<string, Fake>): Promise<O
                 await fn({ page, context, request: context.request });
                 outcomes.push({ title, passed: true, message: "", findings: annotations.filter((a) => a.type === "finding").map((a) => a.description!) });
             } catch (error) {
-                outcomes.push({ title, passed: false, message: (error as Error).message, findings: annotations.filter((a) => a.type === "finding").map((a) => a.description!) });
+                if (error instanceof Skipped) outcomes.push({ title, passed: true, skipped: error.message, message: "", findings: [] });
+                else outcomes.push({ title, passed: false, message: (error as Error).message, findings: annotations.filter((a) => a.type === "finding").map((a) => a.description!) });
             } finally {
                 await context.close();
             }
@@ -197,6 +205,17 @@ test("in a real browser: each exposure fails, naming the page and the element", 
     assert.equal(secrets[3].passed, false);
     assert.match(secrets[3].message, /a link on \/ to https:\/\/secure\.site\.test\/notes\?sessionid=abc123 carries sessionid in its URL/);
     assert.match(secrets[3].message, /a form on \/ would send its password field in the URL \(method GET, to https:\/\/secure\.site\.test\/sign-in\)/);
+});
+
+// TFP-136, found on the-internet: /basic_auth answers 401, which is the
+// server working, not an exposure - so not a failure.
+test("in a real browser: a page behind a login (401) is not run, with why; its response headers are still read for a version", { skip: needsChromium }, async () => {
+    const outcomes = await runPageTests(suiteFor("https://secure.site.test", ["/basic_auth"]), {
+        "https://secure.site.test/basic_auth": { status: 401, headers: { "www-authenticate": 'Basic realm="x"', server: "nginx/1.2.3" }, body: "Not authorized" },
+    });
+    const reason = "/basic_auth answered HTTP 401: it is behind a login, and this run does not sign in";
+    assert.deepEqual(outcomes.map((o) => [o.passed, o.skipped ?? null]), [[true, reason], [true, null], [true, reason], [true, reason]]);
+    assert.deepEqual(outcomes[1].findings, ["server: nginx/1.2.3 on /basic_auth names a software version"]);
 });
 
 test("in a real browser: a plain-HTTP password page on a local development host is not an exposure", { skip: needsChromium }, async () => {

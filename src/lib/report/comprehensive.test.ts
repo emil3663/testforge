@@ -142,10 +142,9 @@ test("in a real browser: a generated Comprehensive run's report shows the area o
         const json = await runWithPlaywright(code);
         const report = buildReport(json, ["security"], "", origin, pageData as never, code, null, "", SECURITY, 4);
 
-        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 4, 0], ["/about", 4, 0], ["/gone", 3, 1], ["(missing-page probe)", 1, 0]]);
-        const failure = report.comprehensive!.groups.flatMap((group) => group.failures)[0];
-        assert.equal(failure.page, "/gone");
-        assert.match(failure.detail, /\/gone answered HTTP 404/);
+        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 4, 0], ["/about", 4, 0], ["/gone", 1, 0], ["(missing-page probe)", 1, 0]], "a 404 page's checks are not run, not failed (TFP-136); its version check still reads the headers");
+        assert.equal(report.comprehensive!.pages.find((row) => row.path === "/gone")!.notRun, 3);
+        assert.deepEqual(report.comprehensive!.groups.flatMap((group) => group.failures), []);
         assert.deepEqual(report.comprehensive!.pagesNotCovered, ["/beyond-the-cap"]);
         assert.equal(report.comprehensive!.workerNote, "4 workers.");
 

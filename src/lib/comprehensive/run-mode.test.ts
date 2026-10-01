@@ -59,7 +59,7 @@ test("workerCountFor: one worker for a Comprehensive run on every host (TFP-133)
 
 const page = (path: string) => ({ path, url: `https://site.test${path}`, title: "", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [] });
 
-test("selectComprehensivePages: inspected pages first, then crawled ones, same origin, no repeats, up to the cap", () => {
+test("selectComprehensivePages: inspected pages first, then pages linked from them by their real href, same origin, no form targets, no repeats, up to the cap", () => {
     const profile = {
         scannedAt: "",
         baseUrl: "https://site.test",
@@ -70,12 +70,20 @@ test("selectComprehensivePages: inspected pages first, then crawled ones, same o
                 { path: "/about", url: "https://site.test/about", title: "", inspected: false },
                 { path: "/x", url: "https://elsewhere.test/x", title: "", inspected: false },
                 { path: "/help?q=1", url: "https://site.test/help?q=1", title: "", inspected: false },
+                { path: "/session", url: "https://site.test/session", title: "", inspected: false },
             ],
-            edges: [],
+            edges: [
+                // The graph normalises /about/ to /about; the link's own href keeps the slash (TFP-136).
+                { from: "/", to: "/about", kind: "link", rawValue: "/about/", text: "About", tagName: "a" },
+                { from: "/", to: "/x", kind: "link", rawValue: "https://elsewhere.test/x", text: "X", tagName: "a" },
+                { from: "/login", to: "/help?q=1", kind: "link", rawValue: "help?q=1", text: "Help", tagName: "a" },
+                // Known only as a form's target: not a page to load.
+                { from: "/login", to: "/session", kind: "form-submit", rawValue: "/session", text: "", tagName: "form" },
+            ],
         },
     };
-    assert.deepEqual(selectComprehensivePages(profile as never, "https://site.test", 20), { covered: ["/", "/login", "/about", "/help?q=1"], notCovered: [], pageCap: 20 });
-    assert.deepEqual(selectComprehensivePages(profile as never, "https://site.test", 2), { covered: ["/", "/login"], notCovered: ["/about", "/help?q=1"], pageCap: 2 });
+    assert.deepEqual(selectComprehensivePages(profile as never, "https://site.test", 20), { covered: ["/", "/login", "/about/", "/help?q=1"], notCovered: [], pageCap: 20 });
+    assert.deepEqual(selectComprehensivePages(profile as never, "https://site.test", 2), { covered: ["/", "/login"], notCovered: ["/about/", "/help?q=1"], pageCap: 2 });
 });
 
 test("selectComprehensivePages: with no page data the run covers the landing page", () => {

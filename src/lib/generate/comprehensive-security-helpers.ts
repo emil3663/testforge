@@ -4,7 +4,18 @@
 // String.raw keeps every backslash, and the block avoids "${" and backticks
 // (\x60 stands for a backtick inside a pattern).
 
-export const PASSIVE_SECURITY_HELPERS = String.raw`// Query parameters that carry a password, token or session id.
+export const NOT_A_PAGE_HELPER = String.raw`// Why a response is not a page these checks can read, or null when it is.
+// A 401 or 403 is the server correctly refusing, not an exposure: a
+// Comprehensive run does not sign in (TFP-136, found on the-internet: /basic_auth).
+function tfNotAPage(status: number): string | null {
+  if (status === 401 || status === 403) return 'answered HTTP ' + status + ': it is behind a login, and this run does not sign in';
+  if (status >= 400) return 'answered HTTP ' + status + ', so there is no page here to check';
+  return null;
+}
+
+`;
+
+export const PASSIVE_SECURITY_HELPERS = NOT_A_PAGE_HELPER + String.raw`// Query parameters that carry a password, token or session id.
 const TF_SENSITIVE_PARAM = /^(password|passwd|pwd|pass|token|access_token|auth_token|id_token|refresh_token|api_key|apikey|secret|session|sessionid|session_id|sid|jsessionid|phpsessid|jwt)$/i;
 
 function tfSensitiveParams(url: string): string[] {
