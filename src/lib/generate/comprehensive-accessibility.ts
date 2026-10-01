@@ -18,8 +18,12 @@ import { formFieldNamesTest } from "./mock/form-field-names";
 //
 // @axe-core/playwright and axe-core are MPL-2.0 and used unmodified.
 
-/** axe's tags for WCAG 2.0, 2.1 and 2.2 at levels A and AA. */
-export const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"];
+/**
+ * axe's tags for WCAG 2.0, 2.1 and 2.2 at levels A and AA. axe-core 4.13.0
+ * has no `wcag22a` tag (Gate B finding): WCAG 2.2's new level-A criteria
+ * have no axe rule, which the "needs a person" statement covers.
+ */
+export const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 /** What the TFP-121 check verifies, by axe's own `label` rule's tag (wcag412). */
 export const FORM_FIELD_NAMES_CRITERION = "WCAG 4.1.2";
@@ -76,6 +80,18 @@ export function accessibilityPageTests(page: AccessibilityCheckPage): string[] {
     const scan = AXE_SCAN.split("__PATH__").join(page.escapedPath)
         .split("__DETAILS__").join(page.details("WCAG 2.2 A and AA (axe-core)"))
         .split("__TAGS__").join(JSON.stringify(WCAG_TAGS).replace(/"/g, "'"));
-    const fieldNames = indent(formFieldNamesTest(page.path)).replace("', async ({ page }) => {", `', ${page.details(FORM_FIELD_NAMES_CRITERION)}, async ({ page }) => {`);
+    // Gate B finding: like the scan, the field-name check is Not run on a
+    // page answering 400 or more (198dbec's rule) - a 401 page has no fields
+    // to check, so passing there checked nothing. Only this copy changes; the
+    // Standard template's own check is untouched.
+    const load = `await page.goto('${page.escapedPath}');`;
+    const standardCheck = indent(formFieldNamesTest(page.path));
+    if (standardCheck.split(load).length !== 2) throw new Error(`TFP-121's check no longer loads ${page.path} exactly once; update the Comprehensive copy`);
+    const fieldNames = standardCheck
+        .replace("', async ({ page }) => {", `', ${page.details(FORM_FIELD_NAMES_CRITERION)}, async ({ page }) => {`)
+        .replace(
+            load,
+            `const response = await page.goto('${page.escapedPath}');\n      const notAPage = response ? tfNotAPage(response.status()) : null;\n      test.skip(notAPage !== null, '${page.escapedPath} ' + notAPage);`
+        );
     return [scan, fieldNames];
 }

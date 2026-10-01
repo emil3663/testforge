@@ -99,6 +99,13 @@ Standards used (as of 2026-09-30):
   says so. The template's checks stand on their own.
 - Letting model tests count later is a separate decision. It needs the
   labelled failure set to show they are trustworthy for that area.
+- **Amended at Gate B (Emil, 2026-10-01): where the model's tests run.**
+  - In a passive security run they are listed and never run. A
+    model-written test may send input (on the fixture the model wrote
+    invalid-input and script-injection tests), and running it would be the
+    active level, which needs Decision 8's confirmation.
+  - In other areas they run only with interactive tests on
+    (`TESTFORGE_INTERACTIVE=1`), as gap-fill tests do (GEN-44).
 
 6. Every Comprehensive report ends with what it did not test.
 - A fixed, written statement per area, not model-generated. It is the first
@@ -194,7 +201,7 @@ Standards used (as of 2026-09-30):
 
 ## Backlog
 
-TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01.
+TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01, and TFP-139 and TFP-140 at Gate B.
 
 ### TFP-132 — Comprehensive run mode
 
@@ -255,7 +262,24 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
     statement is true of the run. Today it describes a scan and its
     "could not decide" list, which don't exist until this ticket.
 - **Dependencies:** TFP-132.
-- **Status:** Built 2026-10-01 (TEST_PLAN GEN-61; RPT-16 updated). Acceptance Criteria 3: on the fixture, a missing image alt, a contrast failure and an unlabelled field are found and classed by impact (critical, serious, critical), each under its WCAG criterion and naming the element; undecided items appear under "Needs manual review" (proven in a real browser). The Gate A criterion: the statement is true of the run. Not yet independently verified. Not pushed.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-61; RPT-16 updated). Acceptance Criteria 3: on the fixture, a missing image alt, a contrast failure and an unlabelled field are found and classed by impact (critical, serious, critical), each under its WCAG criterion and naming the element; undecided items appear under "Needs manual review" (proven in a real browser). The Gate A criterion: the statement is true of the run.
+- **Gate B finding, to fix in this ticket before the push (2026-10-01):**
+  - TFP-121's field-name check **passed** on the three pages that answered
+    HTTP 401 on the-internet (`/basic_auth`, `/digest_auth`,
+    `/download_secure`, run `84094801`). There was no page to check, so 3
+    of the 17 passes check nothing. `198dbec`'s rule is that a page
+    answering 400 or more is Not run with the reason; the axe scan follows
+    it and this check doesn't.
+  - Fix it in the Comprehensive copy of the check only. The Standard
+    template must stay 166 of 166 identical.
+  - Correct the measurement report and TEST_PLAN to match: on the-internet
+    that is 14 passed, 20 failed, 6 not run.
+  - In the same commit: `WCAG_TAGS` lists `wcag22a`, which axe-core 4.13.0
+    doesn't have (its WCAG tags are `wcag2a`, `wcag2aa`, `wcag2aaa`,
+    `wcag21a`, `wcag21aa`, `wcag22aa`). Drop it. The scan still selects
+    the same 70 rules. WCAG 2.2's new level-A criteria have no axe rule,
+    which the "need a person" statement already covers.
+- **Gate B finding fixed (2026-10-01), not yet verified, not pushed:** the Comprehensive copy of TFP-121's check is Not run on a page answering 400 or more, with the reason; `wcag22a` is dropped (axe-core 4.13.0's level tags checked: `wcag2a`, `wcag2aa`, `wcag2aaa`, `wcag21a`, `wcag21aa`, `wcag22aa`; 70 rules selected before and after). The template stays 166 of 166 identical. The-internet counts are corrected to 14 passed, 20 failed, 6 not run, derived from the committed evidence and confirmed by a live re-run (`a7540ac8`).
 
 ### TFP-135 — Model scenarios, labelled and outside the verdict
 
@@ -405,6 +429,51 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
   - `tsc` and ESLint are clean.
   - The real-browser test skips in the VM, which has no Chromium; it rests on the builder's run.
 
+### TFP-139 — Keep a model accessibility suite that imports axe
+
+- **Phase:** 35 · **Priority:** P3 · **Labels:** `local`, `generate`
+- **Problem it solves:** a model accessibility suite that uses axe is
+  always rejected.
+  - When the model's suite is merged into a Comprehensive accessibility
+    suite, only its `@playwright/test` import is dropped.
+  - A model suite that imports `@axe-core/playwright` (the natural way to
+    write accessibility scenarios) passes the model's own type check. But
+    the merged suite then has an import inside a `describe`: TS1232, "An
+    import declaration can only be used at the top level of a namespace or
+    module".
+  - The run falls back to the template safely, but those scenarios are
+    always lost. Reproduced at Gate B, 2026-10-01.
+- **Scope:**
+  - The merge also drops an `import AxeBuilder from '@axe-core/playwright'`
+    line, which the suite already has. This is the same kind of removal as
+    the `@playwright/test` line, not a rewrite of the model's tests.
+  - Any other import still fails the merged type check, by design.
+- **Acceptance criteria:**
+  - A model suite importing axe merges and passes the merged type check.
+  - A model suite importing anything else still falls back, with the gate
+    verdict recorded.
+- **Dependencies:** none.
+
+### TFP-140 — A crawled page's server error is checked for leaks
+
+- **Phase:** 35 · **Priority:** P3 · **Labels:** `security`, `generate`
+- **Problem it solves:** only one error page is ever read for leaks.
+  - Since `198dbec`, a covered page that answers 500 or more is Not run, so
+    its error body is never read.
+  - Only the one missing-page probe checks an error page for stack traces
+    and file paths. A real page that crashes and shows its stack trace (the
+    exposure Decision 3 names) is reported as not run.
+- **Scope:** on an answer of 500 or more, apply the probe's error-leak
+  patterns to that page's body. A leak fails, as the probe's does. With no
+  leak, the other checks stay Not run with the reason.
+- **Acceptance criteria:**
+  - On the fixture, a page switched to answer 500 with a stack trace fails,
+    naming the page and the pattern.
+  - A page answering 500 without a leak is not failed.
+  - Still no request beyond page loads and the one probe (the
+    request-recording test).
+- **Dependencies:** none.
+
 ## Recommended Execution Order
 
 1. TFP-132.
@@ -413,6 +482,8 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
 3. TFP-138 (added at Gate A, 2026-10-01).
 4. TFP-133, TFP-134 and TFP-135, in any order.
 5. TFP-136 last.
+6. The Gate B finding in TFP-134, before the push. TFP-139 and TFP-140
+   after, in any order.
 
 ## Suggested Milestone Gates
 
@@ -424,6 +495,27 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
   status entries.
 
 ### Gate B — First slice built and measured
-**Built 2026-10-01** (`a7fae28` TFP-133, `7c8b979` TFP-134, `8c5b1e4` TFP-135, `198dbec` the fix found by TFP-136, and TFP-136's measurement). Awaiting independent verification. Not pushed.
+**Built 2026-10-01** (`a7fae28` TFP-133, `7c8b979` TFP-134, `8c5b1e4` TFP-135, `198dbec` the fix found by TFP-136, and TFP-136's measurement). Not pushed.
+- **Verified 2026-10-01 (Cowork), passing once TFP-134's Gate B finding is
+  fixed and checked:**
+  - The template is 166 of 166 identical from 094d52d to 7f7829b, on Linux.
+  - Unit suite: 413 tests, 388 passed, 25 skipped (real-browser tests; the
+    VM has no Chromium), none failed. `tsc` and ESLint are clean on the 26
+    changed files.
+  - Every OWASP Top 10:2025 title, its CWE mappings, and ASVS 3.3.1, 3.3.3,
+    3.3.4, 3.4.1 and 3.4.3 to 3.4.6 were checked against their source
+    files.
+  - The checks read as passive: page loads plus one GET probe. The
+    request-recording test asserts GET only, never two requests at once,
+    and one worker slot under `--workers=4 --fully-parallel`.
+  - The model section's exclusion from every count is proven by its
+    real-browser test.
+  - From the committed evidence: security on the-internet has 81 tests
+    (72 passed, 9 not run, 0 failed) and 85 findings, 5 kinds on each of
+    the 17 pages that load. The contrast ratio of `rgb(43,166,203)` on
+    white recomputes to 2.83:1.
+  - Not checkable here: the live runs. The VM can't reach the site, so they
+    rest on the builder's Windows runs and the committed evidence.
+  - Emil accepted Decision 5's amendment and `198dbec` (2026-10-01).
 - TFP-133 to 136 landed and independently verified, with no unexplained
   failure on the real site.

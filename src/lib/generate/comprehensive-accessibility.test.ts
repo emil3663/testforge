@@ -36,8 +36,8 @@ test("the suite: axe scan and field-name check per page, the six WCAG A/AA tags,
     assert.deepEqual(findPromisesToPlainMatchers(code), []);
     assert.deepEqual(findDuplicateTests(code), []);
     assert.match(code, /^import AxeBuilder from '@axe-core\/playwright';$/m);
-    assert.deepEqual(WCAG_TAGS, ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"]);
-    assert.equal(code.match(/\.withTags\(\['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22a','wcag22aa'\]\)/g)?.length, 2);
+    assert.deepEqual(WCAG_TAGS, ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"], "axe-core 4.13.0 has no wcag22a tag (Gate B)");
+    assert.equal(code.match(/\.withTags\(\['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'\]\)/g)?.length, 2);
     assert.equal(code.match(/every form field has an accessible name: /g)?.length, 2);
     assert.match(code, /\{ type: 'category', description: 'WCAG 4\.1\.2' \}/);
     assert.match(code, /^test\.describe\.configure\(\{ mode: 'default' \}\);$/m);
@@ -82,18 +82,23 @@ const PAGES: Record<string, string> = {
 test("in a real browser: violations split by impact under their WCAG criterion, undecided items listed for review, TFP-121 runs on every page", { skip: needsChromium }, async () => {
     const server = createServer((req, res) => {
         const body = PAGES[new URL(req.url ?? "/", "http://x").pathname];
-        res.writeHead(body ? 200 : 404, { "content-type": "text/html" }).end(body ?? "");
+        // /locked answers 401, as the-internet's /basic_auth does (Gate B finding).
+        const status = body ? 200 : new URL(req.url ?? "/", "http://x").pathname === "/locked" ? 401 : 404;
+        res.writeHead(status, { "content-type": "text/html" }).end(body ?? "Not authorized");
     });
     await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
     const origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
     try {
-        const paths = Object.keys(PAGES);
+        const paths = [...Object.keys(PAGES), "/locked"];
         const code = suiteFor(origin, paths);
         const report = buildReport(await runWithPlaywright(code), ["accessibility"], "", origin, null, code, null, "", ACCESSIBILITY, 1);
         const c = report.comprehensive!;
         const row = (path: string) => c.pages.find((r) => r.path === path)!;
 
         assert.deepEqual([row("/").passed, row("/").failed, row("/").findings], [2, 0, 0], "a clean page passes both checks");
+        assert.deepEqual([row("/locked").passed, row("/locked").failed, row("/locked").notRun], [0, 0, 2], "a 401 page: both checks not run - there is nothing to check");
+        const lockedReasons = report.execution.filter((r) => r.page === "/locked").map((r) => r.skipReason);
+        assert.deepEqual(lockedReasons, ["/locked answered HTTP 401: it is behind a login, and this run does not sign in", "/locked answered HTTP 401: it is behind a login, and this run does not sign in"]);
         const failures = c.groups.flatMap((group) => group.failures.map((f) => ({ category: group.category, page: f.page, detail: f.detail })));
         const failureFor = (page: string, rule: string) => failures.find((f) => f.page === page && f.detail.startsWith(rule));
         assert.equal(failureFor("/alt", "image-alt (critical)")?.category, "WCAG 1.1.1");

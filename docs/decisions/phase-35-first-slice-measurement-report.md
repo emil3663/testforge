@@ -90,10 +90,23 @@ inspection and generation, measured from the client.
 
 ## Accessibility on the-internet
 
-Run `84094801` (`accessibility-none-the-internet.herokuapp.com.json`):
-- 20 failures on 17 of 20 pages.
-- 3 pages not run, because they are behind a login.
+Run `84094801` (`accessibility-none-the-internet.herokuapp.com.json`), as
+corrected at Gate B:
+- 40 tests: 14 passed, 20 failed, 6 not run. The 20 failures are on 17 of
+  20 pages.
+- The 6 not run are the 3 pages behind a login, 2 checks each.
 - 0 findings, and 20 items listed for manual review.
+
+**Corrected at Gate B (2026-10-01).** This section first reported the run
+as 17 passed, 20 failed, 3 not run. On the three pages answering 401
+(`/basic_auth`, `/digest_auth`, `/download_secure`), TFP-121's field-name
+check had passed, with no page to check. It now follows `198dbec`'s rule and
+is Not run there, as the axe scan already was.
+- The corrected counts were derived from the committed evidence: the 3
+  passes become not run.
+- They were then confirmed by a live re-run on the fixed build: run
+  `a7540ac8`, `accessibility-the-internet-after-gate-b-fix.json`, 158 s.
+  It gives the same 20 failures on the same 17 pages, and 20 review items.
 
 Every failure was confirmed against the page:
 

@@ -1,4 +1,4 @@
-# Handover to Claude Code — Phase 35 (2026-09-30, updated 2026-10-01 after Gate A)
+# Handover to Claude Code — Phase 35 (2026-09-30, updated 2026-10-01 at Gate B)
 
 Supersedes `docs/HANDOVER_TO_CLAUDE_CODE_2026-09-30-phase37.md` (Phase 37
 is complete).
@@ -10,24 +10,29 @@ Gate and verification reference: `docs/QUALITY_GATES.md`.
 
 ## Done
 
-1. The docs commit (20bd60d).
-2. TFP-132 (134b183) and TFP-137 (53d3391).
-3. **Gate A verified 2026-10-01 in Cowork.** The results are in the TFP-132
-   and TFP-137 status entries of the Phase 35 record.
+1. Gate A: TFP-132 (134b183) and TFP-137 (53d3391), verified and pushed.
+2. TFP-138 (163b4c7), verified and pushed.
+3. TFP-133 to 136 and `198dbec` (a7fae28..7f7829b), not pushed.
+   **Verified at Gate B in Cowork, 2026-10-01, except for one finding**
+   (see TFP-134's status entry). Emil accepted Decision 5's amendment and
+   `198dbec`.
 
 ## Do next, in this order
 
-1. **Commit the Gate A docs** as one `docs(decisions)` commit:
-   - the Phase 35 record: verified status entries, TFP-138 added, criteria
-     added to TFP-133 and TFP-134;
-   - `product-roadmap.md` (Gate A verified);
-   - this handover.
-
-   Then **push** 134b183, 53d3391 and this commit.
-2. **TFP-138:** the Standard HTML export's tabs. It is one commit; measure
-   it as its Acceptance Criterion 2 says.
-3. **TFP-133, TFP-134, TFP-135** in any order, including the criteria added
-   at Gate A. Then **TFP-136**. Stop at Gate B.
+1. **Fix TFP-134's Gate B finding** in one new commit, before any push.
+   Don't amend the earlier commits.
+   - The Comprehensive copy of TFP-121's field-name check is Not run on a
+     page answering 400 or more, as the axe scan already is. The Standard
+     template stays 166 of 166 identical.
+   - Drop `wcag22a` from `WCAG_TAGS`.
+   - Correct the measurement report's accessibility counts on the-internet
+     (14 passed, 20 failed, 6 not run), from a re-run or from the committed
+     evidence, saying which.
+   - Commit it together with this handover and the updated Phase 35 record
+     (Decision 5 amended; Gate B verification; TFP-139 and TFP-140 added).
+2. **Stop and report** with the commit, the template check and the
+   corrected counts. When that is verified, push everything.
+3. Then **TFP-139** and **TFP-140**, in any order.
 
 Watch for:
 - **ASVS 5.0 requirement IDs** must be copied from the published ASVS 5.0
