@@ -169,8 +169,20 @@ export function buildLinkExperienceTests(
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const selector = link.rawHref;
-            expect(await page.locator(selector).count(), 'Anchor target missing for ' + selector).toBeGreaterThan(0);
+            // TFP-141: the target is looked up by id (or name), never by
+            // passing the href to a CSS selector - href="#" made that
+            // selector "#" and crashed the test on ordinary sites.
+            const fragment = link.rawHref.replace(/^#/, '');
+            let target = fragment;
+            try { target = decodeURIComponent(fragment); } catch { target = fragment; }
+            if (!target) {
+                test.info().annotations.push({ type: 'finding', description: 'link "' + (link.text || link.rawHref) + '" has href="' + link.rawHref + '", which points at no in-page target (a placeholder link)' });
+                continue;
+            }
+            // "#top" scrolls to the top of the page even with no element of that id (HTML standard).
+            if (target.toLowerCase() === 'top') continue;
+            const exists = await page.evaluate((id) => document.getElementById(id) !== null || document.getElementsByName(id).length > 0, target);
+            expect(exists, 'Anchor target missing for #' + target).toBeTruthy();
         }
     });`);
     }

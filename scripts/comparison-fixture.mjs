@@ -166,6 +166,15 @@ const server = createServer(async (req, res) => {
         return send(303, "", "text/plain", { location: "/notes" });
     }
     if (url.pathname === "/notes" && req.method === "GET") return send(200, notesPage());
+    // TFP-141: the in-page links the anchor-target check met on a real site -
+    // a placeholder href="#" (which crashed it), a real target and #top. The
+    // check passes here, with a finding for the placeholder. Not linked from
+    // the nav, so introspection finds it only when asked for /anchors.
+    if (url.pathname === "/anchors" && req.method === "GET") {
+        return send(200, page("Anchors", `<h1>Anchors</h1>
+<p><a href="#">Menu</a> <a href="#details">Details</a> <a href="#top">Back to top</a></p>
+<h2 id="details">Details</h2>`));
+    }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);
         const note = (form.note ?? "").trim();
