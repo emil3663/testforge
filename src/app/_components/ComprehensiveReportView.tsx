@@ -75,6 +75,18 @@ export function ComprehensiveReportView({ report }: { report: ComprehensiveRepor
                     {report.notTested.statements.map((statement) => <p key={statement}>{statement}</p>)}
                     {report.notTested.pagesNotCovered ? <p>{report.notTested.pagesNotCovered}</p> : null}
                 </div>
+                {report.manualReview.length > 0 ? (
+                    <div className="mt-4">
+                        <h4 className="text-sm font-medium text-zinc-800">Needs manual review ({report.manualReview.length})</h4>
+                        <ul className="mt-1 space-y-1 text-sm text-zinc-700">
+                            {report.manualReview.map((item, index) => (
+                                <li key={index}>
+                                    <span className="font-mono text-xs">{item.page}</span> · {item.detail}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : null}
                 {report.notTested.asvs ? (
                     <div className="mt-4 overflow-x-auto">
                         <p className="text-xs text-zinc-500">Chapters from {report.notTested.asvs.source}.</p>

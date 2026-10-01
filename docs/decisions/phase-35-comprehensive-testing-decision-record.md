@@ -255,6 +255,7 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
     statement is true of the run. Today it describes a scan and its
     "could not decide" list, which don't exist until this ticket.
 - **Dependencies:** TFP-132.
+- **Status:** Built 2026-10-01 (TEST_PLAN GEN-61; RPT-16 updated). Acceptance Criteria 3: on the fixture, a missing image alt, a contrast failure and an unlabelled field are found and classed by impact (critical, serious, critical), each under its WCAG criterion and naming the element; undecided items appear under "Needs manual review" (proven in a real browser). The Gate A criterion: the statement is true of the run. Not yet independently verified. Not pushed.
 
 ### TFP-135 — Model scenarios, labelled and outside the verdict
 

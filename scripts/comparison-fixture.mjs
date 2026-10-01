@@ -31,6 +31,10 @@ export const DEFECTS = {
     "security-stack-trace": "a page that does not exist answers with a stack trace and server file paths",
     "security-version-header": "every response names the server software and its version (X-Powered-By)",
     "security-weak-session-cookie": "the home page sets a session cookie without HttpOnly that lasts 400 days",
+    // Phase 35 (TFP-134): WCAG defects for the axe-core scan, beside
+    // a11y-unlabelled-field above. The clean site's responses are unchanged.
+    "a11y-missing-alt": "the home page shows an image with no alternative text",
+    "a11y-low-contrast": "the home page's introduction is light grey on white",
 };
 
 const portArg = process.argv.indexOf("--port");
@@ -74,7 +78,8 @@ function home() {
     return page(
         "Home",
         `<h1>Acme Notes</h1>
-<p>Write short notes and find them again later.</p>
+<p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `
+<p><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E" width="40" height="40"></p>` : ""}
 <p id="status">Checking status...</p>
 <p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>`,
         { meta: defect !== "seo-missing-meta", script: crashScript }

@@ -75,6 +75,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
             <h2>What this run did not test</h2>
             ${c.notTested.statements.map((statement) => `<p>${e(statement)}</p>`).join("")}
             ${c.notTested.pagesNotCovered ? `<p>${e(c.notTested.pagesNotCovered)}</p>` : ""}
+            ${c.manualReview.length > 0 ? `<h3>Needs manual review (${c.manualReview.length})</h3><ul>${c.manualReview.map((item) => `<li><strong>${e(item.page)}</strong> - ${e(item.detail)}</li>`).join("")}</ul>` : ""}
             ${asvsTable}
         </section>
         <details>

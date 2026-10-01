@@ -2,6 +2,7 @@ import { normalizeExecutionTitle, sanitizeDiagnosticText, simplifyExecutionTarge
 import { createExecutionArtifacts } from "./artifacts";
 import { LOCAL_MODEL_SUITE_PREFIX } from "@/lib/generate/gap-fill";
 import type {
+    ComprehensiveIssueRecord,
     ExecutionRecord,
     ExecutionStatus,
     JsonSuite,
@@ -284,11 +285,28 @@ function annotationValues(test: JsonTest, type: string): string[] {
     return [...new Set((test.annotations ?? []).filter((a) => a.type === type && a.description).map((a) => a.description!.trim()))];
 }
 
-function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "category" | "asvs"> {
+const ISSUE_KINDS = new Set(["failure", "finding", "manual-review"]);
+
+/** TFP-134: `issue` annotations, JSON { kind, category, detail }; anything else is ignored. */
+function issuesOf(test: JsonTest): ComprehensiveIssueRecord[] {
+    return annotationValues(test, "issue").flatMap((description) => {
+        try {
+            const value = JSON.parse(description) as Record<string, unknown>;
+            return ISSUE_KINDS.has(value.kind as string) && typeof value.category === "string" && typeof value.detail === "string"
+                ? [{ kind: value.kind as ComprehensiveIssueRecord["kind"], category: value.category, detail: value.detail }]
+                : [];
+        } catch {
+            return [];
+        }
+    });
+}
+
+function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "category" | "asvs" | "issues"> {
     const [page] = annotationValues(test, "page");
     const [category] = annotationValues(test, "category");
     const asvs = annotationValues(test, "asvs");
-    return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(asvs.length > 0 ? { asvs } : {}) };
+    const issues = issuesOf(test);
+    return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(asvs.length > 0 ? { asvs } : {}), ...(issues.length > 0 ? { issues } : {}) };
 }
 
 function withGenerator(remark: string, localModel: string | null) {

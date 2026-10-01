@@ -53,7 +53,8 @@ export function findFormFieldPages(contentProfile: ContentProfile | null): strin
     return [...new Set(paths)].slice(0, MAX_PAGES);
 }
 
-function formFieldNamesTest(path: string) {
+/** One page's check, as the Standard suite writes it; Phase 35 (TFP-134) runs it on every page of a Comprehensive accessibility run. */
+export function formFieldNamesTest(path: string) {
     const p = escapeForSingleQuotedString(path);
     return `  test('every form field has an accessible name: ${p}', async ({ page }) => {
     await page.goto('${p}');

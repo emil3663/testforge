@@ -90,6 +90,13 @@ export interface ExecutionRecord {
     category?: string;
     /** Phase 35: ASVS 5.0 requirement IDs it verifies (`asvs` annotations), e.g. "3.4.1". */
     asvs?: string[];
+    /**
+     * Phase 35 (TFP-134): the separate failures, findings and undecided items
+     * one test recorded (`issue` annotations), each with its own category -
+     * an axe scan finds many things on one page, each under its own WCAG
+     * criterion.
+     */
+    issues?: ComprehensiveIssueRecord[];
     rawMessage: string;
     reproductionSteps: string[];
     artifacts: ExecutionArtifact[];
@@ -340,6 +347,13 @@ export interface EmptyAreaRecord {
     reasons: string[];
 }
 
+/** Phase 35 (TFP-134): one item a Comprehensive test recorded, with its own category. */
+export interface ComprehensiveIssueRecord {
+    kind: "failure" | "finding" | "manual-review";
+    category: string;
+    detail: string;
+}
+
 /** Phase 35 (TFP-132, Decision 7): one row of a Comprehensive run's per-page table. */
 export interface ComprehensivePageRow {
     path: string;
@@ -396,6 +410,11 @@ export interface ComprehensiveReport {
     };
     pages: ComprehensivePageRow[];
     groups: ComprehensiveGroup[];
+    /**
+     * Decision 4 (TFP-134): what the scan could not decide - listed for a
+     * person to review, never counted as passed.
+     */
+    manualReview: ComprehensiveIssue[];
     /** Decision 5: the local model's scenarios, outside the verdict. */
     model: { status: "not-asked"; note: string };
     /** Decision 6: the fixed statement of what this run did not test. */

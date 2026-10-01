@@ -60,15 +60,27 @@ export function buildComprehensiveReport(
         if (!groups.has(category)) groups.set(category, { category, failures: [], findings: [] });
         return groups.get(category)!;
     };
+    const manualReview: ComprehensiveIssue[] = [];
     for (const record of execution) {
         const page = record.page ?? "(no page)";
         const category = record.category ?? UNCATEGORISED;
-        if (FAILED_STATUSES.has(record.status)) {
+        // TFP-134: a test that recorded its items one by one (an axe scan)
+        // files each under its own category; its plain findings repeat them.
+        const issues = record.issues ?? [];
+        for (const issue of issues) {
+            const item: ComprehensiveIssue = { page, title: record.title, detail: issue.detail };
+            if (issue.kind === "manual-review") manualReview.push(item);
+            else if (issue.kind === "finding") groupFor(issue.category).findings.push(item);
+            else if (FAILED_STATUSES.has(record.status)) groupFor(issue.category).failures.push(item);
+        }
+        if (FAILED_STATUSES.has(record.status) && !issues.some((issue) => issue.kind === "failure")) {
             const issue: ComprehensiveIssue = { page, title: record.title, detail: `${record.status === "Blocked" ? "Blocked: " : ""}${firstLine(record.rawMessage)}` };
             groupFor(category).failures.push(issue);
         }
-        for (const finding of record.findings ?? []) {
-            groupFor(category).findings.push({ page, title: record.title, detail: finding });
+        if (issues.length === 0) {
+            for (const finding of record.findings ?? []) {
+                groupFor(category).findings.push({ page, title: record.title, detail: finding });
+            }
         }
     }
 
@@ -117,6 +129,7 @@ export function buildComprehensiveReport(
         },
         pages,
         groups: [...groups.values()],
+        manualReview,
         model: { status: "not-asked", note: MODEL_NOT_ASKED_NOTE },
         notTested: {
             statements: [...NOT_TESTED_STATEMENTS[mode.area]],

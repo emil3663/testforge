@@ -38,7 +38,8 @@ test("findTypeErrors: rejects a syntax error", () => {
 });
 
 test("findTypeErrors: rejects an import that is not installed", () => {
-    const errors = findTypeErrors("import AxeBuilder from '@axe-core/playwright';\nconsole.log(AxeBuilder);");
+    // @axe-core/playwright was this example until Phase 35 (TFP-134) installed it.
+    const errors = findTypeErrors("import Missing from '@testforge/never-installed';\nconsole.log(Missing);");
     assert.ok(errors.some((e) => e.includes("TS2307")), errors.join("\n"));
 });
 
