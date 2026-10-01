@@ -280,6 +280,7 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
   set updated; the roadmap's timing estimate replaced.
 - **Acceptance criteria:** Acceptance Criteria 2 (real site) and 6.
 - **Dependencies:** TFP-133, TFP-134, TFP-135.
+- **Status:** Measured 2026-10-01 (`phase-35-first-slice-measurement-report.md`, evidence in `benchmarks/2026-10-01-phase35-first-slice/`). Acceptance Criteria 2 on the-internet: the first passive run had 5 false failures, all template errors (labelled T13 to T17), fixed in `198dbec`; after the fix, 0 failures on 20 pages, and the 85 findings match the site's real headers. Accessibility there: 20 failures, each confirmed real (R4 to R9). Acceptance Criteria 6: durations recorded against Standard runs, and the roadmap's estimate replaced. Not yet independently verified. Not pushed.
 
 ### TFP-137 — Commit the check that proves the template's output unchanged
 
@@ -423,5 +424,6 @@ TFP-131 was the last issued ticket. TFP-137 and TFP-138 were added on 2026-10-01
   status entries.
 
 ### Gate B — First slice built and measured
+**Built 2026-10-01** (`a7fae28` TFP-133, `7c8b979` TFP-134, `8c5b1e4` TFP-135, `198dbec` the fix found by TFP-136, and TFP-136's measurement). Awaiting independent verification. Not pushed.
 - TFP-133 to 136 landed and independently verified, with no unexplained
   failure on the real site.

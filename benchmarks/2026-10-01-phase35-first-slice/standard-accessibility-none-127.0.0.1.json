@@ -1,0 +1,658 @@
+{
+ "runId": "85709b2c-2ff7-4565-8c3d-e4d19cafb20b",
+ "result": {
+  "runId": "85709b2c-2ff7-4565-8c3d-e4d19cafb20b",
+  "runStatus": "passed",
+  "passed": true,
+  "output": "Run budget: up to 195s for ~9 execution(s) across 1 browser project(s) in fast mode.",
+  "duration": 4144,
+  "progress": {
+   "totalTests": 9,
+   "startedTests": 7,
+   "completedTests": 7,
+   "passedTests": 7,
+   "failedTests": 0,
+   "flakyTests": 0,
+   "blockedTests": 0,
+   "currentTestTitle": null,
+   "currentLinkLabel": null,
+   "lastCompletedTitle": "TFAC-007: every form field has an accessible name: /notes",
+   "activeExecutions": [],
+   "plannedExecutions": [
+    {
+     "id": "be04f0d42c83f3c2fe6b-3d79e08b60f6fa739a06",
+     "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "linkLabel": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "status": "passed",
+     "duration": 774
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-ad7518efb4fd3dd7e0a9",
+     "title": "TFAC-002: accessible name and role: Home [link]",
+     "linkLabel": "TFAC-002: accessible name and role: Home [link]",
+     "status": "passed",
+     "duration": 187
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-aa687e556ba1121c5fe3",
+     "title": "TFAC-003: accessible name and role: Sign in [link]",
+     "linkLabel": "TFAC-003: accessible name and role: Sign in [link]",
+     "status": "passed",
+     "duration": 170
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-90d1ef36d36e551bfd17",
+     "title": "TFAC-004: accessible name and role: Notes [link]",
+     "linkLabel": "TFAC-004: accessible name and role: Notes [link]",
+     "status": "passed",
+     "duration": 188
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-2cc862feec91a5ce87a1",
+     "title": "TFAC-005: accessible name and role: Go to your notes [link]",
+     "linkLabel": "TFAC-005: accessible name and role: Go to your notes [link]",
+     "status": "passed",
+     "duration": 193
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-13e86858ff1fcbe54344",
+     "title": "TFAC-006: every form field has an accessible name: /login",
+     "linkLabel": "TFAC-006: every form field has an accessible name: /login",
+     "status": "passed",
+     "duration": 234
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-48b7ea88f93b4171ebdd",
+     "title": "TFAC-007: every form field has an accessible name: /notes",
+     "linkLabel": "TFAC-007: every form field has an accessible name: /notes",
+     "status": "passed",
+     "duration": 218
+    }
+   ]
+  },
+  "report": {
+   "summary": {
+    "planned": 7,
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "blocked": 0,
+    "flaky": 0,
+    "notRun": 0,
+    "notRunReasons": [],
+    "notRunNote": "",
+    "duration": 3426.9120000000003,
+    "releaseRecommendation": "Ready for release",
+    "defectDistribution": {
+     "Critical": 0,
+     "Major": 0,
+     "Minor": 0
+    },
+    "passFailRatio": {
+     "passed": 7,
+     "failed": 0
+    },
+    "browsers": [
+     "chromium"
+    ],
+    "defectTrend": [
+     {
+      "label": "T1",
+      "count": 0
+     },
+     {
+      "label": "T2",
+      "count": 0
+     },
+     {
+      "label": "T3",
+      "count": 0
+     },
+     {
+      "label": "T4",
+      "count": 0
+     },
+     {
+      "label": "T5",
+      "count": 0
+     },
+     {
+      "label": "T6",
+      "count": 0
+     },
+     {
+      "label": "T7",
+      "count": 0
+     }
+    ]
+   },
+   "execution": [
+    {
+     "id": "be04f0d42c83f3c2fe6b-3d79e08b60f6fa739a06",
+     "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "description": "Expected result: TFAC-001: exposes basic accessible structure for assistive technologies should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 774,
+     "remarks": "Passed. TFAC-001: exposes basic accessible structure for assistive technologies behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-001: exposes basic accessible structure for assistive technologies.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 1
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-ad7518efb4fd3dd7e0a9",
+     "title": "TFAC-002: accessible name and role: Home [link]",
+     "description": "Expected result: TFAC-002: accessible name and role: Home [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 187,
+     "remarks": "Passed. TFAC-002: accessible name and role: Home [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-002: accessible name and role: Home [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 2
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-aa687e556ba1121c5fe3",
+     "title": "TFAC-003: accessible name and role: Sign in [link]",
+     "description": "Expected result: TFAC-003: accessible name and role: Sign in [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 170,
+     "remarks": "Passed. TFAC-003: accessible name and role: Sign in [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-003: accessible name and role: Sign in [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 3
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-90d1ef36d36e551bfd17",
+     "title": "TFAC-004: accessible name and role: Notes [link]",
+     "description": "Expected result: TFAC-004: accessible name and role: Notes [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 188,
+     "remarks": "Passed. TFAC-004: accessible name and role: Notes [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-004: accessible name and role: Notes [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 4
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-2cc862feec91a5ce87a1",
+     "title": "TFAC-005: accessible name and role: Go to your notes [link]",
+     "description": "Expected result: TFAC-005: accessible name and role: Go to your notes [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 193,
+     "remarks": "Passed. TFAC-005: accessible name and role: Go to your notes [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-005: accessible name and role: Go to your notes [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 5
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-13e86858ff1fcbe54344",
+     "title": "TFAC-006: every form field has an accessible name: /login",
+     "description": "Expected result: TFAC-006: every form field has an accessible name: /login should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 234,
+     "remarks": "Passed. TFAC-006: every form field has an accessible name: /login behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-006: every form field has an accessible name: /login.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 6
+    },
+    {
+     "id": "be04f0d42c83f3c2fe6b-48b7ea88f93b4171ebdd",
+     "title": "TFAC-007: every form field has an accessible name: /notes",
+     "description": "Expected result: TFAC-007: every form field has an accessible name: /notes should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 218,
+     "remarks": "Passed. TFAC-007: every form field has an accessible name: /notes behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-007: every form field has an accessible name: /notes.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 7
+    }
+   ],
+   "defects": {
+    "issues": [],
+    "heatmap": []
+   },
+   "coverage": {
+    "percentage": 0,
+    "covered": 0,
+    "total": 1,
+    "uncovered": [
+     "Accessibility: Email Password Sign in",
+     "Accessibility: email",
+     "Accessibility: password",
+     "Accessibility: Sign in",
+     "Accessibility: Note Save note",
+     "Accessibility: note",
+     "Accessibility: Save note"
+    ],
+    "matrix": [
+     {
+      "requirement": "Accessibility",
+      "status": "partial",
+      "tests": [
+       "accessible name and role: Home [link]",
+       "accessible name and role: Sign in [link]",
+       "accessible name and role: Notes [link]",
+       "accessible name and role: Go to your notes [link]",
+       "accessible name and role: Home [link]",
+       "accessible name and role: Sign in [link]",
+       "accessible name and role: Notes [link]",
+       "accessible name and role: Home [link]",
+       "accessible name and role: Sign in [link]",
+       "accessible name and role: Notes [link]"
+      ],
+      "uncoveredElements": [
+       "Email Password Sign in",
+       "email",
+       "password",
+       "Sign in",
+       "Note Save note",
+       "note",
+       "Save note"
+      ],
+      "percentage": 59
+     }
+    ]
+   },
+   "notTested": [
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Go to your notes",
+     "elementType": "link",
+     "containerLabel": "All systems normal",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Email Password Sign in",
+     "elementType": "form",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "email",
+     "elementType": "input",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "Email",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "button",
+     "containerLabel": "Password",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Note Save note",
+     "elementType": "form",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "note",
+     "elementType": "input",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Save note",
+     "elementType": "button",
+     "containerLabel": "Note",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Email Password Sign in",
+     "elementType": "form",
+     "containerLabel": "Sign in",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "email",
+     "elementType": "input",
+     "containerLabel": "Sign in",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "Email",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "button",
+     "containerLabel": "Password",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Note Save note",
+     "elementType": "form",
+     "containerLabel": "Notes",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "note",
+     "elementType": "input",
+     "containerLabel": "Notes",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Save note",
+     "elementType": "button",
+     "containerLabel": "Note",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "127.0.0.1:4410 [xhr-fetch]",
+     "elementType": "xhr-fetch",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    },
+    {
+     "area": "reliability",
+     "path": "/login",
+     "elementName": "127.0.0.1:4410 [form-action]",
+     "elementType": "form-action",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    }
+   ],
+   "generation": {
+    "generatedBy": "fallback",
+    "gates": [],
+    "fallbackReason": "openai_error"
+   },
+   "emptyAreas": [],
+   "performance": {
+    "totalDuration": 3426.9120000000003,
+    "averageDuration": 281,
+    "throughput": 122.56,
+    "slowestTests": [
+     {
+      "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 774
+     },
+     {
+      "title": "TFAC-006: every form field has an accessible name: /login",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 234
+     },
+     {
+      "title": "TFAC-007: every form field has an accessible name: /notes",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 218
+     },
+     {
+      "title": "TFAC-005: accessible name and role: Go to your notes [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 193
+     },
+     {
+      "title": "TFAC-004: accessible name and role: Notes [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 188
+     }
+    ],
+    "pageResponseTimes": [],
+    "resourceUtilization": "CPU and memory utilization are not captured in the current browser-only runner.",
+    "scalability": "Scalability conclusions require dedicated load tooling such as Lighthouse or JMeter alongside this suite."
+   },
+   "usability": {
+    "successRate": 100,
+    "findings": [
+     {
+      "id": "FINDING-000",
+      "summary": "No major usability blockers surfaced in the current automated pass.",
+      "testId": "",
+      "testTitle": "",
+      "browser": "",
+      "artifacts": []
+     }
+    ],
+    "videoClips": "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
+    "sessionEvidence": [],
+    "tasksCompleted": 7,
+    "totalTasks": 7
+   },
+   "seo": {
+    "requested": false,
+    "score": 0,
+    "statusLabel": "Healthy",
+    "passedChecks": 0,
+    "failedChecks": 0,
+    "notCoveredChecks": 0,
+    "totalChecks": 0,
+    "checks": [],
+    "pageGroups": [],
+    "findings": [
+     "No SEO-specific failures were produced in the current run."
+    ],
+    "strengths": [
+     "Add explicit SEO checks to surface deterministic strengths in future runs."
+    ],
+    "recommendations": [
+     {
+      "priority": "Low",
+      "title": "Keep the SEO audit in regression",
+      "rationale": "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time."
+     }
+    ]
+   },
+   "rawOutput": "Run budget: up to 195s for ~9 execution(s) across 1 browser project(s) in fast mode."
+  }
+ },
+ "wallSeconds": 10
+}

@@ -1,0 +1,1219 @@
+{
+ "runId": "a34327d8-7bd1-4baf-9654-71909404d0e1",
+ "result": {
+  "runId": "a34327d8-7bd1-4baf-9654-71909404d0e1",
+  "runStatus": "passed",
+  "passed": true,
+  "output": "Run budget: up to 120s for ~5 execution(s) across 1 browser project(s) in fast mode.",
+  "duration": 11236,
+  "progress": {
+   "totalTests": 5,
+   "startedTests": 4,
+   "completedTests": 4,
+   "passedTests": 3,
+   "failedTests": 0,
+   "flakyTests": 0,
+   "blockedTests": 0,
+   "currentTestTitle": null,
+   "currentLinkLabel": null,
+   "lastCompletedTitle": "TFSC-004: script-shaped input is not executed: Username on /login",
+   "activeExecutions": [],
+   "plannedExecutions": [
+    {
+     "id": "0e5ed2ca59e3d8e75a36-fb5a0877be72f7237947",
+     "title": "TFSC-001: uses HTTPS for the requested public test target",
+     "linkLabel": "TFSC-001: uses HTTPS for the requested public test target",
+     "status": "passed",
+     "duration": 2887
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-c8b81be84e2494e44ff7",
+     "title": "TFSC-002: landing page security headers (recorded as findings)",
+     "linkLabel": "TFSC-002: landing page security headers (recorded as findings)",
+     "status": "passed",
+     "duration": 2963
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-0d930543750e234a0147",
+     "title": "TFSC-003: cookies set by the site carry protective flags (recorded as findings)",
+     "linkLabel": "TFSC-003: cookies set by the site carry protective flags (recorded as findings)",
+     "status": "passed",
+     "duration": 2904
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-14f3b8c719e4b86ab145",
+     "title": "TFSC-004: script-shaped input is not executed: Username on /login",
+     "linkLabel": "TFSC-004: script-shaped input is not executed: Username on /login",
+     "status": "blocked",
+     "duration": 190
+    }
+   ]
+  },
+  "report": {
+   "summary": {
+    "planned": 4,
+    "executed": 3,
+    "passed": 3,
+    "failed": 0,
+    "blocked": 0,
+    "flaky": 0,
+    "notRun": 1,
+    "notRunReasons": [
+     {
+      "reason": "script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+      "count": 1
+     }
+    ],
+    "notRunNote": "1 test not run: script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+    "duration": 10515.694,
+    "releaseRecommendation": "Ready for release",
+    "defectDistribution": {
+     "Critical": 0,
+     "Major": 0,
+     "Minor": 0
+    },
+    "passFailRatio": {
+     "passed": 3,
+     "failed": 0
+    },
+    "browsers": [
+     "chromium"
+    ],
+    "defectTrend": [
+     {
+      "label": "T1",
+      "count": 0
+     },
+     {
+      "label": "T2",
+      "count": 0
+     },
+     {
+      "label": "T3",
+      "count": 0
+     },
+     {
+      "label": "T4",
+      "count": 0
+     }
+    ]
+   },
+   "execution": [
+    {
+     "id": "0e5ed2ca59e3d8e75a36-fb5a0877be72f7237947",
+     "title": "TFSC-001: uses HTTPS for the requested public test target",
+     "description": "Expected result: TFSC-001: uses HTTPS for the requested public test target should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2887,
+     "remarks": "Passed. TFSC-001: uses HTTPS for the requested public test target behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-001: uses HTTPS for the requested public test target.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 1
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-c8b81be84e2494e44ff7",
+     "title": "TFSC-002: landing page security headers (recorded as findings)",
+     "description": "Expected result: TFSC-002: landing page security headers (recorded as findings) should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2963,
+     "remarks": "Passed. TFSC-002: landing page security headers (recorded as findings) behaved as expected. Findings: no Content-Security-Policy header: nothing limits what an injected script could do.",
+     "findings": [
+      "no Content-Security-Policy header: nothing limits what an injected script could do"
+     ],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-002: landing page security headers (recorded as findings).",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 2
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-0d930543750e234a0147",
+     "title": "TFSC-003: cookies set by the site carry protective flags (recorded as findings)",
+     "description": "Expected result: TFSC-003: cookies set by the site carry protective flags (recorded as findings) should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2904,
+     "remarks": "Passed. TFSC-003: cookies set by the site carry protective flags (recorded as findings) behaved as expected. Findings: cookie \"rack.session\" has no Secure (it can be sent over plain HTTP); cookie \"optimizelySegments\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP); cookie \"optimizelyEndUserId\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP); cookie \"optimizelyBuckets\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP); cookie \"optimizelyPendingLogEvents\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP).",
+     "findings": [
+      "cookie \"rack.session\" has no Secure (it can be sent over plain HTTP)",
+      "cookie \"optimizelySegments\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP)",
+      "cookie \"optimizelyEndUserId\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP)",
+      "cookie \"optimizelyBuckets\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP)",
+      "cookie \"optimizelyPendingLogEvents\" has no HttpOnly (scripts can read it), no Secure (it can be sent over plain HTTP)"
+     ],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-003: cookies set by the site carry protective flags (recorded as findings).",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 3
+    },
+    {
+     "id": "0e5ed2ca59e3d8e75a36-14f3b8c719e4b86ab145",
+     "title": "TFSC-004: script-shaped input is not executed: Username on /login",
+     "description": "Expected result: TFSC-004: script-shaped input is not executed: Username on /login should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Not run",
+     "duration": 190,
+     "remarks": "Not run. TFSC-004: script-shaped input is not executed: Username on /login did not run: script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run.",
+     "findings": [],
+     "generator": "template",
+     "skipReason": "script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-004: script-shaped input is not executed: Username on /login.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 4
+    }
+   ],
+   "defects": {
+    "issues": [],
+    "heatmap": []
+   },
+   "coverage": {
+    "percentage": 0,
+    "covered": 0,
+    "total": 1,
+    "uncovered": [],
+    "matrix": [
+     {
+      "requirement": "Security",
+      "status": "partial",
+      "tests": [
+       "chromium: TFSC-001: uses HTTPS for the requested public test target",
+       "chromium: TFSC-002: landing page security headers (recorded as findings)",
+       "chromium: TFSC-003: cookies set by the site carry protective flags (recorded as findings)",
+       "chromium: TFSC-004: script-shaped input is not executed: Username on /login"
+      ],
+      "percentage": 75
+     }
+    ]
+   },
+   "notTested": [
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "A/B Testing",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Add/Remove Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Basic Auth",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Broken Images",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Challenging DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Checkboxes",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Context Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Digest Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Disappearing Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Drag and Drop",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dropdown",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Controls",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Loading",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Entry Ad",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Exit Intent",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "File Upload",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Floating Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Forgot Password",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Form Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Geolocation",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Horizontal Slider",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Hovers",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Infinite Scroll",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Inputs",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JQuery UI Menus",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JavaScript Alerts",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JavaScript onload event error",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Key Presses",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Large & Deep DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Multiple Windows",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Nested Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Notification Messages",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Redirect Link",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Secure File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Shadow DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Shifting Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Elemental Selenium",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Username Password Login",
+     "elementType": "form",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "username",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Login",
+     "elementType": "button",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "A/B Testing",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Add/Remove Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Basic Auth",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Broken Images",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Challenging DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Checkboxes",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Context Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Digest Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Disappearing Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Drag and Drop",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Dropdown",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Dynamic Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Dynamic Controls",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Dynamic Loading",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Entry Ad",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Exit Intent",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "File Upload",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Floating Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Forgot Password",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Form Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Geolocation",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Horizontal Slider",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Hovers",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Infinite Scroll",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Inputs",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "JQuery UI Menus",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "JavaScript Alerts",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "JavaScript onload event error",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Key Presses",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Large & Deep DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Multiple Windows",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Nested Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Notification Messages",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Redirect Link",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Secure File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Shadow DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Shifting Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Username Password Login",
+     "elementType": "form",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "username",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Login",
+     "elementType": "button",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Elemental Selenium",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "journey /login > /authenticate",
+     "elementType": "journey",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "candidate journey was not selected on the review screen, so no test was generated for it"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "journey / > /login > /authenticate",
+     "elementType": "journey",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "candidate journey was not selected on the review screen, so no test was generated for it"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "298279967.log.optimizely.com [xhr-fetch]",
+     "elementType": "xhr-fetch",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/login",
+     "elementName": "the-internet.herokuapp.com [form-action]",
+     "elementType": "form-action",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    }
+   ],
+   "generation": {
+    "generatedBy": "fallback",
+    "gates": [],
+    "fallbackReason": "openai_error"
+   },
+   "emptyAreas": [],
+   "performance": {
+    "totalDuration": 10515.694,
+    "averageDuration": 2918,
+    "throughput": 17.12,
+    "slowestTests": [
+     {
+      "title": "TFSC-002: landing page security headers (recorded as findings)",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 2963
+     },
+     {
+      "title": "TFSC-003: cookies set by the site carry protective flags (recorded as findings)",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 2904
+     },
+     {
+      "title": "TFSC-001: uses HTTPS for the requested public test target",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 2887
+     },
+     {
+      "title": "TFSC-004: script-shaped input is not executed: Username on /login",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 190
+     }
+    ],
+    "pageResponseTimes": [],
+    "resourceUtilization": "CPU and memory utilization are not captured in the current browser-only runner.",
+    "scalability": "Scalability conclusions require dedicated load tooling such as Lighthouse or JMeter alongside this suite."
+   },
+   "usability": {
+    "successRate": 75,
+    "findings": [
+     {
+      "id": "FINDING-000",
+      "summary": "No major usability blockers surfaced in the current automated pass.",
+      "testId": "",
+      "testTitle": "",
+      "browser": "",
+      "artifacts": []
+     }
+    ],
+    "videoClips": "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
+    "sessionEvidence": [],
+    "tasksCompleted": 3,
+    "totalTasks": 4
+   },
+   "seo": {
+    "requested": false,
+    "score": 0,
+    "statusLabel": "Healthy",
+    "passedChecks": 0,
+    "failedChecks": 0,
+    "notCoveredChecks": 0,
+    "totalChecks": 0,
+    "checks": [],
+    "pageGroups": [],
+    "findings": [
+     "No SEO-specific failures were produced in the current run."
+    ],
+    "strengths": [
+     "Add explicit SEO checks to surface deterministic strengths in future runs."
+    ],
+    "recommendations": [
+     {
+      "priority": "Low",
+      "title": "Keep the SEO audit in regression",
+      "rationale": "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time."
+     }
+    ]
+   },
+   "rawOutput": "Run budget: up to 120s for ~5 execution(s) across 1 browser project(s) in fast mode."
+  }
+ },
+ "wallSeconds": 21
+}

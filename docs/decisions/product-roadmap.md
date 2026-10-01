@@ -227,11 +227,15 @@ Direction so far (Emil, 2026-09-28; to be locked in the decision record):
   runs headless in Docker) rather than build a scanner. TestForge scopes the
   scan, supplies the Phase 20 logged-in session, requires the ownership or
   permission confirmation, and translates ZAP's alerts into its own report.
-- **Still open:** timing. A standard run on a real site measured about 70-80
-  s for ~30 tests (2-5 s per test); comprehensive runs will be far longer, so
-  the phase measures real durations for one area and for all areas, and
-  decides whether all-areas runs are offered as a scheduled or overnight
-  run, each area as its own job so partial results survive.
+- **Timing, measured 2026-10-01** (TFP-136,
+  `phase-35-first-slice-measurement-report.md`). This replaces the earlier
+  estimate (a Standard run of about 70-80 s for ~30 tests, with
+  comprehensive runs expected to be "far longer"). At the default 20-page
+  cap on the-internet, Comprehensive security took 224 s and accessibility
+  155 s: about 11 s and 8 s a page, one test at a time. On the 3-page
+  fixture each took about 5 s. Whether all-areas runs are offered as
+  scheduled or overnight jobs, each area its own job so partial results
+  survive, is still to be decided; they were not measured.
 
 ### Phase 36 — Trust in results, and measuring the local model (locked 2026-09-29)
 Before comprehensive testing leans on the local model, TestForge stops

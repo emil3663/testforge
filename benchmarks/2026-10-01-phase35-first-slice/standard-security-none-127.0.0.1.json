@@ -1,0 +1,590 @@
+{
+ "runId": "55d67b4d-ce6a-4745-a661-78e729095cb0",
+ "result": {
+  "runId": "55d67b4d-ce6a-4745-a661-78e729095cb0",
+  "runStatus": "passed",
+  "passed": true,
+  "output": "Run budget: up to 120s for ~4 execution(s) across 1 browser project(s) in fast mode.",
+  "duration": 3259,
+  "progress": {
+   "totalTests": 4,
+   "startedTests": 3,
+   "completedTests": 3,
+   "passedTests": 2,
+   "failedTests": 0,
+   "flakyTests": 0,
+   "blockedTests": 0,
+   "currentTestTitle": null,
+   "currentLinkLabel": null,
+   "lastCompletedTitle": "TFSC-003: script-shaped input is not executed: Note on /notes",
+   "activeExecutions": [],
+   "plannedExecutions": [
+    {
+     "id": "451eeb6acf9ad739f7c5-63bfab9eacd5109f6bc1",
+     "title": "TFSC-001: landing page security headers (recorded as findings)",
+     "linkLabel": "TFSC-001: landing page security headers (recorded as findings)",
+     "status": "passed",
+     "duration": 768
+    },
+    {
+     "id": "451eeb6acf9ad739f7c5-9c5c7e5bdd905c10c41a",
+     "title": "TFSC-002: cookies set by the site carry protective flags (recorded as findings)",
+     "linkLabel": "TFSC-002: cookies set by the site carry protective flags (recorded as findings)",
+     "status": "passed",
+     "duration": 157
+    },
+    {
+     "id": "451eeb6acf9ad739f7c5-1194e836c87bee3ff848",
+     "title": "TFSC-003: script-shaped input is not executed: Note on /notes",
+     "linkLabel": "TFSC-003: script-shaped input is not executed: Note on /notes",
+     "status": "blocked",
+     "duration": 156
+    }
+   ]
+  },
+  "report": {
+   "summary": {
+    "planned": 3,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "blocked": 0,
+    "flaky": 0,
+    "notRun": 1,
+    "notRunReasons": [
+     {
+      "reason": "script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+      "count": 1
+     }
+    ],
+    "notRunNote": "1 test not run: script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+    "duration": 2535.282,
+    "releaseRecommendation": "Ready for release",
+    "defectDistribution": {
+     "Critical": 0,
+     "Major": 0,
+     "Minor": 0
+    },
+    "passFailRatio": {
+     "passed": 2,
+     "failed": 0
+    },
+    "browsers": [
+     "chromium"
+    ],
+    "defectTrend": [
+     {
+      "label": "T1",
+      "count": 0
+     },
+     {
+      "label": "T2",
+      "count": 0
+     },
+     {
+      "label": "T3",
+      "count": 0
+     }
+    ]
+   },
+   "execution": [
+    {
+     "id": "451eeb6acf9ad739f7c5-63bfab9eacd5109f6bc1",
+     "title": "TFSC-001: landing page security headers (recorded as findings)",
+     "description": "Expected result: TFSC-001: landing page security headers (recorded as findings) should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 768,
+     "remarks": "Passed. TFSC-001: landing page security headers (recorded as findings) behaved as expected. Findings: no Content-Security-Policy header: nothing limits what an injected script could do; X-Content-Type-Options is not \"nosniff\": browsers may guess content types; no X-Frame-Options or CSP frame-ancestors: the page can be framed by another site (clickjacking).",
+     "findings": [
+      "no Content-Security-Policy header: nothing limits what an injected script could do",
+      "X-Content-Type-Options is not \"nosniff\": browsers may guess content types",
+      "no X-Frame-Options or CSP frame-ancestors: the page can be framed by another site (clickjacking)"
+     ],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-001: landing page security headers (recorded as findings).",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 1
+    },
+    {
+     "id": "451eeb6acf9ad739f7c5-9c5c7e5bdd905c10c41a",
+     "title": "TFSC-002: cookies set by the site carry protective flags (recorded as findings)",
+     "description": "Expected result: TFSC-002: cookies set by the site carry protective flags (recorded as findings) should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 157,
+     "remarks": "Passed. TFSC-002: cookies set by the site carry protective flags (recorded as findings) behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-002: cookies set by the site carry protective flags (recorded as findings).",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 2
+    },
+    {
+     "id": "451eeb6acf9ad739f7c5-1194e836c87bee3ff848",
+     "title": "TFSC-003: script-shaped input is not executed: Note on /notes",
+     "description": "Expected result: TFSC-003: script-shaped input is not executed: Note on /notes should complete successfully.",
+     "suite": "Security Coverage",
+     "area": "Security",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Not run",
+     "duration": 156,
+     "remarks": "Not run. TFSC-003: script-shaped input is not executed: Note on /notes did not run: script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run.",
+     "findings": [],
+     "generator": "template",
+     "skipReason": "script-payload check: submits a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Security Coverage checks.",
+      "Executed the test case: TFSC-003: script-shaped input is not executed: Note on /notes.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 3
+    }
+   ],
+   "defects": {
+    "issues": [],
+    "heatmap": []
+   },
+   "coverage": {
+    "percentage": 0,
+    "covered": 0,
+    "total": 1,
+    "uncovered": [],
+    "matrix": [
+     {
+      "requirement": "Security",
+      "status": "partial",
+      "tests": [
+       "chromium: TFSC-001: landing page security headers (recorded as findings)",
+       "chromium: TFSC-002: cookies set by the site carry protective flags (recorded as findings)",
+       "chromium: TFSC-003: script-shaped input is not executed: Note on /notes"
+      ],
+      "percentage": 67
+     }
+    ]
+   },
+   "notTested": [
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Go to your notes",
+     "elementType": "link",
+     "containerLabel": "All systems normal",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Email Password Sign in",
+     "elementType": "form",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "email",
+     "elementType": "input",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "Email",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "button",
+     "containerLabel": "Password",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Note Save note",
+     "elementType": "form",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "note",
+     "elementType": "input",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/notes",
+     "elementName": "Save note",
+     "elementType": "button",
+     "containerLabel": "Note",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/",
+     "elementName": "Go to your notes",
+     "elementType": "link",
+     "containerLabel": "All systems normal",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Email Password Sign in",
+     "elementType": "form",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "email",
+     "elementType": "input",
+     "containerLabel": "Sign in",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "Email",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Sign in",
+     "elementType": "button",
+     "containerLabel": "Password",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Home",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Sign in",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Notes",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Note Save note",
+     "elementType": "form",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "note",
+     "elementType": "input",
+     "containerLabel": "Notes",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/notes",
+     "elementName": "Save note",
+     "elementType": "button",
+     "containerLabel": "Note",
+     "reason": "not-selected",
+     "reasonDetail": "\"accessibility\" was not a selected practice area for this run"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "127.0.0.1:4410 [xhr-fetch]",
+     "elementType": "xhr-fetch",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    },
+    {
+     "area": "reliability",
+     "path": "/login",
+     "elementName": "127.0.0.1:4410 [form-action]",
+     "elementType": "form-action",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    }
+   ],
+   "generation": {
+    "generatedBy": "fallback",
+    "gates": [],
+    "fallbackReason": "openai_error"
+   },
+   "emptyAreas": [],
+   "performance": {
+    "totalDuration": 2535.282,
+    "averageDuration": 463,
+    "throughput": 47.33,
+    "slowestTests": [
+     {
+      "title": "TFSC-001: landing page security headers (recorded as findings)",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 768
+     },
+     {
+      "title": "TFSC-002: cookies set by the site carry protective flags (recorded as findings)",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 157
+     },
+     {
+      "title": "TFSC-003: script-shaped input is not executed: Note on /notes",
+      "browser": "chromium",
+      "area": "Security",
+      "duration": 156
+     }
+    ],
+    "pageResponseTimes": [],
+    "resourceUtilization": "CPU and memory utilization are not captured in the current browser-only runner.",
+    "scalability": "Scalability conclusions require dedicated load tooling such as Lighthouse or JMeter alongside this suite."
+   },
+   "usability": {
+    "successRate": 67,
+    "findings": [
+     {
+      "id": "FINDING-000",
+      "summary": "No major usability blockers surfaced in the current automated pass.",
+      "testId": "",
+      "testTitle": "",
+      "browser": "",
+      "artifacts": []
+     }
+    ],
+    "videoClips": "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
+    "sessionEvidence": [],
+    "tasksCompleted": 2,
+    "totalTasks": 3
+   },
+   "seo": {
+    "requested": false,
+    "score": 0,
+    "statusLabel": "Healthy",
+    "passedChecks": 0,
+    "failedChecks": 0,
+    "notCoveredChecks": 0,
+    "totalChecks": 0,
+    "checks": [],
+    "pageGroups": [],
+    "findings": [
+     "No SEO-specific failures were produced in the current run."
+    ],
+    "strengths": [
+     "Add explicit SEO checks to surface deterministic strengths in future runs."
+    ],
+    "recommendations": [
+     {
+      "priority": "Low",
+      "title": "Keep the SEO audit in regression",
+      "rationale": "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time."
+     }
+    ]
+   },
+   "rawOutput": "Run budget: up to 120s for ~4 execution(s) across 1 browser project(s) in fast mode."
+  }
+ },
+ "wallSeconds": 10
+}

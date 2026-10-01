@@ -1,0 +1,2146 @@
+{
+ "runId": "98cfc51f-c84e-4fc0-b016-c6ac3f85cdfd",
+ "result": {
+  "runId": "98cfc51f-c84e-4fc0-b016-c6ac3f85cdfd",
+  "runStatus": "passed",
+  "passed": true,
+  "output": "Run budget: up to 705s for ~43 execution(s) across 1 browser project(s) in fast mode.",
+  "duration": 131309,
+  "progress": {
+   "totalTests": 43,
+   "startedTests": 42,
+   "completedTests": 42,
+   "passedTests": 42,
+   "failedTests": 0,
+   "flakyTests": 0,
+   "blockedTests": 0,
+   "currentTestTitle": null,
+   "currentLinkLabel": null,
+   "lastCompletedTitle": "TFAC-042: every form field has an accessible name: /login",
+   "activeExecutions": [],
+   "plannedExecutions": [
+    {
+     "id": "f57fae82cecd21773d54-d3f902a9ed357175bf0f",
+     "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "linkLabel": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "status": "passed",
+     "duration": 2941
+    },
+    {
+     "id": "f57fae82cecd21773d54-c5a934447903eacef1aa",
+     "title": "TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link]",
+     "linkLabel": "TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link]",
+     "status": "passed",
+     "duration": 2961
+    },
+    {
+     "id": "f57fae82cecd21773d54-ad60ff29574ac2e1954b",
+     "title": "TFAC-003: accessible name and role: A/B Testing [link]",
+     "linkLabel": "TFAC-003: accessible name and role: A/B Testing [link]",
+     "status": "passed",
+     "duration": 2928
+    },
+    {
+     "id": "f57fae82cecd21773d54-c7b99a9c19b3b71dd17b",
+     "title": "TFAC-004: accessible name and role: Add/Remove Elements [link]",
+     "linkLabel": "TFAC-004: accessible name and role: Add/Remove Elements [link]",
+     "status": "passed",
+     "duration": 2888
+    },
+    {
+     "id": "f57fae82cecd21773d54-64936d362dbd55ae808f",
+     "title": "TFAC-005: accessible name and role: Basic Auth [link]",
+     "linkLabel": "TFAC-005: accessible name and role: Basic Auth [link]",
+     "status": "passed",
+     "duration": 2918
+    },
+    {
+     "id": "f57fae82cecd21773d54-06598dcae2d8036f6ace",
+     "title": "TFAC-006: accessible name and role: Broken Images [link]",
+     "linkLabel": "TFAC-006: accessible name and role: Broken Images [link]",
+     "status": "passed",
+     "duration": 3150
+    },
+    {
+     "id": "f57fae82cecd21773d54-bb48ce7b6457cc9aed13",
+     "title": "TFAC-007: accessible name and role: Challenging DOM [link]",
+     "linkLabel": "TFAC-007: accessible name and role: Challenging DOM [link]",
+     "status": "passed",
+     "duration": 2952
+    },
+    {
+     "id": "f57fae82cecd21773d54-6f9e79d72ecc085d2fac",
+     "title": "TFAC-008: accessible name and role: Checkboxes [link]",
+     "linkLabel": "TFAC-008: accessible name and role: Checkboxes [link]",
+     "status": "passed",
+     "duration": 2911
+    },
+    {
+     "id": "f57fae82cecd21773d54-a23bb5939233cad30a15",
+     "title": "TFAC-009: accessible name and role: Context Menu [link]",
+     "linkLabel": "TFAC-009: accessible name and role: Context Menu [link]",
+     "status": "passed",
+     "duration": 2964
+    },
+    {
+     "id": "f57fae82cecd21773d54-46a03b3c9f369772f572",
+     "title": "TFAC-010: accessible name and role: Digest Authentication [link]",
+     "linkLabel": "TFAC-010: accessible name and role: Digest Authentication [link]",
+     "status": "passed",
+     "duration": 2929
+    },
+    {
+     "id": "f57fae82cecd21773d54-2121e7da03e70ee23a34",
+     "title": "TFAC-011: accessible name and role: Disappearing Elements [link]",
+     "linkLabel": "TFAC-011: accessible name and role: Disappearing Elements [link]",
+     "status": "passed",
+     "duration": 2926
+    },
+    {
+     "id": "f57fae82cecd21773d54-868d6262193a08b8ac44",
+     "title": "TFAC-012: accessible name and role: Drag and Drop [link]",
+     "linkLabel": "TFAC-012: accessible name and role: Drag and Drop [link]",
+     "status": "passed",
+     "duration": 2863
+    },
+    {
+     "id": "f57fae82cecd21773d54-359ffee5ec02621e4337",
+     "title": "TFAC-013: accessible name and role: Dropdown [link]",
+     "linkLabel": "TFAC-013: accessible name and role: Dropdown [link]",
+     "status": "passed",
+     "duration": 2934
+    },
+    {
+     "id": "f57fae82cecd21773d54-0c66858c7e54bbd39b16",
+     "title": "TFAC-014: accessible name and role: Dynamic Content [link]",
+     "linkLabel": "TFAC-014: accessible name and role: Dynamic Content [link]",
+     "status": "passed",
+     "duration": 2904
+    },
+    {
+     "id": "f57fae82cecd21773d54-57ffba59b96f97a665b1",
+     "title": "TFAC-015: accessible name and role: Dynamic Controls [link]",
+     "linkLabel": "TFAC-015: accessible name and role: Dynamic Controls [link]",
+     "status": "passed",
+     "duration": 2929
+    },
+    {
+     "id": "f57fae82cecd21773d54-abb721172cd886cf4909",
+     "title": "TFAC-016: accessible name and role: Dynamic Loading [link]",
+     "linkLabel": "TFAC-016: accessible name and role: Dynamic Loading [link]",
+     "status": "passed",
+     "duration": 3630
+    },
+    {
+     "id": "f57fae82cecd21773d54-8dea192ef5ec708c409d",
+     "title": "TFAC-017: accessible name and role: Entry Ad [link]",
+     "linkLabel": "TFAC-017: accessible name and role: Entry Ad [link]",
+     "status": "passed",
+     "duration": 2918
+    },
+    {
+     "id": "f57fae82cecd21773d54-9bbbc36c9580900050ed",
+     "title": "TFAC-018: accessible name and role: Exit Intent [link]",
+     "linkLabel": "TFAC-018: accessible name and role: Exit Intent [link]",
+     "status": "passed",
+     "duration": 2885
+    },
+    {
+     "id": "f57fae82cecd21773d54-2e6e978be3d71dddf367",
+     "title": "TFAC-019: accessible name and role: File Download [link]",
+     "linkLabel": "TFAC-019: accessible name and role: File Download [link]",
+     "status": "passed",
+     "duration": 2951
+    },
+    {
+     "id": "f57fae82cecd21773d54-e26f94443a8b4e8d9d58",
+     "title": "TFAC-020: accessible name and role: File Upload [link]",
+     "linkLabel": "TFAC-020: accessible name and role: File Upload [link]",
+     "status": "passed",
+     "duration": 2837
+    },
+    {
+     "id": "f57fae82cecd21773d54-01310e7412b9d7747ed0",
+     "title": "TFAC-021: accessible name and role: Floating Menu [link]",
+     "linkLabel": "TFAC-021: accessible name and role: Floating Menu [link]",
+     "status": "passed",
+     "duration": 4959
+    },
+    {
+     "id": "f57fae82cecd21773d54-13fd80bdb9f0f2b00095",
+     "title": "TFAC-022: accessible name and role: Forgot Password [link]",
+     "linkLabel": "TFAC-022: accessible name and role: Forgot Password [link]",
+     "status": "passed",
+     "duration": 2913
+    },
+    {
+     "id": "f57fae82cecd21773d54-e1edd024d578a2af4d5b",
+     "title": "TFAC-023: accessible name and role: Form Authentication [link]",
+     "linkLabel": "TFAC-023: accessible name and role: Form Authentication [link]",
+     "status": "passed",
+     "duration": 2997
+    },
+    {
+     "id": "f57fae82cecd21773d54-67061bbaa3d8c983a53c",
+     "title": "TFAC-024: accessible name and role: Frames [link]",
+     "linkLabel": "TFAC-024: accessible name and role: Frames [link]",
+     "status": "passed",
+     "duration": 2905
+    },
+    {
+     "id": "f57fae82cecd21773d54-dde385cc473481299779",
+     "title": "TFAC-025: accessible name and role: Geolocation [link]",
+     "linkLabel": "TFAC-025: accessible name and role: Geolocation [link]",
+     "status": "passed",
+     "duration": 3066
+    },
+    {
+     "id": "f57fae82cecd21773d54-4e4f114bb5e20766a3c4",
+     "title": "TFAC-026: accessible name and role: Horizontal Slider [link]",
+     "linkLabel": "TFAC-026: accessible name and role: Horizontal Slider [link]",
+     "status": "passed",
+     "duration": 2944
+    },
+    {
+     "id": "f57fae82cecd21773d54-e7333b8fa49607a856c2",
+     "title": "TFAC-027: accessible name and role: Hovers [link]",
+     "linkLabel": "TFAC-027: accessible name and role: Hovers [link]",
+     "status": "passed",
+     "duration": 2990
+    },
+    {
+     "id": "f57fae82cecd21773d54-eb06fb9dabc5bb0fae9a",
+     "title": "TFAC-028: accessible name and role: Infinite Scroll [link]",
+     "linkLabel": "TFAC-028: accessible name and role: Infinite Scroll [link]",
+     "status": "passed",
+     "duration": 2927
+    },
+    {
+     "id": "f57fae82cecd21773d54-301d34a0842710ba9cd8",
+     "title": "TFAC-029: accessible name and role: Inputs [link]",
+     "linkLabel": "TFAC-029: accessible name and role: Inputs [link]",
+     "status": "passed",
+     "duration": 2921
+    },
+    {
+     "id": "f57fae82cecd21773d54-35f34864e6d50322a496",
+     "title": "TFAC-030: accessible name and role: JQuery UI Menus [link]",
+     "linkLabel": "TFAC-030: accessible name and role: JQuery UI Menus [link]",
+     "status": "passed",
+     "duration": 2915
+    },
+    {
+     "id": "f57fae82cecd21773d54-7efacde1f72401ee4209",
+     "title": "TFAC-031: accessible name and role: JavaScript Alerts [link]",
+     "linkLabel": "TFAC-031: accessible name and role: JavaScript Alerts [link]",
+     "status": "passed",
+     "duration": 2848
+    },
+    {
+     "id": "f57fae82cecd21773d54-fbdac8201d66d330b6c6",
+     "title": "TFAC-032: accessible name and role: JavaScript onload event error [link]",
+     "linkLabel": "TFAC-032: accessible name and role: JavaScript onload event error [link]",
+     "status": "passed",
+     "duration": 2941
+    },
+    {
+     "id": "f57fae82cecd21773d54-4c2e0a34cfdc9b1a16cd",
+     "title": "TFAC-033: accessible name and role: Key Presses [link]",
+     "linkLabel": "TFAC-033: accessible name and role: Key Presses [link]",
+     "status": "passed",
+     "duration": 2919
+    },
+    {
+     "id": "f57fae82cecd21773d54-a23d41a1ccdaac15ada9",
+     "title": "TFAC-034: accessible name and role: Large & Deep DOM [link]",
+     "linkLabel": "TFAC-034: accessible name and role: Large & Deep DOM [link]",
+     "status": "passed",
+     "duration": 4119
+    },
+    {
+     "id": "f57fae82cecd21773d54-e7284d252da755576595",
+     "title": "TFAC-035: accessible name and role: Multiple Windows [link]",
+     "linkLabel": "TFAC-035: accessible name and role: Multiple Windows [link]",
+     "status": "passed",
+     "duration": 2935
+    },
+    {
+     "id": "f57fae82cecd21773d54-ab7a3a39414885c6c395",
+     "title": "TFAC-036: accessible name and role: Nested Frames [link]",
+     "linkLabel": "TFAC-036: accessible name and role: Nested Frames [link]",
+     "status": "passed",
+     "duration": 2909
+    },
+    {
+     "id": "f57fae82cecd21773d54-561e84a9bb0f73ce33bf",
+     "title": "TFAC-037: accessible name and role: Notification Messages [link]",
+     "linkLabel": "TFAC-037: accessible name and role: Notification Messages [link]",
+     "status": "passed",
+     "duration": 3027
+    },
+    {
+     "id": "f57fae82cecd21773d54-95051ce74c34ffcc9a84",
+     "title": "TFAC-038: accessible name and role: Redirect Link [link]",
+     "linkLabel": "TFAC-038: accessible name and role: Redirect Link [link]",
+     "status": "passed",
+     "duration": 2899
+    },
+    {
+     "id": "f57fae82cecd21773d54-617367f1d5e9314f9749",
+     "title": "TFAC-039: accessible name and role: Secure File Download [link]",
+     "linkLabel": "TFAC-039: accessible name and role: Secure File Download [link]",
+     "status": "passed",
+     "duration": 2843
+    },
+    {
+     "id": "f57fae82cecd21773d54-cc860a5ccf818db2bb99",
+     "title": "TFAC-040: accessible name and role: Shadow DOM [link]",
+     "linkLabel": "TFAC-040: accessible name and role: Shadow DOM [link]",
+     "status": "passed",
+     "duration": 2914
+    },
+    {
+     "id": "f57fae82cecd21773d54-dd8e23ea463152bf0100",
+     "title": "TFAC-041: accessible name and role: Shifting Content [link]",
+     "linkLabel": "TFAC-041: accessible name and role: Shifting Content [link]",
+     "status": "passed",
+     "duration": 2957
+    },
+    {
+     "id": "f57fae82cecd21773d54-0ca699a97ea5e0e70b25",
+     "title": "TFAC-042: every form field has an accessible name: /login",
+     "linkLabel": "TFAC-042: every form field has an accessible name: /login",
+     "status": "passed",
+     "duration": 3377
+    }
+   ]
+  },
+  "report": {
+   "summary": {
+    "planned": 42,
+    "executed": 42,
+    "passed": 42,
+    "failed": 0,
+    "blocked": 0,
+    "flaky": 0,
+    "notRun": 0,
+    "notRunReasons": [],
+    "notRunNote": "",
+    "duration": 130476.135,
+    "releaseRecommendation": "Ready for release",
+    "defectDistribution": {
+     "Critical": 0,
+     "Major": 0,
+     "Minor": 0
+    },
+    "passFailRatio": {
+     "passed": 42,
+     "failed": 0
+    },
+    "browsers": [
+     "chromium"
+    ],
+    "defectTrend": [
+     {
+      "label": "T1",
+      "count": 0
+     },
+     {
+      "label": "T2",
+      "count": 0
+     },
+     {
+      "label": "T3",
+      "count": 0
+     },
+     {
+      "label": "T4",
+      "count": 0
+     },
+     {
+      "label": "T5",
+      "count": 0
+     },
+     {
+      "label": "T6",
+      "count": 0
+     },
+     {
+      "label": "T7",
+      "count": 0
+     },
+     {
+      "label": "T8",
+      "count": 0
+     },
+     {
+      "label": "T9",
+      "count": 0
+     },
+     {
+      "label": "T10",
+      "count": 0
+     },
+     {
+      "label": "T11",
+      "count": 0
+     },
+     {
+      "label": "T12",
+      "count": 0
+     },
+     {
+      "label": "T13",
+      "count": 0
+     },
+     {
+      "label": "T14",
+      "count": 0
+     },
+     {
+      "label": "T15",
+      "count": 0
+     },
+     {
+      "label": "T16",
+      "count": 0
+     },
+     {
+      "label": "T17",
+      "count": 0
+     },
+     {
+      "label": "T18",
+      "count": 0
+     },
+     {
+      "label": "T19",
+      "count": 0
+     },
+     {
+      "label": "T20",
+      "count": 0
+     },
+     {
+      "label": "T21",
+      "count": 0
+     },
+     {
+      "label": "T22",
+      "count": 0
+     },
+     {
+      "label": "T23",
+      "count": 0
+     },
+     {
+      "label": "T24",
+      "count": 0
+     },
+     {
+      "label": "T25",
+      "count": 0
+     },
+     {
+      "label": "T26",
+      "count": 0
+     },
+     {
+      "label": "T27",
+      "count": 0
+     },
+     {
+      "label": "T28",
+      "count": 0
+     },
+     {
+      "label": "T29",
+      "count": 0
+     },
+     {
+      "label": "T30",
+      "count": 0
+     },
+     {
+      "label": "T31",
+      "count": 0
+     },
+     {
+      "label": "T32",
+      "count": 0
+     },
+     {
+      "label": "T33",
+      "count": 0
+     },
+     {
+      "label": "T34",
+      "count": 0
+     },
+     {
+      "label": "T35",
+      "count": 0
+     },
+     {
+      "label": "T36",
+      "count": 0
+     },
+     {
+      "label": "T37",
+      "count": 0
+     },
+     {
+      "label": "T38",
+      "count": 0
+     },
+     {
+      "label": "T39",
+      "count": 0
+     },
+     {
+      "label": "T40",
+      "count": 0
+     },
+     {
+      "label": "T41",
+      "count": 0
+     },
+     {
+      "label": "T42",
+      "count": 0
+     }
+    ]
+   },
+   "execution": [
+    {
+     "id": "f57fae82cecd21773d54-d3f902a9ed357175bf0f",
+     "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+     "description": "Expected result: TFAC-001: exposes basic accessible structure for assistive technologies should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2941,
+     "remarks": "Passed. TFAC-001: exposes basic accessible structure for assistive technologies behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-001: exposes basic accessible structure for assistive technologies.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 1
+    },
+    {
+     "id": "f57fae82cecd21773d54-c5a934447903eacef1aa",
+     "title": "TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link]",
+     "description": "Expected result: TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2961,
+     "remarks": "Passed. TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-002: accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 2
+    },
+    {
+     "id": "f57fae82cecd21773d54-ad60ff29574ac2e1954b",
+     "title": "TFAC-003: accessible name and role: A/B Testing [link]",
+     "description": "Expected result: TFAC-003: accessible name and role: A/B Testing [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2928,
+     "remarks": "Passed. TFAC-003: accessible name and role: A/B Testing [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-003: accessible name and role: A/B Testing [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 3
+    },
+    {
+     "id": "f57fae82cecd21773d54-c7b99a9c19b3b71dd17b",
+     "title": "TFAC-004: accessible name and role: Add/Remove Elements [link]",
+     "description": "Expected result: TFAC-004: accessible name and role: Add/Remove Elements [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2888,
+     "remarks": "Passed. TFAC-004: accessible name and role: Add/Remove Elements [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-004: accessible name and role: Add/Remove Elements [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 4
+    },
+    {
+     "id": "f57fae82cecd21773d54-64936d362dbd55ae808f",
+     "title": "TFAC-005: accessible name and role: Basic Auth [link]",
+     "description": "Expected result: TFAC-005: accessible name and role: Basic Auth [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2918,
+     "remarks": "Passed. TFAC-005: accessible name and role: Basic Auth [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-005: accessible name and role: Basic Auth [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 5
+    },
+    {
+     "id": "f57fae82cecd21773d54-06598dcae2d8036f6ace",
+     "title": "TFAC-006: accessible name and role: Broken Images [link]",
+     "description": "Expected result: TFAC-006: accessible name and role: Broken Images [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 3150,
+     "remarks": "Passed. TFAC-006: accessible name and role: Broken Images [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-006: accessible name and role: Broken Images [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 6
+    },
+    {
+     "id": "f57fae82cecd21773d54-bb48ce7b6457cc9aed13",
+     "title": "TFAC-007: accessible name and role: Challenging DOM [link]",
+     "description": "Expected result: TFAC-007: accessible name and role: Challenging DOM [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2952,
+     "remarks": "Passed. TFAC-007: accessible name and role: Challenging DOM [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-007: accessible name and role: Challenging DOM [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 7
+    },
+    {
+     "id": "f57fae82cecd21773d54-6f9e79d72ecc085d2fac",
+     "title": "TFAC-008: accessible name and role: Checkboxes [link]",
+     "description": "Expected result: TFAC-008: accessible name and role: Checkboxes [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2911,
+     "remarks": "Passed. TFAC-008: accessible name and role: Checkboxes [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-008: accessible name and role: Checkboxes [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 8
+    },
+    {
+     "id": "f57fae82cecd21773d54-a23bb5939233cad30a15",
+     "title": "TFAC-009: accessible name and role: Context Menu [link]",
+     "description": "Expected result: TFAC-009: accessible name and role: Context Menu [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2964,
+     "remarks": "Passed. TFAC-009: accessible name and role: Context Menu [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-009: accessible name and role: Context Menu [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 9
+    },
+    {
+     "id": "f57fae82cecd21773d54-46a03b3c9f369772f572",
+     "title": "TFAC-010: accessible name and role: Digest Authentication [link]",
+     "description": "Expected result: TFAC-010: accessible name and role: Digest Authentication [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2929,
+     "remarks": "Passed. TFAC-010: accessible name and role: Digest Authentication [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-010: accessible name and role: Digest Authentication [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 10
+    },
+    {
+     "id": "f57fae82cecd21773d54-2121e7da03e70ee23a34",
+     "title": "TFAC-011: accessible name and role: Disappearing Elements [link]",
+     "description": "Expected result: TFAC-011: accessible name and role: Disappearing Elements [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2926,
+     "remarks": "Passed. TFAC-011: accessible name and role: Disappearing Elements [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-011: accessible name and role: Disappearing Elements [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 11
+    },
+    {
+     "id": "f57fae82cecd21773d54-868d6262193a08b8ac44",
+     "title": "TFAC-012: accessible name and role: Drag and Drop [link]",
+     "description": "Expected result: TFAC-012: accessible name and role: Drag and Drop [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2863,
+     "remarks": "Passed. TFAC-012: accessible name and role: Drag and Drop [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-012: accessible name and role: Drag and Drop [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 12
+    },
+    {
+     "id": "f57fae82cecd21773d54-359ffee5ec02621e4337",
+     "title": "TFAC-013: accessible name and role: Dropdown [link]",
+     "description": "Expected result: TFAC-013: accessible name and role: Dropdown [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2934,
+     "remarks": "Passed. TFAC-013: accessible name and role: Dropdown [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-013: accessible name and role: Dropdown [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 13
+    },
+    {
+     "id": "f57fae82cecd21773d54-0c66858c7e54bbd39b16",
+     "title": "TFAC-014: accessible name and role: Dynamic Content [link]",
+     "description": "Expected result: TFAC-014: accessible name and role: Dynamic Content [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2904,
+     "remarks": "Passed. TFAC-014: accessible name and role: Dynamic Content [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-014: accessible name and role: Dynamic Content [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 14
+    },
+    {
+     "id": "f57fae82cecd21773d54-57ffba59b96f97a665b1",
+     "title": "TFAC-015: accessible name and role: Dynamic Controls [link]",
+     "description": "Expected result: TFAC-015: accessible name and role: Dynamic Controls [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2929,
+     "remarks": "Passed. TFAC-015: accessible name and role: Dynamic Controls [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-015: accessible name and role: Dynamic Controls [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 15
+    },
+    {
+     "id": "f57fae82cecd21773d54-abb721172cd886cf4909",
+     "title": "TFAC-016: accessible name and role: Dynamic Loading [link]",
+     "description": "Expected result: TFAC-016: accessible name and role: Dynamic Loading [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 3630,
+     "remarks": "Passed. TFAC-016: accessible name and role: Dynamic Loading [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-016: accessible name and role: Dynamic Loading [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 16
+    },
+    {
+     "id": "f57fae82cecd21773d54-8dea192ef5ec708c409d",
+     "title": "TFAC-017: accessible name and role: Entry Ad [link]",
+     "description": "Expected result: TFAC-017: accessible name and role: Entry Ad [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2918,
+     "remarks": "Passed. TFAC-017: accessible name and role: Entry Ad [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-017: accessible name and role: Entry Ad [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 17
+    },
+    {
+     "id": "f57fae82cecd21773d54-9bbbc36c9580900050ed",
+     "title": "TFAC-018: accessible name and role: Exit Intent [link]",
+     "description": "Expected result: TFAC-018: accessible name and role: Exit Intent [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2885,
+     "remarks": "Passed. TFAC-018: accessible name and role: Exit Intent [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-018: accessible name and role: Exit Intent [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 18
+    },
+    {
+     "id": "f57fae82cecd21773d54-2e6e978be3d71dddf367",
+     "title": "TFAC-019: accessible name and role: File Download [link]",
+     "description": "Expected result: TFAC-019: accessible name and role: File Download [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2951,
+     "remarks": "Passed. TFAC-019: accessible name and role: File Download [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-019: accessible name and role: File Download [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 19
+    },
+    {
+     "id": "f57fae82cecd21773d54-e26f94443a8b4e8d9d58",
+     "title": "TFAC-020: accessible name and role: File Upload [link]",
+     "description": "Expected result: TFAC-020: accessible name and role: File Upload [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2837,
+     "remarks": "Passed. TFAC-020: accessible name and role: File Upload [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-020: accessible name and role: File Upload [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 20
+    },
+    {
+     "id": "f57fae82cecd21773d54-01310e7412b9d7747ed0",
+     "title": "TFAC-021: accessible name and role: Floating Menu [link]",
+     "description": "Expected result: TFAC-021: accessible name and role: Floating Menu [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 4959,
+     "remarks": "Passed. TFAC-021: accessible name and role: Floating Menu [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-021: accessible name and role: Floating Menu [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 21
+    },
+    {
+     "id": "f57fae82cecd21773d54-13fd80bdb9f0f2b00095",
+     "title": "TFAC-022: accessible name and role: Forgot Password [link]",
+     "description": "Expected result: TFAC-022: accessible name and role: Forgot Password [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2913,
+     "remarks": "Passed. TFAC-022: accessible name and role: Forgot Password [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-022: accessible name and role: Forgot Password [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 22
+    },
+    {
+     "id": "f57fae82cecd21773d54-e1edd024d578a2af4d5b",
+     "title": "TFAC-023: accessible name and role: Form Authentication [link]",
+     "description": "Expected result: TFAC-023: accessible name and role: Form Authentication [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2997,
+     "remarks": "Passed. TFAC-023: accessible name and role: Form Authentication [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-023: accessible name and role: Form Authentication [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 23
+    },
+    {
+     "id": "f57fae82cecd21773d54-67061bbaa3d8c983a53c",
+     "title": "TFAC-024: accessible name and role: Frames [link]",
+     "description": "Expected result: TFAC-024: accessible name and role: Frames [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2905,
+     "remarks": "Passed. TFAC-024: accessible name and role: Frames [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-024: accessible name and role: Frames [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 24
+    },
+    {
+     "id": "f57fae82cecd21773d54-dde385cc473481299779",
+     "title": "TFAC-025: accessible name and role: Geolocation [link]",
+     "description": "Expected result: TFAC-025: accessible name and role: Geolocation [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 3066,
+     "remarks": "Passed. TFAC-025: accessible name and role: Geolocation [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-025: accessible name and role: Geolocation [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 25
+    },
+    {
+     "id": "f57fae82cecd21773d54-4e4f114bb5e20766a3c4",
+     "title": "TFAC-026: accessible name and role: Horizontal Slider [link]",
+     "description": "Expected result: TFAC-026: accessible name and role: Horizontal Slider [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2944,
+     "remarks": "Passed. TFAC-026: accessible name and role: Horizontal Slider [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-026: accessible name and role: Horizontal Slider [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 26
+    },
+    {
+     "id": "f57fae82cecd21773d54-e7333b8fa49607a856c2",
+     "title": "TFAC-027: accessible name and role: Hovers [link]",
+     "description": "Expected result: TFAC-027: accessible name and role: Hovers [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2990,
+     "remarks": "Passed. TFAC-027: accessible name and role: Hovers [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-027: accessible name and role: Hovers [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 27
+    },
+    {
+     "id": "f57fae82cecd21773d54-eb06fb9dabc5bb0fae9a",
+     "title": "TFAC-028: accessible name and role: Infinite Scroll [link]",
+     "description": "Expected result: TFAC-028: accessible name and role: Infinite Scroll [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2927,
+     "remarks": "Passed. TFAC-028: accessible name and role: Infinite Scroll [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-028: accessible name and role: Infinite Scroll [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 28
+    },
+    {
+     "id": "f57fae82cecd21773d54-301d34a0842710ba9cd8",
+     "title": "TFAC-029: accessible name and role: Inputs [link]",
+     "description": "Expected result: TFAC-029: accessible name and role: Inputs [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2921,
+     "remarks": "Passed. TFAC-029: accessible name and role: Inputs [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-029: accessible name and role: Inputs [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 29
+    },
+    {
+     "id": "f57fae82cecd21773d54-35f34864e6d50322a496",
+     "title": "TFAC-030: accessible name and role: JQuery UI Menus [link]",
+     "description": "Expected result: TFAC-030: accessible name and role: JQuery UI Menus [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2915,
+     "remarks": "Passed. TFAC-030: accessible name and role: JQuery UI Menus [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-030: accessible name and role: JQuery UI Menus [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 30
+    },
+    {
+     "id": "f57fae82cecd21773d54-7efacde1f72401ee4209",
+     "title": "TFAC-031: accessible name and role: JavaScript Alerts [link]",
+     "description": "Expected result: TFAC-031: accessible name and role: JavaScript Alerts [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2848,
+     "remarks": "Passed. TFAC-031: accessible name and role: JavaScript Alerts [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-031: accessible name and role: JavaScript Alerts [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 31
+    },
+    {
+     "id": "f57fae82cecd21773d54-fbdac8201d66d330b6c6",
+     "title": "TFAC-032: accessible name and role: JavaScript onload event error [link]",
+     "description": "Expected result: TFAC-032: accessible name and role: JavaScript onload event error [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2941,
+     "remarks": "Passed. TFAC-032: accessible name and role: JavaScript onload event error [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-032: accessible name and role: JavaScript onload event error [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 32
+    },
+    {
+     "id": "f57fae82cecd21773d54-4c2e0a34cfdc9b1a16cd",
+     "title": "TFAC-033: accessible name and role: Key Presses [link]",
+     "description": "Expected result: TFAC-033: accessible name and role: Key Presses [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2919,
+     "remarks": "Passed. TFAC-033: accessible name and role: Key Presses [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-033: accessible name and role: Key Presses [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 33
+    },
+    {
+     "id": "f57fae82cecd21773d54-a23d41a1ccdaac15ada9",
+     "title": "TFAC-034: accessible name and role: Large & Deep DOM [link]",
+     "description": "Expected result: TFAC-034: accessible name and role: Large & Deep DOM [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 4119,
+     "remarks": "Passed. TFAC-034: accessible name and role: Large & Deep DOM [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-034: accessible name and role: Large & Deep DOM [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 34
+    },
+    {
+     "id": "f57fae82cecd21773d54-e7284d252da755576595",
+     "title": "TFAC-035: accessible name and role: Multiple Windows [link]",
+     "description": "Expected result: TFAC-035: accessible name and role: Multiple Windows [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2935,
+     "remarks": "Passed. TFAC-035: accessible name and role: Multiple Windows [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-035: accessible name and role: Multiple Windows [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 35
+    },
+    {
+     "id": "f57fae82cecd21773d54-ab7a3a39414885c6c395",
+     "title": "TFAC-036: accessible name and role: Nested Frames [link]",
+     "description": "Expected result: TFAC-036: accessible name and role: Nested Frames [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2909,
+     "remarks": "Passed. TFAC-036: accessible name and role: Nested Frames [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-036: accessible name and role: Nested Frames [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 36
+    },
+    {
+     "id": "f57fae82cecd21773d54-561e84a9bb0f73ce33bf",
+     "title": "TFAC-037: accessible name and role: Notification Messages [link]",
+     "description": "Expected result: TFAC-037: accessible name and role: Notification Messages [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 3027,
+     "remarks": "Passed. TFAC-037: accessible name and role: Notification Messages [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-037: accessible name and role: Notification Messages [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 37
+    },
+    {
+     "id": "f57fae82cecd21773d54-95051ce74c34ffcc9a84",
+     "title": "TFAC-038: accessible name and role: Redirect Link [link]",
+     "description": "Expected result: TFAC-038: accessible name and role: Redirect Link [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2899,
+     "remarks": "Passed. TFAC-038: accessible name and role: Redirect Link [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-038: accessible name and role: Redirect Link [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 38
+    },
+    {
+     "id": "f57fae82cecd21773d54-617367f1d5e9314f9749",
+     "title": "TFAC-039: accessible name and role: Secure File Download [link]",
+     "description": "Expected result: TFAC-039: accessible name and role: Secure File Download [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2843,
+     "remarks": "Passed. TFAC-039: accessible name and role: Secure File Download [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-039: accessible name and role: Secure File Download [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 39
+    },
+    {
+     "id": "f57fae82cecd21773d54-cc860a5ccf818db2bb99",
+     "title": "TFAC-040: accessible name and role: Shadow DOM [link]",
+     "description": "Expected result: TFAC-040: accessible name and role: Shadow DOM [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2914,
+     "remarks": "Passed. TFAC-040: accessible name and role: Shadow DOM [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-040: accessible name and role: Shadow DOM [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 40
+    },
+    {
+     "id": "f57fae82cecd21773d54-dd8e23ea463152bf0100",
+     "title": "TFAC-041: accessible name and role: Shifting Content [link]",
+     "description": "Expected result: TFAC-041: accessible name and role: Shifting Content [link] should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 2957,
+     "remarks": "Passed. TFAC-041: accessible name and role: Shifting Content [link] behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-041: accessible name and role: Shifting Content [link].",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 41
+    },
+    {
+     "id": "f57fae82cecd21773d54-0ca699a97ea5e0e70b25",
+     "title": "TFAC-042: every form field has an accessible name: /login",
+     "description": "Expected result: TFAC-042: every form field has an accessible name: /login should complete successfully.",
+     "suite": "Accessibility Coverage",
+     "area": "Accessibility",
+     "interactionType": null,
+     "browser": "chromium",
+     "status": "Passed",
+     "duration": 3377,
+     "remarks": "Passed. TFAC-042: every form field has an accessible name: /login behaved as expected.",
+     "findings": [],
+     "generator": "template",
+     "rawMessage": "No additional diagnostics captured.",
+     "reproductionSteps": [
+      "Reused the active chromium session for generated Accessibility Coverage checks.",
+      "Executed the test case: TFAC-042: every form field has an accessible name: /login.",
+      "Validated the observed outcome: No additional diagnostics captured.."
+     ],
+     "artifacts": [],
+     "order": 42
+    }
+   ],
+   "defects": {
+    "issues": [],
+    "heatmap": []
+   },
+   "coverage": {
+    "percentage": 0,
+    "covered": 0,
+    "total": 1,
+    "uncovered": [
+     "Accessibility: Username Password Login",
+     "Accessibility: username",
+     "Accessibility: password",
+     "Accessibility: Login",
+     "Accessibility: Elemental Selenium"
+    ],
+    "matrix": [
+     {
+      "requirement": "Accessibility",
+      "status": "partial",
+      "tests": [
+       "accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link]",
+       "accessible name and role: A/B Testing [link]",
+       "accessible name and role: Add/Remove Elements [link]",
+       "accessible name and role: Basic Auth [link]",
+       "accessible name and role: Broken Images [link]",
+       "accessible name and role: Challenging DOM [link]",
+       "accessible name and role: Checkboxes [link]",
+       "accessible name and role: Context Menu [link]",
+       "accessible name and role: Digest Authentication [link]",
+       "accessible name and role: Disappearing Elements [link]",
+       "accessible name and role: Drag and Drop [link]",
+       "accessible name and role: Dropdown [link]",
+       "accessible name and role: Dynamic Content [link]",
+       "accessible name and role: Dynamic Controls [link]",
+       "accessible name and role: Dynamic Loading [link]",
+       "accessible name and role: Entry Ad [link]",
+       "accessible name and role: Exit Intent [link]",
+       "accessible name and role: File Download [link]",
+       "accessible name and role: File Upload [link]",
+       "accessible name and role: Floating Menu [link]",
+       "accessible name and role: Forgot Password [link]",
+       "accessible name and role: Form Authentication [link]",
+       "accessible name and role: Frames [link]",
+       "accessible name and role: Geolocation [link]",
+       "accessible name and role: Horizontal Slider [link]",
+       "accessible name and role: Hovers [link]",
+       "accessible name and role: Infinite Scroll [link]",
+       "accessible name and role: Inputs [link]",
+       "accessible name and role: JQuery UI Menus [link]",
+       "accessible name and role: JavaScript Alerts [link]",
+       "accessible name and role: JavaScript onload event error [link]",
+       "accessible name and role: Key Presses [link]",
+       "accessible name and role: Large & Deep DOM [link]",
+       "accessible name and role: Multiple Windows [link]",
+       "accessible name and role: Nested Frames [link]",
+       "accessible name and role: Notification Messages [link]",
+       "accessible name and role: Redirect Link [link]",
+       "accessible name and role: Secure File Download [link]",
+       "accessible name and role: Shadow DOM [link]",
+       "accessible name and role: Shifting Content [link]",
+       "accessible name and role: Untitled link to https://github.com/tourdedave/the-internet [link]"
+      ],
+      "uncoveredElements": [
+       "Username Password Login",
+       "username",
+       "password",
+       "Login",
+       "Elemental Selenium"
+      ],
+      "percentage": 89
+     }
+    ]
+   },
+   "notTested": [
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "A/B Testing",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Add/Remove Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Basic Auth",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Broken Images",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Challenging DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Checkboxes",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Context Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Digest Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Disappearing Elements",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Drag and Drop",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dropdown",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Controls",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Dynamic Loading",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Entry Ad",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Exit Intent",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "File Upload",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Floating Menu",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Forgot Password",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Form Authentication",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Geolocation",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Horizontal Slider",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Hovers",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Infinite Scroll",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Inputs",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JQuery UI Menus",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JavaScript Alerts",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "JavaScript onload event error",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Key Presses",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Large & Deep DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Multiple Windows",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Nested Frames",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Notification Messages",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Redirect Link",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Secure File Download",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Shadow DOM",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "Shifting Content",
+     "elementType": "link",
+     "containerLabel": "Available Examples",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Untitled link to https://github.com/tourdedave/the-internet",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Elemental Selenium",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "link element covered by the dedicated link-audit suite instead of a per-element functional check"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Username Password Login",
+     "elementType": "form",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "username",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "Login",
+     "elementType": "button",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "not-selected",
+     "reasonDetail": "\"functional\" was not a selected practice area for this run"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Username Password Login",
+     "elementType": "form",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "username",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "password",
+     "elementType": "input",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Login",
+     "elementType": "button",
+     "containerLabel": "This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "accessibility",
+     "path": "/login",
+     "elementName": "Elemental Selenium",
+     "elementType": "link",
+     "containerLabel": "",
+     "reason": "generator-gap",
+     "reasonDetail": "selected and eligible for a generated test, but no matching executed test was found"
+    },
+    {
+     "area": "functional",
+     "path": "/login",
+     "elementName": "journey /login > /authenticate",
+     "elementType": "journey",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "candidate journey was not selected on the review screen, so no test was generated for it"
+    },
+    {
+     "area": "functional",
+     "path": "/",
+     "elementName": "journey / > /login > /authenticate",
+     "elementType": "journey",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "candidate journey was not selected on the review screen, so no test was generated for it"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "298279967.log.optimizely.com [xhr-fetch]",
+     "elementType": "xhr-fetch",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/",
+     "elementName": "the-internet.herokuapp.com [cookie]",
+     "elementType": "cookie",
+     "containerLabel": "",
+     "reason": "excluded-by-generator",
+     "reasonDetail": "cookie-kind dependencies aren't a routable network request - page.route() has nothing to block"
+    },
+    {
+     "area": "reliability",
+     "path": "/login",
+     "elementName": "the-internet.herokuapp.com [form-action]",
+     "elementType": "form-action",
+     "containerLabel": "",
+     "reason": "not-selected",
+     "reasonDetail": "\"reliability\" was not a selected practice area for this run"
+    }
+   ],
+   "generation": {
+    "generatedBy": "fallback",
+    "gates": [],
+    "fallbackReason": "openai_error"
+   },
+   "emptyAreas": [],
+   "performance": {
+    "totalDuration": 130476.135,
+    "averageDuration": 3037,
+    "throughput": 19.31,
+    "slowestTests": [
+     {
+      "title": "TFAC-021: accessible name and role: Floating Menu [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 4959
+     },
+     {
+      "title": "TFAC-034: accessible name and role: Large & Deep DOM [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 4119
+     },
+     {
+      "title": "TFAC-016: accessible name and role: Dynamic Loading [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 3630
+     },
+     {
+      "title": "TFAC-042: every form field has an accessible name: /login",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 3377
+     },
+     {
+      "title": "TFAC-006: accessible name and role: Broken Images [link]",
+      "browser": "chromium",
+      "area": "Accessibility",
+      "duration": 3150
+     }
+    ],
+    "pageResponseTimes": [],
+    "resourceUtilization": "CPU and memory utilization are not captured in the current browser-only runner.",
+    "scalability": "Scalability conclusions require dedicated load tooling such as Lighthouse or JMeter alongside this suite."
+   },
+   "usability": {
+    "successRate": 100,
+    "findings": [
+     {
+      "id": "FINDING-000",
+      "summary": "No major usability blockers surfaced in the current automated pass.",
+      "testId": "",
+      "testTitle": "",
+      "browser": "",
+      "artifacts": []
+     }
+    ],
+    "videoClips": "No failed-run artifacts were captured in this run. Trace, video, and screenshot evidence only appear when Playwright retains failure artifacts.",
+    "sessionEvidence": [],
+    "tasksCompleted": 42,
+    "totalTasks": 42
+   },
+   "seo": {
+    "requested": false,
+    "score": 0,
+    "statusLabel": "Healthy",
+    "passedChecks": 0,
+    "failedChecks": 0,
+    "notCoveredChecks": 0,
+    "totalChecks": 0,
+    "checks": [],
+    "pageGroups": [],
+    "findings": [
+     "No SEO-specific failures were produced in the current run."
+    ],
+    "strengths": [
+     "Add explicit SEO checks to surface deterministic strengths in future runs."
+    ],
+    "recommendations": [
+     {
+      "priority": "Low",
+      "title": "Keep the SEO audit in regression",
+      "rationale": "The current run is healthy. Preserve these checks in regression so metadata, schema, and crawler files stay stable over time."
+     }
+    ]
+   },
+   "rawOutput": "Run budget: up to 705s for ~43 execution(s) across 1 browser project(s) in fast mode."
+  }
+ },
+ "wallSeconds": 140
+}
