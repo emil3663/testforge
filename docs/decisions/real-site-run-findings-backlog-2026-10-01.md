@@ -120,27 +120,53 @@ TFP-140 was the last issued ticket.
     flags, the Standard and passive-security runs report the same set.
 - **Dependencies:** None.
 
-### TFP-145 — Standard accessibility run double-reports the same nav link
+### TFP-145 — Standard accessible-name checks fail links that have a name
 
-- **Phase:** 35 (follow-up) · **Priority:** P3
-- **Suggested labels:** `enhancement`, `generate`, `accessibility`
-- **Problem it solves:** split out of TFP-143. In a **Standard** run the
-  hand-written accessible-name checks, located by `getByText`, report the
-  same link more than once and misreport named links. On rizonetech.com,
-  TFAC-018 and TFAC-038 both flagged the one "AI" nav link, and the
-  `getByText` lookup flagged "Home" as having no accessible name. This is
-  Standard-run noise, separate from the Comprehensive axe scan.
+- **Phase:** 35 (follow-up) · **Priority:** P2 (raised from P3 on
+  2026-10-02: measurement shows false failures, not only duplication)
+- **Suggested labels:** `bug`, `generate`, `accessibility`
+- **Problem it solves:** split out of TFP-143, and re-scoped after reading
+  the 2026-10-01 rizonetech.com evidence (`standard-suite.spec.ts`,
+  `standard-run.json`, `content-profile.json`). Two causes, both in how the
+  Standard accessible-name checks locate their element:
+  1. **Text locators land on the wrong element.** Some checks use
+     `getByRole('link', { name })` and pass. Others use
+     `getByText(text, { exact: true }).first()` and fail with an empty
+     accessible name: TFAC-008 "Home", TFAC-009 "Services", TFAC-018 and
+     TFAC-038 "AI". `getByText` resolves to the element holding the text,
+     most likely the `<span>` inside the menu `<a>` in WordPress menu markup.
+     A span has no accessible name, so a named link is reported as unnamed.
+     The same "AI" link passes TFAC-005 (by role) and fails TFAC-018 (by
+     text).
+  2. **Same-named elements all test the first match.** The page data holds
+     four distinct "AI" links: the nav link and a hidden copy (`/ai-search/`),
+     a category filter and a post's category tag (`/ai/`). Each check ends in
+     `.first()`, so four checks meant for four elements test one.
 - **Scope:**
-  - De-duplicate the Standard accessible-name checks so one element is
-    reported once.
-  - Review the `getByText` locator strategy for the named-link false
-    positives.
+  - Locate each check's element by its recorded role and name, or resolve a
+    text match to its closest interactive ancestor, so the check reads the
+    link's accessible name, not a child's.
+  - Scope same-named elements by what the page data already records (`href`
+    / `rawHref`, `containerLabel`) instead of `.first()`. Elements that are
+    truly identical (same name, target and container) get one check.
+  - Find out why the generator chooses `getByText` for some elements and
+    `getByRole` for others, and record it in the commit.
 - **Deliverables:**
-  - The change and a `TEST_PLAN.md` case on a page with a repeated nav link.
+  - The fix in the Standard accessibility template.
+  - A fixture page with: a menu link whose text sits in a child `<span>`;
+    two same-text links to different targets; and a genuinely unnamed link
+    (an `<img>` with no `alt` inside an `<a>`).
+  - `TEST_PLAN.md` case.
 - **Acceptance criteria:**
-  - On a Standard run of a page whose nav link appears in two places, that
-    link is reported at most once.
-  - A link that has an accessible name is not flagged as missing one.
+  - On the fixture, `<a href="/"><span>Home</span></a>` passes its
+    accessible-name check.
+  - The genuinely unnamed link still fails, naming the element.
+  - Two same-text links to different targets each test their own element
+    (shown by a failure on one not failing the other).
+  - On the saved rizonetech.com inputs, TFAC-008, 009, 018 and 038 no longer
+    fail.
+  - `npm run check:template-unchanged` shows only the accessible-name
+    checks changed.
 - **Dependencies:** None.
 
 ## Recommended Execution Order
@@ -149,7 +175,7 @@ TFP-140 was the last issued ticket.
 2. TFP-142. **Done, `6c484de`, verified.**
 3. TFP-144. **Done, `4a81655`, verified.**
 4. TFP-143. **Closed 2026-10-01, already met — see its Resolution; not built.**
-5. TFP-145 (split from TFP-143), when picked up.
+5. TFP-145 (split from TFP-143; re-scoped 2026-10-02 to the false failures).
 
 ## Suggested Milestone Gate
 
