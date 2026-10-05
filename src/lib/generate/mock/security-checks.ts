@@ -1,4 +1,4 @@
-import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { ACTIVE_GATE_SKIP, gateDetails } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./format";
 import { SESSION_COOKIE_NAME } from "./cookie-session-checks";
 import { discoverForms, fieldLocator, fieldName, submitButton, type DiscoveredForm } from "./forms";
@@ -27,7 +27,6 @@ const MAX_FORMS = 3;
  */
 export const SCRIPT_PAYLOAD = `"><img src=x onerror="window.__testforgeXss=(window.__testforgeXss||0)+1">`;
 
-const PAYLOAD_SKIP_REASON = `script-payload check: submits a form on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`;
 
 // Only free-text fields take the payload. An email, url or tel field would
 // fail the browser's own validation with it, block the submit, and let the
@@ -135,8 +134,10 @@ function payloadTest(form: PayloadForm) {
         ? `await form.getByRole('button', { name: '${escapeForSingleQuotedString(submit.text || submit.locator.name)}' }).first().click();`
         : `await form.evaluate((el) => (el as HTMLFormElement).requestSubmit());`;
 
-    return `  test('${title}', async ({ page }) => {
-    test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(PAYLOAD_SKIP_REASON)}');
+    // Phase 38 Decisions 3 and 6: attack-shaped input is the active gate,
+    // closed until the ownership confirmation exists.
+    return `  test('${title}', ${gateDetails("active")}, async ({ page }) => {
+    ${ACTIVE_GATE_SKIP}
 
     const payload = '${escapeForSingleQuotedString(SCRIPT_PAYLOAD)}';
     const dialogs: string[] = [];
@@ -183,7 +184,7 @@ export function buildSecurityChecks(baseUrl: string, contentProfile: ContentProf
         ...(isHttps ? [] : ["This target is not HTTPS by default, so deeper transport-security validation should be handled outside this browser suite."]),
         "Security: missing headers and cookie flags are recorded as findings in the run report and do not fail a test; an executed script payload does.",
         forms.length > 0
-            ? `Security: the script-payload tests submit real forms, so they are skipped unless ${INTERACTIVE_ENV_VAR}=1 is set for the run (the "Run interactive tests" option).`
+            ? "Security: the script-payload tests send attack-shaped input, so they are not run until the site's ownership confirmation exists (not built yet)."
             : contentProfile
               ? "Security: no form with a text field was found on the inspected pages, so no script-payload test was generated."
               : "Security: no page inspection data, so no form was found for a script-payload test. Run introspection first.",

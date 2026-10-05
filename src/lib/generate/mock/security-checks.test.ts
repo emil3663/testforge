@@ -99,13 +99,14 @@ test("security suite: missing headers and cookie flags are findings, never failu
     }
 });
 
-test("security suite: payload tests never type into passwords, and are skipped unless interactive (Decision 5)", () => {
+test("security suite: payload tests never type into passwords, and are at the active gate, so never run (Phase 38 Decision 6)", () => {
     const code = generate("http://127.0.0.1:4410", FIXTURE);
     assert.doesNotMatch(code, /\[id="password"\]'\)\.fill\(payload\)/);
     const payloadTests = code.split("test('TFSC-").filter((t) => t.includes("script-shaped input is not executed"));
     assert.equal(payloadTests.length, 1);
     for (const body of payloadTests) {
-        assert.match(body.slice(0, 400), /test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1'/);
+        assert.match(body.slice(0, 400), /\{ annotation: \{ type: 'gate', description: 'active' \} \}, async \(\{ page \}\) => \{\n    test\.skip\(true, 'attack-shaped input: needs the ownership confirmation, not built yet'\);/);
+        assert.doesNotMatch(body, /TESTFORGE_INTERACTIVE/, "not behind the interactive switch any more");
         assert.match(body, /the page renders user input as HTML \(cross-site scripting\)/);
     }
 });

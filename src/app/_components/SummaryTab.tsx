@@ -2,6 +2,7 @@ import { GenerationPanels } from "@/app/_components/GenerationPanels";
 import { MetricCard } from "@/app/_components/MetricCard";
 import { ReportPanel } from "@/app/_components/ReportPanel";
 import { TrendBars } from "@/app/_components/TrendBars";
+import { formatNotRunByGate } from "@/lib/report/summary";
 import { formatMilliseconds } from "@/lib/report/text";
 import type { RunReport } from "@/lib/report/types";
 
@@ -71,6 +72,9 @@ export function SummaryTab({ report }: SummaryTabProps) {
                                                 <p className="mt-2 text-sm leading-6 text-zinc-600">
                                                     {report.summary.notRunNote}. Not run by choice, so they do not count against the recommendation, and they are not coverage either.
                                                 </p>
+                                            ) : null}
+                                            {formatNotRunByGate(report.summary) ? (
+                                                <p className="mt-2 text-sm leading-6 text-zinc-600">{formatNotRunByGate(report.summary)}</p>
                                             ) : null}
                                         </div>
                                     </ReportPanel>

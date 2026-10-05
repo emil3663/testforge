@@ -1,3 +1,5 @@
+import type { TestGate } from "@/lib/run/test-gates";
+
 // "Not run" (Phase 34 Option C): the test skipped itself with a stated reason -
 // not run by choice, e.g. interactive tests off. "Blocked" is a skip or
 // interruption nobody explained.
@@ -84,6 +86,8 @@ export interface ExecutionRecord {
     generator?: "template" | "local model";
     /** Phase 34 Option C: why a "Not run" test did not run (its skip annotation). */
     skipReason?: string;
+    /** Phase 38 Decision 1: the gate the test declared; absent on runs from before TFP-146. */
+    gate?: TestGate;
     /** Phase 35 (TFP-132): the page a Comprehensive test checked (`page` annotation). */
     page?: string;
     /** Phase 35: its OWASP Top 10 category or WCAG criterion (`category` annotation). */
@@ -224,6 +228,8 @@ export interface RunReport {
         /** Phase 34 Option C: tests that skipped themselves with a reason. */
         notRun: number;
         notRunReasons: { reason: string; count: number }[];
+        /** Phase 38 Decision 1: Not run tests per declared gate; absent on runs from before TFP-146. */
+        notRunByGate?: Record<TestGate, number>;
         /** e.g. "4 tests not run: interactive tests are off"; empty when none. */
         notRunNote: string;
         duration: number;

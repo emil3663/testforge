@@ -1,3 +1,4 @@
+import { TEST_GATES, type TestGate } from "@/lib/run/test-gates";
 import type { DefectRecord, ExecutionRecord, RunReport } from "./types";
 
 export const NO_TEST_RAN = "No recommendation: no test ran";
@@ -12,6 +13,15 @@ export const NOTHING_TO_RUN = "Nothing to run: the suite has no tests";
  */
 export function noTestRan(summary: Pick<RunReport["summary"], "passed" | "flaky" | "failed">) {
     return summary.passed + summary.flaky + summary.failed === 0;
+}
+
+/**
+ * Phase 38 Decision 1: e.g. "Not run by gate: read-only 0, interactive 11,
+ * active 1". Empty for runs whose tests declare no gate (before TFP-146).
+ */
+export function formatNotRunByGate(summary: Pick<RunReport["summary"], "notRunByGate">) {
+    const counts = summary.notRunByGate;
+    return counts ? `Not run by gate: ${TEST_GATES.map((gate) => `${gate} ${counts[gate] ?? 0}`).join(", ")}` : "";
 }
 
 function releaseRecommendation(
@@ -60,6 +70,11 @@ export function buildSummary(
         reasonCounts.set(reason, (reasonCounts.get(reason) ?? 0) + 1);
     }
     const notRunReasons = [...reasonCounts].map(([reason, count]) => ({ reason, count }));
+    // Phase 38 Decision 1: how many tests each gate kept from running. Only
+    // when the run's tests declare gates, so older runs don't show zeros.
+    const notRunByGate = records.some((record) => record.gate)
+        ? Object.fromEntries(TEST_GATES.map((gate) => [gate, notRunRecords.filter((record) => record.gate === gate).length])) as Record<TestGate, number>
+        : undefined;
     const notRunNote = notRunRecords.length === 0
         ? ""
         : `${notRunRecords.length} ${notRunRecords.length === 1 ? "test" : "tests"} not run: ${notRunReasons.map((r) => (notRunReasons.length > 1 ? `${r.reason} (${r.count})` : r.reason)).join("; ")}`;
@@ -76,6 +91,7 @@ export function buildSummary(
         flaky,
         notRun: notRunRecords.length,
         notRunReasons,
+        ...(notRunByGate ? { notRunByGate } : {}),
         notRunNote,
         duration,
         releaseRecommendation: releaseRecommendation(records.length, passed + flaky + failed, failed, blocked, critical, major),

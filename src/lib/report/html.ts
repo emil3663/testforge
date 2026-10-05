@@ -1,7 +1,7 @@
 import { escapeReportHtml, formatMilliseconds } from "./text";
 import { buildFallbackExecutionHtmlMarkup } from "./status";
 import { describePageInspection } from "./page-inspection-text";
-import { noTestRan } from "./summary";
+import { formatNotRunByGate, noTestRan } from "./summary";
 import type { RunReport } from "./types";
 import { buildComprehensiveHtmlDocument } from "./comprehensive-html";
 
@@ -41,12 +41,13 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
             <tr>
                 <td>${escapeReportHtml(record.title)}</td>
                 <td>${escapeReportHtml(record.area)}</td>
+                <td>${escapeReportHtml(record.gate ?? "-")}</td>
                 <td>${escapeReportHtml(record.browser)}</td>
                 <td>${statusBadge(record.status)}</td>
                 <td>${escapeReportHtml(formatMilliseconds(record.duration))}</td>
                 <td>${escapeReportHtml(record.description || "No expected result recorded.")}</td>
                 <td>${escapeReportHtml(record.remarks || "No additional outcome recorded.")}</td>
-            </tr>`).join("") || "<tr><td colspan=\"7\">No execution records were produced for this run.</td></tr>";
+            </tr>`).join("") || "<tr><td colspan=\"8\">No execution records were produced for this run.</td></tr>";
     // Phase 34 (TFP-119): areas with no test and why (Decision 7), and every
     // generation gate's verdict with its bar and evidence (Decision 8).
     const emptyAreas = report.emptyAreas ?? [];
@@ -262,6 +263,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
                     <div class="rec-label">Release Recommendation</div>
                     <div class="rec-text">${escapeReportHtml(report.summary.releaseRecommendation)}</div>
                     ${report.summary.notRunNote ? `<div class="rec-note">${escapeReportHtml(report.summary.notRunNote)}</div>` : ""}
+                    ${formatNotRunByGate(report.summary) ? `<div class="rec-note">${escapeReportHtml(formatNotRunByGate(report.summary))}</div>` : ""}
                 </div>
             </div>
             ${generationMarkup}
@@ -273,7 +275,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
                 <div class="card-title">Detailed case-by-case results</div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>Test</th><th>Area</th><th>Browser</th><th>Status</th><th>Duration</th><th>Expected Result</th><th>Observed Outcome</th></tr></thead>
+                        <thead><tr><th>Test</th><th>Area</th><th>Gate</th><th>Browser</th><th>Status</th><th>Duration</th><th>Expected Result</th><th>Observed Outcome</th></tr></thead>
                         <tbody>${executionRowsMarkup}</tbody>
                     </table>
                 </div>

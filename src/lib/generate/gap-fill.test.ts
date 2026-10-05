@@ -32,7 +32,7 @@ test("mergeLocalSuite: template kept whole; every @playwright/test import form d
     const merged = mergeLocalSuite(TEMPLATE, local, "testforge-qwen7b:latest", ["database"]);
     assert.ok(merged.startsWith(TEMPLATE));
     assert.equal((merged.match(/@playwright\/test/g) ?? []).length, 1, "only the template's import remains");
-    assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
+    assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
     assert.deepEqual(findTypeErrors(merged), []);
 });
 
@@ -40,7 +40,7 @@ test("mergeLocalSuite: several gap areas are not forced under one area block", (
     const local = "test.describe('Security', () => {});\ntest.describe('Database', () => {});";
     const merged = mergeLocalSuite(TEMPLATE, local, "m", ["security", "database"]);
     assert.doesNotMatch(merged, /Security Coverage|Database Coverage/);
-    assert.match(merged, /test\.describe\('Local model \(m\)', \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Security'/);
+    assert.match(merged, /test\.describe\('Local model \(m\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Security'/);
     assert.match(merged, /for the selected areas the template\n\/\/ generator left without tests: security, database/);
 });
 

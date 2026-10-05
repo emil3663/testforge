@@ -150,6 +150,9 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** TFP-145 (it changes the same Standard accessibility checks).
+- **Decided by Emil on 2026-10-05, while building it:**
+  - A suite written by OpenAI sits at the interactive gate, like the local model's. It is wrapped whole in one describe, skipped unless `TESTFORGE_INTERACTIVE=1`. Before this it ran in full with interactive off.
+  - In a Comprehensive security run, the local model's scenarios sit at the active gate, with its reason. They were already never run, since they may send input. In other areas they stay interactive (Decision 3).
 
 ### TFP-147 — Passive security checks in the Standard run, shared with Comprehensive
 

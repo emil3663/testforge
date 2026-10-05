@@ -122,6 +122,11 @@ export function ExecutionTable({
                                                     <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
                                                         {record.area}
                                                     </span>
+                                                    {record.gate ? (
+                                                        <span className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold text-zinc-700">
+                                                            Gate: {record.gate}
+                                                        </span>
+                                                    ) : null}
                                                 </div>
                                             </div>
 

@@ -78,7 +78,7 @@ test("TFP-135: with a local model, a Comprehensive request asks it for that area
     assert.equal(body.generatedBy, "template+ollama");
     assert.equal(body.model, CATALOG_ID);
     assert.ok(body.code.startsWith(templateOnly.code), "the template's suite is kept whole, first");
-    assert.match(body.code, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n {4}test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'written by the local model \(testforge-qwen7b:latest\): it may submit forms/);
+    assert.match(body.code, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n {4}test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'written by the local model \(testforge-qwen7b:latest\): it may submit forms/);
     assert.deepEqual(findTypeErrors(body.code), []);
     assert.equal(chatBodies.length, 1);
     const user = chatBodies[0].messages?.find((m) => m.role === "user")?.content ?? "";
@@ -86,12 +86,12 @@ test("TFP-135: with a local model, a Comprehensive request asks it for that area
     assert.deepEqual(body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`), ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "duplicate tests: kept", "merged suite type check: kept"]);
 });
 
-test("TFP-135: in a passive security run the model's scenarios are listed and never run - they may send input", async () => {
+test("TFP-135, TFP-146: in a passive security run the model's scenarios are at the active gate, so never run - they may send input", async () => {
     fakeOpenAi([CATALOG_ID], (_req, res) => json(res, 200, completion(SCENARIO)));
     useOllama();
     const body = await comprehensive("security");
     assert.equal(body.generatedBy, "template+ollama");
-    assert.match(body.code, /test\.skip\(true, 'written by the local model \(testforge-qwen7b:latest\): a passive security run sends no input and a model-written test may, so it is listed, not run'\);/);
+    assert.match(body.code, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'active' \} \}, \(\) => \{\n {4}test\.skip\(true, 'attack-shaped input: needs the ownership confirmation, not built yet'\);/);
 });
 
 test("TFP-135: a rejected model suite leaves the template's suite alone, labelled with why", async (t) => {

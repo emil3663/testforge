@@ -171,7 +171,7 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     const appended = body.code.slice(expectedTemplate.length);
     assert.match(
         appended,
-        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
+        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
     );
     assert.match(appended, /a saved note is still shown after a reload/);
     assert.doesNotMatch(appended, /import |```/, "the local import and fence are dropped");

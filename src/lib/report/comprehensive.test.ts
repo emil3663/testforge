@@ -50,7 +50,7 @@ test("the suite: one describe per covered page under the area's title, every tes
     assert.match(code, /test\.describe\('Security Coverage', \(\) => \{/);
     assert.deepEqual([...code.matchAll(/test\.describe\('Page ([^']|\\')*'/g)].length, 3);
     assert.deepEqual([...code.matchAll(/test\('(TFSC-\d{3}):/g)].map((m) => m[1]), Array.from({ length: 13 }, (_, i) => `TFSC-${String(i + 1).padStart(3, "0")}`), "3 pages x 4 passive checks, then the one missing-page probe");
-    assert.match(code, /\{ annotation: \[\{ type: 'page', description: '\/it\\'s' \}, \{ type: 'category', description: 'A02:2025 Security Misconfiguration' \}/);
+    assert.match(code, /\{ annotation: \[\{ type: 'page', description: '\/it\\'s' \}, \{ type: 'gate', description: 'read-only' \}, \{ type: 'category', description: 'A02:2025 Security Misconfiguration' \}/);
     assert.match(code, /\/\/ Not covered \(beyond the 3-page cap\): \/d/);
     assert.doesNotMatch(code, /fill\(|click\(|submit|onerror/, "the passive level sends no input");
 });

@@ -7,6 +7,7 @@ import { ACCESSIBILITY_HELPERS, accessibilityPageTests, AXE_IMPORT } from "./com
 import { escapeForSingleQuotedString } from "./mock/format";
 import { localModelSuiteTitle } from "./gap-fill";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { ACTIVE_GATE_SKIP, gateAnnotation, gateDetails, type TestGate } from "@/lib/run/test-gates";
 import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 
 // Phase 35 (TFP-132, Decisions 1, 2 and 7): the suite a Comprehensive run
@@ -29,15 +30,17 @@ export interface PageCheckContext {
     path: string;
     /** The path, escaped for a single-quoted string in generated code. */
     escapedPath: string;
-    /** `{ annotation: [...] }`: the page, plus a standard's tags when given. */
+    /** `{ annotation: [...] }`: the page and the read-only gate, plus a standard's tags when given. */
     details: (standard?: CheckStandard) => string;
 }
 
 type PageCheck = (context: PageCheckContext) => string[];
 
+// Phase 38 Decision 3: every passive check, the missing-page probe included,
+// is read-only (Decision 1 allows one probe per run).
 function detailsFor(escapedPage: string) {
     return (standard?: CheckStandard) =>
-        `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPage}' }${standard ? `, ${standardAnnotations(standard)}` : ""}] }`;
+        `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPage}' }, ${gateAnnotation("read-only")}${standard ? `, ${standardAnnotations(standard)}` : ""}] }`;
 }
 
 export const PAGE_CHECKS: Record<ComprehensiveArea, PageCheck[]> = {
@@ -71,10 +74,18 @@ const IMPORTS: Record<ComprehensiveArea, string> = {
  * a form or attack-shaped input is the active level, which needs Decision 8's
  * permission - so there they are listed and never run. In other areas they
  * may still submit forms, so they run only with interactive tests on.
+ *
+ * Phase 38 (TFP-146, decided by Emil 2026-10-05): in a security run they sit
+ * at the active gate, closed until the ownership confirmation exists, with
+ * that gate's reason; elsewhere at the interactive gate (Decision 3).
  */
+export function scenarioGate(mode: ComprehensiveRunMode): TestGate {
+    return mode.area === "security" ? "active" : "interactive";
+}
+
 export function scenarioSkip(mode: ComprehensiveRunMode, model: string): string {
-    return mode.area === "security"
-        ? `test.skip(true, '${escapeForSingleQuotedString(`written by the local model (${model}): a passive security run sends no input and a model-written test may, so it is listed, not run`)}');`
+    return scenarioGate(mode) === "active"
+        ? ACTIVE_GATE_SKIP
         : `test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(`written by the local model (${model}): it may submit forms on the live site, so it runs only when ${INTERACTIVE_ENV_VAR}=1 is set for the run`)}');`;
 }
 
@@ -94,7 +105,7 @@ export function mergeComprehensiveScenarios(suiteCode: string, localCode: string
 // Written by the local model (${model}): site-specific ${mode.area} scenarios,
 // shown in their own report section and kept outside the verdict (Phase 35
 // Decision 5).
-test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', () => {
+test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', ${gateDetails(scenarioGate(mode))}, () => {
     ${scenarioSkip(mode, model)}
 
     ${body}

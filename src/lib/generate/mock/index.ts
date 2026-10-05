@@ -7,6 +7,7 @@ import { buildJourneyTests, JOURNEY_HELPERS, JOURNEY_TESTS_NOTE } from "./journe
 import { escapeForSingleQuotedString, summarizeDescription, toSentenceCase } from "./format";
 import { buildGenericSuites } from "./generic-suites";
 import { SUITE_AREA_CODES } from "./suite";
+import { withDefaultGate } from "@/lib/run/test-gates";
 import type { BestPracticeArea, ContentProfile, ContentRules, GeneratedSuite, TestAuditMode } from "./types";
 
 export { BEST_PRACTICE_OPTIONS } from "./types";
@@ -53,7 +54,8 @@ function renderSuites(suites: GeneratedSuite[]) {
             lastIdByAreaCode.set(areaCode, firstId + suite.tests.length - 1);
             const numberedTests = suite.tests.map((testStr, index) => {
                 const id = `TF${areaCode}-${String(firstId + index).padStart(3, "0")}`;
-                return testStr.replace(/^(\s*test\(['"])/, (match) => `${match}${id}: `);
+                // Phase 38 Decision 3: a test that declares no gate is read-only.
+                return withDefaultGate(testStr.replace(/^(\s*test\(['"])/, (match) => `${match}${id}: `));
             });
 
             return `${notes}test.describe('${escapeForSingleQuotedString(

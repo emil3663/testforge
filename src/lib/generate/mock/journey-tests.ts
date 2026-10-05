@@ -1,5 +1,6 @@
 import { selectJourneys } from "@/lib/introspect/journeys";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { gateDetails } from "@/lib/run/test-gates";
 import { escapeForDoubleQuotedSelector, escapeForSingleQuotedString } from "./format";
 import type { CandidateJourney, ContentProfile, ContentRules, SiteGraphEdge } from "./types";
 
@@ -143,7 +144,7 @@ function journeyTest(journey: CandidateJourney) {
         `interactive journey test: submits forms on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`
     );
 
-    return `  test('${title}', async ({ page }) => {
+    return `  test('${title}', ${gateDetails("interactive")}, async ({ page }) => {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${skipReason}');
 
     const pageErrors: string[] = [];

@@ -105,12 +105,12 @@ test("in a real browser: a deliberately failing model test is shown as 'failed: 
     });
 });
 
-test("in a real browser: in a passive security run the model's test is listed as not run, with why, even with interactive tests on", { skip: needsChromium }, async () => {
+test("in a real browser: in a passive security run the model's test is at the active gate, listed as not run with why, even with interactive tests on (TFP-146)", { skip: needsChromium }, async () => {
     const mode = normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode;
     await withSite(async (origin) => {
         const merged = mergeComprehensiveScenarios(buildComprehensiveSuite(origin, mode, { covered: ["/"], notCovered: [], pageCap: 20 }), FAILING_SCENARIO, MODEL, mode);
         const report = buildReport(await runWithPlaywright(merged, { TESTFORGE_INTERACTIVE: "1" }), ["security"], "", origin, null, merged, { generatedBy: "template+ollama", model: MODEL, gates: [] }, "", mode, 1);
-        assert.deepEqual(report.comprehensive!.model.tests.map((t) => [t.outcome, t.detail]), [["not run", `written by the local model (${MODEL}): a passive security run sends no input and a model-written test may, so it is listed, not run`]]);
+        assert.deepEqual(report.comprehensive!.model.tests.map((t) => [t.outcome, t.detail]), [["not run", "attack-shaped input: needs the ownership confirmation, not built yet"]]);
         assert.equal(report.summary.notRun, 0, "and it is not counted as not run either");
     });
 });

@@ -1,4 +1,5 @@
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { gateDetails } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./format";
 import { discoverForms, fieldLocator, fieldName, submitButton } from "./forms";
 
@@ -74,7 +75,7 @@ function roundTripTest(form: PersistenceForm) {
         ? `await form.getByRole('button', { name: '${submitName}' }).first().click();`
         : `await form.evaluate((el) => (el as HTMLFormElement).requestSubmit());`;
 
-    return `  test('${title}', async ({ page }) => {
+    return `  test('${title}', ${gateDetails("interactive")}, async ({ page }) => {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(SKIP_REASON)}');
 
     // A value no earlier run can have saved, so finding it proves this run saved it.

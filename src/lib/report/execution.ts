@@ -1,6 +1,7 @@
 import { normalizeExecutionTitle, sanitizeDiagnosticText, simplifyExecutionTarget, classifyFailureReason } from "./text";
 import { createExecutionArtifacts } from "./artifacts";
 import { LOCAL_MODEL_SUITE_PREFIX } from "@/lib/generate/gap-fill";
+import { GATE_ANNOTATION, isTestGate } from "@/lib/run/test-gates";
 import type {
     ComprehensiveIssueRecord,
     ExecutionRecord,
@@ -309,6 +310,12 @@ function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "cate
     return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(asvs.length > 0 ? { asvs } : {}), ...(issues.length > 0 ? { issues } : {}) };
 }
 
+// Phase 38 Decision 1: the gate a test declared, on itself or on its describe.
+function gateOf(test: JsonTest): Pick<ExecutionRecord, "gate"> {
+    const [gate] = annotationValues(test, GATE_ANNOTATION);
+    return isTestGate(gate) ? { gate } : {};
+}
+
 function withGenerator(remark: string, localModel: string | null) {
     return localModel ? `${remark} Written by the local model (${localModel}).` : remark;
 }
@@ -373,6 +380,7 @@ export function flattenSuites(
                     findings: findingsOf(test),
                     generator: localModel ? "local model" : "template",
                     ...(status === "Not run" && skipReason ? { skipReason } : {}),
+                    ...gateOf(test),
                     ...comprehensiveTags(test),
                     rawMessage: message,
                     reproductionSteps: buildExecutionSteps(

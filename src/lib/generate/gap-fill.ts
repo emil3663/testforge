@@ -1,4 +1,5 @@
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { gateDetails } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { SUITE_TITLES } from "./mock/suite";
 import type { BestPracticeArea } from "./mock/types";
@@ -41,6 +42,48 @@ export function gapFillSkipReason(model: string) {
     return `gap-fill test written by the local model (${model}): it may submit forms on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`;
 }
 
+/**
+ * Phase 38 (TFP-146, decided by Emil 2026-10-05): a suite written by OpenAI
+ * sits at the interactive gate, like the local model's. It used to run in
+ * full with interactive tests off, and nothing in it is checked for a submit.
+ */
+export function openAiSkipReason(model: string) {
+    return `test written by OpenAI (${model}): it may submit forms on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`;
+}
+
+const IMPORT_START = /^import\b/;
+const IMPORT_END = /(from\s+['"][^'"]+['"]|^import\s+['"][^'"]+['"])\s*;?\s*$/;
+
+/**
+ * Wraps an OpenAI-written suite in one describe at the interactive gate,
+ * skipped unless interactive tests are on. Top-level imports (one or several
+ * lines each) stay at the top, since a describe cannot hold them; the rest
+ * is indented into the describe unchanged.
+ */
+export function gateOpenAiSuite(code: string, model: string) {
+    const imports: string[] = [];
+    const body: string[] = [];
+    let inImport = false;
+    for (const line of code.split("\n")) {
+        if (inImport || IMPORT_START.test(line)) {
+            imports.push(line);
+            inImport = !IMPORT_END.test(line);
+        } else {
+            body.push(line.trim() === "" ? "" : `    ${line}`);
+        }
+    }
+    return `${imports.join("\n")}
+
+// Written by OpenAI (${model}). Phase 38 (TFP-146): at the interactive gate,
+// like the local model's tests.
+test.describe('${escapeForSingleQuotedString(`OpenAI (${model})`)}', ${gateDetails("interactive")}, () => {
+    test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(openAiSkipReason(model))}');
+
+${body.join("\n").replace(/^\n+|\n+$/g, "")}
+});
+`;
+}
+
 export function localModelSuiteTitle(model: string) {
     return `${LOCAL_MODEL_SUITE_PREFIX}${model})`;
 }
@@ -74,7 +117,7 @@ export function mergeLocalSuite(templateCode: string, localCode: string, model: 
 
 // Written by the local model (${model}) for the selected areas the template
 // generator left without tests: ${gapAreas.join(", ")}. Phase 34, Option B.
-test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', () => {
+test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', ${gateDetails("interactive")}, () => {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(gapFillSkipReason(model))}');
 
 ${inner}

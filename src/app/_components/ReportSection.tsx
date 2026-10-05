@@ -16,7 +16,7 @@ import { UsabilityTab } from "@/app/_components/UsabilityTab";
 import { toSentenceCase } from "@/app/_lib/format";
 import type { ExecutionRecord, ExecutionStatus, RunReport, SeoPageGroup, SeoRecommendation } from "@/lib/report/types";
 import type { ReportTab, RunResult } from "@/app/_lib/types";
-import { noTestRan } from "@/lib/report/summary";
+import { formatNotRunByGate, noTestRan } from "@/lib/report/summary";
 
 interface ReportSectionProps {
     result: RunResult;
@@ -159,6 +159,9 @@ export function ReportSection({
                                     </div>
                                     {report.summary.notRunNote ? (
                                         <p className="mt-2 text-sm text-zinc-600">{report.summary.notRunNote}</p>
+                                    ) : null}
+                                    {formatNotRunByGate(report.summary) ? (
+                                        <p className="mt-1 text-sm text-zinc-600">{formatNotRunByGate(report.summary)}</p>
                                     ) : null}
 
                                     <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
