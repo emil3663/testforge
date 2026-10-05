@@ -89,6 +89,8 @@ test("in a real browser, interactive unset: the Standard run sends only GETs; in
 
     assert.ok(requests.length > 0);
     assert.deepEqual(requests.filter((request) => request.method !== "GET" || request.bodyBytes > 0), [], "nothing but GET requests, none with a body");
+    // Phase 38 Acceptance Criteria 2 (TFP-147): one missing-page probe per Standard run, every area included.
+    assert.equal(requests.filter((request) => request.path.startsWith("/testforge-missing-")).length, 1, "exactly one missing-page probe");
     assert.deepEqual(records.filter((record) => !record.gate).map((record) => record.title), [], "every test declares a gate");
 
     const interactive = records.filter((record) => record.gate === "interactive");
@@ -114,6 +116,7 @@ test("in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and subm
     assert.deepEqual(interactive.filter((record) => INTERACTIVE_REASON.test(record.skipReason ?? "")).map((record) => record.title), [], "no interactive test is held back by its gate");
     assert.ok(interactive.filter((record) => record.status === "Passed").length > 0, show(interactive));
     assert.ok(requests.some((request) => request.method === "POST"), "the interactive tests submitted forms");
+    assert.equal(requests.filter((request) => request.path.startsWith("/testforge-missing-")).length, 1, "exactly one missing-page probe");
 
     const active = records.filter((record) => record.gate === "active");
     assert.deepEqual(active.map((record) => [record.status, record.skipReason]), [["Not run", ACTIVE_GATE_REASON]], show(active));

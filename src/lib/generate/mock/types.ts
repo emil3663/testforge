@@ -86,6 +86,8 @@ export interface GeneratedSuite {
      * area is not a gap, so the local model is never asked to fill it.
      */
     notApplicable?: string;
+    /** Code the suite's tests share, written at the top of its describe (e.g. the passive security helpers). */
+    preamble?: string;
 }
 
 export interface ContentRules {

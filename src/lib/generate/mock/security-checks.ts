@@ -1,6 +1,8 @@
 import { ACTIVE_GATE_SKIP, gateDetails } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./format";
-import { SESSION_COOKIE_NAME } from "./cookie-session-checks";
+import { MAX_INSPECTION_PATHS } from "@/lib/introspect/paths";
+import { checkDetails, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "../comprehensive-security";
+import { PASSIVE_SECURITY_HELPERS } from "../comprehensive-security-helpers";
 import { discoverForms, fieldLocator, fieldName, submitButton, type DiscoveredForm } from "./forms";
 import type { ActionableElementDetail, ContentProfile } from "./types";
 
@@ -75,52 +77,6 @@ function httpsTest() {
   });`;
 }
 
-function securityHeadersTest() {
-    return `  test('landing page security headers (recorded as findings)', async ({ page }) => {
-    const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
-    expect(response, 'no response for /').not.toBeNull();
-    const headers = await response!.allHeaders();
-    const csp = headers['content-security-policy'] ?? '';
-    const findings: string[] = [];
-    if (!csp) findings.push('no Content-Security-Policy header: nothing limits what an injected script could do');
-    if ((headers['x-content-type-options'] ?? '').toLowerCase() !== 'nosniff') findings.push('X-Content-Type-Options is not "nosniff": browsers may guess content types');
-    if (!headers['x-frame-options'] && !/frame-ancestors/i.test(csp)) findings.push('no X-Frame-Options or CSP frame-ancestors: the page can be framed by another site (clickjacking)');
-    // Hardening gaps, not defects: recorded without failing the test.
-    for (const description of findings) test.info().annotations.push({ type: 'finding', description });
-  });`;
-}
-
-// TFP-144: in scope are the site's own cookies named like a session - the
-// rule the Comprehensive passive-security check and the cookie/session check
-// use (SESSION_COOKIE_NAME). Flagging every cookie made the two runs disagree
-// on the same site: on rizonetech.com this check named 6 cookies, passive
-// security none. All 6 were analytics or consent cookies (_clck, _fbp,
-// FCCDCF, ...) whose own scripts must read them, so HttpOnly is not theirs to
-// have.
-function cookieFlagsTest() {
-    return `  test('session cookies set by the site carry protective flags (recorded as findings)', async ({ page, context }) => {
-    await page.goto('/', { waitUntil: 'load' });
-    const url = new URL(page.url());
-    const isHttps = url.protocol === 'https:';
-    const sessionName = ${SESSION_COOKIE_NAME.toString()};
-    const own = (await context.cookies()).filter((cookie) => {
-      const domain = cookie.domain.replace(/^\\./, '');
-      return url.hostname === domain || url.hostname.endsWith('.' + domain);
-    });
-    const sessionCookies = own.filter((cookie) => sessionName.test(cookie.name));
-    test.skip(sessionCookies.length === 0, 'no session cookie on the landing page (' + own.length + ' cookie(s) set by the site, none named like a session), so there is nothing to check');
-    for (const cookie of sessionCookies) {
-      const missing: string[] = [];
-      if (!cookie.httpOnly) missing.push('HttpOnly (scripts can read it)');
-      if (isHttps && !cookie.secure) missing.push('Secure (it can be sent over plain HTTP)');
-      if (cookie.sameSite === 'None') missing.push('a restrictive SameSite (it is sent on cross-site requests)');
-      if (missing.length > 0) {
-        test.info().annotations.push({ type: 'finding', description: 'session cookie "' + cookie.name + '" has no ' + missing.join(', no ') });
-      }
-    }
-  });`;
-}
-
 function payloadTest(form: PayloadForm) {
     const path = escapeForSingleQuotedString(form.path);
     const names = form.fields.map((field) => escapeForSingleQuotedString(fieldName(field)));
@@ -175,19 +131,42 @@ ${fill}
   });`;
 }
 
-/** Decision 3's security suite: tests plus the notes that explain them. */
-export function buildSecurityChecks(baseUrl: string, contentProfile: ContentProfile | null): { tests: string[]; notes: string[] } {
+/**
+ * Phase 38 (TFP-147, Decision 4): the pages the passive checks cover - every
+ * inspected page, up to MAX_INSPECTION_PATHS, in inspection order; "/"
+ * without page data.
+ */
+export function passiveCheckPaths(contentProfile: ContentProfile | null): string[] {
+    const paths = [...new Set((contentProfile?.pages ?? []).map((page) => page.path))].slice(0, MAX_INSPECTION_PATHS);
+    return paths.length > 0 ? paths : ["/"];
+}
+
+/**
+ * Decision 3's security suite: tests, the notes that explain them, and the
+ * helpers the passive checks call (written at the top of the suite).
+ *
+ * Phase 38 (TFP-147, Decision 4): Standard's own landing-page header test
+ * and session-cookie test are replaced by Comprehensive's passive checks,
+ * through the same builders, on every inspected page, plus the run's one
+ * missing-page probe - so the two runs cannot disagree about the same page
+ * (as they did on rizonetech.com, TFP-144).
+ */
+export function buildSecurityChecks(baseUrl: string, contentProfile: ContentProfile | null): { tests: string[]; notes: string[]; preamble: string } {
     const isHttps = new URL(baseUrl).protocol === "https:";
     const forms = findPayloadForms(contentProfile);
-    const tests = [...(isHttps ? [httpsTest()] : []), securityHeadersTest(), cookieFlagsTest(), ...forms.map(payloadTest)];
+    const passive = passiveCheckPaths(contentProfile).flatMap((path) => {
+        const escapedPath = escapeForSingleQuotedString(path);
+        return passiveSecurityPageTests({ escapedPath, details: checkDetails(escapedPath) });
+    });
+    const tests = [...(isHttps ? [httpsTest()] : []), ...passive, ...passiveSecurityRunTests(checkDetails(PROBE_PAGE)), ...forms.map(payloadTest)];
     const notes = [
         ...(isHttps ? [] : ["This target is not HTTPS by default, so deeper transport-security validation should be handled outside this browser suite."]),
-        "Security: missing headers and cookie flags are recorded as findings in the run report and do not fail a test; an executed script payload does.",
+        "Security: the passive checks are the Comprehensive run's own, on every inspected page, plus one request to a page that cannot exist. Missing or weak headers, cookie flags and software versions are findings and do not fail a test; a password exposed to plain HTTP or in a URL, an error page showing a stack trace or a server path, and an executed script payload do.",
         forms.length > 0
             ? "Security: the script-payload tests send attack-shaped input, so they are not run until the site's ownership confirmation exists (not built yet)."
             : contentProfile
               ? "Security: no form with a text field was found on the inspected pages, so no script-payload test was generated."
               : "Security: no page inspection data, so no form was found for a script-payload test. Run introspection first.",
     ];
-    return { tests, notes };
+    return { tests, notes, preamble: PASSIVE_SECURITY_HELPERS };
 }

@@ -1,5 +1,6 @@
 import { MAX_SESSION_COOKIE_DAYS, SESSION_COOKIE_NAME } from "./mock/cookie-session-checks";
-import { PASSIVE_CHECK_STANDARDS, type CheckStandard } from "@/lib/comprehensive/standards";
+import { PASSIVE_CHECK_STANDARDS, standardAnnotations, type CheckStandard } from "@/lib/comprehensive/standards";
+import { gateAnnotation } from "@/lib/run/test-gates";
 
 // Phase 35 (TFP-133, Decision 3): Comprehensive security at the passive
 // level. Every check only loads pages and reads what comes back - the
@@ -20,6 +21,20 @@ import { PASSIVE_CHECK_STANDARDS, type CheckStandard } from "@/lib/comprehensive
 
 /** The page a missing-page probe reports under, in the per-page table. */
 export const PROBE_PAGE = "(missing-page probe)";
+
+/** Static annotation type naming the page a check belongs to. */
+export const PAGE_ANNOTATION = "page";
+
+/**
+ * A check's details: its page, the read-only gate (Phase 38 Decision 3: the
+ * missing-page probe included, which Decision 1 allows once per run), and a
+ * standard's tags when given. Phase 38 (TFP-147, Decision 4): the Standard
+ * and Comprehensive runs tag their shared checks the same way.
+ */
+export function checkDetails(escapedPage: string) {
+    return (standard?: CheckStandard) =>
+        `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPage}' }, ${gateAnnotation("read-only")}${standard ? `, ${standardAnnotations(standard)}` : ""}] }`;
+}
 
 export interface SecurityCheckPage {
     escapedPath: string;

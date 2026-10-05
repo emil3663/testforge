@@ -60,15 +60,24 @@ function titles(code: string) {
     return (code.match(/test\('TFSC-\d+: [^']+'/g) ?? []).map((t) => t.replace(/^test\('TFSC-\d+: /, "").replace(/'$/, ""));
 }
 
-test("security suite on an http:// target: header and cookie checks plus a payload test per form with a free-text field, not just a note", () => {
+// Phase 38 (TFP-147): the passive checks shared with Comprehensive, on every
+// inspected page, then the run's one missing-page probe.
+const PASSIVE = (path: string) => [
+    `${path} sends its security headers and session cookies`,
+    `${path} names no software version in its response headers`,
+    `${path} keeps passwords off plain HTTP`,
+    `${path} puts no password or session token in a URL`,
+];
+const PROBE = "a page that cannot exist shows no stack trace or server file path";
+
+test("security suite on an http:// target: the shared passive checks on every inspected page, one missing-page probe, and a payload test per form with a free-text field", () => {
     const code = generate("http://127.0.0.1:4410", FIXTURE);
     // The sign-in form has only email and password fields: no free-text field
     // can carry the payload validly, so it gets no payload test.
-    assert.deepEqual(titles(code), [
-        "landing page security headers (recorded as findings)",
-        "session cookies set by the site carry protective flags (recorded as findings)",
-        "script-shaped input is not executed: Note on /notes",
-    ]);
+    assert.deepEqual(titles(code), [...PASSIVE("/login"), ...PASSIVE("/notes"), PROBE, "script-shaped input is not executed: Note on /notes"]);
+    assert.doesNotMatch(code, /landing page security headers|session cookies set by the site carry protective flags/, "Standard's own two checks are gone (Decision 4)");
+    assert.equal((code.match(/function tfNotAPage\(/g) ?? []).length, 1, "the passive helpers, once, at the top of the suite");
+    assert.deepEqual(titles(generate("http://127.0.0.1:4410", null)), [...PASSIVE("/"), PROBE], "without page data: / only");
     assert.match(code, /\/\/ This target is not HTTPS by default/);
     assert.doesNotMatch(code, /toBe\('https:'\)/, "never assert https on an http target");
 });
@@ -87,15 +96,17 @@ test("security suite: the generated code compiles and awaits every web-first ass
     }
 });
 
-test("security suite: missing headers and cookie flags are findings, never failures", () => {
+test("security suite: missing headers, cookie flags and software versions are findings, never failures", () => {
     const code = generate("http://127.0.0.1:4410", FIXTURE);
-    for (const name of ["landing page security headers", "cookies set by the site carry protective flags"]) {
-        const start = code.indexOf(name);
-        const body = code.slice(start, code.indexOf("\n  });", start));
-        assert.match(body, /annotations\.push\(\{ type: 'finding'/);
-        // The only assertion allowed is that the page answered at all.
-        const assertions = body.match(/expect\([^)]*\)/g) ?? [];
-        assert.ok(assertions.every((a) => a === "expect(response, 'no response for /')"), `${name} must not fail on a finding: ${assertions.join(", ")}`);
+    for (const path of ["/login", "/notes"]) {
+        for (const name of [`${path} sends its security headers and session cookies`, `${path} names no software version in its response headers`]) {
+            const start = code.indexOf(name);
+            const body = code.slice(start, code.indexOf("\n    });", start));
+            assert.match(body, /annotations\.push\(\{ type: 'finding'/);
+            // The only assertion allowed is that the page answered at all.
+            const assertions = body.match(/expect\([^)]*\)/g) ?? [];
+            assert.ok(assertions.every((a) => a === `expect(response, 'no response for ${path}')`), `${name} must not fail on a finding: ${assertions.join(", ")}`);
+        }
     }
 });
 

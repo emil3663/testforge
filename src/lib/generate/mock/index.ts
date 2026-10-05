@@ -58,9 +58,10 @@ function renderSuites(suites: GeneratedSuite[]) {
                 return withDefaultGate(testStr.replace(/^(\s*test\(['"])/, (match) => `${match}${id}: `));
             });
 
+            const preamble = suite.preamble ? `${suite.preamble.trimEnd()}\n\n` : "";
             return `${notes}test.describe('${escapeForSingleQuotedString(
                 suite.title
-            )}', () => {\n${numberedTests.join("\n\n")}\n});`;
+            )}', () => {\n${preamble}${numberedTests.join("\n\n")}\n});`;
         })
         .join("\n\n");
 }

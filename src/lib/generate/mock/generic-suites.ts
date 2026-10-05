@@ -173,11 +173,11 @@ ${elementChecks}
     if (areas.includes("security") && !coveredAreas.includes("security")) {
         // TFP-116: HTTPS (https targets only), header and cookie-flag
         // findings, and a script-payload check per discovered form.
-        const { tests, notes } = buildSecurityChecks(baseUrl, contentProfile);
+        const { tests, notes, preamble } = buildSecurityChecks(baseUrl, contentProfile);
         const suite = createSuite("security", tests, notes);
 
         if (suite) {
-            suites.push(suite);
+            suites.push({ ...suite, preamble });
         }
     }
 

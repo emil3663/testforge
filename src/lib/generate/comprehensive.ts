@@ -1,13 +1,13 @@
 import type { ComprehensivePageScope } from "@/lib/comprehensive/pages";
 import { comprehensiveLabel, type ComprehensiveArea, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
-import { standardAnnotations, type CheckStandard } from "@/lib/comprehensive/standards";
+import type { CheckStandard } from "@/lib/comprehensive/standards";
 import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
-import { passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
+import { checkDetails, PAGE_ANNOTATION, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { ACCESSIBILITY_HELPERS, accessibilityPageTests, AXE_IMPORT } from "./comprehensive-accessibility";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { localModelSuiteTitle } from "./gap-fill";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
-import { ACTIVE_GATE_SKIP, gateAnnotation, gateDetails, type TestGate } from "@/lib/run/test-gates";
+import { ACTIVE_GATE_SKIP, gateDetails, type TestGate } from "@/lib/run/test-gates";
 import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 
 // Phase 35 (TFP-132, Decisions 1, 2 and 7): the suite a Comprehensive run
@@ -23,8 +23,7 @@ import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
 // (TFP-133, added at Gate A): the one-worker rule of Decision 2 must not
 // depend on the caller sending runMode, or on the host the request named.
 
-/** Static annotation type naming the page a Comprehensive test belongs to. */
-export const PAGE_ANNOTATION = "page";
+export { PAGE_ANNOTATION };
 
 export interface PageCheckContext {
     path: string;
@@ -36,12 +35,7 @@ export interface PageCheckContext {
 
 type PageCheck = (context: PageCheckContext) => string[];
 
-// Phase 38 Decision 3: every passive check, the missing-page probe included,
-// is read-only (Decision 1 allows one probe per run).
-function detailsFor(escapedPage: string) {
-    return (standard?: CheckStandard) =>
-        `{ annotation: [{ type: '${PAGE_ANNOTATION}', description: '${escapedPage}' }, ${gateAnnotation("read-only")}${standard ? `, ${standardAnnotations(standard)}` : ""}] }`;
-}
+const detailsFor = checkDetails;
 
 export const PAGE_CHECKS: Record<ComprehensiveArea, PageCheck[]> = {
     // TFP-133: the passive checks; "the page responds" is the first of them.

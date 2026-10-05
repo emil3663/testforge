@@ -6,6 +6,12 @@
  * security only those named like a session. Both now take the session-named
  * ones (SESSION_COOKIE_NAME).
  *
+ * Phase 38 (TFP-147, Decision 4): Standard no longer has a cookie check of
+ * its own. Its security suite runs the passive check itself, built by the
+ * same function, so the two cannot drift apart again. These tests now pin
+ * that: the Standard check is the passive one, and still flags only the
+ * session cookie.
+ *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/cookie-scope.test.ts
  */
@@ -19,21 +25,25 @@ import { test } from "node:test";
 import type { JsonReport } from "../../report/types.ts";
 
 const { buildSecurityChecks } = await import("./security-checks.ts");
-const { passiveSecurityPageTests } = await import("../comprehensive-security.ts");
+const { checkDetails, passiveSecurityPageTests } = await import("../comprehensive-security.ts");
 const { PASSIVE_SECURITY_HELPERS } = await import("../comprehensive-security-helpers.ts");
 const { findTypeErrors } = await import("../validate.ts");
 const { flattenSuites } = await import("../../report/execution.ts");
 const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
 const needsChromium = await chromiumSkipReason();
 
+const COOKIE_CHECK = "sends its security headers and session cookies";
+
+/** The Standard security suite's cookie check for /, with the helpers the suite writes above it. */
 function standardCookieTest() {
-    const found = buildSecurityChecks("http://127.0.0.1:1", null).tests.filter((t) => t.includes("cookies set by the site carry protective flags"));
+    const { tests, preamble } = buildSecurityChecks("http://127.0.0.1:1", null);
+    const found = tests.filter((t) => t.includes(COOKIE_CHECK));
     assert.equal(found.length, 1);
-    return found[0];
+    return `${preamble}\n${found[0]}`;
 }
 
 function passiveCookieTest(path: string) {
-    const found = passiveSecurityPageTests({ escapedPath: path, details: () => "{ annotation: [] }" }).filter((t) => t.includes("sends its security headers and session cookies"));
+    const found = passiveSecurityPageTests({ escapedPath: path, details: () => "{ annotation: [] }" }).filter((t) => t.includes(COOKIE_CHECK));
     assert.equal(found.length, 1);
     return `${PASSIVE_SECURITY_HELPERS}\n${found[0]}`;
 }
@@ -43,10 +53,11 @@ function flaggedCookies(findings: string[]) {
     return findings.filter((f) => /HttpOnly|Secure/.test(f)).map((f) => (/cookie "([^"]+)"/.exec(f) ?? [])[1]).sort();
 }
 
-test("the Standard cookie check type-checks and takes the passive check's session-cookie rule", () => {
-    const code = standardCookieTest();
-    assert.deepEqual(findTypeErrors(`import { test, expect } from '@playwright/test';\n${code}\n`), []);
-    assert.match(code, /sessionCookies = own\.filter\(\(cookie\) => sessionName\.test\(cookie\.name\)\)/);
+test("the Standard cookie check is the passive check, built by the same function, and type-checks (TFP-147)", () => {
+    const standard = buildSecurityChecks("http://127.0.0.1:1", null).tests.filter((t) => t.includes(COOKIE_CHECK));
+    const passive = passiveSecurityPageTests({ escapedPath: "/", details: checkDetails("/") }).filter((t) => t.includes(COOKIE_CHECK));
+    assert.deepEqual(standard, passive);
+    assert.deepEqual(findTypeErrors(`import { test, expect } from '@playwright/test';\n${standardCookieTest()}\n`), []);
 });
 
 /** Runs one generated test through the Playwright CLI, returning its outcome, message and findings. */
@@ -96,16 +107,19 @@ test("in a real browser: on a page with a session cookie and two that are not, n
     }
 });
 
-test("in a real browser: with no session-named cookie the Standard check is Not run with its reason, not passed having checked nothing", { skip: needsChromium }, async () => {
+// TFP-147 changed this outcome. Standard's own check was Not run here ("no
+// session cookie on the landing page"); the shared check also reads the
+// page's headers, so it runs, records the header findings, and names no cookie.
+test("in a real browser: with no session-named cookie the Standard check names no cookie, and records the header findings", { skip: needsChromium }, async () => {
     const server = createServer((_req, res) => {
         res.writeHead(200, { "content-type": "text/html", "set-cookie": ["_ga=GA1.1.1234567890; Path=/"] }).end("<!doctype html><title>t</title><p>Home</p>");
     });
     await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
     try {
         const result = await runGenerated(standardCookieTest(), `http://127.0.0.1:${(server.address() as AddressInfo).port}`);
-        assert.equal(result.status, "Not run");
-        assert.match(result.message, /no session cookie on the landing page \(1 cookie\(s\) set by the site, none named like a session\)/);
-        assert.deepEqual(result.findings, []);
+        assert.equal(result.status, "Passed", result.message);
+        assert.deepEqual(flaggedCookies(result.findings), []);
+        assert.ok(result.findings.some((finding) => finding === "no Content-Security-Policy header on /"), JSON.stringify(result.findings));
     } finally {
         server.closeAllConnections();
         await new Promise<void>((resolve) => server.close(() => resolve()));

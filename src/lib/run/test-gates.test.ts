@@ -82,7 +82,11 @@ test("the template: on the 166 fixed inputs every test declares exactly one gate
     assert.equal(inputsWithTests, 154);
     // Read-only everywhere but the database round trip (interactive) and the
     // script payload (active), each on the two page-data inputs that have them.
-    assert.deepEqual(totals, { "read-only": 860, interactive: 2, active: 2 });
+    // TFP-147: 860 before; the security suite's 2 own checks became the 4
+    // shared passive checks per inspected page plus the probe: +3 on each of
+    // the 12 security inputs without page data (/ only), +11 on each of the 2
+    // with it (3 pages), 860 + 36 + 22 = 918.
+    assert.deepEqual(totals, { "read-only": 918, interactive: 2, active: 2 });
 });
 
 test("the template with every journey selected: journeys are interactive, with the interactive skip", () => {
