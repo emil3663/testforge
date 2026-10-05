@@ -1,0 +1,78 @@
+model block: no; commit b9ca79b
+interactive=unset; run took 68 s; 93 tests
+statuses {"Passed":70,"Failed":9,"Not run":14}
+gates {"read-only":81,"interactive":11,"active":1} notRunByGate {"read-only":0,"interactive":11,"active":1}
+methods {"GET":151}
+   Failed TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFRL-002: dependency failure injection: 127.0.0.1:54108 [form-action] | Error: page.goto: net::ERR_FAILED at http://127.0.0.1:54108/login Call log: - navigating to "http://127.0.0.1:54108/login", waiting until "domcontentloaded"
+   Failed TFSE-005: keeps canonical metadata stable for / | Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout:
+   Failed TFSE-010: keeps canonical metadata stable for /login | Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-015: keeps canonical metadata stable for /notes | Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-017: publishes robots.txt with a sitemap reference | Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+   Failed TFSE-018: publishes sitemap.xml with at least one URL | Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+model block: no; commit b9ca79b
+interactive=1; run took 71 s; 93 tests
+statuses {"Passed":81,"Failed":9,"Not run":3}
+gates {"read-only":81,"interactive":11,"active":1} notRunByGate {"read-only":0,"interactive":0,"active":1}
+methods {"GET":192,"POST":11}
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 34
+   Failed TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFRL-002: dependency failure injection: 127.0.0.1:59994 [form-action] | Error: page.goto: net::ERR_FAILED at http://127.0.0.1:59994/login Call log: - navigating to "http://127.0.0.1:59994/login", waiting until "domcontentloaded"
+   Failed TFSE-005: keeps canonical metadata stable for / | Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout:
+   Failed TFSE-010: keeps canonical metadata stable for /login | Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-015: keeps canonical metadata stable for /notes | Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-017: publishes robots.txt with a sitemap reference | Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+   Failed TFSE-018: publishes sitemap.xml with at least one URL | Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+model block: yes; commit b9ca79b
+interactive=unset; run took 69 s; 94 tests
+statuses {"Passed":70,"Failed":9,"Not run":15}
+gates {"read-only":81,"interactive":12,"active":1} notRunByGate {"read-only":0,"interactive":12,"active":1}
+methods {"GET":151}
+   Failed TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFRL-002: dependency failure injection: 127.0.0.1:51678 [form-action] | Error: page.goto: net::ERR_FAILED at http://127.0.0.1:51678/login Call log: - navigating to "http://127.0.0.1:51678/login", waiting until "domcontentloaded"
+   Failed TFSE-005: keeps canonical metadata stable for / | Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout:
+   Failed TFSE-010: keeps canonical metadata stable for /login | Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-015: keeps canonical metadata stable for /notes | Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-017: publishes robots.txt with a sitemap reference | Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+   Failed TFSE-018: publishes sitemap.xml with at least one URL | Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+model block: yes; commit b9ca79b
+interactive=1; run took 71 s; 94 tests
+statuses {"Passed":82,"Failed":9,"Not run":3}
+gates {"read-only":81,"interactive":12,"active":1} notRunByGate {"read-only":0,"interactive":0,"active":1}
+methods {"GET":193,"POST":11}
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 21
+  NON-GET POST /login 57
+  NON-GET POST /notes 34
+   Failed TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+   Failed TFRL-002: dependency failure injection: 127.0.0.1:53160 [form-action] | Error: page.goto: net::ERR_FAILED at http://127.0.0.1:53160/login Call log: - navigating to "http://127.0.0.1:53160/login", waiting until "domcontentloaded"
+   Failed TFSE-005: keeps canonical metadata stable for / | Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout:
+   Failed TFSE-010: keeps canonical metadata stable for /login | Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-015: keeps canonical metadata stable for /notes | Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Tim
+   Failed TFSE-017: publishes robots.txt with a sitemap reference | Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+   Failed TFSE-018: publishes sitemap.xml with at least one URL | Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404

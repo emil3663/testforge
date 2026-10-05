@@ -183,6 +183,28 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
     it lists no tests one by one; Acceptance Criteria 1 is about the
     Standard run, and the records carry the gate. Suites a user edits and
     saves aren't gated: they are the user's code.
+- **Verification (2026-10-05, Cowork), `b9ca79b`: Gate A passed, with one
+  docs correction before the push.**
+  - **Re-measured here.** `check:template-unchanged 245ea6f b9ca79b` gives
+    166 of 166 identical. tsc is clean. `test-gates.test.ts` and
+    `jobs.test.ts` give 18 passed and none failed.
+  - **Read in the code:** the count uses the run's own interactive setting
+    (`closedGates`: active always, interactive unless the run turned it on).
+    The OpenAI suite is active when `getBestPracticeAreas` includes
+    security. Its defaults don't, so security comes only from a selection or
+    a keyword such as "xss" or "invalid input". Counting keyword-triggered
+    areas too is accepted, because the description reaches the model either
+    way.
+  - **Measured by Code on Emil's machine:** the real-browser test asserts
+    read-only 0, interactive 12, active 1 with interactive unset, and
+    active 1 alone with it on. The unit suite gives 436/436.
+  - **Docs correction before the push:** RUN-25 contradicts itself. It says
+    "all 12 interactive tests", and the real-browser test asserts 12, but
+    its Measured line gives 93 tests, 14 not run and "interactive 11". The
+    commit message for `245ea6f` says the same, while its test also
+    asserted 12. RUN-25 must name the run each set of numbers came from,
+    and the two must agree or the difference must be explained (for
+    example, a run without the local-model block).
 - **Decided by Emil on 2026-10-05, while building it:**
   - A suite written by OpenAI sits at the interactive gate, like the local model's. It is wrapped whole in one describe, skipped unless `TESTFORGE_INTERACTIVE=1`. Before this it ran in full with interactive off.
   - In a Comprehensive security run, the local model's scenarios sit at the active gate, with its reason. They were already never run, since they may send input. In other areas they stay interactive (Decision 3).
@@ -248,6 +270,8 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
 ## Suggested Milestone Gates
 
 ### Gate A — Gates in place
+- **Passed 2026-10-05** (Cowork, `245ea6f` and `b9ca79b`), with RUN-25's
+  numbers corrected before the push. See TFP-146's verification entries.
 - TFP-146 landed and independently verified.
 - Outputs differ only by the annotations and the payload test's gate.
 - A Standard run without interactive sends nothing but GET requests.

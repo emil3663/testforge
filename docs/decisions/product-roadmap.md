@@ -264,7 +264,7 @@ identical bodies under different titles (GEN-32). The fix is measured by the
 same hand-read check before Phase 35 relies on the model. See
 `phase-37-gap-fill-prompt-and-model-gates-decision-record.md`.
 
-### Phase 38 — Standard run: three gates, shared conformance checks, performance bands (locked 2026-10-05, not started)
+### Phase 38 — Standard run: three gates, shared conformance checks, performance bands (locked 2026-10-05; Gate A passed 2026-10-05)
 The coverage proposal measured the Standard run against the published standards and found it broad but shallow. This phase makes three changes.
 
 - **Three gates:** read-only, interactive, and active (behind the typed ownership confirmation).

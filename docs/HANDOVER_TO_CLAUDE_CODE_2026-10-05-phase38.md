@@ -42,8 +42,10 @@ starts, so a session opened before then doesn't use it.
      committed).
 
    Then push `afe38a1`, `0504f92`, `4d35b28` and this commit.
-3. **TFP-146:** committed as `245ea6f`. Make the two fixes in its
-   verification entry in the Phase 38 record, then stop at Gate A again.
+3. **TFP-146:** `245ea6f` and `b9ca79b`. Gate A passed on 2026-10-05.
+   Before pushing, correct RUN-25's numbers as the `b9ca79b` verification
+   entry in the Phase 38 record says, in one `docs` commit with these doc
+   updates. Then push.
 4. **TFP-152:** the image-link false pass. Its approach is decided and
    recorded in the ticket: follow HTML-AAM 4.1.10.
 5. **TFP-147, TFP-148, TFP-149** in any order (TFP-148 after TFP-152). Then
