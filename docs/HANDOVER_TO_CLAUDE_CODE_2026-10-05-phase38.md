@@ -42,10 +42,10 @@ starts, so a session opened before then doesn't use it.
      committed).
 
    Then push `afe38a1`, `0504f92`, `4d35b28` and this commit.
-3. **TFP-146:** the three gates. Stop at Gate A for independent
-   verification.
-4. **TFP-152:** the image-link false pass. Its approach needs Emil's
-   confirmation first. Ask if it isn't recorded in the ticket by then.
+3. **TFP-146:** committed as `245ea6f`. Make the two fixes in its
+   verification entry in the Phase 38 record, then stop at Gate A again.
+4. **TFP-152:** the image-link false pass. Its approach is decided and
+   recorded in the ticket: follow HTML-AAM 4.1.10.
 5. **TFP-147, TFP-148, TFP-149** in any order (TFP-148 after TFP-152). Then
    **TFP-150**. Stop at Gate B.
 6. TFP-151 waits until after Phase 38.

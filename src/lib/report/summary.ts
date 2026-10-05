@@ -1,4 +1,4 @@
-import { TEST_GATES, type TestGate } from "@/lib/run/test-gates";
+import { closedGates, TEST_GATES, type TestGate } from "@/lib/run/test-gates";
 import type { DefectRecord, ExecutionRecord, RunReport } from "./types";
 
 export const NO_TEST_RAN = "No recommendation: no test ran";
@@ -21,7 +21,8 @@ export function noTestRan(summary: Pick<RunReport["summary"], "passed" | "flaky"
  */
 export function formatNotRunByGate(summary: Pick<RunReport["summary"], "notRunByGate">) {
     const counts = summary.notRunByGate;
-    return counts ? `Not run by gate: ${TEST_GATES.map((gate) => `${gate} ${counts[gate] ?? 0}`).join(", ")}` : "";
+    const kept = counts ? TEST_GATES.filter((gate) => (counts[gate] ?? 0) > 0) : [];
+    return kept.length > 0 ? `Not run because their gate was closed: ${kept.map((gate) => `${gate} ${counts![gate]}`).join(", ")}` : "";
 }
 
 function releaseRecommendation(
@@ -53,7 +54,9 @@ function releaseRecommendation(
 export function buildSummary(
     records: ExecutionRecord[],
     defects: DefectRecord[],
-    duration: number
+    duration: number,
+    /** Whether the run turned interactive tests on (TESTFORGE_INTERACTIVE=1); off by default, as in the executor. */
+    interactiveEnabled = false
 ) {
     const passed = records.filter((record) => record.status === "Passed").length;
     const failed = records.filter((record) => record.status === "Failed").length;
@@ -70,10 +73,14 @@ export function buildSummary(
         reasonCounts.set(reason, (reasonCounts.get(reason) ?? 0) + 1);
     }
     const notRunReasons = [...reasonCounts].map(([reason, count]) => ({ reason, count }));
-    // Phase 38 Decision 1: how many tests each gate kept from running. Only
-    // when the run's tests declare gates, so older runs don't show zeros.
+    // Phase 38 Decision 1: how many tests each gate kept from running - Not
+    // run tests whose gate was closed for this run. A test that skipped
+    // itself for its own reason behind an open gate (e.g. a read-only cookie
+    // check with no cookie to check) is not counted. Only when the run's
+    // tests declare gates, so older runs don't show zeros.
+    const closed = closedGates(interactiveEnabled);
     const notRunByGate = records.some((record) => record.gate)
-        ? Object.fromEntries(TEST_GATES.map((gate) => [gate, notRunRecords.filter((record) => record.gate === gate).length])) as Record<TestGate, number>
+        ? Object.fromEntries(TEST_GATES.map((gate) => [gate, closed.includes(gate) ? notRunRecords.filter((record) => record.gate === gate).length : 0])) as Record<TestGate, number>
         : undefined;
     const notRunNote = notRunRecords.length === 0
         ? ""

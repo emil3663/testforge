@@ -194,6 +194,29 @@ test("a Standard run's report and saved record carry nothing new", async () => {
     assert.equal("runMode" in ((await loadRunRecord(job.id)) as object), false);
 });
 
+// Phase 38 TFP-146: the per-gate Not run count follows the run's own
+// interactive setting. Decision table: interactive off or on, against an
+// interactive test held by its gate and an active test.
+function gatedReport() {
+    const skipped = (id: string, gate: string, reason: string) => ({ id, title: `${id}: t`, tests: [{ projectName: "chromium", status: "skipped", annotations: [{ type: "gate", description: gate }, { type: "skip", description: reason }], results: [{ duration: 0, retry: 0, errors: [] }] }] });
+    return JSON.stringify({
+        suites: [{ title: "s.spec.ts", specs: [], suites: [{ title: "Functional Coverage", suites: [], specs: [skipped("TFFU-001", "interactive", "interactive journey test: it only runs when TESTFORGE_INTERACTIVE=1 is set for the run"), skipped("TFFU-002", "active", "attack-shaped input: needs the ownership confirmation, not built yet")] }] }],
+        errors: [],
+        stats: { duration: 5, expected: 0, unexpected: 0, flaky: 0, skipped: 2 },
+    });
+}
+
+test("the per-gate Not run count uses the run's interactive setting (TFP-146)", async () => {
+    for (const [enableInteractive, expected] of [[false, { "read-only": 0, interactive: 1, active: 1 }], [true, { "read-only": 0, interactive: 0, active: 1 }]] as const) {
+        const job = makeJob({ contentProfile: null, enableInteractive });
+        await writeFile(job.testFile, "import { test } from '@playwright/test';\ntest('x', async () => {});\n", "utf8");
+        await writeFile(job.jsonReportFile, gatedReport(), "utf8");
+        await finalizeRunJob(job as never);
+        const report = (job as unknown as { result: { report: { summary: { notRunByGate?: unknown } } } }).result.report;
+        assert.deepEqual(report.summary.notRunByGate, expected, `enableInteractive ${enableInteractive}`);
+    }
+});
+
 // Phase 35 TFP-135 (Decision 5): a failing local-model test changes no verdict.
 test("a Comprehensive run whose only failure is a local-model test is saved as passed, the failure shown as needing review", async () => {
     const runMode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" });

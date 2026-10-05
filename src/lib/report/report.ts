@@ -25,7 +25,9 @@ export function buildReport(
     generation: GenerationRecord | null = null,
     description = "",
     runMode: RunMode | undefined = undefined,
-    workerCount: number | undefined = undefined
+    workerCount: number | undefined = undefined,
+    /** Phase 38: whether the run turned interactive tests on, for the per-gate Not run count. */
+    interactiveEnabled = false
 ): RunReport {
     const allExecution = flattenSuites(report.suites ?? []);
     // Phase 35 (TFP-135, Decision 5): in a Comprehensive run the local
@@ -42,7 +44,7 @@ export function buildReport(
         suiteCode === null ? null : extractDeclaredTestTitles(suiteCode)
     );
     const coverage = buildDiscoveredCoverageMatrix(selectedPractices, execution, matches);
-    const summary = buildSummary(execution, defects, report.stats?.duration ?? 0);
+    const summary = buildSummary(execution, defects, report.stats?.duration ?? 0, interactiveEnabled);
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
     const usability = buildUsabilityReport(execution, defects);
     const seo = buildSeoReport(execution, selectedPractices, baseUrl);

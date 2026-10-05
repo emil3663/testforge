@@ -1,5 +1,5 @@
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
-import { gateDetails } from "@/lib/run/test-gates";
+import { ACTIVE_GATE_SKIP, gateDetails, type TestGate } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { SUITE_TITLES } from "./mock/suite";
 import type { BestPracticeArea } from "./mock/types";
@@ -46,7 +46,15 @@ export function gapFillSkipReason(model: string) {
  * Phase 38 (TFP-146, decided by Emil 2026-10-05): a suite written by OpenAI
  * sits at the interactive gate, like the local model's. It used to run in
  * full with interactive tests off, and nothing in it is checked for a submit.
+ * When the run's areas include security it sits at the active gate instead,
+ * as the local model's Comprehensive security scenarios do: a model's
+ * security tests are expected to send script-shaped input (TestForge's own
+ * quality check looks for it), and Decision 1 puts that at the active gate.
  */
+export function openAiGate(areas: readonly string[]): TestGate {
+    return areas.includes("security") ? "active" : "interactive";
+}
+
 export function openAiSkipReason(model: string) {
     return `test written by OpenAI (${model}): it may submit forms on the live site, so it only runs when ${INTERACTIVE_ENV_VAR}=1 is set for the run`;
 }
@@ -55,12 +63,13 @@ const IMPORT_START = /^import\b/;
 const IMPORT_END = /(from\s+['"][^'"]+['"]|^import\s+['"][^'"]+['"])\s*;?\s*$/;
 
 /**
- * Wraps an OpenAI-written suite in one describe at the interactive gate,
- * skipped unless interactive tests are on. Top-level imports (one or several
+ * Wraps an OpenAI-written suite in one describe at its gate: interactive,
+ * skipped unless interactive tests are on, or active, never run until the
+ * ownership confirmation exists. Top-level imports (one or several
  * lines each) stay at the top, since a describe cannot hold them; the rest
  * is indented into the describe unchanged.
  */
-export function gateOpenAiSuite(code: string, model: string) {
+export function gateOpenAiSuite(code: string, model: string, gate: TestGate = "interactive") {
     const imports: string[] = [];
     const body: string[] = [];
     let inImport = false;
@@ -74,10 +83,9 @@ export function gateOpenAiSuite(code: string, model: string) {
     }
     return `${imports.join("\n")}
 
-// Written by OpenAI (${model}). Phase 38 (TFP-146): at the interactive gate,
-// like the local model's tests.
-test.describe('${escapeForSingleQuotedString(`OpenAI (${model})`)}', ${gateDetails("interactive")}, () => {
-    test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(openAiSkipReason(model))}');
+// Written by OpenAI (${model}). Phase 38 (TFP-146): at the ${gate} gate.
+test.describe('${escapeForSingleQuotedString(`OpenAI (${model})`)}', ${gateDetails(gate)}, () => {
+    ${gate === "active" ? ACTIVE_GATE_SKIP : `test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(openAiSkipReason(model))}');`}
 
 ${body.join("\n").replace(/^\n+|\n+$/g, "")}
 });

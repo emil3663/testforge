@@ -110,12 +110,12 @@ export function completion(content: string | null) {
     };
 }
 
-export function generateRequest() {
+export function generateRequest(extra: Record<string, unknown> = {}) {
     return new NextRequest(new URL("http://localhost/api/generate"), {
         method: "POST",
         // autoInspect: false - these tests exercise generation, not TFP-122 inspection
         // (route.inspect.test.ts), and must never open a browser on :3000.
-        body: JSON.stringify({ baseUrl: "http://localhost:3000", description: "check the home page", autoInspect: false }),
+        body: JSON.stringify({ baseUrl: "http://localhost:3000", description: "check the home page", autoInspect: false, ...extra }),
         headers: { "content-type": "application/json" },
     });
 }

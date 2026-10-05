@@ -213,7 +213,8 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             job.generation,
             job.description,
             job.runMode,
-            job.workerCount
+            job.workerCount,
+            job.enableInteractive
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;

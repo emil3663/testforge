@@ -73,7 +73,7 @@ async function standardRun(interactive: "unset" | "1") {
                 child.on("close", () => resolve());
             });
             const records = flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-            return { records, summary: buildSummary(records, [], 0), requests: [...fixture.recorded] };
+            return { records, summary: buildSummary(records, [], 0, interactive === "1"), requests: [...fixture.recorded] };
         } finally {
             await rm(specFile, { force: true });
             await rm(jsonFile, { force: true });
@@ -100,8 +100,9 @@ test("in a real browser, interactive unset: the Standard run sends only GETs; in
     assert.equal(active.length, 1, show(active));
     assert.deepEqual(active.map((record) => [record.status, record.skipReason]), [["Not run", ACTIVE_GATE_REASON]]);
 
-    const readOnlyNotRun = records.filter((record) => record.gate === "read-only" && record.status === "Not run").length;
-    assert.deepEqual(summary.notRunByGate, { "read-only": readOnlyNotRun, interactive: 12, active: 1 });
+    // Read-only tests that skipped for their own reason (no cookie to check) are not counted: that gate never closes.
+    assert.ok(records.some((record) => record.gate === "read-only" && record.status === "Not run"), "the fixture has read-only tests that skip themselves");
+    assert.deepEqual(summary.notRunByGate, { "read-only": 0, interactive: 12, active: 1 });
 });
 
 test("in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and submit forms; the active test is still Not run, naming the ownership confirmation", { skip: needsChromium }, async () => {
@@ -117,5 +118,5 @@ test("in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and subm
     const active = records.filter((record) => record.gate === "active");
     assert.deepEqual(active.map((record) => [record.status, record.skipReason]), [["Not run", ACTIVE_GATE_REASON]], show(active));
     assert.match(ACTIVE_GATE_REASON, /ownership confirmation/);
-    assert.equal(summary.notRunByGate?.active, 1);
+    assert.deepEqual(summary.notRunByGate, { "read-only": 0, interactive: 0, active: 1 });
 });

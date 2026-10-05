@@ -268,10 +268,15 @@ TFP-140 was the last issued ticket.
     `Accessibility.getPartialAXTree`), as evidence only. The verdict follows
     HTML-AAM either way, decided before measuring.
   - Make the check fail a link whose only name comes from the `title` of an
-    `alt=""` image, citing HTML-AAM 4.1.10 in the message. **Approach:
-    recommended, Emil to confirm.** Rejected: reading every name from
-    Chromium's tree through CDP, which would tie generated suites to
-    Chromium and change every accessible-name check.
+    `alt=""` image, citing HTML-AAM 4.1.10 in the message. **Approach
+    decided by Emil on 2026-10-05: the standard decides, not any one tool.**
+  - Rejected: reading every name from Chromium's tree through CDP. If
+    Chromium also names the link from the `title`, the false pass would
+    stay. It would also tie generated suites to Chromium and change every
+    accessible-name check.
+  - Other places where Playwright departs from the standard are not covered
+    by this rule. Once TFP-148 adds the axe scan to the Standard run, a
+    disagreement between axe and this check shows up in the report.
 - **Deliverables:**
   - The fix, a real-browser case and a `TEST_PLAN.md` case.
   - The TFAC-007 verdict in `docs/decisions/data/labelled-failures.md` as a

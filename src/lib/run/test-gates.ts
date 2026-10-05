@@ -35,6 +35,14 @@ export function gateAnnotation(gate: TestGate) {
     return `{ type: '${GATE_ANNOTATION}', description: '${gate}' }`;
 }
 
+/**
+ * The gates closed for a run: active always (Decision 6), interactive unless
+ * the run turned interactive tests on. Read-only never closes.
+ */
+export function closedGates(interactiveEnabled: boolean): TestGate[] {
+    return interactiveEnabled ? ["active"] : ["interactive", "active"];
+}
+
 /** The first statement of an active-gate test: closed until the confirmation exists. */
 export const ACTIVE_GATE_SKIP = `test.skip(true, '${ACTIVE_GATE_REASON}');`;
 

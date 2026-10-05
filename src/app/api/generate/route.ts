@@ -10,7 +10,8 @@ import {
 } from "@/lib/generate/normalize";
 import { pickModel } from "@/lib/generate/models";
 import { countGate, type GateVerdict } from "@/lib/generate/gates";
-import { findGapAreas, gateOpenAiSuite, mergeLocalSuite } from "@/lib/generate/gap-fill";
+import { findGapAreas, gateOpenAiSuite, mergeLocalSuite, openAiGate } from "@/lib/generate/gap-fill";
+import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
 import { generateLocalSuite, type LocalFailureReason } from "@/lib/generate/local-generation";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { inspectForGeneration } from "@/lib/generate/page-inspection";
@@ -192,8 +193,11 @@ export async function POST(req: NextRequest) {
         if (typeof code !== "string" || code.trim() === "") {
             return respond(fallback(template(), "empty_completion", model));
         }
-        // Phase 38 (TFP-146): the whole suite sits at the interactive gate.
-        return respond({ code: gateOpenAiSuite(code, model), generatedBy: "openai", model });
+        // Phase 38 (TFP-146): the whole suite sits behind one gate - active when
+        // the run's areas (selected or keyword-triggered, as the template
+        // scopes them) include security, interactive otherwise.
+        const gate = openAiGate(getBestPracticeAreas(description, normalizedPractices));
+        return respond({ code: gateOpenAiSuite(code, model, gate), generatedBy: "openai", model });
     } catch (error) {
         console.error(
             "[api/generate] OpenAI call failed, using template generator:",

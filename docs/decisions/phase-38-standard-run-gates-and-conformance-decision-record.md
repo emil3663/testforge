@@ -150,6 +150,39 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** TFP-145 (it changes the same Standard accessibility checks).
+- **Verification (2026-10-05, Cowork), `245ea6f`: Gate A not yet passed.**
+  - **Re-measured here.** `check:template-unchanged d90de57 245ea6f` gives
+    12 of 166 identical. With the gate annotations, the payload test's
+    `test.skip(true, ...)` and its security note removed from the new
+    output, and the payload test's old interactive skip and note removed
+    from the old output, all 166 are byte-identical. Every test line carries
+    exactly one gate: 860 read-only, 2 interactive (the database round trip),
+    2 active (the payload test). tsc is clean. In `test-gates.test.ts` and
+    `standard-gates.test.ts`, 8 pass and the 2 real-browser cases skip here.
+  - **Measured by Code on Emil's machine:** the request-recording run
+    (151 requests, all GET, no body, with interactive unset; 11 POSTs with
+    it set, and the payload test still Not run) and the unit suite
+    (434/434).
+  - **Fix before Gate A passes, in this ticket:** the "Not run by gate"
+    count groups every Not run test by its gate, so it reports "read-only
+    2" for two cookie checks that skipped for their own reason. The
+    read-only gate never closes, and RPT-18 says the line counts what each
+    gate "kept from running". It must count only tests whose gate was
+    closed for the run: interactive tests when `TESTFORGE_INTERACTIVE` is
+    unset, and active tests always.
+  - **Fix before Gate A passes, decided by Emil on 2026-10-05:** a suite
+    written by OpenAI sits at the active gate when the requested areas
+    include security, Not run with the active reason; otherwise it stays
+    interactive. It matches the split for the local model's Comprehensive
+    scenarios. The reason: TestForge's own quality check for a model's
+    security tests looks for script-shaped input, and Decision 1 puts
+    attack-shaped input at the active gate.
+  - **Accepted:** gates are enforced through each test's own skip, with a
+    unit test that checks every skip matches its gate (Decision 7 rules out
+    a shared hook). The Comprehensive report shows no per-test gate, because
+    it lists no tests one by one; Acceptance Criteria 1 is about the
+    Standard run, and the records carry the gate. Suites a user edits and
+    saves aren't gated: they are the user's code.
 - **Decided by Emil on 2026-10-05, while building it:**
   - A suite written by OpenAI sits at the interactive gate, like the local model's. It is wrapped whole in one describe, skipped unless `TESTFORGE_INTERACTIVE=1`. Before this it ran in full with interactive off.
   - In a Comprehensive security run, the local model's scenarios sit at the active gate, with its reason. They were already never run, since they may send input. In other areas they stay interactive (Decision 3).

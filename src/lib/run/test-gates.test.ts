@@ -23,7 +23,7 @@ const { ACTIVE_GATE_SKIP, withDefaultGate } = await import("./test-gates.ts");
 const { mockGenerate } = await import("../generate/mock/index.ts");
 const { normalizeContentRules, normalizeTestAuditMode } = await import("../generate/normalize.ts");
 const { buildComprehensiveSuite, mergeComprehensiveScenarios } = await import("../generate/comprehensive.ts");
-const { gateOpenAiSuite, mergeLocalSuite } = await import("../generate/gap-fill.ts");
+const { gateOpenAiSuite, mergeLocalSuite, openAiGate } = await import("../generate/gap-fill.ts");
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { findTypeErrors } = await import("../generate/validate.ts");
 const { flattenSuites } = await import("../report/execution.ts");
@@ -111,7 +111,7 @@ test("Comprehensive: every passive security check and accessibility check is rea
 
 const MODEL_SUITE = "import { test, expect } from '@playwright/test';\ntest.describe('Database', () => {\n  test('x', async ({ page }) => { await page.goto('/'); await expect(page.locator('body')).toBeVisible(); });\n});";
 
-test("model-written blocks: the describe declares the gate once - interactive for gap-fill, OpenAI and Comprehensive accessibility, active for Comprehensive security", () => {
+test("model-written blocks: the describe declares the gate once - interactive for gap-fill, OpenAI and Comprehensive accessibility, active for Comprehensive security and for OpenAI when security is in scope", () => {
     const describeGates = (code: string) => [...code.matchAll(/test\.describe\('[^']*', (\{ annotation: [^\n]*\}), \(\) => \{/g)].flatMap((match) => gatesOf(match[1]));
     const template = "import { test, expect } from '@playwright/test';\n";
     const gapFill = mergeLocalSuite(template, MODEL_SUITE, "m", ["database"]);
@@ -120,6 +120,13 @@ test("model-written blocks: the describe declares the gate once - interactive fo
 
     const openAi = gateOpenAiSuite(MODEL_SUITE, "gpt-x");
     assert.deepEqual(describeGates(openAi), ["interactive"]);
+    const openAiSecurity = gateOpenAiSuite(MODEL_SUITE, "gpt-x", openAiGate(["functional", "security"]));
+    assert.deepEqual(describeGates(openAiSecurity), ["active"]);
+    assert.ok(openAiSecurity.includes(`() => {
+    ${ACTIVE_GATE_SKIP}`), openAiSecurity);
+    assert.doesNotMatch(openAiSecurity, /TESTFORGE_INTERACTIVE/);
+    assert.deepEqual(findTypeErrors(openAiSecurity), []);
+    assert.equal(openAiGate(["functional", "accessibility"]), "interactive");
     assert.match(openAi, /^import \{ test, expect \} from '@playwright\/test';\n\n/);
     assert.deepEqual(findTypeErrors(openAi), []);
 
@@ -145,7 +152,7 @@ function suite(annotations: Array<{ type: string; description?: string }>, statu
     return { title: "Functional Coverage", specs: [{ id: title, title, tests: [{ projectName: "chromium", status, annotations, results: [{ duration: 1, retry: 0, errors: [] }] }] }] };
 }
 
-test("the report: each record carries its declared gate, and the summary counts Not run tests per gate", () => {
+test("the report: each record carries its declared gate, and the summary counts only tests whose gate was closed for the run", () => {
     const records = flattenSuites([
         suite([{ type: "gate", description: "interactive" }, { type: "skip", description: "interactive journey test: ..." }], "skipped", "a"),
         suite([{ type: "gate", description: "interactive" }, { type: "skip", description: "database round trip: ..." }], "skipped", "b"),
@@ -157,9 +164,17 @@ test("the report: each record carries its declared gate, and the summary counts 
     assert.deepEqual(records.map((record) => [record.title, record.status, record.gate]), [
         ["a", "Not run", "interactive"], ["b", "Not run", "interactive"], ["c", "Not run", "active"], ["d", "Not run", "read-only"], ["e", "Passed", "read-only"], ["f", "Passed", undefined],
     ]);
-    const summary = buildSummary(records, [], 0);
-    assert.deepEqual(summary.notRunByGate, { "read-only": 1, interactive: 2, active: 1 });
-    assert.equal(formatNotRunByGate(summary), "Not run by gate: read-only 1, interactive 2, active 1");
+    // Decision table: interactive off closes interactive and active; on, only
+    // active. Read-only never closes, so test d (a cookie check that skipped
+    // for its own reason) is never counted.
+    const off = buildSummary(records, [], 0);
+    assert.deepEqual(off.notRunByGate, { "read-only": 0, interactive: 2, active: 1 });
+    assert.equal(formatNotRunByGate(off), "Not run because their gate was closed: interactive 2, active 1");
+    const on = buildSummary(records, [], 0, true);
+    assert.deepEqual(on.notRunByGate, { "read-only": 0, interactive: 0, active: 1 });
+    assert.equal(formatNotRunByGate(on), "Not run because their gate was closed: active 1");
+    const none = buildSummary(records.filter((record) => record.gate !== "active"), [], 0, true);
+    assert.equal(formatNotRunByGate(none), "", "no line when no gate kept a test from running");
 });
 
 test("the report: a run whose tests declare no gate (before TFP-146) shows no per-gate counts", () => {
