@@ -1,0 +1,7 @@
+link index among <a>: 5
+url: https://rizonetech.com/ | playwright 1.59.1 | chromium 147.0.7727.15
+outerHTML: <a href="https://rizonetech.com/" class="custom-logo-link" rel="home" aria-current="page"><img width="1" height="1" src="https://rizonetech.com/wp-content/uploads/2024/11/rizonetech-logo-light-r2.svg" class="custom-logo" alt="" decoding="async" title="Rizonetech Logo - Light R2 → Rizonetechcom"></a>
+ariaSnapshot: "- link \"Rizonetech Logo - Light R2 → Rizonetechcom\":\n  - /url: https://rizonetech.com/\n  - img \"Rizonetech Logo - Light R2 → Rizonetechcom\""
+toHaveAccessibleName(/.+/): (has a name)
+CDP AX: {"role":"link","name":"","nameSources":[],"ignored":false}
+images in the link: [{"alt":"","title":"Rizonetech Logo - Light R2 → Rizonetechcom","hasAlt":true}] | link title: null | aria-label: null

@@ -160,3 +160,34 @@ test("in a real browser: a hidden copy in the menu does not shift the footer lin
         await close();
     }
 });
+
+// TFP-152: HTML-AAM 4.1.10 - an <img alt=""> is presentational and has no
+// name; its title is used only when there is no alt attribute. Playwright
+// 1.59.1 falls back to the title, so a logo link like rizonetech.com's
+// (TFAC-007) passed though it has no name. A title on the link itself is a
+// valid name (accname step 2I), and so is a non-empty alt.
+// ISTQB technique: equivalence partitioning - where the only text sits: the
+// image's title, the link's title, the image's alt.
+const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+const IMAGE_LINKS_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Image links</title></head><body><main><h1>Image links</h1>
+<p><a href="/logo"><img src="${GIF}" width="20" height="20" alt="" title="Home"></a></p>
+<p><a href="/titled" title="Home"><img src="${GIF}" width="20" height="20" alt=""></a></p>
+<p><a href="/alt"><img src="${GIF}" width="20" height="20" alt="Home"></a></p>
+</main></body></html>`;
+
+test("in a real browser: an image link named only by an alt=\"\" image's title fails, citing HTML-AAM 4.1.10; a titled link and an alt-named image pass", { skip: needsChromium }, async () => {
+    const { origin, close } = await serve({ "/image-links": IMAGE_LINKS_PAGE });
+    try {
+        const { pages } = await inspectPages(origin, ["/image-links"]);
+        const tests = buildAccessibilityElementTests({ pages } as unknown as ContentProfile, "/image-links");
+        const results = await runGenerated(tests, origin);
+        // Introspection records no text for an image link, so each is titled by its target.
+        const byTarget = Object.fromEntries(["/logo", "/titled", "/alt"].map((path) => [path, results.filter((result) => result.title === `Untitled link to ${origin}${path} [link]`)]));
+        assert.equal(results.length, 3, JSON.stringify(results));
+        assert.deepEqual(Object.fromEntries(Object.entries(byTarget).map(([path, list]) => [path, list.map((result) => result.status)])), { "/logo": ["Failed"], "/titled": ["Passed"], "/alt": ["Passed"] }, JSON.stringify(results));
+        assert.match(byTarget["/logo"][0].message, /has no accessible name: HTML-AAM 4\.1\.10/);
+        assert.match(byTarget["/logo"][0].message, /\/logo/, "names the link");
+    } finally {
+        await close();
+    }
+});

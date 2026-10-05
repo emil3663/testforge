@@ -33,6 +33,7 @@ and a classifier only sees what is left).
 | T13-T15 | the-internet | Comprehensive security, "responds, with its security headers": `/basic_auth`, `/digest_auth`, `/download_secure` | Each answered HTTP 401 (read with curl: `/basic_auth` 401). They are behind HTTP authentication; refusing is the server working, and Decision 3's failures are exposures only | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/before-fix-security-the-internet.json` (run `aeb33b15`) | **Fixed, `198dbec`:** a page answering 400 or more is Not run with the reason ("behind a login, and this run does not sign in"); its version check still reads the headers. Passes on run `12e385fb` |
 | T16 | the-internet | Comprehensive security on `/add_remove_elements` | HTTP 404. The site graph normalises the path; the link's real href is `/add_remove_elements/`, which answers 200 | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/before-fix-security-the-internet.json` (run `aeb33b15`) | **Fixed, `198dbec`:** a page known only from the crawl is loaded by the href a link to it uses. Covered as `/add_remove_elements/` on run `12e385fb` |
 | T17 | the-internet | Comprehensive security on `/authenticate` | HTTP 404 to a GET. Known only from a form-submit edge: it is `/login`'s POST target, not a page | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/before-fix-security-the-internet.json` (run `aeb33b15`) | **Fixed, `198dbec`:** nodes reached only by a form submit or scripted action are not loaded |
+| T18 | rizonetech.com | TFAC-007 "accessible name and role: Untitled link to https://rizonetech.com/" - a **false pass**, not a failure | The logo link is `<a href="https://rizonetech.com/" class="custom-logo-link"><img alt="" title="Rizonetech Logo - Light R2 → Rizonetechcom"></a>`: no `title` or `aria-label` on the link. HTML-AAM 4.1.10 gives an `alt=""` image no name and uses `title` only without an `alt` attribute, so the link has none, and axe's `link-name` flags it. Playwright 1.59.1 names it from the image's title, so `toHaveAccessibleName` passed. Chromium 147's own accessibility tree (CDP, evidence only) gives the link the name `""`, with no name sources. On 2026-10-01 the check located `a[href]` first, which is the page's "Skip to content" link, so the logo was not what it tested. The false pass on the logo itself dates from `0504f92`, whose live run passed it | Live 2026-10-05: `benchmarks/2026-10-05-tfp152-logo-link/live-2026-10-05.log`; the 2026-10-01 suite in `benchmarks/2026-10-01-rizonetech/standard-suite.spec.ts` | **Fixed, TFP-152:** the check follows HTML-AAM 4.1.10 and fails it as "has no accessible name: HTML-AAM 4.1.10 gives an `<img alt="">` no name and does not use its title". Live, the 40 checks on `/` give 39 passed and this 1 failed (`live-checks-2026-10-06.log` there) |
 
 ## Model errors
 
@@ -69,7 +70,9 @@ and a classifier only sees what is left).
 - 3 sites: 12 template-error failures (7 of them one cause, fixed by rule),
   5 model-error patterns (M4 alone covers 7 suites), 14 real SEO failures
   and 1 unclear finding. Too few, and too dominated by the two sites
-  TestForge was built against, to set a classifier threshold. Phase 34's
+  TestForge was built against, to set a classifier threshold. T18 (TFP-152)
+  adds rizonetech.com and the set's first false pass: a check that passed
+  where it should have failed, which a failure classifier never sees. Phase 34's
   plan stands: add labelled failures from later runs, and hold some back
   from threshold-setting.
 - **Left out on purpose:** C3's and C6's benchmark suites that navigated to

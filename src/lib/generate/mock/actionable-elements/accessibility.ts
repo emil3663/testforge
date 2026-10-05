@@ -47,6 +47,15 @@ import { hiddenAtIntrospectionComment } from "./shared";
  * a hidden mobile copy of a menu link is in the page but not in the data;
  * counted, it shifted the footer copy's check onto itself and failed a
  * named link. The visibility rule is introspection's own isVisibleElement.
+ *
+ * TFP-152: the name follows HTML-AAM 4.1.10, not Playwright's departure
+ * from it (decided by Emil, 2026-10-05: the standard decides, not any one
+ * tool). An <img alt=""> is presentational and has no name; its title is
+ * used only when there is no alt attribute. Playwright 1.59.1 falls back to
+ * the title, so rizonetech.com's logo link - an alt="" image with a title -
+ * passed as named. The check takes those titles off before reading the
+ * name, and a failure says why. A title on the element itself, or a
+ * non-empty alt, still names it.
  */
 function linkLookup(element: ActionableElementDetail, occurrence: number, name: string) {
     if (element.elementType !== "link" || !element.url || element.locator.id) {
@@ -106,7 +115,16 @@ ${locatorSetup}
     await page.waitForLoadState('domcontentloaded');
 
 ${locatorSetup}
-    await expect(locator, '${name} has no accessible name in the accessibility tree').toHaveAccessibleName(/.+/);
+    // HTML-AAM 4.1.10: an <img alt=""> is presentational and has no name; its title counts only when there is no alt.
+    // Playwright falls back to that title, so it is taken off before the name is read (the page is not reused).
+    const presentationalTitles = await locator.evaluate((element) => Array.from(element.querySelectorAll('img[alt=""][title]')).map((image) => {
+      const title = image.getAttribute('title') ?? '';
+      image.removeAttribute('title');
+      return title;
+    }));
+    await expect(locator, presentationalTitles.length > 0
+      ? '${name} has no accessible name: HTML-AAM 4.1.10 gives an <img alt=""> no name and does not use its title ("' + presentationalTitles.join('", "') + '")'
+      : '${name} has no accessible name in the accessibility tree').toHaveAccessibleName(/.+/);
 
     const ariaSnapshot = (await locator.ariaSnapshot()).trim();
     const role = ariaSnapshot.match(/^-\\s*(\\S+)/)?.[1];
