@@ -1,0 +1,113 @@
+run 4134252c-3db6-412f-acfb-ef59bf555be9 | status passed | 483s | 81 tests: 81 passed, 0 failed, 0 not run, 0 blocked, 0 flaky | recommendation: Ready for release
+pages covered (20): / /a-stern-warning-for-google-chrome-users/ /ai/ /ai-adoption-in-enterprises-progress-hindered-by-challenges/ /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ /ai-search/ /ai/page/2/ /ai/page/3/ /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ /author/rizonesoft/ /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ /contact/ /contact-us/ /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ /deepmind-the-ai-powerhouse-changing-the-world/ /editorial-standards/ /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ /gaming/ /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/
+beyond the cap (29): /hardware/ /how-to-fix-onedrive-error-0x8004de81-on-windows-11-10/ /how-to-fix-outlook-storage-full-error/ /how-to-fix-windows-11-10-update-error-0x80073701/ /how-to-fix-windows-update-error-0x80245002-on-windows-11-10/ /internet/ /microsoft-365-nce-agreement/ /microsoft-powertoys-unleashes-mac-magic-on-windows/ /new-windows-11-copilot-features-and-power-automate-integration-insider-exclusive/ /news/ /nvidias-trillion-dollar-valuation-and-dominance-in-the-ai-chip-market/ /office/ /page/12/ /page/2/ /preserving-sega-ai-computer-a-journey-through-gaming-history/ /privacy-policy/ /reviews/ /samsung-and-the-allegations-of-trade-secret-theft/ /scientists-unveiled-the-petabit-optical-disk/ /security/ /services/ /software/ /solved-how-to-fix-microsoft-store-error-0x8024001d-on-windows-11-10/ /ssds-now-the-new-standard-for-pc-gaming/ /the-emergence-of-ai-generated-fake-news-and-its-implications-for-democracy/ /the-google-bard-memory-feature-ushers-in-a-new-epoch/ /we-are-excited-to-introducing-rizonetech-ask-ai/ /what-is-the-windows-registry-and-how-to-edit-it/ /windows/
+worker: One worker: tests ran one at a time, as the suite itself requires on every host.
+per page:
+  /: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /a-stern-warning-for-google-chrome-users/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai-adoption-in-enterprises-progress-hindered-by-challenges/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai-safety-concerns-force-openai-to-pause-gpt-5-development/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai-search/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai/page/2/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /ai/page/3/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /author/rizonesoft/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /contact/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /contact-us/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /deepfake-impersonation-of-biden-in-robocall-raises-concerns/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /deepmind-the-ai-powerhouse-changing-the-world/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /editorial-standards/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /gaming/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/: 4 checks, 4 passed, 0 failed, 0 not run, 4 findings
+  (missing-page probe): 1 checks, 1 passed, 0 failed, 0 not run, 0 findings
+failures:
+findings:
+  [A02:2025 Security Misconfiguration] / | no Content-Security-Policy header on /
+  [A02:2025 Security Misconfiguration] / | any site can frame /: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] / | no X-Content-Type-Options: nosniff on /
+  [A02:2025 Security Misconfiguration] / | no referrer policy on / (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /a-stern-warning-for-google-chrome-users/ | no Content-Security-Policy header on /a-stern-warning-for-google-chrome-users/
+  [A02:2025 Security Misconfiguration] /a-stern-warning-for-google-chrome-users/ | any site can frame /a-stern-warning-for-google-chrome-users/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /a-stern-warning-for-google-chrome-users/ | no X-Content-Type-Options: nosniff on /a-stern-warning-for-google-chrome-users/
+  [A02:2025 Security Misconfiguration] /a-stern-warning-for-google-chrome-users/ | no referrer policy on /a-stern-warning-for-google-chrome-users/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai/ | no Content-Security-Policy header on /ai/
+  [A02:2025 Security Misconfiguration] /ai/ | any site can frame /ai/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai/ | no X-Content-Type-Options: nosniff on /ai/
+  [A02:2025 Security Misconfiguration] /ai/ | no referrer policy on /ai/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai-adoption-in-enterprises-progress-hindered-by-challenges/ | no Content-Security-Policy header on /ai-adoption-in-enterprises-progress-hindered-by-challenges/
+  [A02:2025 Security Misconfiguration] /ai-adoption-in-enterprises-progress-hindered-by-challenges/ | any site can frame /ai-adoption-in-enterprises-progress-hindered-by-challenges/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai-adoption-in-enterprises-progress-hindered-by-challenges/ | no X-Content-Type-Options: nosniff on /ai-adoption-in-enterprises-progress-hindered-by-challenges/
+  [A02:2025 Security Misconfiguration] /ai-adoption-in-enterprises-progress-hindered-by-challenges/ | no referrer policy on /ai-adoption-in-enterprises-progress-hindered-by-challenges/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ | no Content-Security-Policy header on /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/
+  [A02:2025 Security Misconfiguration] /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ | any site can frame /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ | no X-Content-Type-Options: nosniff on /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/
+  [A02:2025 Security Misconfiguration] /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ | no referrer policy on /ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ | no Content-Security-Policy header on /ai-safety-concerns-force-openai-to-pause-gpt-5-development/
+  [A02:2025 Security Misconfiguration] /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ | any site can frame /ai-safety-concerns-force-openai-to-pause-gpt-5-development/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ | no X-Content-Type-Options: nosniff on /ai-safety-concerns-force-openai-to-pause-gpt-5-development/
+  [A02:2025 Security Misconfiguration] /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ | no referrer policy on /ai-safety-concerns-force-openai-to-pause-gpt-5-development/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai-search/ | no Content-Security-Policy header on /ai-search/
+  [A02:2025 Security Misconfiguration] /ai-search/ | any site can frame /ai-search/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai-search/ | no X-Content-Type-Options: nosniff on /ai-search/
+  [A02:2025 Security Misconfiguration] /ai-search/ | no referrer policy on /ai-search/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai/page/2/ | no Content-Security-Policy header on /ai/page/2/
+  [A02:2025 Security Misconfiguration] /ai/page/2/ | any site can frame /ai/page/2/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai/page/2/ | no X-Content-Type-Options: nosniff on /ai/page/2/
+  [A02:2025 Security Misconfiguration] /ai/page/2/ | no referrer policy on /ai/page/2/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /ai/page/3/ | no Content-Security-Policy header on /ai/page/3/
+  [A02:2025 Security Misconfiguration] /ai/page/3/ | any site can frame /ai/page/3/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /ai/page/3/ | no X-Content-Type-Options: nosniff on /ai/page/3/
+  [A02:2025 Security Misconfiguration] /ai/page/3/ | no referrer policy on /ai/page/3/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ | no Content-Security-Policy header on /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/
+  [A02:2025 Security Misconfiguration] /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ | any site can frame /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ | no X-Content-Type-Options: nosniff on /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/
+  [A02:2025 Security Misconfiguration] /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ | no referrer policy on /alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /author/rizonesoft/ | no Content-Security-Policy header on /author/rizonesoft/
+  [A02:2025 Security Misconfiguration] /author/rizonesoft/ | any site can frame /author/rizonesoft/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /author/rizonesoft/ | no X-Content-Type-Options: nosniff on /author/rizonesoft/
+  [A02:2025 Security Misconfiguration] /author/rizonesoft/ | no referrer policy on /author/rizonesoft/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ | no Content-Security-Policy header on /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/
+  [A02:2025 Security Misconfiguration] /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ | any site can frame /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ | no X-Content-Type-Options: nosniff on /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/
+  [A02:2025 Security Misconfiguration] /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ | no referrer policy on /clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /contact/ | no Content-Security-Policy header on /contact/
+  [A02:2025 Security Misconfiguration] /contact/ | any site can frame /contact/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /contact/ | no X-Content-Type-Options: nosniff on /contact/
+  [A02:2025 Security Misconfiguration] /contact/ | no referrer policy on /contact/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /contact-us/ | no Content-Security-Policy header on /contact-us/
+  [A02:2025 Security Misconfiguration] /contact-us/ | any site can frame /contact-us/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /contact-us/ | no X-Content-Type-Options: nosniff on /contact-us/
+  [A02:2025 Security Misconfiguration] /contact-us/ | no referrer policy on /contact-us/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ | no Content-Security-Policy header on /deepfake-impersonation-of-biden-in-robocall-raises-concerns/
+  [A02:2025 Security Misconfiguration] /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ | any site can frame /deepfake-impersonation-of-biden-in-robocall-raises-concerns/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ | no X-Content-Type-Options: nosniff on /deepfake-impersonation-of-biden-in-robocall-raises-concerns/
+  [A02:2025 Security Misconfiguration] /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ | no referrer policy on /deepfake-impersonation-of-biden-in-robocall-raises-concerns/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /deepmind-the-ai-powerhouse-changing-the-world/ | no Content-Security-Policy header on /deepmind-the-ai-powerhouse-changing-the-world/
+  [A02:2025 Security Misconfiguration] /deepmind-the-ai-powerhouse-changing-the-world/ | any site can frame /deepmind-the-ai-powerhouse-changing-the-world/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /deepmind-the-ai-powerhouse-changing-the-world/ | no X-Content-Type-Options: nosniff on /deepmind-the-ai-powerhouse-changing-the-world/
+  [A02:2025 Security Misconfiguration] /deepmind-the-ai-powerhouse-changing-the-world/ | no referrer policy on /deepmind-the-ai-powerhouse-changing-the-world/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /editorial-standards/ | no Content-Security-Policy header on /editorial-standards/
+  [A02:2025 Security Misconfiguration] /editorial-standards/ | any site can frame /editorial-standards/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /editorial-standards/ | no X-Content-Type-Options: nosniff on /editorial-standards/
+  [A02:2025 Security Misconfiguration] /editorial-standards/ | no referrer policy on /editorial-standards/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ | no Content-Security-Policy header on /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/
+  [A02:2025 Security Misconfiguration] /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ | any site can frame /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ | no X-Content-Type-Options: nosniff on /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/
+  [A02:2025 Security Misconfiguration] /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ | no referrer policy on /exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /gaming/ | no Content-Security-Policy header on /gaming/
+  [A02:2025 Security Misconfiguration] /gaming/ | any site can frame /gaming/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /gaming/ | no X-Content-Type-Options: nosniff on /gaming/
+  [A02:2025 Security Misconfiguration] /gaming/ | no referrer policy on /gaming/ (no Referrer-Policy header or meta referrer)
+  [A02:2025 Security Misconfiguration] /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/ | no Content-Security-Policy header on /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/
+  [A02:2025 Security Misconfiguration] /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/ | any site can frame /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  [A02:2025 Security Misconfiguration] /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/ | no X-Content-Type-Options: nosniff on /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/
+  [A02:2025 Security Misconfiguration] /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/ | no referrer policy on /google-drive-ending-support-for-windows-8-and-older-upgrade-now-for-compatibility/ (no Referrer-Policy header or meta referrer)
+manual review (0):
+model section: not-configured - No local model is configured (TESTFORGE_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own.
+ASVS chapters tested: V3, V12, V13, V14, V16
+failed tests:
+not run:

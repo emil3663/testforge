@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 open (2026-10-01)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-151 and TFP-152 open (2026-10-05)
 
 ## Context
 
@@ -168,6 +168,123 @@ TFP-140 was the last issued ticket.
   - `npm run check:template-unchanged` shows only the accessible-name
     checks changed.
 - **Dependencies:** None.
+- **Verification (2026-10-05, Cowork), `0504f92`:**
+  - **Re-measured here.** `check:template-unchanged afe38a1 0504f92` gives
+    162 of 166 identical. Split into tests, the 4 that differ change only
+    TFAC-002 to 005, the accessible-name tests; headers and titles are
+    identical. tsc is clean, and ESLint is clean on the changed files.
+    `accessible-names.test.ts` (non-browser case) and the golden-output test
+    pass.
+  - **Not checkable here, measured by Code on Emil's machine:** the
+    real-browser case, the fixture's `/names` run (7 passed, 2 failed), the
+    live rizonetech.com run (36/4 to 40/0) and the full unit suite
+    (423/423). The VM has no Chromium and stops runs over 3 minutes.
+  - **Criteria 1, 2, 4 and 5 met. Criterion 3 met for the measured cases,
+    with one gap, found by reading introspection's code:** introspection
+    drops a link that repeats another's URL, text and container, but the
+    check counts its position among every same-URL, same-text link in the
+    page. On a page with a desktop menu "Home", a hidden mobile copy in the
+    same container and a footer "Home", the footer check lands on the hidden
+    copy and fails a named link.
+- **Follow-up, decided by Emil on 2026-10-05:** a second commit in this
+  ticket, before anything is pushed.
+  - The check counts a link's position only among links whose visibility
+    matches what introspection recorded, in the recorded data and in the
+    page.
+  - A real-browser case reproduces the gap first: a visible menu link, a
+    hidden copy in the same container, and a visible footer copy. It fails
+    on `0504f92` and passes after the fix.
+  - Template output is measured against `0504f92`: only the accessible-name
+    tests change.
+  - Rejected: recording each link's exact position at introspection. It is
+    more precise, but it changes introspection, and saved page data would
+    still need this path.
+- **Follow-up done, `4d35b28`, verified 2026-10-05 in Cowork:**
+  - **Re-measured here.** `check:template-unchanged 0504f92 4d35b28` gives
+    162 of 166 identical. In the 4 that differ, only TFAC-002 to 005
+    change. The non-browser case and the golden-output test pass.
+  - **Measured by Code on Emil's machine:** the hidden-duplicate case fails
+    on `0504f92` and passes on `4d35b28`; unit suite 424/424. On the saved
+    rizonetech.com page data no visible link's position changes, so the live
+    40/40 from `0504f92` stands for the visible checks. Only hidden copies
+    move, and their checks only test that the link is attached.
+  - **Known limitation, accepted:** when a hidden copy comes before its
+    visible link in the same container, introspection keeps the hidden one
+    and drops the visible one. A later same-named visible link's check then
+    lands on the first visible link. That link is named, so the check passes:
+    one link is tested twice and another not at all. Nothing fails wrongly.
+    Recorded in the commit; not ticketed.
+
+### TFP-151 — Accessible-name checks for buttons and other non-link elements land on a child element
+
+- **Phase:** after Phase 38 · **Priority:** P3
+- **Suggested labels:** `bug`, `generate`, `accessibility`
+- **Problem it solves:** TFP-145 fixed links only. A button, or any other
+  non-link element, without an id or label is still located with
+  `getByText(text, { exact: true }).first()`. When its text sits in a child
+  `<span>`, the check reads the span's name and fails a named button. Same-text
+  elements still all test the first match.
+- **Scope:**
+  - Apply TFP-145's approach to buttons and the other element types the
+    accessible-name check covers: find the element itself by what
+    introspection recorded, not the element holding its text.
+  - Leave `buildLocatorExpression` and the introspection name chain as they
+    are, unless a measured case shows that's not enough.
+- **Deliverables:**
+  - The fix, a real-browser case and a `TEST_PLAN.md` case.
+- **Acceptance criteria:**
+  - `<button><span>Save</span></button>` passes its accessible-name check.
+  - An icon-only button with no name fails, naming the element.
+  - Two same-text buttons each test their own element.
+  - `npm run check:template-unchanged` shows only the accessible-name
+    checks changed.
+- **Dependencies:** Phase 38 Gate B, since TFP-148 changes the same
+  accessibility area.
+
+### TFP-152 — The accessible-name check passes an image link that has no name
+
+- **Phase:** 35 (follow-up) · **Priority:** P2
+- **Suggested labels:** `bug`, `generate`, `accessibility`
+- **Problem it solves:** on rizonetech.com, TFAC-007 (the logo link) passes,
+  while axe's `link-name` rule flags the same link. Its only content is an
+  image with `alt=""` and a `title`.
+  - **The standard says axe is right.** HTML-AAM 4.1.10 (img Element
+    Accessible Name Computation, checked 2026-10-05) uses the `alt`
+    attribute "even if its value ... is the empty string", says such an
+    image "is mapped to the presentation role. It has no accessible name",
+    and uses `title` only "if ... there is no alt attribute". So the link
+    has no accessible name.
+  - **Why the check passes:** Playwright 1.59.1 departs from that rule. Its
+    role code makes an `alt=""` image presentational only when it has no
+    `title`, and its name code falls back to the `title` when `alt` is
+    empty. `toHaveAccessibleName` therefore finds a name.
+  - This is a false pass: the check says a link is named when assistive
+    technology following the standard gets no name.
+- **Scope:**
+  - Confirm on the live page that the `title` is on the `<img>`, not the
+    `<a>`. A `title` on the link itself is a valid name (accname step 2I),
+    and then Playwright is right.
+  - Record what Chromium's own accessibility tree gives the link (CDP
+    `Accessibility.getPartialAXTree`), as evidence only. The verdict follows
+    HTML-AAM either way, decided before measuring.
+  - Make the check fail a link whose only name comes from the `title` of an
+    `alt=""` image, citing HTML-AAM 4.1.10 in the message. **Approach:
+    recommended, Emil to confirm.** Rejected: reading every name from
+    Chromium's tree through CDP, which would tie generated suites to
+    Chromium and change every accessible-name check.
+- **Deliverables:**
+  - The fix, a real-browser case and a `TEST_PLAN.md` case.
+  - The TFAC-007 verdict in `docs/decisions/data/labelled-failures.md` as a
+    template error: a false pass.
+- **Acceptance criteria:**
+  - `<a href="/"><img alt="" title="Home"></a>` fails its accessible-name
+    check, naming the link and HTML-AAM 4.1.10.
+  - `<a href="/" title="Home"><img alt=""></a>` and
+    `<a href="/"><img alt="Home"></a>` pass.
+  - `npm run check:template-unchanged` shows only the accessible-name
+    checks changed.
+- **Dependencies:** the TFP-145 follow-up. To land before Phase 38's
+  TFP-148, so the Standard check and axe agree when they meet.
 
 ## Recommended Execution Order
 
@@ -176,6 +293,9 @@ TFP-140 was the last issued ticket.
 3. TFP-144. **Done, `4a81655`, verified.**
 4. TFP-143. **Closed 2026-10-01, already met — see its Resolution; not built.**
 5. TFP-145 (split from TFP-143; re-scoped 2026-10-02 to the false failures).
+   **Done, `0504f92` and follow-up `4d35b28`, verified 2026-10-05.**
+6. TFP-152, after Phase 38's TFP-146 and before its TFP-148.
+7. TFP-151, after Phase 38 Gate B.
 
 ## Suggested Milestone Gate
 

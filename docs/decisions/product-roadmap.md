@@ -264,6 +264,15 @@ identical bodies under different titles (GEN-32). The fix is measured by the
 same hand-read check before Phase 35 relies on the model. See
 `phase-37-gap-fill-prompt-and-model-gates-decision-record.md`.
 
+### Phase 38 — Standard run: three gates, shared conformance checks, performance bands (locked 2026-10-05, not started)
+The coverage proposal measured the Standard run against the published standards and found it broad but shallow. This phase makes three changes.
+
+- **Three gates:** read-only, interactive, and active (behind the typed ownership confirmation).
+- **Working path versus breaking:** Standard tests the critical working path; Comprehensive tries to break it.
+- **Shared conformance checks:** Phase 35's read-only passive security checks and the axe scan join Standard through one implementation shared with Comprehensive. Performance is graded with Core Web Vitals' bands, where "needs improvement" is a finding and "poor" fails.
+
+All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
+
 ---
 
 ## Sequencing note

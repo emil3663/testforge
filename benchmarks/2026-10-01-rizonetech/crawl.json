@@ -1,0 +1,625 @@
+{
+ "crawlId": "96139a4c-12e7-4f7d-a553-aee23c7c02d9",
+ "crawlStatus": "completed",
+ "duration": 939670,
+ "progress": {
+  "maxPages": 100,
+  "visitedUrls": 101,
+  "queuedUrls": 0,
+  "discoveredPages": 100,
+  "warningsCount": 0,
+  "currentUrl": null,
+  "currentPath": null,
+  "currentTitle": null,
+  "lastCompletedPath": "/the-alarming-escalation-of-ransomware-attacks-on-mid-sized-companies",
+  "lastCompletedTitle": "Ransomware Surge Targets Mid-Sized Companies"
+ },
+ "result": {
+  "crawledAt": "2026-10-01T13:04:13.763Z",
+  "baseUrl": "https://rizonetech.com",
+  "pageCount": 100,
+  "pages": [
+   {
+    "path": "/",
+    "url": "https://rizonetech.com/",
+    "title": "Rizonetech.com → Your Tech Resource",
+    "discoveredFrom": null
+   },
+   {
+    "path": "/a-stern-warning-for-google-chrome-users",
+    "url": "https://rizonetech.com/a-stern-warning-for-google-chrome-users",
+    "title": "Warning for Google Chrome Users → Rizonetech.com",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/ai",
+    "url": "https://rizonetech.com/ai",
+    "title": "Artificial Intelligence (AI) → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/ai-adoption-in-enterprises-progress-hindered-by-challenges",
+    "url": "https://rizonetech.com/ai-adoption-in-enterprises-progress-hindered-by-challenges",
+    "title": "AI Adoption in Enterprises - A Slow Progress",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate",
+    "url": "https://rizonetech.com/ai-gone-rogue-preventing-chatgpt-and-openai-from-spreading-hate",
+    "title": "The Dark Side of AI: Preventing Hate and Misinformation",
+    "discoveredFrom": "/page/12"
+   },
+   {
+    "path": "/ai-search",
+    "url": "https://rizonetech.com/ai-search",
+    "title": "AI Search → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/ai/page/2",
+    "url": "https://rizonetech.com/ai/page/2",
+    "title": "Artificial Intelligence (AI) → Rizonetech.com - Page 2",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/ai/page/3",
+    "url": "https://rizonetech.com/ai/page/3",
+    "title": "Artificial Intelligence (AI) → Rizonetech.com - Page 3",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation",
+    "url": "https://rizonetech.com/alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation",
+    "title": "AlphaCodium - Redefining AI Code Generation",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/anydesk-security-breach-a-comprehensive-analysis-and-recommendations",
+    "url": "https://rizonetech.com/anydesk-security-breach-a-comprehensive-analysis-and-recommendations",
+    "title": "AnyDesk Security Breach → Urgent Measures",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/apple-m2-ultra-a-performance-revolution-for-mac-studio-and-mac-pro",
+    "url": "https://rizonetech.com/apple-m2-ultra-a-performance-revolution-for-mac-studio-and-mac-pro",
+    "title": "Apple M2 Ultra: Powerhouse for Mac Studio and Pro",
+    "discoveredFrom": "/reviews"
+   },
+   {
+    "path": "/arm-architecture-pioneering-the-future-of-personal-computing",
+    "url": "https://rizonetech.com/arm-architecture-pioneering-the-future-of-personal-computing",
+    "title": "The Rise of Arm in Computing Efficiency & Innovation",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/author/rizonesoft",
+    "url": "https://rizonetech.com/author/rizonesoft",
+    "title": "Derick Payne, Author at Rizonetech.com",
+    "discoveredFrom": "/exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting"
+   },
+   {
+    "path": "/best-free-antivirus-programs-of-2024-protection-without-spending-a-dime",
+    "url": "https://rizonetech.com/best-free-antivirus-programs-of-2024-protection-without-spending-a-dime",
+    "title": "Best Free Antivirus Programs of 2024 | Top Security Picks",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/bumblebee-malware-attacks-surge-after-4-month-absence-what-you-need-to-know",
+    "url": "https://rizonetech.com/bumblebee-malware-attacks-surge-after-4-month-absence-what-you-need-to-know",
+    "title": "Bumblebee Malware Returns: Protect Yourself Now",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility",
+    "url": "https://rizonetech.com/clean-and-speed-up-windows-10-with-the-built-in-disk-cleanup-utility",
+    "title": "Clean Windows 10 with the built-in Disk Cleanup Utility",
+    "discoveredFrom": "/how-to-fix-windows-update-error-0x80245002-on-windows-11-10"
+   },
+   {
+    "path": "/coming-soon-enhanced-snipping-tool-and-notepad-for-windows-11",
+    "url": "https://rizonetech.com/coming-soon-enhanced-snipping-tool-and-notepad-for-windows-11",
+    "title": "Coming Soon – Enhanced Snipping Tool and Notepad for Windows 11 → Rizonetech.com",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/contact-us",
+    "url": "https://rizonetech.com/contact-us",
+    "title": "Contact Us for Free Windows Support",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/deepfake-impersonation-of-biden-in-robocall-raises-concerns",
+    "url": "https://rizonetech.com/deepfake-impersonation-of-biden-in-robocall-raises-concerns",
+    "title": "Robocall Scandal - AI Mimics Biden, Sparks Alarm",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/deepmind-the-ai-powerhouse-changing-the-world",
+    "url": "https://rizonetech.com/deepmind-the-ai-powerhouse-changing-the-world",
+    "title": "DeepMind: Google's AI Giant Reshaping the World",
+    "discoveredFrom": "/nvidias-trillion-dollar-valuation-and-dominance-in-the-ai-chip-market"
+   },
+   {
+    "path": "/easy-file-backups-and-restoration-with-acronis-true-image-for-wd",
+    "url": "https://rizonetech.com/easy-file-backups-and-restoration-with-acronis-true-image-for-wd",
+    "title": "Acronis True Image Guide → File Backup and Restore",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/editorial-standards",
+    "url": "https://rizonetech.com/editorial-standards",
+    "title": "Rizonetech.com → Editorial Standards for Tech You Trust",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/enabling-secure-playback-in-brave-browser-activating-widevine",
+    "url": "https://rizonetech.com/enabling-secure-playback-in-brave-browser-activating-widevine",
+    "title": "Activate Widevine DRM in Brave for Seamless Streaming",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting",
+    "url": "https://rizonetech.com/exporting-exchange-public-folders-to-pst-tools-tips-and-troubleshooting",
+    "title": "Exporting Exchange Public Folders to PST: A Complete Guide",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/fix-network-computers-not-showing-in-windows-11-or-10",
+    "url": "https://rizonetech.com/fix-network-computers-not-showing-in-windows-11-or-10",
+    "title": "[Solved] How to Fix Network Computers Not Showing in Windows",
+    "discoveredFrom": "/windows"
+   },
+   {
+    "path": "/gaming",
+    "url": "https://rizonetech.com/gaming",
+    "title": "Gaming → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/google-discontinue-cached-webpages-feature-in-search",
+    "url": "https://rizonetech.com/google-discontinue-cached-webpages-feature-in-search",
+    "title": "Google Discontinues Cached Webpages Feature in Search",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/hardware",
+    "url": "https://rizonetech.com/hardware",
+    "title": "Hardware → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/hardware/page/2",
+    "url": "https://rizonetech.com/hardware/page/2",
+    "title": "Hardware → Rizonetech.com - Page 2",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/how-to-fix-blue-screen-errors-kernel-auto-boost-lock-acquisition-with-raised-irql",
+    "url": "https://rizonetech.com/how-to-fix-blue-screen-errors-kernel-auto-boost-lock-acquisition-with-raised-irql",
+    "title": "How to Fix Blue Screen Errors – KERNEL AUTO BOOST LOCK ACQUISITION WITH RAISED IRQL → Rizonetech.com",
+    "discoveredFrom": "/preserving-sega-ai-computer-a-journey-through-gaming-history"
+   },
+   {
+    "path": "/how-to-fix-hard-drive-corruption-and-file-system-errors",
+    "url": "https://rizonetech.com/how-to-fix-hard-drive-corruption-and-file-system-errors",
+    "title": "[Solved] Fix Hard Drive Corruption and File System Errors",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/how-to-fix-onedrive-error-0x8004de81-on-windows-11-10",
+    "url": "https://rizonetech.com/how-to-fix-onedrive-error-0x8004de81-on-windows-11-10",
+    "title": "[Solved] Fix OneDrive Error 0x8004DE81 on Windows 11 an 10",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/how-to-fix-outlook-storage-full-error",
+    "url": "https://rizonetech.com/how-to-fix-outlook-storage-full-error",
+    "title": "[Solved] How to Fix Outlook Storage Full Error? → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/how-to-fix-scan-to-folder-not-working-on-windows-11-10",
+    "url": "https://rizonetech.com/how-to-fix-scan-to-folder-not-working-on-windows-11-10",
+    "title": "[Solved] How to Fix Scan to Folder Not Working on Windows",
+    "discoveredFrom": "/windows"
+   },
+   {
+    "path": "/how-to-fix-the-cant-play-audio-error-0xc00d36fa-in-windows-11",
+    "url": "https://rizonetech.com/how-to-fix-the-cant-play-audio-error-0xc00d36fa-in-windows-11",
+    "title": "Fix Can't Play Audio 0xC00D36FA Error in Windows 11",
+    "discoveredFrom": "/we-are-excited-to-introducing-rizonetech-ask-ai"
+   },
+   {
+    "path": "/how-to-fix-the-explorer-exe-this-file-does-not-have-an-app-associated-error-in-windows-11-and-10",
+    "url": "https://rizonetech.com/how-to-fix-the-explorer-exe-this-file-does-not-have-an-app-associated-error-in-windows-11-and-10",
+    "title": "[Solved] This File Does Not Have an App... Error in Windows",
+    "discoveredFrom": "/page/2"
+   },
+   {
+    "path": "/how-to-fix-windows-11-10-update-error-0x80070003",
+    "url": "https://rizonetech.com/how-to-fix-windows-11-10-update-error-0x80070003",
+    "title": "[Solved] How to Fix Windows 11/10 Update Error 0x80070003",
+    "discoveredFrom": "/windows"
+   },
+   {
+    "path": "/how-to-fix-windows-11-10-update-error-0x80073701",
+    "url": "https://rizonetech.com/how-to-fix-windows-11-10-update-error-0x80073701",
+    "title": "[Solved] How to Fix Windows 11/10 Update Error 0x80073701",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/how-to-fix-windows-update-error-0x80245002-on-windows-11-10",
+    "url": "https://rizonetech.com/how-to-fix-windows-update-error-0x80245002-on-windows-11-10",
+    "title": "[Solved] How to Fi Windows Update Error 0x80245002",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/how-to-install-free-acronis-true-image-for-western-digital",
+    "url": "https://rizonetech.com/how-to-install-free-acronis-true-image-for-western-digital",
+    "title": "Install Free Acronis True Image for Western Digital",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/how-to-repair-windows-11-and-10-image-with-dism-command-tool",
+    "url": "https://rizonetech.com/how-to-repair-windows-11-and-10-image-with-dism-command-tool",
+    "title": "Repair Windows 11 or 10 with this DISM Guide",
+    "discoveredFrom": "/how-to-fix-windows-update-error-0x80245002-on-windows-11-10"
+   },
+   {
+    "path": "/how-to-restore-windows-11-using-system-restore",
+    "url": "https://rizonetech.com/how-to-restore-windows-11-using-system-restore",
+    "title": "Windows 11 System Restore: Your Time Machine for PC Issues",
+    "discoveredFrom": "/what-is-the-windows-registry-and-how-to-edit-it"
+   },
+   {
+    "path": "/how-to-spot-a-fake-shopping-website-and-ensure-online-shopping-safety",
+    "url": "https://rizonetech.com/how-to-spot-a-fake-shopping-website-and-ensure-online-shopping-safety",
+    "title": "Spotting Fake Shopping Sites Made Easy",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/internet",
+    "url": "https://rizonetech.com/internet",
+    "title": "Internet → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/is-microsoft-defender-enough-for-complete-protection-in-2024",
+    "url": "https://rizonetech.com/is-microsoft-defender-enough-for-complete-protection-in-2024",
+    "title": "Is Microsoft Defender enough to keep you safe in 2024?",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/mac-vs-windows-pc-the-best-of-the-best",
+    "url": "https://rizonetech.com/mac-vs-windows-pc-the-best-of-the-best",
+    "title": "Mac vs Windows PC – The Best of the Best → Rizonetech.com",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/microsoft-365-nce-agreement",
+    "url": "https://rizonetech.com/microsoft-365-nce-agreement",
+    "title": "Microsoft 365 NCE Agreement → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/microsoft-edge-a-critical-evaluation-of-data-privacy-concerns",
+    "url": "https://rizonetech.com/microsoft-edge-a-critical-evaluation-of-data-privacy-concerns",
+    "title": "Microsoft Edge Privacy Concerns Unveiled→ Rizonetech.com",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/microsoft-executives-targeted-in-sophisticated-cyberattack-by-russian-linked-hackers",
+    "url": "https://rizonetech.com/microsoft-executives-targeted-in-sophisticated-cyberattack-by-russian-linked-hackers",
+    "title": "Microsoft Breached by Russian-Linked Hackers",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/microsoft-powertoys-now-compact-in-size-and-mighty-in-power",
+    "url": "https://rizonetech.com/microsoft-powertoys-now-compact-in-size-and-mighty-in-power",
+    "title": "PowerToys 0.72 - Compact Size, Enhanced Features",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/microsoft-powertoys-to-enhance-windows-and-boost-productivity",
+    "url": "https://rizonetech.com/microsoft-powertoys-to-enhance-windows-and-boost-productivity",
+    "title": "Microsoft PowerToys to Enhance Windows and Boost Productivity → Rizonetech.com",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/microsoft-powertoys-unleashes-mac-magic-on-windows",
+    "url": "https://rizonetech.com/microsoft-powertoys-unleashes-mac-magic-on-windows",
+    "title": "Microsoft PowerToys Unleashes Mac Magic on Windows",
+    "discoveredFrom": "/scientists-unveiled-the-petabit-optical-disk"
+   },
+   {
+    "path": "/microsoft-to-retire-wordpad-after-28-years-of-service",
+    "url": "https://rizonetech.com/microsoft-to-retire-wordpad-after-28-years-of-service",
+    "title": "WordPad Retired - Microsoft's Shift to Modernity",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/minecraft-bedrock-on-chromebooks-play-explore-with-friends",
+    "url": "https://rizonetech.com/minecraft-bedrock-on-chromebooks-play-explore-with-friends",
+    "title": "Play Minecraft Bedrock Edition on Your Chromebook",
+    "discoveredFrom": "/gaming"
+   },
+   {
+    "path": "/neuralink-successful-brain-chip-implant-in-first-human",
+    "url": "https://rizonetech.com/neuralink-successful-brain-chip-implant-in-first-human",
+    "title": "Neuralink – Successful Brain Chip Implant in First Human",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/new-windows-11-copilot-features-and-power-automate-integration-insider-exclusive",
+    "url": "https://rizonetech.com/new-windows-11-copilot-features-and-power-automate-integration-insider-exclusive",
+    "title": "Windows 11 Copilot Upgrade → AI Power-Up (Insider Only)",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/news",
+    "url": "https://rizonetech.com/news",
+    "title": "News → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/news/page/2",
+    "url": "https://rizonetech.com/news/page/2",
+    "title": "News → Rizonetech.com - Page 2",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/news/page/3",
+    "url": "https://rizonetech.com/news/page/3",
+    "title": "News → Rizonetech.com - Page 3",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/now-you-can-have-conversations-with-ai-game-characters",
+    "url": "https://rizonetech.com/now-you-can-have-conversations-with-ai-game-characters",
+    "title": "Now You Can Have Conversations with AI Game Characters",
+    "discoveredFrom": "/gaming"
+   },
+   {
+    "path": "/nvidias-trillion-dollar-valuation-and-dominance-in-the-ai-chip-market",
+    "url": "https://rizonetech.com/nvidias-trillion-dollar-valuation-and-dominance-in-the-ai-chip-market",
+    "title": "Nvidia: From Graphics to AI Chip Dominance → Rizonetech.com",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/office",
+    "url": "https://rizonetech.com/office",
+    "title": "Office → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/page/11",
+    "url": "https://rizonetech.com/page/11",
+    "title": "Rizonetech.com → Your Tech Resource - Page 11",
+    "discoveredFrom": "/page/12"
+   },
+   {
+    "path": "/page/12",
+    "url": "https://rizonetech.com/page/12",
+    "title": "Rizonetech.com → Your Tech Resource - Page 12",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/page/2",
+    "url": "https://rizonetech.com/page/2",
+    "title": "Rizonetech.com → Your Tech Resource - Page 2",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/page/3",
+    "url": "https://rizonetech.com/page/3",
+    "title": "Rizonetech.com → Your Tech Resource - Page 3",
+    "discoveredFrom": "/page/2"
+   },
+   {
+    "path": "/pc-wont-boot-bios-beep-codes-to-the-rescue",
+    "url": "https://rizonetech.com/pc-wont-boot-bios-beep-codes-to-the-rescue",
+    "title": "[Solved] PC Won't Boot? BIOS Beep Codes to the Rescue",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/preserving-sega-ai-computer-a-journey-through-gaming-history",
+    "url": "https://rizonetech.com/preserving-sega-ai-computer-a-journey-through-gaming-history",
+    "title": "Reviving the '80s Sega AI Computer - A Historic Journey",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/privacy-policy",
+    "url": "https://rizonetech.com/privacy-policy",
+    "title": "Rizone Privacy Policy → Committed to Your Data Protection",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/qualcomms-snapdragon-x-elite-set-to-power-the-next-version-of-windows",
+    "url": "https://rizonetech.com/qualcomms-snapdragon-x-elite-set-to-power-the-next-version-of-windows",
+    "title": "Snapdragon X Elite Ushers New Windows Era",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/recent-microsoft-store-update-causes-app-crashes-in-windows-10",
+    "url": "https://rizonetech.com/recent-microsoft-store-update-causes-app-crashes-in-windows-10",
+    "title": "Microsoft Store Update Crashes Windows 10 Apps",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/reevaluating-moores-law-in-the-current-technological-landscape",
+    "url": "https://rizonetech.com/reevaluating-moores-law-in-the-current-technological-landscape",
+    "title": "Moore's Law Future Questioned",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/remember-the-heartbleed-bug-that-tiny-openssl-flaw-that-almost-broke-the-internet",
+    "url": "https://rizonetech.com/remember-the-heartbleed-bug-that-tiny-openssl-flaw-that-almost-broke-the-internet",
+    "title": "Heartbleed Bug: The Flaw That Exposed the Internet",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/resolving-netflix-error-code-m7701-1003-in-microsoft-edge",
+    "url": "https://rizonetech.com/resolving-netflix-error-code-m7701-1003-in-microsoft-edge",
+    "title": "Resolving Netflix Error Code M7701-1003 in Microsoft Edge",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/reviews",
+    "url": "https://rizonetech.com/reviews",
+    "title": "Reviews Archives → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/scientists-unveiled-the-petabit-optical-disk",
+    "url": "https://rizonetech.com/scientists-unveiled-the-petabit-optical-disk",
+    "title": "Petabit Optical Disk: Data Storage Revolutionized",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/security",
+    "url": "https://rizonetech.com/security",
+    "title": "Security → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/security/page/2",
+    "url": "https://rizonetech.com/security/page/2",
+    "title": "Security → Rizonetech.com - Page 2",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/services",
+    "url": "https://rizonetech.com/services",
+    "title": "Services → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/software",
+    "url": "https://rizonetech.com/software",
+    "title": "Software → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/software/page/2",
+    "url": "https://rizonetech.com/software/page/2",
+    "title": "Software → Rizonetech.com - Page 2",
+    "discoveredFrom": "/software"
+   },
+   {
+    "path": "/solved-how-to-fix-microsoft-store-error-0x8024001d-on-windows-11-10",
+    "url": "https://rizonetech.com/solved-how-to-fix-microsoft-store-error-0x8024001d-on-windows-11-10",
+    "title": "[Solved] How to Fix Microsoft Store Error 0x8024001D",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/ssds-now-the-new-standard-for-pc-gaming",
+    "url": "https://rizonetech.com/ssds-now-the-new-standard-for-pc-gaming",
+    "title": "SSDs: The New Minimum for PC Gaming → Rizonetech.com",
+    "discoveredFrom": "/gaming"
+   },
+   {
+    "path": "/the-alarming-escalation-of-ransomware-attacks-on-mid-sized-companies",
+    "url": "https://rizonetech.com/the-alarming-escalation-of-ransomware-attacks-on-mid-sized-companies",
+    "title": "Ransomware Surge Targets Mid-Sized Companies",
+    "discoveredFrom": "/alphacodium-pioneering-the-next-frontier-in-ai-powered-code-generation"
+   },
+   {
+    "path": "/the-best-hard-drives-in-2024",
+    "url": "https://rizonetech.com/the-best-hard-drives-in-2024",
+    "title": "Best Hard Drives for 2024 → Top HDDs for Every Need",
+    "discoveredFrom": "/hardware"
+   },
+   {
+    "path": "/the-emergence-of-ai-generated-fake-news-and-its-implications-for-democracy",
+    "url": "https://rizonetech.com/the-emergence-of-ai-generated-fake-news-and-its-implications-for-democracy",
+    "title": "AI-Generated Fake News and Its Implications for Democracy",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/the-evolution-of-malware-and-cybercrime",
+    "url": "https://rizonetech.com/the-evolution-of-malware-and-cybercrime",
+    "title": "Malware Evolution → From Harmless Pranks to Cybercrime",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/the-evolution-of-microsoft-windows-from-1-to-11-and-beyond",
+    "url": "https://rizonetech.com/the-evolution-of-microsoft-windows-from-1-to-11-and-beyond",
+    "title": "Windows Evolution From 1.0 to 11 and Beyond",
+    "discoveredFrom": "/how-to-fix-windows-update-error-0x80245002-on-windows-11-10"
+   },
+   {
+    "path": "/the-google-bard-memory-feature-ushers-in-a-new-epoch",
+    "url": "https://rizonetech.com/the-google-bard-memory-feature-ushers-in-a-new-epoch",
+    "title": "Google Bard Memory - Personalizing AI Chatbot Experience",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/the-impact-of-starlink-on-the-south-african-satellite-internet-market",
+    "url": "https://rizonetech.com/the-impact-of-starlink-on-the-south-african-satellite-internet-market",
+    "title": "Starlink Transforms South Africa's Internet",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/we-are-excited-to-introducing-rizonetech-ask-ai",
+    "url": "https://rizonetech.com/we-are-excited-to-introducing-rizonetech-ask-ai",
+    "title": "Ask AI: Smarter Windows Troubleshooting → Rizonetech.com",
+    "discoveredFrom": "/ai"
+   },
+   {
+    "path": "/what-is-the-windows-registry-and-how-to-edit-it",
+    "url": "https://rizonetech.com/what-is-the-windows-registry-and-how-to-edit-it",
+    "title": "What Is the Windows Registry and How to Edit it?",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/whats-next-for-firefox-now-that-mozillas-ceo-resigned",
+    "url": "https://rizonetech.com/whats-next-for-firefox-now-that-mozillas-ceo-resigned",
+    "title": "Mozilla CEO Out: What's Next for Firefox? → Rizonetech.com",
+    "discoveredFrom": "/internet"
+   },
+   {
+    "path": "/whatsapp-channels-broadcast-to-your-audience-and-boost-engagement",
+    "url": "https://rizonetech.com/whatsapp-channels-broadcast-to-your-audience-and-boost-engagement",
+    "title": "WhatsApp Channels → The New Way to Broadcast and Connect",
+    "discoveredFrom": "/news"
+   },
+   {
+    "path": "/why-regular-password-changes-are-bad-for-security",
+    "url": "https://rizonetech.com/why-regular-password-changes-are-bad-for-security",
+    "title": "Regular Password Changes Can Harm Security → Rizonetech.com",
+    "discoveredFrom": "/security"
+   },
+   {
+    "path": "/windows",
+    "url": "https://rizonetech.com/windows",
+    "title": "Windows → Rizonetech.com",
+    "discoveredFrom": "/"
+   },
+   {
+    "path": "/windows-10-update-reset.bat",
+    "url": "https://rizonetech-downloads.b-cdn.net/windows-10-update-reset.bat",
+    "title": "404 - File Not Found",
+    "discoveredFrom": "/how-to-fix-windows-11-10-update-error-0x80073701"
+   },
+   {
+    "path": "/windows-11-update-reset.bat",
+    "url": "https://rizonetech-downloads.b-cdn.net/windows-11-update-reset.bat",
+    "title": "404 - File Not Found",
+    "discoveredFrom": "/how-to-fix-windows-11-10-update-error-0x80073701"
+   },
+   {
+    "path": "/windows/page/2",
+    "url": "https://rizonetech.com/windows/page/2",
+    "title": "Windows → Rizonetech.com - Page 2",
+    "discoveredFrom": "/windows"
+   },
+   {
+    "path": "/windows/page/5",
+    "url": "https://rizonetech.com/windows/page/5",
+    "title": "Windows → Rizonetech.com - Page 5",
+    "discoveredFrom": "/windows"
+   }
+  ],
+  "warnings": []
+ }
+}
