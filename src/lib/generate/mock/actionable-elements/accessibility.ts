@@ -55,7 +55,10 @@ import { hiddenAtIntrospectionComment } from "./shared";
  * the title, so rizonetech.com's logo link - an alt="" image with a title -
  * passed as named. The check takes those titles off before reading the
  * name, and a failure says why. A title on the element itself, or a
- * non-empty alt, still names it.
+ * non-empty alt, still names it. "Empty" is HTML-AAM's "empty when trimmed
+ * of whitespace" (ASCII whitespace, as HTML strips it): alt=" " is
+ * presentational too, and Playwright treats it as a real image (TFP-152
+ * follow-up).
  */
 function linkLookup(element: ActionableElementDetail, occurrence: number, name: string) {
     if (element.elementType !== "link" || !element.url || element.locator.id) {
@@ -115,9 +118,9 @@ ${locatorSetup}
     await page.waitForLoadState('domcontentloaded');
 
 ${locatorSetup}
-    // HTML-AAM 4.1.10: an <img alt=""> is presentational and has no name; its title counts only when there is no alt.
-    // Playwright falls back to that title, so it is taken off before the name is read (the page is not reused).
-    const presentationalTitles = await locator.evaluate((element) => Array.from(element.querySelectorAll('img[alt=""][title]')).map((image) => {
+    // HTML-AAM 4.1.10: an <img> whose alt is empty once trimmed of whitespace is presentational and has no name; its title
+    // counts only when there is no alt. Playwright falls back to that title, so it is taken off before the name is read (the page is not reused).
+    const presentationalTitles = await locator.evaluate((element) => Array.from(element.querySelectorAll('img[alt][title]')).filter((image) => /^[\\t\\n\\f\\r ]*$/.test(image.getAttribute('alt') ?? '')).map((image) => {
       const title = image.getAttribute('title') ?? '';
       image.removeAttribute('title');
       return title;

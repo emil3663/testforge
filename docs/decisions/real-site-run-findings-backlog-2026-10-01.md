@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-151 and TFP-152 open (2026-10-05)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 committed (`34622b0`), one follow-up commit open; TFP-151 open (2026-10-06)
 
 ## Context
 
@@ -290,6 +290,33 @@ TFP-140 was the last issued ticket.
     checks changed.
 - **Dependencies:** the TFP-145 follow-up. To land before Phase 38's
   TFP-148, so the Standard check and axe agree when they meet.
+- **Verification (2026-10-06, Cowork), `34622b0`:**
+  - **Re-measured here.** `check:template-unchanged cdec8e0 34622b0` gives
+    162 of 166 identical. Split into tests, the 4 that differ change only
+    TFAC-002 to 005, the accessible-name tests; headers and titles are
+    identical.
+  - **Live evidence, measured by Code** (`benchmarks/2026-10-05-tfp152-logo-link/`):
+    the `title` is on the `<img alt="">`, not the link. Playwright names the
+    link from it, and Chromium 147's own accessibility tree gives it the name
+    `""`. So the standard and Chrome agree, and Playwright is the one that
+    differs. On rizonetech.com, `/` gives 39 passed and 1 failed (TFAC-007).
+    Unit suite 437/437. Labelled as T18, the set's first false pass.
+  - **Accepted:**
+    - the rule applies to every element the check covers, not only links,
+      because the rule is about the image;
+    - the check removes the image's `title` in the page before reading the
+      name. Each test loads its own page, and nothing is sent to the site.
+  - **Wording:** the ticket says TFAC-007 "passes" on the logo. On
+    2026-10-01 TFAC-007 tested the "Skip to content" link (`a[href]`
+    first). The false pass on the logo dates from `0504f92`, as T18 records.
+  - **Fix before the push, in this ticket:** the check finds images with
+    `img[alt=""]`, so it misses an `alt` that is only whitespace, such as
+    `alt=" "`. HTML-AAM 4.1.10 treats an `alt` that is empty "when trimmed
+    of whitespace" the same way. Playwright 1.59.1 treats `alt=" "` as an
+    image and falls back to the `title`, so `<a><img alt=" " title="Home"></a>`
+    still passes falsely. The check must match any `img` whose `alt` is
+    present and empty after trimming, with a real-browser case for
+    `alt=" "`.
 
 ## Recommended Execution Order
 
@@ -299,7 +326,9 @@ TFP-140 was the last issued ticket.
 4. TFP-143. **Closed 2026-10-01, already met — see its Resolution; not built.**
 5. TFP-145 (split from TFP-143; re-scoped 2026-10-02 to the false failures).
    **Done, `0504f92` and follow-up `4d35b28`, verified 2026-10-05.**
-6. TFP-152, after Phase 38's TFP-146 and before its TFP-148.
+6. TFP-152, after Phase 38's TFP-146 and before its TFP-148. **Committed,
+   `34622b0`, verified 2026-10-06 except one gap; the follow-up commit comes
+   before the push.**
 7. TFP-151, after Phase 38 Gate B.
 
 ## Suggested Milestone Gate

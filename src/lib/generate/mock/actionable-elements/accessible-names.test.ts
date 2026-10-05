@@ -167,26 +167,30 @@ test("in a real browser: a hidden copy in the menu does not shift the footer lin
 // (TFAC-007) passed though it has no name. A title on the link itself is a
 // valid name (accname step 2I), and so is a non-empty alt.
 // ISTQB technique: equivalence partitioning - where the only text sits: the
-// image's title, the link's title, the image's alt.
+// image's title, the link's title, the image's alt. Boundary value analysis
+// on the alt: empty, and blank (" "), which HTML-AAM treats as empty once
+// trimmed while Playwright treats it as a real image (TFP-152 follow-up).
 const GIF = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 const IMAGE_LINKS_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Image links</title></head><body><main><h1>Image links</h1>
 <p><a href="/logo"><img src="${GIF}" width="20" height="20" alt="" title="Home"></a></p>
+<p><a href="/blank"><img src="${GIF}" width="20" height="20" alt=" " title="Home"></a></p>
 <p><a href="/titled" title="Home"><img src="${GIF}" width="20" height="20" alt=""></a></p>
 <p><a href="/alt"><img src="${GIF}" width="20" height="20" alt="Home"></a></p>
 </main></body></html>`;
 
-test("in a real browser: an image link named only by an alt=\"\" image's title fails, citing HTML-AAM 4.1.10; a titled link and an alt-named image pass", { skip: needsChromium }, async () => {
+test("in a real browser: an image link named only by an alt=\"\" or alt=\" \" image's title fails, citing HTML-AAM 4.1.10; a titled link and an alt-named image pass", { skip: needsChromium }, async () => {
     const { origin, close } = await serve({ "/image-links": IMAGE_LINKS_PAGE });
     try {
         const { pages } = await inspectPages(origin, ["/image-links"]);
         const tests = buildAccessibilityElementTests({ pages } as unknown as ContentProfile, "/image-links");
         const results = await runGenerated(tests, origin);
         // Introspection records no text for an image link, so each is titled by its target.
-        const byTarget = Object.fromEntries(["/logo", "/titled", "/alt"].map((path) => [path, results.filter((result) => result.title === `Untitled link to ${origin}${path} [link]`)]));
-        assert.equal(results.length, 3, JSON.stringify(results));
-        assert.deepEqual(Object.fromEntries(Object.entries(byTarget).map(([path, list]) => [path, list.map((result) => result.status)])), { "/logo": ["Failed"], "/titled": ["Passed"], "/alt": ["Passed"] }, JSON.stringify(results));
+        const byTarget = Object.fromEntries(["/logo", "/blank", "/titled", "/alt"].map((path) => [path, results.filter((result) => result.title === `Untitled link to ${origin}${path} [link]`)]));
+        assert.equal(results.length, 4, JSON.stringify(results));
+        assert.deepEqual(Object.fromEntries(Object.entries(byTarget).map(([path, list]) => [path, list.map((result) => result.status)])), { "/logo": ["Failed"], "/blank": ["Failed"], "/titled": ["Passed"], "/alt": ["Passed"] }, JSON.stringify(results));
         assert.match(byTarget["/logo"][0].message, /has no accessible name: HTML-AAM 4\.1\.10/);
         assert.match(byTarget["/logo"][0].message, /\/logo/, "names the link");
+        assert.match(byTarget["/blank"][0].message, /\/blank has no accessible name: HTML-AAM 4\.1\.10/);
     } finally {
         await close();
     }

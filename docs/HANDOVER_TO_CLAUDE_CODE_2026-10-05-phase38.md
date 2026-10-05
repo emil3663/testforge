@@ -46,8 +46,9 @@ starts, so a session opened before then doesn't use it.
    Before pushing, correct RUN-25's numbers as the `b9ca79b` verification
    entry in the Phase 38 record says, in one `docs` commit with these doc
    updates. Then push.
-4. **TFP-152:** the image-link false pass. Its approach is decided and
-   recorded in the ticket: follow HTML-AAM 4.1.10.
+4. **TFP-152:** `34622b0`. Make the whitespace-`alt` fix in its
+   verification entry in the backlog, as a follow-up commit with these doc
+   updates, then push.
 5. **TFP-147, TFP-148, TFP-149** in any order (TFP-148 after TFP-152). Then
    **TFP-150**. Stop at Gate B.
 6. TFP-151 waits until after Phase 38.
