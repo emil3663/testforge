@@ -40,6 +40,13 @@ import { hiddenAtIntrospectionComment } from "./shared";
  * those it was. Links with an id keep the id; links without a target keep
  * the previous locator. buildLocatorExpression itself is unchanged - the
  * functional checks share it.
+ *
+ * The position counts only links with the visibility introspection
+ * recorded, in the recorded data and in the page. Introspection drops a link
+ * that repeats another's URL, text and container whatever its visibility, so
+ * a hidden mobile copy of a menu link is in the page but not in the data;
+ * counted, it shifted the footer copy's check onto itself and failed a
+ * named link. The visibility rule is introspection's own isVisibleElement.
  */
 function linkLookup(element: ActionableElementDetail, occurrence: number, name: string) {
     if (element.elementType !== "link" || !element.url || element.locator.id) {
@@ -47,12 +54,18 @@ function linkLookup(element: ActionableElementDetail, occurrence: number, name: 
     }
     const target = escapeForSingleQuotedString(element.url);
     const text = escapeForSingleQuotedString(element.text);
-    return `    // The link introspection recorded: href ${target}, text '${text}', match ${occurrence + 1} of those.
+    const visibility = element.isVisible ? "visible" : "hidden";
+    return `    // The link introspection recorded: href ${target}, text '${text}', match ${occurrence + 1} of those that are ${visibility}.
     let linkIndex = -1;
     await expect.poll(async () => (linkIndex = await page.locator('a').evaluateAll((links, wanted) => links
       .map((link, index) => ({ link, index }))
       .filter(({ link }) => (link as HTMLAnchorElement).href === wanted.url && (link.textContent ?? '').replace(/\\s+/g, ' ').trim() === wanted.text)
-      .map(({ index }) => index)[wanted.occurrence] ?? -1, { url: '${target}', text: '${text}', occurrence: ${occurrence} })), { message: '${name} (a link to ${target}) is not on the page' }).toBeGreaterThanOrEqual(0);
+      .filter(({ link }) => {
+        const style = getComputedStyle(link);
+        const box = link.getBoundingClientRect();
+        return (style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0) === wanted.visible;
+      })
+      .map(({ index }) => index)[wanted.occurrence] ?? -1, { url: '${target}', text: '${text}', visible: ${element.isVisible}, occurrence: ${occurrence} })), { message: '${name} (a ${visibility} link to ${target}) is not on the page' }).toBeGreaterThanOrEqual(0);
     const locator = page.locator('a').nth(linkIndex);`;
 }
 
@@ -68,8 +81,8 @@ export function buildAccessibilityElementTests(
     return elements.map((element, position) => {
         const name = escapeForSingleQuotedString(getActionableElementDisplayName(element));
         const title = escapeForSingleQuotedString(buildAccessibilityElementTitle(element));
-        // Which of the recorded links with this target and text this one is, in page order.
-        const occurrence = allElements.slice(0, position).filter((other) => other.elementType === "link" && other.url === element.url && other.text === element.text).length;
+        // Which of the recorded links with this target, text and visibility this one is, in page order.
+        const occurrence = allElements.slice(0, position).filter((other) => other.elementType === "link" && other.url === element.url && other.text === element.text && other.isVisible === element.isVisible).length;
         const locatorSetup = linkLookup(element, occurrence, name) ?? `    const locator = ${buildLocatorExpression(element)};`;
 
         // Elements hidden at introspection time are excluded from the

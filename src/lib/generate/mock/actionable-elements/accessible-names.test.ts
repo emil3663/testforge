@@ -41,23 +41,53 @@ const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
 <footer><p>Footer</p><a href="/">Home</a></footer>
 </body></html>`;
 
-test("the generated checks type-check, and no link check uses getByText or .first()", () => {
+// TFP-145 follow-up: a visible menu link, a hidden (mobile) copy in the same
+// container, and a visible footer copy. Introspection drops the hidden copy as
+// a duplicate of the menu link, so it records two visible "Home" links - but
+// the page has three. ISTQB technique: error guessing - the fault was found by
+// reading introspection's dedupe, and this page is built to trigger it.
+const HIDDEN_COPY_PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Hidden copy</title></head><body>
+<nav><ul class="menu"><li><a href="/">Home</a></li><li style="display: none"><a href="/">Home</a></li><li><a href="/about/">About</a></li></ul></nav>
+<main><h1>Hidden copy</h1></main>
+<footer><p>Footer</p><a href="/">Home</a></footer>
+</body></html>`;
+
+test("the generated checks type-check, no link check uses getByText or .first(), and positions count only links of the same visibility", () => {
     const profile = {
         pages: [{
             path: "/", url: "http://x.test/", title: "", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [],
             actionableElements: [
                 { text: "Home", url: "http://x.test/", category: "navigation", elementType: "link", containerLabel: "", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: "link", name: "", label: "", placeholder: "", id: "", inputType: "" } },
                 { text: "Home", url: "http://x.test/", category: "navigation", elementType: "link", containerLabel: "Footer", expectedStatus: null, isVisible: false, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: "link", name: "", label: "", placeholder: "", id: "", inputType: "" } },
+                { text: "Home", url: "http://x.test/", category: "navigation", elementType: "link", containerLabel: "Legal", expectedStatus: null, isVisible: true, ariaPressed: null, ariaSelected: null, ariaChecked: null, ariaExpanded: null, groupId: null, locator: { role: "link", name: "", label: "", placeholder: "", id: "", inputType: "" } },
             ],
         }],
     } as unknown as ContentProfile;
     const tests = buildAccessibilityElementTests(profile, "/");
-    assert.equal(tests.length, 2);
+    assert.equal(tests.length, 3);
     assert.deepEqual(findTypeErrors(`import { test, expect } from '@playwright/test';\n${tests.join("\n")}\n`), []);
     for (const code of tests) assert.doesNotMatch(code, /getByText|\.first\(\)/);
-    assert.match(tests[0], /occurrence: 0 /);
-    assert.match(tests[1], /occurrence: 1 /);
+    // Visible, hidden, visible: the hidden link is the first hidden one; the third is the second visible one.
+    assert.match(tests[0], /visible: true, occurrence: 0 /);
+    assert.match(tests[1], /visible: false, occurrence: 0 /);
+    assert.match(tests[2], /visible: true, occurrence: 1 /);
 });
+
+/** Serves the given pages by path (404 otherwise) on a free local port. */
+async function serve(pages: Record<string, string>) {
+    const server = createServer((req, res) => {
+        const page = pages[new URL(req.url ?? "/", "http://x").pathname];
+        res.writeHead(page ? 200 : 404, { "content-type": "text/html; charset=utf-8" }).end(page ?? "");
+    });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    return {
+        origin: `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
+        close: async () => {
+            server.closeAllConnections();
+            await new Promise<void>((resolve) => server.close(() => resolve()));
+        },
+    };
+}
 
 /** Runs generated tests through the Playwright CLI, returning each one's outcome and message by title. */
 async function runGenerated(tests: string[], baseURL: string) {
@@ -89,12 +119,7 @@ async function runGenerated(tests: string[], baseURL: string) {
 }
 
 test("in a real browser: a span-wrapped menu link passes; same-text links each test their own link; unnamed links fail by name", { skip: needsChromium }, async () => {
-    const server = createServer((req, res) => {
-        const found = new URL(req.url ?? "/", "http://x").pathname === "/names";
-        res.writeHead(found ? 200 : 404, { "content-type": "text/html; charset=utf-8" }).end(found ? PAGE : "");
-    });
-    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
-    const origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+    const { origin, close } = await serve({ "/names": PAGE });
     try {
         const { pages } = await inspectPages(origin, ["/names"]);
         const tests = buildAccessibilityElementTests({ pages } as unknown as ContentProfile, "/names");
@@ -116,7 +141,22 @@ test("in a real browser: a span-wrapped menu link passes; same-text links each t
         assert.equal(icon[0].status, "Failed");
         assert.match(icon[0].message, /Untitled link to .*\/login\?from=icon has no accessible name/);
     } finally {
-        server.closeAllConnections();
-        await new Promise<void>((resolve) => server.close(() => resolve()));
+        await close();
+    }
+});
+
+test("in a real browser: a hidden copy in the menu does not shift the footer link's check onto it", { skip: needsChromium }, async () => {
+    const { origin, close } = await serve({ "/hidden-copy": HIDDEN_COPY_PAGE });
+    try {
+        const { pages } = await inspectPages(origin, ["/hidden-copy"]);
+        const recorded = pages[0].actionableElements.filter((element) => element.text === "Home");
+        // The scenario needs introspection to have dropped the hidden copy.
+        assert.deepEqual(recorded.map((element) => element.isVisible), [true, true], JSON.stringify(recorded));
+
+        const tests = buildAccessibilityElementTests({ pages } as unknown as ContentProfile, "/hidden-copy");
+        const home = (await runGenerated(tests, origin)).filter((result) => result.title === "Home [link]");
+        assert.deepEqual(home.map((result) => result.status), ["Passed", "Passed"], JSON.stringify(home));
+    } finally {
+        await close();
     }
 });
