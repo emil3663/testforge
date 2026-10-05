@@ -181,6 +181,17 @@ const server = createServer(async (req, res) => {
 <p><a href="#">Menu</a> <a href="#details">Details</a> <a href="#top">Back to top</a></p>
 <h2 id="details">Details</h2>`));
     }
+    // TFP-145: the links the Standard accessible-name check misjudged on a
+    // real site - a menu link whose text sits in a <span> (named; it failed
+    // as unnamed), two "Open" links to different places, one of them
+    // genuinely unnamed (its text is aria-hidden), and an image link with no
+    // alt (unnamed). Not linked from the nav, like /anchors.
+    if (url.pathname === "/names" && req.method === "GET") {
+        return send(200, page("Link names", `<h1>Link names</h1>
+<ul class="menu"><li><a href="/"><span>Home</span></a></li><li><a href="/notes"><span>Notes</span></a></li></ul>
+<p><a href="/notes">Open</a> <a href="/login"><span aria-hidden="true">Open</span></a></p>
+<p><a href="/login?from=icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='20' height='20' fill='%23336'/%3E%3C/svg%3E" width="20" height="20"></a></p>`));
+    }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);
         const note = (form.note ?? "").trim();
