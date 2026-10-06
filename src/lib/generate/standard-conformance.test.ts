@@ -154,6 +154,8 @@ const ACCESSIBILITY_DEFECTS: Record<string, { page: string; shows: RegExp }> = {
     "a11y-missing-alt": { page: "/", shows: /failure WCAG 1\.1\.1 image-alt \(critical\)/ },
     "a11y-low-contrast": { page: "/", shows: /failure WCAG 1\.4\.3 color-contrast \(serious\)/ },
 };
+// Text over a background image: axe cannot work out the contrast, so it reports the item as incomplete.
+const UNDECIDED = "a11y-text-over-image";
 
 test("in a real browser: on the fixture, the Standard run's axe scan and the Comprehensive one report the same for every page, for the clean site and each WCAG defect (TFP-148)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
@@ -165,7 +167,8 @@ test("in a real browser: on the fixture, the Standard run's axe scan and the Com
         assert.deepEqual(findTypeErrors(standard), []);
         const isScan = (record: ExecutionRecord) => record.title.endsWith(AXE_SCAN);
 
-        for (const defect of ["none", ...Object.keys(ACCESSIBILITY_DEFECTS)]) {
+        let clean: Record<string, Outcome> | null = null;
+        for (const defect of ["none", UNDECIDED, ...Object.keys(ACCESSIBILITY_DEFECTS)]) {
             await fixture.control(`/__fixture/defect?set=${defect}`);
             const standardRun = await runSuite(standard, "standard-a11y");
             const standardScans = outcomes(standardRun.records, isScan);
@@ -180,7 +183,22 @@ test("in a real browser: on the fixture, the Standard run's axe scan and the Com
             assert.equal(report.manualReview?.length ?? 0, undecided.length, `${defect}: ${JSON.stringify(report.manualReview)}`);
 
             if (defect === "none") {
+                clean = standardScans;
                 assert.ok(Object.values(standardScans).every((outcome) => outcome.status === "Passed"), JSON.stringify(standardScans));
+                assert.ok(!report.manualReview?.some((item) => /color-contrast/.test(item.detail)), `the clean site leaves no contrast undecided: ${JSON.stringify(report.manualReview)}`);
+                continue;
+            }
+            if (defect === UNDECIDED) {
+                // Not counted as passed: the item is listed for a person to check, in the report and its HTML,
+                // and is neither a finding nor a failure. The scan itself still passes (Phase 35 Decision 4).
+                const home = standardScans[`/ | / ${AXE_SCAN}`];
+                assert.equal(home.status, "Passed", JSON.stringify(home));
+                assert.deepEqual(home.findings, clean![`/ | / ${AXE_SCAN}`].findings, "no new finding");
+                assert.match(home.issues.join("\n"), /^manual-review WCAG 1\.4\.3 color-contrast: .* - p:nth-child\(2\)$/m, JSON.stringify(home));
+                const listed = (report.manualReview ?? []).filter((item) => item.page === "/" && /^WCAG 1\.4\.3 color-contrast: /.test(item.detail));
+                assert.equal(listed.length, 1, JSON.stringify(report.manualReview));
+                const html = buildReportHtmlDocument(report, "r");
+                assert.ok(html.includes(`Needs manual review (${report.manualReview!.length})`) && html.includes(listed[0].detail), "the HTML export lists it under Needs manual review");
                 continue;
             }
             const { page, shows } = ACCESSIBILITY_DEFECTS[defect];

@@ -38,6 +38,10 @@ export const DEFECTS = {
     // a11y-unlabelled-field above. The clean site's responses are unchanged.
     "a11y-missing-alt": "the home page shows an image with no alternative text",
     "a11y-low-contrast": "the home page's introduction is light grey on white",
+    // Phase 38 (TFP-148): not a defect, a case axe cannot decide. Text over a
+    // background image leaves colour contrast "incomplete", so the scan
+    // lists it for manual review and still passes.
+    "a11y-text-over-image": "the home page's introduction is white text over a background image",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
     // the home page's hero image back, so the load event and the largest
     // contentful paint land about 3 s or 5 s in; the layout-shift defects
@@ -106,7 +110,7 @@ function home() {
     return page(
         "Home",
         `<h1>Acme Notes</h1>
-<p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `
+<p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : defect === "a11y-text-over-image" ? ' style="color:#fff;background-image:url(/hero.svg);padding:1em"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `
 <p><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E" width="40" height="40"></p>` : ""}
 <p id="status">Checking status...</p>
 <p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>${lcpDelay ? `
@@ -186,6 +190,7 @@ const server = createServer(async (req, res) => {
 
     if (url.pathname === "/hero.svg") {
         // TFP-149: the slow-LCP defects' hero image, held back by ?delay= ms.
+        // TFP-148: a11y-text-over-image's background, not held back.
         await new Promise((r) => setTimeout(r, Math.min(Number(url.searchParams.get("delay")) || 0, 10000)));
         return send(200, HERO_SVG, "image/svg+xml");
     }
