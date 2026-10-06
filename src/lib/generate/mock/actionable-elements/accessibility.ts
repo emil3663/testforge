@@ -81,6 +81,83 @@ function linkLookup(element: ActionableElementDetail, occurrence: number, name: 
     const locator = page.locator('a').nth(linkIndex);`;
 }
 
+/**
+ * TFP-151: TFP-145's approach for the other element types. A button,
+ * select, textarea or input with no id, label or placeholder was located
+ * with getByText(text).first(): the element holding the text - the <span>
+ * inside a button - which has no name, and always the first of same-text
+ * elements. It is now found among its own kind by the text introspection
+ * recorded (computed as introspection does), its visibility and its
+ * position among those.
+ */
+const KIND_SELECTORS: Partial<Record<ActionableElementDetail["elementType"], string>> = {
+    button: 'button, input[type="button"], input[type="submit"], input[type="reset"], [role="button"]:not(a)',
+    select: "select",
+    textarea: "textarea",
+    input: 'input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])',
+};
+
+function controlLookup(element: ActionableElementDetail, occurrence: number, name: string) {
+    const selector = KIND_SELECTORS[element.elementType];
+    const locatedByText = !element.locator.id && !(element.locator.role && element.locator.name) && !element.locator.label && !element.locator.placeholder;
+    if (!selector || !locatedByText || !element.text) {
+        return null;
+    }
+    const text = escapeForSingleQuotedString(element.text);
+    const visibility = element.isVisible ? "visible" : "hidden";
+    const kind = escapeForSingleQuotedString(selector);
+    return `    // The ${element.elementType} introspection recorded: text '${text}', match ${occurrence + 1} of those that are ${visibility} (TFP-151).
+    let elementIndex = -1;
+    await expect.poll(async () => (elementIndex = await page.locator('${kind}').evaluateAll((nodes, wanted) => nodes
+      .map((node, index) => ({ node, index }))
+      .filter(({ node }) => {
+        const text = node instanceof HTMLInputElement ? node.value || node.getAttribute('aria-label') || node.getAttribute('placeholder') || node.name || '' : node.textContent ?? '';
+        return text.replace(/\\s+/g, ' ').trim() === wanted.text;
+      })
+      .filter(({ node }) => {
+        const style = getComputedStyle(node);
+        const box = node.getBoundingClientRect();
+        return (style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0) === wanted.visible;
+      })
+      .map(({ index }) => index)[wanted.occurrence] ?? -1, { text: '${text}', visible: ${element.isVisible}, occurrence: ${occurrence} })), { message: '${name} (a ${visibility} ${element.elementType}) is not on the page' }).toBeGreaterThanOrEqual(0);
+    const locator = page.locator('${kind}').nth(elementIndex);`;
+}
+
+/**
+ * TFP-151 (T23): a form is the <form> itself - by TFP-160's record (action,
+ * method, occurrence), or the nth <form> in a profile without one - never the
+ * element holding its text, which on practicesoftwaretesting.com was a <div>.
+ */
+function formLookup(element: ActionableElementDetail, profileFormIndex: number, name: string) {
+    if (element.elementType !== "form" || element.locator.id) {
+        return null;
+    }
+    if (!element.form) {
+        return `    // The page's form number ${profileFormIndex + 1}, in the order the page was inspected (no form record in this profile).
+    const locator = page.locator('form').nth(${profileFormIndex});`;
+    }
+    const { action, method, occurrence } = element.form;
+    return `    // The <form> introspection recorded, by its action and method as written and which of those it is (TFP-160).
+    const formIndex = await page.locator('form').evaluateAll((nodes, wanted) => nodes
+      .map((node, position) => ({ position, action: node.getAttribute('action') ?? '', method: (node.getAttribute('method') ?? '').toLowerCase() }))
+      .filter((form) => form.action === wanted.action && form.method === wanted.method)
+      .map((form) => form.position)[wanted.occurrence] ?? -1, { action: '${escapeForSingleQuotedString(action)}', method: '${escapeForSingleQuotedString(method)}', occurrence: ${occurrence} });
+    expect(formIndex, '${name} (a form) is not on the page').toBeGreaterThanOrEqual(0);
+    const locator = page.locator('form').nth(formIndex);`;
+}
+
+/**
+ * TFP-151 (decided by Emil, 2026-10-06): an element with no role has no
+ * name to check. Under HTML-AAM a <form> has the form role only when it has
+ * an accessible name; without aria-label, aria-labelledby or title it is
+ * generic. Such a check is Not run, with that reason, not passed.
+ */
+function noRoleSkip(name: string) {
+    return `    // HTML-AAM: a <form> has the form role only when it is named; unnamed, it is generic and has no name to check (TFP-151).
+    const unnamedForm = await locator.evaluate((node) => !node.getAttribute('role') && !['aria-label', 'aria-labelledby', 'title'].some((attribute) => (node.getAttribute(attribute) ?? '').trim() !== ''));
+    test.skip(unnamedForm, '${name} is a <form> with no accessible name, so it has no role (HTML-AAM): there is no name to check');`;
+}
+
 export function buildAccessibilityElementTests(
     contentProfile: ContentProfile | null,
     path = "/"
@@ -95,7 +172,13 @@ export function buildAccessibilityElementTests(
         const title = escapeForSingleQuotedString(buildAccessibilityElementTitle(element));
         // Which of the recorded links with this target, text and visibility this one is, in page order.
         const occurrence = allElements.slice(0, position).filter((other) => other.elementType === "link" && other.url === element.url && other.text === element.text && other.isVisible === element.isVisible).length;
-        const locatorSetup = linkLookup(element, occurrence, name) ?? `    const locator = ${buildLocatorExpression(element)};`;
+        // TFP-151: likewise, which of the recorded elements of its kind, text and visibility this one is.
+        const kindOccurrence = allElements.slice(0, position).filter((other) => other.elementType === element.elementType && other.text === element.text && other.isVisible === element.isVisible).length;
+        const locatorSetup = linkLookup(element, occurrence, name)
+            ?? formLookup(element, allElements.filter((other) => other.elementType === "form").indexOf(element), name)
+            ?? controlLookup(element, kindOccurrence, name)
+            ?? `    const locator = ${buildLocatorExpression(element)};`;
+        const isUnnamedFormCandidate = element.elementType === "form";
 
         // Elements hidden at introspection time are excluded from the
         // accessibility tree entirely (accessible name/role computation
@@ -118,7 +201,8 @@ ${locatorSetup}
     await page.waitForLoadState('domcontentloaded');
 
 ${locatorSetup}
-    // HTML-AAM 4.1.10: an <img> whose alt is empty once trimmed of whitespace is presentational and has no name; its title
+${isUnnamedFormCandidate ? `${noRoleSkip(name)}
+` : ""}    // HTML-AAM 4.1.10: an <img> whose alt is empty once trimmed of whitespace is presentational and has no name; its title
     // counts only when there is no alt. Playwright falls back to that title, so it is taken off before the name is read (the page is not reused).
     const presentationalTitles = await locator.evaluate((element) => Array.from(element.querySelectorAll('img[alt][title]')).filter((image) => /^[\\t\\n\\f\\r ]*$/.test(image.getAttribute('alt') ?? '')).map((image) => {
       const title = image.getAttribute('title') ?? '';
