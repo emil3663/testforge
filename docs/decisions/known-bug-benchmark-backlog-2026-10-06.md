@@ -154,6 +154,36 @@ services to third parties. So:
   - Re-run TFP-154 step 1. The with-bugs crawl finds the routes that the
     clean site finds as paths, give or take the sites' own differences.
 - **Dependencies:** none. TFP-154 depends on it.
+- **Done, `8324b2b`, verified 2026-10-06 (Cowork):**
+  - `check:template-unchanged 2f435a6 8324b2b` gives 166 of 166 identical.
+  - The re-run crawl (`b187e25`) finds 34 pages on with-bugs, up from 1,
+    and the clean site's 46 match its first run exactly. Both sites have
+    the same 8 main routes. `/#/category/undefined` and `/#/chainsaws`
+    exist only on with-bugs, and are listed bugs.
+  - Read in the code: `isRouteFragment` follows Decision 1, and
+    `pagePathOf` Decision 2. The start route (`#/`, `#!/`) is never
+    compared with the missing-route view, so an app that sends unknown
+    routes home doesn't fail its own home link.
+  - Measured by Code: the `/spa` fixture case (453/453 in the unit suite)
+    fails on the old code.
+  - Known limits, accepted:
+    - a page whose text changes on every load can make a missing route look
+      found, which is a miss, not a false failure;
+    - TFP-161's orphan check still clears the `#…` part, so it is
+      meaningless on a hash-routed site. That is TFP-166.
+
+### TFP-166 — The orphan-page check on hash-routed sites
+
+- **Priority:** P2 (before TFP-154) · **Labels:** `bug`, `generate`, `seo`
+- **Problem it solves:** TFP-161's orphan check clears the `#…` part of
+  each link, so on a hash-routed site every route counts as `/`. Its result
+  there means nothing, and it would mix into TFP-154's score.
+- **Scope:** count inbound links by `pagePathOf`, as the crawl now does.
+- **Acceptance criteria:**
+  - On the `/spa` fixture, a route no other route links to fails as an
+    orphan, and linked routes pass.
+  - `check:template-unchanged` gives 166 of 166 identical.
+- **Dependencies:** TFP-165.
 
 ### TFP-154 — Run TestForge against both versions and score it
 
@@ -176,7 +206,7 @@ services to third parties. So:
   - every failure on the with-bugs site is either a scored bug or a labelled
     failure;
   - the report says which areas' Standard sets the misses point to.
-- **Dependencies:** TFP-153 and TFP-165. The template fixes TFP-151 and
+- **Dependencies:** TFP-153, TFP-165 and TFP-166. The template fixes TFP-151 and
   TFP-159 to TFP-161 come first (done 2026-10-06), so their false failures
   on this same site don't mix into the score.
 - **Step 1 done, `c1685b7`, verified 2026-10-06 (Cowork):** the committed
@@ -187,7 +217,8 @@ services to third parties. So:
 
 1. Confirm Decisions 1 to 4. **Done, 2026-10-06.**
 2. TFP-153. **Done 2026-10-06 (Cowork).**
-3. TFP-165 (hash routes), raised by TFP-154 step 1.
+3. TFP-165 (hash routes), raised by TFP-154 step 1. **Done, `8324b2b`,
+   verified 2026-10-06.** Then TFP-166 (the orphan check on hash routes).
 4. TFP-154, at the read-only gate on the hosted sites.
 5. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
