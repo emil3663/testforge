@@ -293,6 +293,23 @@ other hosts; otherwise half the CPU cores. Tickets TFP-155 to TFP-158;
 starts after Phase 38 Gate B. See
 `phase-39-run-concurrency-decision-record.md`.
 
+
+### Phase 40 (candidate) — Page-type selection (draft 2026-10-06)
+Group a site's crawled pages into types (templates) by address pattern and
+page outline, and test one page of every type. Pages are no longer chosen
+in crawl order.
+- **Standard:** one page per type, not capped at 5 (Emil, 2026-10-06). A cap
+  of about 8 is recommended. Home, form pages and the biggest type are never
+  dropped; content pages go first.
+- **Comprehensive:** covers every type before a second page of any.
+- **The report:** names the types found, covered and skipped, with each page's
+  full URL, and ends with a copyable list. Pasted into the URL field (one per
+  line), the list re-runs exactly those pages (Emil, 2026-10-06).
+- **Measurement:** scored against the Toolshop answer key, beside TFP-154's
+  hand-picked list.
+
+See `phase-40-page-type-selection-decision-record.md`.
+
 ---
 
 ## Sequencing note
