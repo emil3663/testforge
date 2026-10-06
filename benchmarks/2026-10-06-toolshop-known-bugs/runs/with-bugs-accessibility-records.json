@@ -1,0 +1,237 @@
+{
+  "label": "with-bugs-accessibility",
+  "site": "https://with-bugs.practicesoftwaretesting.com",
+  "kind": "accessibility",
+  "paths": [
+    "/#/",
+    "/#/category/hand-tools",
+    "/#/product/1",
+    "/#/contact",
+    "/#/auth/login",
+    "/#/auth/register",
+    "/#/auth/forgot-password",
+    "/#/rentals",
+    "/#/chainsaws"
+  ],
+  "commit": "26fed09",
+  "startedAt": "2026-10-06T12:42:58.131Z",
+  "generateSeconds": 0,
+  "runSeconds": 45,
+  "tests": 18,
+  "byStatus": {
+    "Failed": 11,
+    "Passed": 7
+  },
+  "records": [
+    {
+      "title": "TFAC-001: /#/ passes the WCAG 2.2 A and AA scan",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text -.navbar-brand > img[src$=\"broken.png\"],.img-fluid,.grid-title:nth-child(7) > img[src$=\"broken.png\"]; WCAG 4.1.2 label (critical): Form elements must have labels -.form-control; WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select expect(received).toEqual(expected) // deep equal",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - .navbar-brand > img[src$=\"broken.png\"], .img-fluid, .grid-title:nth-child(7) > img[src$=\"broken.png\"]",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - .form-control",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select, .grid-title:nth-child(7)"
+      ]
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /#/",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: form fields on /#/ with no accessible name (a screen reader announces them without a label): select, input[type=\"text\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"select\", + \"input[type=\\\"text\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: /#/category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/category/hand-tools: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img; WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio threshold",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select"
+      ]
+    },
+    {
+      "title": "TFAC-004: every form field has an accessible name: /#/category/hand-tools",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: form fields on /#/category/hand-tools with no accessible name (a screen reader announces them without a label): select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"select\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /#/product/1 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/1: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\\\"_blank\\\"]:nth-child(1), a[target=\\\"_blank\\\"]:nth-child(2)\", + \"WCAG 1.1.1 image-",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /#/product/1",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /#/contact passes the WCAG 2.2 A and AA scan",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/contact: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\\\"_blank\\\"]:nth-child(1), a[target=\\\"_blank\\\"]:nth-child(2)\", + \"WCAG 1.1.1 image-al",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, #subject"
+      ]
+    },
+    {
+      "title": "TFAC-008: every form field has an accessible name: /#/contact",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /#/auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/login: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn\", + \"WCAG 1.4.3 color-contrast (serious",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, a[data-test=\"footer-learn-courses\"] > span > .text-muted, a[href$=\"api-spector.dev\"] > span > .text-muted"
+      ]
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /#/auth/login",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /#/auth/login, which disappears as the user types: #email (\"Your E-mail *\")",
+        "form field named only by its placeholder on /#/auth/login, which disappears as the user types: #password (\"Your password *\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /#/auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/register: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn\", + \"WCAG 1.4.3 color-contrast (seri",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container[_ngcontent-ng-c2781432996=\"\"] > span, #country",
+        "manual-review WCAG 4.1.2 duplicate-id-aria: IDs used in ARIA and labels must be unique - app-password-input"
+      ]
+    },
+    {
+      "title": "TFAC-012: every form field has an accessible name: /#/auth/register",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/forgot-password: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\\\"_blank\\\"]:nth-child(1), a[target=\\\"_blank\\\"]:nth-child(2)\", + \"WCAG 1",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /#/auth/forgot-password",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /#/auth/forgot-password, which disappears as the user types: #email (\"Your E-mail *\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /#/rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/#/rentals",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/rentals: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\\\"_blank\\\"]:nth-child(1), a[target=\\\"_blank\\\"]:nth-child(2)\", + \"WCAG 1.1.1 image-al",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-016: every form field has an accessible name: /#/rentals",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /#/chainsaws passes the WCAG 2.2 A and AA scan",
+      "page": "/#/chainsaws",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/chainsaws: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\\\"_blank\\\"]:nth-child(1), a[target=\\\"_blank\\\"]:nth-child(2)\", + \"WCAG 1.1.1 image-",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - p > a[target=\"_blank\"]:nth-child(1), a[target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /#/chainsaws",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

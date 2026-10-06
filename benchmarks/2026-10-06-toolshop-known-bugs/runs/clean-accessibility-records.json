@@ -1,0 +1,192 @@
+{
+  "label": "clean-accessibility",
+  "site": "https://practicesoftwaretesting.com",
+  "kind": "accessibility",
+  "paths": [
+    "/",
+    "/category/hand-tools",
+    "/product/01M48AGCWN26TFYQ1FQ6S7FNJF",
+    "/contact",
+    "/auth/login",
+    "/auth/register",
+    "/auth/forgot-password",
+    "/rentals"
+  ],
+  "commit": "26fed09",
+  "startedAt": "2026-10-06T12:54:19.279Z",
+  "generateSeconds": 0,
+  "runSeconds": 21,
+  "tests": 16,
+  "byStatus": {
+    "Passed": 16
+  },
+  "records": [
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - span"
+      ]
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: /category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select, a[data-test=\"footer-learn-courses\"] > span > .text-muted, a[href$=\"api-spector.dev\"] > span > .text-muted"
+      ]
+    },
+    {
+      "title": "TFAC-004: every form field has an accessible name: /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /product/01M48AGCWN26TFYQ1FQ6S7FNJF passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M48AGCWN26TFYQ1FQ6S7FNJF",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /product/01M48AGCWN26TFYQ1FQ6S7FNJF",
+      "page": "/product/01M48AGCWN26TFYQ1FQ6S7FNJF",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /contact passes the WCAG 2.2 A and AA scan",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - span"
+      ]
+    },
+    {
+      "title": "TFAC-008: every form field has an accessible name: /contact",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /auth/login",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - span"
+      ]
+    },
+    {
+      "title": "TFAC-012: every form field has an accessible name: /auth/register",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /auth/forgot-password",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-016: every form field has an accessible name: /rentals",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

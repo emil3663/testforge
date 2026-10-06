@@ -1,0 +1,413 @@
+{
+  "label": "with-bugs-security",
+  "site": "https://with-bugs.practicesoftwaretesting.com",
+  "kind": "security",
+  "paths": [
+    "/#/",
+    "/#/category/hand-tools",
+    "/#/product/1",
+    "/#/contact",
+    "/#/auth/login",
+    "/#/auth/register",
+    "/#/auth/forgot-password",
+    "/#/rentals",
+    "/#/chainsaws"
+  ],
+  "commit": "26fed09",
+  "startedAt": "2026-10-06T12:42:21.894Z",
+  "generateSeconds": 0,
+  "runSeconds": 36,
+  "tests": 37,
+  "byStatus": {
+    "Passed": 37
+  },
+  "records": [
+    {
+      "title": "TFSC-001: /#/ sends its security headers and session cookies",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/",
+        "any site can frame /#/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/",
+        "no referrer policy on /#/ (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-002: /#/ names no software version in its response headers",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-003: /#/ keeps passwords off plain HTTP",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-004: /#/ puts no password or session token in a URL",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-005: /#/category/hand-tools sends its security headers and session cookies",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/category/hand-tools",
+        "any site can frame /#/category/hand-tools: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/category/hand-tools",
+        "no referrer policy on /#/category/hand-tools (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/category/hand-tools"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-006: /#/category/hand-tools names no software version in its response headers",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-007: /#/category/hand-tools keeps passwords off plain HTTP",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-008: /#/category/hand-tools puts no password or session token in a URL",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-009: /#/product/1 sends its security headers and session cookies",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/1",
+        "any site can frame /#/product/1: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/1",
+        "no referrer policy on /#/product/1 (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/product/1"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-010: /#/product/1 names no software version in its response headers",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-011: /#/product/1 keeps passwords off plain HTTP",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-012: /#/product/1 puts no password or session token in a URL",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-013: /#/contact sends its security headers and session cookies",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/contact",
+        "any site can frame /#/contact: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/contact",
+        "no referrer policy on /#/contact (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/contact"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-014: /#/contact names no software version in its response headers",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-015: /#/contact keeps passwords off plain HTTP",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-016: /#/contact puts no password or session token in a URL",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-017: /#/auth/login sends its security headers and session cookies",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/login",
+        "any site can frame /#/auth/login: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/login",
+        "no referrer policy on /#/auth/login (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/auth/login"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-018: /#/auth/login names no software version in its response headers",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-019: /#/auth/login keeps passwords off plain HTTP",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-020: /#/auth/login puts no password or session token in a URL",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-021: /#/auth/register sends its security headers and session cookies",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/register",
+        "any site can frame /#/auth/register: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/register",
+        "no referrer policy on /#/auth/register (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/auth/register"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-022: /#/auth/register names no software version in its response headers",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-023: /#/auth/register keeps passwords off plain HTTP",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-024: /#/auth/register puts no password or session token in a URL",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-025: /#/auth/forgot-password sends its security headers and session cookies",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/forgot-password",
+        "any site can frame /#/auth/forgot-password: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/forgot-password",
+        "no referrer policy on /#/auth/forgot-password (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/auth/forgot-password"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-026: /#/auth/forgot-password names no software version in its response headers",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-027: /#/auth/forgot-password keeps passwords off plain HTTP",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-028: /#/auth/forgot-password puts no password or session token in a URL",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-029: /#/rentals sends its security headers and session cookies",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/rentals",
+        "any site can frame /#/rentals: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/rentals",
+        "no referrer policy on /#/rentals (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/rentals"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-030: /#/rentals names no software version in its response headers",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-031: /#/rentals keeps passwords off plain HTTP",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-032: /#/rentals puts no password or session token in a URL",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-033: /#/chainsaws sends its security headers and session cookies",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/chainsaws",
+        "any site can frame /#/chainsaws: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/chainsaws",
+        "no referrer policy on /#/chainsaws (no Referrer-Policy header or meta referrer)",
+        "no Strict-Transport-Security header on /#/chainsaws"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-034: /#/chainsaws names no software version in its response headers",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-035: /#/chainsaws keeps passwords off plain HTTP",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-036: /#/chainsaws puts no password or session token in a URL",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-037: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}
