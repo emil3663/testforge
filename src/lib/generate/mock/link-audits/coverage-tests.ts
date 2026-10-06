@@ -1,4 +1,5 @@
 import type { LinkDetail } from "../types";
+import { RUNTIME_HIDDEN_LINK_LOCATOR } from "./reveal";
 
 export function buildLinkCoverageTests(
     escapedPath: string,
@@ -6,7 +7,8 @@ export function buildLinkCoverageTests(
     allLinkPayload: string,
     interactionNonApiLinks: LinkDetail[],
     isFastLinkAudit: boolean,
-    escapedCurrentPageUrl: string
+    escapedCurrentPageUrl: string,
+    hasHiddenLinks = false
 ) {
     const tests: string[] = [];
 
@@ -95,7 +97,25 @@ export function buildLinkCoverageTests(
         await page.waitForLoadState('domcontentloaded');
 
         for (const link of links) {
-            const locator = link.text
+${hasHiddenLinks ? `            // TFP-159: a link hidden at inspection (a closed menu, a collapsed navbar) is classified by its
+            // own address and its presence; whether users can reach it is the keyboard check's question.
+            if (!link.isVisible) {
+                const hiddenLocator = ${RUNTIME_HIDDEN_LINK_LOCATOR};
+                await expect(hiddenLocator, (link.text || link.url) + ' is not on the page').toBeAttached();
+                if (link.linkType === 'internal') {
+                    expect(new URL(link.url).origin).toBe(new URL('${escapedCurrentPageUrl}').origin);
+                } else if (link.linkType === 'external') {
+                    expect(new URL(link.url).origin).not.toBe(new URL('${escapedCurrentPageUrl}').origin);
+                } else if (link.linkType === 'anchor') {
+                    expect(link.rawHref.startsWith('#')).toBeTruthy();
+                } else if (link.linkType === 'mailto') {
+                    await expect(hiddenLocator).toHaveAttribute('href', /^mailto:/i);
+                } else if (link.linkType === 'download') {
+                    await expect(hiddenLocator).toHaveAttribute('href', /\\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
+                }
+                continue;
+            }
+` : ""}            const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
                     ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()

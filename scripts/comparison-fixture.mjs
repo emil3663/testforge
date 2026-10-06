@@ -42,6 +42,13 @@ export const DEFECTS = {
     // background image leaves colour contrast "incomplete", so the scan
     // lists it for manual review and still passes.
     "a11y-text-over-image": "the home page's introduction is white text over a background image",
+    // TFP-159: not defects, menus that hide links. The home page gains a site
+    // nav that collapses under 600 px behind a toggle (aria-controls), holding
+    // a "Categories" dropdown whose button has no aria-controls (Bootstrap's
+    // sibling pattern). In it, "Hand Tools" shows when the menu opens and
+    // "Archived" never does. menus-toggle-broken: the dropdown never opens.
+    "menus": "the home page has a collapsing site nav and a closed Categories dropdown",
+    "menus-toggle-broken": "as menus, but the Categories dropdown's button does nothing",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
     // the home page's hero image back, so the load event and the largest
     // contentful paint land about 3 s or 5 s in; the layout-shift defects
@@ -107,16 +114,27 @@ function home() {
         ? `\nsetTimeout(() => { const banner = document.createElement('div'); banner.style.height = Math.round(${shift} * Math.max(innerWidth, innerHeight)) + 'px'; banner.style.background = '#fde68a'; banner.textContent = 'Notice'; document.body.prepend(banner); }, 200);`
         : "";
     const lcpDelay = LCP_DELAYS[defect];
+    const menus = defect === "menus" || defect === "menus-toggle-broken";
+    const menusScript = menus
+        ? `
+document.querySelector('.nav-toggle').addEventListener('click', (e) => { const open = document.getElementById('site-nav').classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', String(open)); });${defect === "menus" ? `
+document.querySelector('.dropdown-toggle').addEventListener('click', (e) => { const open = e.currentTarget.nextElementSibling.classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', String(open)); });` : ""}`
+        : "";
     return page(
         "Home",
-        `<h1>Acme Notes</h1>
+        `${menus ? `<style>.nav-toggle{display:none}.dropdown-list{display:none;margin:0;padding:0;list-style:none}.dropdown-list.open{display:block}@media (max-width:600px){.nav-toggle{display:inline-block}#site-nav{display:none}#site-nav.open{display:block}}</style>
+<button type="button" class="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Open site menu">Menu</button>
+<div id="site-nav"><a href="/notes?view=shop">Shop</a>
+<div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false">Categories</button><ul class="dropdown-list"><li><a href="/notes?category=hand-tools">Hand Tools</a></li><li style="display:none"><a href="/notes?category=archived">Archived</a></li></ul></div>
+</div>
+` : ""}<h1>Acme Notes</h1>
 <p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : defect === "a11y-text-over-image" ? ' style="color:#fff;background-image:url(/hero.svg);padding:1em"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `
 <p><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E" width="40" height="40"></p>` : ""}
 <p id="status">Checking status...</p>
 <p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>${lcpDelay ? `
 <p><img src="/hero.svg?delay=${lcpDelay}" width="960" height="480" alt="Acme Notes on a laptop"></p>` : ""}${shift ? `
 <div style="height:200vh;background:#f4f4f5">Notes you wrote recently</div>` : ""}`,
-        { meta: defect !== "seo-missing-meta", script: crashScript + shiftScript }
+        { meta: defect !== "seo-missing-meta", script: crashScript + shiftScript + menusScript }
     );
 }
 

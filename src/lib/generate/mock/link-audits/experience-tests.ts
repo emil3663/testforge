@@ -1,4 +1,5 @@
 import type { LinkDetail } from "../types";
+import { buildRevealHelper, RUNTIME_HIDDEN_LINK_LOCATOR } from "./reveal";
 
 interface ScannedPage {
     path: string;
@@ -107,6 +108,7 @@ export function buildLinkExperienceTests(
     }
 
     if (includeAccessibilityLinkAudits && interactionNonApiLinks.length > 0) {
+        const keyboardHasHidden = interactionNonApiLinks.some((link) => !link.isVisible);
         tests.push(`  test('keyboard navigation: links can receive focus and activate with Enter', async ({ page, context }) => {
         const links = ${JSON.stringify(interactionNonApiLinks)};
         const revisitLinksPage = async () => {
@@ -114,14 +116,21 @@ export function buildLinkExperienceTests(
             await page.waitForLoadState('domcontentloaded');
         };
 
-        await revisitLinksPage();
+${keyboardHasHidden ? `${buildRevealHelper("        ")}\n` : ""}        await revisitLinksPage();
         for (const link of links) {
-            const locator = link.text
+            const locator = ${keyboardHasHidden ? `!link.isVisible
+                ? ${RUNTIME_HIDDEN_LINK_LOCATOR.replace(/\n/g, "\n    ")}
+                : ` : ""}link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
                     ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
                     : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
-            await locator.focus();
+${keyboardHasHidden ? `            if (!link.isVisible) {
+                // TFP-159: hidden at inspection - open its menu by keyboard first; a link users can't reach fails, naming the menu.
+                const reach = await tfReveal(locator, 'keyboard');
+                expect(reach.visible, (link.text || link.url) + " can't be reached by keyboard: " + reach.reason).toBeTruthy();
+            }
+` : ""}            await locator.focus();
             await expect(locator).toBeFocused();
             const urlBeforeInteraction = page.url();
 

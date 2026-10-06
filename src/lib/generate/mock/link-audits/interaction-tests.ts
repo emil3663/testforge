@@ -1,6 +1,7 @@
 import { escapeForSingleQuotedString } from "../format";
 import { buildLinkLocatorExpression, buildLinkTitle } from "../locators";
 import type { LinkDetail } from "../types";
+import { buildHiddenLinkLocatorExpression, buildRevealHelper } from "./reveal";
 
 export function buildBrowserInteractionLinkTests(
     browserInteractionLinks: LinkDetail[],
@@ -44,6 +45,40 @@ export function buildBrowserInteractionLinkTests(
         const response = await responsePromise;
 
 ${expectedStatusAssertion}
+    });`);
+
+            continue;
+        }
+
+        // TFP-159: hidden at inspection (a closed menu, a collapsed navbar). Its health is
+        // its address and its presence, never whether a menu opened; whether users can
+        // reach it is a finding, so a broken menu never hides a dead link.
+        if (!link.isVisible) {
+            const name = escapeForSingleQuotedString(link.text || link.url);
+            const isHttp = ["internal", "external", "download"].includes(link.linkType);
+            const healthAssertions = isHttp
+                ? `        const response = await request.get('${linkUrl}', {
+            failOnStatusCode: false,
+            timeout: ${linkAuditTimeoutMs},
+            maxRedirects: ${link.targetBehavior === "same-window" ? 5 : 0},
+        });
+        expect(response.status(), '${name} answered HTTP ' + response.status()).toBeLessThan(400);
+        await expect(locator).toHaveAttribute('href', /.+/);`
+                : `        await expect(locator).toHaveAttribute('href', '${rawHref}');`;
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page${isHttp ? ", request" : ""} }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        // Hidden when the page was inspected: checked by its own address and its presence, not its visibility (TFP-159).
+        const locator = ${buildHiddenLinkLocatorExpression(link)};
+        await expect(locator, '${name} is not on the page').toBeAttached();
+${healthAssertions}
+
+${buildRevealHelper("        ")}
+        const reach = await tfReveal(locator, 'click');
+        if (!reach.visible) {
+            test.info().annotations.push({ type: 'finding', description: '${name} is healthy by its address, but users can\\'t reach it: ' + reach.reason });
+        }
     });`);
 
             continue;

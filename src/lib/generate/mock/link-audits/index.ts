@@ -71,7 +71,8 @@ export function buildTestMyLinksAuditTests(
             allLinkPayload,
             interactionNonApiLinks,
             isFastLinkAudit,
-            escapedCurrentPageUrl
+            escapedCurrentPageUrl,
+            linkDetails.some((link) => !link.isVisible)
         )
     );
 

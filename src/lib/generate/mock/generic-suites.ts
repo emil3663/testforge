@@ -15,6 +15,7 @@ import { buildFormFieldNameTests } from "./form-field-names";
 import { buildCookieSessionTests } from "./cookie-session-checks";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
+import { buildRevealHelper } from "./link-audits/reveal";
 import {
     buildLocatorExpression,
     findMatchingProfilePage,
@@ -51,7 +52,13 @@ export function buildSharedBestPracticeSuites(
             .map((element) => {
                 const name = escapeForSingleQuotedString(getActionableElementDisplayName(element));
                 const locatorExpression = buildLocatorExpression(element);
-                return `      await expect(${locatorExpression}, '${name} should stay visible at ' + viewport.name + ' viewport').toBeVisible();`;
+                // TFP-159: behind a collapsed navbar's toggle at a narrow viewport, it is revealed
+                // first by clicking the toggle; still hidden, it fails, naming the menu.
+                return `      {
+        const item = ${locatorExpression};
+        const reach = await tfReveal(item, 'click');
+        await expect(item, '${name} should stay visible at ' + viewport.name + ' viewport' + (reach.reason ? ': ' + reach.reason : '')).toBeVisible();
+      }`;
             })
             .join("\n");
 
@@ -63,7 +70,9 @@ export function buildSharedBestPracticeSuites(
       { name: 'desktop', width: 1440, height: 900 },
     ];
 
-    for (const viewport of viewports) {
+${sampledElements.length > 0 ? `${buildRevealHelper("    ")}
+
+` : ""}    for (const viewport of viewports) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/');
       await page.waitForLoadState('domcontentloaded');
