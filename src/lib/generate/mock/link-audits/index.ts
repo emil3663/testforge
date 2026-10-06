@@ -97,7 +97,11 @@ export function buildTestMyLinksAuditTests(
             allLinkPayload,
             secureLinks,
             anchorLinks,
-            scannedPages
+            scannedPages,
+            // TFP-161: only profiles that record what was requested and what failed.
+            contentProfile?.requestedPaths
+                ? { requestedPaths: contentProfile.requestedPaths, failedPages: contentProfile.failedPages ?? [] }
+                : null
         )
     );
 

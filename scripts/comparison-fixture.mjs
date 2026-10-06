@@ -51,6 +51,8 @@ export const DEFECTS = {
     "menus-toggle-broken": "as menus, but the Categories dropdown's button does nothing",
     // TFP-160: /forms loses a field its form check recorded.
     "forms-missing-field": "the /forms search form has no Tag field",
+    // TFP-161: the home page drops the connection (/unreachable always does).
+    "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
     // the home page's hero image back, so the load event and the largest
     // contentful paint land about 3 s or 5 s in; the layout-shift defects
@@ -215,6 +217,13 @@ const server = createServer(async (req, res) => {
         return send(200, HERO_SVG, "image/svg+xml");
     }
     if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json");
+    // TFP-161: a page inspection can't load - the connection is dropped, as
+    // the-internet's host did. hub-down does the same to the home page,
+    // which links to every other page.
+    if (url.pathname === "/unreachable" || (url.pathname === "/" && defect === "hub-down")) {
+        req.socket.destroy();
+        return;
+    }
     if (url.pathname === "/" && req.method === "GET") {
         const cookie =
             defect === "security-weak-session-cookie" ? { "set-cookie": "sid=acme-4f9c2a1e7b; Path=/; Max-Age=34560000" }

@@ -130,6 +130,10 @@ export interface ContentProfile {
     baseUrl: string;
     pages: ContentProfilePage[];
     warnings?: string[];
+    // TFP-161: the paths inspection was asked for, in order (the first is the
+    // start page), and those it could not load. Absent in older profiles.
+    requestedPaths?: string[];
+    failedPages?: { path: string; reason: string }[];
     dependencyMap?: DependencyMapEntry[];
     // TFP-088: per-baseUrl walkable graph of page-to-page navigation.
     siteGraph?: SiteGraph;

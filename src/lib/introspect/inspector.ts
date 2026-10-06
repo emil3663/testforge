@@ -96,6 +96,8 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
     try {
         const pages: PageSnapshot[] = [];
         const warnings: string[] = [];
+        // TFP-161: which requested pages could not be loaded, and why.
+        const failedPages: { path: string; reason: string }[] = [];
         const perPageDependencies: { path: string; dependencies: DependencyDetail[] }[] = [];
 
         for (const path of paths) {
@@ -106,6 +108,12 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
 
             try {
                 const response = await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+                // TFP-161 (Emil, 2026-10-06): a server error is a page that could not be loaded, like a
+                // timeout - an error page's empty snapshot made every page it links to look orphaned.
+                // A 4xx stays a page: it is the site's real answer.
+                if (response && response.status() >= 500) {
+                    throw new Error(`HTTP ${response.status()}`);
+                }
                 await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => { });
 
                 const snapshot = await page.evaluate(captureDomSnapshot, {
@@ -154,9 +162,9 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
                     ],
                 });
             } catch (error) {
-                warnings.push(
-                    `Could not inspect ${targetUrl}: ${error instanceof Error ? error.message : "Unknown error"}`
-                );
+                const reason = error instanceof Error ? error.message : "Unknown error";
+                warnings.push(`Could not inspect ${targetUrl}: ${reason}`);
+                failedPages.push({ path, reason: reason.split("\n")[0] });
             } finally {
                 page.off("request", requestListener);
             }
@@ -168,6 +176,9 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
         return {
             pages,
             warnings: [...warnings, ...journeyResult.warnings],
+            // TFP-161: the paths asked for, in order (the first is the start page), and those that failed.
+            requestedPaths: [...paths],
+            failedPages,
             dependencyMap: aggregateDependencyMap(perPageDependencies),
             siteGraph,
             journeys: journeyResult.journeys,

@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedPaths = normalizeInspectionPathList(normalizedBaseUrl.value, paths);
-    const { pages, warnings, dependencyMap, siteGraph, journeys } = await inspectPages(
+    const { pages, warnings, requestedPaths, failedPages, dependencyMap, siteGraph, journeys } = await inspectPages(
         normalizedBaseUrl.value,
         normalizedPaths,
         normalizeNamedFlows(namedFlows)
@@ -59,6 +59,8 @@ export async function POST(req: NextRequest) {
         baseUrl: normalizedBaseUrl.value,
         pages,
         warnings,
+        requestedPaths,
+        failedPages,
         dependencyMap,
         siteGraph,
         journeys,

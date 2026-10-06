@@ -1,3 +1,5 @@
+import { escapeForSingleQuotedString } from "../format";
+import { normalizeRoutePath } from "../locators";
 import type { LinkDetail } from "../types";
 import { buildRevealHelper, RUNTIME_HIDDEN_LINK_LOCATOR } from "./reveal";
 
@@ -5,6 +7,70 @@ interface ScannedPage {
     path: string;
     url: string;
     inboundCandidates: string[];
+}
+
+/** TFP-161: what inspection was asked for and what it couldn't load. */
+export interface OrphanContext {
+    requestedPaths: string[];
+    failedPages: { path: string; reason: string }[];
+}
+
+/**
+ * TFP-161 (decided by Emil, 2026-10-06): the orphan check judges only pages
+ * that were loaded. On the-internet (TFP-150 re-run, T24) inspection lost
+ * "/", which links to every example, and every other page failed as an
+ * orphan. The start page is the first path requested.
+ * - Start page not loaded: Not run, naming it - which pages it links to is
+ *   unknown.
+ * - Another page not loaded: a loaded page with no link from another loaded
+ *   page is a finding naming the pages that weren't loaded, not a failure.
+ * - Every page loaded: a page with no inbound link fails, as before.
+ */
+function buildOrphanCheck(scannedPages: ScannedPage[], { requestedPaths, failedPages }: OrphanContext) {
+    const startPath = normalizeRoutePath(requestedPaths[0]);
+    const startFailure = failedPages.find((page) => normalizeRoutePath(page.path) === startPath);
+    const title = "orphan page approximation: each scanned page is linked from another scanned page";
+    if (startFailure) {
+        const reason = escapeForSingleQuotedString(`the start page ${startPath} could not be loaded when the site was inspected (${startFailure.reason}), so which pages it links to is unknown`);
+        return `  test('${title}', async () => {
+        // TFP-161: every other page's inbound links come from the start page; it wasn't loaded.
+        test.skip(true, '${reason}');
+    });`;
+    }
+    const pages = scannedPages.map((page) => ({ ...page, path: normalizeRoutePath(page.path) }));
+    const notLoaded = failedPages.map((page) => normalizeRoutePath(page.path));
+    return `  test('${title}', async () => {
+        const pages = ${JSON.stringify(pages)};
+        // TFP-161: inbound links are counted among the pages that were loaded; the start page (${escapeForSingleQuotedString(startPath)}) needs none.
+        const startPath = '${escapeForSingleQuotedString(startPath)}';
+        const notLoaded: string[] = ${JSON.stringify(notLoaded)};
+        const inboundMap = new Map<string, number>();
+
+        for (const page of pages) {
+            inboundMap.set(page.url.replace(/#.*$/, ''), 0);
+        }
+
+        for (const page of pages) {
+            const self = page.url.replace(/#.*$/, '');
+            for (const linkedUrl of page.inboundCandidates) {
+                const normalized = linkedUrl.replace(/#.*$/, '');
+                // From another page: a page's links to itself (#top, #details) are not inbound links.
+                if (normalized !== self && inboundMap.has(normalized)) {
+                    inboundMap.set(normalized, (inboundMap.get(normalized) ?? 0) + 1);
+                }
+            }
+        }
+
+        for (const page of pages) {
+            if (page.path === startPath) continue;
+            const inbound = inboundMap.get(page.url.replace(/#.*$/, '')) ?? 0;
+            if (inbound === 0 && notLoaded.length > 0) {
+                test.info().annotations.push({ type: 'finding', description: page.path + ' has no link from another loaded page; ' + notLoaded.join(', ') + ' could not be loaded, so a link from there was not seen' });
+                continue;
+            }
+            expect(inbound, page.path + ' is not linked from any other inspected page').toBeGreaterThan(0);
+        }
+    });`;
 }
 
 export function buildLinkExperienceTests(
@@ -15,7 +81,8 @@ export function buildLinkExperienceTests(
     allLinkPayload: string,
     secureLinks: LinkDetail[],
     anchorLinks: LinkDetail[],
-    scannedPages: ScannedPage[]
+    scannedPages: ScannedPage[],
+    orphanContext: OrphanContext | null = null
 ) {
     const tests: string[] = [];
 
@@ -236,7 +303,9 @@ ${keyboardHasHidden ? `            if (!link.isVisible) {
     });`);
     }
 
-    if (scannedPages.length > 1) {
+    if (orphanContext && orphanContext.requestedPaths.length > 1) {
+        tests.push(buildOrphanCheck(scannedPages, orphanContext));
+    } else if (scannedPages.length > 1) {
         tests.push(`  test('orphan page approximation: each scanned page is linked from another scanned page', async () => {
         const pages = ${JSON.stringify(scannedPages)};
         const inboundMap = new Map();
