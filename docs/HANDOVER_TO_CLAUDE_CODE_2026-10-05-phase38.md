@@ -78,6 +78,33 @@ is to be started without his word:
    then stop for Gate B.
 6. TFP-151 waits until after Phase 38.
 
+## TestForge's test account (2026-10-06)
+
+Emil created `testforgeapp@gmail.com` as TestForge's own test identity. Use
+`testforgeapp+<site>@gmail.com` to give each site its own address, which
+lands in the same inbox. Some sites reject `+`; fall back to the plain
+address.
+- **Credentials live only in `.env.local`,** which `.env*` in `.gitignore`
+  ignores, and in Emil's password manager. Never in `.env.development` or
+  `.env.example`: both are tracked by git. Never in a commit, a doc, a test
+  fixture, a report or a log. TestForge's report redaction must cover them.
+- **Where it may be used:**
+  - Emil's own sites and local copies: freely, including registering.
+  - Practice sites: use their published demo accounts instead. Don't
+    register unless the site invites it.
+  - Any other site: registering creates data on someone else's system, so
+    it waits for the owner's sign-off on Comprehensive testing (Phase 35
+    Decision 8).
+- **Variables, set in Emil's `.env.local` on 2026-10-06:**
+  `TESTFORGE_ACCOUNT_EMAIL` and `TESTFORGE_ACCOUNT_PASSWORD`.
+  - The password is for accounts TestForge creates on test sites. It is
+    not the Gmail password, which TestForge never gets.
+  - A run's login block references them by name (`"usernameEnv":
+    "TESTFORGE_ACCOUNT_EMAIL", "passwordEnv": "TESTFORGE_ACCOUNT_PASSWORD"`),
+    as `.env.example` and `docs/AUTOMATED_ACCOUNT_SETUP.md` describe.
+  - Never print, log or echo their values.
+- Nothing uses the account yet. Wiring it in is a ticket of its own.
+
 ## Watch for
 
 - **Decision 6:** until the ownership confirmation exists, the
