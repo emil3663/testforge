@@ -1,4 +1,6 @@
-import type { CandidateJourney, DependencyMapEntry, SiteGraph, StorageUsage } from "@/lib/introspect/types";
+import type { CandidateJourney, DependencyMapEntry, FormRecord, SiteGraph, StorageUsage } from "@/lib/introspect/types";
+
+export type { FormFieldRecord, FormRecord } from "@/lib/introspect/types";
 
 export const BEST_PRACTICE_OPTIONS = [
     "functional",
@@ -43,6 +45,8 @@ export interface ActionableElementDetail {
     ariaExpanded: string | null;
     groupId: string | null;
     locator: LocatorHint;
+    /** TFP-160: see the introspection type. */
+    form?: FormRecord;
 }
 
 export interface LinkDetail {

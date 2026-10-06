@@ -24,6 +24,28 @@ export interface ActionableElementDetail {
     ariaExpanded: string | null;
     groupId: string | null;
     locator: LocatorHint;
+    /** TFP-160: a <form>'s own identity and fields; absent on other elements and in older profiles. */
+    form?: FormRecord;
+}
+
+/**
+ * TFP-160: what identifies a <form> without its text. `action` and `method`
+ * are the attributes as written ("" when absent); `occurrence` counts the
+ * page's earlier forms with the same action and method (TFP-145's approach
+ * for same-text links). `fields` are its controls in document order.
+ */
+export interface FormRecord {
+    action: string;
+    method: string;
+    occurrence: number;
+    fields: FormFieldRecord[];
+}
+
+export interface FormFieldRecord {
+    tag: string;
+    type: string;
+    name: string;
+    id: string;
 }
 
 export interface LinkDetail {

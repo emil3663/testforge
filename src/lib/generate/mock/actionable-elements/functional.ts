@@ -6,6 +6,7 @@ import {
     findMatchingProfilePage,
 } from "../locators";
 import type { ActionableElementDetail, ContentProfile } from "../types";
+import { buildFormCheckTest } from "./form-check";
 import { hiddenAtIntrospectionComment } from "./shared";
 
 export function buildActionableElementTests(
@@ -43,8 +44,14 @@ export function buildActionableElementTests(
   });`];
     }
 
+    // Every recorded form counts towards a form's position, ids or not: they are all <form>s on the page.
+    const profileForms = actionableElements.filter((element) => element.elementType === "form");
     return actionableElements.map((element: ActionableElementDetail) => {
         const title = escapeForSingleQuotedString(buildActionableElementTitle(element));
+        // TFP-160: a form with an id keeps its id; one without is found by its record, not its text.
+        if (element.elementType === "form" && element.category !== "api" && !element.locator.id) {
+            return buildFormCheckTest(title, escapeForSingleQuotedString(path), element, profileForms.indexOf(element));
+        }
 
         if (element.category === "api" && element.url) {
             const url = escapeForSingleQuotedString(element.url);

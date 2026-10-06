@@ -350,6 +350,25 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         return styles.display !== "none" && styles.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
     };
 
+    // TFP-160: a form's identity without its text - its action and method as
+    // written, which of the page's forms with those it is, and its fields.
+    const recordForm = (form: HTMLFormElement) => {
+        const action = form.getAttribute("action") ?? "";
+        const method = (form.getAttribute("method") ?? "").toLowerCase();
+        const occurrence = Array.from(document.querySelectorAll("form"))
+            .slice(0, Array.from(document.querySelectorAll("form")).indexOf(form))
+            .filter((other) => (other.getAttribute("action") ?? "") === action && (other.getAttribute("method") ?? "").toLowerCase() === method)
+            .length;
+        const fields = Array.from(form.querySelectorAll("input:not([type='hidden']), select, textarea, button"))
+            .map((field) => ({
+                tag: field.tagName.toLowerCase(),
+                type: (field.getAttribute("type") ?? "").toLowerCase(),
+                name: field.getAttribute("name") ?? "",
+                id: field.getAttribute("id") ?? "",
+            }));
+        return { action, method, occurrence, fields };
+    };
+
     const isSameOriginUrl = (url: string) => {
         try {
             return new URL(url).origin === window.location.origin;
@@ -505,6 +524,7 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                     id,
                     inputType,
                 },
+                ...(node instanceof HTMLFormElement ? { form: recordForm(node) } : {}),
             };
         })
         .filter(

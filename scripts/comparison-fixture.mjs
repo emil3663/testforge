@@ -49,6 +49,8 @@ export const DEFECTS = {
     // "Archived" never does. menus-toggle-broken: the dropdown never opens.
     "menus": "the home page has a collapsing site nav and a closed Categories dropdown",
     "menus-toggle-broken": "as menus, but the Categories dropdown's button does nothing",
+    // TFP-160: /forms loses a field its form check recorded.
+    "forms-missing-field": "the /forms search form has no Tag field",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
     // the home page's hero image back, so the load event and the largest
     // contentful paint land about 3 s or 5 s in; the layout-shift defects
@@ -246,6 +248,20 @@ const server = createServer(async (req, res) => {
 <ul class="menu"><li><a href="/"><span>Home</span></a></li><li><a href="/notes"><span>Notes</span></a></li></ul>
 <p><a href="/notes">Open</a> <a href="/login"><span aria-hidden="true">Open</span></a></p>
 <p><a href="/login?from=icon"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='20' height='20' fill='%23336'/%3E%3C/svg%3E" width="20" height="20"></a></p>`));
+    }
+    // TFP-160: the forms the Standard form check misjudged on a real site -
+    // one with several labelled fields (looked up by all its labels joined,
+    // which no element holds) and one holding a lone <select> (matched by
+    // its options' joined text, so the check counted fields inside the
+    // <select>). As on the site, the fields sit in their own <div>s with no
+    // text between them, the submit is an <input> (Playwright counts its value
+    // as the form's text; introspection's textContent doesn't), and the forms
+    // have no id. forms-missing-field drops the first
+    // form's "tag" field. Not linked from the nav, like /anchors.
+    if (url.pathname === "/forms" && req.method === "GET") {
+        return send(200, page("Forms", `<h1>Forms</h1>
+<form action="/notes" method="get"><div><label for="f-title">Title *</label><input id="f-title" name="title"></div>${defect === "forms-missing-field" ? "" : `<div><label for="f-tag">Tag *</label><input id="f-tag" name="tag"></div>`}<div><label for="f-body">Body</label><textarea id="f-body" name="body"></textarea></div><div><input type="submit" value="Search"></div></form>
+<form><select aria-label="Sort"><option>Name (A - Z)</option><option>Name (Z - A)</option></select></form>`));
     }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);
