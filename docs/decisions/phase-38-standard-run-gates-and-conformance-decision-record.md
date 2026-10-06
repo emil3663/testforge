@@ -89,7 +89,9 @@ Test design follows ISTQB CTFL v4.0 practice (confirmed by Emil, 2026-10-05).
 
 8. Run time is measured, not assumed.
 - Standard's run budget stays 30 minutes (the executor's `maxTimeout` of 1,800,000 ms).
-- Run time is measured on the comparison fixture, the-internet.herokuapp.com and rizonetech.com, all at the read-only gate. The rizonetech.com Standard run took 1,766 s on 2026-10-01, before TFP-142's timeout fix.
+- Run time is measured on the comparison fixture, the-internet.herokuapp.com and practicesoftwaretesting.com, all at the read-only gate.
+- **Amended by Emil on 2026-10-06:** real-site runs use only sites published for test practice. rizonetech.com is a friend's site that earns revenue, so it is not used for TFP-150. practicesoftwaretesting.com (the "Toolshop" demo shop, built for practising test automation) takes its place. Its 2026-10-01 runs and labelled failures stay as historical evidence. (The rizonetech.com Standard run took 1,766 s on 2026-10-01, before TFP-142's timeout fix.)
+- The "before" runs use `d90de57`, the last commit before TFP-146. On each real site, the before and after runs go back to back, so the site's own speed varies as little as possible.
 - If a measured Standard run goes over the budget, the result is recorded, and the split between Standard and Comprehensive is revisited. Nothing is tuned to fit within this phase.
 
 ## Acceptance Criteria
@@ -115,7 +117,7 @@ Test design follows ISTQB CTFL v4.0 practice (confirmed by Emil, 2026-10-05).
 - `check:template-unchanged`: only performance-area tests change.
 
 4. Measurement (TFP-150)
-- Standard run durations on the fixture, the-internet.herokuapp.com and rizonetech.com are recorded, before and after the phase, at the read-only gate.
+- Standard run durations on the fixture, the-internet.herokuapp.com and practicesoftwaretesting.com are recorded, before and after the phase, at the read-only gate (Decision 8, as amended 2026-10-06).
 - Every new failure on the two real sites is read by hand and recorded in the labelled failure set. None is left unexplained.
 - Each ticket's `check:template-unchanged` result is recorded.
 

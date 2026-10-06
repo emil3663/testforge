@@ -1,0 +1,693 @@
+{
+  "scannedAt": "2026-10-06T02:13:38.711Z",
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "pages": [
+    {
+      "path": "/dropdown",
+      "url": "https://the-internet.herokuapp.com/dropdown",
+      "title": "The Internet",
+      "metaDescription": "",
+      "headings": [
+        "Dropdown List"
+      ],
+      "buttons": [],
+      "links": [
+        "Elemental Selenium"
+      ],
+      "actionableElements": [
+        {
+          "text": "",
+          "url": "https://github.com/tourdedave/the-internet",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": false,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Please select an option Option 1 Option 2",
+          "url": null,
+          "category": "form",
+          "elementType": "select",
+          "containerLabel": "Dropdown List",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "combobox",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "dropdown",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Elemental Selenium",
+          "url": "http://elementalselenium.com/",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        }
+      ],
+      "linkDetails": [
+        {
+          "text": "",
+          "url": "https://github.com/tourdedave/the-internet",
+          "rawHref": "https://github.com/tourdedave/the-internet",
+          "category": "navigation",
+          "linkType": "external",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": false,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "Elemental Selenium",
+          "url": "http://elementalselenium.com/",
+          "rawHref": "http://elementalselenium.com/",
+          "category": "navigation",
+          "linkType": "external",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "_blank",
+          "targetBehavior": "new-tab",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        }
+      ],
+      "embeddedLinkDetails": [
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/298279967.js",
+          "rawValue": "/js/vendor/298279967.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/css/app.css",
+          "rawValue": "/css/app.css",
+          "tagName": "link",
+          "attributeName": "href",
+          "kind": "stylesheet",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/css/font-awesome.css",
+          "rawValue": "/css/font-awesome.css",
+          "tagName": "link",
+          "attributeName": "href",
+          "kind": "stylesheet",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/jquery-1.11.3.min.js",
+          "rawValue": "/js/vendor/jquery-1.11.3.min.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/jquery-ui-1.11.4/jquery-ui.js",
+          "rawValue": "/js/vendor/jquery-ui-1.11.4/jquery-ui.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/foundation/foundation.js",
+          "rawValue": "/js/foundation/foundation.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/foundation/foundation.alerts.js",
+          "rawValue": "/js/foundation/foundation.alerts.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "Fork me on GitHub",
+          "url": "https://the-internet.herokuapp.com/img/forkme_right_green_007200.png",
+          "rawValue": "/img/forkme_right_green_007200.png",
+          "tagName": "img",
+          "attributeName": "src",
+          "kind": "image",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": true
+        }
+      ],
+      "dragDropTargets": [],
+      "visibleTextSnippets": [],
+      "storageUsage": {
+        "localStorage": false,
+        "sessionStorage": false,
+        "indexedDB": false
+      }
+    },
+    {
+      "path": "/tables",
+      "url": "https://the-internet.herokuapp.com/tables",
+      "title": "The Internet",
+      "metaDescription": "",
+      "headings": [
+        "Data Tables"
+      ],
+      "buttons": [],
+      "links": [
+        "edit",
+        "delete",
+        "Elemental Selenium"
+      ],
+      "actionableElements": [
+        {
+          "text": "",
+          "url": "https://github.com/tourdedave/the-internet",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": false,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "edit",
+          "url": null,
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "No Class or ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "delete",
+          "url": null,
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "No Class or ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "edit",
+          "url": null,
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "Class and ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "delete",
+          "url": null,
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "Class and ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Elemental Selenium",
+          "url": "http://elementalselenium.com/",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        }
+      ],
+      "linkDetails": [
+        {
+          "text": "",
+          "url": "https://github.com/tourdedave/the-internet",
+          "rawHref": "https://github.com/tourdedave/the-internet",
+          "category": "navigation",
+          "linkType": "external",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": false,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "edit",
+          "url": "https://the-internet.herokuapp.com/tables#edit",
+          "rawHref": "#edit",
+          "category": "navigation",
+          "linkType": "anchor",
+          "containerLabel": "No Class or ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "delete",
+          "url": "https://the-internet.herokuapp.com/tables#delete",
+          "rawHref": "#delete",
+          "category": "navigation",
+          "linkType": "anchor",
+          "containerLabel": "No Class or ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "edit",
+          "url": "https://the-internet.herokuapp.com/tables#edit",
+          "rawHref": "#edit",
+          "category": "navigation",
+          "linkType": "anchor",
+          "containerLabel": "Class and ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "delete",
+          "url": "https://the-internet.herokuapp.com/tables#delete",
+          "rawHref": "#delete",
+          "category": "navigation",
+          "linkType": "anchor",
+          "containerLabel": "Class and ID attributes to signify groupings of rows and columns",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": true
+        },
+        {
+          "text": "Elemental Selenium",
+          "url": "http://elementalselenium.com/",
+          "rawHref": "http://elementalselenium.com/",
+          "category": "navigation",
+          "linkType": "external",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "_blank",
+          "targetBehavior": "new-tab",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        }
+      ],
+      "embeddedLinkDetails": [
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/298279967.js",
+          "rawValue": "/js/vendor/298279967.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/css/app.css",
+          "rawValue": "/css/app.css",
+          "tagName": "link",
+          "attributeName": "href",
+          "kind": "stylesheet",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/css/font-awesome.css",
+          "rawValue": "/css/font-awesome.css",
+          "tagName": "link",
+          "attributeName": "href",
+          "kind": "stylesheet",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/jquery-1.11.3.min.js",
+          "rawValue": "/js/vendor/jquery-1.11.3.min.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/jquery-ui-1.11.4/jquery-ui.js",
+          "rawValue": "/js/vendor/jquery-ui-1.11.4/jquery-ui.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/foundation/foundation.js",
+          "rawValue": "/js/foundation/foundation.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/foundation/foundation.alerts.js",
+          "rawValue": "/js/foundation/foundation.alerts.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        },
+        {
+          "text": "Fork me on GitHub",
+          "url": "https://the-internet.herokuapp.com/img/forkme_right_green_007200.png",
+          "rawValue": "/img/forkme_right_green_007200.png",
+          "tagName": "img",
+          "attributeName": "src",
+          "kind": "image",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": true
+        },
+        {
+          "text": "",
+          "url": "https://the-internet.herokuapp.com/js/vendor/jquery.tablesorter.min.js",
+          "rawValue": "/js/vendor/jquery.tablesorter.min.js",
+          "tagName": "script",
+          "attributeName": "src",
+          "kind": "script",
+          "source": "dom",
+          "containerLabel": "",
+          "sameOrigin": true,
+          "isVisible": false
+        }
+      ],
+      "dragDropTargets": [],
+      "visibleTextSnippets": [],
+      "storageUsage": {
+        "localStorage": false,
+        "sessionStorage": false,
+        "indexedDB": false
+      }
+    }
+  ],
+  "warnings": [
+    "Could not inspect https://the-internet.herokuapp.com/: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://the-internet.herokuapp.com/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+    "Could not inspect https://the-internet.herokuapp.com/login: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://the-internet.herokuapp.com/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+    "Could not inspect https://the-internet.herokuapp.com/checkboxes: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://the-internet.herokuapp.com/checkboxes\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  ],
+  "dependencyMap": [
+    {
+      "host": "298279967.log.optimizely.com",
+      "kind": "xhr-fetch",
+      "sampleUrl": "https://298279967.log.optimizely.com/event?a=298279967&d=298279967&y=false&n=https%3A%2F%2Fthe-internet.herokuapp.com%2Fdropdown&u=oeu1791252786961r0.13757681058699045&wxhr=true&t=1791252814482&f=298349752,318188263",
+      "sameOrigin": false,
+      "method": "GET",
+      "rawValue": null,
+      "occurrences": 3,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    },
+    {
+      "host": "the-internet.herokuapp.com",
+      "kind": "cookie",
+      "sampleUrl": "rack.session",
+      "sameOrigin": true,
+      "method": null,
+      "rawValue": null,
+      "occurrences": 2,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    },
+    {
+      "host": "the-internet.herokuapp.com",
+      "kind": "cookie",
+      "sampleUrl": "optimizelySegments",
+      "sameOrigin": true,
+      "method": null,
+      "rawValue": null,
+      "occurrences": 2,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    },
+    {
+      "host": "the-internet.herokuapp.com",
+      "kind": "cookie",
+      "sampleUrl": "optimizelyEndUserId",
+      "sameOrigin": true,
+      "method": null,
+      "rawValue": null,
+      "occurrences": 2,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    },
+    {
+      "host": "the-internet.herokuapp.com",
+      "kind": "cookie",
+      "sampleUrl": "optimizelyBuckets",
+      "sameOrigin": true,
+      "method": null,
+      "rawValue": null,
+      "occurrences": 2,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    },
+    {
+      "host": "the-internet.herokuapp.com",
+      "kind": "cookie",
+      "sampleUrl": "optimizelyPendingLogEvents",
+      "sameOrigin": true,
+      "method": null,
+      "rawValue": null,
+      "occurrences": 2,
+      "paths": [
+        "/dropdown",
+        "/tables"
+      ]
+    }
+  ],
+  "siteGraph": {
+    "nodes": [
+      {
+        "path": "/dropdown",
+        "url": "https://the-internet.herokuapp.com/dropdown",
+        "title": "The Internet",
+        "inspected": true
+      },
+      {
+        "path": "/tables",
+        "url": "https://the-internet.herokuapp.com/tables",
+        "title": "The Internet",
+        "inspected": true
+      }
+    ],
+    "edges": []
+  },
+  "journeys": []
+}

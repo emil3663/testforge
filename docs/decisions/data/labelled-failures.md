@@ -34,6 +34,11 @@ and a classifier only sees what is left).
 | T16 | the-internet | Comprehensive security on `/add_remove_elements` | HTTP 404. The site graph normalises the path; the link's real href is `/add_remove_elements/`, which answers 200 | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/before-fix-security-the-internet.json` (run `aeb33b15`) | **Fixed, `198dbec`:** a page known only from the crawl is loaded by the href a link to it uses. Covered as `/add_remove_elements/` on run `12e385fb` |
 | T17 | the-internet | Comprehensive security on `/authenticate` | HTTP 404 to a GET. Known only from a form-submit edge: it is `/login`'s POST target, not a page | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/before-fix-security-the-internet.json` (run `aeb33b15`) | **Fixed, `198dbec`:** nodes reached only by a form submit or scripted action are not loaded |
 | T18 | rizonetech.com | TFAC-007 "accessible name and role: Untitled link to https://rizonetech.com/" - a **false pass**, not a failure | The logo link is `<a href="https://rizonetech.com/" class="custom-logo-link"><img alt="" title="Rizonetech Logo - Light R2 → Rizonetechcom"></a>`: no `title` or `aria-label` on the link. HTML-AAM 4.1.10 gives an `alt=""` image no name and uses `title` only without an `alt` attribute, so the link has none, and axe's `link-name` flags it. Playwright 1.59.1 names it from the image's title, so `toHaveAccessibleName` passed. Chromium 147's own accessibility tree (CDP, evidence only) gives the link the name `""`, with no name sources. On 2026-10-01 the check located `a[href]` first, which is the page's "Skip to content" link, so the logo was not what it tested. The false pass on the logo itself dates from `0504f92`, whose live run passed it | Live 2026-10-05: `benchmarks/2026-10-05-tfp152-logo-link/live-2026-10-05.log`; the 2026-10-01 suite in `benchmarks/2026-10-01-rizonetech/standard-suite.spec.ts` | **Fixed, TFP-152:** the check follows HTML-AAM 4.1.10 and fails it as "has no accessible name: HTML-AAM 4.1.10 gives an `<img alt="">` no name and does not use its title". Live, the 40 checks on `/` give 39 passed and this 1 failed (`live-checks-2026-10-06.log` there) |
+| T19 | practicesoftwaretesting.com | 15 tests: "navigation link health: Hand Tools" and "link types: … classified correctly" (5 pages each), "keyboard navigation: links can receive focus and activate with Enter" (5, 30 s timeout) | "Hand Tools" is `<a href="/category/hand-tools">` inside the closed "Categories" dropdown (`.dropdown-menu`), hidden until the menu opens. The first two require it visible; keyboard navigation waits to focus it until the test times out. Visibility by design, as T1-T7 | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
+| T20 | practicesoftwaretesting.com | TFRM-001 "keeps the core journey visible across common viewport sizes" | At 390 px "Home" is in the collapsed navbar, hidden behind a visible `.navbar-toggler`; visible at 768 and 1440 px | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
+| T21 | practicesoftwaretesting.com | "form element check: Name (A - Z)… [Sort] [form]" on 3 pages | `getByText` of the options' joined text matches the `<select>` itself; the check then counts `input, textarea, select, button` inside it: 0. A `<form>` around it exists | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
+| T22 | practicesoftwaretesting.com | "form element check" for the `/contact` and `/auth/login` forms | Located by the whole form's joined label text ("Email address *Password *"); no single element has that text, so nothing is found | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
+| T23 | practicesoftwaretesting.com | TFAC "accessible name and role: SearchX Search [form]" | The located element is a plain `<div>` (no role, no `aria-label`): a generic element has no accessible name to give, so asking for one is the check's mistake | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
 
 ## Model errors
 
@@ -58,12 +63,17 @@ and a classifier only sees what is left).
 | R7 | the-internet | select-name (critical, 4.1.2) and TFP-121's check on `/dropdown` | `<select id="dropdown">` with no label anywhere on the page (0 `<label>` elements) | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
 | R8 | the-internet | label (critical, 4.1.2) and TFP-121's check on `/dynamic_controls` | The checkbox and the text input have no label | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
 | R9 | the-internet | list (serious, 1.3.1) on `/disappearing_elements` | The `<ul>`'s direct children are `LI,LI,LI,LI,LI,UL` - a list inside a list without an `<li>` | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
+| R10 | practicesoftwaretesting.com | axe `button-name` (critical, 4.1.2) on `/auth/login` | The show-password toggle is `<button class="btn btn-outline-secondary"><fa-icon><svg aria-hidden="true">…</svg></fa-icon></button>`: no text, no label; its aria snapshot is `- button`. New with Phase 38's scan (TFP-148) | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` | Open (the site's) |
+| R11 | practicesoftwaretesting.com | "storage failure injection: localStorage" on all 5 pages | With `localStorage` throwing, the app throws it uncaught and renders an empty body (0 characters, no products) | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open (the site's) |
+| R12 | practicesoftwaretesting.com | template SEO: meta description and canonical (5 pages each), robots.txt `Sitemap:`, sitemap.xml | No meta description or canonical link after render; `/robots.txt` and `/sitemap.xml` answer 200 with the app's HTML shell | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Real, and stay failures (Phase 36 Decision 2) |
 
 ## Unclear
 
 | # | Site | Test | Evidence | Source run | Status |
 | --- | --- | --- | --- | --- | --- |
 | U1 | test-assist | TFFU-036 `:visited` link styling | The stylesheet defines no `:visited` rule; the page has two links, both external. A real observation, but whether it matters is a judgement call | TFP-040, `examples/testforge-app/test-assist/` | Recorded as a real but unclear finding |
+| U2 | practicesoftwaretesting.com | "visited style configuration" on 5 pages | No `:visited` rule in 1,826 inspectable same-origin rules, as U1 | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Recorded as a real but unclear finding |
+| U3 | practicesoftwaretesting.com | "visual representation: links are distinguishable from surrounding text" on `/category/power-tools` | The footer's "explore" card links (`.ptt-explore-link`) have their parent's colour and no underline, but are block links with no surrounding text. Timing-dependent: the run failed this page and passed 4, a later probe found them on 3 others and not this one | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Unclear: the finding, and the check's race with the footer's render |
 
 ## What this set is, and isn't
 
@@ -75,6 +85,14 @@ and a classifier only sees what is left).
   where it should have failed, which a failure classifier never sees. Phase 34's
   plan stands: add labelled failures from later runs, and hold some back
   from threshold-setting.
+- TFP-150 (2026-10-06) adds practicesoftwaretesting.com, a fourth site and
+  the first built for test practice: 22 template-error failures (T19 alone
+  is 15), 18 real and 6 unclear.
+- **Left out on purpose:** the-internet's 30 s test timeouts in TFP-150's
+  runs (`benchmarks/2026-10-06-tfp150/the-internet-*`): 47 before, 53 after.
+  The host wasn't answering (inspection timed out on 3 of 5 pages, and
+  `curl` got a 503 after 30.8 s), so none is a test right or wrong about a
+  page.
 - **Left out on purpose:** C3's and C6's benchmark suites that navigated to
   relative URLs and failed with "Cannot navigate to invalid URL". That was
   the benchmark running a model suite without the `test.use({ baseURL })`

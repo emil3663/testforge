@@ -53,6 +53,10 @@ starts, so a session opened before then doesn't use it.
    follow-ups `73aa393` and `da2235f`. All verified on 2026-10-06.
    Commit these doc updates as one `docs` commit, then push. Then run
    **TFP-150** on the final code, at the read-only gate with one worker.
+   Real sites: the-internet.herokuapp.com and practicesoftwaretesting.com
+   only. **Do not run against rizonetech.com** (Decision 8, amended
+   2026-10-06: it is a friend's revenue-earning site). The before runs use
+   `d90de57`, back to back with the after runs on each site.
    Stop at Gate B.
 6. TFP-151 waits until after Phase 38.
 

@@ -1,0 +1,13 @@
+fixture-after: http://127.0.0.1:59666 paths / /login /notes; commit d202315; 2026-10-06T01:40:29.001Z
+inspection 3 s, generation 0 s, run 77 s (budget 1800 s: within); playwright duration 76 s
+99 tests {"Passed":87,"Failed":9,"Not run":3}
+failed:
+  [Failed] TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+  [Failed] TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+  [Failed] TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Error: expect(received).toBeTruthy() Received: false
+  [Failed] TFRL-002: dependency failure injection: 127.0.0.1:59666 [form-action] | Error: page.goto: net::ERR_FAILED at http://127.0.0.1:59666/login Call log: - navigating to "http://127.0.0.1:59666/login", waiting until "domcontentloaded"
+  [Failed] TFSE-005: keeps canonical metadata stable for / | Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on / with timeout 5000ms - waiting for locator('link[rel="canonical"]').fi
+  [Failed] TFSE-010: keeps canonical metadata stable for /login | Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /login with timeout 5000ms - waiting for locator('link[rel="canoni
+  [Failed] TFSE-015: keeps canonical metadata stable for /notes | Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel="canonical"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /notes with timeout 5000ms - waiting for locator('link[rel="canoni
+  [Failed] TFSE-017: publishes robots.txt with a sitemap reference | Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
+  [Failed] TFSE-018: publishes sitemap.xml with at least one URL | Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404
