@@ -266,6 +266,13 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
     (for example, text over a background image, which leaves colour contrast
     undecided). Show it listed for manual review in a Standard run, and not
     counted as passed.
+- **Gap closed, `73aa393`, verified 2026-10-06:** the generator is
+  unchanged (only the fixture and a test change). A new fixture state,
+  `a11y-text-over-image`, makes axe leave colour contrast undecided. A
+  Standard run lists it under "Needs manual review" and adds no finding or
+  failure. "Never counted as passed" applies to the undecided item, which is
+  listed for a person to judge; the scan itself still passes on its
+  violations, as Phase 35 Decision 4 and GEN-61 set out.
 
 ### TFP-149 — Core Web Vitals bands for LCP and CLS, TBT recorded
 
@@ -297,6 +304,11 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
     exactly 4.0 s the run gives both a finding and a failure. Decision 5 and
     web.dev say "over 4 s" is poor, so the assertion must be
     `toBeLessThanOrEqual(4000)`, with a unit case at 4000 ms.
+- **Fix done, `da2235f`, verified 2026-10-06:** `check:template-unchanged
+  c4f00df da2235f` gives 110 of 166 identical. Each of the 56 that differ
+  changes by one line, `toBeLessThan(4000)` to `toBeLessThanOrEqual(4000)`.
+  The boundary unit test (LCP 2500, 2501, 4000 and 4001 ms; CLS 0.1, 0.101,
+  0.25 and 0.251, with Playwright's real `expect`) passes here, 9 of 9.
 
 ### TFP-150 — Measure the Standard run
 

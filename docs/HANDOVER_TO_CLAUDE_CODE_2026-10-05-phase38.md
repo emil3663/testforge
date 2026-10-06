@@ -49,11 +49,11 @@ starts, so a session opened before then doesn't use it.
 4. **TFP-152:** `34622b0`. Make the whitespace-`alt` fix in its
    verification entry in the backlog, as a follow-up commit with these doc
    updates, then push.
-5. **TFP-147, TFP-148, TFP-149:** `fc736cc`, `12ace9c`, `c4f00df`, verified
-   on 2026-10-06. Close the TFP-148 gap and make the TFP-149 boundary fix
-   from their verification entries in the Phase 38 record, as one follow-up
-   commit each, with these doc updates. Then push.
-   Then **TFP-150** on the final code. Stop at Gate B.
+5. **TFP-147, TFP-148, TFP-149:** `fc736cc`, `12ace9c`, `c4f00df`, with
+   follow-ups `73aa393` and `da2235f`. All verified on 2026-10-06.
+   Commit these doc updates as one `docs` commit, then push. Then run
+   **TFP-150** on the final code, at the read-only gate with one worker.
+   Stop at Gate B.
 6. TFP-151 waits until after Phase 38.
 
 ## Watch for
