@@ -324,6 +324,15 @@ function withFindings(remark: string, findings: string[]) {
     return findings.length > 0 ? `${remark} Findings: ${findings.join("; ")}.` : remark;
 }
 
+// Phase 38 (TFP-149): a value recorded with no pass or fail, e.g. TBT.
+function measurementsOf(test: JsonTest): string[] {
+    return annotationValues(test, "measurement");
+}
+
+function withMeasurements(remark: string, measurements: string[]) {
+    return measurements.length > 0 ? `${remark} Measured: ${measurements.join("; ")}` : remark;
+}
+
 export function flattenSuites(
     suites: JsonSuite[],
     lineage: string[] = [],
@@ -366,18 +375,22 @@ export function flattenSuites(
                     status,
                     duration: latestResult?.duration ?? 0,
                     remarks: withGenerator(
-                        withFindings(
-                            buildExecutionOutcomeSummary(
-                                spec.title,
-                                status,
-                                message,
-                                skipReason
+                        withMeasurements(
+                            withFindings(
+                                buildExecutionOutcomeSummary(
+                                    spec.title,
+                                    status,
+                                    message,
+                                    skipReason
+                                ),
+                                findingsOf(test)
                             ),
-                            findingsOf(test)
+                            measurementsOf(test)
                         ),
                         localModel
                     ),
                     findings: findingsOf(test),
+                    ...(measurementsOf(test).length > 0 ? { measurements: measurementsOf(test) } : {}),
                     generator: localModel ? "local model" : "template",
                     ...(status === "Not run" && skipReason ? { skipReason } : {}),
                     ...gateOf(test),

@@ -38,7 +38,27 @@ export const DEFECTS = {
     // a11y-unlabelled-field above. The clean site's responses are unchanged.
     "a11y-missing-alt": "the home page shows an image with no alternative text",
     "a11y-low-contrast": "the home page's introduction is light grey on white",
+    // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
+    // the home page's hero image back, so the load event and the largest
+    // contentful paint land about 3 s or 5 s in; the layout-shift defects
+    // push the home page's content down by a banner inserted just after it
+    // first renders, sized so CLS comes to about 0.15 or 0.3 (the banner's
+    // height over the viewport's longest side, with the shifted content
+    // covering the viewport). The clean site's responses are unchanged.
+    "performance-lcp-3s": "the home page's hero image arrives 3 s late: LCP about 3 s (needs improvement)",
+    "performance-lcp-5s": "the home page's hero image arrives 5 s late: LCP about 5 s (poor)",
+    "performance-shift-0.15": "the home page's content is pushed down after it renders: CLS about 0.15 (needs improvement)",
+    "performance-shift-0.3": "the home page's content is pushed down after it renders: CLS about 0.3 (poor)",
 };
+
+const LCP_DELAYS = { "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
+const SHIFT_SCORES = { "performance-shift-0.15": 0.15, "performance-shift-0.3": 0.3 };
+
+// The hero image. Chrome leaves low-entropy images (under about 0.05 bits per
+// displayed pixel) out of LCP, so a plain rectangle would never be the
+// largest contentful paint: this one draws 400 circles (fixed, not random,
+// so every run serves the same bytes), about 25 KB for 960x480.
+const HERO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480"><rect width="960" height="480" fill="#334"/>${Array.from({ length: 400 }, (_, i) => `<circle cx="${(i * 97) % 960}" cy="${(i * 53) % 480}" r="${4 + (i % 23)}" fill="#${(((i * 2654435761) >>> 0) % 0xffffff).toString(16).padStart(6, "0")}" opacity="0.8"/>`).join("")}<text x="40" y="260" font-size="64" fill="#fff">Acme Notes</text></svg>`;
 
 const portArg = process.argv.indexOf("--port");
 const port = portArg > 0 ? Number(process.argv[portArg + 1]) : 4410;
@@ -78,14 +98,21 @@ function home() {
         defect === "reliability-api-crash"
             ? `${script}\nwindow.addEventListener('unhandledrejection', (e) => { throw e.reason; });`
             : script;
+    const shift = SHIFT_SCORES[defect];
+    const shiftScript = shift
+        ? `\nsetTimeout(() => { const banner = document.createElement('div'); banner.style.height = Math.round(${shift} * Math.max(innerWidth, innerHeight)) + 'px'; banner.style.background = '#fde68a'; banner.textContent = 'Notice'; document.body.prepend(banner); }, 200);`
+        : "";
+    const lcpDelay = LCP_DELAYS[defect];
     return page(
         "Home",
         `<h1>Acme Notes</h1>
 <p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `
 <p><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E" width="40" height="40"></p>` : ""}
 <p id="status">Checking status...</p>
-<p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>`,
-        { meta: defect !== "seo-missing-meta", script: crashScript }
+<p><a href="${defect === "security-token-in-url" ? "/notes?sessionid=4f9c2a1e7b" : "/notes"}">Go to your notes</a></p>${lcpDelay ? `
+<p><img src="/hero.svg?delay=${lcpDelay}" width="960" height="480" alt="Acme Notes on a laptop"></p>` : ""}${shift ? `
+<div style="height:200vh;background:#f4f4f5">Notes you wrote recently</div>` : ""}`,
+        { meta: defect !== "seo-missing-meta", script: crashScript + shiftScript }
     );
 }
 
@@ -157,6 +184,11 @@ const server = createServer(async (req, res) => {
 
     if (defect === "performance-slow") await new Promise((r) => setTimeout(r, 4000));
 
+    if (url.pathname === "/hero.svg") {
+        // TFP-149: the slow-LCP defects' hero image, held back by ?delay= ms.
+        await new Promise((r) => setTimeout(r, Math.min(Number(url.searchParams.get("delay")) || 0, 10000)));
+        return send(200, HERO_SVG, "image/svg+xml");
+    }
     if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json");
     if (url.pathname === "/" && req.method === "GET") {
         const cookie =

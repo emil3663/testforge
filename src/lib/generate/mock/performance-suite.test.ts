@@ -25,7 +25,8 @@ const DEMOQA = "https://demoqa.com";
 
 // TFP-115: a performance suite is now Decision 2's four checks (navigation,
 // LCP, page weight, failed requests), so "one suite" means four TFPL tests.
-const CHECKS = 4;
+// Phase 38 TFP-149 added CLS and TBT: six.
+const CHECKS = 6;
 
 function performanceTests(baseUrl: string, description: string, practices: string[]): number {
     const code = mockGenerate(

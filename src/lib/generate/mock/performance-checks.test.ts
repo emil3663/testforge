@@ -25,8 +25,8 @@ test("performance checks: the budgets are Decision 2's loose ones", () => {
     assert.equal(PAGE_WEIGHT_BUDGET_BYTES, 5 * 1024 * 1024);
 });
 
-test("performance checks: four checks, the generated suite compiles and awaits every web-first assertion", () => {
-    assert.equal(ALL.length, 4);
+test("performance checks: six checks (TFP-149 added CLS and TBT), the generated suite compiles and awaits every web-first assertion", () => {
+    assert.equal(ALL.length, 6);
     const code = asSuite(ALL);
     assert.deepEqual(findTypeErrors(code), []);
     assert.deepEqual(findUnawaitedAssertions(code).filter((a) => a.returnsPromise), []);
@@ -64,7 +64,7 @@ test("performance checks: no LCP at all is recorded as a finding, not a failure"
 
 test("performance checks: includeNavigation false drops only the navigation budget; path is used by every check", () => {
     const withoutNavigation = buildPerformanceChecks({ includeNavigation: false });
-    assert.equal(withoutNavigation.length, 3);
+    assert.equal(withoutNavigation.length, 5);
     assert.ok(!withoutNavigation.some((t) => t.includes("finishes loading within")));
     for (const t of buildPerformanceChecks({ path: "/elements" })) assert.match(t, /page\.goto\('\/elements'/);
 });

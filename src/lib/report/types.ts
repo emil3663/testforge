@@ -79,6 +79,12 @@ export interface ExecutionRecord {
      */
     findings?: string[];
     /**
+     * Phase 38 (TFP-149, Decision 5): values a test recorded with no pass or
+     * fail (Playwright `measurement` annotations), e.g. total blocking time.
+     * Also appended to `remarks`.
+     */
+    measurements?: string[];
+    /**
      * Phase 34 (TFP-118): which generator wrote the test. Option B appends the
      * local model's tests to the template suite inside a describe titled
      * "Local model (<model>)"; everything else is the template's.

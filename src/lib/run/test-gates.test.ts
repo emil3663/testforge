@@ -88,7 +88,8 @@ test("the template: on the 166 fixed inputs every test declares exactly one gate
     // with it (3 pages), 860 + 36 + 22 = 918. TFP-148: the axe scan on every
     // inspected page of the 46 inputs with accessibility: +1 on each of the 42
     // without page data, +3 on each of the 4 with it, 918 + 42 + 12 = 972.
-    assert.deepEqual(totals, { "read-only": 972, interactive: 2, active: 2 });
+    // TFP-149: CLS and TBT on each of the 56 inputs with performance, 972 + 112 = 1084.
+    assert.deepEqual(totals, { "read-only": 1084, interactive: 2, active: 2 });
 });
 
 test("the template with every journey selected: journeys are interactive, with the interactive skip", () => {
