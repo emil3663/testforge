@@ -2,7 +2,7 @@
 
 Date: 2026-10-05
 Scope: Define what a run may do through three gates. Make the Standard run the critical working path. Bring the read-only conformance checks (passive security and the axe scan) into it through one shared implementation. Grade performance with Core Web Vitals' three bands.
-Status: Locked. Approved by Emil on 2026-10-05: Decisions 1 to 5, 7 and 8 in the coverage proposal, and Decision 6 in chat. Not started; TFP-145 is in progress first.
+Status: Complete. Approved by Emil on 2026-10-05: Decisions 1 to 5, 7 and 8 in the coverage proposal, and Decision 6 in chat. Decision 8 was amended on 2026-10-06. Gate A passed 2026-10-05; Gate B passed 2026-10-06 (Emil).
 
 ## Context
 
@@ -322,7 +322,7 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - the labelled failure set updated.
 - **Acceptance criteria:** Acceptance Criteria 4.
 - **Dependencies:** TFP-147, TFP-148, TFP-149.
-- **Verification (2026-10-06, Cowork), `ac9cf44`: Gate B waits on one re-run.**
+- **Verification (2026-10-06, Cowork), `ac9cf44` and `2a45da9`: Gate B passed (Emil, 2026-10-06).**
   (Code's report gave the hash as `78b1d0f`, which doesn't exist. The commit
   is `ac9cf44`.)
   - **Re-measured here from the committed evidence**
@@ -345,6 +345,17 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
     keep the first pair in the report as it is.
   - **Accepted:** the runs were driven by a script with one worker, on 5
     chosen paths, the same before and after.
+  - **Re-run, `2a45da9`, verified 2026-10-06:** Playwright's stats match the
+    report. Before took 2,071 s, with 54 timeouts and 6 other failures.
+    After took 3,222 s, with 87 timeouts and 6 other failures. The host was
+    still failing, and setup loaded different page sets in the two runs, so
+    the pair doesn't compare. Both pairs stay recorded as they are, and
+    nothing was tuned. T24 (the orphan-page check) is a template error,
+    ticketed as TFP-161.
+  - **Gate B decided by Emil on 2026-10-06:** passed on the fixture and
+    practicesoftwaretesting.com. The-internet's hosted copy is recorded as
+    not measurable. Its code is Apache-2.0 with a Dockerfile, so it is
+    measured on a local copy in Phase 39's TFP-158.
 
 ## Recommended Execution Order
 
@@ -363,6 +374,11 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
 - A Standard run without interactive sends nothing but GET requests.
 
 ### Gate B — Standard run's conformance and performance
+- **Passed 2026-10-06** (Emil). The before and after are measured on the
+  fixture and practicesoftwaretesting.com. The-internet's hosted copy is
+  recorded as not measurable, and its measurement moves to a local copy in
+  Phase 39's TFP-158. The older false failures found are labelled and
+  ticketed (TFP-151, TFP-159 to TFP-161).
 - TFP-147 to TFP-150 landed and independently verified.
 - Each template diff is confined to its named area.
 - No unexplained false failure on the real sites, and durations are recorded.

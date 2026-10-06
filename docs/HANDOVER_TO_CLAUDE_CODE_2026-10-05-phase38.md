@@ -21,6 +21,21 @@ starts, so a session opened before then doesn't use it.
 - If it isn't working, tell Emil. Don't reinstall it or change the
   user-level settings yourself.
 
+## Phase 38 is complete (2026-10-06)
+
+Gate A passed 2026-10-05; Gate B passed 2026-10-06 (Emil). See the Phase 38
+record. Everything below is the history of how it got there.
+
+**Do next:** commit the uncommitted docs as one `docs(decisions)` commit,
+push, and stop. Emil picks the next piece of work. These are ready, and none
+is to be started without his word:
+- the SEO Standard set;
+- the known-bug benchmark (`known-bug-benchmark-backlog-2026-10-06.md`,
+  draft);
+- Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked);
+- the template fixes TFP-151 and TFP-159 to TFP-161 (in
+  `real-site-run-findings-backlog-2026-10-01.md`).
+
 ## Done
 
 - TFP-145: `0504f92` and its follow-up `4d35b28`, not pushed. Both were

@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151 open (2026-10-06)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151, TFP-159, TFP-160 and TFP-161 open (2026-10-06)
 
 ## Context
 
@@ -224,6 +224,10 @@ TFP-140 was the last issued ticket.
   `getByText(text, { exact: true }).first()`. When its text sits in a child
   `<span>`, the check reads the span's name and fails a named button. Same-text
   elements still all test the first match.
+- **Also (T23, practicesoftwaretesting.com, TFP-150):** the check asked a
+  plain `<div>` with no role for an accessible name. A generic element has
+  none to give, so asking is the check's mistake. The check must not ask an
+  element with no role for a name.
 - **Scope:**
   - Apply TFP-145's approach to buttons and the other element types the
     accessible-name check covers: find the element itself by what
@@ -322,6 +326,94 @@ TFP-140 was the last issued ticket.
   and only the Accessibility block changes. The `alt=" "` case is measured
   by Code: a false pass on `34622b0`, a failure now.
 
+### TFP-159 — Link checks expect links in closed menus to be visible
+
+- **Phase:** after Phase 38 · **Priority:** P2
+- **Suggested labels:** `bug`, `generate`, `functional`
+- **Problem it solves:** on practicesoftwaretesting.com (TFP-150, T19 and
+  T20) 16 checks failed healthy links:
+  - **T19, 15 checks:** "Hand Tools" sits in the closed "Categories" dropdown,
+    and the link-health, link-type and keyboard checks expect it visible.
+  - **T20, 1 check:** at 390 px, "Home" sits behind the collapsed navbar
+    toggle.
+- **Scope:**
+  - A link inside a closed menu or a collapsed navbar is checked as what it
+    is. **Approach decided by Emil on 2026-10-06:**
+    - **Link health and link type are independent of the menu.** They are
+      checked from the link's own `href` and its presence in the page,
+      without requiring it to be visible. They don't wait on the keyboard or
+      mouse checks, so a broken menu never hides a dead link, and links in a
+      broken menu are still checked.
+    - **The keyboard and responsive checks open the menu or toggle first.**
+      Opening it is a read-only interaction (Phase 38 Decision 1). If the
+      link still isn't visible, the check fails, naming the menu.
+    - **The two are linked in the report.** When a menu couldn't be opened,
+      each link in it that passed its health check gets a finding: "healthy
+      by its address, but users can't reach it: the '<menu>' menu didn't
+      open".
+    - Rejected: making the health check wait on the menu checks. One
+      failure would cover two causes, and links behind a broken menu would
+      go unchecked.
+  - ISTQB technique: decision table (visible, in a closed menu, behind a
+    toggle).
+- **Deliverables:** the fix, a fixture page with a closed dropdown and a
+  collapsed navbar, and `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the fixture, a healthy link in a closed dropdown passes link health
+    and link type.
+  - The keyboard check opens the menu and passes. A link that stays hidden
+    after opening fails, naming the menu.
+  - With the menu's toggle broken on the fixture, the keyboard check fails
+    naming the menu, the link's health check still passes, and it carries
+    the "users can't reach it" finding.
+  - At 390 px, a link behind a working toggle passes.
+  - `npm run check:template-unchanged` shows only these checks changed.
+- **Dependencies:** Phase 38 Gate B.
+
+### TFP-160 — Form checks locate a form by its joined label text
+
+- **Phase:** after Phase 38 · **Priority:** P2
+- **Suggested labels:** `bug`, `generate`, `functional`
+- **Problem it solves:** on practicesoftwaretesting.com (TFP-150, T21 and
+  T22) 5 form checks found the wrong element or none:
+  - **T21:** a sort `<select>` matched its own options' joined text;
+  - **T22:** the contact and login forms were looked up by all their labels
+    joined ("Email address *Password *"), which no single element holds.
+- **Scope:**
+  - Locate each form the way TFP-145 locates links: the `<form>` element
+    itself, by what introspection recorded (its action, its fields), not by
+    text.
+  - ISTQB technique: error guessing, from the two recorded failures.
+- **Deliverables:** the fix, fixture cases for a form with several labelled
+  fields and a lone `<select>`, and `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the fixture, the multi-field form and the `<select>` form each find
+    their own `<form>` and count its fields correctly.
+  - `npm run check:template-unchanged` shows only the form checks changed.
+- **Dependencies:** Phase 38 Gate B.
+
+### TFP-161 — The orphan-page check judges pages it never loaded
+
+- **Phase:** after Phase 38 · **Priority:** P3
+- **Suggested labels:** `bug`, `generate`, `seo`
+- **Problem it solves:** on the-internet (TFP-150 re-run, T24), inspection
+  couldn't load `/`, the page that links to every example. Every other page
+  then looked unlinked and failed as an orphan.
+- **Scope:**
+  - The check counts inbound links only among pages that were actually
+    inspected. When pages failed to load, it says which ones. A page with
+    no inbound link among the loaded pages is a finding naming those
+    missing pages, not a failure.
+  - When the start page itself wasn't loaded, the check is Not run, with
+    that reason.
+- **Deliverables:** the fix, a fixture case where the hub page fails to
+  load, and `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - With the hub page unreachable, no page fails as an orphan. The check is
+    Not run, naming the hub page.
+  - With every page loaded, a genuinely unlinked page still fails.
+- **Dependencies:** Phase 38 Gate B.
+
 ## Recommended Execution Order
 
 1. TFP-141 (a crash; highest value). **Done, `32e8eae`, verified.**
@@ -332,7 +424,8 @@ TFP-140 was the last issued ticket.
    **Done, `0504f92` and follow-up `4d35b28`, verified 2026-10-05.**
 6. TFP-152, after Phase 38's TFP-146 and before its TFP-148. **Done, `34622b0`
    and follow-up `b15714b`, verified 2026-10-06.**
-7. TFP-151, after Phase 38 Gate B.
+7. TFP-151, after Phase 38 Gate B (now also covers T23).
+8. TFP-159, TFP-160 and TFP-161, after Phase 38 Gate B, in any order.
 
 ## Suggested Milestone Gate
 

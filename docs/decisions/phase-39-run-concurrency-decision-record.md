@@ -97,6 +97,10 @@ Gate B.
   - the comparison fixture;
   - a local Docker copy of Toolshop (Testsmith's `docker compose` setup),
     which is a local host;
+  - a local Docker copy of the-internet (its own Dockerfile, Apache-2.0),
+    which is also a local host. Its hosted copy couldn't be measured in
+    Phase 38's TFP-150. The local copy also gives Phase 38's before and
+    after: `d90de57` against `d202315`, one worker;
   - practicesoftwaretesting.com, capped.
 - The change is kept if the Comprehensive run (every area) on the local
   Toolshop copy is at least 40% faster with the machine limit than with 1
@@ -205,8 +209,9 @@ TFP-154 was the last issued ticket (`known-bug-benchmark-backlog-2026-10-06.md`)
 - **Problem it solves:** the speed-up is an estimate until it's measured.
 - **Scope:** Decision 6.
 - **Deliverables:**
-  - the runs on the fixture, a local Toolshop copy and
+  - the runs on the fixture, local Toolshop and the-internet copies, and
     practicesoftwaretesting.com;
+  - Phase 38's missing before and after on the local the-internet copy;
   - the keep or revert rule applied as written;
   - a report under `docs/decisions/`.
 - **Acceptance criteria:** Acceptance Criteria 5.
