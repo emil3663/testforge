@@ -322,6 +322,29 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - the labelled failure set updated.
 - **Acceptance criteria:** Acceptance Criteria 4.
 - **Dependencies:** TFP-147, TFP-148, TFP-149.
+- **Verification (2026-10-06, Cowork), `ac9cf44`: Gate B waits on one re-run.**
+  (Code's report gave the hash as `78b1d0f`, which doesn't exist. The commit
+  is `ac9cf44`.)
+  - **Re-measured here from the committed evidence**
+    (`benchmarks/2026-10-06-tfp150/`). The Playwright stats match the report
+    to the second:
+    - fixture: 68 s before, 76 s after;
+    - practicesoftwaretesting.com: 925 s before, 952 s after;
+    - the-internet: 1,712 s before, 1,913 s after.
+
+    Toolshop's 45 and 46 unexpected results and the-internet's 47 and 53
+    timeouts match the report too. `check:template-unchanged d90de57
+    d202315` gives 12 of 166 identical across the phase.
+  - **Labelled set:** the 46 Toolshop failures are each labelled: 22 template
+    errors (T19 to T23), 18 real (R10 to R12) and 6 unclear (U2, U3). R10 is
+    the only new failure from the phase, and it is real.
+  - **Open:** the-internet's pair ran while the host was mostly not
+    answering: 503s, and 47 and 53 thirty-second timeouts. It measures a dead
+    host, not the phase. The host answered again by 05:50 on 2026-10-06.
+    Re-run the pair back to back on a healthy host before Gate B closes, and
+    keep the first pair in the report as it is.
+  - **Accepted:** the runs were driven by a script with one worker, on 5
+    chosen paths, the same before and after.
 
 ## Recommended Execution Order
 

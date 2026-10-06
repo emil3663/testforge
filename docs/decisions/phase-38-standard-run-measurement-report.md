@@ -48,6 +48,8 @@ generation are timed separately. Budget: 1,800 s (the executor's
 | practicesoftwaretesting | `/`, `/category/hand-tools`, `/category/power-tools`, `/contact`, `/auth/login` | `d90de57` | 255 | 205 | 45 | 5 | 15 s | 926 s |
 | practicesoftwaretesting | as above | `d202315` | 281 | 231 | 46 | 4 | 10 s | 954 s |
 
+- These are the first pair. The re-run (below) was also slowed by the
+  host, and is not a usable comparison either.
 - the-internet's paths were `/`, `/login`, `/checkboxes`, `/dropdown` and
   `/tables`. `page.goto` timed out at 30 s on the first three in both
   inspections, so both runs covered the same 2 pages.
@@ -105,6 +107,49 @@ The same 9 failures before and after, the same 9 as in TFP-146's gate run
 (3), the form-action injection on `/login` (T8), canonical (3), and
 robots.txt and sitemap (R1).
 
+## the-internet, re-run (2026-10-06, 04:20 to 05:49 UTC)
+
+Asked for once the host was answering again. The same driver, paths and
+settings, back to back: `d90de57`, then `d202315` (`HEAD` was `ac9cf44`,
+with no code change since `d202315`). Files: `the-internet-rerun-*`.
+
+**Host health, sampled with `curl` over the 5 paths.** 04:19 UTC: 2 of 40
+requests got a 503, each after 30.75 s (Heroku's router giving up at
+30 s); the rest got 200 in about 0.8 s. 05:50 UTC, after the pair: 1 of 20.
+That is better than the first pair's 1 in 9, but a Standard run makes
+hundreds of page loads, and each stall costs a test its 30 s.
+
+| Commit | Pages loaded at inspection (of 5) | Tests | Passed | Failed | of which 30 s timeouts | Not run | Inspection | Run |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `d90de57` | 3: `/checkboxes`, `/dropdown`, `/tables` | 76 | 16 | 60 | 54 | 0 | 65 s | **2,072 s (over)** |
+| `d202315` | 4: `/login` as well | 121 | 27 | 93 | 87 | 1 | 37 s | **3,223 s (over)** |
+
+- **Still not a usable before/after.** Inspection lost `/` in both runs
+  and `/login` in the before run only, so the two suites cover different
+  page sets. Timeouts are 90 % of the failures before and 94 % after; the
+  after run's 87 timeouts are 2,610 s of its 3,223 s.
+- **Both runs went over the 1,800 s budget.** Recorded as they are, nothing
+  tuned (Decision 8).
+
+**Failures that were not timeouts, read by hand:**
+
+- "orphan page approximation" (3 before, 4 after): **template error, T24.**
+  The check counts links only among the inspected pages. Inspection lost
+  `/`, the page that links to every example, so each inspected page looks
+  unlinked. It predates the phase; the fourth one after is `/login`,
+  inspected only then.
+- "no same-origin request fails" (before only): `HTTP 503` on `/`, the
+  host.
+- Canonical and meta description on `/checkboxes`, and robots.txt with no
+  `Sitemap:` line: real, R2.
+
+**New failures in the after run:** 42 titles not failing before. 41 are
+30 s timeouts: the phase's new checks (axe scans, passive security, CLS,
+TBT) on the pages that loaded, older checks, and 4 form checks on
+`/login`, which was inspected only in the after run. The 42nd is the
+fourth orphan check (T24), also from `/login`. None is a finding about a
+page, and none comes from the phase's code.
+
 ## practicesoftwaretesting.com: the failures that predate the phase
 
 The site is new to TestForge. Gate B asks for no unexplained false failure
@@ -147,13 +192,16 @@ are recorded, not fixed, here.
 - TFP-147 to TFP-149 and their follow-ups are verified (the Phase 38
   record).
 - Each template diff is confined to its named area (the table above).
-- Durations are recorded. The-internet's pair measures a host that mostly
-  wasn't answering, so it shows what the run costs in that case, not the
-  phase's cost on a working site.
+- Durations are recorded. Neither of the-internet's pairs is a usable
+  before/after: in both, 30 s host timeouts are most of the failures and
+  most of the run time, and in the re-run inspection lost different pages
+  in each run. On this host, Decision 8's before/after holds only for the
+  fixture and practicesoftwaretesting.com. Whether that is enough for Gate
+  B, or the-internet is tried again or replaced, is Emil's call.
 - Every new failure is explained: 1 real on practicesoftwaretesting.com, 10
   host timeouts on the-internet. The 22 template errors found on
   practicesoftwaretesting.com are false failures, but older than the phase.
   Whether they block Gate B or become tickets is Emil's call.
-- The-internet's after run went over budget. Under Decision 8, the split
-  between Standard and Comprehensive is revisited. A re-run of the-internet
-  pair when the host is answering would give a usable before/after there.
+- Three of the-internet's four runs went over budget, each because of
+  host timeouts. Under Decision 8, the split between Standard and
+  Comprehensive is revisited.

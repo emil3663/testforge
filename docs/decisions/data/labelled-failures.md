@@ -39,6 +39,7 @@ and a classifier only sees what is left).
 | T21 | practicesoftwaretesting.com | "form element check: Name (A - Z)… [Sort] [form]" on 3 pages | `getByText` of the options' joined text matches the `<select>` itself; the check then counts `input, textarea, select, button` inside it: 0. A `<form>` around it exists | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
 | T22 | practicesoftwaretesting.com | "form element check" for the `/contact` and `/auth/login` forms | Located by the whole form's joined label text ("Email address *Password *"); no single element has that text, so nothing is found | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
 | T23 | practicesoftwaretesting.com | TFAC "accessible name and role: SearchX Search [form]" | The located element is a plain `<div>` (no role, no `aria-label`): a generic element has no accessible name to give, so asking for one is the check's mistake | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open |
+| T24 | the-internet | "orphan page approximation: each scanned page is linked from another scanned page" (3 and 4 tests) | The check counts inbound links only among inspected pages. The host timed out on `/`, so inspection lost the page that links to every example, and `/checkboxes`, `/dropdown`, `/tables` (and `/login`) each looked unlinked. Read by hand, each is linked from `/` | TFP-150 re-run, `benchmarks/2026-10-06-tfp150/the-internet-rerun-*` (`d90de57` and `d202315`) | Open |
 
 ## Model errors
 
@@ -89,7 +90,8 @@ and a classifier only sees what is left).
   the first built for test practice: 22 template-error failures (T19 alone
   is 15), 18 real and 6 unclear.
 - **Left out on purpose:** the-internet's 30 s test timeouts in TFP-150's
-  runs (`benchmarks/2026-10-06-tfp150/the-internet-*`): 47 before, 53 after.
+  runs (`benchmarks/2026-10-06-tfp150/the-internet-*`): 47 before, 53 after,
+  and in the re-run 54 before, 87 after, plus one `HTTP 503` on `/`.
   The host wasn't answering (inspection timed out on 3 of 5 pages, and
   `curl` got a 503 after 30.8 s), so none is a test right or wrong about a
   page.

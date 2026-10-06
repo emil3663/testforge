@@ -273,6 +273,26 @@ The coverage proposal measured the Standard run against the published standards 
 
 All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
 
+
+### Phase 39 — Run concurrency (locked 2026-10-06, not started)
+Standard and Comprehensive spread their tests over several workers from a
+shared queue. Each area gets its own file, or one per page for page-level
+areas. Tests that change data run one at a time.
+
+The worker limit depends on the host:
+- local hosts are limited only by the machine;
+- other hosts get a worker maximum and a shared requests-per-second cap;
+- with the owner's sign-off on Comprehensive testing (Phase 35 Decision 8)
+  the caps are removed with no separate ask, and the run goes all out
+  (Emil, 2026-10-06).
+
+This replaces Phase 35's one-worker rule and Standard's fixed 4 and 2.
+
+Values (Emil, 2026-10-06): at most 3 workers and 5 requests per second on
+other hosts; otherwise half the CPU cores. Tickets TFP-155 to TFP-158;
+starts after Phase 38 Gate B. See
+`phase-39-run-concurrency-decision-record.md`.
+
 ---
 
 ## Sequencing note

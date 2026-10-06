@@ -1,0 +1,97 @@
+the-internet-rerun-after: https://the-internet.herokuapp.com paths / /login /checkboxes /dropdown /tables; commit d202315; 2026-10-06T04:55:48.010Z
+inspection 37 s, generation 0 s, run 3223 s (budget 1800 s: OVER); playwright duration 3222 s
+121 tests {"Failed":93,"Passed":27,"Not run":1}
+failed:
+  [Failed] TFFU-001: loads the target page and shows visible content | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-002: shows at least one interactive element related to the scenario | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-003: form element check: Username Password Login [This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.] [form] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-004: form element check: username [This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.] [input] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-005: form element check: password [This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.] [input] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-006: form element check: Login [This is where you can log into the secure area. Enter tomsmith for the username and SuperSecretPassword! for the password. If the information is wrong you should see error messages.] [button] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-007: form element check: checkbox 1 checkbox 2 [Checkboxes] [form] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-008: form element check: on [Checkboxes] [input] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-009: form element check: Please select an option Option 1 Option 2 [Dropdown List] [select] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-010: actionable element setup for /tables did not discover any interactive elements | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-011: navigation link health: Untitled link to https://github.com/tourdedave/the-internet | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-015: target window behavior matches the link target configuration | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-016: visual representation: links are distinguishable from surrounding text | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-019: keyboard navigation: links can receive focus and activate with Enter | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-020: technical security: link protocols are safe and do not expose obvious XSS vectors | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-022: orphan page approximation: each scanned page is linked from another scanned page | Error: expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0
+  [Failed] TFFU-023: navigation link health: Untitled link to https://github.com/tourdedave/the-internet | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-024: navigation link health: Elemental Selenium | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-026: link types: internal, external, anchor, mailto, and download links are classified correctly | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-027: target window behavior matches the link target configuration | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-028: visual representation: links are distinguishable from surrounding text | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-029: hover state: links show pointer cursor and preserve tooltip attributes | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-030: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-032: technical security: link protocols are safe and do not expose obvious XSS vectors | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-034: orphan page approximation: each scanned page is linked from another scanned page | Error: expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0
+  [Failed] TFFU-035: navigation link health: Untitled link to https://github.com/tourdedave/the-internet | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-036: navigation link health: Elemental Selenium | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-038: link types: internal, external, anchor, mailto, and download links are classified correctly | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-039: target window behavior matches the link target configuration | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-040: visual representation: links are distinguishable from surrounding text | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-041: hover state: links show pointer cursor and preserve tooltip attributes | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-044: technical security: link protocols are safe and do not expose obvious XSS vectors | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-046: orphan page approximation: each scanned page is linked from another scanned page | Error: expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0
+  [Failed] TFFU-047: navigation link health: edit [No Class or ID attributes to signify groupings of rows and columns] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-048: navigation link health: delete [No Class or ID attributes to signify groupings of rows and columns] | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-051: link types: internal, external, anchor, mailto, and download links are classified correctly | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-052: visual representation: links are distinguishable from surrounding text | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-053: hover state: links show pointer cursor and preserve tooltip attributes | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-055: keyboard navigation: links can receive focus and activate with Enter | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-056: technical security: link protocols are safe and do not expose obvious XSS vectors | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-058: anchor links point to existing in-page targets | Test timeout of 30000ms exceeded.
+  [Failed] TFFU-059: orphan page approximation: each scanned page is linked from another scanned page | Error: expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0
+  [Failed] TFUS-001: keeps navigation and guidance visible for a first-time user | Test timeout of 30000ms exceeded.
+  [Failed] TFRM-001: keeps the core journey visible across common viewport sizes | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-001: exposes basic accessible structure for assistive technologies | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-002: every form field has an accessible name: /login | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-003: every form field has an accessible name: /checkboxes | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-004: every form field has an accessible name: /dropdown | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-005: /login passes the WCAG 2.2 A and AA scan | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-006: /checkboxes passes the WCAG 2.2 A and AA scan | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-007: /dropdown passes the WCAG 2.2 A and AA scan | Test timeout of 30000ms exceeded.
+  [Failed] TFAC-008: /tables passes the WCAG 2.2 A and AA scan | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-001: exposes core SEO and content signals on the landing page | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-001: landing page finishes loading within 5 s | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-002: largest contentful paint stays under 4 s | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-003: page weight stays under 5 MB | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-004: no same-origin request fails while the page loads | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-005: cumulative layout shift during load stays under 0.25 | Test timeout of 30000ms exceeded.
+  [Failed] TFPL-006: total blocking time during load (recorded, not judged) | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-001: uses HTTPS for the requested public test target | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-002: /login sends its security headers and session cookies | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-003: /login names no software version in its response headers | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-004: /login keeps passwords off plain HTTP | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-005: /login puts no password or session token in a URL | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-006: /checkboxes sends its security headers and session cookies | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-007: /checkboxes names no software version in its response headers | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-008: /checkboxes keeps passwords off plain HTTP | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-009: /checkboxes puts no password or session token in a URL | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-010: /dropdown sends its security headers and session cookies | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-011: /dropdown names no software version in its response headers | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-012: /dropdown keeps passwords off plain HTTP | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-013: /dropdown puts no password or session token in a URL | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-014: /tables sends its security headers and session cookies | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-015: /tables names no software version in its response headers | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-016: /tables keeps passwords off plain HTTP | Test timeout of 30000ms exceeded.
+  [Failed] TFSC-017: /tables puts no password or session token in a URL | Test timeout of 30000ms exceeded.
+  [Failed] TFCS-001: session cookies set by the site expire and stay scoped to it | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-003: keeps meta description stable for /login | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-005: keeps canonical metadata stable for /login | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-008: keeps meta description stable for /checkboxes | Error: no meta description on /checkboxes expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name="description"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /checkboxes with timeout 5000ms - waiting for locator(
+  [Failed] TFSE-009: keeps heading structure stable for /checkboxes | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-010: keeps canonical metadata stable for /checkboxes | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-012: keeps page title stable for /dropdown | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-013: keeps meta description stable for /dropdown | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-015: keeps canonical metadata stable for /dropdown | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-016: exposes structured data for /dropdown (recorded as a finding when missing) | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-017: keeps page title stable for /tables | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-018: keeps meta description stable for /tables | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-020: keeps canonical metadata stable for /tables | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-021: exposes structured data for /tables (recorded as a finding when missing) | Test timeout of 30000ms exceeded.
+  [Failed] TFSE-022: publishes robots.txt with a sitemap reference | Error: /robots.txt has no Sitemap: line expect(received).toContain(expected) // indexOf Expected substring: "Sitemap:" Received string: "# www.robotstxt.org/ # www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156449· User-agent: * "
+  [Failed] TFSE-024: publishes manifest metadata for installable clients (recorded as a finding when missing) | Test timeout of 30000ms exceeded.

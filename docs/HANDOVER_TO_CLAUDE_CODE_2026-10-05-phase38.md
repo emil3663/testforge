@@ -58,6 +58,9 @@ starts, so a session opened before then doesn't use it.
    2026-10-06: it is a friend's revenue-earning site). The before runs use
    `d90de57`, back to back with the after runs on each site.
    Stop at Gate B.
+   **TFP-150 status (2026-10-06):** `ac9cf44`. Re-run the-internet's
+   before/after pair on a healthy host, as its verification entry says,
+   then stop for Gate B.
 6. TFP-151 waits until after Phase 38.
 
 ## Watch for
