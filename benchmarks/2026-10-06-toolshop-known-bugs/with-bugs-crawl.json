@@ -1,0 +1,31 @@
+{
+  "crawlId": "0cd244d2-28a2-4c69-9030-578b34a542de",
+  "crawlStatus": "completed",
+  "duration": 6858,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 1,
+    "queuedUrls": 0,
+    "discoveredPages": 1,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/",
+    "lastCompletedTitle": "Practice Software Testing - Toolshop - v5.0 with bugs"
+  },
+  "result": {
+    "crawledAt": "2026-10-06T10:10:59.474Z",
+    "baseUrl": "https://with-bugs.practicesoftwaretesting.com",
+    "pageCount": 1,
+    "pages": [
+      {
+        "path": "/",
+        "url": "https://with-bugs.practicesoftwaretesting.com/",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": null
+      }
+    ],
+    "warnings": []
+  }
+}
