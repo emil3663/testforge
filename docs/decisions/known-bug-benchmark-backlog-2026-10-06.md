@@ -2,8 +2,10 @@
 
 **Version:** 0.1
 **Date:** 2026-10-06
-**Status:** Draft. Emil agreed the idea on 2026-10-06. Decisions 1 to 4
-below must be confirmed before TFP-153 starts. Starts after Phase 38 Gate B.
+**Status:** Locked. Decisions 1 to 4 were approved by Emil on 2026-10-06.
+TFP-153 is done (classification and spot-check), pending verification of
+the answer key. TFP-154 is not started; it waits for the template fixes TFP-159,
+TFP-160, TFP-151 and TFP-161.
 
 ## Context
 
@@ -25,8 +27,9 @@ What the list holds, by reading it (not yet classified for TestForge):
   checkout 6, category 5, login 5, and others. 13 are API bugs, and 10 are
   accessibility bugs (missing labels, contrast, image alts, a missing
   fieldset).
-- **Browser:** 16 name Firefox, Edge or Safari. TestForge runs Chromium only,
-  so they are out of reach unless that changes.
+- **Browser:** 16 name Firefox, Edge or Safari. 13 of those don't show in
+  Chromium at all (3 also show in Chrome). TestForge runs Chromium only, so
+  the 13 are out of reach unless that changes.
 - **Security:** 13 carry an OWASP type, mostly API authorisation. Most need
   attack-shaped requests, which is the active gate.
 
@@ -44,7 +47,7 @@ services to third parties. So:
 
 (Claude is not a lawyer; this is a reading of the licence text, not advice.)
 
-## Decisions to confirm
+## Decisions (approved by Emil, 2026-10-06)
 
 1. **The answer key is Testsmith's list, pinned to one commit.** Before any
    run, check the hosted with-bugs site matches it, for example by spot-checking
@@ -90,6 +93,17 @@ services to third parties. So:
   - no Testsmith text is copied in.
 - **Dependencies:** Phase 38 Gate B.
 
+- **Progress (2026-10-06, Cowork):** classified in
+  `benchmarks/2026-10-06-toolshop-known-bugs/answer-key.md`, from commit
+  `c752a70`. All 94 are classified, in TestForge's own wording.
+  - The prediction: 7 likely, 10 maybe, 77 not caught today.
+  - **Spot-check done the same day, in Chrome, read-only:** 15 of 15 checked
+    bugs are present.
+  - **It found that the with-bugs site routes by `#/` hash, while the clean
+    site routes by path.** TFP-154 must first check what TestForge's crawl
+    finds there. If it only finds `/`, that is a gap of its own and needs a
+    ticket before scoring.
+
 ### TFP-154 — Run TestForge against both versions and score it
 
 - **Priority:** P2 · **Labels:** `measurement`, `benchmark`
@@ -111,12 +125,14 @@ services to third parties. So:
   - every failure on the with-bugs site is either a scored bug or a labelled
     failure;
   - the report says which areas' Standard sets the misses point to.
-- **Dependencies:** TFP-153.
+- **Dependencies:** TFP-153. The template fixes TFP-151 and TFP-159 to
+  TFP-161 come first, so their false failures on this same site don't mix
+  into the score.
 
 ## Recommended Execution Order
 
-1. Confirm Decisions 1 to 4.
-2. TFP-153.
+1. Confirm Decisions 1 to 4. **Done, 2026-10-06.**
+2. TFP-153. **Done 2026-10-06 (Cowork).**
 3. TFP-154, at the read-only gate on the hosted sites.
 4. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
