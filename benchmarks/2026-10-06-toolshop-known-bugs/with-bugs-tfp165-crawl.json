@@ -1,0 +1,229 @@
+{
+  "crawlId": "f4c90c4e-1adc-47e3-a60f-25edbeda127e",
+  "crawlStatus": "completed",
+  "duration": 45530,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 34,
+    "queuedUrls": 0,
+    "discoveredPages": 34,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/#/product/16",
+    "lastCompletedTitle": "Practice Software Testing - Toolshop - v5.0 with bugs"
+  },
+  "result": {
+    "crawledAt": "2026-10-06T10:34:58.926Z",
+    "baseUrl": "https://with-bugs.practicesoftwaretesting.com",
+    "pageCount": 34,
+    "pages": [
+      {
+        "path": "/#/",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": null
+      },
+      {
+        "path": "/#/auth/forgot-password",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/forgot-password",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/auth/login"
+      },
+      {
+        "path": "/#/auth/login",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/login",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/auth/register",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/register",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/auth/login"
+      },
+      {
+        "path": "/#/category/hand-tools",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/hand-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/category/power-tools",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/power-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/category/undefined",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/undefined",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/chainsaws",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/chainsaws",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/contact",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/contact",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/1",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/1",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/10",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/10",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools"
+      },
+      {
+        "path": "/#/product/11",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/11",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools"
+      },
+      {
+        "path": "/#/product/12",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/12",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools"
+      },
+      {
+        "path": "/#/product/13",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/13",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools"
+      },
+      {
+        "path": "/#/product/14",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/14",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools"
+      },
+      {
+        "path": "/#/product/15",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/15",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/product/14"
+      },
+      {
+        "path": "/#/product/16",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/16",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/product/14"
+      },
+      {
+        "path": "/#/product/19",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/19",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/2",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/2",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/20",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/20",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/21",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/21",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/22",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/22",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/23",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/23",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/24",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/24",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/25",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/25",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/26",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/26",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools"
+      },
+      {
+        "path": "/#/product/3",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/3",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/4",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/4",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/5",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/5",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/6",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/6",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/7",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/7",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/8",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/8",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/product/9",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/9",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      },
+      {
+        "path": "/#/rentals",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/rentals",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/"
+      }
+    ],
+    "warnings": []
+  }
+}

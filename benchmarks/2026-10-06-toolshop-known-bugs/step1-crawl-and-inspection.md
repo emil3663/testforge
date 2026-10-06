@@ -67,3 +67,34 @@ on many. Recognising a `#/` route as a page (crawl, introspection's link
 type, link health, the anchor-target check) is a gap of its own and needs a
 ticket first, as the answer key says. The clean site is a usable crawl
 target but, routing differently, a weaker control than Decision 3 assumed.
+
+## Re-run after TFP-165 (`8324b2b`), 2026-10-06
+
+Same driver, same API and settings, on a production build of `8324b2b`.
+Output: `with-bugs-tfp165-*.json` and `clean-tfp165-*.json`. The first
+run's files above are kept as they were.
+
+| | with-bugs (hash routes) | clean (paths) |
+| --- | --- | --- |
+| Crawl | **34 pages** (46 s), named `/#/...` | **46 pages** (69 s), the same list as the first run |
+| Inspected (first 5) | `/#/`, `/#/auth/forgot-password`, `/#/auth/login`, `/#/auth/register`, `/#/category/hand-tools` | `/`, `/auth/forgot-password`, `/auth/login`, `/auth/register`, `/category/hand-tools` |
+| Failed pages | none | none |
+| `#` links on inspected pages | 67: routes recorded as `internal`, `#filters` and `#` as `anchor` | 0 |
+
+Route by route, reading `/#/x` as `/x`:
+- **On both:** 8 pages - `/`, `/auth/forgot-password`, `/auth/login`,
+  `/auth/register`, `/category/hand-tools`, `/category/power-tools`,
+  `/contact`, `/rentals` - and the products (24 on with-bugs, numbered
+  `/#/product/1` to `/26` without 17 and 18; 35 on the clean site,
+  addressed by id).
+- **Only on the clean site:** `/category/other`,
+  `/category/special-tools`, `/privacy`.
+- **Only on with-bugs:** `/#/category/undefined` and `/#/chainsaws`.
+  Both are linked from its menu, and both are listed bugs. The crawl finds
+  them as pages; whether they draw "not found" is link health's question
+  in the scored runs.
+
+So the with-bugs crawl now finds the routes the clean site finds as paths,
+give or take the two sites' own differences (TFP-165's last acceptance
+criterion). Inspection's first 5 pages are the same five kinds on both
+sites.
