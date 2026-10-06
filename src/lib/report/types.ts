@@ -270,6 +270,11 @@ export interface RunReport {
     // Phase 34 (TFP-119, Decision 7): each area in scope that ended up with no
     // test at all, and why - never silently dropped.
     emptyAreas?: EmptyAreaRecord[];
+    // Phase 38 (TFP-148, Decision 4): what the axe scan could not decide in a
+    // Standard run ("incomplete"), by page - listed for a person to check,
+    // never counted as passed. Absent when there is none, and on Comprehensive
+    // runs, whose own section lists them.
+    manualReview?: ComprehensiveIssue[];
     performance: {
         totalDuration: number;
         averageDuration: number;

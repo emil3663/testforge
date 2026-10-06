@@ -35,7 +35,9 @@ test("the suite: axe scan and field-name check per page, the six WCAG A/AA tags,
     assert.deepEqual(findUnawaitedAssertions(code).filter((a) => a.returnsPromise), []);
     assert.deepEqual(findPromisesToPlainMatchers(code), []);
     assert.deepEqual(findDuplicateTests(code), []);
-    assert.match(code, /^import AxeBuilder from '@axe-core\/playwright';$/m);
+    // TFP-148: each scan loads axe itself, so the Standard suite can run the same test without a file-level import.
+    assert.doesNotMatch(code, /^import AxeBuilder/m);
+    assert.equal(code.match(/const \{ default: AxeBuilder \} = await import\('@axe-core\/playwright'\);/g)?.length, 2);
     assert.deepEqual(WCAG_TAGS, ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"], "axe-core 4.13.0 has no wcag22a tag (Gate B)");
     assert.equal(code.match(/\.withTags\(\['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'\]\)/g)?.length, 2);
     assert.equal(code.match(/every form field has an accessible name: /g)?.length, 2);

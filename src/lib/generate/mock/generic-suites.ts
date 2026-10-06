@@ -22,7 +22,9 @@ import {
     resolveLinkAuditPath,
     resolveLinkAuditPaths,
 } from "./locators";
-import { createSuite } from "./suite";
+import { createSuite, inspectedPagePaths } from "./suite";
+import { ACCESSIBILITY_HELPERS, axeScanTest } from "../comprehensive-accessibility";
+import { checkDetails } from "../comprehensive-security";
 import type { ActionableElementDetail, BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
 export function buildSharedBestPracticeSuites(
@@ -128,10 +130,16 @@ ${elementChecks}
             ...toggleGroupTests,
             // TFP-121: every inspected page with form fields, not only the landing page.
             ...buildFormFieldNameTests(contentProfile),
+            // Phase 38 (TFP-148, Decision 4): Comprehensive's axe-core WCAG 2.2 A
+            // and AA scan, the same builder, on every inspected page.
+            ...inspectedPagePaths(contentProfile).map((path) => {
+                const escapedPath = escapeForSingleQuotedString(path);
+                return axeScanTest({ path, escapedPath, details: (category) => checkDetails(escapedPath)({ category, asvs: [], why: "" }) });
+            }),
         ]);
 
         if (suite) {
-            suites.push(suite);
+            suites.push({ ...suite, preamble: ACCESSIBILITY_HELPERS });
         }
     }
 

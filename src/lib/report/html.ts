@@ -66,7 +66,16 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
                 ${generation.pageInspection ? `<div class="issue-body">${escapeReportHtml(describePageInspection(generation.pageInspection))}</div>` : ""}
                 ${generation.gates.length === 0 ? "" : `<div class="table-wrap"><table><thead><tr><th>Check</th><th>Bar</th><th>Measured</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>${generation.gates.map((gate) => `<tr><td>${escapeReportHtml(gate.gate)}</td><td>${escapeReportHtml(gate.bar)}</td><td>${escapeReportHtml(gate.measured)}</td><td>${escapeReportHtml(gate.verdict)}</td><td>${gate.evidence.map((line) => escapeReportHtml(line)).join("<br>") || "-"}</td></tr>`).join("")}</tbody></table></div>`}
             </div>`;
-    const generationMarkup = `${emptyAreasMarkup}${gatesMarkup}`;
+    // Phase 38 (TFP-148): what the axe scan could not decide, for a person to check.
+    const manualReview = report.manualReview ?? [];
+    const manualReviewMarkup = manualReview.length === 0 ? "" : `
+            <div class="card">
+                <div class="card-eyebrow">Accessibility</div>
+                <div class="card-title">Needs manual review (${manualReview.length})</div>
+                <div class="issue-body">The axe scan could not decide these, so they are not counted as passed.</div>
+                ${manualReview.map((item) => `<div class="issue-item"><div class="issue-title">${escapeReportHtml(item.page)}</div><div class="issue-body">${escapeReportHtml(item.detail)}</div></div>`).join("")}
+            </div>`;
+    const generationMarkup = `${emptyAreasMarkup}${manualReviewMarkup}${gatesMarkup}`;
     const defectsMarkup = report.defects.issues.map((defect) => `
             <div class="issue-item">
                 <div class="issue-title">${escapeReportHtml(defect.title)}</div>

@@ -1,4 +1,15 @@
-import type { BestPracticeArea, GeneratedSuite } from "./types";
+import { MAX_INSPECTION_PATHS } from "@/lib/introspect/paths";
+import type { BestPracticeArea, ContentProfile, GeneratedSuite } from "./types";
+
+/**
+ * Phase 38 (TFP-147, TFP-148; Decision 4): the pages the shared conformance
+ * checks cover in a Standard run - every inspected page, up to
+ * MAX_INSPECTION_PATHS, in inspection order; "/" without page data.
+ */
+export function inspectedPagePaths(contentProfile: ContentProfile | null): string[] {
+    const paths = [...new Set((contentProfile?.pages ?? []).map((page) => page.path))].slice(0, MAX_INSPECTION_PATHS);
+    return paths.length > 0 ? paths : ["/"];
+}
 
 export const SUITE_AREA_CODES: Record<BestPracticeArea, string> = {
     functional: "FU",

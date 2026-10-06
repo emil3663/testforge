@@ -11,9 +11,16 @@ import { computeEmptyAreas } from "./empty-areas";
 import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
-import type { GenerationRecord, JsonReport, RunReport } from "./types";
+import type { ComprehensiveIssue, ExecutionRecord, GenerationRecord, JsonReport, RunReport } from "./types";
 import { buildComprehensiveReport } from "./comprehensive";
 import { isComprehensive, type RunMode } from "@/lib/comprehensive/run-mode";
+
+/** Phase 38 (TFP-148): every item a Standard test listed for manual review (the axe scan's "incomplete"), by page. */
+function standardManualReview(execution: ExecutionRecord[]): ComprehensiveIssue[] {
+    return execution.flatMap((record) => (record.issues ?? [])
+        .filter((issue) => issue.kind === "manual-review")
+        .map((issue) => ({ page: record.page ?? "(no page)", title: record.title, detail: `${issue.category} ${issue.detail}` })));
+}
 
 export function buildReport(
     report: JsonReport,
@@ -66,6 +73,7 @@ export function buildReport(
         notTested,
         generation,
         emptyAreas,
+        ...(!isComprehensive(runMode) && standardManualReview(execution).length > 0 ? { manualReview: standardManualReview(execution) } : {}),
         performance,
         usability,
         seo,

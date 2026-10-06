@@ -1,8 +1,8 @@
 import { ACTIVE_GATE_SKIP, gateDetails } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./format";
-import { MAX_INSPECTION_PATHS } from "@/lib/introspect/paths";
 import { checkDetails, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "../comprehensive-security";
 import { PASSIVE_SECURITY_HELPERS } from "../comprehensive-security-helpers";
+import { inspectedPagePaths } from "./suite";
 import { discoverForms, fieldLocator, fieldName, submitButton, type DiscoveredForm } from "./forms";
 import type { ActionableElementDetail, ContentProfile } from "./types";
 
@@ -132,16 +132,6 @@ ${fill}
 }
 
 /**
- * Phase 38 (TFP-147, Decision 4): the pages the passive checks cover - every
- * inspected page, up to MAX_INSPECTION_PATHS, in inspection order; "/"
- * without page data.
- */
-export function passiveCheckPaths(contentProfile: ContentProfile | null): string[] {
-    const paths = [...new Set((contentProfile?.pages ?? []).map((page) => page.path))].slice(0, MAX_INSPECTION_PATHS);
-    return paths.length > 0 ? paths : ["/"];
-}
-
-/**
  * Decision 3's security suite: tests, the notes that explain them, and the
  * helpers the passive checks call (written at the top of the suite).
  *
@@ -154,7 +144,7 @@ export function passiveCheckPaths(contentProfile: ContentProfile | null): string
 export function buildSecurityChecks(baseUrl: string, contentProfile: ContentProfile | null): { tests: string[]; notes: string[]; preamble: string } {
     const isHttps = new URL(baseUrl).protocol === "https:";
     const forms = findPayloadForms(contentProfile);
-    const passive = passiveCheckPaths(contentProfile).flatMap((path) => {
+    const passive = inspectedPagePaths(contentProfile).flatMap((path) => {
         const escapedPath = escapeForSingleQuotedString(path);
         return passiveSecurityPageTests({ escapedPath, details: checkDetails(escapedPath) });
     });

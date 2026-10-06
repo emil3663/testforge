@@ -79,6 +79,22 @@ export function SummaryTab({ report }: SummaryTabProps) {
                                         </div>
                                     </ReportPanel>
 
+                                    {report.manualReview && report.manualReview.length > 0 ? (
+                                        <ReportPanel
+                                            eyebrow="Accessibility"
+                                            title={`Needs manual review (${report.manualReview.length})`}
+                                            description="What the accessibility scan could not decide. Not counted as passed: a person needs to check these."
+                                        >
+                                            <ul className="space-y-1 text-sm text-zinc-700">
+                                                {report.manualReview.map((item, index) => (
+                                                    <li key={index}>
+                                                        <span className="font-mono text-xs">{item.page}</span> · {item.detail}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </ReportPanel>
+                                    ) : null}
+
                                     <GenerationPanels report={report} />
                                 </div>
     );

@@ -85,8 +85,10 @@ test("the template: on the 166 fixed inputs every test declares exactly one gate
     // TFP-147: 860 before; the security suite's 2 own checks became the 4
     // shared passive checks per inspected page plus the probe: +3 on each of
     // the 12 security inputs without page data (/ only), +11 on each of the 2
-    // with it (3 pages), 860 + 36 + 22 = 918.
-    assert.deepEqual(totals, { "read-only": 918, interactive: 2, active: 2 });
+    // with it (3 pages), 860 + 36 + 22 = 918. TFP-148: the axe scan on every
+    // inspected page of the 46 inputs with accessibility: +1 on each of the 42
+    // without page data, +3 on each of the 4 with it, 918 + 42 + 12 = 972.
+    assert.deepEqual(totals, { "read-only": 972, interactive: 2, active: 2 });
 });
 
 test("the template with every journey selected: journeys are interactive, with the interactive skip", () => {

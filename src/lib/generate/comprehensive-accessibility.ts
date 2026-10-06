@@ -28,8 +28,6 @@ export const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"
 /** What the TFP-121 check verifies, by axe's own `label` rule's tag (wcag412). */
 export const FORM_FIELD_NAMES_CRITERION = "WCAG 4.1.2";
 
-export const AXE_IMPORT = "import AxeBuilder from '@axe-core/playwright';";
-
 export const ACCESSIBILITY_HELPERS = NOT_A_PAGE_HELPER + String.raw`// The WCAG criterion axe tags a rule with: wcag143 -> "WCAG 1.4.3".
 function tfCriterion(tags: string[]): string {
   const tag = tags.find((candidate) => /^wcag\d{3,}$/.test(candidate));
@@ -55,6 +53,8 @@ const AXE_SCAN = String.raw`    test('__PATH__ passes the WCAG 2.2 A and AA scan
       const notAPage = response ? tfNotAPage(response.status()) : null;
       test.skip(notAPage !== null, '__PATH__ ' + notAPage);
       await page.waitForLoadState('load');
+      // Loaded here, not imported at the top of the file: the Standard suite runs this same test (Phase 38 TFP-148).
+      const { default: AxeBuilder } = await import('@axe-core/playwright');
       const results = await new AxeBuilder({ page }).withTags(__TAGS__).analyze();
       const failures: string[] = [];
       for (const violation of results.violations) {
@@ -75,11 +75,20 @@ function indent(code: string) {
     return code.split("\n").map((line) => (line ? `  ${line}` : line)).join("\n");
 }
 
-/** The per-page accessibility checks: the axe scan, then TFP-121's field names. */
-export function accessibilityPageTests(page: AccessibilityCheckPage): string[] {
-    const scan = AXE_SCAN.split("__PATH__").join(page.escapedPath)
+/**
+ * The axe-core WCAG scan of one page. Phase 38 (TFP-148, Decision 4): the
+ * Standard and Comprehensive runs both build it here, so they class every
+ * violation the same way. It needs ACCESSIBILITY_HELPERS in scope.
+ */
+export function axeScanTest(page: AccessibilityCheckPage): string {
+    return AXE_SCAN.split("__PATH__").join(page.escapedPath)
         .split("__DETAILS__").join(page.details("WCAG 2.2 A and AA (axe-core)"))
         .split("__TAGS__").join(JSON.stringify(WCAG_TAGS).replace(/"/g, "'"));
+}
+
+/** The per-page accessibility checks: the axe scan, then TFP-121's field names. */
+export function accessibilityPageTests(page: AccessibilityCheckPage): string[] {
+    const scan = axeScanTest(page);
     // Gate B finding: like the scan, the field-name check is Not run on a
     // page answering 400 or more (198dbec's rule) - a 401 page has no fields
     // to check, so passing there checked nothing. Only this copy changes; the
