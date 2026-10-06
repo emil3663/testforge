@@ -93,7 +93,7 @@ function largestContentfulPaintTest(path: string) {
     expect(
       lcp.time,
       'LCP ' + (lcp.time / 1000).toFixed(2) + ' s, budget ${(LCP_BUDGET_MS / 1000).toFixed(1)} s: Core Web Vitals "poor". Largest element: ' + lcp.element + '. ${LAB_NOTE}'
-    ).toBeLessThan(${LCP_BUDGET_MS});
+    ).toBeLessThanOrEqual(${LCP_BUDGET_MS});
   });`;
 }
 

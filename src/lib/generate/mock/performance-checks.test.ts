@@ -62,6 +62,41 @@ test("performance checks: no LCP at all is recorded as a finding, not a failure"
     assert.match(lcp, /annotations\.push\(\{ type: 'finding'/);
 });
 
+/** Runs a generated check with a stub page whose evaluate() returns `measured`, and Playwright's own expect. */
+async function runWithMeasurement(code: string, measured: unknown) {
+    const ts = await import("typescript");
+    const { expect } = await import("@playwright/test");
+    const js = ts.transpileModule(code, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText;
+    let body: ((fixtures: { page: unknown }) => Promise<void>) | null = null;
+    const annotations: Array<{ type: string; description?: string }> = [];
+    const fakeTest = Object.assign((_title: string, fn: typeof body) => { body = fn; }, { info: () => ({ annotations }) });
+    new Function("test", "expect", js)(fakeTest, expect);
+    const page = { goto: async () => null, evaluate: async () => measured };
+    const findings = () => annotations.filter((a) => a.type === "finding").length;
+    try {
+        await body!({ page });
+        return { outcome: "passed", findings: findings() };
+    } catch {
+        return { outcome: "failed", findings: findings() };
+    }
+}
+
+test("performance checks: LCP and CLS at and either side of each band's lines (boundary value analysis; 'poor' is over the line, as web.dev says)", async () => {
+    const lcpAt = (time: number) => runWithMeasurement(lcp, { time, element: "img" });
+    assert.deepEqual(await lcpAt(2500), { outcome: "passed", findings: 0 }, "2.5 s is good");
+    assert.deepEqual(await lcpAt(2501), { outcome: "passed", findings: 1 }, "just over 2.5 s needs improvement");
+    // Before this case, exactly 4.0 s gave both a finding and a failure.
+    assert.deepEqual(await lcpAt(4000), { outcome: "passed", findings: 1 }, "4.0 s still needs improvement, not poor");
+    assert.deepEqual(await lcpAt(4001), { outcome: "failed", findings: 0 }, "just over 4.0 s is poor");
+
+    const cls = ALL[4];
+    const clsAt = (value: number) => runWithMeasurement(cls, { value, sources: "main" });
+    assert.deepEqual(await clsAt(0.1), { outcome: "passed", findings: 0 });
+    assert.deepEqual(await clsAt(0.101), { outcome: "passed", findings: 1 });
+    assert.deepEqual(await clsAt(0.25), { outcome: "passed", findings: 1 });
+    assert.deepEqual(await clsAt(0.251), { outcome: "failed", findings: 0 });
+});
+
 test("performance checks: includeNavigation false drops only the navigation budget; path is used by every check", () => {
     const withoutNavigation = buildPerformanceChecks({ includeNavigation: false });
     assert.equal(withoutNavigation.length, 5);

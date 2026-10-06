@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 committed (`34622b0`), one follow-up commit open; TFP-151 open (2026-10-06)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151 open (2026-10-06)
 
 ## Context
 
@@ -317,6 +317,10 @@ TFP-140 was the last issued ticket.
     still passes falsely. The check must match any `img` whose `alt` is
     present and empty after trimming, with a real-browser case for
     `alt=" "`.
+- **Follow-up done, `b15714b`, verified 2026-10-06 in Cowork:**
+  `check:template-unchanged 34622b0 b15714b` gives 162 of 166 identical,
+  and only the Accessibility block changes. The `alt=" "` case is measured
+  by Code: a false pass on `34622b0`, a failure now.
 
 ## Recommended Execution Order
 
@@ -326,9 +330,8 @@ TFP-140 was the last issued ticket.
 4. TFP-143. **Closed 2026-10-01, already met — see its Resolution; not built.**
 5. TFP-145 (split from TFP-143; re-scoped 2026-10-02 to the false failures).
    **Done, `0504f92` and follow-up `4d35b28`, verified 2026-10-05.**
-6. TFP-152, after Phase 38's TFP-146 and before its TFP-148. **Committed,
-   `34622b0`, verified 2026-10-06 except one gap; the follow-up commit comes
-   before the push.**
+6. TFP-152, after Phase 38's TFP-146 and before its TFP-148. **Done, `34622b0`
+   and follow-up `b15714b`, verified 2026-10-06.**
 7. TFP-151, after Phase 38 Gate B.
 
 ## Suggested Milestone Gate

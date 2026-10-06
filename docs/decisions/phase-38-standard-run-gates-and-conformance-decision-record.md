@@ -221,6 +221,20 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 2, the security parts.
 - **Dependencies:** TFP-146.
+- **Verification (2026-10-06, Cowork), `fc736cc`: met.**
+  - **Re-measured here.** `check:template-unchanged b15714b fc736cc` gives
+    152 of 166 identical. In the 14 that differ, all of them inputs with
+    security, nothing changes outside the Security block and its `// Security:`
+    note. Every output with security has exactly one missing-page probe test,
+    and the others have none. Standard imports the same builders
+    (`passiveSecurityPageTests`, `passiveSecurityRunTests`) as Comprehensive.
+  - **Measured by Code:** the real-browser comparison, the clean fixture plus
+    the six passive defects, with the same outcome on every page in both
+    runs.
+  - **Accepted:** with no session cookie, the shared check now passes and
+    records the header findings, where Standard's own check was Not run. It
+    now has headers to check, so that's an honest pass (Decision 4; GEN-65
+    updated).
 
 ### TFP-148 — The axe scan in the Standard run
 
@@ -234,6 +248,24 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 2, the accessibility parts.
 - **Dependencies:** TFP-146, TFP-145, and TFP-152 (so the Standard accessible-name check and axe agree on image links).
+- **Verification (2026-10-06, Cowork), `12ace9c`: one gap to close before
+  Gate B.**
+  - **Re-measured here.** `check:template-unchanged fc736cc 12ace9c` gives
+    120 of 166 identical. In the 46 that differ, nothing changes outside the
+    Accessibility block, and Standard's imports are unchanged. The scan uses
+    Phase 35 Decision 4's split: critical and serious fail, moderate and
+    minor are findings, incomplete items are listed as `manual-review`.
+  - **Measured by Code:** the clean fixture and three WCAG defects, with the
+    same scan on every page in both runs.
+  - **Accepted:** axe is loaded inside the test, so Comprehensive
+    accessibility files lose their file-level import. Decision 7 covers the
+    Standard run, and the Comprehensive real-browser case still passes.
+  - **Gap, in this ticket:** nothing shows that a real scan's incomplete
+    items reach the report as "Needs manual review". A unit case covers only
+    the list. Add a fixture state that makes axe return an incomplete item
+    (for example, text over a background image, which leaves colour contrast
+    undecided). Show it listed for manual review in a Standard run, and not
+    counted as passed.
 
 ### TFP-149 — Core Web Vitals bands for LCP and CLS, TBT recorded
 
@@ -248,6 +280,23 @@ TFP-145 was the last issued ticket when this record was written. It is done (`05
   - `TEST_PLAN.md` cases.
 - **Acceptance criteria:** Acceptance Criteria 3.
 - **Dependencies:** TFP-146.
+- **Verification (2026-10-06, Cowork), `c4f00df`: one boundary fix before
+  Gate B.**
+  - **Re-measured here.** `check:template-unchanged 12ace9c c4f00df` gives
+    110 of 166 identical. In the 56 that differ, nothing changes outside the
+    Performance block. The CLS session window follows web.dev (1 s gap, 5 s
+    cap), CLS fails only over 0.25 (`toBeLessThanOrEqual(0.25)`), and TBT
+    is a `measurement` with no assertion.
+  - **Measured by Code:** LCP 3.06 s gives a finding and 5.06 s a failure;
+    CLS 0.142 gives a finding and 0.285 a failure; TBT is about 250 ms for a
+    300 ms task.
+  - **Accepted:** the lab wording on the failed-requests message, since
+    Decision 5 says every performance finding and failure carries it.
+  - **Fix, in this ticket (boundary value analysis):** LCP still fails with
+    `toBeLessThan(4000)`, while the finding covers `lcp.time <= 4000`. At
+    exactly 4.0 s the run gives both a finding and a failure. Decision 5 and
+    web.dev say "over 4 s" is poor, so the assertion must be
+    `toBeLessThanOrEqual(4000)`, with a unit case at 4000 ms.
 
 ### TFP-150 — Measure the Standard run
 
