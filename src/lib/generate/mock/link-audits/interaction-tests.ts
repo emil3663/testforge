@@ -2,6 +2,7 @@ import { escapeForSingleQuotedString } from "../format";
 import { buildLinkLocatorExpression, buildLinkTitle } from "../locators";
 import type { LinkDetail } from "../types";
 import { buildHiddenLinkLocatorExpression, buildRevealHelper } from "./reveal";
+import { buildRouteHelpers, isRouteLink, isStartRoute, routePathOf } from "./routes";
 
 export function buildBrowserInteractionLinkTests(
     browserInteractionLinks: LinkDetail[],
@@ -46,6 +47,36 @@ export function buildBrowserInteractionLinkTests(
 
 ${expectedStatusAssertion}
     });`);
+
+            continue;
+        }
+
+        // TFP-165: a link to a page of a hash-routed app. The server answers every route
+        // the same, so its health is what the app draws there: not what it draws for a
+        // route that can't exist. A link hidden at inspection is found as TFP-159 finds it.
+        if (isRouteLink(link) && !isStartRoute(link)) {
+            const name = escapeForSingleQuotedString(link.text || link.url);
+            const route = escapeForSingleQuotedString(routePathOf(link));
+            const locator = link.isVisible ? locatorExpression : buildHiddenLinkLocatorExpression(link);
+            tests.push(`  test('navigation link health: ${linkTitle}', async ({ page }) => {
+        await page.goto('${escapedPath}');
+        await page.waitForLoadState('domcontentloaded');
+
+        const locator = ${locator};
+        await expect(locator, '${name} is not on the page').toBeAttached();
+        await expect(locator).toHaveAttribute('href', '${rawHref}');
+
+${buildRouteHelpers("        ")}
+        const probe = await tfMissingRoute('${linkUrl}');
+        const view = await tfRouteView('${linkUrl}');
+        expect(view, '${route} draws the same as ' + probe.route + ', a route that cannot exist: the app shows its "not found" view').not.toBe(probe.view);
+${link.isVisible ? "" : `
+${buildRevealHelper("        ")}
+        const reach = await tfReveal(locator, 'click');
+        if (!reach.visible) {
+            test.info().annotations.push({ type: 'finding', description: '${name} is healthy by its address, but users can\\'t reach it: ' + reach.reason });
+        }
+`}    });`);
 
             continue;
         }

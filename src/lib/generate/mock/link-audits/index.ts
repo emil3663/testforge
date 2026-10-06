@@ -6,6 +6,7 @@ import { buildLinkCoverageTests } from "./coverage-tests";
 import { buildLinkDetailTests } from "./detail-tests";
 import { buildLinkExperienceTests } from "./experience-tests";
 import { buildBrowserInteractionLinkTests } from "./interaction-tests";
+import { isRouteLink } from "./routes";
 
 const FAST_LINK_AUDIT_TIMEOUT_MS = 4000;
 const DEEP_LINK_AUDIT_TIMEOUT_MS = 15000;
@@ -72,7 +73,8 @@ export function buildTestMyLinksAuditTests(
             interactionNonApiLinks,
             isFastLinkAudit,
             escapedCurrentPageUrl,
-            linkDetails.some((link) => !link.isVisible)
+            linkDetails.some((link) => !link.isVisible),
+            linkDetails.filter(isRouteLink)
         )
     );
 

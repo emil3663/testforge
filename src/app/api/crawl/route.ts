@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
+import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -121,21 +122,15 @@ function normalizeBaseUrl(baseUrl: unknown) {
     }
 }
 
+// TFP-165: a hash route is a page, named as the address bar shows it (/#/contact).
 function normalizePath(url: URL) {
-    const pathname = url.pathname === "/" ? "/" : url.pathname.replace(/\/$/, "");
-    return pathname;
+    return pagePathOf(url);
 }
 
+// TFP-165: the query and an in-page anchor are dropped, but a hash route
+// (#/contact, #!/contact) is kept: it is its own page.
 function normalizeCrawlUrl(url: URL) {
-    const normalized = new URL(url.toString());
-    normalized.hash = "";
-    normalized.search = "";
-
-    if (normalized.pathname !== "/") {
-        normalized.pathname = normalized.pathname.replace(/\/$/, "");
-    }
-
-    return normalized;
+    return crawlKeyOf(url);
 }
 
 function shouldQueueUrl(candidateUrl: URL, origin: string) {
@@ -200,8 +195,8 @@ async function runCrawlJob(job: CrawlJob) {
             job.progress.currentTitle = null;
 
             try {
-                await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
-                await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => { });
+                // TFP-165: a hash route loads as a fresh document, so the network-idle wait means something.
+                await gotoPage(page, targetUrl, { timeout: 30000 });
 
                 if (job.cancellationRequested) {
                     break;

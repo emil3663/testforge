@@ -5,6 +5,7 @@ import { buildSiteGraph } from "./site-graph";
 import { aggregateDependencyMap, dependenciesFromEmbeddedLinks } from "./dependency-map";
 import { installStorageAccessProbe, readStorageAccessProbe } from "./storage-probe";
 import type { DependencyDetail, NamedFlow, PageSnapshot } from "./types";
+import { gotoPage } from "./routes";
 
 const MAX_TEXT_ITEMS = 8;
 const MAX_ACTIONABLE_ITEMS = 40;
@@ -107,14 +108,14 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
             page.on("request", requestListener);
 
             try {
-                const response = await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+                // TFP-165: a hash route (/#/contact) loads as a fresh document, so the network-idle wait means something.
+                const response = await gotoPage(page, targetUrl, { timeout: 30000 });
                 // TFP-161 (Emil, 2026-10-06): a server error is a page that could not be loaded, like a
                 // timeout - an error page's empty snapshot made every page it links to look orphaned.
                 // A 4xx stays a page: it is the site's real answer.
                 if (response && response.status() >= 500) {
                     throw new Error(`HTTP ${response.status()}`);
                 }
-                await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => { });
 
                 const snapshot = await page.evaluate(captureDomSnapshot, {
                     requestedPath: path,

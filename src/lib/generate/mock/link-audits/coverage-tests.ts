@@ -1,5 +1,6 @@
 import type { LinkDetail } from "../types";
 import { RUNTIME_HIDDEN_LINK_LOCATOR } from "./reveal";
+import { buildRouteHelpers, isStartRoute, routePathOf } from "./routes";
 
 export function buildLinkCoverageTests(
     escapedPath: string,
@@ -8,7 +9,8 @@ export function buildLinkCoverageTests(
     interactionNonApiLinks: LinkDetail[],
     isFastLinkAudit: boolean,
     escapedCurrentPageUrl: string,
-    hasHiddenLinks = false
+    hasHiddenLinks = false,
+    routeLinks: LinkDetail[] = []
 ) {
     const tests: string[] = [];
 
@@ -19,7 +21,11 @@ export function buildLinkCoverageTests(
             if (!['internal', 'external', 'download'].includes(link.linkType)) {
                 continue;
             }
-
+${routeLinks.length > 0 ? `            // TFP-165: a hash route (#/contact) is checked by what the app draws there, below; the server answers every route the same.
+            if (/^#!?\\//.test(link.rawHref)) {
+                continue;
+            }
+` : ""}
             const response = await request.get(link.url, {
                 failOnStatusCode: false,
                 timeout: ${linkAuditTimeoutMs},
@@ -29,6 +35,32 @@ export function buildLinkCoverageTests(
             expect(response.status(), 'Broken link detected for ' + (link.text || link.url)).toBeLessThan(400);
         }
     });`);
+
+    // TFP-165 (Decision 4): every linked route of a hash-routed app, each once, against
+    // what the app draws for a route that can't exist. Bounded like TFP-142's checks: the
+    // routes left when 14 s have gone are named as not checked.
+    const routes = [...new Map(routeLinks.filter((link) => !isStartRoute(link)).map((link) => [link.url, { url: link.url, route: routePathOf(link) }])).values()];
+    if (routes.length > 0) {
+        tests.push(`  test('link health: linked routes draw a page, not the app\\'s "not found" view', async ({ page }) => {
+        const routes = ${JSON.stringify(routes)};
+${buildRouteHelpers("        ")}
+        const deadline = Date.now() + 14000;
+        const notFound: string[] = [];
+        const notChecked: string[] = [];
+        for (const { url, route } of routes) {
+            if (Date.now() > deadline) {
+                notChecked.push(route);
+                continue;
+            }
+            const probe = await tfMissingRoute(url);
+            if ((await tfRouteView(url)) === probe.view) notFound.push(route + ' (draws the same as ' + probe.route + ', a route that cannot exist)');
+        }
+        if (notChecked.length > 0) {
+            test.info().annotations.push({ type: 'finding', description: notChecked.length + ' linked routes not checked: the check stops after 14 s (' + notChecked.slice(0, 5).join(', ') + (notChecked.length > 5 ? ', ...' : '') + ')' });
+        }
+        expect(notFound, 'linked routes that show the app\\'s "not found" view: ' + notFound.join('; ')).toEqual([]);
+    });`);
+    }
 
     if (interactionNonApiLinks.length > 0 && !isFastLinkAudit) {
         tests.push(`  test('navigation destination: links navigate to their required destination', async ({ page, context }) => {

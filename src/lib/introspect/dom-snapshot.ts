@@ -219,12 +219,21 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         return null;
     };
 
+    // TFP-165 (Decision 1, as isRouteFragment in routes.ts - this runs in the page, so it
+    // can't import it): a # link whose fragment starts with / or !/ is a page of a
+    // hash-routed app, not an in-page anchor.
+    const isRouteHref = (href: string) => href.startsWith("#/") || href.startsWith("#!/");
+
     const inferLinkType = (href: string, element: Element) => {
         const loweredHref = href.toLowerCase();
         const downloadAttribute = cleanText(element.getAttribute("download") ?? "");
 
         if (loweredHref.startsWith("mailto:")) {
             return "mailto" as const;
+        }
+
+        if (isRouteHref(loweredHref)) {
+            return "internal" as const;
         }
 
         if (loweredHref.startsWith("#")) {
@@ -470,7 +479,7 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                                     ? "form"
                                     : "input";
             const rawHref = node.getAttribute("href");
-            const url = rawHref && !rawHref.startsWith("#") && !rawHref.startsWith("javascript:") && !rawHref.startsWith("mailto:") && !rawHref.startsWith("tel:")
+            const url = rawHref && (!rawHref.startsWith("#") || isRouteHref(rawHref)) && !rawHref.startsWith("javascript:") && !rawHref.startsWith("mailto:") && !rawHref.startsWith("tel:")
                 ? safeResolveUrl(rawHref)
                 : null;
             const text = getElementText(node);

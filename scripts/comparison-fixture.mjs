@@ -272,6 +272,40 @@ const server = createServer(async (req, res) => {
 <form action="/notes" method="get"><div><label for="f-title">Title *</label><input id="f-title" name="title"></div>${defect === "forms-missing-field" ? "" : `<div><label for="f-tag">Tag *</label><input id="f-tag" name="tag"></div>`}<div><label for="f-body">Body</label><textarea id="f-body" name="body"></textarea></div><div><input type="submit" value="Search"></div></form>
 <form><select aria-label="Sort"><option>Name (A - Z)</option><option>Name (Z - A)</option></select></form>`));
     }
+    // TFP-165: a hash-routed single-page app, as Angular's and Vue's hash modes
+    // and React Router's HashRouter build them. Every route is the same
+    // document; the app draws the route after a request to /api/status (so a
+    // check that doesn't wait sees "Loading..."). #/chainsaws is linked but
+    // missing: the app draws its "not found" view, as for any unknown route.
+    // #!/legacy is the older hashbang form. #top and #details are real in-page
+    // anchors. Not linked from the nav, like /anchors.
+    if (url.pathname === "/spa" && req.method === "GET") {
+        return send(200, `<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Acme Shop</title></head>
+<body>
+<nav><a href="#/">Home</a> <a href="#/contact">Contact</a> <a href="#/products">Products</a> <a href="#!/legacy">Legacy</a> <a href="#/chainsaws">Chainsaws</a></nav>
+<main id="view">Loading...</main>
+<script>
+const views = {
+  "/": '<h1 id="top">Acme Shop</h1><p><a href="#details">Details</a> <a href="#/products/1">First product</a></p><h2 id="details">Details</h2><p><a href="#top">Back to top</a></p>',
+  "/contact": "<h1>Contact</h1><p>Write to us.</p>",
+  "/products": '<h1>Products</h1><p><a href="#/products/1">First product</a></p>',
+  "/products/1": "<h1>First product</h1><p>A hammer.</p>",
+  "/legacy": "<h1>Legacy</h1><p>An old hashbang route.</p>",
+};
+if (!location.hash) location.replace("#/");
+async function draw() {
+  const route = location.hash.replace(/^#!?/, "") || "/";
+  await fetch("/api/status");
+  document.getElementById("view").innerHTML = views[route] ?? "<h1>Page not found</h1><p>Nothing lives here.</p>";
+}
+addEventListener("hashchange", draw);
+draw();
+</script>
+</body>
+</html>`);
+    }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);
         const note = (form.note ?? "").trim();
