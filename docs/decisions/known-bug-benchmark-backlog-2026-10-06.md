@@ -191,6 +191,44 @@ services to third parties. So:
   linked", and on the new code only the genuinely unlinked `/spa#/offer`
   fails. Profiles without `requestedPaths` keep the old check.
 
+### TFP-167 — Generated tests wait for single-page apps to draw
+
+- **Priority:** P1 (before the benchmark re-run and Phase 40) · **Labels:** `bug`, `generate`
+- **Problem it solves:** TFP-154 measured it. Generated tests open a page
+  and wait only for `domcontentloaded`. A single-page app (Angular, React,
+  Vue) draws its content after that, so checks read a header-and-footer
+  shell:
+  - form and name checks fail falsely (T25: 7 on the clean Toolshop, plus
+    the with-bugs login form);
+  - product-page checks miss what's there (bugs 91, 92 and 46).
+
+  It affects path-routed apps as well as hash-routed ones. TFP-165 added the
+  wait to the crawl and inspection only.
+- **Decision to confirm (recommended):** every page visit in a generated
+  test goes through one helper:
+  - load the page;
+  - wait for the network to go quiet, for at most 5 s; the test is never
+    failed for the wait itself;
+  - hash routes load as a fresh document, as TFP-165 does.
+
+  This mirrors the crawl's wait, so tests see what inspection saw.
+  Rejected: waiting for a known element, because generated tests can't know
+  each app's markers in advance.
+- **Deliverables:**
+  - the helper, used by every page visit;
+  - a fixture page that draws its form only after a delayed request;
+  - `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the delayed fixture page, form and name checks pass. They fail on
+    the old code.
+  - `check:template-unchanged` shows only the page-visit lines changed.
+  - The run-time cost is measured on the fixture and Toolshop, against the
+    30-minute budget.
+- **Then:** re-run TFP-154 on both Toolshops with the same page set and the
+  same scoring rule. Record the new score beside the first; don't replace
+  it.
+- **Dependencies:** none.
+
 ### TFP-154 — Run TestForge against both versions and score it
 
 - **Priority:** P2 · **Labels:** `measurement`, `benchmark`
@@ -215,6 +253,24 @@ services to third parties. So:
 - **Dependencies:** TFP-153, TFP-165 and TFP-166. The template fixes TFP-151 and
   TFP-159 to TFP-161 come first (done 2026-10-06), so their false failures
   on this same site don't mix into the score.
+- **Scoring run done, `91a7141` (rule) and `3b5b774` (report), verified
+  2026-10-06 (Cowork):**
+  - **Order checked.** The scoring rule was committed at 14:28:42, and the
+    first run started at 14:29:36 (12:29:36 UTC in the report). So the rule
+    came before the measurement.
+  - **Scores.** 37 bugs were in reach: read-only and visible in Chromium,
+    which matches the answer key's 50 read-only minus the 13 that don't show
+    in Chromium. 6 were found, 3 hinted and 28 missed.
+  - **Every with-bugs failure that matches no bug is labelled:** T25 to T29,
+    R13 to R15 and U4.
+  - **The score is held down by a readiness defect.** The generated tests
+    wait only for `domcontentloaded` (222 page visits in the with-bugs
+    Standard suite, against 35 that wait for network idle). On a
+    single-page app the checks run before the app has drawn the page. That
+    hit both Toolshops: bug 91 was missed, bug 92 was only hinted, and there
+    were form-check false failures on both sites (T25). This first score
+    stands as recorded. TFP-167 fixes the wait, and the benchmark is re-run
+    after it.
 - **Step 1 done, `c1685b7`, verified 2026-10-06 (Cowork):** the committed
   crawl output gives 1 page on with-bugs and 46 on the clean site.
   Scoring waits for TFP-165.
@@ -226,8 +282,10 @@ services to third parties. So:
 3. TFP-165 (hash routes), raised by TFP-154 step 1. **Done, `8324b2b`,
    verified 2026-10-06.** Then TFP-166 (the orphan check on hash routes). **Done, `26fed09`,
    verified 2026-10-06.**
-4. TFP-154, at the read-only gate on the hosted sites.
-5. Later, a local Docker copy for the interactive and active gates, once
+4. TFP-154, at the read-only gate on the hosted sites. **First score done
+   and verified 2026-10-06: 6 found, 3 hinted, 28 missed of 37.**
+5. TFP-167 (wait for single-page apps), then re-score TFP-154.
+6. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
 
 ## Suggested Milestone Gate
