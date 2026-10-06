@@ -17,6 +17,7 @@
  *   all loaded, page unlinked                -> fails, naming the page
  *   all loaded, every page linked            -> passes, no finding
  *   older profile (no record)                -> today's check, unchanged
+ *   hash-routed app (TFP-166): an unlinked route fails, linked routes pass, counted by route
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/orphan-pages.test.ts
@@ -102,6 +103,14 @@ test("in a real browser: on the fixture, the orphan check follows the decision t
         const linked = await orphanCheck("none", ["/", "/login", "/notes"]);
         assert.equal(linked.record.status, "Passed", JSON.stringify(linked.record));
         assert.deepEqual(linked.record.findings ?? [], []);
+
+        // TFP-166, a hash-routed app: pages are counted by route. #/contact is linked from the
+        // nav on every route and passes; #/offer is linked from no route and fails, named.
+        const routedLinked = await orphanCheck("none", ["/spa#/", "/spa#/contact", "/spa#/products"]);
+        assert.equal(routedLinked.record.status, "Passed", JSON.stringify(routedLinked.record));
+        const routedOrphan = await orphanCheck("none", ["/spa#/", "/spa#/contact", "/spa#/offer"]);
+        assert.equal(routedOrphan.record.status, "Failed", JSON.stringify(routedOrphan.record));
+        assert.match(routedOrphan.record.rawMessage, /\/spa#\/offer is not linked from any other inspected page/);
     } finally {
         await fixture.close();
     }

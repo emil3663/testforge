@@ -293,6 +293,7 @@ const views = {
   "/products": '<h1>Products</h1><p><a href="#/products/1">First product</a></p>',
   "/products/1": "<h1>First product</h1><p>A hammer.</p>",
   "/legacy": "<h1>Legacy</h1><p>An old hashbang route.</p>",
+  "/offer": "<h1>Offer</h1><p>No other route links here (TFP-166: an orphan route).</p>",
 };
 if (!location.hash) location.replace("#/");
 async function draw() {

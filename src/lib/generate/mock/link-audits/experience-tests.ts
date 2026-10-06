@@ -1,5 +1,5 @@
 import { escapeForSingleQuotedString } from "../format";
-import { normalizeRoutePath } from "../locators";
+import { pagePathOf } from "../../../introspect/routes";
 import type { LinkDetail } from "../types";
 import { buildRevealHelper, RUNTIME_HIDDEN_LINK_LOCATOR } from "./reveal";
 
@@ -26,9 +26,29 @@ export interface OrphanContext {
  *   page is a finding naming the pages that weren't loaded, not a failure.
  * - Every page loaded: a page with no inbound link fails, as before.
  */
+/**
+ * TFP-166: a page's identity for the count is its origin and pagePathOf, as
+ * the crawl names pages (TFP-165) - a hash route keeps its #/..., an in-page
+ * anchor (#top) is dropped. Clearing every # part made each route of a
+ * hash-routed site count as "/".
+ */
+function pageKeyOf(url: string) {
+    try {
+        const parsed = new URL(url);
+        return parsed.origin + pagePathOf(parsed);
+    } catch {
+        return url.replace(/#.*$/, "");
+    }
+}
+
+/** A requested or inspected path, named as the crawl names it: /#/ stays /#/, /contact/ is /contact. */
+function pagePathName(path: string) {
+    return pagePathOf(new URL(path, "http://page.invalid"));
+}
+
 function buildOrphanCheck(scannedPages: ScannedPage[], { requestedPaths, failedPages }: OrphanContext) {
-    const startPath = normalizeRoutePath(requestedPaths[0]);
-    const startFailure = failedPages.find((page) => normalizeRoutePath(page.path) === startPath);
+    const startPath = pagePathName(requestedPaths[0]);
+    const startFailure = failedPages.find((page) => pagePathName(page.path) === startPath);
     const title = "orphan page approximation: each scanned page is linked from another scanned page";
     if (startFailure) {
         const reason = escapeForSingleQuotedString(`the start page ${startPath} could not be loaded when the site was inspected (${startFailure.reason}), so which pages it links to is unknown`);
@@ -37,9 +57,11 @@ function buildOrphanCheck(scannedPages: ScannedPage[], { requestedPaths, failedP
         test.skip(true, '${reason}');
     });`;
     }
-    const pages = scannedPages.map((page) => ({ ...page, path: normalizeRoutePath(page.path) }));
-    const notLoaded = failedPages.map((page) => normalizeRoutePath(page.path));
+    // TFP-166: each page and each link by its page key (origin + pagePathOf), worked out here.
+    const pages = scannedPages.map((page) => ({ path: pagePathName(page.path), key: pageKeyOf(page.url), links: page.inboundCandidates.map(pageKeyOf) }));
+    const notLoaded = failedPages.map((page) => pagePathName(page.path));
     return `  test('${title}', async () => {
+        // Each page and each of its links by page: origin, path and hash route (#/contact), without an in-page anchor (TFP-166).
         const pages = ${JSON.stringify(pages)};
         // TFP-161: inbound links are counted among the pages that were loaded; the start page (${escapeForSingleQuotedString(startPath)}) needs none.
         const startPath = '${escapeForSingleQuotedString(startPath)}';
@@ -47,23 +69,21 @@ function buildOrphanCheck(scannedPages: ScannedPage[], { requestedPaths, failedP
         const inboundMap = new Map<string, number>();
 
         for (const page of pages) {
-            inboundMap.set(page.url.replace(/#.*$/, ''), 0);
+            inboundMap.set(page.key, 0);
         }
 
         for (const page of pages) {
-            const self = page.url.replace(/#.*$/, '');
-            for (const linkedUrl of page.inboundCandidates) {
-                const normalized = linkedUrl.replace(/#.*$/, '');
+            for (const linked of page.links) {
                 // From another page: a page's links to itself (#top, #details) are not inbound links.
-                if (normalized !== self && inboundMap.has(normalized)) {
-                    inboundMap.set(normalized, (inboundMap.get(normalized) ?? 0) + 1);
+                if (linked !== page.key && inboundMap.has(linked)) {
+                    inboundMap.set(linked, (inboundMap.get(linked) ?? 0) + 1);
                 }
             }
         }
 
         for (const page of pages) {
             if (page.path === startPath) continue;
-            const inbound = inboundMap.get(page.url.replace(/#.*$/, '')) ?? 0;
+            const inbound = inboundMap.get(page.key) ?? 0;
             if (inbound === 0 && notLoaded.length > 0) {
                 test.info().annotations.push({ type: 'finding', description: page.path + ' has no link from another loaded page; ' + notLoaded.join(', ') + ' could not be loaded, so a link from there was not seen' });
                 continue;
