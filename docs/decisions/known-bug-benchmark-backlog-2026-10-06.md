@@ -184,6 +184,12 @@ services to third parties. So:
     orphan, and linked routes pass.
   - `check:template-unchanged` gives 166 of 166 identical.
 - **Dependencies:** TFP-165.
+- **Done, `26fed09`, verified 2026-10-06 (Cowork):**
+  `check:template-unchanged dfabfaf 26fed09` gives 166 of 166 identical. The
+  orphan-page test's non-browser case passes here. Measured by Code: the
+  hash-routed column fails falsely on the old code, as "/spa#/contact is not
+  linked", and on the new code only the genuinely unlinked `/spa#/offer`
+  fails. Profiles without `requestedPaths` keep the old check.
 
 ### TFP-154 — Run TestForge against both versions and score it
 
@@ -218,7 +224,8 @@ services to third parties. So:
 1. Confirm Decisions 1 to 4. **Done, 2026-10-06.**
 2. TFP-153. **Done 2026-10-06 (Cowork).**
 3. TFP-165 (hash routes), raised by TFP-154 step 1. **Done, `8324b2b`,
-   verified 2026-10-06.** Then TFP-166 (the orphan check on hash routes).
+   verified 2026-10-06.** Then TFP-166 (the orphan check on hash routes). **Done, `26fed09`,
+   verified 2026-10-06.**
 4. TFP-154, at the read-only gate on the hosted sites.
 5. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
