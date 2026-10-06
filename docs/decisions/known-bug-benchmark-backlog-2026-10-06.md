@@ -104,6 +104,57 @@ services to third parties. So:
     finds there. If it only finds `/`, that is a gap of its own and needs a
     ticket before scoring.
 
+### TFP-165 — Treat `#/` links as pages on sites that route by hash
+
+- **Priority:** P1 (it blocks TFP-154) · **Labels:** `enhancement`, `crawl`, `introspect`, `generate`
+- **Problem it solves:** TFP-154 step 1 (`c1685b7`,
+  `step1-crawl-and-inspection.md`) measured it. On the with-bugs Toolshop,
+  which routes by `#/` links, TestForge's crawl finds 1 page; on the clean
+  Toolshop, which routes by path, it finds 46. The crawl clears every URL's
+  `#…` part (`normalized.hash = ""` in `src/app/api/crawl/route.ts`), so
+  each `#/…` link counts as `/`. Read from the code, not run:
+  - inspection records every `#…` link as an in-page anchor;
+  - link health never requests one, and the per-link check passes any
+    route, including one that shows a "not found" page (bug 3);
+  - the anchor check looks for an element with id `/contact`, a false
+    "Anchor target missing".
+
+  Many single-page apps route this way (Angular's and Vue's hash modes,
+  React Router's HashRouter), so this isn't just a Toolshop gap.
+- **Decisions to confirm (recommended):**
+  1. **A `#` link is a page when what follows the `#` starts with `/` or
+     `!/`.** Everything else stays an in-page anchor, including `#top`,
+     `#filters` and a bare `#`.
+  2. **A route page is named as the address bar shows it,** `/#/contact`,
+     everywhere: the crawl, inspection, generated tests and reports.
+  3. **After moving to a route, the crawl and the tests wait for the app
+     to finish drawing it,** because the browser doesn't reload the page.
+     That means network idle, with a bounded timeout, as TFP-142 bounded
+     other waits.
+  4. **A route that doesn't exist is found by comparison, not by
+     guessing:**
+     - once per run, open a route that can't exist (`/#/testforge-missing-<random>`)
+       and record what the app draws;
+     - a linked route that draws the same thing is "not found".
+
+     This is the client-side twin of the passive missing-page probe, and it
+     works whatever wording the site uses. It stays read-only: it is only
+     page loads.
+- **Scope:** crawl, inspection, link health, the anchor check and link-type
+  classification follow Decisions 1 to 4. Path-routed sites don't change.
+- **Deliverables:** a hash-routed fixture page set with a missing route, the
+  changes, and `TEST_PLAN.md` cases. ISTQB technique: equivalence
+  partitioning (route fragment, anchor fragment, bare `#`).
+- **Acceptance criteria:**
+  - On the fixture, the crawl finds every linked route as its own page.
+  - A link to a missing route fails link health, naming it. `#top` still
+    passes the anchor check, and no route fragment is treated as an anchor.
+  - `check:template-unchanged` gives 166 of 166 identical: no fixed input
+    is hash-routed.
+  - Re-run TFP-154 step 1. The with-bugs crawl finds the routes that the
+    clean site finds as paths, give or take the sites' own differences.
+- **Dependencies:** none. TFP-154 depends on it.
+
 ### TFP-154 — Run TestForge against both versions and score it
 
 - **Priority:** P2 · **Labels:** `measurement`, `benchmark`
@@ -125,16 +176,20 @@ services to third parties. So:
   - every failure on the with-bugs site is either a scored bug or a labelled
     failure;
   - the report says which areas' Standard sets the misses point to.
-- **Dependencies:** TFP-153. The template fixes TFP-151 and TFP-159 to
-  TFP-161 come first, so their false failures on this same site don't mix
-  into the score.
+- **Dependencies:** TFP-153 and TFP-165. The template fixes TFP-151 and
+  TFP-159 to TFP-161 come first (done 2026-10-06), so their false failures
+  on this same site don't mix into the score.
+- **Step 1 done, `c1685b7`, verified 2026-10-06 (Cowork):** the committed
+  crawl output gives 1 page on with-bugs and 46 on the clean site.
+  Scoring waits for TFP-165.
 
 ## Recommended Execution Order
 
 1. Confirm Decisions 1 to 4. **Done, 2026-10-06.**
 2. TFP-153. **Done 2026-10-06 (Cowork).**
-3. TFP-154, at the read-only gate on the hosted sites.
-4. Later, a local Docker copy for the interactive and active gates, once
+3. TFP-165 (hash routes), raised by TFP-154 step 1.
+4. TFP-154, at the read-only gate on the hosted sites.
+5. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
 
 ## Suggested Milestone Gate
