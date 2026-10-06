@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151, TFP-159, TFP-160 and TFP-161 open (2026-10-06)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151 and TFP-159 to TFP-161 done and verified; TFP-162 to TFP-164 open (2026-10-06)
 
 ## Context
 
@@ -244,6 +244,12 @@ TFP-140 was the last issued ticket.
     checks changed.
 - **Dependencies:** Phase 38 Gate B, since TFP-148 changes the same
   accessibility area.
+- **Done, `bf9cc36`, verified 2026-10-06 (Cowork):**
+  `check:template-unchanged 91222c5 bf9cc36` gives 166 of 166 identical. No
+  fixed input generates a button or form name check.
+  - Accepted: the actionable-elements golden file changes in its
+    `signup-form` check. A form with an id but no name has no role, so the
+    check is now Not run with its reason (T23).
 
 ### TFP-152 — The accessible-name check passes an image link that has no name
 
@@ -369,6 +375,14 @@ TFP-140 was the last issued ticket.
   - At 390 px, a link behind a working toggle passes.
   - `npm run check:template-unchanged` shows only these checks changed.
 - **Dependencies:** Phase 38 Gate B.
+- **Done, `6852538`, verified 2026-10-06 (Cowork):**
+  `check:template-unchanged 882a47d 6852538` gives 162 of 166 identical.
+  The 4 that differ change only TFRM-001, the responsive check; no fixed
+  input has a hidden link. Measured by Code: the new case reproduces T19
+  and T20 on the old code, and the unit suite gives 445/445.
+  - Accepted: Code applies Emil's ARIA-then-sibling rule one level at a
+    time, nearest hidden ancestor first. Trying ARIA on every ancestor first
+    picked a far toggle over the nearer menu button.
 
 ### TFP-160 — Form checks locate a form by its joined label text
 
@@ -391,6 +405,14 @@ TFP-140 was the last issued ticket.
     their own `<form>` and count its fields correctly.
   - `npm run check:template-unchanged` shows only the form checks changed.
 - **Dependencies:** Phase 38 Gate B.
+- **Done, `91222c5`, verified 2026-10-06 (Cowork):**
+  `check:template-unchanged 6852538 91222c5` gives 162 of 166 identical.
+  The 4 that differ change only the two `[form]` checks (TFFU-004 and
+  TFFU-008), and no test is added.
+  - Introspection now also records each form's action, method and fields.
+    That adds to the page data; nothing existing changes.
+  - Accepted: a form with an id keeps its id-based check, as TFP-145 does
+    for links.
 
 ### TFP-161 — The orphan-page check judges pages it never loaded
 
@@ -413,6 +435,78 @@ TFP-140 was the last issued ticket.
     Not run, naming the hub page.
   - With every page loaded, a genuinely unlinked page still fails.
 - **Dependencies:** Phase 38 Gate B.
+- **Done, `f4bb043`, verified 2026-10-06 (Cowork):**
+  `check:template-unchanged bf9cc36 f4bb043` gives 166 of 166 identical.
+  - Saved page data has no `requestedPaths`, so old profiles keep the old
+    check, and only new inspections get the fix.
+  - Accepted: a page's links to itself (`#top`) no longer count as inbound
+    links, as the check's title implies.
+
+### TFP-162 — Hidden elements in the remaining checks
+
+- **Phase:** after TFP-159 · **Priority:** P2
+- **Suggested labels:** `bug`, `generate`, `functional`
+- **Problem it solves:** found while building TFP-159 and TFP-151.
+  - In deep mode, the "navigation destination" check still requires a link
+    in a closed menu to be visible.
+  - In the form and name checks, a hidden button is looked up with
+    `getByRole`, which only finds elements in the accessibility tree, so it
+    never finds the button.
+- **Scope:** apply TFP-159's approach to both. The approach is decided:
+  check from the element itself, open the menu first only where the check
+  is about reaching the element.
+- **Deliverables:** the fix, fixture cases, `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the fixture, a link in a closed menu passes the deep-mode
+    destination check.
+  - A hidden button is found and checked as itself.
+  - `check:template-unchanged` shows only these checks changed.
+- **Dependencies:** none.
+
+### TFP-163 — Introspection misses or merges some controls
+
+- **Phase:** after TFP-159 · **Priority:** P2
+- **Suggested labels:** `bug`, `introspect`, `accessibility`
+- **Problem it solves:** found while building TFP-151.
+  - **Every `<input>` gets the role `textbox`,** so a labelled
+    `type="search"` field (role `searchbox`) is never found by role.
+  - **An icon-only button with no text, label or id isn't recorded,** so it
+    gets no name check. Toolshop's show-password toggle (R10) is one; only
+    the axe scan catches it.
+  - **Same-text buttons under the same heading are merged into one
+    record,** so only the first is checked. It's the same deduplication
+    TFP-145 met for links.
+- **Scope:**
+  - Roles follow the input type, as the ARIA in HTML mapping sets them.
+  - Unnamed icon-only buttons are recorded, with their position.
+  - Same-text buttons are kept apart by position, as TFP-145 did for links.
+
+  Each of these changes the saved page data, so measure on the fixed inputs
+  and on fresh inspections.
+- **Deliverables:** the fix, fixture cases, `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the fixture, a labelled search field is found and checked.
+  - An icon-only unnamed button fails its name check.
+  - Two same-text buttons each test their own element.
+- **Dependencies:** none. ISTQB technique: equivalence partitioning, by input
+  type.
+
+### TFP-164 — The visible download-link check's pattern lost its escaped dot
+
+- **Phase:** after TFP-159 · **Priority:** P3
+- **Suggested labels:** `bug`, `generate`
+- **Problem it solves:** in `coverage-tests.ts` (since 2026-08-28), the
+  pattern is written as `\.` inside a template string, which drops the
+  backslash, so the generated
+  test gets `/.(pdf|doc|…)…$/i`. The `.` there matches any character, so
+  `…/getpdf` counts as a download. The hidden-link path TFP-159 added
+  escapes it correctly.
+- **Scope:** emit `\.` in the generated pattern. Add a unit case: a link
+  ending `xpdf` with no dot is not a download.
+- **Acceptance criteria:**
+  - The generated pattern contains `\.(pdf`.
+  - `check:template-unchanged` shows only the download check changed.
+- **Dependencies:** none.
 
 ## Recommended Execution Order
 
@@ -426,6 +520,9 @@ TFP-140 was the last issued ticket.
    and follow-up `b15714b`, verified 2026-10-06.**
 7. TFP-151, after Phase 38 Gate B (now also covers T23).
 8. TFP-159, TFP-160 and TFP-161, after Phase 38 Gate B, in any order.
+   **Done (`6852538`, `91222c5`, `f4bb043`), with TFP-151 (`bf9cc36`),
+   verified 2026-10-06.**
+9. TFP-162, TFP-163 and TFP-164, raised while building them.
 
 ## Suggested Milestone Gate
 
