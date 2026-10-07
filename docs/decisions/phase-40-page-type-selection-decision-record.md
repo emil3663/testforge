@@ -176,8 +176,11 @@ at 5 pages.
 
 8. The URL field takes a list of pages to run.
 - One URL per line runs Standard (or Comprehensive) on exactly those pages.
-  The crawl still runs for link checks, but type selection is skipped and
-  the report says "pages chosen by the user".
+  Type selection is skipped and the report says "pages chosen by the user".
+  **Clarified at TFP-174's review (2026-10-07):** a list run doesn't crawl
+  by itself; link checks come from inspection, as for any run. If the site
+  was crawled, the crawl is used only to name the types the list covered
+  and left out.
 - The first URL gives the run's site. Every URL must share its origin; a URL
   on another origin is rejected before the run, naming it.
 - Hash-routed URLs (`/#/contact`) are kept as they are (TFP-165).
@@ -443,6 +446,23 @@ use.
   `javascript:` URL and an other-origin URL dropped, and the HTML export
   never contains them.
 - **Dependencies:** TFP-173.
+
+- **Done, `e2a3070`, verified 2026-10-07 (Cowork), with one follow-up.**
+  The field parses one URL as before, or a list on one origin (checked by
+  `URL.origin`, so `https://site@evil` is rejected); `javascript:` and
+  `data:` are rejected; the page-type record keeps only `http:`/`https:`
+  URLs on the run's origin.
+  - **Gap:** a page given to `/api/introspect` or `/api/generate` as a path
+    such as `//evil.test/x` or `/\evil.test/x` passes `findForeignPath`
+    (it isn't an absolute URL) but resolves to another site in the
+    inspector (`new URL(path, baseUrl)`). This predates TFP-174, but
+    Decision 8's guarantee depends on closing it. **Follow-up:** resolve
+    every page against the base URL and reject any whose origin differs,
+    before the run, naming it; unit cases for both forms.
+  - **Also:** the regression test "Journey tests are skipped by default"
+    (`tests/regression/testforge.journeys.spec.ts:133`) still expects
+    "Blocked", but skipped tests have been reported as "Not run" since
+    `de26bf1`. Fix the assertion in its own `test` commit.
 
 ### TFP-175 — Score the automatic selection against the hand-picked list
 
