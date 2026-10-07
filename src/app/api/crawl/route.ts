@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
 import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
+import { groupPagesByAddress, type PageType } from "@/lib/selection/page-types";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -27,6 +28,8 @@ interface CrawlResultPayload {
     baseUrl: string;
     pageCount: number;
     pages: CrawledPage[];
+    /** Phase 40 Decision 1 (TFP-170): the pages grouped into types by address pattern. */
+    pageTypes?: PageType[];
     warnings?: string[];
 }
 
@@ -299,6 +302,8 @@ async function runCrawlJob(job: CrawlJob) {
             baseUrl: job.baseUrl,
             pageCount: sortedPages.length,
             pages: sortedPages,
+            // Phase 40 Decision 1 (TFP-170): the pages grouped into types by address, in crawl order.
+            pageTypes: groupPagesByAddress(pages.map((page) => page.path)),
             warnings,
         };
         job.status = job.cancellationRequested ? "cancelled" : "completed";
@@ -315,6 +320,7 @@ async function runCrawlJob(job: CrawlJob) {
                 baseUrl: job.baseUrl,
                 pageCount: sortedPages.length,
                 pages: sortedPages,
+                pageTypes: groupPagesByAddress(pages.map((page) => page.path)),
                 warnings,
             };
             job.status = "cancelled";
