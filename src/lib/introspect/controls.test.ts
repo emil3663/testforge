@@ -70,10 +70,11 @@ test("in a real browser: each input type gets the role ARIA in HTML gives it (eq
         ];
         await page.setContent(`<datalist id="d"><option value="a"></option></datalist>${types.map(([type]) => `<label>${type} field <input type="${type}" name="${type}"${type === "button" || type === "submit" || type === "reset" ? ` value="${type} it"` : ""}></label>`).join("")}<label>listed <input type="text" name="listed" list="d"></label>`);
         const snapshot = await page.evaluate(captureDomSnapshot, { requestedPath: "/", maxActionableItems: 40, maxLinkDetails: 10, maxEmbeddedLinkDetails: 10, maxDragDropTargets: 0 });
-        const roleOf = (name: string) => snapshot.actionableElements.find((element: { text: string; locator: { inputType: string; role: string } }) => element.locator.inputType === name || element.text === name)?.locator.role;
+        const elements = snapshot.actionableElements as Array<{ text: string; locator: { inputType: string; role: string } }>;
+        const roleOf = (name: string) => elements.find((element) => element.locator.inputType === name || element.text === name)?.locator.role;
         for (const [type, role] of types) assert.equal(roleOf(type), role, `type="${type}"`);
         // A text field with a list attribute is a combobox.
-        assert.equal(snapshot.actionableElements.find((element: { text: string }) => element.text === "listed")?.locator.role, "combobox");
+        assert.equal(elements.find((element) => element.text === "listed")?.locator.role, "combobox");
         // The page's search field is found by that role, as introspection records it.
         assert.equal(await page.getByRole("searchbox", { name: "search field", exact: true }).count(), 1);
         assert.equal(await page.getByRole("textbox", { name: "search field", exact: true }).count(), 0, "never by textbox");
