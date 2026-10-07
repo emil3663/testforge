@@ -23,7 +23,7 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `7e84497`; `878a49d` (the re-score) is committed, not
+`origin/main` is at `2ed67bc`; `d8287a1` (TFP-171) is committed, not
 pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
@@ -34,13 +34,13 @@ pushed. Phase 38 is complete. Since then:
   - TFP-154: the first score (6 found, 3 hinted, 28 missed of 37) and the
     re-score after TFP-167 (`878a49d`: 9 found, 4 hinted, 24 missed), both
     verified. The known-bug gate is met.
-- **Next: Phase 40, locked 2026-10-07**
-  (`docs/decisions/phase-40-page-type-selection-decision-record.md`,
-  TFP-170 to TFP-175). Emil confirmed every value: a Standard cap of 8,
-  exact structural signatures (no threshold), ordered ranking rules (no
-  weights), the keep rule in Decision 9, and Phase 40 before Phase 39.
-  Start with TFP-170, then TFP-171, and stop at Gate A. Each ticket stops
-  for verification before the next.
+- **Now: Phase 40** (`docs/decisions/phase-40-page-type-selection-decision-record.md`).
+  TFP-170 (`2ed67bc`) and TFP-171 (`d8287a1`) are done and verified. Gate A's
+  first measurement did not pass: Emil revised Decisions 1, 2 and 4 on
+  2026-10-07 (address types first, split by form signature only, merge only
+  siblings under one parent, never top-level pages or home; a segment before
+  an `:id` is never a slug; the cap is hard). Build TFP-176, then stop at
+  Gate A again. Don't start TFP-172.
 - **Not started, not next:**
   - TFP-168 (model and OpenAI visits through `tfGoto`) and TFP-169 (TFP-147's
     security case resets at fixture start-up), in

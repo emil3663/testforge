@@ -12,7 +12,8 @@ that Standard is not capped at 5 pages; on 2026-10-07 he confirmed the
 remaining values: a cap of 8, exact structural signatures instead of an
 outline threshold, ordered ranking rules instead of weights, the keep rule
 in Decision 9, and Phase 40 before Phase 39. TFP-167 and TFP-154's re-score
-are done (9 found, 4 hinted, 24 missed). Tickets TFP-170 to TFP-175.
+are done (9 found, 4 hinted, 24 missed). Tickets TFP-170 to TFP-176. Revised at Gate A on 2026-10-07: Decisions 1,
+2 and 4 (address first, a hard cap).
 
 ## Context
 
@@ -43,11 +44,17 @@ are done (9 found, 4 hinted, 24 missed). Tickets TFP-170 to TFP-175.
 - Hash-routed pages are grouped the same way, by the page name TFP-165 gives
   them (`/#/product/:id`).
 - Query strings don't create types.
+- **Top-level pages stay separate** (`/contact`, `/privacy`); the root is
+  not a shared parent (Emil, 2026-10-07, TFP-170's review).
+- **A segment directly before an `:id` is a collection name, not a slug**
+  (Emil, 2026-10-07, Gate A): `/en/product/1` and `/en/category/2` are
+  `/en/product/:id` and `/en/category/:id`, not one `/en/:slug/:id`.
 
 2. The crawl records a cheap outline of each page, and the outline refines the
 grouping.
-- **The outline:** landmark regions, the number of forms and their field
-  types (password, email, textarea, search), whether repeated card-like
+- **The outline:** landmark regions, the number of forms and the type of
+  every field in each (password, email, textarea and search were examples;
+  every field type counts, Emil 2026-10-07), whether repeated card-like
   items are present, heading structure, and the count of interactive
   elements.
 - **The structural signature (Emil, 2026-10-07):** the set of landmark
@@ -56,9 +63,22 @@ grouping.
   match only when their signatures are equal. There is no threshold.
 - Counts (headings, interactive elements) never decide grouping; they are
   recorded and used by the ranking.
-- Pages with different addresses but equal signatures merge into one type,
-  for example `/privacy` and `/terms`.
-- Pages with one address pattern but different signatures split.
+- **Revised at Gate A (Emil, 2026-10-07): the address type comes first;
+  the outline refines it only in two narrow ways.** The first measurement
+  (TFP-171, `d8287a1`) showed that merging any address types with equal
+  signatures merges unrelated templates (90 of the-internet's 100 pages
+  into one type with home; Toolshop products with `/rentals` and
+  `/privacy`), and that splitting on cards follows data, not templates
+  (products with and without related items; an empty category).
+  - **Split** an address type only when its pages' **form signatures**
+    differ (the Toolshop's `/auth/:slug` into login, register and
+    forgot-password). Landmarks and cards don't split a type.
+  - **Merge** address types only when they are siblings under the same
+    parent (`/p/:id` and `/p/:slug`; `/shop/men/shirts` and
+    `/shop/women/shoes`) and their full signatures are equal.
+  - **Never merge** top-level pages with each other, and never merge home.
+    Decision 2's earlier `/privacy` + `/terms` example is withdrawn: two
+    content types cost little, since content types are dropped first.
 - Rejected: a fuzzy similarity threshold. It needs calibrating before it can
   be trusted and can't be explained in the report. The type counts measured
   on the fixture, both Toolshops and the-internet (TFP-171) show whether
@@ -79,10 +99,15 @@ grouping.
 - A wrong label never changes which pages are tested; the ranking does that.
 
 4. Types are ranked, and the ranking decides what is covered.
-- **Always covered, never dropped:**
+- **Always covered first:**
   - home;
   - every type with a form (sign-in, registration, contact, checkout);
   - the type covering the most pages (usually detail).
+- **The cap is hard (Emil, 2026-10-07, Gate A),** since it protects the
+  run-time budget. If the always-covered types alone exceed it, they are
+  ordered among themselves by the ordered rules below, and those that don't
+  fit are named in the report as skipped. (On the-internet, home, six form
+  pages and the largest type already make 8.)
 - **Then, by ordered rules (Emil, 2026-10-07):** more pages of that type
   first; then more forms on its representative page; then more interactive
   elements on it; then crawl order. No weights: the report can say exactly
@@ -167,8 +192,9 @@ at 5 pages.
 1. Grouping
 - On a fixture with 2 detail pages, 2 listing pages, a sign-in page, a
   contact form, 2 content pages and home, the grouping finds exactly those
-  types. Two pages with equal signatures merge; two with one address pattern
-  and different signatures split.
+  types. One address pattern with different form signatures splits; sibling
+  address types under one parent with equal signatures merge; top-level
+  pages and home never merge; cards alone never split a type.
 - On Toolshop (both versions), the types found are recorded with their page
   counts. Hash and path routing give the same types.
 
@@ -260,6 +286,37 @@ use.
     looks over-split named.
 - **Dependencies:** TFP-170.
 - **Stop at Gate A** after this ticket.
+- **Done, `d8287a1`, verified 2026-10-07 (Cowork); Gate A not passed.**
+  The counts in `benchmarks/2026-10-07-phase40-types/` reproduce from the
+  committed type files. Exact matching under-splits across address types
+  and over-splits on cards; Emil revised Decisions 1, 2 and 4 the same day.
+  TFP-176 builds the revision.
+
+### TFP-176 — Revise the grouping after Gate A's first measurement
+
+- **Priority:** P1 · **Labels:** `selection`, `measurement`
+- **Scope:** Decisions 1, 2 and 4 as revised at Gate A (2026-10-07).
+- **Deliverables:**
+  - TFP-170's rule: a segment directly before an `:id` is never a slug;
+  - TFP-171's grouping: split within an address type by form signature
+    only; merge only sibling address types under one parent with equal full
+    signatures; never merge top-level pages or home;
+  - fixture cases (decision table): the `/types` fixture updated to the
+    revised expectation, `/en/product/:id` beside `/en/category/:id`, the
+    two TFP-170 edge families still merging, and a page without cards kept
+    in its listing type;
+  - the four sites re-measured from the crawls already committed in
+    `benchmarks/2026-10-07-phase40-types/` (no new crawl), with a section
+    added to that report beside the first measurement, which stays.
+- **Acceptance criteria:**
+  - the clean Toolshop gives home, category, product, contact, rentals,
+    privacy, login, register and forgot-password, each with its pages; the
+    with-bugs Toolshop the same with `/#/chainsaws` in place of `/privacy`;
+    any difference is explained in the report;
+  - the-internet's type count is recorded, with its form types listed;
+  - `check:template-unchanged` 166 of 166 identical.
+- **Dependencies:** TFP-171.
+- **Stop at Gate A** again after this ticket.
 
 ### TFP-172 — Rank types and select pages for Standard and Comprehensive
 
@@ -321,14 +378,15 @@ use.
 
 ## Recommended Execution Order
 
-1. TFP-170, then TFP-171. **Gate A.**
+1. TFP-170, then TFP-171. **Gate A (first measurement, 2026-10-07): not
+   passed; Decisions 1, 2 and 4 revised.** Then TFP-176. **Gate A again.**
 2. TFP-172, TFP-173, TFP-174, in that order.
 3. TFP-175. **Gate B.**
 
 ## Gates
 
 ### Gate A — Types measured
-- TFP-170 and TFP-171 landed and independently verified.
+- TFP-170, TFP-171 and TFP-176 landed and independently verified.
 - Type counts for the fixture, both Toolshops and the-internet are recorded.
 - Emil reviews whether exact matching over-splits before selection is
   built.
