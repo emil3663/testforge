@@ -26,6 +26,10 @@ export interface ActionableElementDetail {
     locator: LocatorHint;
     /** TFP-160: a <form>'s own identity and fields; absent on other elements and in older profiles. */
     form?: FormRecord;
+    /** TFP-163: a button's index among the page's buttons, in document order; absent on other elements and in older profiles. */
+    position?: number;
+    /** TFP-163: how many of the page's earlier buttons have the same text (0 for the first). */
+    occurrence?: number;
 }
 
 /**

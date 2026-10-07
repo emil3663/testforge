@@ -78,7 +78,9 @@ export function buildLocatorExpression(element: ActionableElementDetail) {
     }
 
     if (element.text) {
-        return `page.getByText('${escapeForSingleQuotedString(element.text)}', { exact: true }).first()`;
+        // TFP-163: the nth of the same-text buttons is that button, not the first; the first keeps .first().
+        const nth = element.elementType === "button" && element.occurrence ? `.nth(${element.occurrence})` : ".first()";
+        return `page.getByText('${escapeForSingleQuotedString(element.text)}', { exact: true })${nth}`;
     }
 
     if (element.elementType === "form") {
@@ -94,6 +96,10 @@ export function buildLocatorExpression(element: ActionableElementDetail) {
     }
 
     if (element.elementType === "button") {
+        // TFP-163: a button with no text, name or id (icon-only) is the page's button at its recorded position.
+        if (element.position !== undefined) {
+            return `page.locator('button, input[type="button"], input[type="submit"], input[type="reset"], [role="button"]').nth(${element.position})`;
+        }
         return "page.locator('button, input[type=\"button\"], input[type=\"submit\"], [role=\"button\"]').first()";
     }
 

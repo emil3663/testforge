@@ -126,8 +126,26 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                 return "radio";
             }
 
-            if (inputType === "submit" || inputType === "button" || inputType === "reset") {
+            if (inputType === "submit" || inputType === "button" || inputType === "reset" || inputType === "image") {
                 return "button";
+            }
+
+            // TFP-163: the role ARIA in HTML gives each input type, so a labelled search field is found by role.
+            // A text-like field with a list attribute is a combobox; types with no role there keep textbox.
+            if (inputType === "search") {
+                return element.hasAttribute("list") ? "combobox" : "searchbox";
+            }
+
+            if (inputType === "number") {
+                return "spinbutton";
+            }
+
+            if (inputType === "range") {
+                return "slider";
+            }
+
+            if (["text", "email", "tel", "url"].includes(inputType) && element.hasAttribute("list")) {
+                return "combobox";
             }
 
             return "textbox";
@@ -458,6 +476,8 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
             .map((node) => node.textContent ?? "")
     );
 
+    // TFP-163: every button-kind element in document order, for a button's position on the page.
+    const buttonNodes = Array.from(document.querySelectorAll("button, input[type='button'], input[type='submit'], input[type='reset'], [role='button']"));
     const dedupedActionableElements = Array.from(
         document.querySelectorAll("a, button, input:not([type='hidden']), select, textarea, form, [role='button']")
     )
@@ -495,7 +515,9 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
             );
             const id = cleanText(node.getAttribute("id") ?? "");
 
-            if (!url && !text && !label && !placeholder && !id && elementType !== "form") {
+            // TFP-163: a button is kept even with no text, label or id (an icon-only button: Toolshop's
+            // show-password toggle, R10), so it gets a name check; it is found by its position.
+            if (!url && !text && !label && !placeholder && !id && elementType !== "form" && elementType !== "button") {
                 return null;
             }
 
@@ -534,13 +556,21 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
                     inputType,
                 },
                 ...(node instanceof HTMLFormElement ? { form: recordForm(node) } : {}),
+                // TFP-163: which of the page's buttons this is, in document order, and which of the earlier
+                // buttons with the same text it follows (0 for the first), so each same-text button tests itself.
+                ...(elementType === "button" && buttonNodes.includes(node)
+                    ? { position: buttonNodes.indexOf(node), occurrence: buttonNodes.slice(0, buttonNodes.indexOf(node)).filter((other) => getElementText(other) === text).length }
+                    : {}),
             };
         })
         .filter(
             (element): element is ActionableElementDetail => Boolean(element)
         )
         .filter(
+            // TFP-163: buttons aren't merged - two same-text buttons under one heading are two records, kept
+            // apart by position, as TFP-145 kept links apart (both were merged into the first before).
             (element, index, allElements) =>
+                element.position !== undefined ||
                 allElements.findIndex(
                     (candidate) =>
                         candidate.url === element.url &&

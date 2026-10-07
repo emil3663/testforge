@@ -324,6 +324,18 @@ draw();
         const late = `<h1>Late form</h1><form aria-label="Search notes" action="/notes" method="get"><div><label for="lf-title">Title</label><input id="lf-title" name="title"></div><div><label for="lf-tag">Tag</label><input id="lf-tag" name="tag"></div><div><input type="submit" value="Search" style="padding:6px 12px"></div></form><p><button type="button" style="padding:6px 12px"><span>Save draft</span></button></p>`;
         return send(200, page("Late form", `<div id="app">Loading...</div>`, { script: `fetch("/api/slow").then(() => { document.getElementById("app").innerHTML = ${JSON.stringify(late)}; });` }));
     }
+    // TFP-163: controls introspection used to miss or merge. A labelled search
+    // field (role searchbox, not textbox); an icon-only button with no text,
+    // label or id (no accessible name: a real defect, like Toolshop's R10);
+    // and two "Delete" buttons under one heading, the second disabled, which
+    // were merged into one record. Not linked from the nav, like /anchors.
+    if (url.pathname === "/controls" && req.method === "GET") {
+        return send(200, page("Controls", `<h1>Controls</h1>
+<p><label>Search notes <input type="search" name="q"></label></p>
+<p><button type="button" class="reveal"><svg aria-hidden="true" width="16" height="16"><circle cx="8" cy="8" r="6"></circle></svg></button></p>
+<h2>Old notes</h2>
+<p><button type="button">Delete</button> <button type="button" disabled>Delete</button></p>`));
+    }
     // TFP-177: a page whose links appear only after a request the app starts
     // late. The shell draws at once; the script waits 800 ms with no request
     // in flight (as an app still starting up does on a busy machine), then
