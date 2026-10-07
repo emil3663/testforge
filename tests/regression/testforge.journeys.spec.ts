@@ -138,7 +138,7 @@ test.describe("Journey tests (TFP-091)", () => {
         const journeyRecords = report.execution.filter((record) => record.title.includes(": journey "));
 
         expect(journeyRecords).toHaveLength(3);
-        expect(journeyRecords.every((record) => record.status === "Blocked")).toBe(true);
+        expect(journeyRecords.every((record) => record.status === "Not run")).toBe(true);
         expect(report.notTested.filter((entry) => entry.elementType === "journey").map((entry) => entry.reason)).toEqual(["interactive-skipped", "interactive-skipped", "interactive-skipped"]);
         const functional = report.coverage.matrix.find((row) => row.requirement === "Functional");
         expect(functional?.status).toBe("uncovered");
