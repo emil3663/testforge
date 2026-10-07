@@ -278,7 +278,8 @@ const server = createServer(async (req, res) => {
     // check that doesn't wait sees "Loading..."). #/chainsaws is linked but
     // missing: the app draws its "not found" view, as for any unknown route.
     // #!/legacy is the older hashbang form. #top and #details are real in-page
-    // anchors. Not linked from the nav, like /anchors.
+    // anchors. #/contact holds a form and draws after /api/slow, 1.5 s
+    // (TFP-167). Not linked from the nav, like /anchors.
     if (url.pathname === "/spa" && req.method === "GET") {
         return send(200, `<!doctype html>
 <html lang="en">
@@ -289,7 +290,7 @@ const server = createServer(async (req, res) => {
 <script>
 const views = {
   "/": '<h1 id="top">Acme Shop</h1><p><a href="#details">Details</a> <a href="#/products/1">First product</a></p><h2 id="details">Details</h2><p><a href="#top">Back to top</a></p>',
-  "/contact": "<h1>Contact</h1><p>Write to us.</p>",
+  "/contact": '<h1>Contact</h1><p>Write to us.</p><form aria-label="Contact us" action="/notes" method="get"><label>Message <input name="message"></label> <input type="submit" value="Send" style="padding:6px 12px"></form>',
   "/products": '<h1>Products</h1><p><a href="#/products/1">First product</a></p>',
   "/products/1": "<h1>First product</h1><p>A hammer.</p>",
   "/legacy": "<h1>Legacy</h1><p>An old hashbang route.</p>",
@@ -298,7 +299,8 @@ const views = {
 if (!location.hash) location.replace("#/");
 async function draw() {
   const route = location.hash.replace(/^#!?/, "") || "/";
-  await fetch("/api/status");
+  // TFP-167: #/contact draws late (1.5 s), so a check that reads it at load sees "Loading...".
+  await fetch(route === "/contact" ? "/api/slow" : "/api/status");
   document.getElementById("view").innerHTML = views[route] ?? "<h1>Page not found</h1><p>Nothing lives here.</p>";
 }
 addEventListener("hashchange", draw);

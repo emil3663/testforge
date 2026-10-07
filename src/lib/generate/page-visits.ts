@@ -34,7 +34,9 @@ async function tfGoto(page: import('@playwright/test').Page, url: string, option
  * were, so the only lines that change are the visits and the helper itself.
  */
 export function routePageVisits(code: string) {
-    if (!/\bpage\.goto\(/.test(code)) {
+    // Once only: a second pass would turn the helper's own page.goto into a call to
+    // itself (infinite recursion) and add a second helper.
+    if (!/\bpage\.goto\(/.test(code) || code.includes("async function tfGoto(")) {
         return code;
     }
     const routed = code.replace(/\bpage\.goto\(/g, "tfGoto(page, ");

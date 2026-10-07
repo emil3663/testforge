@@ -40,6 +40,10 @@ test("every page.goto in a suite goes through the helper, added once after test.
     assert.equal(routed.split(PAGE_VISIT_HELPER).length, 2, "the helper once");
     assert.ok(routed.indexOf(PAGE_VISIT_HELPER) > routed.indexOf("test.use("), "after test.use");
     assert.equal(routePageVisits("const x = 1;\n"), "const x = 1;\n", "a suite with no visits is unchanged");
+    // Idempotent: a second pass changes nothing, so the helper's own page.goto is never turned into a call to itself.
+    assert.equal(routePageVisits(routed), routed);
+    assert.equal(routePageVisits(routed).split("async function tfGoto(").length, 2, "the helper once");
+    assert.match(routePageVisits(routed), /const response = await page\.goto\(url, options\);/, "the helper still calls page.goto");
     // The helper's own goto calls stay page.goto, and the suite type-checks.
     assert.deepEqual(findTypeErrors(routed.replace("await view.goto('/x');", "")), []);
 });
@@ -74,8 +78,12 @@ test("in a real browser: on a page that draws its form after a slow request, the
     try {
         // Inspection waits (TFP-165), so it records the late form and button.
         const inspection = await inspectPages(fixture.origin, ["/late-form"]);
-        const recorded = (inspection.pages[0].actionableElements ?? []).map((element: { elementType: string; text: string }) => `${element.elementType}:${element.text}`);
-        assert.ok(recorded.includes("form:TitleTagBody") || recorded.some((entry: string) => entry.startsWith("form:")), JSON.stringify(recorded));
+        const elements = inspection.pages[0].actionableElements ?? [];
+        const recorded = elements.map((element: { elementType: string; text: string }) => `${element.elementType}:${element.text}`);
+        // The drawn form, not "Loading...": its labels' text, and the fields it holds (TFP-160's record).
+        assert.ok(recorded.includes("form:TitleTag"), JSON.stringify(recorded));
+        const form = elements.find((element: { elementType: string }) => element.elementType === "form");
+        assert.deepEqual(form?.form?.fields.map((field: { tag: string; type: string; name: string }) => `${field.tag}${field.type ? `[${field.type}]` : ""}:${field.name}`), ["input:title", "input:tag", "input[submit]:"]);
         assert.ok(recorded.includes("button:Save draft"), JSON.stringify(recorded));
 
         const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
@@ -104,6 +112,27 @@ test("in a real browser: on a page that draws its form after a slow request, the
         const comprehensive = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as never, { covered: ["/late-form"], notCovered: [], pageCap: 20 });
         assert.match(comprehensive, /tfGoto\(page, '\/late-form'/);
         assert.deepEqual(findTypeErrors(comprehensive), []);
+    } finally {
+        await fixture.close();
+    }
+});
+
+test("in a real browser: a hash route that draws late (/spa#/contact) is read after it draws: its form check finds the form", { skip: needsChromium }, async () => {
+    const fixture = await startRecordedFixture();
+    try {
+        const inspection = await inspectPages(fixture.origin, ["/spa#/contact"]);
+        const form = (inspection.pages[0].actionableElements ?? []).find((element: { elementType: string }) => element.elementType === "form");
+        assert.ok(form, "inspection read the drawn route");
+        const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
+        const code: string = mockGenerate(fixture.origin, "Check the site.", ["functional"], profile as never, normalizeContentRules(undefined), normalizeTestAuditMode("fast"));
+        assert.deepEqual(findTypeErrors(code), []);
+        assert.match(code, /tfGoto\(page, '\/spa#\/contact'\)/, "the route visit goes through tfGoto");
+
+        const records = await runSuite(code, "spa-contact");
+        // TFP-160's form lookup reads the page once: at load it would see "Loading..." and no form.
+        const formCheck = records.filter((record) => /form element check: .*\[form\]$/.test(record.title));
+        assert.equal(formCheck.length, 1, records.map((record) => record.title).join(" | "));
+        assert.equal(formCheck[0].status, "Passed", formCheck[0].rawMessage.split("\n")[0]);
     } finally {
         await fixture.close();
     }
