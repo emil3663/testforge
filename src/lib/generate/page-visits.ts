@@ -28,20 +28,65 @@ async function tfGoto(page: import('@playwright/test').Page, url: string, option
   return response;
 }`;
 
+const PAGE_GOTO = /\bpage\.goto\(/g;
+const IMPORT_START = /^import\b/;
+const IMPORT_END = /(from\s+['"][^'"]+['"]|^import\s+['"][^'"]+['"])\s*;?\s*$/;
+
 /**
  * Routes every `page.goto(...)` in a generated suite through the helper and
  * adds it once after `test.use(...)`. The call's arguments are kept as they
  * were, so the only lines that change are the visits and the helper itself.
+ *
+ * TFP-168: safe to run again on a suite that already has the helper - a
+ * template suite with the local model's code added to it. Every visit
+ * outside the helper's own body is routed, and the helper stays once. A
+ * suite whose imports aren't the template's line (OpenAI's own) gets the
+ * helper after its last import.
  */
 export function routePageVisits(code: string) {
-    // Once only: a second pass would turn the helper's own page.goto into a call to
-    // itself (infinite recursion) and add a second helper.
+    const route = (part: string) => part.replace(PAGE_GOTO, "tfGoto(page, ");
+    const helperAt = code.indexOf(PAGE_VISIT_HELPER);
+    if (helperAt >= 0) {
+        // The helper's own page.goto calls stay; everything around it is routed.
+        return route(code.slice(0, helperAt)) + PAGE_VISIT_HELPER + route(code.slice(helperAt + PAGE_VISIT_HELPER.length));
+    }
+    // A helper of another shape is left alone rather than routed into calling itself.
     if (!/\bpage\.goto\(/.test(code) || code.includes("async function tfGoto(")) {
         return code;
     }
-    const routed = code.replace(/\bpage\.goto\(/g, "tfGoto(page, ");
+    const routed = route(code);
     const afterUse = routed.replace(/^(test\.use\(\{ baseURL: [^\n]*\);\n)/m, `$1\n${PAGE_VISIT_HELPER}\n`);
-    return afterUse !== routed
-        ? afterUse
-        : routed.replace(/^(import \{ test, expect \} from '@playwright\/test';\n)/m, `$1\n${PAGE_VISIT_HELPER}\n`);
+    if (afterUse !== routed) return afterUse;
+    const afterImport = routed.replace(/^(import \{ test, expect \} from '@playwright\/test';\n)/m, `$1\n${PAGE_VISIT_HELPER}\n`);
+    if (afterImport !== routed) return afterImport;
+    // TFP-168: any other imports (double quotes, more names, several lines): the helper goes after the last one.
+    const lines = routed.split("\n");
+    let lastImport = -1;
+    let inImport = false;
+    lines.forEach((line, index) => {
+        if (inImport || IMPORT_START.test(line)) {
+            inImport = !IMPORT_END.test(line);
+            lastImport = index;
+        }
+    });
+    lines.splice(lastImport + 1, 0, "", PAGE_VISIT_HELPER, "");
+    return lines.join("\n");
+}
+
+/**
+ * TFP-168: code added to a finished suite (the local model's block, its
+ * Comprehensive scenarios) routes its own visits, leaving the suite above it
+ * byte for byte as it was. Returns the added code routed, and the helper to
+ * put before it when the suite doesn't define one yet ("" otherwise).
+ */
+export function routeAddedVisits(suiteCode: string, addedCode: string) {
+    if (!PAGE_GOTO.test(addedCode)) {
+        PAGE_GOTO.lastIndex = 0;
+        return { code: addedCode, helper: "" };
+    }
+    PAGE_GOTO.lastIndex = 0;
+    return {
+        code: addedCode.replace(PAGE_GOTO, "tfGoto(page, "),
+        helper: suiteCode.includes("async function tfGoto(") ? "" : `\n${PAGE_VISIT_HELPER}\n`,
+    };
 }

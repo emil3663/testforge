@@ -9,7 +9,7 @@ import { localModelSuiteTitle } from "./gap-fill";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { ACTIVE_GATE_SKIP, gateDetails, type TestGate } from "@/lib/run/test-gates";
 import { SUITE_AREA_CODES, SUITE_TITLES } from "./mock/suite";
-import { routePageVisits } from "./page-visits";
+import { routeAddedVisits, routePageVisits } from "./page-visits";
 
 // Phase 35 (TFP-132, Decisions 1, 2 and 7): the suite a Comprehensive run
 // executes. Separate from the Standard generator on purpose: a Standard
@@ -91,14 +91,16 @@ export function mergeComprehensiveScenarios(suiteCode: string, localCode: string
         .map((line) => (line.trim() === "" ? "" : `    ${line}`))
         .join("\n")
         .trim();
-    return `${suiteCode}
+    // TFP-168: the scenarios' page visits go through tfGoto, defined once: the suite's, or added here before the block.
+    const routed = routeAddedVisits(suiteCode, body);
+    return `${suiteCode}${routed.helper}
 // Written by the local model (${model}): site-specific ${mode.area} scenarios,
 // shown in their own report section and kept outside the verdict (Phase 35
 // Decision 5).
 test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', ${gateDetails(scenarioGate(mode))}, () => {
     ${scenarioSkip(mode, model)}
 
-    ${body}
+    ${routed.code}
 });
 `;
 }

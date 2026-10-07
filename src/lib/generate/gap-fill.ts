@@ -1,3 +1,4 @@
+import { routeAddedVisits, routePageVisits } from "./page-visits";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { ACTIVE_GATE_SKIP, gateDetails, type TestGate } from "@/lib/run/test-gates";
 import { escapeForSingleQuotedString } from "./mock/format";
@@ -81,7 +82,8 @@ export function gateOpenAiSuite(code: string, model: string, gate: TestGate = "i
             body.push(line.trim() === "" ? "" : `    ${line}`);
         }
     }
-    return `${imports.join("\n")}
+    // TFP-168: its page visits wait for the page to draw, as the template's do (TFP-167).
+    return routePageVisits(`${imports.join("\n")}
 
 // Written by OpenAI (${model}). Phase 38 (TFP-146): at the ${gate} gate.
 test.describe('${escapeForSingleQuotedString(`OpenAI (${model})`)}', ${gateDetails(gate)}, () => {
@@ -89,7 +91,7 @@ test.describe('${escapeForSingleQuotedString(`OpenAI (${model})`)}', ${gateDetai
 
 ${body.join("\n").replace(/^\n+|\n+$/g, "")}
 });
-`;
+`);
 }
 
 export function localModelSuiteTitle(model: string) {
@@ -121,14 +123,16 @@ export function mergeLocalSuite(templateCode: string, localCode: string, model: 
         ? `    test.describe('${escapeForSingleQuotedString(SUITE_TITLES[gapAreas[0]])}', () => {\n${indented}\n    });`
         : indented;
 
+    // TFP-168: the model's page visits go through tfGoto, defined once: the template's, or added here before the block.
+    const routed = routeAddedVisits(templateCode, inner);
     return `${templateCode}
-
+${routed.helper}
 // Written by the local model (${model}) for the selected areas the template
 // generator left without tests: ${gapAreas.join(", ")}. Phase 34, Option B.
 test.describe('${escapeForSingleQuotedString(localModelSuiteTitle(model))}', ${gateDetails("interactive")}, () => {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(gapFillSkipReason(model))}');
 
-${inner}
+${routed.code}
 });
 `;
 }

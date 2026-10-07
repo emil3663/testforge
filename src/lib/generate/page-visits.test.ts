@@ -137,3 +137,34 @@ test("in a real browser: a hash route that draws late (/spa#/contact) is read af
         await fixture.close();
     }
 });
+
+// TFP-168: the local model's gap-fill block, the Comprehensive scenario block and an OpenAI suite route their visits too.
+test("model and OpenAI page visits go through tfGoto: no raw page.goto outside the helper's own body, the helper once, and each suite type-checks", async () => {
+    const { mergeLocalSuite, gateOpenAiSuite } = await import("./gap-fill.ts");
+    const { mergeComprehensiveScenarios } = await import("./comprehensive.ts");
+    /** Every page.goto outside the helper's own body. */
+    const rawVisits = (code: string) => code.replace(PAGE_VISIT_HELPER, "").match(/\bpage\.goto\(/g) ?? [];
+    const modelCode = "import { test, expect } from '@playwright/test';\ntest('the model visits a page', async ({ page }) => {\n  await page.goto('/notes');\n  await expect(page.locator('h1')).toBeVisible();\n});\n";
+
+    const template = mockGenerate("http://x.test", "Check the site.", ["functional"], null, normalizeContentRules(undefined), normalizeTestAuditMode("fast"));
+    assert.ok(template.includes(PAGE_VISIT_HELPER), "the template suite has the helper (TFP-167)");
+    const merged = mergeLocalSuite(template, modelCode, "testforge-qwen7b", ["database"]);
+    assert.deepEqual(rawVisits(merged), [], "gap-fill: no raw page.goto");
+    assert.match(merged, /await tfGoto\(page, '\/notes'\);/);
+    assert.equal(merged.split("async function tfGoto(").length, 2, "gap-fill: the helper once");
+    assert.deepEqual(findTypeErrors(merged), []);
+
+    const mode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as Parameters<typeof mergeComprehensiveScenarios>[3];
+    const suite = buildComprehensiveSuite("http://x.test", mode, { covered: ["/"], notCovered: [], pageCap: 20 });
+    const scenarios = mergeComprehensiveScenarios(suite, modelCode, "testforge-qwen7b", mode);
+    assert.deepEqual(rawVisits(scenarios), [], "scenarios: no raw page.goto");
+    assert.equal(scenarios.split("async function tfGoto(").length, 2, "scenarios: the helper once");
+    assert.deepEqual(findTypeErrors(scenarios), []);
+
+    // OpenAI writes the whole suite, with imports of its own shape: the helper goes after them.
+    const openAi = gateOpenAiSuite('import { test, expect, type Page } from "@playwright/test";\n\ntest("opens the notes", async ({ page }) => {\n  await page.goto("/notes");\n});\n', "gpt-5");
+    assert.deepEqual(rawVisits(openAi), [], "OpenAI: no raw page.goto");
+    assert.equal(openAi.split("async function tfGoto(").length, 2, "OpenAI: the helper once");
+    assert.ok(openAi.indexOf("async function tfGoto(") > openAi.indexOf('from "@playwright/test"'), "after the imports");
+    assert.deepEqual(findTypeErrors(openAi), []);
+});

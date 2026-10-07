@@ -31,7 +31,9 @@ test("mergeLocalSuite: template kept whole; every @playwright/test import form d
     ].join("\n");
     const merged = mergeLocalSuite(TEMPLATE, local, "testforge-qwen7b:latest", ["database"]);
     assert.ok(merged.startsWith(TEMPLATE));
-    assert.equal((merged.match(/@playwright\/test/g) ?? []).length, 1, "only the template's import remains");
+    // Import statements, not mentions: since TFP-168 the model's page.goto adds tfGoto, whose type names @playwright/test.
+    assert.equal((merged.match(/^\s*import\b[^\n]*@playwright\/test/gm) ?? []).length, 1, "only the template's import remains");
+    assert.match(merged, /await tfGoto\(page, '\/'\)/, "the model's visit goes through tfGoto (TFP-168)");
     assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
     assert.deepEqual(findTypeErrors(merged), []);
 });
