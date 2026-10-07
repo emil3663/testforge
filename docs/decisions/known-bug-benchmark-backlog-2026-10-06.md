@@ -315,6 +315,23 @@ services to third parties. So:
     were form-check false failures on both sites (T25). This first score
     stands as recorded. TFP-167 fixes the wait, and the benchmark is re-run
     after it.
+- **Re-score done, `878a49d`, verified 2026-10-07 (Cowork):** after
+  TFP-167, 9 found, 4 hinted and 24 missed of the same 37, recorded beside
+  the first score, which is unchanged in the report.
+  - **Same rule:** `scoring-rule.md` is unchanged since `91a7141`.
+  - **Same pages:** every run's page list matches the first run's, and every
+    suite was generated at `7577252`. Each committed suite visits pages only
+    through `tfGoto`.
+  - **What moved:** 91 and 46 missed to found, 92 hinted to found, 26 and 40
+    missed to hinted. The totals reconcile.
+  - **Same suite on with-bugs, not on the clean site.** The with-bugs
+    Standard suite is the first run's, test for test, apart from its page
+    visits. The clean Standard suite was regenerated from a fresh inspection:
+    the live clean site's element ids changed and its brand filters went from
+    8 inputs to 2 plus "Eco-Friendly", so it has 272 tests against 277. Bugs
+    are scored on with-bugs, so the score isn't affected.
+  - **Performance:** no performance check changed outcome on either site,
+    though each now reads the page after up to 5 s more settling.
 - **Step 1 done, `c1685b7`, verified 2026-10-06 (Cowork):** the committed
   crawl output gives 1 page on with-bugs and 46 on the clean site.
   Scoring waits for TFP-165.
@@ -328,13 +345,17 @@ services to third parties. So:
    verified 2026-10-06.**
 4. TFP-154, at the read-only gate on the hosted sites. **First score done
    and verified 2026-10-06: 6 found, 3 hinted, 28 missed of 37.**
-5. TFP-167 (wait for single-page apps), then re-score TFP-154.
+5. TFP-167 (wait for single-page apps), then re-score TFP-154. **Done,
+   `e812795` and `7577252` (TFP-167) and `878a49d` (re-score), verified
+   2026-10-07: 9 found, 4 hinted, 24 missed of 37.**
 6. Later, a local Docker copy for the interactive and active gates, once
    Phase 35 Decision 8 is built.
 
 ## Suggested Milestone Gate
 
 ### Gate — Known misses measured
+**Met 2026-10-07 (Cowork):** both scores are recorded with the rule
+committed first, and every with-bugs failure is a scored bug or labelled.
 - TFP-153 and TFP-154 landed and independently verified.
 - The scoring rule was committed before the first run.
 - Found, hinted and missed counts are recorded for each area.

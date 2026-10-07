@@ -23,31 +23,33 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at the TFP-167 docs commit. Phase 38 is complete. Since then:
+`origin/main` is at `7e84497`; `878a49d` (the re-score) is committed, not
+pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
   - TFP-153 (the Toolshop answer key);
-  - TFP-154's first score: 6 found, 3 hinted and 28 missed, of the 37 bugs in
-    reach at the read-only gate in Chromium.
-- **Done and verified 2026-10-07:** TFP-167 (`e812795`, `7577252`): every
-  generated page visit waits for network idle, bounded at 5 s (approved by
-  Emil). Cost: with-bugs Toolshop's 5 pages 766 s to 1,170 s.
-- **In progress:** TFP-154's re-score, with the same pages and rule,
-  recorded beside the first score. Stop for verification when it's done.
-- **New, not started:** TFP-168 (model and OpenAI visits through `tfGoto`)
-  and TFP-169 (TFP-147's security case resets at fixture start-up), in
-  `known-bug-benchmark-backlog-2026-10-06.md`.
-- **Ready, not started:**
+  - TFP-167 (`e812795`, `7577252`): every generated page visit waits for
+    network idle, bounded at 5 s;
+  - TFP-154: the first score (6 found, 3 hinted, 28 missed of 37) and the
+    re-score after TFP-167 (`878a49d`: 9 found, 4 hinted, 24 missed), both
+    verified. The known-bug gate is met.
+- **Next: Phase 40, locked 2026-10-07**
+  (`docs/decisions/phase-40-page-type-selection-decision-record.md`,
+  TFP-170 to TFP-175). Emil confirmed every value: a Standard cap of 8,
+  exact structural signatures (no threshold), ordered ranking rules (no
+  weights), the keep rule in Decision 9, and Phase 40 before Phase 39.
+  Start with TFP-170, then TFP-171, and stop at Gate A. Each ticket stops
+  for verification before the next.
+- **Not started, not next:**
+  - TFP-168 (model and OpenAI visits through `tfGoto`) and TFP-169 (TFP-147's
+    security case resets at fixture start-up), in
+    `known-bug-benchmark-backlog-2026-10-06.md`;
   - TFP-162 to TFP-164 (`real-site-run-findings-backlog-2026-10-01.md`);
-  - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; needs
-    Docker on Emil's machine for TFP-158).
-- **Draft, values to confirm:** Phase 40
-  (`phase-40-page-type-selection-decision-record.md`: Standard cap
-  recommended 8, outline threshold, ranking weights, keep rule). It starts
-  after TFP-154's re-score.
-- **Known-bug backlog:** `known-bug-benchmark-backlog-2026-10-06.md` holds
-  TFP-153 to TFP-154 and TFP-165 to TFP-169.
+  - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
+    Phase 40; needs Docker on Emil's machine for TFP-158).
+- **Git:** don't use `git stash` in this repo; Emil keeps an older stash
+  entry. Read old versions with `git show <commit>^:<path>`.
 
 ## Phase 38 is complete (2026-10-06)
 

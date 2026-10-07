@@ -248,6 +248,13 @@ Every run is within the 1,800 s budget. The longest, with-bugs Standard,
 leaves 742 s. (TFP-167's own measurement of the same run took 1,170 s:
 two runs from this machine, about 10 % apart.)
 
+**The clean Standard suite was regenerated.** The with-bugs Standard
+suite is the first run's, test for test, apart from its page visits. The
+clean one comes from a fresh inspection of the live clean site, whose
+element ids changed and whose brand filters went from 8 inputs to 2 plus
+"Eco-Friendly": 272 tests against 277. Bugs are scored on with-bugs, so the
+score isn't affected.
+
 **Performance checks** (navigation, LCP, CLS, TBT, page weight) now read
 the page after up to 5 s more settling. Any change in them between the two
 scores may come from that, not from found bugs. Measured here, none
