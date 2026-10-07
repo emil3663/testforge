@@ -175,7 +175,7 @@ ${hasHiddenLinks ? `            // TFP-159: a link hidden at inspection (a close
             } else if (link.linkType === 'mailto') {
                 await expect(locator).toHaveAttribute('href', /^mailto:/i);
             } else if (link.linkType === 'download') {
-                await expect(locator).toHaveAttribute('href', /\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
+                await expect(locator).toHaveAttribute('href', /\\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
             }
         }
     });`);

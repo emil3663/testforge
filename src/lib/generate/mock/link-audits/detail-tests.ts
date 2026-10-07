@@ -44,7 +44,7 @@ export function buildLinkDetailTests(
             await expect(rendered).toBeVisible();
             const response = await request.get(link.url, { failOnStatusCode: false, timeout: ${linkAuditTimeoutMs} });
             expect(response.status()).toBeLessThan(400);
-            expect(await locator.getAttribute('href')).toMatch(/\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
+            expect(await locator.getAttribute('href')).toMatch(/\\.(pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx)([?#].*)?$/i);
         }
     });`);
     }
