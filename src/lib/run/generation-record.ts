@@ -29,7 +29,11 @@ function gate(value: unknown): GenerationGateVerdict | null {
     return { gate: name, bar, measured, verdict: v.verdict, evidence };
 }
 
-export function normalizeGenerationRecord(input: unknown): GenerationRecord | null {
+/**
+ * `baseUrl` is the run's site: the page-type record's URLs must be on its
+ * origin (TFP-174). Without one, the record is dropped.
+ */
+export function normalizeGenerationRecord(input: unknown, baseUrl?: string): GenerationRecord | null {
     if (!input || typeof input !== "object") return null;
     const v = input as Record<string, unknown>;
     const generatedBy = text(v.generatedBy);
@@ -54,7 +58,7 @@ export function normalizeGenerationRecord(input: unknown): GenerationRecord | nu
     }
     const pageInspection = normalizePageInspection(v.pageInspection);
     if (pageInspection) record.pageInspection = pageInspection;
-    const pageTypes = normalizePageTypes(v.pageTypes);
+    const pageTypes = normalizePageTypes(v.pageTypes, baseUrl);
     if (pageTypes) record.pageTypes = pageTypes;
     return record;
 }
@@ -86,16 +90,34 @@ function normalizePageInspection(value: unknown): PageInspectionRecord | null {
 const MAX_TYPES = 100;
 const MAX_URL = 2000;
 
-function pageTypeEntry(value: unknown, skipped: boolean): PageTypeCoverageEntry | null {
+/**
+ * TFP-173's review: the export puts these URLs in links and the re-run list,
+ * so only http(s) URLs on the run's origin are kept - never `javascript:`
+ * or another site's page.
+ */
+function siteUrl(value: unknown, origin: string): string | undefined {
+    const candidate = text(value, MAX_URL);
+    if (!candidate) return undefined;
+    try {
+        const url = new URL(candidate);
+        return (url.protocol === "http:" || url.protocol === "https:") && url.origin === origin ? candidate : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+function siteUrls(items: unknown, origin: string): string[] {
+    return Array.isArray(items) ? items.map((item) => siteUrl(item, origin)).filter((item): item is string => Boolean(item)).slice(0, MAX_PAGE_CAP) : [];
+}
+
+function pageTypeEntry(value: unknown, skipped: boolean, origin: string): PageTypeCoverageEntry | null {
     if (!value || typeof value !== "object") return null;
     const v = value as Record<string, unknown>;
     const pattern = text(v.pattern, MAX_EVIDENCE_LINE);
     const label = text(v.label);
-    const url = text(v.url, MAX_URL);
+    const url = siteUrl(v.url, origin);
     if (!pattern || !label || !url || typeof v.pages !== "number" || !Number.isInteger(v.pages) || v.pages < 1) return null;
-    const covered = Array.isArray(v.covered)
-        ? v.covered.map((item) => text(item, MAX_URL)).filter((item): item is string => Boolean(item)).slice(0, MAX_PAGE_CAP)
-        : [];
+    const covered = siteUrls(v.covered, origin);
     if (!skipped && covered.length === 0) return null;
     const entry: PageTypeCoverageEntry = { pattern, label, pages: Math.min(v.pages, 1000), url, covered: skipped ? [] : covered };
     const reason = text(v.reason, MAX_EVIDENCE_LINE);
@@ -103,17 +125,22 @@ function pageTypeEntry(value: unknown, skipped: boolean): PageTypeCoverageEntry 
     return entry;
 }
 
-/** TFP-173: page types found, covered and skipped, and whether the user chose the pages by hand. */
-function normalizePageTypes(value: unknown): PageTypeCoverageRecord | null {
-    if (!value || typeof value !== "object") return null;
+/** TFP-173: page types found, covered and skipped, and whether the user chose the pages by hand or listed them (TFP-174). */
+function normalizePageTypes(value: unknown, baseUrl: string | undefined): PageTypeCoverageRecord | null {
+    if (!value || typeof value !== "object" || !baseUrl) return null;
+    let origin: string;
+    try {
+        origin = new URL(baseUrl).origin;
+    } catch {
+        return null;
+    }
     const v = value as Record<string, unknown>;
-    if (v.selectedBy !== "type" && v.selectedBy !== "user") return null;
+    if (v.selectedBy !== "type" && v.selectedBy !== "user" && v.selectedBy !== "list") return null;
     if (v.runType !== "standard" && v.runType !== "comprehensive") return null;
     const whole = (n: unknown, max: number) => (typeof n === "number" && Number.isInteger(n) && n >= 0 ? Math.min(n, max) : 0);
     const entries = (items: unknown, skipped: boolean) =>
-        Array.isArray(items) ? items.map((item) => pageTypeEntry(item, skipped)).filter((item): item is PageTypeCoverageEntry => item !== null).slice(0, MAX_TYPES) : [];
-    const urls = (items: unknown) =>
-        Array.isArray(items) ? items.map((item) => text(item, MAX_URL)).filter((item): item is string => Boolean(item)).slice(0, MAX_PAGE_CAP) : [];
+        Array.isArray(items) ? items.map((item) => pageTypeEntry(item, skipped, origin)).filter((item): item is PageTypeCoverageEntry => item !== null).slice(0, MAX_TYPES) : [];
+    const urls = (items: unknown) => siteUrls(items, origin);
     const record: PageTypeCoverageRecord = {
         selectedBy: v.selectedBy,
         runType: v.runType,

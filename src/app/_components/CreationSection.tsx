@@ -14,6 +14,8 @@ interface CreationSectionProps {
     isCreationCollapsed: boolean;
     setIsCreationCollapsed: (updater: (value: boolean) => boolean) => void;
     baseUrl: string;
+    /** Phase 40 (TFP-174): how the URL field was read - a list of pages, or why it can't be run. */
+    urlFieldNote: { kind: "list" | "invalid"; text: string } | null;
     setBaseUrl: (value: string) => void;
     isBaseUrlPlaceholderActive: boolean;
     setIsBaseUrlPlaceholderActive: (value: boolean) => void;
@@ -96,6 +98,7 @@ export function CreationSection({
     isCreationCollapsed,
     setIsCreationCollapsed,
     baseUrl,
+    urlFieldNote,
     setBaseUrl,
     isBaseUrlPlaceholderActive,
     setIsBaseUrlPlaceholderActive,
@@ -185,10 +188,10 @@ export function CreationSection({
                                     <label htmlFor="base-url-input" className="block text-sm font-medium text-zinc-700">
                                         Base URL
                                     </label>
-                                    <input
+                                    <textarea
                                         id="base-url-input"
                                         aria-label="Base URL"
-                                        type="text"
+                                        rows={Math.min(6, Math.max(1, baseUrl.split(/\n/).length))}
                                         value={baseUrl}
                                         onFocus={() => {
                                             if (isBaseUrlPlaceholderActive) {
@@ -212,11 +215,16 @@ export function CreationSection({
                                         autoCapitalize="none"
                                         autoCorrect="off"
                                         spellCheck={false}
-                                        className={`w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm ${isBaseUrlPlaceholderActive ? "text-zinc-400" : "text-zinc-900"} focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200`}
+                                        className={`w-full resize-y rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm ${isBaseUrlPlaceholderActive ? "text-zinc-400" : "text-zinc-900"} focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200`}
                                     />
                                     <p className="text-xs text-zinc-500">
-                                        Accepts local addresses like localhost:3000 and full URLs.
+                                        Accepts local addresses like localhost:3000 and full URLs. To run exactly some pages, put one page URL per line, all on one site.
                                     </p>
+                                    {urlFieldNote ? (
+                                        <p data-testid="url-field-note" className={`text-xs ${urlFieldNote.kind === "invalid" ? "text-rose-600" : "text-sky-800"}`}>
+                                            {urlFieldNote.text}
+                                        </p>
+                                    ) : null}
                                 </div>
 
                                 <div className="space-y-1.5">

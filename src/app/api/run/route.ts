@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
             enableInteractive === true,
             loginConfig,
             // Phase 34 (TFP-119): untrusted input, so only the known shape, capped.
-            normalizeGenerationRecord(generation),
+            normalizeGenerationRecord(generation, typeof baseUrl === "string" ? baseUrl : undefined),
             normalizedRunMode
         );
     } catch (error) {

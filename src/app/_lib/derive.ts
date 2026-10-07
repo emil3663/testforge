@@ -138,6 +138,51 @@ export function buildSelectedPracticeDescription(practices: BestPracticeArea[]) 
     return `Generate a test suite covering ${labels.join(", ")}.`;
 }
 
+/**
+ * Phase 40 Decision 8 (TFP-174): the URL field takes one URL, as before, or a
+ * list of pages, one per line. In a list the first URL gives the run's site
+ * (its origin); every other URL must share that origin, or the list is
+ * rejected before the run, naming the URL. Each page keeps its path, query
+ * and hash route as given (`/#/contact`, TFP-165's page names). Duplicates
+ * are dropped; blank lines are ignored.
+ */
+export type UrlField =
+    | { kind: "single"; value: string }
+    | { kind: "list"; site: string; pages: string[]; urls: string[] }
+    | { kind: "invalid"; message: string };
+
+export function parseUrlField(value: string): UrlField {
+    const lines = value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    if (lines.length <= 1) return { kind: "single", value };
+    const parsed: URL[] = [];
+    for (const line of lines) {
+        // A scheme ("https://", "javascript:") is kept; "localhost:3000/x" is a host and port, read as http.
+        const withProtocol = /^[a-zA-Z][a-zA-Z\d+.-]*:(\/\/|(?!\d))/.test(line) ? line : `http://${line}`;
+        let url: URL;
+        try {
+            url = new URL(withProtocol);
+        } catch {
+            return { kind: "invalid", message: `"${line}" is not a valid URL. Enter one page URL per line.` };
+        }
+        if (url.protocol !== "http:" && url.protocol !== "https:") {
+            return { kind: "invalid", message: `${line} is not an http or https URL.` };
+        }
+        parsed.push(url);
+    }
+    const site = parsed[0].origin;
+    const other = parsed.find((url) => url.origin !== site);
+    if (other) {
+        return { kind: "invalid", message: `${other.toString()} is on another site than the first URL (${site}). Every page in the list must be on the same origin.` };
+    }
+    const pages = [...new Set(parsed.map((url) => `${url.pathname}${url.search}${url.hash}`))];
+    return { kind: "list", site, pages, urls: pages.map((page) => `${site}${page}`) };
+}
+
+/** The run's site: the field's one URL, or a list's first origin; the field as typed when it can't be read. */
+export function urlFieldSite(field: UrlField, raw: string): string {
+    return field.kind === "list" ? field.site : field.kind === "single" ? field.value : raw;
+}
+
 export function normalizeBaseUrl(value: string) {
     const trimmed = value.trim();
 

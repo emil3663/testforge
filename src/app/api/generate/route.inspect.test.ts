@@ -114,3 +114,15 @@ test("with a local model configured, an inspected database request is no gap: th
     assert.equal(body.pageInspection.status, "inspected");
     assert.equal(chatCalls + chatBodies.length, 0);
 });
+
+// Phase 40 Decision 8 (TFP-174): a list of full page URLs (pasted from a report) is accepted on the run's site, and a page on another origin is rejected before anything runs, naming it.
+test("a full page URL on the run's site is inspected as its path; one on another origin is rejected with a 400 naming it", { skip: needsChromium }, async () => {
+    const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"], contentRules: { paths: [`${siteUrl}/notes`] } });
+    assert.deepEqual(body.pageInspection, { status: "inspected", paths: ["/notes"], pages: 1, warnings: [] });
+
+    for (const foreign of ["https://elsewhere.example/notes", "javascript:alert(1)"]) {
+        const res = await POST(new NextRequest(new URL("http://localhost/api/generate"), { method: "POST", body: JSON.stringify({ baseUrl: siteUrl, description: "x", selectedPractices: ["database"], contentRules: { paths: ["/", foreign] } }), headers: { "content-type": "application/json" } }));
+        assert.equal(res.status, 400);
+        assert.equal((await res.json()).error, `${foreign} is not on the run's site (${siteUrl}); every page must be on the same origin.`);
+    }
+});

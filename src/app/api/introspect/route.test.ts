@@ -42,3 +42,15 @@ test("POST /api/introspect: empty body returns 400 with a JSON error body, not a
     assert.equal(res.status, 400);
     assert.equal(typeof body.error, "string");
 });
+
+// Phase 40 Decision 8 (TFP-174): a page on another origin is rejected before inspection, naming it.
+test("POST /api/introspect: a page URL on another origin returns 400 naming it, before anything is inspected", async () => {
+    const req = new NextRequest(new URL("http://localhost/api/introspect"), {
+        method: "POST",
+        body: JSON.stringify({ baseUrl: "https://site.example", paths: ["https://site.example/#/contact", "https://other.example/x"] }),
+        headers: { "content-type": "application/json" },
+    });
+    const res = await POST(req);
+    assert.equal(res.status, 400);
+    assert.equal((await res.json()).error, "https://other.example/x is not on the run's site (https://site.example); every page must be on the same origin.");
+});

@@ -5,6 +5,11 @@
  *
  * - Chosen by type (the default): covered and skipped are Decision 5's or
  *   6's selection, each skip with the one-line reason TFP-172 recorded.
+ * - A list of pages from the URL field (Decision 8, TFP-174): "pages chosen
+ *   by the user". Selection by type is skipped. With a crawl of the site, the
+ *   report still says which types the list covered and which it left out; a
+ *   listed page the crawl didn't find is its own entry. Without a crawl,
+ *   each page is its own entry and no type is named.
  * - Chosen by hand: an override, recorded as such. A type is covered when
  *   any of its pages was chosen; a skipped type says it wasn't chosen and
  *   whether the type selection would have covered it. The pages added to
@@ -23,11 +28,12 @@ export interface CoverageInput {
     baseUrl: string;
     /** The crawl's pages, for their full URLs. */
     pages: Array<{ path: string; url: string }>;
+    /** The crawl's ranking; empty for a URL-field list without a crawl of its site. */
     rankedTypes: RankedPageType[];
     runMode: RunMode;
     /** The pages sent to inspection, in order. */
     selectedPaths: string[];
-    selectedBy: "type" | "user";
+    selectedBy: "type" | "user" | "list";
 }
 
 export function buildPageTypeCoverage(input: CoverageInput): PageTypeCoverageRecord {
@@ -61,6 +67,24 @@ export function buildPageTypeCoverage(input: CoverageInput): PageTypeCoverageRec
             covered: selection.covered.map((type) => entry(type, type.selected)),
             skipped: selection.skipped.map((type) => entry(type, [], type.reason)),
         };
+    }
+
+    if (input.selectedBy === "list") {
+        const covered: PageTypeCoverageEntry[] = [];
+        const skipped: PageTypeCoverageEntry[] = [];
+        for (const type of input.rankedTypes) {
+            const picked = input.selectedPaths.filter((path) => type.pages.includes(path));
+            if (picked.length > 0) covered.push(entry(type, picked));
+            else skipped.push(entry(type, [], "not in the list of pages"));
+        }
+        const typed = new Set(input.rankedTypes.flatMap((type) => type.pages));
+        for (const path of input.selectedPaths.filter((page) => !typed.has(page))) {
+            covered.push({ pattern: path, label: "page", pages: 1, url: urlOf(path), covered: [urlOf(path)] });
+        }
+        // In the order the list named them.
+        const at = (item: PageTypeCoverageEntry) => input.selectedPaths.findIndex((path) => urlOf(path) === item.covered[0]);
+        covered.sort((a, b) => at(a) - at(b));
+        return { selectedBy: "list", ...base, cap: input.selectedPaths.length, covered, skipped };
     }
 
     const chosen = new Set(input.selectedPaths);

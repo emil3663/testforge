@@ -32,6 +32,10 @@ function listTypes(entries: PageTypeCoverageEntry[]): string {
 }
 
 export function describePageTypeHeadline(record: PageTypeCoverageRecord): string {
+    if (record.selectedBy === "list" && record.found === 0) {
+        const pages = coveredPageUrls(record).length;
+        return `${pages} page${pages === 1 ? "" : "s"} chosen by the user. The site wasn't crawled, so no page types are named.`;
+    }
     const found = `Found ${record.found} page type${record.found === 1 ? "" : "s"}.`;
     const covered = `Covered ${record.covered.length}${record.covered.length > 0 ? `: ${listTypes(record.covered)}` : ""}.`;
     const skipped = record.skipped.length > 0 ? ` Not covered: ${listTypes(record.skipped)}.` : "";
@@ -39,6 +43,10 @@ export function describePageTypeHeadline(record: PageTypeCoverageRecord): string
 }
 
 export function describePageTypeSelection(record: PageTypeCoverageRecord): string {
+    if (record.selectedBy === "list") {
+        const pages = coveredPageUrls(record).length;
+        return `Pages chosen by the user: ${pages} page${pages === 1 ? "" : "s"} listed in the URL field, run exactly as listed; selection by page type was skipped.`;
+    }
     if (record.selectedBy === "user") {
         const added = record.override?.added ?? [];
         const removed = record.override?.removed ?? [];

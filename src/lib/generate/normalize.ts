@@ -90,9 +90,18 @@ function normalizeStringList(input: unknown) {
 }
 
 function normalizePaths(input: unknown) {
-    const paths = normalizeStringList(input).map((item) =>
-        item.startsWith("/") ? item : `/${item}`
-    );
+    const paths = normalizeStringList(input).map((item) => {
+        // Phase 40 (TFP-174): a full page URL (the route rejects other origins first) is kept as its path and hash route.
+        if (/^https?:\/\//i.test(item)) {
+            try {
+                const url = new URL(item);
+                return `${url.pathname}${url.search}${url.hash}`;
+            } catch {
+                return item;
+            }
+        }
+        return item.startsWith("/") ? item : `/${item}`;
+    });
 
     return paths.length > 0 ? paths : ["/"];
 }

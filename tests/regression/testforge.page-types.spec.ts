@@ -16,6 +16,17 @@ test.afterAll(async () => {
     await fixture.close();
 });
 
+interface ProfileBody { contentProfile?: { pages: { path: string }[] } }
+
+/** Every POST body sent to an API route, in order. */
+function bodiesOf(page: Page, route: string) {
+    const seen: unknown[] = [];
+    page.on("request", (request) => {
+        if (request.url().endsWith(route) && request.method() === "POST") seen.push(request.postDataJSON());
+    });
+    return seen;
+}
+
 interface RunBody {
     generation?: { pageTypes?: { selectedBy: string; found: number; cap: number; covered: { url: string }[]; skipped: { pattern: string; reason?: string }[]; override?: { added: string[]; removed: string[] } } };
 }
@@ -38,7 +49,9 @@ async function generateAndRun(page: Page) {
 }
 
 test.describe("Page types in the run report (TFP-173)", () => {
-    test("a crawl selects one page per type up to 8; the report names the types found, covered and skipped, and ends with the covered and skipped lists", async ({ page }) => {
+    test("a crawl selects one page per type up to 8; the report names the types found, covered and skipped, and ends with the covered and skipped lists; pasted back, the list runs the same pages (TFP-174)", async ({ page }) => {
+        const introspectBodies = bodiesOf(page, "/api/introspect") as { paths: string[] }[];
+        const generateBodies = bodiesOf(page, "/api/generate") as ProfileBody[];
         const runBodies: RunBody[] = [];
         page.on("request", (request) => {
             if (request.url().endsWith("/api/run") && request.method() === "POST") runBodies.push(request.postDataJSON() as RunBody);
@@ -65,6 +78,31 @@ test.describe("Page types in the run report (TFP-173)", () => {
             `${fixture.origin}/types/legal/privacy`,
             `${fixture.origin}/types/help/terms`,
         ]);
+
+        // TFP-174's round trip: the covered list pasted into the URL field runs exactly those pages.
+        const creation = page.getByRole("button", { name: /Test Suite Creation/ });
+        if ((await creation.getAttribute("aria-expanded")) === "false") await creation.click();
+        await page.getByLabel("Base URL").fill(covered.join("\n"));
+        await expect(page.getByTestId("url-field-note")).toContainText(`8 pages on ${fixture.origin}, run exactly as listed.`);
+        await page.getByRole("button", { name: "Generate test suite" }).click();
+        await expect.poll(() => generateBodies.length, { timeout: 120_000 }).toBe(2);
+        expect(introspectBodies).toHaveLength(2);
+        expect(introspectBodies[1].paths).toEqual(covered.map((url) => url.slice(fixture.origin.length)));
+        expect(new Set(introspectBodies[1].paths)).toEqual(new Set(introspectBodies[0].paths));
+        // The generated suite is built from the same pages.
+        const pagesOf = (body: ProfileBody) => new Set((body.contentProfile?.pages ?? []).map((item) => item.path));
+        expect(pagesOf(generateBodies[1])).toEqual(pagesOf(generateBodies[0]));
+        expect(pagesOf(generateBodies[1]).size).toBe(8);
+        // The field keeps the list as typed.
+        await expect(page.getByLabel("Base URL")).toHaveValue(covered.join("\n"));
+    });
+
+    test("a list with a page on another origin is rejected before the run, naming it (TFP-174)", async ({ page }) => {
+        await page.goto("/");
+        await page.getByLabel("Base URL").fill(`${fixture.origin}/types\nhttps://other.example/types`);
+        await page.getByLabel("What do you want to test?").fill("Check the security headers of every page.");
+        await expect(page.getByTestId("url-field-note")).toHaveText(`https://other.example/types is on another site than the first URL (${fixture.origin}). Every page in the list must be on the same origin.`);
+        await expect(page.getByRole("button", { name: "Generate test suite" })).toBeDisabled();
     });
 
     test("pages chosen by hand are recorded as an override, and 'Select by page type' returns to the type selection", async ({ page }) => {

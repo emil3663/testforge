@@ -26,6 +26,8 @@ interface HandleGenerateParams {
     selectedCrawledPaths: string[];
     /** Phase 40 (TFP-173): whether the crawl selection is still the one chosen by page type. */
     isTypeSelection: boolean;
+    /** Phase 40 (TFP-174): the pages listed in the URL field, run exactly as listed; null for one URL. */
+    urlListPages: string[] | null;
     setCrawlError: (message: string) => void;
     isBaseUrlPlaceholderActive: boolean;
     setBaseUrl: (value: string) => void;
@@ -153,7 +155,8 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             : [];
         const effectiveDescription = (params.isDescriptionPlaceholderActive ? "" : params.description).trim() || buildSelectedPracticeDescription(params.effectiveSelectedPractices);
         const contentRules = {
-            paths: normalizeInspectionPaths(
+            // Phase 40 Decision 8 (TFP-174): a list in the URL field runs exactly those pages.
+            paths: params.urlListPages ?? normalizeInspectionPaths(
                 normalizedBaseUrl.value,
                 parsedPaths,
                 activeSelectedCrawledPaths
@@ -223,7 +226,16 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             setLastGeneratedRunMode(params.runMode);
             // Phase 40 (TFP-173): when the pages came from a crawl, the page types found, covered and skipped.
             const rankedTypes = params.crawlResult?.baseUrl === normalizedBaseUrl.value ? params.crawlResult.rankedTypes : undefined;
-            const pageTypes = rankedTypes && rankedTypes.length > 0 && activeSelectedCrawledPaths.length > 0
+            const pageTypes = params.urlListPages
+                ? buildPageTypeCoverage({
+                    baseUrl: normalizedBaseUrl.value,
+                    pages: rankedTypes ? params.crawlResult?.pages ?? [] : [],
+                    rankedTypes: rankedTypes ?? [],
+                    runMode: params.runMode,
+                    selectedPaths: contentRules.paths,
+                    selectedBy: "list",
+                })
+                : rankedTypes && rankedTypes.length > 0 && activeSelectedCrawledPaths.length > 0
                 ? buildPageTypeCoverage({
                     baseUrl: normalizedBaseUrl.value,
                     pages: params.crawlResult?.pages ?? [],
@@ -237,7 +249,9 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             // page types still need a record to travel in, and "template" is what wrote that suite.
             const generatedBy = typeof data.generatedBy === "string" ? data.generatedBy : pageTypes ? "template" : null;
             setLastGeneration(generatedBy ? { generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates ?? [], ...(pageTypes ? { pageTypes } : {}) } : null);
-            if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {
+            if (params.urlListPages) {
+                // The list stays in the field as typed, so the same pages can be run again.
+            } else if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {
                 params.setBaseUrl(defaultBaseUrl);
                 params.setIsBaseUrlPlaceholderActive(true);
             } else {

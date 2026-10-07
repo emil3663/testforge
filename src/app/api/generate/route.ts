@@ -15,6 +15,7 @@ import { getBestPracticeAreas } from "@/lib/generate/mock/areas";
 import { generateLocalSuite, type LocalFailureReason } from "@/lib/generate/local-generation";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { inspectForGeneration } from "@/lib/generate/page-inspection";
+import { findForeignPath, foreignPathMessage } from "@/lib/introspect/paths";
 import type { PageInspectionRecord } from "@/lib/report/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { buildGapFillMessages, buildGenerationMessages, type GenerationRequestContext } from "@/lib/generate/messages";
@@ -40,6 +41,10 @@ export async function POST(req: NextRequest) {
             { status: 400 }
         );
     }
+
+    // Phase 40 Decision 8 (TFP-174): a page on another origin is rejected before anything runs, naming it.
+    const foreign = findForeignPath(normalizedBaseUrl.value, contentRules && typeof contentRules === "object" ? (contentRules as { paths?: unknown }).paths : undefined);
+    if (foreign) return NextResponse.json({ error: foreignPathMessage(normalizedBaseUrl.value, foreign) }, { status: 400 });
 
     // Phase 35 (TFP-132): absent means a Standard run, handled exactly as
     // before. An invalid Comprehensive request is refused, never run as

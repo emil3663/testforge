@@ -26,6 +26,8 @@ import {
     normalizeBaseUrl,
     normalizeInspectionPaths,
     parseContentLines,
+    parseUrlField,
+    urlFieldSite,
     parseNamedFlowLines,
 } from "@/app/_lib/derive";
 import type { LoginInputs } from "@/app/_lib/derive";
@@ -85,8 +87,13 @@ export default function Home() {
     const runMode: RunMode = runType === "comprehensive"
         ? { kind: "comprehensive", area: comprehensiveArea, level: comprehensiveArea === "security" ? "passive" : null, pageCap: pageCapProblem ? DEFAULT_PAGE_CAP : pageCap }
         : STANDARD_RUN;
+    // Phase 40 Decision 8 (TFP-174): one URL, or a list of pages on one site.
+    const urlField = parseUrlField(baseUrl);
+    const siteUrl = urlFieldSite(urlField, baseUrl);
+    const urlListPages = urlField.kind === "list" ? urlField.pages : null;
+    const urlFieldProblem = urlField.kind === "invalid" ? urlField.message : "";
     // Phase 40 (TFP-172): after a crawl, the pages selected by type for this run type.
-    const crawl = useCrawl(baseUrl, runMode);
+    const crawl = useCrawl(siteUrl, runMode);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
     const run = useRun(step, setStep, setError, setIsCreationCollapsed, generation.setIsGeneratedCollapsed);
 
@@ -123,7 +130,8 @@ export default function Home() {
 
     function buildGenerateParams() {
         return {
-            baseUrl,
+            baseUrl: siteUrl,
+            urlListPages,
             effectiveSelectedPractices: practicesInScope,
             runMode,
             isDescriptionPlaceholderActive,
@@ -177,11 +185,11 @@ export default function Home() {
         .filter((practice) => !deselectedPractices.includes(practice));
     // A Comprehensive run covers its one area; a Standard run the selected ones.
     const practicesInScope: BestPracticeArea[] = runMode.kind === "comprehensive" ? [runMode.area] : effectiveSelectedPractices;
-    const normalizedBaseUrlForDisplay = normalizeBaseUrl(baseUrl);
+    const normalizedBaseUrlForDisplay = normalizeBaseUrl(siteUrl);
     const parsedDisplayPaths = parseContentLines(contentPathsInput).map((item) =>
         item.startsWith("/") ? item : `/${item}`
     );
-    const effectiveInspectionPaths = normalizeInspectionPaths(
+    const effectiveInspectionPaths = urlListPages ?? normalizeInspectionPaths(
         normalizedBaseUrlForDisplay.ok ? normalizedBaseUrlForDisplay.value : DEFAULT_BASE_URL,
         parsedDisplayPaths,
         crawl.hasActiveCrawlSelection ? crawl.selectedCrawledPaths : []
@@ -210,7 +218,9 @@ export default function Home() {
     const isJourneySelectionReady =
         generation.lastGeneratedJourneySignature === JSON.stringify([...effectiveSelectedJourneyIds].sort());
     const { login: loginBlock, problem: loginProblem } = buildLoginBlock(loginInputs);
-    const runBlockedMessage = loginProblem
+    const runBlockedMessage = urlFieldProblem
+        ? urlFieldProblem
+        : loginProblem
         ? `Fix the login settings before running: ${loginProblem}`
         : pageCapProblem
         ? pageCapProblem
@@ -224,10 +234,10 @@ export default function Home() {
                 ? "Generate the suite again after changing the selected journeys before running it."
                 : "";
     const showBusyOverlay = isGenerating || isRunning;
-    const normalizedBusyTarget = normalizeBaseUrl(baseUrl);
+    const normalizedBusyTarget = normalizeBaseUrl(siteUrl);
     const busyTarget = normalizedBusyTarget.ok
         ? normalizedBusyTarget.value
-        : baseUrl.trim() || DEFAULT_BASE_URL;
+        : siteUrl.trim() || DEFAULT_BASE_URL;
     const busyBaseUrl = (isRunning ? generation.lastGeneratedBaseUrl : busyTarget) || DEFAULT_BASE_URL;
     const busyInspectionPaths = isRunning
         ? generation.lastGeneratedInspectionPaths
@@ -238,7 +248,7 @@ export default function Home() {
             ? "Stopping generated Playwright suite..."
             : "Running generated Playwright suite...";
     const activeRunProgress = isRunning ? run.runProgress : null;
-    const canGenerateOrRun = practicesInScope.length > 0 && !pageCapProblem;
+    const canGenerateOrRun = practicesInScope.length > 0 && !pageCapProblem && !urlFieldProblem;
     const contentInsights = deriveContentInsights(generation.contentProfile, auditMode);
     const { busyInspectionTargetsPreview, remainingBusyInspectionTargets } = deriveBusyInspectionTargets(
         isRunning,
@@ -358,6 +368,9 @@ export default function Home() {
                     isCreationCollapsed={isCreationCollapsed}
                     setIsCreationCollapsed={setIsCreationCollapsed}
                     baseUrl={baseUrl}
+                    urlFieldNote={urlField.kind === "list"
+                        ? { kind: "list", text: `${urlField.pages.length} pages on ${urlField.site}, run exactly as listed. Pages are not chosen by page type; a crawl of the site only names their types in the report.` }
+                        : urlFieldProblem ? { kind: "invalid", text: urlFieldProblem } : null}
                     setBaseUrl={setBaseUrl}
                     isBaseUrlPlaceholderActive={isBaseUrlPlaceholderActive}
                     setIsBaseUrlPlaceholderActive={setIsBaseUrlPlaceholderActive}

@@ -116,3 +116,23 @@ test("every field a login block accepts has a UI label, and the section has no f
     assert.deepStrictEqual(Object.keys(LOGIN_FIELD_LABELS).sort(), [...LOGIN_CONFIG_FIELDS].sort());
     assert.ok(!Object.values(LOGIN_FIELD_LABELS).some((label) => /^(username|password)$/i.test(label)));
 });
+
+// Phase 40 Decision 8 (TFP-174): the URL field takes one URL, as before, or a list of pages on one site.
+test("parseUrlField: one URL behaves as today; a list keeps each page's path and hash route on the first URL's origin; another origin is rejected, naming it", async () => {
+    const { parseUrlField } = await import("./derive.ts");
+    assert.deepEqual(parseUrlField("https://with-bugs.practicesoftwaretesting.com/#/"), { kind: "single", value: "https://with-bugs.practicesoftwaretesting.com/#/" });
+    assert.deepEqual(parseUrlField("  localhost:3000/notes \n\n"), { kind: "single", value: "  localhost:3000/notes \n\n" }, "one line with blank lines is still one URL");
+    assert.deepEqual(parseUrlField("https://site.example/#/contact\r\nhttps://site.example/product/1?x=2\n\nhttps://site.example/#/contact\nsite.example/a"), {
+        kind: "invalid",
+        message: "http://site.example/a is on another site than the first URL (https://site.example). Every page in the list must be on the same origin.",
+    }, "a line without a protocol reads as http, so it is another origin than https");
+    assert.deepEqual(parseUrlField("https://site.example/#/contact\r\nhttps://site.example/product/1?x=2\n\nhttps://site.example/#/contact\nhttps://site.example/"), {
+        kind: "list",
+        site: "https://site.example",
+        pages: ["/#/contact", "/product/1?x=2", "/"],
+        urls: ["https://site.example/#/contact", "https://site.example/product/1?x=2", "https://site.example/"],
+    });
+    assert.deepEqual(parseUrlField("https://site.example/a\nhttps://other.example/b"), { kind: "invalid", message: "https://other.example/b is on another site than the first URL (https://site.example). Every page in the list must be on the same origin." });
+    assert.deepEqual(parseUrlField("https://site.example/a\njavascript:alert(1)"), { kind: "invalid", message: "javascript:alert(1) is not an http or https URL." });
+    assert.deepEqual(parseUrlField("https://site.example/a\nhttp://[bad"), { kind: "invalid", message: "\"http://[bad\" is not a valid URL. Enter one page URL per line." });
+});

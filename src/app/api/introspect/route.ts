@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { inspectPages } from "@/lib/introspect/inspector";
 import { normalizeNamedFlows } from "@/lib/introspect/journeys";
-import { normalizeInspectionPathList } from "@/lib/introspect/paths";
+import { findForeignPath, foreignPathMessage, normalizeInspectionPathList } from "@/lib/introspect/paths";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -45,6 +45,12 @@ export async function POST(req: NextRequest) {
 
     if (!normalizedBaseUrl.ok) {
         return NextResponse.json({ error: normalizedBaseUrl.message }, { status: 400 });
+    }
+
+    // Phase 40 Decision 8 (TFP-174): a page on another origin is rejected before inspection, naming it.
+    const foreign = findForeignPath(normalizedBaseUrl.value, paths);
+    if (foreign) {
+        return NextResponse.json({ error: foreignPathMessage(normalizedBaseUrl.value, foreign) }, { status: 400 });
     }
 
     const normalizedPaths = normalizeInspectionPathList(normalizedBaseUrl.value, paths);

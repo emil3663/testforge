@@ -101,16 +101,16 @@ test("chosen by hand: an override, recorded - a type added, a page left out, and
 
 test("the record survives /api/run's normalizer whole; junk is dropped and nothing grows past its cap", () => {
     const record = chosenByType(STANDARD);
-    const normalized = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: record });
+    const normalized = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: record }, ORIGIN);
     assert.deepEqual(normalized!.pageTypes, record);
     const override = buildPageTypeCoverage({ baseUrl: ORIGIN, pages, rankedTypes: ranked, runMode: STANDARD, selectedPaths: ["/#/"], selectedBy: "user" });
-    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: override })!.pageTypes, override);
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: override }, ORIGIN)!.pageTypes, override);
     // Untrusted: an unknown selector or run type drops the record; malformed entries drop alone.
-    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, selectedBy: "robot" } })!.pageTypes, undefined);
-    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, runType: "x" } })!.pageTypes, undefined);
-    const messy = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, covered: [...record.covered, { pattern: "/x", label: "other", pages: 0, url: "u", covered: ["u"] }, "junk"] } });
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, selectedBy: "robot" } }, ORIGIN)!.pageTypes, undefined);
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, runType: "x" } }, ORIGIN)!.pageTypes, undefined);
+    const messy = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, covered: [...record.covered, { pattern: "/x", label: "other", pages: 0, url: "u", covered: ["u"] }, "junk"] } }, ORIGIN);
     assert.equal(messy!.pageTypes!.covered.length, 8);
-    const huge = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, skipped: Array.from({ length: 500 }, (_, i) => ({ pattern: `/p${i}`, label: "content", pages: 1, url: `${ORIGIN}/p${i}`, covered: [] })) } });
+    const huge = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...record, skipped: Array.from({ length: 500 }, (_, i) => ({ pattern: `/p${i}`, label: "content", pages: 1, url: `${ORIGIN}/p${i}`, covered: [] })) } }, ORIGIN);
     assert.equal(huge!.pageTypes!.skipped.length, 100);
     // A run that inspected 8 pages records all 8, not the first 5 (TFP-172's reach).
     const inspected = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: { status: "inspected", paths: Array.from({ length: 8 }, (_, i) => `/p${i}`), pages: 8, warnings: [] } });
@@ -137,4 +137,67 @@ test("both HTML exports end with the page types, the covered list and the skippe
     const covered = standard.slice(standard.indexOf('id="covered-urls"'));
     assert.equal(covered.slice(covered.indexOf(">") + 1, covered.indexOf("</pre>")), coveredPageUrls(record).join("\n"), "one URL per line, ready to paste");
     assert.doesNotMatch(buildReportHtmlDocument(buildReport(EMPTY, ["security"], "raw", ORIGIN), "run-3"), /id="page-types"/);
+});
+
+test("TFP-173's review: only http(s) URLs on the run's origin survive the normalizer, and the export never contains the rest", () => {
+    const record = chosenByType(STANDARD);
+    const hostile = {
+        ...record,
+        covered: [
+            ...record.covered,
+            { pattern: "/x", label: "other", pages: 1, url: "javascript:alert(1)", covered: ["javascript:alert(1)"] },
+            { pattern: "/y", label: "other", pages: 1, url: "https://evil.example/y", covered: ["https://evil.example/y"] },
+            // A real type with one foreign page among its covered ones keeps only its own.
+            { pattern: "/#/z", label: "other", pages: 2, url: `${ORIGIN}/#/z`, covered: [`${ORIGIN}/#/z`, "data:text/html,hi"] },
+        ],
+        skipped: [{ pattern: "/s", label: "content", pages: 1, url: "JAVASCRIPT:alert(2)", covered: [], reason: "r" }],
+        override: { added: ["javascript:void(0)", `${ORIGIN}/#/a`], removed: ["https://evil.example/b"] },
+    };
+    const kept = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: { ...hostile, selectedBy: "user" } }, ORIGIN)!.pageTypes!;
+    assert.deepEqual(kept.covered.map((entry) => entry.pattern), [...record.covered.map((entry) => entry.pattern), "/#/z"]);
+    assert.deepEqual(kept.covered.at(-1)!.covered, [`${ORIGIN}/#/z`]);
+    assert.deepEqual(kept.skipped, []);
+    assert.deepEqual(kept.override, { added: [`${ORIGIN}/#/a`], removed: [] });
+    // Without the run's site, there is nothing to check against: the record is dropped.
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: record })!.pageTypes, undefined);
+    const html = buildReportHtmlDocument(buildReport(EMPTY, ["security"], "raw", ORIGIN, null, null, { generatedBy: "template", gates: [], pageTypes: kept }), "run-x");
+    assert.doesNotMatch(html, /javascript:|evil\.example|data:text/i);
+});
+
+test("a list from the URL field: pages chosen by the user, run as listed; with a crawl its types are named, without one each page stands alone", () => {
+    const listed = ["/#/contact", "/#/product/3", "/#/product/1", "/#/not-crawled"];
+    const withCrawl = buildPageTypeCoverage({ baseUrl: ORIGIN, pages, rankedTypes: ranked, runMode: STANDARD, selectedPaths: listed, selectedBy: "list" });
+    assert.equal(withCrawl.selectedBy, "list");
+    assert.equal(withCrawl.found, 9);
+    assert.deepEqual(withCrawl.covered.map((entry) => `${entry.label} ${entry.pattern} ${entry.covered.length}`), ["form /#/contact 1", "detail /#/product/:id 2", "page /#/not-crawled 1"]);
+    assert.deepEqual(coveredPageUrls(withCrawl), [`${ORIGIN}/#/contact`, `${ORIGIN}/#/product/3`, `${ORIGIN}/#/product/1`, `${ORIGIN}/#/not-crawled`]);
+    assert.equal(withCrawl.skipped.length, 7);
+    assert.ok(withCrawl.skipped.every((entry) => entry.reason === "not in the list of pages"));
+    assert.equal(describePageTypeSelection(withCrawl), "Pages chosen by the user: 4 pages listed in the URL field, run exactly as listed; selection by page type was skipped.");
+
+    const withoutCrawl = buildPageTypeCoverage({ baseUrl: ORIGIN, pages: [], rankedTypes: [], runMode: STANDARD, selectedPaths: listed, selectedBy: "list" });
+    assert.equal(withoutCrawl.found, 0);
+    assert.deepEqual(coveredPageUrls(withoutCrawl), listed.map((path) => `${ORIGIN}${path}`));
+    assert.equal(describePageTypeHeadline(withoutCrawl), "4 pages chosen by the user. The site wasn't crawled, so no page types are named.");
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageTypes: withoutCrawl }, ORIGIN)!.pageTypes, withoutCrawl);
+});
+
+test("the round trip: a report's covered list pasted into the URL field runs exactly those pages, and the generated suite covers the same pages", async () => {
+    const { parseUrlField } = await import("../../app/_lib/derive.ts");
+    const { inspectedPagePaths } = await import("../generate/mock/suite.ts");
+    for (const runMode of [STANDARD, COMPREHENSIVE]) {
+        const record = chosenByType(runMode);
+        const selectedPages = record.covered.flatMap((entry) => entry.covered).map((url) => url.slice(ORIGIN.length));
+        const field = parseUrlField(coveredPageUrls(record).join("\n"));
+        assert.equal(field.kind, "list");
+        if (field.kind !== "list") return;
+        assert.equal(field.site, ORIGIN);
+        assert.deepEqual(field.pages, selectedPages, "the same pages, hash routes as they were");
+        // The suite covers the pages it was inspected on: a profile of exactly those pages.
+        const profile = { pages: field.pages.map((path) => ({ path, url: `${ORIGIN}${path}` })) };
+        assert.deepEqual(inspectedPagePaths(profile as never), selectedPages);
+        // And the list run's own report lists the same pages again.
+        const again = buildPageTypeCoverage({ baseUrl: ORIGIN, pages, rankedTypes: ranked, runMode, selectedPaths: field.pages, selectedBy: "list" });
+        assert.deepEqual(new Set(coveredPageUrls(again)), new Set(coveredPageUrls(record)));
+    }
 });
