@@ -1,6 +1,17 @@
+/**
+ * TFP-189: the tests a suite declares - `test(` and `test.only(` calls, not a
+ * property access. `/\btest\s*\(/` also matched `.test(`, as in TFP-167's tfGoto
+ * helper (`/#!?\//.test(url)`), so every generated suite was estimated one
+ * test too high and a run never reached its planned count.
+ */
+const DECLARED_TEST = /(?<![.\w$])test(?:\.only)?\s*\(/g;
+
+export function countDeclaredTests(code: string) {
+    return code.match(DECLARED_TEST)?.length ?? 0;
+}
+
 export function estimateTestCount(code: string) {
-    const matches = code.match(/\btest\s*\(/g);
-    return Math.max(1, matches?.length ?? 0);
+    return Math.max(1, countDeclaredTests(code));
 }
 
 export function extractDeclaredTestTitles(code: string) {

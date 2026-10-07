@@ -8,7 +8,7 @@ import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedEx
 import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
 import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
-import { estimateTestCount } from "@/lib/run/selection";
+import { countDeclaredTests, estimateTestCount } from "@/lib/run/selection";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled" | "empty";
@@ -233,7 +233,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             const nothingToRun =
                 !job.cancellationRequested &&
                 suiteCode !== null &&
-                (suiteCode.match(/\btest\s*\(/g) ?? []).length === 0 &&
+                countDeclaredTests(suiteCode) === 0 &&
                 reportedErrors.every((message) => /^(Error: )?No tests found/.test(message));
             if (nothingToRun) {
                 const reasons = (aggregatedReport.emptyAreas ?? []).flatMap((area) => area.reasons);
