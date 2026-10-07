@@ -116,7 +116,11 @@ grouping.
 - **The cap is hard (Emil, 2026-10-07, Gate A),** since it protects the
   run-time budget. If the always-covered types alone exceed it, they are
   ordered among themselves by the ordered rules below, and those that don't
-  fit are named in the report as skipped. (On the-internet, home, six form
+  fit are named in the report as skipped.
+- **Home is always ranked first (Emil, 2026-10-07, TFP-172's review).** It
+  is the start page, where most site-wide problems show up, so the cap can
+  never cut it. Under the ordered rules alone it ranked low (few pages,
+  often no form): 8th of 8 on the-internet. (On the-internet, home, six form
   pages and the largest type already make 8.)
 - **Then, by ordered rules (Emil, 2026-10-07):** more pages of that type
   first; then more forms on its representative page; then more interactive
@@ -373,6 +377,24 @@ use.
   names the rule that placed it; `check:template-unchanged` shows test
   bodies unchanged on the 166 fixed inputs.
 - **Dependencies:** TFP-171 and Gate A.
+
+- **Done, `10c3f8c`, verified 2026-10-07 (Cowork), with one follow-up.**
+  Re-running the ranking and selection on the committed crawls reproduces
+  the report: each Toolshop's Standard covers 8 of 9 types and skips its
+  rentals page (content, by crawl order), naming the rule; the-internet's
+  Standard covers its 8 always-covered types and names 49 skipped;
+  Comprehensive covers all 9 Toolshop types in 20 pages.
+  - **Rulings:** a crawl-order tie-break between content types is accepted
+    (deterministic per crawl, and named); Comprehensive's extra pages taken
+    round-robin in rank order are accepted as Decision 6's "biggest types";
+    Comprehensive inspecting all its selected pages is measured in TFP-175.
+  - **Follow-up:** home is always ranked first (Decision 4, as amended), with
+    a unit case where the always-covered types exceed the cap and home is
+    still covered.
+  - **For TFP-175:** the product type's representative is its page with the
+    most interactive elements (`/#/product/10` on with-bugs), not the
+    hand-picked list's `/#/product/1`. If a product bug shows only on one
+    product, the keep rule will show it.
 
 ### TFP-173 — Report coverage by type, with the copyable re-run list
 
