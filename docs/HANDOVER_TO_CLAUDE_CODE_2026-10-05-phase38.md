@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `e12c217`; `b9270b2` (TFP-176) is committed, not
-pushed. Phase 38 is complete. Since then:
+`origin/main` is at `461a01d`; `8c05578` (TFP-176's follow-up) is
+committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -35,13 +35,11 @@ pushed. Phase 38 is complete. Since then:
     re-score after TFP-167 (`878a49d`: 9 found, 4 hinted, 24 missed), both
     verified. The known-bug gate is met.
 - **Now: Phase 40** (`docs/decisions/phase-40-page-type-selection-decision-record.md`).
-  TFP-170 (`2ed67bc`), TFP-171 (`d8287a1`) and TFP-176 (`b9270b2`) are done
-  and verified. Gate A's first measurement didn't pass, and Emil revised
-  Decisions 1, 2 and 4. At the re-check he clarified Decision 2: "same
-  parent" is the immediate parent (the pattern minus its last segment), not
-  the same first segment. Make that follow-up as TFP-176's entry says,
-  re-measure, and stop for verification. Gate A passes on that check. Don't
-  start TFP-172.
+  TFP-170, TFP-171 and TFP-176 (with its follow-up `8c05578`) are done and
+  verified. **Gate A passed 2026-10-07.** Grouping is final: address types
+  first, split by form signature, merge only siblings under one immediate
+  parent, never top-level pages or home. Next is TFP-172 (ranking and
+  selection, with the hard cap of 8). Stop for verification when it's done.
 - **Not started, not next:**
   - TFP-168 (model and OpenAI visits through `tfGoto`) and TFP-169 (TFP-147's
     security case resets at fixture start-up), in

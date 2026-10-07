@@ -347,6 +347,13 @@ use.
     change is explained.
   - **Gate A passes on Cowork's verification of the follow-up**, without
     another stop for Emil unless a result differs from the above.
+- **Follow-up done, `8c05578`, verified 2026-10-07 (Cowork).** Re-running
+  the grouping on the committed crawls: `/en/product/:id` and
+  `/en/category/:id` stay apart, as do `/a/b/c/x` and `/a/d/e/y` and the
+  two `/shop` pages; `/p/:id` + `/p/:slug` still merge; top-level pages
+  never merge. The `/types` fixture gives 11 types. Both Toolshops (9 types
+  each) and the-internet (57) are identical to the second measurement, type
+  for type.
 
 ### TFP-172 — Rank types and select pages for Standard and Comprehensive
 
@@ -409,13 +416,16 @@ use.
 ## Recommended Execution Order
 
 1. TFP-170, then TFP-171. **Gate A (first measurement, 2026-10-07): not
-   passed; Decisions 1, 2 and 4 revised.** Then TFP-176. **Gate A again.**
+   passed; Decisions 1, 2 and 4 revised.** Then TFP-176. **Gate A passed
+   2026-10-07** (`8c05578`, verified in Cowork).
 2. TFP-172, TFP-173, TFP-174, in that order.
 3. TFP-175. **Gate B.**
 
 ## Gates
 
 ### Gate A — Types measured
+**Passed 2026-10-07** on `8c05578`: both Toolshops give exactly their 9
+expected types; the-internet gives 57, with its form types listed.
 - TFP-170, TFP-171 and TFP-176 landed and independently verified.
 - Type counts for the fixture, both Toolshops and the-internet are recorded.
 - Emil reviews whether exact matching over-splits before selection is
