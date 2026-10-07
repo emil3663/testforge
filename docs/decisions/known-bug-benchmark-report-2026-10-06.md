@@ -289,3 +289,137 @@ All are in `docs/decisions/data/labelled-failures.md`:
     links fail `target-size`;
   - **R18**, with-bugs only: home's red "Out of stock" text fails
     `color-contrast` (`.float-start`).
+
+## The automatic selection (TFP-175, 2026-10-07)
+
+Phase 40 Decision 9: the same answer key, scored with the same committed
+rule (`scoring-rule.md`), on pages chosen by the app instead of by hand.
+The first score and the re-score above stay as they were. Evidence:
+`benchmarks/2026-10-07-tfp175-selection/`.
+
+### Runs
+
+- **Code:** `7233751` (TFP-172 to TFP-174 and their follow-ups).
+- **Pages:** a fresh crawl of each site through the app's crawl route, then
+  the app's own selection, unedited: Standard's one page per type up to 8,
+  and Comprehensive's 20 pages (every type first, then more pages of the
+  biggest).
+- **Driver:** TFP-154's, changed only to run every selected page where it
+  took the first 5. Read-only gate, one worker, Chromium.
+- **A first attempt was discarded unscored.** Git Bash rewrote each page
+  argument into a Windows path (`/#/product/6` became
+  `C:/Program Files/Git/#/product/6`), so the runs opened local files, not
+  the sites. The runner now turns that off, and the driver refuses any page
+  that isn't a path.
+
+| Site | Standard's 8 pages | Skipped | Comprehensive's 20 |
+| --- | --- | --- | --- |
+| with-bugs (34 pages, 9 types) | home, `/#/product/6`, `/#/category/hand-tools`, register, contact, login, forgot-password, `/#/chainsaws` | `/#/rentals` (content, by crawl order) | the 9 types: 10 products (6 to 12, 1 to 3), 3 categories (with `undefined`), the rest one each |
+| clean (46 pages, 9 types) | home, one product, `/category/hand-tools`, register, contact, login, forgot-password, `/rentals` | `/privacy` (content, by crawl order) | the 9 types: 9 products, 4 categories, the rest one each |
+
+Against the hand-picked list:
+- **Standard now covers register, forgot-password and a content page**
+  (chainsaws on with-bugs, rentals on clean). The hand-picked first 5 didn't.
+- **Standard's product is the one with the most interactive elements**
+  (`/#/product/6`), not `/#/product/1`.
+- **Comprehensive covers 10 products and 3 categories on with-bugs** (9
+  and 4 on clean), where the hand-picked set had one of each. Every type is
+  in it on both sites.
+
+### The score, beside the first two
+
+| | First (`26fed09`) | Re-score (`7577252`) | **Automatic (`7233751`)** |
+| --- | --- | --- | --- |
+| Found | 6 | 9 | **9** |
+| Hinted | 3 | 4 | **4** |
+| Missed | 28 | 24 | **24** |
+
+Bug for bug, the same as the re-score:
+- **Found:** 3, 28, 30, 46, 85, 87, 91, 92 and 93.
+- **Hinted:** 26, 33, 40 and 60.
+- **Missed:** everything else, for the reasons in the first score's table.
+
+The area counts are the re-score's.
+
+Where the evidence changed:
+- **46, 91 and 92 (and 40's hint) come from `/#/product/6`:**
+  - axe `color-contrast` on `.text-reset` (46);
+  - axe `label` on the quantity `input` (91);
+  - axe `image-alt` on the related products' images (92);
+  - `button-name` on the +/- buttons (40).
+
+  `.text-reset` is the same template element the re-score read by hand on
+  `/#/product/1` (the category badge); it wasn't re-read on product 6.
+- **Comprehensive accessibility shows 40, 46, 91 and 92 on all 10 product
+  pages it covered.** These bugs are on every product, not just the one
+  picked by hand.
+- **3 is found on all 8 Standard pages**, including `/#/chainsaws` itself.
+- **The new pages found no listed bug:**
+  - Register's and forgot-password's listed bugs (53, 54, 58, 59, 22, 23)
+    are layout, spelling and tab order, which no check reads.
+  - Rentals' (49) is layout too.
+  - Covering the pages couldn't find them. Missing these is a check gap,
+    not a selection gap.
+
+### Run times
+
+| Site | Run | Tests | Passed | Failed | Not run | Run time (re-score) |
+| --- | --- | --- | --- | --- | --- | --- |
+| with-bugs | Standard, 8 pages | 312 | 227 | 77 | 8 | **1,232 s** (1,058 s, 5 pages) |
+| with-bugs | Comprehensive security, 20 pages | 81 | 79 | 2 | 0 | 198 s (95 s, 9 pages) |
+| with-bugs | Comprehensive accessibility, 20 pages | 40 | 6 | 34 | 0 | 173 s (78 s) |
+| clean | Standard, 8 pages | 384 | 319 | 58 | 7 | **1,276 s** (916 s, 5 pages) |
+| clean | Comprehensive security, 20 pages | 81 | 79 | 2 | 0 | 225 s (85 s) |
+| clean | Comprehensive accessibility, 20 pages | 40 | 25 | 15 | 0 | 168 s (61 s) |
+
+- **Standard stays within 1,800 s on one worker on both sites.** The longer
+  run, clean, leaves 524 s.
+- **Per page, Standard got cheaper:** with-bugs 154 s a page against 212 s.
+  The site-wide checks don't grow with pages, so Decision 5's linear
+  estimate (1,690 to 1,870 s for 8 pages) was pessimistic, as it said it
+  might be.
+- **Crawl time:** the crawls took 42 s (with-bugs) and 69 s (clean), not
+  counted in the table.
+
+### New failures, read by hand
+
+Every failure was compared with the re-score's on the same site, by check
+and cause, with the page taken out (`new-failures.mjs`). A failure the
+re-score already had on another page isn't new.
+
+| Site | New kind | Verdict |
+| --- | --- | --- |
+| with-bugs | orphan check: "/#/product/6 is not linked from any other inspected page" (8) | **T30**, template error. Inspection read home and the category before their product cards drew, so they showed no product links. Not the selection: product 1 would have failed the same way |
+| with-bugs | "form element check: Your password * [Password]" on register | **U4**, the duplicate `id="password"`, now also on register |
+| clean | axe `target-size` on the product pages' related-product links (10) | **R17**, real: now seen on both sites, so shared behaviour, not a planted bug |
+| clean | axe `button-name` and `list` on register | **R10** and **R16**, already labelled; new only as a combination |
+| clean | "link types": a card link "Hammer More information" not found | **U5**, unclear. The clean catalogue was reset within the hour, so it can't be read back. The re-score failed the same way on another card |
+| clean | the footer's GitHub link answered HTTP 500, once | **U6**, unclear: GitHub's error, not the Toolshop's |
+
+Not failures, recorded:
+- **Placeholder-only fields** on register (`#password`) and forgot-password
+  (`#email`), as on login (bug 87). They're real, but not listed bugs.
+- **CLS 0.102** on with-bugs home, once: "needs improvement", with no LCP or
+  TBT finding.
+
+### Decision 9's keep rule, applied as written
+
+| Condition | Measured | Holds |
+| --- | --- | --- |
+| finds at least 9 of the 37 | 9 | yes |
+| found plus hinted at least 13 | 13 | yes |
+| every new failure on with-bugs is a scored bug or a labelled failure | T30 and U4 labelled; the rest are scored bugs or labelled before | yes |
+| no unlabelled failure appears on the clean site | R17, R10/R16, U5 and U6 labelled | yes |
+| Standard stays within 1,800 s on one worker | 1,232 s and 1,276 s | yes |
+
+**Outcome: kept.** Every condition holds.
+
+Read with it:
+- **The selection matches the hand-picked baseline. It doesn't beat it.**
+  Its new pages hold only bugs that no check can see yet.
+- **"Appears" is read as "new against the re-score".** The clean site's
+  failures that the re-score already had were never part of the labelled
+  set, since the first score read only with-bugs.
+- **T30 is a real weakness, but not a reason to revert.** It's an
+  inspection timing fault that any product page would have hit. It should
+  get its own ticket.

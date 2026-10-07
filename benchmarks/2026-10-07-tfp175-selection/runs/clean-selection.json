@@ -1,0 +1,128 @@
+{
+  "label": "clean",
+  "site": "https://practicesoftwaretesting.com",
+  "commit": "7233751",
+  "crawledAt": "2026-10-07T13:29:12.056Z",
+  "status": "completed",
+  "seconds": 69,
+  "pages": 46,
+  "warnings": [],
+  "types": [
+    {
+      "rank": 1,
+      "label": "home",
+      "pattern": "/",
+      "pages": 1,
+      "representative": "/",
+      "placement": "always covered (home, form); home is always ranked first"
+    },
+    {
+      "rank": 2,
+      "label": "detail",
+      "pattern": "/product/:id",
+      "pages": 35,
+      "representative": "/product/01M4B76Y1E21FPWYSS4K07YSMB",
+      "placement": "always covered (largest); after home, which is always ranked first"
+    },
+    {
+      "rank": 3,
+      "label": "listing",
+      "pattern": "/category/:slug",
+      "pages": 4,
+      "representative": "/category/hand-tools",
+      "placement": "always covered (form); after /product/:id by pages (4 pages against 35 pages)"
+    },
+    {
+      "rank": 4,
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/register",
+      "placement": "always covered (form); after /category/:slug by pages (1 page against 4 pages)"
+    },
+    {
+      "rank": 5,
+      "label": "form",
+      "pattern": "/contact",
+      "pages": 1,
+      "representative": "/contact",
+      "placement": "always covered (form); after /auth/:slug by interactive elements (30 interactive elements against 37 interactive elements)"
+    },
+    {
+      "rank": 6,
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/login",
+      "placement": "always covered (form); after /contact by crawl order (crawled 5th against crawled 4th)"
+    },
+    {
+      "rank": 7,
+      "label": "form",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/forgot-password",
+      "placement": "always covered (form); after /auth/:slug by interactive elements (25 interactive elements against 30 interactive elements)"
+    },
+    {
+      "rank": 8,
+      "label": "content",
+      "pattern": "/rentals",
+      "pages": 1,
+      "representative": "/rentals",
+      "placement": "after every other type: content types are dropped first"
+    },
+    {
+      "rank": 9,
+      "label": "content",
+      "pattern": "/privacy",
+      "pages": 1,
+      "representative": "/privacy",
+      "placement": "after /rentals by crawl order (crawled 9th against crawled 3rd)"
+    }
+  ],
+  "standard": {
+    "pages": [
+      "/",
+      "/product/01M4B76Y1E21FPWYSS4K07YSMB",
+      "/category/hand-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals"
+    ],
+    "skipped": [
+      {
+        "pattern": "/privacy",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 9th; after /rentals by crawl order (crawled 9th against crawled 3rd)"
+      }
+    ]
+  },
+  "comprehensive": {
+    "pages": [
+      "/",
+      "/product/01M4B76Y1E21FPWYSS4K07YSMB",
+      "/product/01M4B76Y1F36M8ARNPNHH3M7PW",
+      "/product/01M4B76Y1GNYSS414VH4HJ4A5G",
+      "/product/01M4B76Y1HVM43XTAQBC7Q4Z4C",
+      "/product/01M4B76Y4Z9HT216SMP562YSA1",
+      "/product/01M4B76Y5264XVBX8GKFV2R0A6",
+      "/product/01M4B76Y55CYTXZMSEGF8N802M",
+      "/product/01M4B76Y59G8QJ2TYJEGTK6HBG",
+      "/product/01M4B76Y1KM1C0BRN0AP850R0B",
+      "/category/hand-tools",
+      "/category/other",
+      "/category/power-tools",
+      "/category/special-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals",
+      "/privacy"
+    ],
+    "skipped": []
+  }
+}
