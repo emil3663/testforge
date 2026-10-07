@@ -17,6 +17,8 @@
  *   closed menu, toggle broken    -> health passes with the finding; keyboard fails, naming the menu
  *   behind a toggle at 390 px     -> the responsive check opens it and passes
  *   hidden, no control            -> health passes with the finding "no control was found"
+ *   (TFP-162) closed menu, deep mode -> the destination check takes the link by its own address
+ *   (TFP-162) a hidden button      -> found by role and name, hidden included, and checked as present
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/hidden-links.test.ts
@@ -88,7 +90,10 @@ test("in a real browser: on the fixture's menus, link health ignores the menu, t
         };
 
         await fixture.control("/__fixture/defect?set=menus");
-        const records = await runSuite(await generate(), "menus");
+        const code = await generate();
+        // TFP-162: the hidden button is looked up by role and name with hidden elements included (getByRole alone never finds it).
+        assert.match(code, /getByRole\('button', \{ name: 'Clear filters', exact: true, includeHidden: true \}\)/);
+        const records = await runSuite(code, "menus");
 
         // Visible: unchanged, and passing.
         assert.equal(one(records, /navigation link health: Shop/).status, "Passed", summary(one(records, /navigation link health: Shop/)));
@@ -110,6 +115,13 @@ test("in a real browser: on the fixture's menus, link health ignores the menu, t
         // Responsive: at 390 px, Shop and Categories are behind the collapsed nav's toggle, which the check opens.
         const responsive = one(records, /keeps the core journey visible across common viewport sizes/);
         assert.equal(responsive.status, "Passed", summary(responsive));
+        // TFP-162: deep mode's destination check takes a link in a closed menu by its own address, as link type does.
+        const destination = one(records, /navigation destination: links navigate to their required destination/);
+        assert.equal(destination.status, "Passed", summary(destination));
+        // TFP-162: the hidden "Clear filters" button is found as itself (by role and name, hidden included) and checked as present.
+        const hiddenButtonChecks = records.filter((record) => /Clear filters/.test(record.title));
+        assert.ok(hiddenButtonChecks.length >= 2, hiddenButtonChecks.map(summary).join("\n"));
+        for (const record of hiddenButtonChecks) assert.equal(record.status, "Passed", summary(record));
 
         await fixture.control("/__fixture/defect?set=menus-toggle-broken");
         const broken = await runSuite(await generate(), "menus-broken");

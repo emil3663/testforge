@@ -47,6 +47,8 @@ export const DEFECTS = {
     // a "Categories" dropdown whose button has no aria-controls (Bootstrap's
     // sibling pattern). In it, "Hand Tools" shows when the menu opens and
     // "Archived" never does. menus-toggle-broken: the dropdown never opens.
+    // TFP-162: the closed dropdown also holds a "Clear filters" button, hidden
+    // with it, so the form and name checks meet a hidden button.
     "menus": "the home page has a collapsing site nav and a closed Categories dropdown",
     "menus-toggle-broken": "as menus, but the Categories dropdown's button does nothing",
     // TFP-160: /forms loses a field its form check recorded.
@@ -129,7 +131,7 @@ document.querySelector('.dropdown-toggle').addEventListener('click', (e) => { co
         `${menus ? `<style>.nav-toggle{display:none}.dropdown-list{display:none;margin:0;padding:0;list-style:none}.dropdown-list.open{display:block}@media (max-width:600px){.nav-toggle{display:inline-block}#site-nav{display:none}#site-nav.open{display:block}}</style>
 <button type="button" class="nav-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Open site menu">Menu</button>
 <div id="site-nav"><a href="/notes?view=shop">Shop</a>
-<div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false">Categories</button><ul class="dropdown-list"><li><a href="/notes?category=hand-tools">Hand Tools</a></li><li style="display:none"><a href="/notes?category=archived">Archived</a></li></ul></div>
+<div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false">Categories</button><ul class="dropdown-list"><li><a href="/notes?category=hand-tools">Hand Tools</a></li><li style="display:none"><a href="/notes?category=archived">Archived</a></li><li><button type="button" class="clear-filters" aria-label="Clear filters">Clear filters</button></li></ul></div>
 </div>
 ` : ""}<h1>Acme Notes</h1>
 <p${defect === "a11y-low-contrast" ? ' style="color:#c8c8c8"' : defect === "a11y-text-over-image" ? ' style="color:#fff;background-image:url(/hero.svg);padding:1em"' : ""}>Write short notes and find them again later.</p>${defect === "a11y-missing-alt" ? `

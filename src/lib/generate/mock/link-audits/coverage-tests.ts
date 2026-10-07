@@ -72,7 +72,16 @@ ${buildRouteHelpers("        ")}
 
         await revisitLinksPage();
         for (const link of links) {
-            const linkLocator = link.text
+${interactionNonApiLinks.some((link) => !link.isVisible) ? `            // TFP-162 (TFP-159's approach): a link hidden at inspection (a closed menu) goes where its own
+            // address says; whether users can reach it is the keyboard check's question, not this one's.
+            if (!link.isVisible) {
+                const hiddenLocator = ${RUNTIME_HIDDEN_LINK_LOCATOR};
+                await expect(hiddenLocator, (link.text || link.url) + ' is not on the page').toBeAttached();
+                const href = await hiddenLocator.getAttribute('href');
+                expect(new URL(href ?? '', page.url()).toString(), (link.text || link.url) + ' does not lead to its destination').toContain(link.url.replace(/[#?].*$/, ''));
+                continue;
+            }
+` : ""}            const linkLocator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
                     ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()

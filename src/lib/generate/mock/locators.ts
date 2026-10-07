@@ -64,7 +64,9 @@ export function buildLocatorExpression(element: ActionableElementDetail) {
     }
 
     if (element.locator.role && element.locator.name) {
-        return `page.getByRole('${escapeForSingleQuotedString(element.locator.role)}', { name: '${escapeForSingleQuotedString(element.locator.name)}', exact: true }).first()`;
+        // TFP-162: getByRole searches the accessibility tree, which leaves hidden elements out; an element hidden at
+        // inspection is looked up with them included, so its check finds it as itself.
+        return `page.getByRole('${escapeForSingleQuotedString(element.locator.role)}', { name: '${escapeForSingleQuotedString(element.locator.name)}', exact: true${element.isVisible === false ? ", includeHidden: true" : ""} }).first()`;
     }
 
     if (element.locator.label) {
