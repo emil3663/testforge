@@ -50,10 +50,10 @@ test("always covered: home, every type with a form, and the largest type - whate
         { pattern: "/tag/:slug", label: "listing", pages: ["/tag/a", "/tag/b", "/tag/c"] },
     ]);
     assert.deepEqual(ranked.map((type: { pattern: string; alwaysCovered: string[] | null }) => [type.pattern, type.alwaysCovered]), [
-        ["/item/:id", ["largest"]],
-        // Among themselves, by the rules: the form type's 1 form puts it before home's none.
-        ["/contact", ["form"]],
+        // Home always first; then the others by the rules.
         ["/", ["home"]],
+        ["/item/:id", ["largest"]],
+        ["/contact", ["form"]],
         ["/tag/:slug", null],
         // Content types last, since they are dropped first - even with more pages than a listing.
         ["/blog/:slug", null],
@@ -61,7 +61,7 @@ test("always covered: home, every type with a form, and the largest type - whate
     ]);
     // A type that is home and has a form is always covered for both reasons.
     const both = site([one("/", "home", { forms: [["search"]] }), { pattern: "/item/:id", label: "detail", pages: ["/item/1", "/item/2"] }]);
-    assert.deepEqual(both.map((type: { alwaysCovered: string[] | null }) => type.alwaysCovered), [["largest"], ["home", "form"]]);
+    assert.deepEqual(both.map((type: { alwaysCovered: string[] | null }) => type.alwaysCovered), [["home", "form"], ["largest"]]);
 });
 
 test("the ordered rules, one at a time: pages, then forms, then interactive elements, then crawl order - each type names the rule that placed it", () => {
@@ -87,8 +87,8 @@ test("the ordered rules, one at a time: pages, then forms, then interactive elem
     assert.equal(ranked[4].placement, "after /c by crawl order (crawled 5th against crawled 3rd)");
     // More forms on the representative page wins over fewer, once pages tie.
     const byForms = site([one("/", "home"), one("/one", "form", { forms: [["text"]] }), one("/two", "form", { forms: [["text"], ["email"]] })]);
-    assert.deepEqual(patterns(byForms), ["/two", "/one", "/"]);
-    assert.equal(byForms[1].placedBy, "forms");
+    assert.deepEqual(patterns(byForms), ["/", "/two", "/one"]);
+    assert.equal(byForms[2].placedBy, "forms");
 });
 
 test("the representative page has the most interactive elements; ties go to crawl order; no outline counts as 0", () => {
@@ -119,7 +119,7 @@ test("Standard: one page per type up to the hard cap of 8; over it, content type
     ]);
     const standard = selectStandardPages(ranked);
     assert.equal(standard.cap, 8);
-    assert.deepEqual(standard.pages, ["/item/1", "/login", "/", "/tag/b", "/map", "/deals", "/new", "/gallery"]);
+    assert.deepEqual(standard.pages, ["/", "/item/1", "/login", "/tag/b", "/map", "/deals", "/new", "/gallery"]);
     assert.deepEqual(patterns(standard.skipped), ["/privacy", "/terms", "/about"]);
     assert.deepEqual(standard.skipped.map((type: { reason: string }) => type.reason), [
         "over the cap of 8 types: ranked 9th; after every other type: content types are dropped first",
@@ -132,16 +132,21 @@ test("Standard: one page per type up to the hard cap of 8; over it, content type
     assert.deepEqual(small.covered.map((type: { selected: string[] }) => type.selected.length), [1, 1, 1, 1, 1]);
 });
 
-test("the cap is hard: always-covered types alone over it are ordered among themselves by the rules, and the rest are skipped, named", () => {
-    // Home and 9 form types: 10 always-covered types, cap 8.
+test("the cap is hard: always-covered types alone over it - home is still covered, first; the others are ordered by the rules and the rest skipped, named", () => {
+    // Home (1 page, no form, crawled last) and 9 form types: 10 always-covered types, cap 8.
+    // Under the ordered rules alone home ranked last here (no form), so the cap cut it (TFP-172 as first built).
     const forms = Array.from({ length: 9 }, (_, index) => one(`/form${index + 1}`, "form", { forms: [["text"]], interactive: 20 + index }));
-    const ranked = site([one("/", "home", { interactive: 100 }), ...forms]);
+    const ranked = site([...forms, one("/", "home", { interactive: 1 })]);
     assert.ok(ranked.every((type: { alwaysCovered: unknown }) => type.alwaysCovered));
     const standard = selectStandardPages(ranked);
     assert.equal(standard.pages.length, 8);
-    // Each form type has 1 form and home none: the forms rule puts home after them, so the cap cuts it.
-    assert.deepEqual(patterns(standard.skipped), ["/form1", "/"]);
-    assert.equal(standard.skipped[1].reason, "over the cap of 8 types: ranked 10th; always covered (home); after /form1 by forms (0 forms against 1 form)");
+    // Home is always ranked first (Decision 4, amended 2026-10-07).
+    assert.equal(standard.pages[0], "/");
+    assert.equal(standard.covered[0].placement, "always covered (home); home is always ranked first");
+    assert.equal(standard.covered[1].placement, "always covered (form, largest); after home, which is always ranked first");
+    // The 9 form types tie on pages and forms; interactive elements order them, and the 2 lowest are skipped.
+    assert.deepEqual(patterns(standard.skipped), ["/form2", "/form1"]);
+    assert.equal(standard.skipped[1].reason, "over the cap of 8 types: ranked 10th; always covered (form); after /form2 by interactive elements (20 interactive elements against 21 interactive elements)");
 });
 
 test("Comprehensive: every type before a second page of any type; then one more page per type per round, in rank order, up to the budget", () => {
@@ -153,8 +158,8 @@ test("Comprehensive: every type before a second page of any type; then one more 
     ]);
     const comprehensive = selectComprehensivePagesByType(ranked, 7);
     assert.deepEqual(comprehensive.covered.map((type: { pattern: string; selected: string[] }) => `${type.pattern}: ${type.selected.join(" ")}`), [
-        "/item/:id: /item/5 /item/4 /item/3",
         "/: /",
+        "/item/:id: /item/5 /item/4 /item/3",
         "/tag/:slug: /tag/a /tag/b",
         "/about: /about",
     ]);
@@ -162,7 +167,7 @@ test("Comprehensive: every type before a second page of any type; then one more 
     assert.equal(comprehensive.skipped.length, 0);
     // A budget below the type count covers one page of the top types and names the rest.
     const tight = selectComprehensivePagesByType(ranked, 2);
-    assert.deepEqual(tight.pages, ["/item/5", "/"]);
+    assert.deepEqual(tight.pages, ["/", "/item/5"]);
     assert.deepEqual(tight.skipped.map((type: { reason: string }) => type.reason), [
         "over the cap of 2 pages: ranked 3rd; after the always-covered types",
         "over the cap of 2 pages: ranked 4th; after every other type: content types are dropped first",
@@ -204,6 +209,8 @@ test("the committed crawls: both Toolshops cover 8 of their 9 types and skip one
     const standard = selectStandardPages(internet);
     assert.equal(internet.length, 57);
     assert.deepEqual(standard.covered.map((type: { pattern: string; alwaysCovered: string[] | null }) => `${type.pattern} ${type.alwaysCovered?.join("+")}`), [
+        // Home first: under the rules alone it was 8th of 8.
+        "/ home",
         "/infinite_scroll/:id largest",
         "/dynamic_controls form",
         "/login form",
@@ -211,7 +218,6 @@ test("the committed crawls: both Toolshops cover 8 of their 9 types and skip one
         "/checkboxes form",
         "/forgot_password form",
         "/key_presses form",
-        "/ home",
     ]);
     assert.equal(standard.skipped.length, 49);
     assert.equal(standard.skipped[0].reason, "over the cap of 8 types: ranked 9th; after the always-covered types");

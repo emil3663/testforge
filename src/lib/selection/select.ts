@@ -5,13 +5,16 @@
  * Decision 4, as revised at Gate A (Emil, 2026-10-07):
  * - **Always covered first:** home, every type with a form, and the type
  *   covering the most pages.
+ * - **Home is always ranked first** (amended in TFP-172's review): it is the
+ *   start page, so the cap can never cut it. Under the ordered rules alone it
+ *   ranked 8th of 8 on the-internet (one page, no form).
  * - **Then the ordered rules,** no weights: more pages of that type first;
  *   then more forms on its representative page; then more interactive
  *   elements on it; then crawl order. Each type records the rule that placed
  *   it below the type before it, so a drop is explained in one line.
- * - **The cap is hard.** When the always-covered types alone exceed it, they
- *   are ordered among themselves by the same rules and those that don't fit
- *   are skipped, named.
+ * - **The cap is hard.** When the always-covered types alone exceed it, the
+ *   ones after home are ordered among themselves by the same rules and those
+ *   that don't fit are skipped, named.
  * - **Dropped first when over the cap:** content types, then the lowest
  *   ranked. An always-covered type is never dropped for being content.
  * - **The representative page** is the type's page with the most
@@ -41,10 +44,11 @@ export interface TypeToRank {
 export type AlwaysCovered = "home" | "form" | "largest";
 /**
  * What placed a type below the one ranked before it: one of the ordered
- * rules, or the group boundary ("always covered" types come first; "content
- * type" puts content types last, since they are dropped first).
+ * rules, or a group boundary ("home first": home always leads; "always
+ * covered" types come next; "content type" puts content types last, since
+ * they are dropped first).
  */
-export type PlacingRule = "first" | "always covered" | "content type" | "pages" | "forms" | "interactive elements" | "crawl order";
+export type PlacingRule = "first" | "home first" | "always covered" | "content type" | "pages" | "forms" | "interactive elements" | "crawl order";
 
 export interface RankedPageType {
     pattern: string;
@@ -97,7 +101,7 @@ function ordinal(n: number) {
     return `${n}${suffix}`;
 }
 
-/** Decision 4: the types in coverage order - always covered, then the rest, content types last. */
+/** Decision 4: the types in coverage order - home, the other always-covered types, then the rest, content types last. */
 export function rankPageTypes(types: TypeToRank[], outlineOf: (path: string) => PageOutline | undefined): RankedPageType[] {
     const interactiveOf = (path: string) => outlineOf(path)?.interactive ?? 0;
     const keyed: Keyed[] = types.map((type, crawlIndex) => {
@@ -114,8 +118,11 @@ export function rankPageTypes(types: TypeToRank[], outlineOf: (path: string) => 
     ];
 
     const rest = keyed.filter((entry) => reasonsOf(entry).length === 0);
+    const isHome = (entry: Keyed) => entry.type.label === "home";
+    const always = keyed.filter((entry) => reasonsOf(entry).length > 0);
     const groups: Array<{ boundary: PlacingRule; entries: Keyed[] }> = [
-        { boundary: "always covered", entries: keyed.filter((entry) => reasonsOf(entry).length > 0).sort(byRules) },
+        { boundary: "home first", entries: always.filter(isHome) },
+        { boundary: "home first", entries: always.filter((entry) => !isHome(entry)).sort(byRules) },
         { boundary: "always covered", entries: rest.filter((entry) => entry.type.label !== "content").sort(byRules) },
         { boundary: "content type", entries: rest.filter((entry) => entry.type.label === "content").sort(byRules) },
     ];
@@ -133,7 +140,10 @@ export function rankPageTypes(types: TypeToRank[], outlineOf: (path: string) => 
                 placement = `after ${above.type.pattern} by ${decisive.rule} (${decisive.say(entry)} against ${decisive.say(above)})`;
             } else if (ranked.length === 0) {
                 placedBy = "first";
-                placement = reasons.length > 0 ? "first of the always-covered types" : "first";
+                placement = groupIndex === 0 ? "home is always ranked first" : reasons.length > 0 ? "first of the always-covered types" : "first";
+            } else if (groupIndex === 1) {
+                placedBy = "home first";
+                placement = "after home, which is always ranked first";
             } else if (group.boundary === "content type") {
                 placedBy = "content type";
                 placement = "after every other type: content types are dropped first";
@@ -141,7 +151,7 @@ export function rankPageTypes(types: TypeToRank[], outlineOf: (path: string) => 
                 placedBy = "always covered";
                 placement = "after the always-covered types";
             }
-            if (groupIndex === 0) placement = `always covered (${reasons.join(", ")}); ${placement}`;
+            if (groupIndex <= 1) placement = `always covered (${reasons.join(", ")}); ${placement}`;
             ranked.push({
                 pattern: entry.type.pattern,
                 label: entry.type.label,
