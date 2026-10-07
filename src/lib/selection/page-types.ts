@@ -21,6 +21,8 @@
  * half only.
  */
 
+import type { PageOutline } from "./page-outline";
+
 export interface PageType {
     /** The address pattern: `/product/:id`, `/#/category/:slug`, `/contact`. */
     pattern: string;
@@ -99,4 +101,78 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
         types.set(pattern, [...(types.get(pattern) ?? []), page.name]);
     }
     return [...types].map(([pattern, pages]) => ({ pattern, pages }));
+}
+
+/**
+ * Phase 40 Decision 2 (TFP-171): TFP-170's address types refined by each
+ * page's structural signature (page-outline.ts).
+ * - Split: pages of one address pattern with different signatures become
+ *   separate types (each keeps the pattern).
+ * - Merge: types of different patterns with equal signatures become one type,
+ *   listing every pattern (`/privacy + /terms`).
+ * A page without an outline (a crawl that couldn't read one) keeps its
+ * address type and never merges. Types keep crawl order of first appearance.
+ */
+export interface OutlinedPageType {
+    /** The type's address patterns, joined with " + " when a merge brought several together. */
+    pattern: string;
+    patterns: string[];
+    pages: string[];
+    /** The shared structural signature; "" when the pages had no outline. */
+    signature: string;
+}
+
+export function groupPagesIntoTypes(pages: Array<{ path: string; signature?: string }>): OutlinedPageType[] {
+    const signatureOfPage = new Map(pages.map((page) => [page.path, page.signature ?? ""]));
+    const buckets: OutlinedPageType[] = [];
+    for (const addressType of groupPagesByAddress(pages.map((page) => page.path))) {
+        const bySignature = new Map<string, string[]>();
+        for (const name of addressType.pages) {
+            const signature = signatureOfPage.get(name) ?? "";
+            bySignature.set(signature, [...(bySignature.get(signature) ?? []), name]);
+        }
+        for (const [signature, names] of bySignature) {
+            buckets.push({ pattern: addressType.pattern, patterns: [addressType.pattern], pages: names, signature });
+        }
+    }
+
+    const merged: OutlinedPageType[] = [];
+    for (const bucket of buckets) {
+        const same = bucket.signature ? merged.find((type) => type.signature === bucket.signature) : undefined;
+        if (!same) {
+            merged.push({ ...bucket, patterns: [...bucket.patterns], pages: [...bucket.pages] });
+            continue;
+        }
+        if (!same.patterns.includes(bucket.pattern)) same.patterns.push(bucket.pattern);
+        same.pages.push(...bucket.pages);
+        same.pattern = same.patterns.join(" + ");
+    }
+    return merged;
+}
+
+export type PageTypeLabel = "home" | "sign-in" | "form" | "search" | "detail" | "listing" | "content" | "other";
+
+/**
+ * Phase 40 Decision 3: a label for each type, for the report only. It is
+ * worked out after grouping and never changes a type's pages; the ranking
+ * (TFP-172) decides coverage. From the outline of the type's first page:
+ * home (it holds the start page), sign-in (a password field), detail (an
+ * `:id` pattern, even with an add-to-cart form), listing (repeated cards, even
+ * with a sort form), form (a form other than a search form), search (only
+ * `type="search"` fields), content (no forms, no cards), other.
+ */
+export function labelPageType(type: OutlinedPageType, outline: PageOutline | undefined, startPath: string): PageTypeLabel {
+    if (type.pages.includes(startPath)) return "home";
+    if (!outline) return "other";
+    // A search form declares itself: only type="search" fields. A lone text box can't be told from one.
+    const searchOnly = (fields: string[]) => fields.length > 0 && fields.every((field) => field === "search");
+    if (outline.forms.some((fields) => fields.includes("password"))) return "sign-in";
+    // A single item addressed by id, even with an add-to-cart form.
+    if (type.patterns.some((pattern) => pattern.includes(":id"))) return "detail";
+    // Repeated cards make a listing, even with a sort or filter form beside them.
+    if (outline.cards) return "listing";
+    if (outline.forms.some((fields) => fields.length > 0 && !searchOnly(fields))) return "form";
+    if (outline.forms.some(searchOnly)) return "search";
+    if (outline.forms.length === 0) return "content";
+    return "other";
 }

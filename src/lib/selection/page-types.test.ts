@@ -65,7 +65,7 @@ test("the committed Toolshop crawls: path-routed and hash-routed give the same p
     assert.ok(withBugs.every((type) => type.pattern.startsWith("/#/")), "hash-routed types keep TFP-165's names");
 });
 
-test("in a real browser: the crawl records its page types (the fixture's hash-routed app)", { skip: needsChromium }, async () => {
+test("in a real browser: the crawl's pages group by address into the fixture hash-routed app's 6 patterns, and the crawl records its types", { skip: needsChromium }, async () => {
     const { POST, GET } = await import("../../app/api/crawl/route.ts");
     const { NextRequest } = await import("next/server");
     const fixture = await startRecordedFixture();
@@ -77,7 +77,9 @@ test("in a real browser: the crawl records its page types (the fixture's hash-ro
             crawl = await (await GET(new NextRequest(new URL(`http://localhost/api/crawl?crawlId=${started.crawlId}`)))).json();
         }
         assert.equal(crawl.crawlStatus, "completed", JSON.stringify(crawl));
-        const types = crawl.result.pageTypes.map((type: { pattern: string; pages: string[] }) => `${type.pattern} ${type.pages.join(",")}`).sort();
+        // Decision 1, the address half (TFP-171 refines the recorded types by outline; see page-outline.test.ts).
+        const types = groupPagesByAddress(crawl.result.pages.map((page: { path: string }) => page.path)).map((type: { pattern: string; pages: string[] }) => `${type.pattern} ${type.pages.join(",")}`).sort();
+        assert.ok(Array.isArray(crawl.result.pageTypes) && crawl.result.pageTypes.length > 0, "the crawl records its types");
         assert.deepEqual(types, [
             "/spa#!/legacy /spa#!/legacy",
             "/spa#/ /spa#/",

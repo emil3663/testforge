@@ -1,0 +1,123 @@
+{
+  "crawlId": "13b4f857-b4c9-43be-b63b-3089285b069a",
+  "crawlStatus": "completed",
+  "duration": 1774,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 3,
+    "queuedUrls": 0,
+    "discoveredPages": 3,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/notes",
+    "lastCompletedTitle": "Notes - Acme Notes"
+  },
+  "result": {
+    "crawledAt": "2026-10-07T05:44:39.210Z",
+    "baseUrl": "http://127.0.0.1:52632",
+    "pageCount": 3,
+    "pages": [
+      {
+        "path": "/",
+        "url": "http://127.0.0.1:52632/",
+        "title": "Home - Acme Notes",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/login",
+        "url": "http://127.0.0.1:52632/login",
+        "title": "Sign in - Acme Notes",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "password"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/notes",
+        "url": "http://127.0.0.1:52632/notes",
+        "title": "Notes - Acme Notes",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 5
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/",
+        "patterns": [
+          "/"
+        ],
+        "pages": [
+          "/"
+        ],
+        "signature": "landmarks:main,navigation|forms:0|cards:no",
+        "label": "home"
+      },
+      {
+        "pattern": "/login",
+        "patterns": [
+          "/login"
+        ],
+        "pages": [
+          "/login"
+        ],
+        "signature": "landmarks:main,navigation|forms:1[email,password]|cards:no",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/notes",
+        "patterns": [
+          "/notes"
+        ],
+        "pages": [
+          "/notes"
+        ],
+        "signature": "landmarks:main,navigation|forms:1[text]|cards:no",
+        "label": "form"
+      }
+    ],
+    "warnings": []
+  }
+}

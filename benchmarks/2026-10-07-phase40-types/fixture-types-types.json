@@ -1,0 +1,102 @@
+{
+  "label": "fixture-types",
+  "site": "http://127.0.0.1:52250/types",
+  "crawledAt": "2026-10-07T05:44:47.984Z",
+  "status": "completed",
+  "seconds": 8,
+  "pages": 14,
+  "warnings": [],
+  "pagesWithoutOutline": [],
+  "addressTypes": 10,
+  "types": 9,
+  "narrowReadingTypes": 9,
+  "authSplit": null,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/types",
+      "count": 1,
+      "pages": [
+        "/types"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation,search|forms:1[search]|cards:no"
+    },
+    {
+      "label": "detail",
+      "pattern": "/types/product/:id",
+      "count": 2,
+      "pages": [
+        "/types/product/101",
+        "/types/product/102"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[number]|cards:no"
+    },
+    {
+      "label": "detail",
+      "pattern": "/types/product/:id",
+      "count": 1,
+      "pages": [
+        "/types/product/103"
+      ],
+      "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:0|cards:no"
+    },
+    {
+      "label": "listing",
+      "pattern": "/types/category/:slug",
+      "count": 2,
+      "pages": [
+        "/types/category/tools",
+        "/types/category/garden"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation|forms:0|cards:yes"
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/types/account/:slug",
+      "count": 1,
+      "pages": [
+        "/types/account/login"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[email,password]|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/types/account/:slug",
+      "count": 1,
+      "pages": [
+        "/types/account/contact"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[email,text,textarea]|cards:no"
+    },
+    {
+      "label": "content",
+      "pattern": "/types/legal/privacy + /types/help/terms",
+      "count": 2,
+      "pages": [
+        "/types/legal/privacy",
+        "/types/help/terms"
+      ],
+      "signature": "landmarks:banner,contentinfo,main,navigation|forms:0|cards:no"
+    },
+    {
+      "label": "detail",
+      "pattern": "/p/:id + /p/:slug",
+      "count": 2,
+      "pages": [
+        "/p/iphone15promaxblack2023",
+        "/p/galaxy-s24"
+      ],
+      "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:1[number]|cards:no"
+    },
+    {
+      "label": "listing",
+      "pattern": "/shop/men/shirts + /shop/women/shoes",
+      "count": 2,
+      "pages": [
+        "/shop/men/shirts",
+        "/shop/women/shoes"
+      ],
+      "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:0|cards:yes"
+    }
+  ]
+}

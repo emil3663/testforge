@@ -1,0 +1,1340 @@
+{
+  "crawlId": "84758f04-69f0-43fc-8d00-ddd5b7e21e25",
+  "crawlStatus": "completed",
+  "duration": 73963,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 46,
+    "queuedUrls": 0,
+    "discoveredPages": 46,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/product/01M4ABRATF1K9MDQYD2M7DVZT3",
+    "lastCompletedTitle": "Washers - Practice Software Testing - Toolshop - v5.0"
+  },
+  "result": {
+    "crawledAt": "2026-10-07T05:46:03.155Z",
+    "baseUrl": "https://practicesoftwaretesting.com",
+    "pageCount": 46,
+    "pages": [
+      {
+        "path": "/",
+        "url": "https://practicesoftwaretesting.com/",
+        "title": "Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ],
+            [
+              "text"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 75
+        }
+      },
+      {
+        "path": "/auth/forgot-password",
+        "url": "https://practicesoftwaretesting.com/auth/forgot-password",
+        "title": "Forgot Password - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 25
+        }
+      },
+      {
+        "path": "/auth/login",
+        "url": "https://practicesoftwaretesting.com/auth/login",
+        "title": "Login - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "password"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/auth/register",
+        "url": "https://practicesoftwaretesting.com/auth/register",
+        "title": "Register - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "password",
+              "select",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 37
+        }
+      },
+      {
+        "path": "/category/hand-tools",
+        "url": "https://practicesoftwaretesting.com/category/hand-tools",
+        "title": "Hand Tools - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 59
+        }
+      },
+      {
+        "path": "/category/other",
+        "url": "https://practicesoftwaretesting.com/category/other",
+        "title": "Other - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 56
+        }
+      },
+      {
+        "path": "/category/power-tools",
+        "url": "https://practicesoftwaretesting.com/category/power-tools",
+        "title": "Power Tools - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 49
+        }
+      },
+      {
+        "path": "/category/special-tools",
+        "url": "https://practicesoftwaretesting.com/category/special-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4"
+          ],
+          "interactive": 28
+        }
+      },
+      {
+        "path": "/contact",
+        "url": "https://practicesoftwaretesting.com/contact",
+        "title": "Contact Us - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "file",
+              "select",
+              "text",
+              "textarea"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/privacy",
+        "url": "https://practicesoftwaretesting.com/privacy",
+        "title": "Privacy Policy - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 23
+        }
+      },
+      {
+        "path": "/product/01M4ABRANV9W8EY4BD87YZC1RN",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRANV9W8EY4BD87YZC1RN",
+        "title": "Combination Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4ABRANYGEXY38YZBEDQXTP4",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRANYGEXY38YZBEDQXTP4",
+        "title": "Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4ABRAP1VJYSDYQZT0HYNWMK",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAP1VJYSDYQZT0HYNWMK",
+        "title": "Bolt Cutters - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4ABRAP370CSEB700YZ6B0CT",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAP370CSEB700YZ6B0CT",
+        "title": "Long Nose Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4ABRAP5NCEKRJVSV1MZPKQ8",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAP5NCEKRJVSV1MZPKQ8",
+        "title": "Slip Joint Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "title": "Claw Hammer with Shock Reduction Grip - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAP9XVGAA879DXWREZR7",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAP9XVGAA879DXWREZR7",
+        "title": "Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAPBHNHX1Y27DRKTJ61H",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAPBHNHX1Y27DRKTJ61H",
+        "title": "Claw Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAPD4VJGP3GQWKV7A7H9",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAPD4VJGP3GQWKV7A7H9",
+        "title": "Thor Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAPGGGCK3RAVFHVNNVEC",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAPGGGCK3RAVFHVNNVEC",
+        "title": "Sledgehammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAPKDBBQXXDF310D49SX",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAPKDBBQXXDF310D49SX",
+        "title": "Claw Hammer with Fiberglass Handle - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAPPCAHR2923PHWTTD0P",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAPPCAHR2923PHWTTD0P",
+        "title": "Court Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRARVN3DD4QVCPBBTAHFV",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRARVN3DD4QVCPBBTAHFV",
+        "title": "Safety Goggles - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRARZ6DC230Q4F5G7C5CE",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRARZ6DC230Q4F5G7C5CE",
+        "title": "Safety Helmet Face Shield - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRASGMG0JY07SJFWSAJ2B",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRASGMG0JY07SJFWSAJ2B",
+        "title": "Protective Gloves - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRASM4HVBEHPJ785CG296",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRASM4HVBEHPJ785CG296",
+        "title": "Super-thin Protection Gloves - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRASQEAWQM9J4WVHPJ8W0",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRASQEAWQM9J4WVHPJ8W0",
+        "title": "Construction Helmet - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRAST8F8JN6YZZW0A3N5J",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAST8F8JN6YZZW0A3N5J",
+        "title": "Ear Protection - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "title": "Screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRAT011FTP7CZN6Z5QAGA",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAT011FTP7CZN6Z5QAGA",
+        "title": "Nuts and bolts - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRAT450NV6PYBJH1P4AZ5",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAT450NV6PYBJH1P4AZ5",
+        "title": "Cross-head screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRAT7HNV5CQS0RTQ4518N",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAT7HNV5CQS0RTQ4518N",
+        "title": "Flat-Head Wood Screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRATB9A7CWMSTJKW0EEBT",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRATB9A7CWMSTJKW0EEBT",
+        "title": "M4 Nuts - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRATF1K9MDQYD2M7DVZT3",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRATF1K9MDQYD2M7DVZT3",
+        "title": "Washers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4ABRAVKGM8F2YR1MZEC6T1C",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAVKGM8F2YR1MZEC6T1C",
+        "title": "Sheet Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4ABRAVP2WJBKBYRSB9PKH31",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAVP2WJBKBYRSB9PKH31",
+        "title": "Belt Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4ABRAVZT6PWH7V2JA0B0QPN",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAVZT6PWH7V2JA0B0QPN",
+        "title": "Circular Saw - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2"
+          ],
+          "interactive": 31
+        }
+      },
+      {
+        "path": "/product/01M4ABRAW2KVCPWGQ4T70MX5AC",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAW2KVCPWGQ4T70MX5AC",
+        "title": "Random Orbit Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "title": "Cordless Drill 20V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAWEB57Y84615R5XBDRZ",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAWEB57Y84615R5XBDRZ",
+        "title": "Cordless Drill 24V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAWN76GSAXD2ENCZRJ4Y",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAWN76GSAXD2ENCZRJ4Y",
+        "title": "Cordless Drill 18V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAWX861FM7FJT9RNG8J0",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAWX861FM7FJT9RNG8J0",
+        "title": "Cordless Drill 12V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4ABRAX2S2XXJRWXVRN8P5XG",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAX2S2XXJRWXVRN8P5XG",
+        "title": "Excavator - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/product/01M4ABRAXBRBY0X3QADNN6JA3R",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAXBRBY0X3QADNN6JA3R",
+        "title": "Bulldozer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/product/01M4ABRAXFYZGEM47F61GDEX5S",
+        "url": "https://practicesoftwaretesting.com/product/01M4ABRAXFYZGEM47F61GDEX5S",
+        "title": "Crane - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/rentals",
+        "url": "https://practicesoftwaretesting.com/rentals",
+        "title": "Rentals Overview - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 23
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/",
+        "patterns": [
+          "/"
+        ],
+        "pages": [
+          "/"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:2[select][text]|cards:yes",
+        "label": "home"
+      },
+      {
+        "pattern": "/category/:slug",
+        "patterns": [
+          "/category/:slug"
+        ],
+        "pages": [
+          "/category/hand-tools",
+          "/category/power-tools",
+          "/category/other"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[select]|cards:yes",
+        "label": "listing"
+      },
+      {
+        "pattern": "/category/:slug",
+        "patterns": [
+          "/category/:slug"
+        ],
+        "pages": [
+          "/category/special-tools"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[select]|cards:no",
+        "label": "form"
+      },
+      {
+        "pattern": "/rentals + /product/:id + /privacy",
+        "patterns": [
+          "/rentals",
+          "/product/:id",
+          "/privacy"
+        ],
+        "pages": [
+          "/rentals",
+          "/product/01M4ABRAVKGM8F2YR1MZEC6T1C",
+          "/product/01M4ABRAVP2WJBKBYRSB9PKH31",
+          "/product/01M4ABRAVZT6PWH7V2JA0B0QPN",
+          "/product/01M4ABRAW2KVCPWGQ4T70MX5AC",
+          "/privacy"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:no",
+        "label": "detail"
+      },
+      {
+        "pattern": "/contact",
+        "patterns": [
+          "/contact"
+        ],
+        "pages": [
+          "/contact"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email,file,select,text,textarea]|cards:no",
+        "label": "form"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/login"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email,password]|cards:no",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/register"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[password,select,text]|cards:no",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email]|cards:no",
+        "label": "form"
+      },
+      {
+        "pattern": "/product/:id",
+        "patterns": [
+          "/product/:id"
+        ],
+        "pages": [
+          "/product/01M4ABRANV9W8EY4BD87YZC1RN",
+          "/product/01M4ABRANYGEXY38YZBEDQXTP4",
+          "/product/01M4ABRAP1VJYSDYQZT0HYNWMK",
+          "/product/01M4ABRAP370CSEB700YZ6B0CT",
+          "/product/01M4ABRAP5NCEKRJVSV1MZPKQ8",
+          "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+          "/product/01M4ABRAP9XVGAA879DXWREZR7",
+          "/product/01M4ABRAPBHNHX1Y27DRKTJ61H",
+          "/product/01M4ABRAPD4VJGP3GQWKV7A7H9",
+          "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+          "/product/01M4ABRAWEB57Y84615R5XBDRZ",
+          "/product/01M4ABRAWN76GSAXD2ENCZRJ4Y",
+          "/product/01M4ABRAWX861FM7FJT9RNG8J0",
+          "/product/01M4ABRARVN3DD4QVCPBBTAHFV",
+          "/product/01M4ABRARZ6DC230Q4F5G7C5CE",
+          "/product/01M4ABRASGMG0JY07SJFWSAJ2B",
+          "/product/01M4ABRASM4HVBEHPJ785CG296",
+          "/product/01M4ABRASQEAWQM9J4WVHPJ8W0",
+          "/product/01M4ABRAST8F8JN6YZZW0A3N5J",
+          "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+          "/product/01M4ABRAT011FTP7CZN6Z5QAGA",
+          "/product/01M4ABRAT450NV6PYBJH1P4AZ5",
+          "/product/01M4ABRAPGGGCK3RAVFHVNNVEC",
+          "/product/01M4ABRAPKDBBQXXDF310D49SX",
+          "/product/01M4ABRAPPCAHR2923PHWTTD0P",
+          "/product/01M4ABRAX2S2XXJRWXVRN8P5XG",
+          "/product/01M4ABRAXBRBY0X3QADNN6JA3R",
+          "/product/01M4ABRAXFYZGEM47F61GDEX5S",
+          "/product/01M4ABRAT7HNV5CQS0RTQ4518N",
+          "/product/01M4ABRATB9A7CWMSTJKW0EEBT",
+          "/product/01M4ABRATF1K9MDQYD2M7DVZT3"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:yes",
+        "label": "detail"
+      }
+    ],
+    "warnings": []
+  }
+}

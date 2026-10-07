@@ -1,0 +1,468 @@
+{
+  "crawlId": "ba53c7e9-6c2f-4556-aa5e-a355e8a9dad1",
+  "crawlStatus": "completed",
+  "duration": 7650,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 14,
+    "queuedUrls": 0,
+    "discoveredPages": 14,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/shop/women/shoes",
+    "lastCompletedTitle": "Types shop"
+  },
+  "result": {
+    "crawledAt": "2026-10-07T05:44:47.984Z",
+    "baseUrl": "http://127.0.0.1:52250/types",
+    "pageCount": 14,
+    "pages": [
+      {
+        "path": "/p/galaxy-s24",
+        "url": "http://127.0.0.1:52250/p/galaxy-s24",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "complementary",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "number"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h2"
+          ],
+          "interactive": 17
+        }
+      },
+      {
+        "path": "/p/iphone15promaxblack2023",
+        "url": "http://127.0.0.1:52250/p/iphone15promaxblack2023",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "complementary",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "number"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h2"
+          ],
+          "interactive": 17
+        }
+      },
+      {
+        "path": "/shop/men/shirts",
+        "url": "http://127.0.0.1:52250/shop/men/shirts",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "complementary",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h2",
+            "h2",
+            "h2"
+          ],
+          "interactive": 18
+        }
+      },
+      {
+        "path": "/shop/women/shoes",
+        "url": "http://127.0.0.1:52250/shop/women/shoes",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "complementary",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h2",
+            "h2",
+            "h2"
+          ],
+          "interactive": 18
+        }
+      },
+      {
+        "path": "/types",
+        "url": "http://127.0.0.1:52250/types",
+        "title": "Types shop",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation",
+            "search"
+          ],
+          "forms": [
+            [
+              "search"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 16
+        }
+      },
+      {
+        "path": "/types/account/contact",
+        "url": "http://127.0.0.1:52250/types/account/contact",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "text",
+              "textarea"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 19
+        }
+      },
+      {
+        "path": "/types/account/login",
+        "url": "http://127.0.0.1:52250/types/account/login",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "password"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 18
+        }
+      },
+      {
+        "path": "/types/category/garden",
+        "url": "http://127.0.0.1:52250/types/category/garden",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h2",
+            "h2"
+          ],
+          "interactive": 18
+        }
+      },
+      {
+        "path": "/types/category/tools",
+        "url": "http://127.0.0.1:52250/types/category/tools",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h2",
+            "h2"
+          ],
+          "interactive": 18
+        }
+      },
+      {
+        "path": "/types/help/terms",
+        "url": "http://127.0.0.1:52250/types/help/terms",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 15
+        }
+      },
+      {
+        "path": "/types/legal/privacy",
+        "url": "http://127.0.0.1:52250/types/legal/privacy",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 15
+        }
+      },
+      {
+        "path": "/types/product/101",
+        "url": "http://127.0.0.1:52250/types/product/101",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "number"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 17
+        }
+      },
+      {
+        "path": "/types/product/102",
+        "url": "http://127.0.0.1:52250/types/product/102",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "number"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 17
+        }
+      },
+      {
+        "path": "/types/product/103",
+        "url": "http://127.0.0.1:52250/types/product/103",
+        "title": "Types shop",
+        "discoveredFrom": "/types",
+        "outline": {
+          "landmarks": [
+            "banner",
+            "complementary",
+            "contentinfo",
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h2"
+          ],
+          "interactive": 15
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/types",
+        "patterns": [
+          "/types"
+        ],
+        "pages": [
+          "/types"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation,search|forms:1[search]|cards:no",
+        "label": "home"
+      },
+      {
+        "pattern": "/types/product/:id",
+        "patterns": [
+          "/types/product/:id"
+        ],
+        "pages": [
+          "/types/product/101",
+          "/types/product/102"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[number]|cards:no",
+        "label": "detail"
+      },
+      {
+        "pattern": "/types/product/:id",
+        "patterns": [
+          "/types/product/:id"
+        ],
+        "pages": [
+          "/types/product/103"
+        ],
+        "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:0|cards:no",
+        "label": "detail"
+      },
+      {
+        "pattern": "/types/category/:slug",
+        "patterns": [
+          "/types/category/:slug"
+        ],
+        "pages": [
+          "/types/category/tools",
+          "/types/category/garden"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation|forms:0|cards:yes",
+        "label": "listing"
+      },
+      {
+        "pattern": "/types/account/:slug",
+        "patterns": [
+          "/types/account/:slug"
+        ],
+        "pages": [
+          "/types/account/login"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[email,password]|cards:no",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/types/account/:slug",
+        "patterns": [
+          "/types/account/:slug"
+        ],
+        "pages": [
+          "/types/account/contact"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation|forms:1[email,text,textarea]|cards:no",
+        "label": "form"
+      },
+      {
+        "pattern": "/types/legal/privacy + /types/help/terms",
+        "patterns": [
+          "/types/legal/privacy",
+          "/types/help/terms"
+        ],
+        "pages": [
+          "/types/legal/privacy",
+          "/types/help/terms"
+        ],
+        "signature": "landmarks:banner,contentinfo,main,navigation|forms:0|cards:no",
+        "label": "content"
+      },
+      {
+        "pattern": "/p/:id + /p/:slug",
+        "patterns": [
+          "/p/:id",
+          "/p/:slug"
+        ],
+        "pages": [
+          "/p/iphone15promaxblack2023",
+          "/p/galaxy-s24"
+        ],
+        "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:1[number]|cards:no",
+        "label": "detail"
+      },
+      {
+        "pattern": "/shop/men/shirts + /shop/women/shoes",
+        "patterns": [
+          "/shop/men/shirts",
+          "/shop/women/shoes"
+        ],
+        "pages": [
+          "/shop/men/shirts",
+          "/shop/women/shoes"
+        ],
+        "signature": "landmarks:banner,complementary,contentinfo,main,navigation|forms:0|cards:yes",
+        "label": "listing"
+      }
+    ],
+    "warnings": []
+  }
+}

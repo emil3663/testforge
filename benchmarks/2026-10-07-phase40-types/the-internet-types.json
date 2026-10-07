@@ -1,0 +1,188 @@
+{
+  "label": "the-internet",
+  "site": "https://the-internet.herokuapp.com",
+  "crawledAt": "2026-10-07T05:48:40.134Z",
+  "status": "completed",
+  "seconds": 106,
+  "pages": 100,
+  "warnings": [],
+  "pagesWithoutOutline": [],
+  "addressTypes": 57,
+  "types": 9,
+  "narrowReadingTypes": 7,
+  "authSplit": null,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/ + /abtest + /add_remove_elements + /basic_auth + /broken_images + /challenging_dom + /context_menu + /digest_auth + /disappearing_elements + /dropdown + /dynamic_content + /dynamic_loading + /entry_ad + /exit_intent + /download + /floating_menu + /frames + /geolocation + /horizontal_slider + /infinite_scroll + /inputs + /jqueryui/menu + /javascript_alerts + /javascript_error + /large + /windows + /nested_frames + /notification_message_rendered + /redirector + /download_secure + /shadowdom + /shifting_content + /slow + /tables + /status_codes + /typos + /about + /contact-us + /portfolio + /gallery + /dynamic_loading/:id + /users/:id + /infinite_scroll/:id + /jqueryui + /windows/new + /shifting_content/:slug + /status_codes/:id",
+      "count": 90,
+      "pages": [
+        "/",
+        "/abtest",
+        "/add_remove_elements",
+        "/basic_auth",
+        "/broken_images",
+        "/challenging_dom",
+        "/context_menu",
+        "/digest_auth",
+        "/disappearing_elements",
+        "/dropdown",
+        "/dynamic_content",
+        "/dynamic_loading",
+        "/entry_ad",
+        "/exit_intent",
+        "/download",
+        "/floating_menu",
+        "/frames",
+        "/geolocation",
+        "/horizontal_slider",
+        "/infinite_scroll",
+        "/inputs",
+        "/jqueryui/menu",
+        "/javascript_alerts",
+        "/javascript_error",
+        "/large",
+        "/windows",
+        "/nested_frames",
+        "/notification_message_rendered",
+        "/redirector",
+        "/download_secure",
+        "/shadowdom",
+        "/shifting_content",
+        "/slow",
+        "/tables",
+        "/status_codes",
+        "/typos",
+        "/about",
+        "/contact-us",
+        "/portfolio",
+        "/gallery",
+        "/dynamic_loading/1",
+        "/dynamic_loading/2",
+        "/users/1",
+        "/users/2",
+        "/users/3",
+        "/infinite_scroll/3",
+        "/infinite_scroll/4",
+        "/infinite_scroll/5",
+        "/infinite_scroll/6",
+        "/infinite_scroll/7",
+        "/infinite_scroll/8",
+        "/infinite_scroll/9",
+        "/infinite_scroll/10",
+        "/infinite_scroll/11",
+        "/infinite_scroll/12",
+        "/infinite_scroll/13",
+        "/infinite_scroll/14",
+        "/infinite_scroll/15",
+        "/infinite_scroll/16",
+        "/infinite_scroll/17",
+        "/infinite_scroll/18",
+        "/infinite_scroll/19",
+        "/infinite_scroll/20",
+        "/infinite_scroll/21",
+        "/infinite_scroll/22",
+        "/infinite_scroll/23",
+        "/infinite_scroll/24",
+        "/infinite_scroll/25",
+        "/infinite_scroll/26",
+        "/infinite_scroll/27",
+        "/infinite_scroll/28",
+        "/infinite_scroll/29",
+        "/infinite_scroll/30",
+        "/infinite_scroll/31",
+        "/infinite_scroll/32",
+        "/infinite_scroll/33",
+        "/infinite_scroll/34",
+        "/infinite_scroll/35",
+        "/infinite_scroll/36",
+        "/infinite_scroll/37",
+        "/infinite_scroll/38",
+        "/jqueryui",
+        "/windows/new",
+        "/shifting_content/menu",
+        "/shifting_content/image",
+        "/shifting_content/list",
+        "/status_codes/200",
+        "/status_codes/301",
+        "/status_codes/404",
+        "/status_codes/500"
+      ],
+      "signature": "landmarks:|forms:0|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/checkboxes",
+      "count": 1,
+      "pages": [
+        "/checkboxes"
+      ],
+      "signature": "landmarks:|forms:1[checkbox]|cards:no"
+    },
+    {
+      "label": "content",
+      "pattern": "/drag_and_drop",
+      "count": 1,
+      "pages": [
+        "/drag_and_drop"
+      ],
+      "signature": "landmarks:banner|forms:0|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/dynamic_controls",
+      "count": 1,
+      "pages": [
+        "/dynamic_controls"
+      ],
+      "signature": "landmarks:|forms:2[checkbox][text]|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/upload",
+      "count": 1,
+      "pages": [
+        "/upload"
+      ],
+      "signature": "landmarks:|forms:1[file]|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/forgot_password + /key_presses",
+      "count": 2,
+      "pages": [
+        "/forgot_password",
+        "/key_presses"
+      ],
+      "signature": "landmarks:|forms:1[text]|cards:no"
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/login",
+      "count": 1,
+      "pages": [
+        "/login"
+      ],
+      "signature": "landmarks:|forms:1[password,text]|cards:no"
+    },
+    {
+      "label": "listing",
+      "pattern": "/hovers",
+      "count": 1,
+      "pages": [
+        "/hovers"
+      ],
+      "signature": "landmarks:|forms:0|cards:yes"
+    },
+    {
+      "label": "content",
+      "pattern": "/tinymce + /iframe",
+      "count": 2,
+      "pages": [
+        "/tinymce",
+        "/iframe"
+      ],
+      "signature": "landmarks:complementary,navigation|forms:0|cards:no"
+    }
+  ]
+}

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
 import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
-import { groupPagesByAddress, type PageType } from "@/lib/selection/page-types";
+import { capturePageOutline, signatureOf, type PageOutline } from "@/lib/selection/page-outline";
+import { groupPagesIntoTypes, labelPageType, type OutlinedPageType, type PageTypeLabel } from "@/lib/selection/page-types";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -21,6 +22,22 @@ interface CrawledPage {
     url: string;
     title: string;
     discoveredFrom: string | null;
+    /** Phase 40 Decision 2 (TFP-171): absent when the page's outline couldn't be read. */
+    outline?: PageOutline;
+}
+
+type CrawledPageType = OutlinedPageType & { label: PageTypeLabel };
+
+/**
+ * Phase 40 Decisions 1 to 3 (TFP-170, TFP-171): the pages, in discovery
+ * order, grouped by address and refined by structural signature, each type
+ * labelled for the report. The start page is the first page crawled.
+ */
+function typesOf(pages: CrawledPage[]): CrawledPageType[] {
+    const outlines = new Map(pages.map((page) => [page.path, page.outline]));
+    const startPath = pages[0]?.path ?? "/";
+    return groupPagesIntoTypes(pages.map((page) => ({ path: page.path, signature: page.outline ? signatureOf(page.outline) : undefined })))
+        .map((type) => ({ ...type, label: labelPageType(type, outlines.get(type.pages[0]), startPath) }));
 }
 
 interface CrawlResultPayload {
@@ -29,7 +46,7 @@ interface CrawlResultPayload {
     pageCount: number;
     pages: CrawledPage[];
     /** Phase 40 Decision 1 (TFP-170): the pages grouped into types by address pattern. */
-    pageTypes?: PageType[];
+    pageTypes?: CrawledPageType[];
     warnings?: string[];
 }
 
@@ -241,11 +258,14 @@ async function runCrawlJob(job: CrawlJob) {
 
                 if (!visitedPaths.has(path)) {
                     visitedPaths.add(path);
+                    // Phase 40 Decision 2 (TFP-171): the page's outline, read from the page already open.
+                    const outline = await page.evaluate(capturePageOutline).catch(() => undefined);
                     pages.push({
                         path,
                         url: currentUrl.toString(),
                         title: pageData.title,
                         discoveredFrom: nextItem.discoveredFrom,
+                        ...(outline ? { outline } : {}),
                     });
                     job.progress.discoveredPages = pages.length;
                 }
@@ -303,7 +323,7 @@ async function runCrawlJob(job: CrawlJob) {
             pageCount: sortedPages.length,
             pages: sortedPages,
             // Phase 40 Decision 1 (TFP-170): the pages grouped into types by address, in crawl order.
-            pageTypes: groupPagesByAddress(pages.map((page) => page.path)),
+            pageTypes: typesOf(pages),
             warnings,
         };
         job.status = job.cancellationRequested ? "cancelled" : "completed";
@@ -320,7 +340,7 @@ async function runCrawlJob(job: CrawlJob) {
                 baseUrl: job.baseUrl,
                 pageCount: sortedPages.length,
                 pages: sortedPages,
-                pageTypes: groupPagesByAddress(pages.map((page) => page.path)),
+                pageTypes: typesOf(pages),
                 warnings,
             };
             job.status = "cancelled";

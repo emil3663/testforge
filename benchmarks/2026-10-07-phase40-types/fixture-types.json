@@ -1,0 +1,43 @@
+{
+  "label": "fixture",
+  "site": "http://127.0.0.1:52632",
+  "crawledAt": "2026-10-07T05:44:39.210Z",
+  "status": "completed",
+  "seconds": 2,
+  "pages": 3,
+  "warnings": [],
+  "pagesWithoutOutline": [],
+  "addressTypes": 3,
+  "types": 3,
+  "narrowReadingTypes": 3,
+  "authSplit": null,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/",
+      "count": 1,
+      "pages": [
+        "/"
+      ],
+      "signature": "landmarks:main,navigation|forms:0|cards:no"
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/login",
+      "count": 1,
+      "pages": [
+        "/login"
+      ],
+      "signature": "landmarks:main,navigation|forms:1[email,password]|cards:no"
+    },
+    {
+      "label": "form",
+      "pattern": "/notes",
+      "count": 1,
+      "pages": [
+        "/notes"
+      ],
+      "signature": "landmarks:main,navigation|forms:1[text]|cards:no"
+    }
+  ]
+}
