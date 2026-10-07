@@ -29,10 +29,25 @@ export async function startRecordedFixture() {
     const fixturePort = await freePort();
     const fixture = spawn(process.execPath, [join(process.cwd(), "scripts", "comparison-fixture.mjs"), "--port", String(fixturePort)], {
         cwd: process.cwd(),
-        stdio: "ignore",
+        // TFP-169: the fixture's errors are kept, so a fixture that dies says why instead of leaving a bare ECONNRESET.
+        stdio: ["ignore", "ignore", "pipe"],
         windowsHide: true,
     });
-    const control = (path: string) => fetch(`http://127.0.0.1:${fixturePort}${path}`).then((response) => response.json());
+    let errors = "";
+    fixture.stderr?.on("data", (chunk: Buffer) => {
+        errors = (errors + chunk.toString()).slice(-4000);
+    });
+    let exited: string | null = null;
+    fixture.on("exit", (code, signal) => {
+        exited = `exit code ${code ?? "none"}${signal ? `, signal ${signal}` : ""}`;
+    });
+    const startedAt = Date.now();
+    const control = (path: string) => fetch(`http://127.0.0.1:${fixturePort}${path}`).then((response) => response.json(), (error: unknown) => {
+        const cause = error instanceof Error ? `${error.message}${error.cause instanceof Error ? `: ${error.cause.message}` : ""}` : String(error);
+        throw new Error(exited
+            ? `the comparison fixture on port ${fixturePort} has exited (${exited}), ${Date.now() - startedAt} ms after it started; control ${path}: ${cause}; its error output: ${errors.trim() || "none"}`
+            : `control ${path} to the comparison fixture on port ${fixturePort} (pid ${fixture.pid}, still running) failed ${Date.now() - startedAt} ms after it started: ${cause}`, { cause: error });
+    });
     let ready = false;
     for (let attempt = 0; attempt < 100 && !ready; attempt++) {
         ready = await control("/__fixture/reset").then(() => true, () => new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 100)));
