@@ -602,7 +602,8 @@ test.describe("TestForge regression coverage", () => {
         expect(result.report?.execution?.[0]?.remarks).toContain("Broken links were detected for: Pricing");
     });
 
-    test("does not show a structured report when Playwright executes zero tests", async ({ request }) => {
+    // TFP-189: since d86c8d1 (TFP-125) a suite that declares no test ends "empty", not "failed", and keeps its report.
+    test("a suite that declares no test ends as empty, keeping its report, and says there was nothing to run", async ({ request }) => {
         const response = await request.post("/api/run", {
             data: {
                 code: [
@@ -634,12 +635,13 @@ test.describe("TestForge regression coverage", () => {
         }
 
         expect(finalSnapshot).not.toBeNull();
-        expect(finalSnapshot?.runStatus).toBe("failed");
+        expect(finalSnapshot?.runStatus).toBe("empty");
         expect(finalSnapshot?.result).toBeTruthy();
 
-        const result = finalSnapshot?.result as { output: string; report?: unknown };
-        expect(result.report).toBeUndefined();
-        expect(result.output).toContain("without executing any tests");
+        const result = finalSnapshot?.result as { output: string; passed: boolean; report?: unknown };
+        expect(result.passed).toBe(false);
+        expect(result.report).toBeTruthy();
+        expect(result.output).toContain("Nothing to run: the generated suite has no tests.");
     });
 
     test("preserves planned, interrupted, and not-run test states when a run is stopped", async ({ request }) => {
@@ -1502,10 +1504,16 @@ test.describe("TestForge regression coverage", () => {
         await generatedSuitePanel.getByRole("button", { name: "Edit" }).click();
         const codeEditor = generatedSuitePanel.locator("textarea");
         await expect(codeEditor).toBeVisible();
+        // TFP-189: a suite that declares a test but runs none still fails without a structured report (a suite that
+        // declares none has ended "empty", with its report, since d86c8d1), so the fallback page is what opens.
         await codeEditor.fill([
             "import { test, expect } from '@playwright/test';",
             "",
             "test.use({ baseURL: 'http://127.0.0.1:3001' });",
+            "",
+            "if (process.env.TESTFORGE_NEVER_SET === 'yes') {",
+            "  test('declared, never collected', async () => { expect(1).toBe(1); });",
+            "}",
         ].join("\n"));
 
         const popupPromise = page.waitForEvent("popup", { timeout: 120_000 });
