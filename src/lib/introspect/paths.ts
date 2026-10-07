@@ -26,7 +26,13 @@ const ABSOLUTE = /^[a-zA-Z][a-zA-Z\d+.-]*:/;
  * Phase 40 Decision 8 (TFP-174): a page may be given as a full URL (a list
  * pasted from a report). One on the run's own origin becomes its path, query
  * and hash route (`https://site/#/contact` -> `/#/contact`); any other is
- * rejected before the run. Returns the first such URL, or null.
+ * rejected before the run. Returns the first such page, or null.
+ *
+ * TFP-174's follow-up: every page is resolved against the base URL the way
+ * the inspector will open it (`new URL(path, baseUrl)`), not only full URLs.
+ * A path such as `//evil.test/x` (protocol-relative) or `/\evil.test/x` (a
+ * backslash the URL parser reads as a slash) isn't an absolute URL, but
+ * resolves to another site; it is rejected the same way.
  */
 export function findForeignPath(baseUrl: string, input: unknown): string | null {
     if (!Array.isArray(input)) return null;
@@ -37,12 +43,14 @@ export function findForeignPath(baseUrl: string, input: unknown): string | null 
         return null;
     }
     for (const item of input) {
-        if (typeof item !== "string" || !ABSOLUTE.test(item.trim())) continue;
+        if (typeof item !== "string" || !item.trim()) continue;
+        const page = item.trim();
         try {
-            const url = new URL(item.trim());
-            if ((url.protocol !== "http:" && url.protocol !== "https:") || url.origin !== origin) return item.trim();
+            // A full URL as given (against the base, as the inspector would); a path as it will be inspected.
+            const url = new URL(ABSOLUTE.test(page) ? page : asPath(page, baseUrl), baseUrl);
+            if ((url.protocol !== "http:" && url.protocol !== "https:") || url.origin !== origin) return page;
         } catch {
-            return item.trim();
+            return page;
         }
     }
     return null;
@@ -59,10 +67,14 @@ export function foreignPathMessage(baseUrl: string, page: string) {
     return `${page} is not on the run's site (${origin}); every page must be on the same origin.`;
 }
 
-/** A page as an inspection path: a same-origin full URL becomes its path, query and hash route. */
-function asPath(item: string) {
+/**
+ * A page as an inspection path: a same-origin full URL becomes its path,
+ * query and hash route. It is resolved against the base URL, as the
+ * inspector resolves it (`https:x/y` with an https base is a path there).
+ */
+function asPath(item: string, baseUrl: string) {
     if (ABSOLUTE.test(item)) {
-        const url = new URL(item);
+        const url = new URL(item, baseUrl);
         return `${url.pathname}${url.search}${url.hash}`;
     }
     return item.startsWith("/") ? item : `/${item}`;
@@ -79,9 +91,9 @@ export function normalizeInspectionPathList(baseUrl: string, input: unknown) {
             .filter((item): item is string => typeof item === "string")
             .map((item) => item.trim())
             .filter(Boolean)
-            // A caller rejects a foreign URL first (findForeignPath); one that slips through is dropped, never visited.
-            .filter((item) => !ABSOLUTE.test(item) || findForeignPath(baseUrl, [item]) === null)
-            .map(asPath)
+            // A caller rejects a foreign page first (findForeignPath); one that slips through is dropped, never visited.
+            .filter((item) => findForeignPath(baseUrl, [item]) === null)
+            .map((item) => asPath(item, baseUrl))
     )].slice(0, MAX_INSPECTION_PATHS);
 
     return uniquePaths.length > 0 ? uniquePaths : [getDefaultInspectionPath(baseUrl)];

@@ -126,3 +126,12 @@ test("a full page URL on the run's site is inspected as its path; one on another
         assert.equal((await res.json()).error, `${foreign} is not on the run's site (${siteUrl}); every page must be on the same origin.`);
     }
 });
+
+// TFP-174's follow-up: the same check at /api/generate, before anything is inspected (no browser needed).
+test("a protocol-relative or backslash path is rejected with a 400 naming it, before inspection", async () => {
+    for (const page of ["//evil.test/x", "/\\evil.test/x"]) {
+        const res = await POST(new NextRequest(new URL("http://localhost/api/generate"), { method: "POST", body: JSON.stringify({ baseUrl: "https://site.example", description: "x", selectedPractices: ["database"], contentRules: { paths: ["/", page] } }), headers: { "content-type": "application/json" } }));
+        assert.equal(res.status, 400);
+        assert.equal((await res.json()).error, `${page} is not on the run's site (https://site.example); every page must be on the same origin.`);
+    }
+});
