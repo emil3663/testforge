@@ -74,8 +74,18 @@ grouping.
     differ (the Toolshop's `/auth/:slug` into login, register and
     forgot-password). Landmarks and cards don't split a type.
   - **Merge** address types only when they are siblings under the same
-    parent (`/p/:id` and `/p/:slug`; `/shop/men/shirts` and
-    `/shop/women/shoes`) and their full signatures are equal.
+    immediate parent and their full signatures are equal. The parent is the
+    pattern minus its last segment, after `:id` and `:slug` are applied:
+    `/p/:id` and `/p/:slug` share `/p` and merge. **Clarified at Gate A's
+    re-check (Emil, 2026-10-07):** not the same first segment. Under a
+    first-segment reading, every page of a site with a language prefix
+    (`/en/...`) or an app under one path (`/app/...`) is one section, so
+    unrelated templates merge again whenever their outlines match
+    (`/en/product/:id` with `/en/category/:id`). A wrong merge silently
+    skips a template, while a wrong split costs only a cap slot, so merging
+    stays the narrow side. The earlier `/shop/men/shirts` +
+    `/shop/women/shoes` example is withdrawn: they have different parents
+    and stay two types.
   - **Never merge** top-level pages with each other, and never merge home.
     Decision 2's earlier `/privacy` + `/terms` example is withdrawn: two
     content types cost little, since content types are dropped first.
@@ -299,8 +309,9 @@ use.
 - **Deliverables:**
   - TFP-170's rule: a segment directly before an `:id` is never a slug;
   - TFP-171's grouping: split within an address type by form signature
-    only; merge only sibling address types under one parent with equal full
-    signatures; never merge top-level pages or home;
+    only; merge only sibling address types under one immediate parent (the
+    pattern minus its last segment) with equal full signatures; never merge
+    top-level pages or home;
   - fixture cases (decision table): the `/types` fixture updated to the
     revised expectation, `/en/product/:id` beside `/en/category/:id`, the
     two TFP-170 edge families still merging, and a page without cards kept
@@ -317,6 +328,25 @@ use.
   - `check:template-unchanged` 166 of 166 identical.
 - **Dependencies:** TFP-171.
 - **Stop at Gate A** again after this ticket.
+- **Built, `b9270b2`, verified 2026-10-07 (Cowork), with one correction.**
+  Re-running the grouping on the committed crawls reproduces every count:
+  both Toolshops give exactly the 9 expected types, the-internet 57, the
+  `/types` fixture 9. But `b9270b2` reads "same parent" as "same first
+  segment and depth", which merges `/en/product/:id` with
+  `/en/category/:id` (and `/a/b/c/x` with `/a/d/e/y`) when their outlines
+  match. Emil clarified Decision 2 the same day: the immediate parent.
+  - **Follow-up:** merge only when the two patterns minus their last
+    segment are equal. Decision-table cases: `/p/:id` + `/p/:slug` merge;
+    `/shop/men/shirts` and `/shop/women/shoes` stay apart; `/en/product/:id`
+    and `/en/category/:id` stay apart even with equal outlines; a top-level
+    page and home never merge. Update the `/types` fixture's expectation
+    (`/types/help/terms` and `/types/legal/privacy` no longer merge).
+  - **Re-measure** the four sites from the same committed crawls, in a
+    third section of the report; the first two stay. Both Toolshops and
+    the-internet should be unchanged, since nothing merges there; any
+    change is explained.
+  - **Gate A passes on Cowork's verification of the follow-up**, without
+    another stop for Emil unless a result differs from the above.
 
 ### TFP-172 — Rank types and select pages for Standard and Comprehensive
 
