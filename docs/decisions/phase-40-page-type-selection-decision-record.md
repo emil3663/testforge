@@ -396,6 +396,11 @@ use.
     hand-picked list's `/#/product/1`. If a product bug shows only on one
     product, the keep rule will show it.
 
+- **Follow-up done, `967ad6c`, verified 2026-10-07 (Cowork):** home now
+  leads the ranking (first on the-internet, where it was 8th), with a unit
+  case of home behind 9 form types under the cap of 8. Covered pages on the
+  committed crawls are unchanged; only the order moves.
+
 ### TFP-173 — Report coverage by type, with the copyable re-run list
 
 - **Priority:** P1 · **Labels:** `report`
@@ -406,6 +411,18 @@ use.
   a manual override recorded.
 - **Acceptance criteria:** the report half of Acceptance Criteria 3.
 - **Dependencies:** TFP-172.
+
+- **Done, `1e7fcd1`, verified 2026-10-07 (Cowork), with one fix carried
+  into TFP-174.** The app's report and both HTML exports end with the
+  section: types found, covered and skipped, each with pattern, page count,
+  label and representative URL; the covered list, then one page per skipped
+  type. A hand selection is recorded as an override (pages added and left
+  out). The record reaches the run through the generation record, which
+  `/api/run` normalizes as untrusted input, and the HTML export escapes it.
+  - **Gap:** the normalizer accepts any text as a URL, and the export puts
+    it in an `href`, so a `javascript:` value would survive into a shared
+    HTML file. TFP-174 accepts only `http:` and `https:` URLs on the run's
+    origin, here as in the URL field, and drops the rest.
 
 ### TFP-174 — The URL field takes a list of pages
 
@@ -419,6 +436,12 @@ use.
 - **Acceptance criteria:** the round trip: a covered list pasted from a
   report runs the same pages, and the generated suite covers the same
   pages; the other-origin rejection is tested.
+- **Also (from TFP-173's review):** the page-type record's URLs (each
+  type's `url`, `covered`, and the override's `added` and `removed`) keep
+  only `http:` and `https:` URLs on the run's origin; anything else is
+  dropped when `/api/run` normalizes the record. A unit case shows a
+  `javascript:` URL and an other-origin URL dropped, and the HTML export
+  never contains them.
 - **Dependencies:** TFP-173.
 
 ### TFP-175 — Score the automatic selection against the hand-picked list

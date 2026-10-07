@@ -23,7 +23,7 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `94207fd`; `10c3f8c` (TFP-172) is committed, not
+`origin/main` is at `3570acd`; `967ad6c` and `1e7fcd1` are committed, not
 pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
@@ -35,10 +35,11 @@ pushed. Phase 38 is complete. Since then:
     re-score after TFP-167 (`878a49d`: 9 found, 4 hinted, 24 missed), both
     verified. The known-bug gate is met.
 - **Now: Phase 40** (`docs/decisions/phase-40-page-type-selection-decision-record.md`).
-  Gate A passed 2026-10-07. TFP-172 (`10c3f8c`) is done and verified, with
-  one follow-up: Emil amended Decision 4 so home is always ranked first.
-  Make that follow-up as TFP-172's entry says, then build TFP-173. Stop for
-  verification after TFP-173; don't start TFP-174.
+  Gate A passed 2026-10-07. TFP-172 with its home-first follow-up
+  (`10c3f8c`, `967ad6c`) and TFP-173 (`1e7fcd1`) are done and verified.
+  Next is TFP-174, including the URL check carried from TFP-173's review
+  (only `http:`/`https:` URLs on the run's origin in the page-type record).
+  Stop for verification after TFP-174; don't start TFP-175.
 - **Not started, not next:**
   - TFP-168 (model and OpenAI visits through `tfGoto`) and TFP-169 (TFP-147's
     security case resets at fixture start-up), in
