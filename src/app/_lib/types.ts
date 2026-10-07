@@ -1,5 +1,6 @@
 import type { CandidateJourney } from "@/lib/introspect/types";
 import type { RunReport } from "@/lib/report/types";
+import type { PageTypeSelection, RankedPageType } from "@/lib/selection/select";
 import type { BEST_PRACTICE_OPTIONS } from "@/app/_lib/constants";
 
 export type Step = "idle" | "generating" | "ready" | "running" | "done";
@@ -153,6 +154,10 @@ export interface CrawlResult {
     baseUrl: string;
     pageCount: number;
     pages: CrawledPage[];
+    /** Phase 40 Decision 4 (TFP-172): the page types in coverage order; absent from a crawl without types. */
+    rankedTypes?: RankedPageType[];
+    /** Phase 40 Decisions 5 and 6 (TFP-172): the pages Standard and Comprehensive (default budget) cover. */
+    pageSelection?: { standard: PageTypeSelection; comprehensive: PageTypeSelection };
     warnings?: string[];
 }
 

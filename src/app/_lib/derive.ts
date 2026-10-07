@@ -3,7 +3,21 @@ import type { NamedFlow } from "@/lib/introspect/types";
 import { ENV_NAME_PATTERN, ENV_NAME_RULE_MESSAGE, LOGIN_CONFIG_FIELDS, LOGIN_FIELD_LABELS } from "@/lib/run/login-fields";
 import type { LoginConfigField } from "@/lib/run/login-fields";
 import { formatMilliseconds } from "@/lib/report/text";
-import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, ContentProfilePage, CrawledPage, RunProgressSnapshot, RunResult, TestAuditMode } from "@/app/_lib/types";
+import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, ContentProfilePage, CrawlResult, CrawledPage, RunProgressSnapshot, RunResult, TestAuditMode } from "@/app/_lib/types";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
+import { selectComprehensivePagesByType, selectStandardPages } from "@/lib/selection/select";
+
+/**
+ * Phase 40 (TFP-172, Decisions 5 and 6): the crawled pages a run inspects
+ * unless the user picks by hand - Standard's one page per type up to 8, or
+ * Comprehensive's pages for its page cap. A crawl without ranked types (an
+ * older result) selects every page, as before.
+ */
+export function typeSelectedPaths(crawlResult: CrawlResult, runMode: RunMode): string[] {
+    const ranked = crawlResult.rankedTypes;
+    if (!ranked || ranked.length === 0) return crawlResult.pages.map((page) => page.path);
+    return runMode.kind === "comprehensive" ? selectComprehensivePagesByType(ranked, runMode.pageCap).pages : selectStandardPages(ranked).pages;
+}
 
 export function getContinuationExcludedTitles(result: RunResult | null) {
     if (!result || result.runStatus !== "cancelled") {

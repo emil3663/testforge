@@ -4,6 +4,8 @@ import { randomUUID } from "crypto";
 import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
 import { capturePageOutline, type PageOutline } from "@/lib/selection/page-outline";
 import { groupPagesIntoTypes, labelPageType, type OutlinedPageType, type PageTypeLabel } from "@/lib/selection/page-types";
+import { rankPageTypes, selectComprehensivePagesByType, selectStandardPages, type PageTypeSelection, type RankedPageType } from "@/lib/selection/select";
+import { DEFAULT_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -41,6 +43,26 @@ function typesOf(pages: CrawledPage[]): CrawledPageType[] {
         .map((type) => ({ ...type, label: labelPageType(type, outlines.get(type.pages[0]), startPath) }));
 }
 
+/**
+ * Phase 40 Decisions 4 to 6 (TFP-172): the types ranked, and the pages
+ * Standard (up to 8 types) and Comprehensive (its default 20-page budget)
+ * cover. A Comprehensive run with another budget selects again from the
+ * ranking.
+ */
+function selectionOf(pages: CrawledPage[], types: CrawledPageType[]) {
+    const outlines = new Map(pages.map((page) => [page.path, page.outline]));
+    const rankedTypes = rankPageTypes(types, (path) => outlines.get(path));
+    return {
+        rankedTypes,
+        pageSelection: { standard: selectStandardPages(rankedTypes), comprehensive: selectComprehensivePagesByType(rankedTypes, DEFAULT_PAGE_CAP) },
+    };
+}
+
+function typedResultOf(pages: CrawledPage[]) {
+    const pageTypes = typesOf(pages);
+    return { pageTypes, ...selectionOf(pages, pageTypes) };
+}
+
 interface CrawlResultPayload {
     crawledAt: string;
     baseUrl: string;
@@ -48,6 +70,10 @@ interface CrawlResultPayload {
     pages: CrawledPage[];
     /** Phase 40 Decision 1 (TFP-170): the pages grouped into types by address pattern. */
     pageTypes?: CrawledPageType[];
+    /** Phase 40 Decision 4 (TFP-172): the types in coverage order. */
+    rankedTypes?: RankedPageType[];
+    /** Phase 40 Decisions 5 and 6 (TFP-172): the pages each run type covers. */
+    pageSelection?: { standard: PageTypeSelection; comprehensive: PageTypeSelection };
     warnings?: string[];
 }
 
@@ -323,8 +349,8 @@ async function runCrawlJob(job: CrawlJob) {
             baseUrl: job.baseUrl,
             pageCount: sortedPages.length,
             pages: sortedPages,
-            // Phase 40 Decision 1 (TFP-170): the pages grouped into types by address, in crawl order.
-            pageTypes: typesOf(pages),
+            // Phase 40 (TFP-170 to TFP-172): the pages grouped into types, in crawl order; ranked; selected.
+            ...typedResultOf(pages),
             warnings,
         };
         job.status = job.cancellationRequested ? "cancelled" : "completed";
@@ -341,7 +367,7 @@ async function runCrawlJob(job: CrawlJob) {
                 baseUrl: job.baseUrl,
                 pageCount: sortedPages.length,
                 pages: sortedPages,
-                pageTypes: typesOf(pages),
+                ...typedResultOf(pages),
                 warnings,
             };
             job.status = "cancelled";

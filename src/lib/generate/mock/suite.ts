@@ -1,13 +1,14 @@
-import { MAX_INSPECTION_PATHS } from "@/lib/introspect/paths";
 import type { BestPracticeArea, ContentProfile, GeneratedSuite } from "./types";
 
 /**
  * Phase 38 (TFP-147, TFP-148; Decision 4): the pages the shared conformance
- * checks cover in a Standard run - every inspected page, up to
- * MAX_INSPECTION_PATHS, in inspection order; "/" without page data.
+ * checks cover in a Standard run - every inspected page, in inspection
+ * order; "/" without page data. Phase 40 (TFP-172) makes the reach "the
+ * selected pages": the inspection already holds exactly those, so there is
+ * no second cap here (it was the first 5).
  */
 export function inspectedPagePaths(contentProfile: ContentProfile | null): string[] {
-    const paths = [...new Set((contentProfile?.pages ?? []).map((page) => page.path))].slice(0, MAX_INSPECTION_PATHS);
+    const paths = [...new Set((contentProfile?.pages ?? []).map((page) => page.path))];
     return paths.length > 0 ? paths : ["/"];
 }
 

@@ -42,6 +42,8 @@ interface CreationSectionProps {
     activeCrawlId: string | null;
     isCancellingCrawl: boolean;
     selectAllCrawledPages: () => void;
+    selectCrawledPagesByType: () => void;
+    isTypeSelection: boolean;
     clearCrawledPageSelection: () => void;
     selectVisibleCrawledPages: (paths: string[]) => void;
     filteredCrawledPaths: string[];
@@ -121,6 +123,8 @@ export function CreationSection({
     activeCrawlId,
     isCancellingCrawl,
     selectAllCrawledPages,
+    selectCrawledPagesByType,
+    isTypeSelection,
     clearCrawledPageSelection,
     selectVisibleCrawledPages,
     filteredCrawledPaths,
@@ -356,6 +360,8 @@ export function CreationSection({
                             activeCrawlId={activeCrawlId}
                             isCancellingCrawl={isCancellingCrawl}
                             selectAllCrawledPages={selectAllCrawledPages}
+                            selectCrawledPagesByType={selectCrawledPagesByType}
+                            isTypeSelection={isTypeSelection}
                             clearCrawledPageSelection={clearCrawledPageSelection}
                             selectVisibleCrawledPages={selectVisibleCrawledPages}
                             filteredCrawledPaths={filteredCrawledPaths}

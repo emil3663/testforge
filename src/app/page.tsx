@@ -78,7 +78,15 @@ export default function Home() {
     const [pageCapInput, setPageCapInput] = useState(String(DEFAULT_PAGE_CAP));
     const [isRunTypeCollapsed, setIsRunTypeCollapsed] = useState(true);
 
-    const crawl = useCrawl(baseUrl);
+    const pageCap = Number(pageCapInput);
+    const pageCapProblem = runType === "comprehensive" && (!Number.isInteger(pageCap) || pageCap < 1 || pageCap > MAX_PAGE_CAP)
+        ? `The page cap must be a whole number from 1 to ${MAX_PAGE_CAP}.`
+        : "";
+    const runMode: RunMode = runType === "comprehensive"
+        ? { kind: "comprehensive", area: comprehensiveArea, level: comprehensiveArea === "security" ? "passive" : null, pageCap: pageCapProblem ? DEFAULT_PAGE_CAP : pageCap }
+        : STANDARD_RUN;
+    // Phase 40 (TFP-172): after a crawl, the pages selected by type for this run type.
+    const crawl = useCrawl(baseUrl, runMode);
     const generation = useGeneration(DEFAULT_BASE_URL, DEFAULT_TEST_AUDIT_MODE);
     const run = useRun(step, setStep, setError, setIsCreationCollapsed, generation.setIsGeneratedCollapsed);
 
@@ -166,13 +174,6 @@ export default function Home() {
     const inferredPractices = inferBestPracticesFromDescription(effectiveDescriptionText);
     const effectiveSelectedPractices: BestPracticeArea[] = [...new Set([...selectedPractices, ...(selectedPractices.length > 0 ? [] : inferredPractices)])]
         .filter((practice) => !deselectedPractices.includes(practice));
-    const pageCap = Number(pageCapInput);
-    const pageCapProblem = runType === "comprehensive" && (!Number.isInteger(pageCap) || pageCap < 1 || pageCap > MAX_PAGE_CAP)
-        ? `The page cap must be a whole number from 1 to ${MAX_PAGE_CAP}.`
-        : "";
-    const runMode: RunMode = runType === "comprehensive"
-        ? { kind: "comprehensive", area: comprehensiveArea, level: comprehensiveArea === "security" ? "passive" : null, pageCap: pageCapProblem ? DEFAULT_PAGE_CAP : pageCap }
-        : STANDARD_RUN;
     // A Comprehensive run covers its one area; a Standard run the selected ones.
     const practicesInScope: BestPracticeArea[] = runMode.kind === "comprehensive" ? [runMode.area] : effectiveSelectedPractices;
     const normalizedBaseUrlForDisplay = normalizeBaseUrl(baseUrl);

@@ -16,6 +16,9 @@ interface DiscoveredPagesSectionProps {
     activeCrawlId: string | null;
     isCancellingCrawl: boolean;
     selectAllCrawledPages: () => void;
+    /** Phase 40 (TFP-172): select the pages chosen by type for the run type again. */
+    selectCrawledPagesByType: () => void;
+    isTypeSelection: boolean;
     clearCrawledPageSelection: () => void;
     selectVisibleCrawledPages: (paths: string[]) => void;
     filteredCrawledPaths: string[];
@@ -53,6 +56,8 @@ export function DiscoveredPagesSection({
     activeCrawlId,
     isCancellingCrawl,
     selectAllCrawledPages,
+    selectCrawledPagesByType,
+    isTypeSelection,
     clearCrawledPageSelection,
     selectVisibleCrawledPages,
     filteredCrawledPaths,
@@ -129,6 +134,14 @@ export function DiscoveredPagesSection({
                                         </button>
                                         <button
                                             type="button"
+                                            onClick={selectCrawledPagesByType}
+                                            disabled={crawledPages.length === 0 || isCrawling || isTypeSelection}
+                                            className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Select by page type
+                                        </button>
+                                        <button
+                                            type="button"
                                             onClick={selectAllCrawledPages}
                                             disabled={crawledPages.length === 0 || isCrawling}
                                             className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
@@ -155,7 +168,7 @@ export function DiscoveredPagesSection({
 
                                     <div className="mt-3 rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3 text-xs leading-5 text-sky-900">
                                         {hasActiveCrawlSelection
-                                            ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}.`
+                                            ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}${isTypeSelection ? ", chosen by page type for this run type" : ""}.`
                                             : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
                                     </div>
 

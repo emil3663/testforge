@@ -125,6 +125,16 @@ test("in a real browser: the crawl of the fixture's /types shop finds the revise
             "listing | /shop/men/shirts | /shop/men/shirts",
             "listing | /shop/women/shoes | /shop/women/shoes",
         ]);
+        // TFP-172: the crawl also ranks the types and selects Standard's pages, one per type up to 8.
+        const standard = crawl.result.pageSelection.standard;
+        assert.equal(standard.pages.length, 8);
+        // 11 types: 6 always covered (home, the 4 form types, the largest: the category), then 5 others for 2 places.
+        // Sold-out 103 loses to the /shop listings on interactive elements; content types go first.
+        assert.deepEqual(standard.skipped.map((type: { pattern: string; label: string }) => `${type.label} | ${type.pattern}`), [
+            "detail | /types/product/:id",
+            "content | /types/legal/privacy",
+            "content | /types/help/terms",
+        ]);
     } finally {
         await fixture.close();
     }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getPathExtension, normalizeBaseUrl } from "@/app/_lib/derive";
+import { getPathExtension, normalizeBaseUrl, typeSelectedPaths } from "@/app/_lib/derive";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
 import { formatMilliseconds } from "@/lib/report/text";
 import type { CrawlLifecycleStatus, CrawlProgressSnapshot, CrawlResult, CrawlStatusSnapshot } from "@/app/_lib/types";
 
@@ -84,9 +85,15 @@ export async function pollCrawlUntilDone(crawlId: string, deps: CrawlPollDeps): 
     }
 }
 
-export function useCrawl(baseUrl: string) {
+export function useCrawl(baseUrl: string, runMode: RunMode) {
     const [crawlResult, setCrawlResult] = useState<CrawlResult | null>(null);
-    const [selectedCrawledPaths, setSelectedCrawledPaths] = useState<string[]>([]);
+    // Phase 40 (TFP-172): null until the user changes the selection by hand,
+    // so it follows the run type: Standard's pages by type, or
+    // Comprehensive's for its page cap. A hand-made selection is kept as is.
+    const [manualCrawledPaths, setManualCrawledPaths] = useState<string[] | null>(null);
+    const selectedCrawledPaths = manualCrawledPaths ?? (crawlResult ? typeSelectedPaths(crawlResult, runMode) : []);
+    const setSelectedCrawledPaths = (update: string[] | ((current: string[]) => string[])) =>
+        setManualCrawledPaths(typeof update === "function" ? update(selectedCrawledPaths) : update);
     const [crawlSearchQuery, setCrawlSearchQuery] = useState("");
     const [selectedCrawlExtensions, setSelectedCrawlExtensions] = useState<string[]>([]);
     const [crawlStatus, setCrawlStatus] = useState<"idle" | "crawling">("idle");
@@ -128,7 +135,7 @@ export function useCrawl(baseUrl: string) {
             },
             onResult: (result) => {
                 setCrawlResult(result);
-                setSelectedCrawledPaths(result.pages.map((page) => page.path));
+                setManualCrawledPaths(null);
                 setCrawlSearchQuery("");
                 setSelectedCrawlExtensions([]);
                 setIsCrawledPagesCollapsed(false);
@@ -237,6 +244,11 @@ export function useCrawl(baseUrl: string) {
 
     function selectAllCrawledPages() {
         setSelectedCrawledPaths(crawlResult?.pages.map((page) => page.path) ?? []);
+    }
+
+    /** Phase 40 (TFP-172): back to the pages selected by type for the run type. */
+    function selectCrawledPagesByType() {
+        setManualCrawledPaths(null);
     }
 
     function clearCrawledPageSelection() {
@@ -349,6 +361,8 @@ export function useCrawl(baseUrl: string) {
         handleStopCrawl,
         toggleCrawledPath,
         selectAllCrawledPages,
+        selectCrawledPagesByType,
+        isTypeSelection: manualCrawledPaths === null && Boolean(crawlResult?.rankedTypes?.length),
         clearCrawledPageSelection,
         toggleCrawlExtension,
         selectVisibleCrawledPages,
