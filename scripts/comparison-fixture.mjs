@@ -307,6 +307,19 @@ draw();
 </body>
 </html>`);
     }
+    // TFP-167: a page that draws its content late, as a single-page app does.
+    // The HTML is a shell; the form and the button appear only after
+    // /api/slow answers, 1.5 s later. A check that runs at domcontentloaded
+    // or load sees "Loading...". Path-routed: the gap isn't only hash routes'.
+    // Not linked from the nav, like /anchors.
+    if (url.pathname === "/api/slow") {
+        await new Promise((r) => setTimeout(r, 1500));
+        return send(200, JSON.stringify({ ready: true }), "application/json");
+    }
+    if (url.pathname === "/late-form" && req.method === "GET") {
+        const late = `<h1>Late form</h1><form aria-label="Search notes" action="/notes" method="get"><div><label for="lf-title">Title</label><input id="lf-title" name="title"></div><div><label for="lf-tag">Tag</label><input id="lf-tag" name="tag"></div><div><input type="submit" value="Search" style="padding:6px 12px"></div></form><p><button type="button" style="padding:6px 12px"><span>Save draft</span></button></p>`;
+        return send(200, page("Late form", `<div id="app">Loading...</div>`, { script: `fetch("/api/slow").then(() => { document.getElementById("app").innerHTML = ${JSON.stringify(late)}; });` }));
+    }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);
         const note = (form.note ?? "").trim();

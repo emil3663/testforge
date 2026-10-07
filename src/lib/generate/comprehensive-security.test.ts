@@ -49,7 +49,8 @@ test("the suite sends no input: no typing, clicking, submitting or non-GET reque
     const code = suiteFor("https://site.test", ["/", "/login", "/notes"]);
     assert.doesNotMatch(code, /\.(fill|type|press|click|dblclick|check|uncheck|selectOption|setInputFiles|dispatchEvent|tap|submit)\(|request\.(post|put|patch|delete|fetch|head)\(|\bfetch\(/);
     assert.equal(code.match(/request\.get\(/g)?.length, 1, "the missing-page probe, once per run");
-    assert.equal(code.match(/page\.goto\(/g)?.length, 3 * 4, "four page loads per page");
+    // TFP-167: every page load goes through tfGoto, whose own body holds the only page.goto calls.
+    assert.equal(code.match(/tfGoto\(page, /g)?.length, 3 * 4, "four page loads per page");
 });
 
 test("every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirements from chapters in a passive run's reach", () => {

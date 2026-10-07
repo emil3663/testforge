@@ -9,6 +9,7 @@ import { buildGenericSuites } from "./generic-suites";
 import { SUITE_AREA_CODES } from "./suite";
 import { withDefaultGate } from "@/lib/run/test-gates";
 import type { BestPracticeArea, ContentProfile, ContentRules, GeneratedSuite, TestAuditMode } from "./types";
+import { routePageVisits } from "../page-visits";
 
 export { BEST_PRACTICE_OPTIONS } from "./types";
 export type {
@@ -154,5 +155,6 @@ ${renderSuites(allSuites)}
 // NOTE: This fallback generator uses URL and keyword heuristics.
 // Add OPENAI_API_KEY in your .env to generate tests tailored more deeply to the scenario.`;
 
-    return { code, areas: bestPracticeAreas, testsByArea, notApplicable };
+    // TFP-167: every page visit waits for the page to draw.
+    return { code: routePageVisits(code), areas: bestPracticeAreas, testsByArea, notApplicable };
 }
