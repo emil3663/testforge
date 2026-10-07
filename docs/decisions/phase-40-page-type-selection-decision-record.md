@@ -94,6 +94,11 @@ at 5 pages.
   Phase 39's workers are expected to absorb the extra pages. If a measured
   Standard run goes over, the result is recorded and the cap is revisited;
   nothing is tuned to fit.
+- **Note on cost (2026-10-07, after TFP-167):** the with-bugs Toolshop's
+  Standard run now takes 1,170 s for 5 pages, about 234 s a page. If cost
+  grows linearly with pages (not yet measured), the recommended cap of 8
+  comes to about 1,870 s, over the 30-minute budget (1,800 s) on one worker.
+  Emil confirms the cap with this in view.
 
 6. Comprehensive covers every type first.
 - One page of every type, then the rest of its 20-page budget goes to the

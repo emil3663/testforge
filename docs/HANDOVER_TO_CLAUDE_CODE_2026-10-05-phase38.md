@@ -21,6 +21,34 @@ starts, so a session opened before then doesn't use it.
 - If it isn't working, tell Emil. Don't reinstall it or change the
   user-level settings yourself.
 
+## State on 2026-10-07 (read this first)
+
+`origin/main` is at the TFP-167 docs commit. Phase 38 is complete. Since then:
+- **Done and verified:**
+  - TFP-151, TFP-159 to TFP-161 (template false failures);
+  - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
+  - TFP-153 (the Toolshop answer key);
+  - TFP-154's first score: 6 found, 3 hinted and 28 missed, of the 37 bugs in
+    reach at the read-only gate in Chromium.
+- **Done and verified 2026-10-07:** TFP-167 (`e812795`, `7577252`): every
+  generated page visit waits for network idle, bounded at 5 s (approved by
+  Emil). Cost: with-bugs Toolshop's 5 pages 766 s to 1,170 s.
+- **In progress:** TFP-154's re-score, with the same pages and rule,
+  recorded beside the first score. Stop for verification when it's done.
+- **New, not started:** TFP-168 (model and OpenAI visits through `tfGoto`)
+  and TFP-169 (TFP-147's security case resets at fixture start-up), in
+  `known-bug-benchmark-backlog-2026-10-06.md`.
+- **Ready, not started:**
+  - TFP-162 to TFP-164 (`real-site-run-findings-backlog-2026-10-01.md`);
+  - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; needs
+    Docker on Emil's machine for TFP-158).
+- **Draft, values to confirm:** Phase 40
+  (`phase-40-page-type-selection-decision-record.md`: Standard cap
+  recommended 8, outline threshold, ranking weights, keep rule). It starts
+  after TFP-154's re-score.
+- **Known-bug backlog:** `known-bug-benchmark-backlog-2026-10-06.md` holds
+  TFP-153 to TFP-154 and TFP-165 to TFP-169.
+
 ## Phase 38 is complete (2026-10-06)
 
 Gate A passed 2026-10-05; Gate B passed 2026-10-06 (Emil). See the Phase 38

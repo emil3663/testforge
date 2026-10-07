@@ -228,6 +228,50 @@ services to third parties. So:
   same scoring rule. Record the new score beside the first; don't replace
   it.
 - **Dependencies:** none.
+- **Done, `e812795` and `7577252`, verified 2026-10-07 (Cowork):**
+  - Every `page.goto(` in a Standard or Comprehensive suite becomes
+    `tfGoto(page, `. `check:template-unchanged bc62533`: 12 of 166
+    identical; in the 154 that differ, only the helper and the 1,042 visit
+    lines change.
+  - On the late-drawing fixture pages (`/late-form`, and the hash route
+    `/spa#/contact` added in `7577252`), the form checks pass, and they fail
+    on the previous code.
+  - `7577252` makes the routing idempotent and tightens the `/late-form`
+    assertion.
+  - **Measured cost** (Standard, all areas, fast, one worker): fixture 104 s
+    to 136 s (+31%). With-bugs Toolshop's 5 pages 766 s to 1,170 s (+53%),
+    within the 30-minute budget.
+
+### TFP-168 — Route model and OpenAI page visits through `tfGoto`
+
+- **Priority:** P3 · **Labels:** `bug`, `generate`
+- **Problem it solves:** TFP-167 routes every template visit through
+  `tfGoto`. The local model's gap-fill block (`mergeLocalSuite`) and the
+  Comprehensive scenario blocks still use raw `page.goto`, so on a
+  single-page app they read the undrawn page. They're gated as interactive
+  and kept outside the verdict, so this doesn't gate anything, but it's a
+  gap against "every page visit".
+- **Scope:** route those blocks' visits through the same helper, defined
+  once per file.
+- **Acceptance criteria:** a merged suite and a scenario suite contain no
+  raw `page.goto` outside `tfGoto`'s own body, and type-check.
+- **Dependencies:** TFP-167.
+
+### TFP-169 — TFP-147's security case: ECONNRESET at fixture start-up
+
+- **Priority:** P2 · **Labels:** `bug`, `test`
+- **Problem it solves:** the real-browser case "a Standard security run and
+  a Comprehensive one report the same ..." (`standard-conformance.test.ts`)
+  failed with `fetch failed: read ECONNRESET` from the fixture, 7 to 10 s
+  in, on three full unit runs (during TFP-159, TFP-167 and TFP-167's
+  follow-up). It passes alone each time. It's a recurring signal in the
+  fixture's start-up or control requests, not a one-off flake.
+- **Scope:** find what resets the connection (the recording proxy, the
+  fixture's start-up, or another real-browser test running in parallel),
+  and fix the cause, not the symptom (no retry around it).
+- **Acceptance criteria:** the cause is named; the full unit suite passes
+  this case on 5 consecutive runs.
+- **Dependencies:** none.
 
 ### TFP-154 — Run TestForge against both versions and score it
 
