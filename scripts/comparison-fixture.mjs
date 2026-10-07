@@ -322,6 +322,20 @@ draw();
         const late = `<h1>Late form</h1><form aria-label="Search notes" action="/notes" method="get"><div><label for="lf-title">Title</label><input id="lf-title" name="title"></div><div><label for="lf-tag">Tag</label><input id="lf-tag" name="tag"></div><div><input type="submit" value="Search" style="padding:6px 12px"></div></form><p><button type="button" style="padding:6px 12px"><span>Save draft</span></button></p>`;
         return send(200, page("Late form", `<div id="app">Loading...</div>`, { script: `fetch("/api/slow").then(() => { document.getElementById("app").innerHTML = ${JSON.stringify(late)}; });` }));
     }
+    // TFP-177: a page whose links appear only after a request the app starts
+    // late. The shell draws at once; the script waits 800 ms with no request
+    // in flight (as an app still starting up does on a busy machine), then
+    // asks /api/status and draws a link to /late-links/item. "No request for
+    // 500 ms" is already true inside that gap, so a read at network idle
+    // alone sees no link and /late-links/item looks orphaned. Not linked from
+    // the nav, like /anchors.
+    if (url.pathname === "/late-links" && req.method === "GET") {
+        const late = `<h1>Late links</h1><p><a href="/late-links/item">The item</a></p>`;
+        return send(200, page("Late links", `<div id="app">Loading...</div>`, { script: `setTimeout(() => fetch("/api/status").then(() => { document.getElementById("app").innerHTML = ${JSON.stringify(late)}; }), 800);` }));
+    }
+    if (url.pathname === "/late-links/item" && req.method === "GET") {
+        return send(200, page("The item", `<h1>The item</h1><p>Reached only from /late-links.</p>`));
+    }
     // Phase 40 (TFP-171, revised in TFP-176): a small shop of page types, for
     // grouping. Every page links every other, so a crawl from /types finds
     // them all. TFP-176 adds an empty category, which stays a listing.

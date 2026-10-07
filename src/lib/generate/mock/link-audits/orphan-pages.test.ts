@@ -18,6 +18,7 @@
  *   all loaded, every page linked            -> passes, no finding
  *   older profile (no record)                -> today's check, unchanged
  *   hash-routed app (TFP-166): an unlinked route fails, linked routes pass, counted by route
+ *   a page whose links draw late (TFP-177): inspection records them; the linked page passes
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/orphan-pages.test.ts
@@ -111,6 +112,12 @@ test("in a real browser: on the fixture, the orphan check follows the decision t
         const routedOrphan = await orphanCheck("none", ["/spa#/", "/spa#/contact", "/spa#/offer"]);
         assert.equal(routedOrphan.record.status, "Failed", JSON.stringify(routedOrphan.record));
         assert.match(routedOrphan.record.rawMessage, /\/spa#\/offer is not linked from any other inspected page/);
+
+        // TFP-177 (T30): /late-links draws its link to /late-links/item only after a request the app starts
+        // 800 ms late. Inspection waits for that, records the link, and the item isn't an orphan.
+        const late = await orphanCheck("none", ["/late-links", "/late-links/item"]);
+        assert.ok(late.inspection.pages[0].linkDetails.some((link: { url: string }) => link.url.endsWith("/late-links/item")), "the late link is recorded");
+        assert.equal(late.record.status, "Passed", JSON.stringify(late.record));
     } finally {
         await fixture.close();
     }
