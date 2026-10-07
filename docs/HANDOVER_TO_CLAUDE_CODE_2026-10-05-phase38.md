@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `6876b93`; `e2a3070` (TFP-174) is committed, not
-pushed. Phase 38 is complete. Since then:
+`origin/main` is at `18efe7c`; `fac43b6`, `7233751` and `20d6773` are
+committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -34,17 +34,19 @@ pushed. Phase 38 is complete. Since then:
   - TFP-154: the first score (6 found, 3 hinted, 28 missed of 37) and the
     re-score after TFP-167 (`878a49d`: 9 found, 4 hinted, 24 missed), both
     verified. The known-bug gate is met.
-- **Now: Phase 40** (`docs/decisions/phase-40-page-type-selection-decision-record.md`).
-  Gate A passed 2026-10-07. TFP-172 to TFP-174 are done and verified
-  (`10c3f8c`, `967ad6c`, `1e7fcd1`, `e2a3070`). Before TFP-175, make
-  TFP-174's two follow-ups (the protocol-relative path check, and the stale
-  journeys assertion), each as its own commit. Then TFP-175, and stop at
-  Gate B.
+- **Phase 40 is complete** (Gate B passed 2026-10-07, Emil): the automatic
+  page selection is kept (9 found, 4 hinted, 24 missed, tying the
+  hand-picked list).
+- **Now: one batch, built ticket by ticket, verified once (Emil,
+  2026-10-07).** Each ticket gets its own commit and its own targeted tests
+  while building; the full unit suite, the regression tests and
+  `check:template-unchanged` run once, at the end of the batch. In order:
+  1. TFP-177 (inspection waits for single-page apps; T30);
+  2. TFP-162, TFP-163, TFP-164 (`real-site-run-findings-backlog-2026-10-01.md`);
+  3. TFP-168, then TFP-169;
+  4. TFP-178 (labelling only, from committed records; no runs).
+  Stop for verification after the batch. Don't start Phase 39.
 - **Not started, not next:**
-  - TFP-168 (model and OpenAI visits through `tfGoto`) and TFP-169 (TFP-147's
-    security case resets at fixture start-up), in
-    `known-bug-benchmark-backlog-2026-10-06.md`;
-  - TFP-162 to TFP-164 (`real-site-run-findings-backlog-2026-10-01.md`);
   - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
     Phase 40; needs Docker on Emil's machine for TFP-158).
 - **Git:** don't use `git stash` in this repo; Emil keeps an older stash

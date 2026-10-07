@@ -336,6 +336,49 @@ services to third parties. So:
   crawl output gives 1 page on with-bugs and 46 on the clean site.
   Scoring waits for TFP-165.
 
+### TFP-177 — Inspection waits for single-page apps to draw (T30)
+
+- **Priority:** P1 · **Labels:** `bug`, `introspect`
+- **Problem it solves:** TFP-175 (T30). On with-bugs, the orphan check
+  failed `/#/product/6` as "not linked from any other inspected page",
+  because inspection read home and the category before their product cards
+  drew, so it recorded no product links. Any product page would have failed
+  the same way. Generated page visits wait for the page to draw (TFP-167);
+  inspection's reading of a page doesn't wait reliably enough.
+- **Scope:** find why inspection's settled read missed the cards (the wait
+  TFP-165 added, its bound, or when links are read), and make inspection
+  read a page only after it has drawn, as `tfGoto` waits: network quiet,
+  bounded, never failing for the wait.
+- **Deliverables:** the fix; a fixture page whose links to another page
+  appear only after a delayed request, inspected; `TEST_PLAN.md` cases.
+- **Acceptance criteria:**
+  - On the fixture, inspection records the late links, and the generated
+    orphan check passes for the linked page. It fails on the old code.
+  - Re-inspecting with-bugs home and `/#/category/hand-tools` records their
+    product links (a fresh inspection, read-only).
+  - `check:template-unchanged`: any change is explained (fixed inputs carry
+    their own page data, so none is expected).
+- **Dependencies:** none.
+
+### TFP-178 — Label the clean Toolshop's baseline failures
+
+- **Priority:** P3 · **Labels:** `measurement`, `benchmark`
+- **Problem it solves:** Decision 9's condition 4 (Phase 40) could only be
+  read against new failures, because the clean site's failures in the
+  re-score were never labelled; the first score labelled with-bugs only.
+- **Scope:** read every clean-site failure in the re-score
+  (`runs-tfp167/`) and TFP-175 (`benchmarks/2026-10-07-tfp175-selection/`)
+  by hand from the committed records, and label each in
+  `labelled-failures.md` (an existing label where it fits). No new runs.
+- **Acceptance criteria:** every clean-site failure in both runs has a
+  label; the count per label is recorded.
+- **Dependencies:** none.
+
+**Known limit of this benchmark (2026-10-07):** the clean Toolshop resets
+its catalogue, at least hourly on 2026-10-07, so product ids and card text
+change between runs (U5). Scores compare bugs, not pages, so they hold;
+failure-by-failure diffs on the clean site across runs hours apart don't.
+
 ## Recommended Execution Order
 
 1. Confirm Decisions 1 to 4. **Done, 2026-10-06.**

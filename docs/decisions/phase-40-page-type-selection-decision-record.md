@@ -7,7 +7,7 @@ of every type up to a cap instead of the first 5 pages; Comprehensive covers
 every type first. The report names the types found, covered and skipped,
 with each page's full URL. A list of URLs pasted into the URL field re-runs
 exactly those pages.
-Status: Locked 2026-10-07. Emil asked for it on 2026-10-06 and decided
+Status: Complete 2026-10-07 (Gate B passed, Emil). Locked 2026-10-07. Emil asked for it on 2026-10-06 and decided
 that Standard is not capped at 5 pages; on 2026-10-07 he confirmed the
 remaining values: a cap of 8, exact structural signatures instead of an
 outline threshold, ordered ranking rules instead of weights, the keep rule
@@ -478,6 +478,25 @@ use.
 - **Dependencies:** TFP-172 to TFP-174.
 - **Stop at Gate B** after this ticket.
 
+- **Done, `fac43b6`, `7233751` (TFP-174's follow-ups) and `20d6773`
+  (TFP-175), verified 2026-10-07 (Cowork). Outcome: the selection is kept.**
+  - **Pages:** each Standard run used exactly the 8 pages in the app's
+    selection file, home first; every inspected page was on the real site.
+    The first attempt (Git Bash rewrote page paths into Windows paths) was
+    discarded unscored.
+  - **Score:** 9 found, 4 hinted, 24 missed, bug for bug the re-score's.
+    The selection ties the hand-picked list and covers every type it
+    skipped; the remaining misses (layout, spelling, tab order) are check
+    gaps, not selection gaps.
+  - **Run time:** Standard 1,232 s (with-bugs) and 1,276 s (clean), within
+    1,800 s; about 154 s a page.
+  - **Condition 4 (Emil, 2026-10-07):** read as "no new unlabelled failure
+    on the clean site against the re-score", since the clean site's baseline
+    failures were never labelled. TFP-178 labels them, so later benchmarks
+    can use the strict reading.
+  - **New:** T30, a false orphan failure from inspection reading pages
+    before their cards drew; TFP-177 fixes it.
+
 ## Recommended Execution Order
 
 1. TFP-170, then TFP-171. **Gate A (first measurement, 2026-10-07): not
@@ -497,5 +516,7 @@ expected types; the-internet gives 57, with its form types listed.
   built.
 
 ### Gate B — Selection measured
+**Passed 2026-10-07 (Emil):** the automatic selection meets Decision 9's
+keep rule and is kept. Phase 40 is complete.
 - TFP-172 to TFP-175 landed and independently verified.
 - Decision 9's keep rule applied and recorded, with run times.

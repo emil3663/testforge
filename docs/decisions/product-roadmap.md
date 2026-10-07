@@ -294,7 +294,7 @@ starts after Phase 38 Gate B. See
 `phase-39-run-concurrency-decision-record.md`.
 
 
-### Phase 40 — Page-type selection (locked 2026-10-07)
+### Phase 40 — Page-type selection (complete 2026-10-07)
 Group a site's crawled pages into types (templates) by address pattern and
 page outline, and test one page of every type. Pages are no longer chosen
 in crawl order.
