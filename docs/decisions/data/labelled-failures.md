@@ -46,6 +46,7 @@ and a classifier only sees what is left).
 | T28 | with-bugs Toolshop | passive security "puts no password or session token in a URL": "a form on /#/auth/login would send its password field in the URL (method GET ...)" | The check flags any GET `<form>` holding a password input. Read by hand: the field has no `name`, so a native submit wouldn't send it, and the app submits by script. The clean site's form is the same; its check passed only because the form wasn't drawn yet (T25). In the re-score (`runs-tfp167/`) it fails on both sites' login and register pages | as T25 | Open |
 | T29 | with-bugs Toolshop | "link types: ... classified correctly" on 5 pages: `getByRole('link', { name: 'Categories' })` not found | "Categories" is `<a href="#" role="button">`: its role is button, so a link-role lookup can't find it. (The clean site's is a `<button>`, not a link) | as T25 | Open |
 | T30 | with-bugs Toolshop | "orphan page approximation: each scanned page is linked from another scanned page" on all 8 pages: "/#/product/6 is not linked from any other inspected page" | Read from the run's inspection profile: home and `/#/category/hand-tools` exposed no product link at all, where the re-score's inspection of the same pages had `#/product/1` to `#/product/9`. Inspection read them before the product cards drew (they load from the API), so the product page looked unlinked. The tests themselves ran on drawn pages (axe names the cards), so no bug's score depends on it. Not the selection: product 1 would have failed the same way | TFP-175, `benchmarks/2026-10-07-tfp175-selection/runs/``with-bugs-standard-*` (`7233751`) | Open: inspection doesn't wait for a hash route's data, as generated visits do since TFP-167 |
+| T31 | practicesoftwaretesting.com | "link types: ... classified correctly": `getByRole('link', { name: 'Combination Pliers ABCDE$14.15' })` (a product card) and `{ name: 'Learn Test AutomationHands-on courses for Playwright, Robot Framework, APIs and more' }` (a footer card) not found | The name is the link's text as inspection joined it, with no space between its block children ("Automation" + "Hands-on", the CO2 letters and the price). The browser's accessible name separates them, so an exact lookup finds nothing, though the link is there. The re-score (5) and TFP-175 (7), clean site only (the with-bugs footer and cards differ) | TFP-178, from `benchmarks/2026-10-06-toolshop-known-bugs/runs-tfp167/clean-standard-records.json` and `benchmarks/2026-10-07-tfp175-selection/runs/clean-standard-records.json` | Open |
 
 ## Model errors
 
@@ -70,10 +71,10 @@ and a classifier only sees what is left).
 | R7 | the-internet | select-name (critical, 4.1.2) and TFP-121's check on `/dropdown` | `<select id="dropdown">` with no label anywhere on the page (0 `<label>` elements) | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
 | R8 | the-internet | label (critical, 4.1.2) and TFP-121's check on `/dynamic_controls` | The checkbox and the text input have no label | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
 | R9 | the-internet | list (serious, 1.3.1) on `/disappearing_elements` | The `<ul>`'s direct children are `LI,LI,LI,LI,LI,UL` - a list inside a list without an `<li>` | TFP-136, `benchmarks/2026-10-01-phase35-first-slice/accessibility-none-the-internet.herokuapp.com.json` (run `84094801`) | Open (the site's) |
-| R10 | practicesoftwaretesting.com | axe `button-name` (critical, 4.1.2) on `/auth/login` | The show-password toggle is `<button class="btn btn-outline-secondary"><fa-icon><svg aria-hidden="true">…</svg></fa-icon></button>`: no text, no label; its aria snapshot is `- button`. New with Phase 38's scan (TFP-148) | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` | Open (the site's) |
+| R10 | practicesoftwaretesting.com | axe `button-name` (critical, 4.1.2) on `/auth/login` (and `/auth/register`, TFP-178) | The show-password toggle is `<button class="btn btn-outline-secondary"><fa-icon><svg aria-hidden="true">…</svg></fa-icon></button>`: no text, no label; its aria snapshot is `- button`. New with Phase 38's scan (TFP-148) | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` | Open (the site's) |
 | R11 | practicesoftwaretesting.com | "storage failure injection: localStorage" on all 5 pages | With `localStorage` throwing, the app throws it uncaught and renders an empty body (0 characters, no products) | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Open (the site's) |
 | R12 | practicesoftwaretesting.com | template SEO: meta description and canonical (5 pages each), robots.txt `Sitemap:`, sitemap.xml | No meta description or canonical link after render; `/robots.txt` and `/sitemap.xml` answer 200 with the app's HTML shell | TFP-150, `benchmarks/2026-10-06-tfp150/toolshop-after-report.json` (and `-before-`, `d90de57`) | Real, and stay failures (Phase 36 Decision 2) |
-| R13 | with-bugs Toolshop | template SEO: meta description and canonical on the 5 Standard routes, robots.txt `Sitemap:`, sitemap.xml | No meta description or canonical link; `/robots.txt` is a real robots file with no `Sitemap:` line, and `/sitemap.xml` answers 404. Not a listed bug | TFP-154, `benchmarks/2026-10-06-toolshop-known-bugs/runs/with-bugs-standard-records.json` | Real, and stay failures (Phase 36 Decision 2) |
+| R13 | Toolshop, both sites | template SEO: meta description and canonical on the 5 Standard routes, robots.txt `Sitemap:`, sitemap.xml | No meta description or canonical link; `/robots.txt` is a real robots file with no `Sitemap:` line, and `/sitemap.xml` answers 404. Not a listed bug | TFP-154, `benchmarks/2026-10-06-toolshop-known-bugs/runs/with-bugs-standard-records.json` | Real, and stay failures (Phase 36 Decision 2) |
 | R14 | with-bugs Toolshop | "anchor links point to existing in-page targets": "Anchor target missing for #filters" (2 pages) | `<a href="#filters" data-bs-toggle="collapse">` (the small-screen filters toggle); no element has id `filters`, after the page settles too. The clean site uses a button with an existing target. Not a listed bug | as R13 | Open (the site's) |
 | R15 | with-bugs Toolshop | axe `button-name` (critical, 4.1.2) on `/#/auth/login` and `/#/auth/register` | The show-password toggle, `<button class="btn btn-outline-secondary"><i class="fa fa-eye"></i></button>`: no text, no label. The same defect as R10 on the clean site, which this run's clean scans didn't reach (its form wasn't drawn yet, T25). Not a listed bug | as R13 | Open (the site's) |
 | R16 | Toolshop, both sites | axe `list` (serious, 1.3.1) on home and the category (`.checkbox:nth-child(n) > ul`), and on the clean register page (`#passwordHelp > ul`) | A `<ul>` that directly holds something other than `<li>`: the filters' nested category lists. Seen once TFP-167 let the filters draw. Not a listed bug | TFP-154 re-score, `benchmarks/2026-10-06-toolshop-known-bugs/runs-tfp167/*-accessibility-records.json` (`7577252`) | Open (the site's) |
@@ -90,6 +91,7 @@ and a classifier only sees what is left).
 | U4 | with-bugs Toolshop | "form element check: Your password * [Login] [input]" on `/#/auth/login`: "not editable ... Element is not an <input>" | Two elements carry `id="password"`: the `app-password-input` wrapper and the input inside it. `[id="password"]` lands on the wrapper. The duplicate id is real (axe lists `duplicate-id-aria` for manual review on register); the check's message blames the field, which is editable | TFP-154, `benchmarks/2026-10-06-toolshop-known-bugs/runs/with-bugs-standard-records.json` Also on `/#/auth/register` ("form element check: Your password * [Password] [input]", TFP-175, `benchmarks/2026-10-07-tfp175-selection/runs/`), the same two elements | Unclear: a real duplicate id, reported as the wrong fault |
 | U5 | practicesoftwaretesting.com | "link types: ... classified correctly" on the clean product page: `getByRole('link', { name: 'Hammer More information' })` not found | A product card link named as inspection saw it, a few minutes before the test, wasn't there when the test ran. Not read back: an hour later the clean site's catalogue had been reset and the run's product (`/product/01M4B76Y1E21FPWYSS4K07YSMB`) drew no product at all, so its cards can't be compared. The same check failed the same way in the re-score on "Combination Pliers ABCDE$14.15" | TFP-175, `benchmarks/2026-10-07-tfp175-selection/runs/``clean-standard-*` | Unclear: the cards' contents shift between inspection and test |
 | U6 | practicesoftwaretesting.com | "link health: internal, external, and download links do not return broken responses": the footer's GitHub link answered HTTP 500 | Once, on one of 8 pages; the same link passed on the other 7 and in the re-score. GitHub's answer, not the Toolshop's | TFP-175, `benchmarks/2026-10-07-tfp175-selection/runs/``clean-standard-*` | Unclear: an external host's passing error |
+| U7 | practicesoftwaretesting.com | "orphan page approximation" on all 5 pages of the re-score: "/product/01M48AGCWN26TFYQ1FQ6S7FNJF is not linked from any other inspected page" | Read from the run's profile: home and `/category/hand-tools` each listed 9 products, none of them this one. It is TFP-154's hand-picked product, fixed by id on 2026-10-06; the clean catalogue is reset (the benchmark's known limit), so by the re-score its page was reached only by its address. The check is right about the data it had | TFP-178, from `benchmarks/2026-10-06-toolshop-known-bugs/runs-tfp167/clean-standard-*` | Unclear: a benchmark artifact, not the site's or the template's |
 
 ## What this set is, and isn't
 
@@ -118,3 +120,28 @@ and a classifier only sees what is left).
   something about the page that one real page contradicted: visibility by
   design, a zero-size anchor, a root page that isn't the flow's page, a
   navigation that hasn't committed yet, an https upgrade.
+
+
+## The clean Toolshop's failures, labelled (TFP-178, 2026-10-07)
+
+Decision 9's condition 4 (Phase 40) could be read only against new failures,
+because the first score labelled with-bugs only. Every clean-site failure in
+TFP-154's re-score (`runs-tfp167/`) and in TFP-175
+(`benchmarks/2026-10-07-tfp175-selection/runs/`) was read by hand from the
+committed records, then given a label by `label-clean.mjs` (in TFP-175's
+folder), which fails if any failure is left without one. No new runs.
+
+- **New labels:** T31 (a link's name joined without spaces) and U7 (the
+  hand-picked product no longer listed after a catalogue reset).
+- **Labels widened:** R13 (both sites), R10 (register too).
+- R16 already covers the clean register and categories; T28, R17, U5 and U6
+  already name the clean site.
+
+
+
+**Every one of the 122 clean-site failures has a label.** By verdict:
+- **real (R10, R11, R13, R16, R17):** 70;
+- **template errors (T28, T31):** 19;
+- **unclear (U2, U3, U5, U6, U7):** 33.
+
+R10+R16 is one scan failing on both rules, on register.
