@@ -185,3 +185,100 @@ field-name failures on home and the category are bugs 33 and 93.
   outside this set.
 - **One run each, from this machine.** The route check's 14 s budget left
   3 to 7 product routes unchecked on each page (recorded as findings).
+
+## Re-score after TFP-167 (2026-10-07)
+
+The first score above stays as it was. This re-score used the same page
+set, the same committed rule (`scoring-rule.md`), the same driver and both
+Toolshops, read-only, one worker, Chromium. The code was `7577252`: every
+generated page visit now waits for the network to go quiet, for at most
+5 s. Evidence: `benchmarks/2026-10-06-toolshop-known-bugs/runs-tfp167/`.
+
+### The score, beside the first
+
+| | First (`26fed09`) | Re-score (`7577252`) |
+| --- | --- | --- |
+| Found | 6 | **9** |
+| Hinted | 3 | **4** |
+| Missed | 28 | **24** |
+
+| Area | Scored | Found | Hinted | Missed |
+| --- | --- | --- | --- | --- |
+| functional | 8 | 3 | 2 | 3 |
+| visual | 13 | 1 | 1 | 11 |
+| content | 6 | 0 | 1 | 5 |
+| accessibility | 7 | 5 | 0 | 2 |
+| security | 3 | 0 | 0 | 3 |
+| **all** | **37** | **9** | **4** | **24** |
+
+**What moved, and why.** Each change is on the product page or home,
+which the first run read before it drew:
+
+| ID | First | Re-score | Evidence now |
+| --- | --- | --- | --- |
+| 91 | missed | **found** | axe `label` (critical) on `input`, and "form fields on /#/product/1 with no accessible name: input[type="number"]" (Standard and Comprehensive); the clean product page passes |
+| 92 | hinted | **found** | axe `image-alt` on the product page's product images (`a[href$="#/product/2"] > .card-img-wrapper > .card-img-top`, ...); the clean product page passes |
+| 46 | missed | **found** | axe `color-contrast` (serious) on `.text-reset` on `/#/product/1`. Read by hand, that is the category badge "Pliers", dark text `rgb(33, 37, 41)` on grey: the black badge text. The clean page passes |
+| 26 | missed | hinted | axe `image-alt` on home's product card images (`a[data-test="product-1"] > .card-img-top`), the bug's elements. The message is about alt text, not images that don't show |
+| 40 | missed | hinted | axe `button-name` on `#btn-decrease-quantity` and `#btn-increase-quantity`, the bug's buttons. It names their missing names, not that they don't change the quantity |
+
+The other scores are unchanged:
+- **Found:** 3, 28, 30, 85, 87 and 93. In this run 87 is found by
+  Standard as well as Comprehensive, since the login form is now drawn when
+  the check runs.
+- **Hinted:** 33 and 60.
+- **Missed:** everything else. Visual, typos, behaviour on read-only pages,
+  53, 94 and the three security probes, as in the first score's table.
+
+**Against the prediction:** all 7 "likely" bugs are now found (28, 30,
+85, 87, 91, 92, 93).
+
+### Runs and the 30-minute budget
+
+| Site | Run | Tests | Passed | Failed | Not run | Run time (first) |
+| --- | --- | --- | --- | --- | --- | --- |
+| with-bugs | Standard | 288 | 234 | 48 | 6 | **1,058 s** (766 s) |
+| with-bugs | Comprehensive security | 37 | 35 | 2 | 0 | 95 s (36 s) |
+| with-bugs | Comprehensive accessibility | 18 | 6 | 12 | 0 | 78 s (45 s) |
+| clean | Standard | 272 | 225 | 41 | 6 | **916 s** (590 s) |
+| clean | Comprehensive security | 33 | 31 | 2 | 0 | 85 s (29 s) |
+| clean | Comprehensive accessibility | 16 | 12 | 4 | 0 | 61 s (21 s) |
+
+Every run is within the 1,800 s budget. The longest, with-bugs Standard,
+leaves 742 s. (TFP-167's own measurement of the same run took 1,170 s:
+two runs from this machine, about 10 % apart.)
+
+**Performance checks** (navigation, LCP, CLS, TBT, page weight) now read
+the page after up to 5 s more settling. Any change in them between the two
+scores may come from that, not from found bugs. Measured here, none
+changed: on both sites every performance check has the same outcome in both
+scores. The only failure is the broken `broken.png` request (bug 28). There
+is no LCP or CLS finding, and TBT is recorded as 0 ms.
+
+### The control is even now
+
+The first score's clean runs read some pages before they drew. Now they
+see what the with-bugs runs see:
+- R10's unnamed show-password toggle fails `button-name` on the clean login
+  and register pages, as R15 does on with-bugs;
+- the filters' `list` violation shows on both sites;
+- "password field in the URL" fails on both sites' login and register
+  pages (T28);
+- the clean site's form checks all pass (T25 is gone).
+
+So shared defects now cancel out in the diff, as the control intends.
+
+### With-bugs failures that match no bug
+
+All are in `docs/decisions/data/labelled-failures.md`:
+- **Unchanged:** T26, T27, T29, R13, R14, R15 and U4. U2 and U3 also fail
+  on the clean site.
+- **T25** is gone.
+- **T28** now fails on both sites' login and register pages, which
+  confirms it's the template's error, not the site's.
+- **New, real, not listed bugs:**
+  - **R16**, on both sites: the filters' nested `<ul>` (axe `list`);
+  - **R17**, with-bugs only: the related products' small `href="#"`
+    links fail `target-size`;
+  - **R18**, with-bugs only: home's red "Out of stock" text fails
+    `color-contrast` (`.float-start`).
