@@ -322,8 +322,10 @@ draw();
         const late = `<h1>Late form</h1><form aria-label="Search notes" action="/notes" method="get"><div><label for="lf-title">Title</label><input id="lf-title" name="title"></div><div><label for="lf-tag">Tag</label><input id="lf-tag" name="tag"></div><div><input type="submit" value="Search" style="padding:6px 12px"></div></form><p><button type="button" style="padding:6px 12px"><span>Save draft</span></button></p>`;
         return send(200, page("Late form", `<div id="app">Loading...</div>`, { script: `fetch("/api/slow").then(() => { document.getElementById("app").innerHTML = ${JSON.stringify(late)}; });` }));
     }
-    // Phase 40 (TFP-171): a small shop of page types, for grouping. Every page
-    // links every other, so a crawl from /types finds them all. Expected:
+    // Phase 40 (TFP-171, revised in TFP-176): a small shop of page types, for
+    // grouping. Every page links every other, so a crawl from /types finds
+    // them all. TFP-176 adds an empty category, which stays a listing.
+    // TFP-171's expectation:
     // home; detail /types/product/:id (101, 102) and, split off by its
     // outline, 103 (sold out, with an aside); listing /types/category/:slug;
     // /types/account/:slug split by outline into sign-in (login) and form
@@ -334,7 +336,7 @@ draw();
     // root, as on a real site: under /types, "product" and "p" would read as
     // a slug (/types/:slug/:id). Not linked from the nav, like /anchors.
     if (url.pathname === "/types" || /^\/(types|p|shop)\//.test(url.pathname)) {
-        const all = ["/types", "/types/product/101", "/types/product/102", "/types/product/103", "/types/category/tools", "/types/category/garden", "/types/account/login", "/types/account/contact", "/types/legal/privacy", "/types/help/terms", "/p/iphone15promaxblack2023", "/p/galaxy-s24", "/shop/men/shirts", "/shop/women/shoes"];
+        const all = ["/types", "/types/product/101", "/types/product/102", "/types/product/103", "/types/category/tools", "/types/category/garden", "/types/category/empty", "/types/account/login", "/types/account/contact", "/types/legal/privacy", "/types/help/terms", "/p/iphone15promaxblack2023", "/p/galaxy-s24", "/shop/men/shirts", "/shop/women/shoes"];
         if (!all.includes(url.pathname)) return send(404, "<!doctype html><title>Not found</title><h1>Not found</h1>");
         const img = `<img alt="" width="40" height="40" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E">`;
         const cards = `<div class="cards">${[101, 102, 103].map((id) => `<a class="card" href="/types/product/${id}">${img}<h2>Item ${id}</h2></a>`).join("")}</div>`;
@@ -347,6 +349,8 @@ draw();
             "/types/product/103": `<main><h1>Item 103</h1><p>Sold out.</p></main>${aside}`,
             "/types/category/tools": `<main><h1>Tools</h1>${cards}</main>`,
             "/types/category/garden": `<main><h1>Garden</h1>${cards}</main>`,
+            // TFP-176: a category with nothing in it - no cards. It stays in its listing type: cards don't split.
+            "/types/category/empty": `<main><h1>Empty</h1><p>Nothing here yet.</p></main>`,
             "/types/account/login": `<main><h1>Sign in</h1><form action="/types/account/login" method="post"><label>Email <input type="email" name="email"></label><label>Password <input type="password" name="password"></label><button>Sign in</button></form></main>`,
             "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject <input name="subject"></label><label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
             "/types/legal/privacy": `<main><h1>Privacy</h1><p>We keep little.</p></main>`,

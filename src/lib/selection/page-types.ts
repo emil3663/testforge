@@ -8,7 +8,9 @@
  *   (`/product/01M48AGCWN26TFYQ1FQ6S7FNJF` -> `/product/:id`).
  * - Segments that vary between otherwise identical addresses under a shared
  *   parent become `:slug` (`/category/hand-tools`, `/category/power-tools` ->
- *   `/category/:slug`). The parent is a real segment: top-level pages
+ *   `/category/:slug`). A segment directly before an `:id` names a
+ *   collection and is never a slug (Gate A, 2026-10-07): `/en/product/1` and
+ *   `/en/category/2` stay `/en/product/:id` and `/en/category/:id`. The parent is a real segment: top-level pages
  *   (`/contact`, `/privacy`) stay literal, since Decision 2 merges those by
  *   their outline, not their address. A segment with no sibling that varies
  *   stays literal.
@@ -21,7 +23,7 @@
  * half only.
  */
 
-import type { PageOutline } from "./page-outline";
+import { formSignatureOf, signatureOf, type PageOutline } from "./page-outline";
 
 export interface PageType {
     /** The address pattern: `/product/:id`, `/#/category/:slug`, `/contact`. */
@@ -79,6 +81,8 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
         const values = new Map<string, Set<string>>();
         for (const page of withIds) {
             if (page.segments.length <= position) continue;
+            // Gate A revision (Emil, 2026-10-07): a segment directly before an :id names a collection, not a slug.
+            if (page.segments[position + 1] === ":id") continue;
             const masked = page.segments.map((segment, index) => (index === position ? "*" : segment));
             const key = `${page.prefix}|${page.segments.length}|${masked.join("/")}`;
             const seen = values.get(key) ?? new Set<string>();
@@ -93,7 +97,7 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
     const types = new Map<string, string[]>();
     for (const page of withIds) {
         const segments = page.segments.map((segment, position) => {
-            if (segment === ":id" || position === 0) return segment;
+            if (segment === ":id" || position === 0 || page.segments[position + 1] === ":id") return segment;
             const masked = page.segments.map((other, index) => (index === position ? "*" : other));
             return slugAt.has(`${page.prefix}|${page.segments.length}|${masked.join("/")}|${position}`) ? ":slug" : segment;
         });
@@ -104,46 +108,73 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
 }
 
 /**
- * Phase 40 Decision 2 (TFP-171): TFP-170's address types refined by each
- * page's structural signature (page-outline.ts).
- * - Split: pages of one address pattern with different signatures become
- *   separate types (each keeps the pattern).
- * - Merge: types of different patterns with equal signatures become one type,
- *   listing every pattern (`/privacy + /terms`).
- * A page without an outline (a crawl that couldn't read one) keeps its
- * address type and never merges. Types keep crawl order of first appearance.
+ * Phase 40 Decision 2, as revised at Gate A (Emil, 2026-10-07; TFP-176):
+ * the address type comes first, and the outline refines it in two narrow
+ * ways. The first measurement (TFP-171) merged any types with equal
+ * signatures, which put 90 of the-internet's 100 pages into one type with
+ * home, and split on cards, which follows data (products with and without
+ * related items), not templates.
+ * - Split an address type only when its pages' form signatures differ (the
+ *   Toolshop's /auth/:slug into login, register and forgot-password).
+ *   Landmarks and cards don't split.
+ * - Merge address types only when they are siblings in one section - the
+ *   same prefix, the same first segment and the same depth, at least 2
+ *   (`/p/:id` and `/p/:slug`; `/shop/men/shirts` and `/shop/women/shoes`) -
+ *   and every page of both has one equal full signature.
+ * - Never merge top-level pages (depth 1, home included).
+ * A page with no outline has an unknown form signature: it stays apart
+ * within its address type and never merges. Types keep crawl order.
  */
 export interface OutlinedPageType {
     /** The type's address patterns, joined with " + " when a merge brought several together. */
     pattern: string;
     patterns: string[];
     pages: string[];
-    /** The shared structural signature; "" when the pages had no outline. */
+    /** The pages' shared full signature; "" when they differ or are unknown (the type never merges then). */
     signature: string;
+    /** The pages' shared form signature; "" when unknown. */
+    formSignature: string;
 }
 
-export function groupPagesIntoTypes(pages: Array<{ path: string; signature?: string }>): OutlinedPageType[] {
-    const signatureOfPage = new Map(pages.map((page) => [page.path, page.signature ?? ""]));
+/** A pattern's section, for merging: its prefix and first segment at its depth; null for a top-level page. */
+function sectionOf(pattern: string) {
+    const hashAt = pattern.search(/#!?\//);
+    const prefix = hashAt >= 0 ? pattern.slice(0, hashAt + (pattern[hashAt + 1] === "!" ? 2 : 1)) : "";
+    const segments = (hashAt >= 0 ? pattern.slice(prefix.length) : pattern).split("/").filter(Boolean);
+    return segments.length < 2 ? null : `${prefix}|${segments[0]}|${segments.length}`;
+}
+
+export function groupPagesIntoTypes(pages: Array<{ path: string; outline?: PageOutline }>): OutlinedPageType[] {
+    const outlineOf = new Map(pages.map((page) => [page.path, page.outline]));
     const buckets: OutlinedPageType[] = [];
     for (const addressType of groupPagesByAddress(pages.map((page) => page.path))) {
-        const bySignature = new Map<string, string[]>();
+        const byForms = new Map<string, string[]>();
         for (const name of addressType.pages) {
-            const signature = signatureOfPage.get(name) ?? "";
-            bySignature.set(signature, [...(bySignature.get(signature) ?? []), name]);
+            const outline = outlineOf.get(name);
+            const key = outline ? formSignatureOf(outline) : "";
+            byForms.set(key, [...(byForms.get(key) ?? []), name]);
         }
-        for (const [signature, names] of bySignature) {
-            buckets.push({ pattern: addressType.pattern, patterns: [addressType.pattern], pages: names, signature });
+        for (const [formSignature, names] of byForms) {
+            const signatures = new Set(names.map((name) => {
+                const outline = outlineOf.get(name);
+                return outline ? signatureOf(outline) : "";
+            }));
+            const signature = signatures.size === 1 && !signatures.has("") ? [...signatures][0] : "";
+            buckets.push({ pattern: addressType.pattern, patterns: [addressType.pattern], pages: names, signature, formSignature });
         }
     }
 
     const merged: OutlinedPageType[] = [];
     for (const bucket of buckets) {
-        const same = bucket.signature ? merged.find((type) => type.signature === bucket.signature) : undefined;
+        const section = sectionOf(bucket.pattern);
+        const same = section && bucket.signature
+            ? merged.find((type) => type.signature === bucket.signature && type.patterns.every((pattern) => sectionOf(pattern) === section && pattern !== bucket.pattern))
+            : undefined;
         if (!same) {
             merged.push({ ...bucket, patterns: [...bucket.patterns], pages: [...bucket.pages] });
             continue;
         }
-        if (!same.patterns.includes(bucket.pattern)) same.patterns.push(bucket.pattern);
+        same.patterns.push(bucket.pattern);
         same.pages.push(...bucket.pages);
         same.pattern = same.patterns.join(" + ");
     }

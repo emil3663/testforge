@@ -1,0 +1,115 @@
+{
+  "site": "toolshop-with-bugs",
+  "from": "toolshop-with-bugs-crawl.json (crawled 2026-10-07T05:46:52.145Z)",
+  "pages": 34,
+  "addressTypes": 7,
+  "types": 9,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/#/",
+      "count": 1,
+      "forms": "forms:2[select][text]",
+      "pages": [
+        "/#/"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/#/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[text]",
+      "pages": [
+        "/#/auth/forgot-password"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/#/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[password,text]",
+      "pages": [
+        "/#/auth/login"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/#/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[password,select,text]",
+      "pages": [
+        "/#/auth/register"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/#/category/:slug",
+      "count": 3,
+      "forms": "forms:1[select]",
+      "pages": [
+        "/#/category/hand-tools",
+        "/#/category/power-tools",
+        "/#/category/undefined"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/#/chainsaws",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/#/chainsaws"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/#/contact",
+      "count": 1,
+      "forms": "forms:1[email,file,select,text,textarea]",
+      "pages": [
+        "/#/contact"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/#/product/:id",
+      "count": 24,
+      "forms": "forms:0",
+      "pages": [
+        "/#/product/1",
+        "/#/product/10",
+        "/#/product/11",
+        "/#/product/12",
+        "/#/product/13",
+        "/#/product/14",
+        "/#/product/15",
+        "/#/product/16",
+        "/#/product/19",
+        "/#/product/2",
+        "/#/product/20",
+        "/#/product/21",
+        "/#/product/22",
+        "/#/product/23",
+        "/#/product/24",
+        "/#/product/25",
+        "/#/product/26",
+        "/#/product/3",
+        "/#/product/4",
+        "/#/product/5",
+        "/#/product/6",
+        "/#/product/7",
+        "/#/product/8",
+        "/#/product/9"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/#/rentals",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/#/rentals"
+      ]
+    }
+  ]
+}

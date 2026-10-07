@@ -1,0 +1,565 @@
+{
+  "site": "the-internet",
+  "from": "the-internet-crawl.json (crawled 2026-10-07T05:48:40.134Z)",
+  "pages": 100,
+  "addressTypes": 57,
+  "types": 57,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/about",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/about"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/abtest",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/abtest"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/add_remove_elements",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/add_remove_elements"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/basic_auth",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/basic_auth"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/broken_images",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/broken_images"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/challenging_dom",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/challenging_dom"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/checkboxes",
+      "count": 1,
+      "forms": "forms:1[checkbox]",
+      "pages": [
+        "/checkboxes"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/contact-us",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/contact-us"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/context_menu",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/context_menu"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/digest_auth",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/digest_auth"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/disappearing_elements",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/disappearing_elements"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/download",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/download"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/download_secure",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/download_secure"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/drag_and_drop",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/drag_and_drop"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/dropdown",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/dropdown"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/dynamic_content",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/dynamic_content"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/dynamic_controls",
+      "count": 1,
+      "forms": "forms:2[checkbox][text]",
+      "pages": [
+        "/dynamic_controls"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/dynamic_loading",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/dynamic_loading"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/dynamic_loading/:id",
+      "count": 2,
+      "forms": "forms:0",
+      "pages": [
+        "/dynamic_loading/1",
+        "/dynamic_loading/2"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/entry_ad",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/entry_ad"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/exit_intent",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/exit_intent"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/floating_menu",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/floating_menu"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/forgot_password",
+      "count": 1,
+      "forms": "forms:1[text]",
+      "pages": [
+        "/forgot_password"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/frames",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/frames"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/gallery",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/gallery"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/geolocation",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/geolocation"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/horizontal_slider",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/horizontal_slider"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/hovers",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/hovers"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/iframe",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/iframe"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/infinite_scroll",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/infinite_scroll"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/infinite_scroll/:id",
+      "count": 36,
+      "forms": "forms:0",
+      "pages": [
+        "/infinite_scroll/10",
+        "/infinite_scroll/11",
+        "/infinite_scroll/12",
+        "/infinite_scroll/13",
+        "/infinite_scroll/14",
+        "/infinite_scroll/15",
+        "/infinite_scroll/16",
+        "/infinite_scroll/17",
+        "/infinite_scroll/18",
+        "/infinite_scroll/19",
+        "/infinite_scroll/20",
+        "/infinite_scroll/21",
+        "/infinite_scroll/22",
+        "/infinite_scroll/23",
+        "/infinite_scroll/24",
+        "/infinite_scroll/25",
+        "/infinite_scroll/26",
+        "/infinite_scroll/27",
+        "/infinite_scroll/28",
+        "/infinite_scroll/29",
+        "/infinite_scroll/3",
+        "/infinite_scroll/30",
+        "/infinite_scroll/31",
+        "/infinite_scroll/32",
+        "/infinite_scroll/33",
+        "/infinite_scroll/34",
+        "/infinite_scroll/35",
+        "/infinite_scroll/36",
+        "/infinite_scroll/37",
+        "/infinite_scroll/38",
+        "/infinite_scroll/4",
+        "/infinite_scroll/5",
+        "/infinite_scroll/6",
+        "/infinite_scroll/7",
+        "/infinite_scroll/8",
+        "/infinite_scroll/9"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/inputs",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/inputs"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/javascript_alerts",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/javascript_alerts"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/javascript_error",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/javascript_error"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/jqueryui",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/jqueryui"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/jqueryui/menu",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/jqueryui/menu"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/key_presses",
+      "count": 1,
+      "forms": "forms:1[text]",
+      "pages": [
+        "/key_presses"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/large",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/large"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/login",
+      "count": 1,
+      "forms": "forms:1[password,text]",
+      "pages": [
+        "/login"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/nested_frames",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/nested_frames"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/notification_message_rendered",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/notification_message_rendered"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/portfolio",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/portfolio"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/redirector",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/redirector"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/shadowdom",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/shadowdom"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/shifting_content",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/shifting_content"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/shifting_content/:slug",
+      "count": 3,
+      "forms": "forms:0",
+      "pages": [
+        "/shifting_content/image",
+        "/shifting_content/list",
+        "/shifting_content/menu"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/slow",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/slow"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/status_codes",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/status_codes"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/status_codes/:id",
+      "count": 4,
+      "forms": "forms:0",
+      "pages": [
+        "/status_codes/200",
+        "/status_codes/301",
+        "/status_codes/404",
+        "/status_codes/500"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/tables",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/tables"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/tinymce",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/tinymce"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/typos",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/typos"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/upload",
+      "count": 1,
+      "forms": "forms:1[file]",
+      "pages": [
+        "/upload"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/users/:id",
+      "count": 3,
+      "forms": "forms:0",
+      "pages": [
+        "/users/1",
+        "/users/2",
+        "/users/3"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/windows",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/windows"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/windows/new",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/windows/new"
+      ]
+    }
+  ]
+}

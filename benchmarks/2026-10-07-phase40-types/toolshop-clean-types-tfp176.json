@@ -1,0 +1,127 @@
+{
+  "site": "toolshop-clean",
+  "from": "toolshop-clean-crawl.json (crawled 2026-10-07T05:46:03.155Z)",
+  "pages": 46,
+  "addressTypes": 7,
+  "types": 9,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/",
+      "count": 1,
+      "forms": "forms:2[select][text]",
+      "pages": [
+        "/"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[email]",
+      "pages": [
+        "/auth/forgot-password"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[email,password]",
+      "pages": [
+        "/auth/login"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "count": 1,
+      "forms": "forms:1[password,select,text]",
+      "pages": [
+        "/auth/register"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/category/:slug",
+      "count": 4,
+      "forms": "forms:1[select]",
+      "pages": [
+        "/category/hand-tools",
+        "/category/other",
+        "/category/power-tools",
+        "/category/special-tools"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/contact",
+      "count": 1,
+      "forms": "forms:1[email,file,select,text,textarea]",
+      "pages": [
+        "/contact"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/privacy",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/privacy"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/product/:id",
+      "count": 35,
+      "forms": "forms:0",
+      "pages": [
+        "/product/01M4ABRANV9W8EY4BD87YZC1RN",
+        "/product/01M4ABRANYGEXY38YZBEDQXTP4",
+        "/product/01M4ABRAP1VJYSDYQZT0HYNWMK",
+        "/product/01M4ABRAP370CSEB700YZ6B0CT",
+        "/product/01M4ABRAP5NCEKRJVSV1MZPKQ8",
+        "/product/01M4ABRAP66T4WKHJMMBF8JBY8",
+        "/product/01M4ABRAP9XVGAA879DXWREZR7",
+        "/product/01M4ABRAPBHNHX1Y27DRKTJ61H",
+        "/product/01M4ABRAPD4VJGP3GQWKV7A7H9",
+        "/product/01M4ABRAPGGGCK3RAVFHVNNVEC",
+        "/product/01M4ABRAPKDBBQXXDF310D49SX",
+        "/product/01M4ABRAPPCAHR2923PHWTTD0P",
+        "/product/01M4ABRARVN3DD4QVCPBBTAHFV",
+        "/product/01M4ABRARZ6DC230Q4F5G7C5CE",
+        "/product/01M4ABRASGMG0JY07SJFWSAJ2B",
+        "/product/01M4ABRASM4HVBEHPJ785CG296",
+        "/product/01M4ABRASQEAWQM9J4WVHPJ8W0",
+        "/product/01M4ABRAST8F8JN6YZZW0A3N5J",
+        "/product/01M4ABRASWDNZZRT2V5RQ48GW0",
+        "/product/01M4ABRAT011FTP7CZN6Z5QAGA",
+        "/product/01M4ABRAT450NV6PYBJH1P4AZ5",
+        "/product/01M4ABRAT7HNV5CQS0RTQ4518N",
+        "/product/01M4ABRATB9A7CWMSTJKW0EEBT",
+        "/product/01M4ABRATF1K9MDQYD2M7DVZT3",
+        "/product/01M4ABRAVKGM8F2YR1MZEC6T1C",
+        "/product/01M4ABRAVP2WJBKBYRSB9PKH31",
+        "/product/01M4ABRAVZT6PWH7V2JA0B0QPN",
+        "/product/01M4ABRAW2KVCPWGQ4T70MX5AC",
+        "/product/01M4ABRAWBTYZ75W5CB5VXD21M",
+        "/product/01M4ABRAWEB57Y84615R5XBDRZ",
+        "/product/01M4ABRAWN76GSAXD2ENCZRJ4Y",
+        "/product/01M4ABRAWX861FM7FJT9RNG8J0",
+        "/product/01M4ABRAX2S2XXJRWXVRN8P5XG",
+        "/product/01M4ABRAXBRBY0X3QADNN6JA3R",
+        "/product/01M4ABRAXFYZGEM47F61GDEX5S"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/rentals",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/rentals"
+      ]
+    }
+  ]
+}

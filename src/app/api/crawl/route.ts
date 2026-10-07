@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
 import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
-import { capturePageOutline, signatureOf, type PageOutline } from "@/lib/selection/page-outline";
+import { capturePageOutline, type PageOutline } from "@/lib/selection/page-outline";
 import { groupPagesIntoTypes, labelPageType, type OutlinedPageType, type PageTypeLabel } from "@/lib/selection/page-types";
 
 // Only correct when TestForge is testing itself. For any other target
@@ -29,14 +29,15 @@ interface CrawledPage {
 type CrawledPageType = OutlinedPageType & { label: PageTypeLabel };
 
 /**
- * Phase 40 Decisions 1 to 3 (TFP-170, TFP-171): the pages, in discovery
- * order, grouped by address and refined by structural signature, each type
- * labelled for the report. The start page is the first page crawled.
+ * Phase 40 Decisions 1 to 3 (TFP-170, TFP-171, revised at Gate A in
+ * TFP-176): the pages, in discovery order, grouped by address, split by form
+ * signature and merged only among siblings in one section, each type labelled
+ * for the report. The start page is the first page crawled.
  */
 function typesOf(pages: CrawledPage[]): CrawledPageType[] {
     const outlines = new Map(pages.map((page) => [page.path, page.outline]));
     const startPath = pages[0]?.path ?? "/";
-    return groupPagesIntoTypes(pages.map((page) => ({ path: page.path, signature: page.outline ? signatureOf(page.outline) : undefined })))
+    return groupPagesIntoTypes(pages.map((page) => ({ path: page.path, outline: page.outline })))
         .map((type) => ({ ...type, label: labelPageType(type, outlines.get(type.pages[0]), startPath) }));
 }
 

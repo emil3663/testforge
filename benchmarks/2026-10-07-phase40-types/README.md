@@ -81,3 +81,105 @@ decision:
 - accept it and let the ranking and the cap decide (TFP-172).
 
 Nothing here is tuned. Selection (TFP-172) waits for Gate A.
+
+## Second measurement: the grouping as revised at Gate A (TFP-176)
+
+Date: 2026-10-07. The first measurement above stays as it was. Emil revised
+Decisions 1, 2 and 4 the same day:
+- the address type comes first;
+- an address type splits only when its pages' form signatures differ;
+- only sibling address types in one section with equal full signatures
+  merge;
+- top-level pages and home never merge;
+- a segment directly before an `:id` is never a slug.
+
+This measurement re-groups the **same committed crawls**
+(`remeasure-tfp176.mts`, no new crawl). Results are in
+`<site>-types-tfp176.json`.
+
+"Section" is TFP-176's reading of "siblings under the same parent": the
+same prefix, the same first segment and the same depth of at least 2. The
+record's own example, `/shop/men/shirts` and `/shop/women/shoes`, has
+different immediate parents, `men` and `women`.
+
+The committed crawl results list pages sorted by path, so types come out in
+that order. Which pages a type holds doesn't depend on order.
+
+| Site | Pages | Address types | Types, first measurement | **Types, revised** |
+| --- | --- | --- | --- | --- |
+| Fixture (`/`) | 3 | 3 | 3 | **3** |
+| Fixture `/types` shop | 14 | 10 | 9 | **9** |
+| Toolshop, clean | 46 | 7 | 9 | **9** |
+| Toolshop, with-bugs | 34 | 7 | 9 | **9** |
+| the-internet | 100 | 57 | 9 | **57** |
+
+### The Toolshop: the expected nine types, on both sites
+
+| Type | Clean | With-bugs | Form signature |
+| --- | --- | --- | --- |
+| home | `/` | `/#/` | 2 forms: `[select]`, `[text]` |
+| category | `/category/:slug` (4) | `/#/category/:slug` (3) | `[select]` |
+| product | `/product/:id` (35) | `/#/product/:id` (24) | none |
+| contact | `/contact` | `/#/contact` | `[email,file,select,text,textarea]` |
+| rentals | `/rentals` | `/#/rentals` | none |
+| privacy / chainsaws | `/privacy` | `/#/chainsaws` | none |
+| login | `/auth/login` | `/#/auth/login` | clean `[email,password]`, with-bugs `[password,text]` |
+| register | `/auth/register` | `/#/auth/register` | `[password,select,text]` |
+| forgot-password | `/auth/forgot-password` | `/#/auth/forgot-password` | clean `[email]`, with-bugs `[text]` |
+
+Differences, explained:
+- `/privacy` exists only on the clean site, and `/#/chainsaws` only on
+  with-bugs (bug 3's missing page).
+- The clean site has 4 categories and with-bugs 3: the two sites list
+  different categories (clean `other`, `special-tools`; with-bugs
+  `undefined`).
+- The two sites have 35 and 24 products.
+- With-bugs' email fields are `type="text"`, so its form signatures say
+  `text` where the clean site's say `email`. It is still three different
+  signatures, so `/#/auth/:slug` still splits into three.
+
+The first measurement's faults are gone:
+- every product is one type, and every category is one type;
+- the empty category (`special-tools`; `undefined`) stays in its listing
+  type;
+- `/rentals`, `/privacy` and `/#/chainsaws` stay their own types.
+
+### the-internet: 57 types
+
+the-internet's examples are all top-level pages, and top-level pages never
+merge. So its 57 address types are its 57 types, and no type mixes unrelated
+templates any more. The first measurement had 9, one of them holding 90
+pages with home.
+
+Its form types:
+
+| Type | Form signature | Label |
+| --- | --- | --- |
+| `/checkboxes` | `[checkbox]` | form |
+| `/dynamic_controls` | 2 forms: `[checkbox]`, `[text]` | form |
+| `/forgot_password` | `[text]` | form |
+| `/key_presses` | `[text]` | form |
+| `/login` | `[password,text]` | sign-in |
+| `/upload` | `[file]` | form |
+
+The other 51 types have no form. Those with more than one page are
+`/infinite_scroll/:id` (36), `/status_codes/:id` (4), `/users/:id` (3),
+`/shifting_content/:slug` (3) and `/dynamic_loading/:id` (2).
+
+**What this means for selection (TFP-172).** With a hard cap of 8, the
+always-covered types alone fill it on the-internet: home, the six form
+types and the largest type (`/infinite_scroll/:id`). The other 49 types
+would be named as skipped, as the revised Decision 4 says.
+
+### The fixture `/types` shop
+
+The 9 types match the revised expectation:
+- `/types/product/:id` splits by forms (103 has no add-to-cart form);
+- `/types/account/:slug` splits into sign-in and form;
+- `/types/legal/privacy + /types/help/terms` merge (siblings in the
+  `/types` section, equal outlines);
+- `/p/:id + /p/:slug` and `/shop/men/shirts + /shop/women/shoes` merge.
+
+The committed crawl predates TFP-176's empty-category page. The real-browser
+case in `page-outline.test.ts` crawls the current fixture, 15 pages, and
+keeps that page in the listing type.

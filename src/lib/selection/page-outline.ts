@@ -83,6 +83,12 @@ export function signatureOf(outline: PageOutline) {
     return `landmarks:${outline.landmarks.join(",")}|forms:${forms.length}${forms.join("")}|cards:${outline.cards ? "yes" : "no"}`;
 }
 
+/** The form signature alone (Gate A revision, TFP-176): how many forms, and each one's field types. It is what splits an address type. */
+export function formSignatureOf(outline: PageOutline) {
+    const forms = outline.forms.map((types) => `[${types.join(",")}]`).sort();
+    return `forms:${forms.length}${forms.join("")}`;
+}
+
 /** Decision 2's narrow reading, for the measurement only: field types limited to password, email, textarea and search. */
 export function narrowSignatureOf(outline: PageOutline) {
     const keep = new Set(["password", "email", "textarea", "search"]);
