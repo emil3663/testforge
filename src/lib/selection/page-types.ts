@@ -117,10 +117,12 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
  * - Split an address type only when its pages' form signatures differ (the
  *   Toolshop's /auth/:slug into login, register and forgot-password).
  *   Landmarks and cards don't split.
- * - Merge address types only when they are siblings in one section - the
- *   same prefix, the same first segment and the same depth, at least 2
- *   (`/p/:id` and `/p/:slug`; `/shop/men/shirts` and `/shop/women/shoes`) -
- *   and every page of both has one equal full signature.
+ * - Merge address types only when they are siblings under one immediate
+ *   parent - the pattern minus its last segment, prefix kept (`/p/:id` and
+ *   `/p/:slug` share `/p`; `/shop/men/shirts` and `/shop/women/shoes` don't)
+ *   - and every page of both has one equal full signature. Not the same
+ *   first segment (Emil, 2026-10-07): under a language prefix (`/en/...`)
+ *   that merges unrelated templates whose outlines match.
  * - Never merge top-level pages (depth 1, home included).
  * A page with no outline has an unknown form signature: it stays apart
  * within its address type and never merges. Types keep crawl order.
@@ -136,12 +138,12 @@ export interface OutlinedPageType {
     formSignature: string;
 }
 
-/** A pattern's section, for merging: its prefix and first segment at its depth; null for a top-level page. */
-function sectionOf(pattern: string) {
+/** A pattern's immediate parent, for merging: its prefix and every segment but the last; null for a top-level page. */
+function parentOf(pattern: string) {
     const hashAt = pattern.search(/#!?\//);
     const prefix = hashAt >= 0 ? pattern.slice(0, hashAt + (pattern[hashAt + 1] === "!" ? 2 : 1)) : "";
     const segments = (hashAt >= 0 ? pattern.slice(prefix.length) : pattern).split("/").filter(Boolean);
-    return segments.length < 2 ? null : `${prefix}|${segments[0]}|${segments.length}`;
+    return segments.length < 2 ? null : `${prefix}|${segments.slice(0, -1).join("/")}`;
 }
 
 export function groupPagesIntoTypes(pages: Array<{ path: string; outline?: PageOutline }>): OutlinedPageType[] {
@@ -166,9 +168,9 @@ export function groupPagesIntoTypes(pages: Array<{ path: string; outline?: PageO
 
     const merged: OutlinedPageType[] = [];
     for (const bucket of buckets) {
-        const section = sectionOf(bucket.pattern);
-        const same = section && bucket.signature
-            ? merged.find((type) => type.signature === bucket.signature && type.patterns.every((pattern) => sectionOf(pattern) === section && pattern !== bucket.pattern))
+        const parent = parentOf(bucket.pattern);
+        const same = parent && bucket.signature
+            ? merged.find((type) => type.signature === bucket.signature && type.patterns.every((pattern) => parentOf(pattern) === parent && pattern !== bucket.pattern))
             : undefined;
         if (!same) {
             merged.push({ ...bucket, patterns: [...bucket.patterns], pages: [...bucket.pages] });

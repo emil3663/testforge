@@ -1,0 +1,111 @@
+{
+  "site": "fixture-types",
+  "from": "fixture-types-crawl.json (crawled 2026-10-07T05:44:47.984Z)",
+  "pages": 14,
+  "addressTypes": 10,
+  "types": 11,
+  "typeList": [
+    {
+      "label": "detail",
+      "pattern": "/p/:slug + /p/:id",
+      "count": 2,
+      "forms": "forms:1[number]",
+      "pages": [
+        "/p/galaxy-s24",
+        "/p/iphone15promaxblack2023"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/shop/men/shirts",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/shop/men/shirts"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/shop/women/shoes",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/shop/women/shoes"
+      ]
+    },
+    {
+      "label": "home",
+      "pattern": "/types",
+      "count": 1,
+      "forms": "forms:1[search]",
+      "pages": [
+        "/types"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/types/account/:slug",
+      "count": 1,
+      "forms": "forms:1[email,text,textarea]",
+      "pages": [
+        "/types/account/contact"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/types/account/:slug",
+      "count": 1,
+      "forms": "forms:1[email,password]",
+      "pages": [
+        "/types/account/login"
+      ]
+    },
+    {
+      "label": "listing",
+      "pattern": "/types/category/:slug",
+      "count": 2,
+      "forms": "forms:0",
+      "pages": [
+        "/types/category/garden",
+        "/types/category/tools"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/types/help/terms",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/types/help/terms"
+      ]
+    },
+    {
+      "label": "content",
+      "pattern": "/types/legal/privacy",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/types/legal/privacy"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/types/product/:id",
+      "count": 2,
+      "forms": "forms:1[number]",
+      "pages": [
+        "/types/product/101",
+        "/types/product/102"
+      ]
+    },
+    {
+      "label": "detail",
+      "pattern": "/types/product/:id",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/types/product/103"
+      ]
+    }
+  ]
+}

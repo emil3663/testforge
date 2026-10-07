@@ -183,3 +183,41 @@ The 9 types match the revised expectation:
 The committed crawl predates TFP-176's empty-category page. The real-browser
 case in `page-outline.test.ts` crawls the current fixture, 15 pages, and
 keeps that page in the listing type.
+
+## Third measurement: merging under one immediate parent (TFP-176 follow-up)
+
+Date: 2026-10-07. The first two measurements above stay as they were. At
+Gate A's re-check Emil clarified Decision 2: "same parent" is the immediate
+parent, the pattern minus its last segment (prefix kept), not the second
+measurement's "section" (same first segment and depth). Under that reading,
+pages under a language prefix merge when their outlines match:
+`/en/product/:id` with `/en/category/:id`.
+
+The **same committed crawls** were re-grouped
+(`remeasure-tfp176.mts --out=tfp176-parent`, no new crawl). Results are in
+`<site>-types-tfp176-parent.json`; the second measurement's
+`<site>-types-tfp176.json` files are unchanged.
+
+| Site | Pages | Address types | Types, first | Types, second | **Types, third** |
+| --- | --- | --- | --- | --- | --- |
+| Fixture (`/`) | 3 | 3 | 3 | 3 | **3** |
+| Fixture `/types` shop | 14 | 10 | 9 | 9 | **11** |
+| Toolshop, clean | 46 | 7 | 9 | 9 | **9** |
+| Toolshop, with-bugs | 34 | 7 | 9 | 9 | **9** |
+| the-internet | 100 | 57 | 9 | 57 | **57** |
+
+- **Both Toolshops and the-internet: unchanged.** Their result files are
+  byte-identical to the second measurement's. Nothing merged on any of the
+  three under the second reading either, so the narrower rule has nothing
+  to undo there. The nine Toolshop types and the-internet's 57 stand as
+  listed in the second section.
+- **The `/types` fixture: 9 to 11, as the follow-up expects.** Two merges
+  are gone, because their patterns have different immediate parents:
+  - `/types/legal/privacy` (`/types/legal`) and `/types/help/terms`
+    (`/types/help`);
+  - `/shop/men/shirts` (`/shop/men`) and `/shop/women/shoes`
+    (`/shop/women`).
+
+  `/p/:id + /p/:slug` still merges (both under `/p`). The real-browser case
+  in `page-outline.test.ts` crawls the current fixture (15 pages, with the
+  empty category) and gets the same 11 types.

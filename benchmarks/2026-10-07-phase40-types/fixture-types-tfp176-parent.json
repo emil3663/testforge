@@ -1,0 +1,36 @@
+{
+  "site": "fixture",
+  "from": "fixture-crawl.json (crawled 2026-10-07T05:44:39.210Z)",
+  "pages": 3,
+  "addressTypes": 3,
+  "types": 3,
+  "typeList": [
+    {
+      "label": "home",
+      "pattern": "/",
+      "count": 1,
+      "forms": "forms:0",
+      "pages": [
+        "/"
+      ]
+    },
+    {
+      "label": "sign-in",
+      "pattern": "/login",
+      "count": 1,
+      "forms": "forms:1[email,password]",
+      "pages": [
+        "/login"
+      ]
+    },
+    {
+      "label": "form",
+      "pattern": "/notes",
+      "count": 1,
+      "forms": "forms:1[text]",
+      "pages": [
+        "/notes"
+      ]
+    }
+  ]
+}

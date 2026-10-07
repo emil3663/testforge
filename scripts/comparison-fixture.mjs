@@ -335,6 +335,9 @@ draw();
     // and /shop/men/shirts beside /shop/women/shoes. The edges sit at the
     // root, as on a real site: under /types, "product" and "p" would read as
     // a slug (/types/:slug/:id). Not linked from the nav, like /anchors.
+    // TFP-176's follow-up (merge only under one immediate parent): legal
+    // privacy and help terms stay apart, and so do /shop/men/shirts and
+    // /shop/women/shoes; /p/:id and /p/:slug still merge. 11 types.
     if (url.pathname === "/types" || /^\/(types|p|shop)\//.test(url.pathname)) {
         const all = ["/types", "/types/product/101", "/types/product/102", "/types/product/103", "/types/category/tools", "/types/category/garden", "/types/category/empty", "/types/account/login", "/types/account/contact", "/types/legal/privacy", "/types/help/terms", "/p/iphone15promaxblack2023", "/p/galaxy-s24", "/shop/men/shirts", "/shop/women/shoes"];
         if (!all.includes(url.pathname)) return send(404, "<!doctype html><title>Not found</title><h1>Not found</h1>");

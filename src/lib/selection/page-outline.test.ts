@@ -1,13 +1,13 @@
 /**
  * Phase 40 Decisions 2 and 3 (TFP-171), as revised at Gate A (TFP-176, Emil
  * 2026-10-07): each page's outline, and how it refines TFP-170's address
- * types - split only by form signature, merge only sibling address types in
- * one section with equal full signatures, never top-level pages or home -
- * and the report-only labels.
+ * types - split only by form signature, merge only sibling address types
+ * under one immediate parent with equal full signatures, never top-level
+ * pages or home - and the report-only labels.
  *
  * ISTQB technique: decision table. Conditions: same address type or not;
- * form signatures equal or not; full signatures equal or not; siblings in
- * one section or not (top-level, home); outline read or not. Then a real
+ * form signatures equal or not; full signatures equal or not; same
+ * immediate parent or not (top-level, home); outline read or not. Then a real
  * crawl of the fixture's /types shop, updated to the revised expectation.
  *
  * Run via:
@@ -54,17 +54,22 @@ test("split an address type only by form signature: different forms split it; ca
     ])), ["/category/:slug = /category/tools,/category/empty", "/product/:id = /product/1,/product/2"]);
 });
 
-test("merge only sibling address types in one section with equal full signatures; never top-level pages or home", () => {
+test("merge only sibling address types under one immediate parent with equal full signatures; never top-level pages or home", () => {
     const same = outline();
-    // Siblings in one section, equal signatures: TFP-170's two edges fold back.
+    // One immediate parent (/p), equal signatures: TFP-170's id/slug edge folds back.
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/p/iphone15promaxblack2023", outline: same }, { path: "/p/galaxy-s24", outline: same }])), ["/p/:id + /p/:slug = /p/iphone15promaxblack2023,/p/galaxy-s24"]);
-    assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/shop/men/shirts", outline: same }, { path: "/shop/women/shoes", outline: same }])), ["/shop/men/shirts + /shop/women/shoes = /shop/men/shirts,/shop/women/shoes"]);
-    // Siblings, different signatures: two types.
-    assert.equal(groupPagesIntoTypes([{ path: "/shop/men/shirts", outline: same }, { path: "/shop/women/shoes", outline: outline({ cards: true }) }]).length, 2);
+    // One immediate parent, different signatures: two types.
+    assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/p/iphone15promaxblack2023", outline: same }, { path: "/p/galaxy-s24", outline: outline({ cards: true }) }])), ["/p/:id = /p/iphone15promaxblack2023", "/p/:slug = /p/galaxy-s24"]);
+    // Different immediate parents (/shop/men, /shop/women) never merge, even with equal outlines (Emil, 2026-10-07).
+    assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/shop/men/shirts", outline: same }, { path: "/shop/women/shoes", outline: same }])), ["/shop/men/shirts = /shop/men/shirts", "/shop/women/shoes = /shop/women/shoes"]);
+    // Nor do two collections under a language prefix: /en/product/:id and /en/category/:id, equal outlines.
+    assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/en/product/1", outline: same }, { path: "/en/category/2", outline: same }])), ["/en/product/:id = /en/product/1", "/en/category/:id = /en/category/2"]);
+    // Nor pages deeper under one first segment: /a/b/c/x and /a/d/e/y.
+    assert.equal(groupPagesIntoTypes([{ path: "/a/b/c/x", outline: same }, { path: "/a/d/e/y", outline: same }]).length, 2);
     // Top-level pages and home never merge, whatever their outlines.
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/", outline: same }, { path: "/privacy", outline: same }, { path: "/terms", outline: same }])), ["/ = /", "/privacy = /privacy", "/terms = /terms"]);
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/#/", outline: same }, { path: "/#/rentals", outline: same }, { path: "/#/chainsaws", outline: same }])), ["/#/ = /#/", "/#/rentals = /#/rentals", "/#/chainsaws = /#/chainsaws"]);
-    // Different sections never merge.
+    // Different parents never merge.
     assert.equal(groupPagesIntoTypes([{ path: "/legal/privacy", outline: same }, { path: "/help/terms", outline: same }]).length, 2);
     // A page with no outline stays apart and never merges.
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/p/a1", outline: same }, { path: "/p/b2" }, { path: "/p/c-3", outline: same }])), ["/p/:slug = /p/a1,/p/c-3", "/p/:slug = /p/b2"]);
@@ -111,11 +116,14 @@ test("in a real browser: the crawl of the fixture's /types shop finds the revise
             // Split by forms, as the Toolshop's /auth/:slug.
             "sign-in | /types/account/:slug | /types/account/login",
             "form | /types/account/:slug | /types/account/contact",
-            // Siblings in the /types section, equal outlines: merged.
-            "content | /types/legal/privacy + /types/help/terms | /types/legal/privacy, /types/help/terms",
-            // TFP-170's two edges, still folded back.
+            // Equal outlines, different immediate parents (/types/legal, /types/help): apart.
+            "content | /types/legal/privacy | /types/legal/privacy",
+            "content | /types/help/terms | /types/help/terms",
+            // TFP-170's id/slug edge, one parent (/p): still folded back.
             "detail | /p/:id + /p/:slug | /p/iphone15promaxblack2023, /p/galaxy-s24",
-            "listing | /shop/men/shirts + /shop/women/shoes | /shop/men/shirts, /shop/women/shoes",
+            // Its two-varying-segments edge: different parents, so apart.
+            "listing | /shop/men/shirts | /shop/men/shirts",
+            "listing | /shop/women/shoes | /shop/women/shoes",
         ]);
     } finally {
         await fixture.close();

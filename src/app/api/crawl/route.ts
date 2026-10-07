@@ -31,7 +31,7 @@ type CrawledPageType = OutlinedPageType & { label: PageTypeLabel };
 /**
  * Phase 40 Decisions 1 to 3 (TFP-170, TFP-171, revised at Gate A in
  * TFP-176): the pages, in discovery order, grouped by address, split by form
- * signature and merged only among siblings in one section, each type labelled
+ * signature and merged only among siblings under one parent, each labelled
  * for the report. The start page is the first page crawled.
  */
 function typesOf(pages: CrawledPage[]): CrawledPageType[] {
