@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `18efe7c`; `fac43b6`, `7233751` and `20d6773` are
-committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `0809d22`; the batch's eight commits (`acc0684` to
+`3b44370`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -37,20 +37,26 @@ committed, not pushed. Phase 38 is complete. Since then:
 - **Phase 40 is complete** (Gate B passed 2026-10-07, Emil): the automatic
   page selection is kept (9 found, 4 hinted, 24 missed, tying the
   hand-picked list).
-- **Now: one batch, built ticket by ticket, verified once (Emil,
-  2026-10-07).** Each ticket gets its own commit and its own targeted tests
-  while building; the full unit suite, the regression tests and
-  `check:template-unchanged` run once, at the end of the batch. In order:
-  1. TFP-177 (inspection waits for single-page apps; T30);
-  2. TFP-162, TFP-163, TFP-164 (`real-site-run-findings-backlog-2026-10-01.md`);
-  3. TFP-168, then TFP-169;
-  4. TFP-178 (labelling only, from committed records; no runs).
-  Stop for verification after the batch. Don't start Phase 39.
+- **The batch is done and verified** (2026-10-07): TFP-177, TFP-162 to
+  TFP-164, TFP-168 and TFP-178. TFP-169 stays open with diagnostics
+  (`3b44370`).
+- **Now: Phase 41** (`docs/decisions/phase-41-check-gaps-decision-record.md`,
+  locked 2026-10-07, TFP-179 to TFP-189). First TFP-189 (the progress
+  estimate and two stale regression tests), then TFP-179 (both Toolshop
+  versions running locally; Docker Desktop must be started first) and
+  TFP-180 (presence and a local baseline). Stop at Gate A.
 - **Not started, not next:**
   - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
-    Phase 40; needs Docker on Emil's machine for TFP-158).
+    the current batch). Docker works on Emil's machine (checked 2026-10-07:
+    Docker Desktop 29.4.0, Compose v5.1.2, WSL 2 backend, `hello-world`
+    ran), so TFP-158's local Toolshop copy isn't blocked. Docker Desktop
+    must be started before use; it isn't running by default.
 - **Git:** don't use `git stash` in this repo; Emil keeps an older stash
-  entry. Read old versions with `git show <commit>^:<path>`.
+  entry. Read old versions with `git show <commit>^:<path>`. Don't use
+  `git worktree` here either: a worktree linked to this repo's
+  `node_modules` deleted it when removed (2026-10-07, restored with
+  `npm ci`). To build an older commit, clone it to a separate folder with
+  its own `npm ci`.
 
 ## Phase 38 is complete (2026-10-06)
 

@@ -312,6 +312,17 @@ in crawl order.
 
 See `phase-40-page-type-selection-decision-record.md`.
 
+### Phase 41 — Check gaps (locked 2026-10-07, not started)
+New checks for the known bugs TestForge reaches but misses at the read-only
+gate (24 of 37): layout consistency, overlap and unrendered images; spelling
+of interface text; controls that don't do their job (with the read-only gate
+widened to GET-only interactions behind a request guard); tab order and
+grouping; known-path probes, guessable ids and API fields that expose
+internals. Built and measured on local copies of both Toolshops first, then
+the hosted sites. Tickets TFP-179 to TFP-189.
+
+See `phase-41-check-gaps-decision-record.md`.
+
 ---
 
 ## Sequencing note

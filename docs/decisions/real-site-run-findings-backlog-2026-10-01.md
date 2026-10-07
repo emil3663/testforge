@@ -462,6 +462,7 @@ TFP-140 was the last issued ticket.
   - A hidden button is found and checked as itself.
   - `check:template-unchanged` shows only these checks changed.
 - **Dependencies:** none.
+- **Done, `cefa24d`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
 
 ### TFP-163 — Introspection misses or merges some controls
 
@@ -490,6 +491,7 @@ TFP-140 was the last issued ticket.
   - Two same-text buttons each test their own element.
 - **Dependencies:** none. ISTQB technique: equivalence partitioning, by input
   type.
+- **Done, `be688d3`, `f4ed183`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
 
 ### TFP-164 — The visible download-link check's pattern lost its escaped dot
 
@@ -525,6 +527,7 @@ TFP-140 was the last issued ticket.
 9. TFP-162, TFP-163 and TFP-164, raised while building them.
 
 ## Suggested Milestone Gate
+- **Done, `837de4f`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
 
 ### Gate — Real-site noise removed
 - **Met 2026-10-01.** TFP-141, TFP-142 and TFP-144 landed and independently

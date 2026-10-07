@@ -374,6 +374,17 @@ services to third parties. So:
   label; the count per label is recorded.
 - **Dependencies:** none.
 
+**Batch verified 2026-10-07 (Cowork):** TFP-177 (`acc0684`), TFP-162
+(`cefa24d`), TFP-163 (`be688d3`, `f4ed183`), TFP-164 (`837de4f`), TFP-168
+(`82cc8d0`), TFP-178 (`6d15268`); TFP-169's diagnostics (`3b44370`), with
+TFP-169 still open. End checks, run once: unit 494/494, tsc clean, ESLint no
+errors, `check:template-unchanged` 162/166 identical (the 4 that differ
+change only TFP-164's download line), regression 54/57 (two stale tests and
+the progress-estimate bug, TFP-189 in the Phase 41 record).
+- **TFP-169 stays open:** three explanations were tested and none
+  reproduced; five full runs passed. `3b44370` makes the next failure name
+  whether the fixture exited, its exit code and its error output.
+
 **Known limit of this benchmark (2026-10-07):** the clean Toolshop resets
 its catalogue, at least hourly on 2026-10-07, so product ids and card text
 change between runs (U5). Scores compare bugs, not pages, so they hold;
