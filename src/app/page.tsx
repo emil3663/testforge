@@ -137,6 +137,7 @@ export default function Home() {
             selectedJourneyIds: effectiveSelectedJourneyIds,
             crawlResult: crawl.crawlResult,
             selectedCrawledPaths: crawl.selectedCrawledPaths,
+            isTypeSelection: crawl.isTypeSelection,
             setCrawlError: crawl.setCrawlError,
             isBaseUrlPlaceholderActive,
             setBaseUrl,

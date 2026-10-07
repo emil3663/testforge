@@ -346,6 +346,39 @@ export interface GenerationRecord {
     gates: GenerationGateVerdict[];
     /** Phase 34 TFP-122: present only when the request brought no page data and TestForge inspected the pages itself. */
     pageInspection?: PageInspectionRecord;
+    /** Phase 40 Decision 7 (TFP-173): page types found, covered and skipped; present when the pages came from a crawl. */
+    pageTypes?: PageTypeCoverageRecord;
+}
+
+/** Phase 40 Decision 7 (TFP-173): one page type in the report. */
+export interface PageTypeCoverageEntry {
+    /** The address pattern: `/product/:id`, `/#/contact`. */
+    pattern: string;
+    /** Decision 3's report-only label. */
+    label: string;
+    /** How many crawled pages the type has. */
+    pages: number;
+    /** The full URL of the page that represented the type, as the address bar shows it. */
+    url: string;
+    /** Every page of the type the run covered, as full URLs; empty for a skipped type. */
+    covered: string[];
+    /** A skipped type: why, in one line. */
+    reason?: string;
+}
+
+/** Phase 40 Decision 7 (TFP-173): which page types a run covered, and which it skipped. */
+export interface PageTypeCoverageRecord {
+    /** "type": the pages chosen by type (Decisions 4 to 6); "user": chosen by hand, an override. */
+    selectedBy: "type" | "user";
+    runType: "standard" | "comprehensive";
+    /** Standard's type cap (8) or Comprehensive's page budget. */
+    cap: number;
+    /** Types found by the crawl. */
+    found: number;
+    covered: PageTypeCoverageEntry[];
+    skipped: PageTypeCoverageEntry[];
+    /** A hand-made selection: full URLs added to, and left out of, what the type selection chose. */
+    override?: { added: string[]; removed: string[] };
 }
 
 export interface PageInspectionRecord {

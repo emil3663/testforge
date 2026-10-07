@@ -1,4 +1,5 @@
-import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord } from "@/lib/report/types";
+import { MAX_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
 // from /api/generate and persists it with the run. It comes from the request
@@ -53,10 +54,13 @@ export function normalizeGenerationRecord(input: unknown): GenerationRecord | nu
     }
     const pageInspection = normalizePageInspection(v.pageInspection);
     if (pageInspection) record.pageInspection = pageInspection;
+    const pageTypes = normalizePageTypes(v.pageTypes);
+    if (pageTypes) record.pageTypes = pageTypes;
     return record;
 }
 
-const MAX_PATHS = 5;
+// Phase 40 (TFP-172): a run inspects its selected pages, up to MAX_PAGE_CAP; it was the first 5.
+const MAX_PATHS = MAX_PAGE_CAP;
 const MAX_WARNINGS = 5;
 
 /** TFP-122: whether generation gathered page data itself, and why not if it failed. */
@@ -74,5 +78,53 @@ function normalizePageInspection(value: unknown): PageInspectionRecord | null {
     };
     const reason = text(v.reason, MAX_EVIDENCE_LINE);
     if (reason) record.reason = reason;
+    return record;
+}
+
+// Phase 40 (TFP-173): a crawl of up to 100 pages gives at most 100 types; a
+// URL is kept whole up to a browser's practical length.
+const MAX_TYPES = 100;
+const MAX_URL = 2000;
+
+function pageTypeEntry(value: unknown, skipped: boolean): PageTypeCoverageEntry | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const pattern = text(v.pattern, MAX_EVIDENCE_LINE);
+    const label = text(v.label);
+    const url = text(v.url, MAX_URL);
+    if (!pattern || !label || !url || typeof v.pages !== "number" || !Number.isInteger(v.pages) || v.pages < 1) return null;
+    const covered = Array.isArray(v.covered)
+        ? v.covered.map((item) => text(item, MAX_URL)).filter((item): item is string => Boolean(item)).slice(0, MAX_PAGE_CAP)
+        : [];
+    if (!skipped && covered.length === 0) return null;
+    const entry: PageTypeCoverageEntry = { pattern, label, pages: Math.min(v.pages, 1000), url, covered: skipped ? [] : covered };
+    const reason = text(v.reason, MAX_EVIDENCE_LINE);
+    if (reason) entry.reason = reason;
+    return entry;
+}
+
+/** TFP-173: page types found, covered and skipped, and whether the user chose the pages by hand. */
+function normalizePageTypes(value: unknown): PageTypeCoverageRecord | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    if (v.selectedBy !== "type" && v.selectedBy !== "user") return null;
+    if (v.runType !== "standard" && v.runType !== "comprehensive") return null;
+    const whole = (n: unknown, max: number) => (typeof n === "number" && Number.isInteger(n) && n >= 0 ? Math.min(n, max) : 0);
+    const entries = (items: unknown, skipped: boolean) =>
+        Array.isArray(items) ? items.map((item) => pageTypeEntry(item, skipped)).filter((item): item is PageTypeCoverageEntry => item !== null).slice(0, MAX_TYPES) : [];
+    const urls = (items: unknown) =>
+        Array.isArray(items) ? items.map((item) => text(item, MAX_URL)).filter((item): item is string => Boolean(item)).slice(0, MAX_PAGE_CAP) : [];
+    const record: PageTypeCoverageRecord = {
+        selectedBy: v.selectedBy,
+        runType: v.runType,
+        cap: whole(v.cap, MAX_PAGE_CAP),
+        found: whole(v.found, MAX_TYPES),
+        covered: entries(v.covered, false),
+        skipped: entries(v.skipped, true),
+    };
+    if (v.selectedBy === "user" && v.override && typeof v.override === "object") {
+        const o = v.override as Record<string, unknown>;
+        record.override = { added: urls(o.added), removed: urls(o.removed) };
+    }
     return record;
 }

@@ -55,8 +55,9 @@ test("normalizeGenerationRecord: an automatic inspection record is kept, and cap
     const failed = { status: "failed", paths: ["/"], pages: 0, warnings: ["Could not inspect http://x/: net::ERR_CONNECTION_REFUSED"], reason: "Could not inspect http://x/: net::ERR_CONNECTION_REFUSED" };
     assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: failed })?.pageInspection, failed);
 
-    const hostile = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: { status: "inspected", paths: Array(50).fill("/p"), pages: 1e9, warnings: Array(50).fill("x".repeat(5000)), extra: 1 } })!.pageInspection!;
-    assert.equal(hostile.paths.length, 5);
+    const hostile = normalizeGenerationRecord({ generatedBy: "template", gates: [], pageInspection: { status: "inspected", paths: Array(150).fill("/p"), pages: 1e9, warnings: Array(50).fill("x".repeat(5000)), extra: 1 } })!.pageInspection!;
+    // Phase 40 (TFP-172): a run inspects its selected pages, up to 100; it was the first 5.
+    assert.equal(hostile.paths.length, 100);
     assert.equal(hostile.pages, 1000);
     assert.equal(hostile.warnings.length, 5);
     assert.ok(hostile.warnings.every((w) => w.length <= 400));

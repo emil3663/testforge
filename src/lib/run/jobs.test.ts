@@ -236,3 +236,22 @@ test("a Comprehensive run whose only failure is a local-model test is saved as p
     assert.equal(result.report.summary.failed, 0);
     assert.deepEqual(result.report.comprehensive.model.tests.map((t) => t.outcome), ["failed: needs review"]);
 });
+
+// Phase 40 (TFP-173, Decision 7): the page types a run covered and skipped travel with its generation record into the saved report.
+test("a finished run's report carries its page types: found, covered, skipped and the override, as the client sent them", async () => {
+    const pageTypes = {
+        selectedBy: "user" as const,
+        runType: "standard" as const,
+        cap: 8,
+        found: 2,
+        covered: [{ pattern: "/", label: "home", pages: 1, url: "https://jobs-test.example/", covered: ["https://jobs-test.example/"] }],
+        skipped: [{ pattern: "/privacy", label: "content", pages: 1, url: "https://jobs-test.example/privacy", covered: [], reason: "not chosen by hand; the type selection would have covered it" }],
+        override: { added: [], removed: ["https://jobs-test.example/privacy"] },
+    };
+    const job = makeJob({ generation: { generatedBy: "template", gates: [], pageTypes } });
+    await writeFile(job.testFile, "import { test } from '@playwright/test';\ntest('x', async () => {});\n", "utf8");
+    await writeFile(job.jsonReportFile, passingReport("/"), "utf8");
+    await finalizeRunJob(job as never);
+    const result = (job as unknown as { result: { report: { generation: { pageTypes: unknown } } } }).result;
+    assert.deepEqual(result.report.generation.pageTypes, pageTypes);
+});

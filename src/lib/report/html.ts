@@ -4,6 +4,7 @@ import { describePageInspection } from "./page-inspection-text";
 import { formatNotRunByGate, noTestRan } from "./summary";
 import type { RunReport } from "./types";
 import { buildComprehensiveHtmlDocument } from "./comprehensive-html";
+import { buildPageTypesHtmlSection } from "./page-types-html";
 
 interface RunResultLike {
     runId: string;
@@ -375,6 +376,8 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
             <summary style="cursor:pointer;font-size:13px;font-weight:600;color:#71717a;padding:8px 0">Raw Console Output</summary>
             <pre style="margin-top:8px">${escapeReportHtml(report.rawOutput)}</pre>
         </details>
+        <!-- Phase 40 (TFP-173): page types and the copyable re-run lists, last -->
+        ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
     </main>
     <script>
         function showTab(btn, id) {

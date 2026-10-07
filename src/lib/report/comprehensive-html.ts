@@ -1,5 +1,6 @@
 import { escapeReportHtml, formatMilliseconds } from "./text";
 import type { RunReport } from "./types";
+import { buildPageTypesHtmlSection } from "./page-types-html";
 
 // Phase 35 (TFP-132, Decision 7): the saved report of a Comprehensive run
 // shows that area only, on one page and in a fixed order: the area summary,
@@ -83,6 +84,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
             <summary class="meta">Raw console output</summary>
             <pre>${e(report.rawOutput)}</pre>
         </details>
+        ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
     </main>
 </body>
 </html>`;
