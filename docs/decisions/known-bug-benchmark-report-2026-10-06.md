@@ -423,3 +423,93 @@ Read with it:
 - **T30 is a real weakness, but not a reason to revert.** It's an
   inspection timing fault that any product page would have hit. It should
   get its own ticket.
+
+## Local baseline (TFP-180, Phase 41 Gate A, 2026-10-08)
+
+Today's TestForge (`4f636b1`), scored on local copies of both Toolshop
+versions with TFP-154's committed rule and Phase 40's selection. Evidence:
+`benchmarks/2026-10-07-phase41-local/`.
+
+- **The copies:** TFP-179, Testsmith's `practice-software-testing` at
+  `5a6ccc26`, run under Docker on this machine, one version at a time.
+- **The runs:** read-only gate, one worker, Chromium. The driver is TFP-175's,
+  unchanged, pointed at `http://localhost:4200`.
+- **Presence verdicts:** recorded in the answer key's "Local presence"
+  section.
+
+### What the copies are
+
+- **The crawls match the hosted ones:**
+  - with-bugs: 34 pages, 9 types, the same 8 Standard pages (`/#/product/6`
+    for products), `/#/rentals` skipped;
+  - clean: 49 pages, 9 types, the same 8 types, `/privacy` skipped.
+
+  with-bugs routes by hash and clean by path, as the hosted sites do.
+- **They are development builds** (Angular's `ng serve`), where the hosted
+  sites are production builds. That shows as label U8 (page weight, no
+  `robots.txt` or `sitemap.xml`) and in axe's selectors (Angular's
+  `_ngcontent` attributes). Neither touches a scored bug.
+- **The clean API's cache is in memory** (TestForge's `compose.local.yml`).
+  On the mounted Windows folder, Laravel couldn't write its file cache.
+  with-bugs ran with the file cache, which worked there. Either way the API
+  returns the same data.
+
+### The score, beside the hosted ones
+
+| | Hosted re-score (hand-picked) | Hosted, automatic (TFP-175) | **Local, automatic (TFP-180)** |
+| --- | --- | --- | --- |
+| Found | 9 | 9 | **9** |
+| Hinted | 4 | 4 | **4** |
+| Missed | 24 | 24 | **24** |
+
+- **Bug for bug the same as TFP-175:**
+  - found: 3, 28, 30, 46, 85, 87, 91, 92, 93;
+  - hinted: 26, 33, 40, 60.
+- **The evidence is the same checks on the same elements:**
+  - 46, 91 and 92 on `/#/product/6`;
+  - 40, 46, 91 and 92 on all 10 product pages Comprehensive covered;
+  - 3 on every Standard page.
+- **What the local copies add is the presence verdicts.** Of the 24 missed:
+  - 21 are present and visible in Chromium;
+  - 22 and 23 are in the source only for Edge and Firefox;
+  - 54 isn't in this version.
+
+  So Phase 41's checks aim at 21 missed and 4 hinted bugs a Chromium run can
+  reach.
+
+### Run times
+
+| Copy | Run | Tests | Passed | Failed | Not run | Run time |
+| --- | --- | --- | --- | --- | --- | --- |
+| with-bugs | Standard, 8 pages | 402 | 330 | 64 | 8 | **1,118 s** |
+| with-bugs | Comprehensive security, 20 pages | 81 | 79 | 2 | 0 | 138 s |
+| with-bugs | Comprehensive accessibility, 20 pages | 40 | 6 | 34 | 0 | 150 s |
+| clean | Standard, 8 pages | 392 | 340 | 45 | 7 | **884 s** |
+| clean | Comprehensive security, 20 pages | 81 | 79 | 2 | 0 | 132 s |
+| clean | Comprehensive accessibility, 20 pages | 40 | 25 | 15 | 0 | 122 s |
+
+- **Both Standard runs are within 1,800 s on one worker.**
+- **Standard now runs about 400 tests**, against 312 and 384 in TFP-175's
+  hosted runs. The batch changed what inspection records:
+  - TFP-177 reads a page only once it has drawn;
+  - TFP-163 keeps the buttons it used to drop or merge.
+
+  More recorded elements mean more checks.
+- **The local runs are a little faster** than the hosted ones (1,118 s
+  against 1,232 s on with-bugs).
+
+### New failures, read by hand
+
+Each local copy's failures were compared with the same version's hosted
+TFP-175 run by check and cause, the page and the site's address taken out
+(`new-failures.mjs`).
+
+| Copy | New kind | Verdict |
+| --- | --- | --- |
+| with-bugs | WCAG scans: `color-contrast` on the footer links and `.float-start` | bug 85 and R18; new only in the development build's selectors |
+| with-bugs | "every form field has an accessible name" on the product page: `input[type="number"]` | bug 91, now also through Standard's field-name check |
+| with-bugs | "form element check: 1 [Ergonomic claw hammer ...]" | **T26**, the quantity field found by its value |
+| both | "page weight stays under 5 MB"; no `robots.txt` (and, clean, no `sitemap.xml`) | **U8**, new: the development server, not the site |
+| clean | "link types": "Claw Hammer with Shock Reduction Grip ABCDE$13.41" not found | **T31**, a card's name joined without spaces |
+
+Every failure on either copy is a scored bug or labelled.

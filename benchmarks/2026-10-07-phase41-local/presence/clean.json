@@ -1,0 +1,120 @@
+{
+  "version": "clean",
+  "app": "http://localhost:4200",
+  "api": "http://localhost:8091",
+  "probedAt": "2026-10-08T06:28:52.921Z",
+  "results": {
+    "26 home product images hidden": {
+      "shows": false,
+      "reading": "0 product images with d-none"
+    },
+    "27 price filter sends no maximum": {
+      "shows": false,
+      "reading": "between=(none)"
+    },
+    "29 Home link leads to contact": {
+      "shows": false,
+      "reading": "nav-home href=/"
+    },
+    "31 Contakt": {
+      "shows": false,
+      "reading": "nav-contact \"Contact\""
+    },
+    "33 Sorth": {
+      "shows": false,
+      "reading": "\"Sorth\" 0x"
+    },
+    "34 Serch": {
+      "shows": false,
+      "reading": "search-submit \"Search\""
+    },
+    "94 no fieldset for filters": {
+      "shows": false,
+      "reading": "6 fieldsets"
+    },
+    "2 sort reversed": {
+      "shows": false,
+      "reading": "\"Name (A - Z)\" value=name,asc"
+    },
+    "4 product names right-aligned": {
+      "shows": false,
+      "reading": "0 names with text-end (random per draw)"
+    },
+    "40 +/- don't change the quantity": {
+      "shows": false,
+      "reading": "quantity 1 -> 2 after \"+\""
+    },
+    "42 Reltded products": {
+      "shows": false,
+      "reading": "\"Reltded products\" 0x"
+    },
+    "45 buttons overlap": {
+      "shows": false,
+      "reading": "the buttons overlap 1 px across, 38 px down"
+    },
+    "49 rentals titles centred": {
+      "shows": false,
+      "reading": "0 card titles with text-center"
+    },
+    "19 login email padding": {
+      "shows": false,
+      "reading": "#email padding-left 12px"
+    },
+    "22 forgot-password button font": {
+      "shows": false,
+      "reading": "submit font-family system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+    },
+    "23 forgot-password email padding": {
+      "shows": false,
+      "reading": "#email padding-left 12px"
+    },
+    "53 register tab order": {
+      "shows": false,
+      "reading": ""
+    },
+    "54 phone placeholder typo": {
+      "shows": false,
+      "reading": "#phone placeholder \"Your phone *\""
+    },
+    "58 register button width": {
+      "shows": false,
+      "reading": "register-submit style.width \"\""
+    },
+    "59 smaller font for some country options": {
+      "shows": false,
+      "reading": "smaller: none"
+    },
+    "60 subject list shows error entries": {
+      "shows": false,
+      "reading": "none"
+    },
+    "62 message placeholder typo": {
+      "shows": false,
+      "reading": "#message placeholder \"null\""
+    },
+    "63 attachment label font": {
+      "shows": false,
+      "reading": "attachment label font-family system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\""
+    },
+    "66 contact button width": {
+      "shows": false,
+      "reading": "contact-submit style.width \"\""
+    },
+    "67 smaller font for some subject options": {
+      "shows": false,
+      "reading": "smaller: none"
+    },
+    "75 products API exposes stock": {
+      "shows": false,
+      "reading": "product fields: id, name, description, price, is_location_offer, is_rental, co2_rating, in_stock, is_eco_friendly, product_image, category, brand"
+    },
+    "80 log file reachable": {
+      "shows": false,
+      "reading": "GET /logs/laravel.log -> 404"
+    },
+    "82 sequential ids": {
+      "shows": false,
+      "reading": "ids: 01M4D26AQEXDP4SS617JJJB5KQ, 01M4D26AQJEBV34HK6TXGDNP6Y, 01M4D26AQPAW0K8RV7N8MTMN9P, 01M4D26AQTC617GXZ8A57B6NPA, 01M4D26AR0V5YCK93F9XGXHMN0"
+    }
+  }
+}

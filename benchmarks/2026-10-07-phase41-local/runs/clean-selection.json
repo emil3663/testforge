@@ -1,0 +1,128 @@
+{
+  "label": "clean",
+  "site": "http://localhost:4200",
+  "commit": "4f636b1",
+  "crawledAt": "2026-10-08T06:29:56.962Z",
+  "status": "completed",
+  "seconds": 54,
+  "pages": 49,
+  "warnings": [],
+  "types": [
+    {
+      "rank": 1,
+      "label": "home",
+      "pattern": "/",
+      "pages": 1,
+      "representative": "/",
+      "placement": "always covered (home, form); home is always ranked first"
+    },
+    {
+      "rank": 2,
+      "label": "detail",
+      "pattern": "/product/:id",
+      "pages": 38,
+      "representative": "/product/01M4D26AR6Z53PW3BF7GH0Y0KG",
+      "placement": "always covered (largest); after home, which is always ranked first"
+    },
+    {
+      "rank": 3,
+      "label": "listing",
+      "pattern": "/category/:slug",
+      "pages": 4,
+      "representative": "/category/hand-tools",
+      "placement": "always covered (form); after /product/:id by pages (4 pages against 38 pages)"
+    },
+    {
+      "rank": 4,
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/register",
+      "placement": "always covered (form); after /category/:slug by pages (1 page against 4 pages)"
+    },
+    {
+      "rank": 5,
+      "label": "form",
+      "pattern": "/contact",
+      "pages": 1,
+      "representative": "/contact",
+      "placement": "always covered (form); after /auth/:slug by interactive elements (26 interactive elements against 33 interactive elements)"
+    },
+    {
+      "rank": 6,
+      "label": "sign-in",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/login",
+      "placement": "always covered (form); after /contact by interactive elements (25 interactive elements against 26 interactive elements)"
+    },
+    {
+      "rank": 7,
+      "label": "form",
+      "pattern": "/auth/:slug",
+      "pages": 1,
+      "representative": "/auth/forgot-password",
+      "placement": "always covered (form); after /auth/:slug by interactive elements (21 interactive elements against 25 interactive elements)"
+    },
+    {
+      "rank": 8,
+      "label": "content",
+      "pattern": "/rentals",
+      "pages": 1,
+      "representative": "/rentals",
+      "placement": "after every other type: content types are dropped first"
+    },
+    {
+      "rank": 9,
+      "label": "content",
+      "pattern": "/privacy",
+      "pages": 1,
+      "representative": "/privacy",
+      "placement": "after /rentals by crawl order (crawled 9th against crawled 3rd)"
+    }
+  ],
+  "standard": {
+    "pages": [
+      "/",
+      "/product/01M4D26AR6Z53PW3BF7GH0Y0KG",
+      "/category/hand-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals"
+    ],
+    "skipped": [
+      {
+        "pattern": "/privacy",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 9th; after /rentals by crawl order (crawled 9th against crawled 3rd)"
+      }
+    ]
+  },
+  "comprehensive": {
+    "pages": [
+      "/",
+      "/product/01M4D26AR6Z53PW3BF7GH0Y0KG",
+      "/product/01M4D26ARBHRAQA4AZT9JRBFPQ",
+      "/product/01M4D26ARFGQW1625858WAGRZK",
+      "/product/01M4D26ARH208YZTF7QYSYNZAA",
+      "/product/01M4D26ARK5Y9HTKARXBMKHJ2J",
+      "/product/01M4D26ARMV6C7YV0ZX2FFD8NY",
+      "/product/01M4D26ARNC183EP8H8SQMSENP",
+      "/product/01M4D26ASNTFP6V07DX5DZ8Q2R",
+      "/product/01M4D26ASP72R6EG6Q5498D77R",
+      "/category/hand-tools",
+      "/category/other",
+      "/category/power-tools",
+      "/category/special-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals",
+      "/privacy"
+    ],
+    "skipped": []
+  }
+}

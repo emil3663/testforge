@@ -197,3 +197,65 @@ during TFP-154.
 2. **The site shows a "Bug Hunting Mode" banner and guide.** These are
    extra buttons and links the clean site doesn't have, so they show up in
    generated tests. They aren't bugs, and they aren't scored.
+
+## Local presence (TFP-180, Phase 41 Decision 0), 2026-10-08
+
+The 28 target bugs - the re-score's 24 missed and 4 hinted - checked on the
+local copies (TFP-179: Testsmith's `practice-software-testing` at `5a6ccc26`,
+`sprint5` clean and `sprint5-with-bugs`), two ways:
+- **source:** the with-bugs source against the clean source;
+- **running page:** `benchmarks/2026-10-07-phase41-local/presence-probe.mts`,
+  in Chromium (the browser TestForge runs), on both copies, read-only. The
+  only interaction is clicking the product page's "+", which changes nothing
+  on the server. Its readings are in that folder's `presence/with-bugs.json`
+  and `presence/clean.json`.
+
+Verdicts:
+- **present:** in the with-bugs source and shown on the with-bugs page, not on
+  the clean one;
+- **not visible in Chromium:** in the source, but only for another browser,
+  so out of a Chromium run's reach;
+- **absent:** not in this version's source, and not on the page.
+
+Testsmith's app tells browsers apart by user agent (`browser-detector.service.ts`).
+Playwright's Chromium reports "chrome" and not "edg", so `isChrome()` is true
+and `isEdge()` and `isFirefox()` are false in every TestForge run.
+
+| ID | Bug | Verdict | Source (with-bugs; clean differs) | Running page, with-bugs (clean) |
+| --- | --- | --- | --- | --- |
+| 2 | Category sort order reversed | present | `category.component.html:16-19`: "Name (A - Z)" has `value="name,desc"` (and so on); clean's are in order | "Name (A - Z)" value `name,desc` (clean `name,asc`) |
+| 4 | Product names right-aligned (category) | present | `category.component.html:99`: `text-end` when a random number is odd, any browser | 5 names with `text-end` on one draw (clean 0); random per draw |
+| 19 | Login email padding | present | `login.component.html:16`: `padding-left: 0px` when `isChrome()` | `#email` padding-left 0px (clean 12px) |
+| 22 | Forgot-password button font | **not visible in Chromium** | `forgot-password.component.html:37`: Comic Sans only when `isEdge()`; Testsmith's list says "Edge and Chrome", the source says Edge | system font (clean the same) |
+| 23 | Forgot-password email padding | **not visible in Chromium** | `forgot-password.component.html:14`: `padding-left: 0px` only when `isFirefox()`; the list says Chrome, the source says Firefox | 12px (clean the same) |
+| 26 | Home product images don't show | present | `overview.component.html:133`: `d-none` on products 5, 13 and 20 when `isChrome()` | 1 hidden image on home's first page (product 5; clean 0) |
+| 27 | Price filter doesn't send its maximum | present | `product.service.ts:35`: `between=price,${minPrice}`, the maximum dropped | home's request has `between=price,1` (clean sends no `between`) |
+| 29 | "Home" link points to contact | present | `header.component.html:24`: `routerLink="/contact"` (clean `href="/"`) | `nav-home` href `#/contact` (clean `/`) |
+| 31 | "Contact" misspelt | present | `header.component.html:43`: "Contakt" | "Contakt" (clean "Contact") |
+| 33 | "Sort" misspelt | present | `overview.component.html:15`: "Sorth" | "Sorth" once (clean 0) |
+| 34 | "Search" misspelt | present | `overview.component.html:48`: "Serch" | "Serch" (clean "Search") |
+| 40 | +/- don't change the quantity | present | `detail.component.ts:64-68`: `plus()` and `minus()` are empty | quantity 1 -> 1 after "+" (clean 1 -> 2) |
+| 42 | "Related products" misspelt | present | `detail.component.html:100`: "Reltded products" | once (clean 0) |
+| 45 | Product buttons overlap | present | `detail.component.html:88` + `.css:54`: `margin-left: -50px` on "Add to favourites" when `isChrome()` | the buttons overlap 50 px (clean: they touch, 1 px) |
+| 49 | Rentals title centred | present | `rentals/overview.component.html:14`: the cards' titles get `text-center` when `isChrome()`; the page's own `h1` is unchanged | 3 card titles centred (clean 0) |
+| 53 | Registration tab order | present | `register.component.html`: `tabindex` 1, 2, then 5 to 12 when `isChrome()`; other browsers 1, 2, 4 to 11 | 1, 2, 5, 6 ... 12 (clean: no `tabindex`) |
+| 54 | Registration phone placeholder misspelt | **absent** | `register.component.html:229`: "Your phone *", spelt right; nothing else differs there | "Your phone *" (clean the same) |
+| 58 | Registration button width | present | `register.component.html:305`: `width: unset` when `isChrome()` | `style.width` "unset" (clean "") |
+| 59 | Registration dropdown fonts | present | `register.component.html:203`: `font-size: smaller` for Austria and the Netherlands | Austria, Netherlands (clean none) |
+| 60 | Contact subject list shows error entries | present | `contact.component.html:110, 114`: "Error 101: Subject not found", "Error 202: Translation error" | both entries (clean none) |
+| 62 | Contact message placeholder misspelt | present | `contact.component.html:135`: "Massage" | "Massage" (clean none) |
+| 63 | Contact attachment label font | present | `contact.component.html:155`: Comic Sans when `isEdge()` or `isChrome()` | "Comic Sans" (clean the system font) |
+| 66 | Contact button width | present | `contact.component.html:180`: `width: unset` when `isEdge()` or `isChrome()` | "unset" (clean "") |
+| 67 | Contact dropdown fonts | present | `contact.component.html:109`: `font-size: smaller` on "Return" | "Return" (clean none) |
+| 75 | Products API exposes stock | present | `API/app/Models/Product.php:54`: `stock` not in `$hidden` (clean hides it) | `/products` items carry `stock` (clean `in_stock` only) |
+| 80 | Log file reachable from the web | present | `API/routes/api.php:43`: `GET /logs/laravel.log` | 200 (clean 404) |
+| 82 | Sequential, guessable ids | present | with-bugs' models have numeric ids; clean's use ULIDs (`HasUlids`) | ids 1, 2, 3, 4, 5 (clean ULIDs) |
+| 94 | Home filters not in a fieldset | present | `overview.component.html`: no `<fieldset>` (clean's has them) | 0 fieldsets (clean 6) |
+
+**25 present, 2 not visible in Chromium (22, 23), 1 absent (54).** A
+Chromium run can find at most the 25. Read against the re-score's 24
+missed and 4 hinted:
+- 22, 23 and 54 can't be found by a Chromium run of this version;
+- the other 21 missed and the 4 hinted are present.
+
+The hosted site's spot-check (above) agrees wherever it read the same bug.
