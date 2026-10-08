@@ -1,0 +1,9 @@
+# Phase 41 (TFP-179): the with-bugs version under Testsmith's docker-compose.yml.
+# Its app has no set-version.js (sprint5's has), so compose's own start command,
+# "npm install --force && node set-version.js && ng serve ...", stops at that step
+# and the app never answers. This override runs the same command without it.
+# Testsmith's files are left as they are.
+services:
+  angular-ui:
+    command: >
+      bash -c "npm install --force && ng serve --host 0.0.0.0 --port 4200"

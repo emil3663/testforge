@@ -1,0 +1,13 @@
+# Phase 41 (TFP-179): both versions under Testsmith's docker-compose.yml, on Windows.
+# The API's code is a Windows folder mounted into Docker, where every file and directory
+# PHP creates is owned by uid 82 and can't be chmod-ed or chown-ed, while php-fpm runs as
+# www-data, uid 1000. So Laravel can't write its file cache or its log there, and every
+# request that does answers 500. The cache is kept in memory and the log goes to the
+# container's own output instead. Real environment variables win over Laravel's .env,
+# so Testsmith's files are left as they are.
+services:
+  laravel-api:
+    environment:
+      - CACHE_STORE=array
+      - CACHE_DRIVER=array
+      - LOG_CHANNEL=stderr
