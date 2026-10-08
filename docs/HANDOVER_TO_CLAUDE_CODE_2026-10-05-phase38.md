@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `0809d22`; the batch's eight commits (`acc0684` to
-`3b44370`) are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `3fdf84f`; `69511a4`, `4f636b1`, `044a1cd` and
+`8769970` are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -40,11 +40,17 @@ starts, so a session opened before then doesn't use it.
 - **The batch is done and verified** (2026-10-07): TFP-177, TFP-162 to
   TFP-164, TFP-168 and TFP-178. TFP-169 stays open with diagnostics
   (`3b44370`).
-- **Now: Phase 41** (`docs/decisions/phase-41-check-gaps-decision-record.md`,
-  locked 2026-10-07, TFP-179 to TFP-189). First TFP-189 (the progress
-  estimate and two stale regression tests), then TFP-179 (both Toolshop
-  versions running locally; Docker Desktop must be started first) and
-  TFP-180 (presence and a local baseline). Stop at Gate A.
+- **Phase 41 Gate A passed 2026-10-08:** TFP-189, TFP-179 and TFP-180
+  verified. The local Toolshop runs from `scripts/toolshop-local/` (Docker
+  Desktop must be started first; one version at a time).
+- **Now: Phase 41 batch 1** (`docs/decisions/phase-41-check-gaps-decision-record.md`):
+  TFP-181 (the GET-only request guard), TFP-182 (controls), TFP-183 (tab
+  order and grouping), TFP-184 (known paths and guessable ids) and TFP-185
+  (undisplayed internal API fields). Each ticket gets its own commit and
+  targeted tests, proved on the fixture and on the local copies (with-bugs
+  finds its targets, clean passes). The full unit suite, the regression
+  suite and `check:template-unchanged` run once at the end. Stop for
+  verification after the batch; don't start batch 2 (TFP-186, TFP-187).
 - **Not started, not next:**
   - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
     the current batch). Docker works on Emil's machine (checked 2026-10-07:

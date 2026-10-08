@@ -236,6 +236,23 @@ its ISTQB technique and its gate.
 - **Dependencies:** TFP-179, and the current batch (TFP-177).
 - **Stop at Gate A.**
 
+- **Done, TFP-189 (`69511a4`, `4f636b1`), TFP-179 (`044a1cd`) and TFP-180
+  (`8769970`), verified 2026-10-08 (Cowork). Gate A passed.**
+  - **TFP-189:** the planned count now matches only declared `test(` and
+    `test.only(` (`(?<![.\w$])test(?:\.only)?\s*\(`), in `selection.ts`
+    and `jobs.ts`; regression 57/57.
+  - **TFP-179:** Testsmith's repository is cloned next to TestForge, pinned
+    at `5a6ccc26`; TestForge's two compose overrides leave Testsmith's files
+    untouched. One version runs at a time (both apps call `localhost:8091`).
+  - **TFP-180:** every run's site is `http://localhost:4200`, every
+    inspected page is local, and each Standard run used exactly its
+    selection. The local score is 9 found, 4 hinted, 24 missed, bug for bug
+    TFP-175's. Of the 24 missed, 21 are present and visible in Chromium;
+    22 and 23 show only in Edge and Firefox; 54 is absent in this version.
+  - **The two copies' API caches differed** (clean in memory, with-bugs on
+    file); the with-bugs run predated the override. TFP-188 runs both
+    through the committed script, so they match from then on.
+
 ### TFP-181 — Widen the read-only gate for GET-only interactions
 
 - **Priority:** P1 · **Labels:** `run`, `gates`
@@ -293,10 +310,23 @@ its ISTQB technique and its gate.
 
 - **Priority:** P1 · **Labels:** `generate`, `usability`
 - **Scope:** Decision 1.
-- **Acceptance criteria:** fixture cases for each property and for overlap
-  and an unrendered image; on the local with-bugs copy they find the present
-  ones of 4, 19, 22, 23, 26, 45, 49, 58, 59, 63, 66 and 67; on the clean copy,
-  no failure, and every finding labelled.
+- **From Gate A's presence verdicts (2026-10-08):**
+  - **Bug 26 hides images (`d-none` on products 5, 13 and 20), it doesn't
+    break them.** An "image that didn't render" check reads only visible
+    images, so it can't see these. Add a group-consistency case: in a set
+    of repeated cards, a card whose image is hidden while its siblings'
+    show is a finding naming the card.
+  - **Bug 4 is random:** product names are right-aligned only when a random
+    number is odd, so it shows on some loads and not others. The check must
+    report it when it appears and must not count its absence as a pass on
+    the bug; the scoring records it as present-intermittent.
+  - 22 and 23 aren't visible in Chromium, so they leave this ticket's
+    targets.
+- **Acceptance criteria:** fixture cases for each property, for overlap, for
+  an unrendered image and for a hidden image among its siblings; on the
+  local with-bugs copy they find the present ones of 4, 19, 26, 45, 49, 58,
+  59, 63, 66 and 67; on the clean copy, no failure, and every finding
+  labelled.
 - **Dependencies:** Gate A.
 
 ### TFP-187 — Spelling of interface text
@@ -305,8 +335,8 @@ its ISTQB technique and its gate.
 - **Scope:** Decision 2, with the dictionary's licence checked first.
 - **Acceptance criteria:** fixture cases for a misspelt label, a brand name
   that isn't reported, and a page in another language named as not checked;
-  on the local with-bugs copy it finds the present ones of 31, 33, 34, 42, 54
-  and 62; on the clean copy every finding is labelled.
+  on the local with-bugs copy it finds 31, 33, 34, 42 and 62 (54 is absent
+  in this version); on the clean copy every finding is labelled.
 - **Dependencies:** Gate A.
 
 ### TFP-188 — Re-score with the new checks (Gate B)
@@ -321,7 +351,8 @@ its ISTQB technique and its gate.
 
 ## Recommended Execution Order
 
-1. TFP-189 (small, first), then TFP-179 and TFP-180. **Gate A.**
+1. TFP-189 (small, first), then TFP-179 and TFP-180. **Gate A passed
+   2026-10-08.**
 2. Batch 1: TFP-181, TFP-182, TFP-183, TFP-184, TFP-185.
 3. Batch 2: TFP-186, TFP-187.
 4. TFP-188. **Gate B.**
@@ -329,6 +360,8 @@ its ISTQB technique and its gate.
 ## Gates
 
 ### Gate A — Ground truth and baseline
+**Passed 2026-10-08** (`8769970`): presence verdicts for all 28 targets;
+the local baseline is 9 found, 4 hinted, 24 missed.
 - Every target bug has a presence verdict from the local copies.
 - Today's code is scored on both local copies.
 
