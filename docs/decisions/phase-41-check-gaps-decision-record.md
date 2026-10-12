@@ -354,6 +354,14 @@ its ISTQB technique and its gate.
     with-bugs copy may have no log, so the probe would miss a bug that is
     there. Before TFP-188: with-bugs keeps file logging (its override),
     and the start script confirms `/logs/laravel.log` answers.
+    - **Done (2026-10-12), not yet verified:** file logging alone made every
+      logging request answer 500 (php-fpm, uid 1000, can't append to the
+      mounted folder's uid-82 file). The log now lives in a Docker volume
+      over `storage/logs`, given to php-fpm's user once Testsmith's
+      `composer` service, which re-owns it to uid 82, has exited. The start
+      script then requires a line written since the start; measured, the
+      start reports the newest line at 20:56:03 UTC for a 20:53 start, the
+      API answers 200, and the 2026-10-08 log would have been rejected.
 
 ### TFP-186 — Layout consistency, overlap and images that don't render
 

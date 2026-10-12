@@ -48,6 +48,7 @@ if ($Sprint -eq "sprint5-with-bugs") { $ComposeFiles += @("-f", (Join-Path $PSSc
 
 $AppUrl = "http://localhost:4200"
 $ApiDocsUrl = "http://localhost:8091/api/documentation"
+$LogUrl = "http://localhost:8091/logs/laravel.log"
 
 docker info --format "{{.ServerVersion}}" 2>$null | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "Docker isn't answering. Start Docker Desktop first." }
@@ -70,7 +71,7 @@ try {
     Write-Host "Starting $Sprint (the first start builds images and installs the app: several minutes)"
     docker compose @ComposeFiles up -d
     if ($LASTEXITCODE -ne 0) { throw "docker compose up failed" }
-
+    $StartedUtc = [DateTime]::UtcNow
     function Wait-Answer([string]$Url, [int]$Seconds) {
         $deadline = (Get-Date).AddSeconds($Seconds)
         while ((Get-Date) -lt $deadline) {
@@ -99,11 +100,42 @@ try {
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path $Autoload)) { throw "installing the API's packages failed" }
     }
 
+    if ($Sprint -eq "sprint5-with-bugs") {
+        # Bug 80 (compose.with-bugs.yml): the log lives in a Docker volume. Testsmith's composer service
+        # mounts the API's volumes (volumes_from) and ends with chown -R www-data /var/www, which in the
+        # composer image is uid 82, while php-fpm runs as uid 1000: Laravel then can't write its log and
+        # every request that logs answers 500. So once composer has exited, the folder goes to the user
+        # php-fpm runs as (process 1), not to a name.
+        $waited = 0
+        while (-not ((docker compose @ComposeFiles ps -a --format "{{.State}}" composer 2>$null) -match "exited") -and $waited -lt 600) {
+            Start-Sleep -Seconds 5
+            $waited += 5
+        }
+        docker compose @ComposeFiles exec -T -u root laravel-api sh -c 'chown -R $(stat -c %u:%g /proc/1) /var/www/storage/logs'
+        if ($LASTEXITCODE -ne 0) { throw "giving the API's log folder to php-fpm's user failed" }
+    }
+
     if (-not (Wait-Answer $ApiDocsUrl 600)) { throw "The API's documentation page didn't answer at $ApiDocsUrl" }
     Write-Host "Seeding the database for $Sprint"
     docker compose @ComposeFiles exec -T laravel-api php artisan migrate:fresh --seed --force
     if ($LASTEXITCODE -ne 0) { throw "seeding the database failed" }
     if (-not (Wait-Answer $AppUrl 900)) { throw "The app didn't answer at $AppUrl" }
+
+    if ($Sprint -eq "sprint5-with-bugs") {
+        # Bug 80 must be there to be found: one request to the API writes a line, and the
+        # log route must serve a line written since this start (a stale log doesn't count).
+        Invoke-WebRequest -Uri "http://localhost:8091/products?page=1" -UseBasicParsing -TimeoutSec 30 | Out-Null
+        $log = Invoke-WebRequest -Uri $LogUrl -UseBasicParsing -TimeoutSec 30
+        $stamps = [regex]::Matches($log.Content, '\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]') | ForEach-Object {
+            [DateTime]::ParseExact($_.Groups[1].Value, "yyyy-MM-dd HH:mm:ss", [Globalization.CultureInfo]::InvariantCulture)
+        }
+        $newest = $stamps | Sort-Object | Select-Object -Last 1
+        # Laravel stamps in UTC (config/app.php); a minute's slack for the clocks.
+        if ($log.StatusCode -ne 200 -or -not $newest -or $newest -lt $StartedUtc.AddMinutes(-1)) {
+            throw "Bug 80 isn't reachable: $LogUrl answered $($log.StatusCode) with no line written since $($StartedUtc.ToString('u'))"
+        }
+        Write-Host "Bug 80: $LogUrl answers 200; its newest line is $($newest.ToString('u'))"
+    }
 
     Write-Host ""
     Write-Host "$Sprint is running:"

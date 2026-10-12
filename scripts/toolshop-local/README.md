@@ -55,5 +55,16 @@ Testsmith's files are not changed. TestForge adds:
   (`sprint5`'s has), so compose's own start command,
   `npm install --force && node set-version.js && ng serve ...`, stops there
   and the app never answers. This override runs the same command without it.
+- **with-bugs keeps its log in a file, so bug 80 is there to find.** Bug 80
+  is with-bugs serving `storage/logs/laravel.log` from `/logs/laravel.log`.
+  `compose.local.yml` sends the log to stderr, because php-fpm (uid 1000)
+  can't write to the Windows folder mounted into Docker; so a fresh copy had
+  no log, and the one this machine served dated from 2026-10-08.
+  `compose.with-bugs.yml` keeps Laravel's file log in a Docker volume over
+  `storage/logs`. Testsmith's `composer` service shares that volume and ends
+  with `chown -R www-data`, which in its image is uid 82, so the start script
+  waits for it to exit before giving the folder to php-fpm's user. Then it
+  makes one API request and stops with an error unless `/logs/laravel.log`
+  answers 200 with a line written since the start.
 - **Only Testsmith's `docker-compose.yml`.** Its override file adds cron,
   phpMyAdmin and MailCatcher, which no TestForge run needs, so it isn't used.

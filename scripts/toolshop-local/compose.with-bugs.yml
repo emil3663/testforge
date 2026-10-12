@@ -7,3 +7,21 @@ services:
   angular-ui:
     command: >
       bash -c "npm install --force && ng serve --host 0.0.0.0 --port 4200"
+  # Phase 41 (TFP-188's prerequisite, from batch 1's verification): bug 80 is the
+  # with-bugs API serving storage/logs/laravel.log through its own route
+  # (routes/api.php:43). compose.local.yml sends the log to stderr, because php-fpm
+  # (uid 1000) can't append to a file on the Windows folder mounted into Docker (it
+  # is owned by uid 82, mode 644: every request that logs answers 500). So a fresh
+  # copy had no log to serve, and the one this machine served was written on
+  # 2026-10-08 and never again. with-bugs keeps Laravel's file log, in a Docker
+  # volume mounted over storage/logs, which start-toolshop.ps1 gives to www-data
+  # and then checks the route serves a line written since the start. Testsmith's
+  # files are left as they are (their own laravel.log is hidden under the volume).
+  laravel-api:
+    environment:
+      - LOG_CHANNEL=single
+    volumes:
+      - with-bugs-logs:/var/www/storage/logs
+
+volumes:
+  with-bugs-logs:
