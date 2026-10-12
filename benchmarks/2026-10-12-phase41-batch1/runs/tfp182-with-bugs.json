@@ -1,0 +1,100 @@
+{
+  "label": "wb-182-final",
+  "site": "local with-bugs Toolshop, http://localhost:4200",
+  "commit": "7069078 + TFP-182 working tree",
+  "startedAt": "2026-10-12T18:56:34.840Z",
+  "durationSeconds": 53,
+  "tests": 10,
+  "records": [
+    {
+      "title": "TFFU-184: sort options order the items on /#/",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: sorting by \"Name (A - Z)\" on /#/ puts \"Wood Saw\" before \"Thor Hammer\"; sorting by \"Name (Z - A)\" on /#/ puts \"Adjustable Wrench\" before \"Angled Spanner\"; sorting by \"Price (High - Low)\" on /#/ puts \"Phillips Screwdriver\" (4.92) before \"Slip Joint Pliers\" (9.17); sorting by \"Price (Low - High)\" on /#/ puts \"Cordless Drill 20V\" (125.23) before \"Cordless Drill 18V\" (119.24)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-185: filters send and respect the chosen values on /#/",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: moving the \"ngx-slider-max\" slider on /#/ from 100 to 99 sent GET http://localhost:8091/products?between=price,0&page=0, which does not carry 99",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-186: option lists show no error text on /#/",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-187: quantity steppers change the value by one on /#/product/6",
+      "status": "Failed",
+      "page": "/#/product/6",
+      "message": "Error: on /#/product/6, \"+\" beside \"quantity\" left it at 1 (it was 1; expected 2)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-188: sort options order the items on /#/category/hand-tools",
+      "status": "Failed",
+      "page": "/#/category/hand-tools",
+      "message": "Error: sorting by \"Name (A - Z)\" on /#/category/hand-tools puts \"Wood Saw\" before \"Thor Hammer\"; sorting by \"Name (Z - A)\" on /#/category/hand-tools puts \"Adjustable Wrench\" before \"Angled Spanner\"; sorting by \"Price (High - Low)\" on /#/category/hand-tools puts \"Phillips Screwdriver\" (4.92) before \"Slip Joint Pliers\" (9.17); sorting by \"Price (Low - High)\" on /#/category/hand-tools puts \"Bolt Cutters\" (48.41) before \"Open-end Spanners (Set)\" (38.51)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-189: filters send and respect the chosen values on /#/category/hand-tools",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-190: option lists show no error text on /#/category/hand-tools",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-191: option lists show no error text on /#/auth/register",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-192: option lists show no error text on /#/contact",
+      "status": "Failed",
+      "page": "/#/contact",
+      "message": "Error: the \"Subject\" list on /#/contact offers \"Error 101: Subject not found\"; the \"Subject\" list on /#/contact offers \"Error 202: Translation error\"",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFFU-193: navigation links land where their text says, from /#/",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: \"Home\" on /#/ leads to /contact (\"Contact\"), not the start page; \"Contakt\" on /#/ leads to /contact (\"Contact\"), whose title and heading share no word with it",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

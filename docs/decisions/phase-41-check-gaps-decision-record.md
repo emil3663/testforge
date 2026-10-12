@@ -265,6 +265,14 @@ its ISTQB technique and its gate.
   and a control that POSTs is aborted and named; existing read-only tests
   unchanged (`check:template-unchanged`).
 - **Dependencies:** Gate A.
+- **Decided while building TFP-182 (Emil, 2026-10-12):** the clean
+  Toolshop sorts and filters with the HTTP QUERY method (RFC 10008: safe and
+  idempotent like GET, its criteria in a JSON body), which the guard
+  aborted, so every interaction check failed there as a breach. The guard
+  allows the methods HTTP defines as safe - GET, HEAD and QUERY - and aborts
+  every other; the filter check reads a QUERY's body as well as its URL.
+  This amends Decision 3's "all GETs" to "all safe methods". Rejected:
+  keeping GET only and labelling the clean breaches.
 
 ### TFP-182 — Controls do their job on read-only pages
 
@@ -275,6 +283,13 @@ its ISTQB technique and its gate.
   transition and decision table); on the local with-bugs copy they find the
   present ones of 2, 27, 29, 40 and 60; the clean copy passes them.
 - **Dependencies:** TFP-181.
+- **Decided while building (Emil, 2026-10-12):** the link-destination rule
+  ("shares the link's words") failed the clean Toolshop's "Sign in", which
+  lands on a page titled and headed "Login". A link and its destination's
+  title or first heading are matched through a small fixed synonym table:
+  sign in = log in = login; sign up = register = create account; cart =
+  basket = checkout. Rejected: matching the destination's URL words, and
+  keeping the literal rule and labelling the clean failure.
 
 ### TFP-183 — Tab order and grouping
 

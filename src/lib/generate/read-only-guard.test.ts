@@ -8,6 +8,7 @@
  * submitted by form.submit(), which fires no submit event) and whether the
  * interaction itself then fails. One column each:
  *   GET-only sort                    -> passes; its GET reaches the server
+ *   a QUERY (RFC 10008)              -> passes and reaches the server (a safe method, like GET: Emil, 2026-10-12)
  *   POST control (Add to cart)       -> fails as a guard breach naming POST and the URL; no POST reaches the server
  *   form submitted by its button     -> fails naming the form and its action; nothing is sent
  *   form.submit()                    -> fails naming the form; nothing is sent
@@ -70,6 +71,13 @@ test('a GET-only sort', async ({ page }) => {
   });
 });
 
+test('a QUERY', async ({ page }) => {
+  await page.goto('/store');
+  await tfReadOnlyGuarded(page, async () => {
+    await page.evaluate(() => fetch('/api/store/products', { method: 'QUERY', headers: { 'content-type': 'application/json' }, body: '{"sort":"name,asc"}' }));
+  });
+});
+
 test('a control that POSTs', async ({ page }) => {
   await page.goto('/store/item/01J8Z3K4QWHAMMER');
   await tfReadOnlyGuarded(page, async () => {
@@ -120,9 +128,12 @@ test("in a real browser: the guard lets a GET-only sort through and aborts, and 
         const sort = one(records, "a GET-only sort");
         assert.equal(sort.status, "Passed", sort.rawMessage);
 
+        const query = one(records, "a QUERY");
+        assert.equal(query.status, "Passed", query.rawMessage);
+
         const post = one(records, "a control that POSTs");
         assert.equal(post.status, "Failed");
-        assert.match(post.rawMessage, new RegExp(`read-only guard breach, aborted: POST ${origin}/api/store/cart \\(the read-only gate allows only GET requests and no form submission\\)`));
+        assert.match(post.rawMessage, new RegExp(`read-only guard breach, aborted: POST ${origin}/api/store/cart \\(the read-only gate allows only GET, HEAD and QUERY requests and no form submission\\)`));
 
         const button = one(records, "a form submitted by its button");
         assert.equal(button.status, "Failed");
@@ -137,9 +148,9 @@ test("in a real browser: the guard lets a GET-only sort through and aborts, and 
         assert.match(later.rawMessage, /read-only guard breach, aborted: POST /);
         assert.doesNotMatch(later.rawMessage, /cart-status/);
 
-        // Measured at the server: the sort's GET arrived; no POST and no form submission did.
-        assert.ok(fixture.recorded.some((request) => request.method === "GET" && request.path === "/api/store/products?sort=name%2Cdesc"), "the sort's GET reached the server");
-        assert.deepEqual(fixture.recorded.filter((request) => request.method !== "GET"), [], "no request but GET reached the server");
+        // Measured at the server: the sort's GET and the QUERY arrived; no POST and no form submission did.
+        assert.ok(fixture.recorded.some((request) => request.method === "GET" && request.path.startsWith("/api/store/products?sort=name%2Cdesc")), "the sort's GET reached the server");
+        assert.deepEqual(fixture.recorded.filter((request) => request.method !== "GET").map((request) => `${request.method} ${request.path}`), ["QUERY /api/store/products"], "no request but GET and the one QUERY reached the server");
         assert.deepEqual(fixture.recorded.filter((request) => request.path.startsWith("/notes")), [], "no form submission reached the server");
     } finally {
         await fixture.close();

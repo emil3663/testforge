@@ -13,6 +13,7 @@ import { buildSecurityChecks } from "./security-checks";
 import { buildDragDropTests } from "./drag-drop";
 import { buildFormFieldNameTests } from "./form-field-names";
 import { buildCookieSessionTests } from "./cookie-session-checks";
+import { buildControlTests } from "./controls";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { buildRevealHelper } from "./link-audits/reveal";
@@ -355,9 +356,13 @@ export function buildGenericSuites(
         usabilityTests.push(...buildUsabilityElementTests(contentProfile, "/"));
     }
 
+    // Phase 41 (TFP-182): sort, filter, stepper, option-list and link-destination checks on the inspected pages.
+    const controls = areas.includes("functional") ? buildControlTests(contentProfile) : { tests: [], helpers: "" };
+    functionalTests.push(...controls.tests);
+
     const functionalSuite = createSuite("functional", functionalTests);
     if (functionalSuite) {
-        suites.push(functionalSuite);
+        suites.push(controls.helpers ? { ...functionalSuite, preamble: controls.helpers } : functionalSuite);
     }
 
     const usabilitySuite = createSuite("usability", usabilityTests);

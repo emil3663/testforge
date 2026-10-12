@@ -116,8 +116,9 @@ The gates catch failures that are mechanical. Quality is judged by reading.
 - **The passive security level sends only page loads**, plus one probe for
   a page that cannot exist. A test that records every request proves this
   (Phase 35 Decision 3, TFP-133).
-- **A read-only test that interacts sends only GETs and submits no form.**
-  It runs its interaction under the request guard, which aborts anything
+- **A read-only test that interacts sends only safe requests (GET, HEAD,
+  QUERY) and submits no form.** It runs its interaction under the request
+  guard, which aborts anything
   else and fails the test as a guard breach, naming the request or the form
   (Phase 41 Decision 3, amending Phase 38 Decision 1; TFP-181, RUN-27).
 - **Active security testing needs a typed confirmation of ownership or

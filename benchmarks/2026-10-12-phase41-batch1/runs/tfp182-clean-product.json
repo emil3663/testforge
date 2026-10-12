@@ -1,0 +1,19 @@
+{
+  "label": "clean-182c",
+  "site": "local clean Toolshop, http://localhost:4200",
+  "commit": "7069078 + TFP-182 working tree",
+  "startedAt": "2026-10-12T18:46:55.261Z",
+  "durationSeconds": 5,
+  "tests": 1,
+  "records": [
+    {
+      "title": "TFFU-022: quantity steppers change the value by one on /product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "status": "Passed",
+      "page": "/product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

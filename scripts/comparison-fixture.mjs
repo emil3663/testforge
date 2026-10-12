@@ -53,6 +53,12 @@ export const DEFECTS = {
     "menus-toggle-broken": "as menus, but the Categories dropdown's button does nothing",
     // TFP-160: /forms loses a field its form check recorded.
     "forms-missing-field": "the /forms search form has no Tag field",
+    // Phase 41 (TFP-182): controls on /store that don't do their job.
+    "controls-sort-reversed": "/store's name sort options ask for the opposite order (A - Z sends name,desc)",
+    "controls-filter-drops-max": "/store's price range sends only its minimum",
+    "controls-stepper-broken": "the quantity + and - on a /store item do nothing",
+    "controls-home-link-wrong": "the nav's Home link goes to /notes",
+    "controls-option-errors": "a /store item's gift-wrap list offers an error entry",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -70,12 +76,12 @@ export const DEFECTS = {
 
 // Phase 41 (TFP-181): the /store products. Ids are ULID-like, as the clean Toolshop's are.
 const STORE_PRODUCTS = [
-    { id: "01J8Z3K4QWHAMMER", name: "Claw Hammer", price: 12.5 },
-    { id: "01J8Z3K4R2CUTTER", name: "Bolt Cutters", price: 48 },
-    { id: "01J8Z3K4R7WDSAW0", name: "Wood Saw", price: 21.75 },
-    { id: "01J8Z3K4RCWRENCH", name: "Adjustable Wrench", price: 9.99 },
-    { id: "01J8Z3K4RHPLIERS", name: "Pliers", price: 7.25 },
-    { id: "01J8Z3K4RNMTAPE0", name: "Measuring Tape", price: 5.5 },
+    { id: "01J8Z3K4QWHAMMER", name: "Claw Hammer", price: 12.5, category: "hand-tools" },
+    { id: "01J8Z3K4R2CUTTER", name: "Bolt Cutters", price: 48, category: "hand-tools" },
+    { id: "01J8Z3K4R7WDSAW0", name: "Wood Saw", price: 21.75, category: "hand-tools" },
+    { id: "01J8Z3K4RCWRENCH", name: "Adjustable Wrench", price: 9.99, category: "hand-tools" },
+    { id: "01J8Z3K4RHPLIERS", name: "Pliers", price: 7.25, category: "hand-tools" },
+    { id: "01J8Z3K4RNMTAPE0", name: "Measuring Tape", price: 5.5, category: "measuring" },
 ];
 
 const LCP_DELAYS ={ "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
@@ -105,7 +111,7 @@ function page(title, body, { meta = true, script = "" } = {}) {
 ${meta ? `<meta name="description" content="${title}: keep short notes with Acme Notes.">` : ""}
 </head>
 <body>
-<nav><a href="/">Home</a> <a href="/login">Sign in</a> <a href="/notes">Notes</a></nav>
+<nav><a href="${defect === "controls-home-link-wrong" ? "/notes" : "/"}">Home</a> <a href="/login">Sign in</a> <a href="/notes">Notes</a></nav>
 <main>
 ${body}
 </main>
@@ -408,10 +414,14 @@ draw();
     // request guard. /store draws its products from /api/store/products, and
     // its sort asks for them again, sorted - GET only. An item's "Add to
     // cart" POSTs /api/store/cart: the kind of control the guard aborts. Not
-    // linked from the nav, like /anchors.
+    // linked from the nav, like /anchors. TFP-182 adds a price range and a
+    // category filter (both GET), a quantity stepper and a gift-wrap list,
+    // each with a defect above.
     if (url.pathname === "/api/store/products" && req.method === "GET") {
         const [key, direction] = (url.searchParams.get("sort") ?? "").split(",");
-        const sorted = [...STORE_PRODUCTS];
+        const [low, high] = (url.searchParams.get("between") ?? "").split(",").slice(1).map(Number);
+        const category = url.searchParams.get("category");
+        const sorted = STORE_PRODUCTS.filter((p) => (!(low >= 0) || p.price >= low) && (!(high >= 0) || p.price <= high) && (!category || p.category === category));
         if (key === "name" || key === "price") {
             sorted.sort((a, b) => (key === "name" ? a.name.localeCompare(b.name) : a.price - b.price) * (direction === "desc" ? -1 : 1));
         }
@@ -423,15 +433,24 @@ draw();
     }
     if (url.pathname === "/store" && req.method === "GET") {
         return send(200, page("Store", `<h1>Store</h1>
-<p><label for="sort">Sort</label> <select id="sort"><option value="">Choose an order</option><option value="name,asc">Name (A - Z)</option><option value="name,desc">Name (Z - A)</option><option value="price,asc">Price (Low - High)</option><option value="price,desc">Price (High - Low)</option></select></p>
+<p><label for="sort">Sort</label> <select id="sort"><option value="">Choose an order</option><option value="name,${defect === "controls-sort-reversed" ? "desc" : "asc"}">Name (A - Z)</option><option value="name,${defect === "controls-sort-reversed" ? "asc" : "desc"}">Name (Z - A)</option><option value="price,asc">Price (Low - High)</option><option value="price,desc">Price (High - Low)</option></select></p>
+<fieldset><legend>Price</legend><label>Lowest <input type="range" id="price-min" aria-label="Lowest price" min="0" max="50" value="0"></label> <label>Highest <input type="range" id="price-max" aria-label="Highest price" min="0" max="50" value="50"></label></fieldset>
+<fieldset><legend>Category</legend><label><input type="checkbox" name="category" value="hand-tools"> Hand tools</label> <label><input type="checkbox" name="category" value="measuring"> Measuring</label></fieldset>
 <ul id="products" class="cards">Loading...</ul>`, { script: `const money = (n) => '$' + n.toFixed(2);
-async function load(sort) {
-  const response = await fetch('/api/store/products' + (sort ? '?sort=' + encodeURIComponent(sort) : ''));
+const value = (id) => document.getElementById(id).value;
+async function load() {
+  const query = new URLSearchParams();
+  if (value('sort')) query.set('sort', value('sort'));
+  query.set('between', 'price,' + value('price-min')${defect === "controls-filter-drops-max" ? "" : " + ',' + value('price-max')"});
+  const category = document.querySelector('input[name="category"]:checked');
+  if (category) query.set('category', category.value);
+  const response = await fetch('/api/store/products?' + query);
   const products = await response.json();
   document.getElementById('products').innerHTML = products.map((p) => '<li class="card"><a href="/store/item/' + p.id + '"><h2 class="card-title">' + p.name + '</h2></a> <span class="price">' + money(p.price) + '</span></li>').join('');
 }
-document.getElementById('sort').addEventListener('change', (e) => load(e.target.value));
-load('');` }));
+for (const id of ['sort', 'price-min', 'price-max']) document.getElementById(id).addEventListener('change', load);
+for (const box of document.querySelectorAll('input[name="category"]')) box.addEventListener('change', load);
+load();` }));
     }
     const storeItem = /^\/store\/item\/([^/]+)$/.exec(url.pathname);
     if (storeItem && req.method === "GET") {
@@ -439,7 +458,12 @@ load('');` }));
         if (!product) return send(404, page("Not found", "<h1>Not found</h1>"));
         return send(200, page(product.name, `<h1>${escapeHtml(product.name)}</h1>
 <p class="price">$${product.price.toFixed(2)}</p>
-<p><button type="button" id="add-to-cart">Add to cart</button> <span id="cart-status"></span></p>`, { script: `document.getElementById('add-to-cart').addEventListener('click', async () => {
+<p><label for="qty">Quantity</label> <button type="button" aria-label="Decrease quantity">-</button> <input type="number" id="qty" min="1" max="10" value="1"> <button type="button" aria-label="Increase quantity">+</button></p>
+<p><label for="wrap">Gift wrap</label> <select id="wrap"><option>No wrapping</option><option>Brown paper</option>${defect === "controls-option-errors" ? "<option>Error 101: Wrapping not found</option>" : ""}<option>Gift box</option></select></p>
+<p><button type="button" id="add-to-cart">Add to cart</button> <span id="cart-status"></span></p>`, { script: `${defect === "controls-stepper-broken" ? "" : `const qty = document.getElementById('qty');
+document.querySelector('[aria-label="Increase quantity"]').addEventListener('click', () => { qty.value = Math.min(Number(qty.value) + 1, 10); });
+document.querySelector('[aria-label="Decrease quantity"]').addEventListener('click', () => { qty.value = Math.max(Number(qty.value) - 1, 1); });
+`}document.getElementById('add-to-cart').addEventListener('click', async () => {
   const response = await fetch('/api/store/cart', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: 'id=${product.id}&quantity=1' });
   document.getElementById('cart-status').textContent = response.ok ? 'Added' : 'Could not add';
 });` }));
