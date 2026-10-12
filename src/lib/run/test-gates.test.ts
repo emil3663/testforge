@@ -92,7 +92,8 @@ test("the template: on the 166 fixed inputs every test declares exactly one gate
     // TFP-182: the link-destination check on each of the 4 inputs with page data and the functional area, 1084 + 4 = 1088.
     // TFP-183: tab order and grouping, 2 per inspected page on the 46 inputs with accessibility (42 x 1 page, 4 x 3), 1088 + 108 = 1196.
     // TFP-186: three layout checks per inspected page on the 32 inputs with usability, and the across-pages check on the 4 with page data (28 x 3 + 4 x 10), 1196 + 124 = 1320.
-    assert.deepEqual(totals, { "read-only": 1320, interactive: 2, active: 2 });
+    // TFP-187: the spelling check per inspected page on the 46 inputs with SEO/content (42 x 1, 4 x 3), 1320 + 54 = 1374.
+    assert.deepEqual(totals, { "read-only": 1374, interactive: 2, active: 2 });
 });
 
 test("the template with every journey selected: journeys are interactive, with the interactive skip", () => {

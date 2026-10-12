@@ -412,6 +412,32 @@ its ISTQB technique and its gate.
   on the local with-bugs copy it finds 31, 33, 34, 42 and 62 (54 is absent
   in this version); on the clean copy every finding is labelled.
 - **Dependencies:** Gate A.
+- **The dictionary, checked before building (Emil, 2026-10-12):**
+  `dictionary-en` 4.0.0 (en_US) and `dictionary-en-gb` 3.0.0 (en_GB-ise),
+  Hunspell files from SCOWL size 60, read with `nspell` 2.1.5 (MIT). Their
+  licence files, read in full: SCOWL's permissive notices (Kevin Atkinson,
+  Ispell's BSD licence, ENABLE, UKACD, WordNet, VarCon); no copyleft, no
+  non-commercial clause; the notices must be kept, and UKACD asks that its
+  notice be prominently displayed and its text included verbatim wherever
+  the list ships. Used, with `THIRD_PARTY_NOTICES.md` carrying all three
+  licences verbatim. Rejected: relying on the copies inside
+  `node_modules`; looking for another list.
+- **The rule, calibrated (Emil, 2026-10-12):** read as written, Decision 2
+  reported about 40 words on the clean Toolshop - 37 parts of country names
+  from the 248-option country list, "Unsplash" (the footer's photo credit),
+  "nav" and "ngx" (aria-labels) - and no dictionary sees bug 62's "Massage",
+  a real word. Adopted: words of four or more letters; a word known in
+  another case is known; lists of 20 or more options and text in a
+  `<footer>` are not read; an unknown word is a finding only when a
+  dictionary suggestion is within edit distance 2; and a field's
+  placeholder word within distance 2 of a word of its label (same first
+  letter, not equal) is a finding. Rejected: sparing words used on every
+  page unless within distance 1; keeping the wording and labelling the
+  clean findings.
+- **Found while building:** adding the GB word list to the US speller
+  (`nspell.dictionary()`) left it accepting every word, "Contakt" included,
+  so the check keeps two spellers; and `dictionary-en` 4 ships its files as
+  `Uint8Array`s, which `nspell` 2 needs decoded to text.
 
 ### TFP-188 — Re-score with the new checks (Gate B)
 

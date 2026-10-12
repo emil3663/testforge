@@ -85,6 +85,10 @@ export const DEFECTS = {
     "layout-broken-image": "/gallery shows an image that doesn't load",
     "layout-centred-titles": "/gallery/more's card titles are centred",
     "layout-submit-width": "/gallery/more's Order button loses its width",
+    // Phase 41 (TFP-187): spelling on /words.
+    "spelling-misspelt": "/words' heading reads Contakt",
+    "spelling-placeholder": "/words' Message field's placeholder reads massage",
+    "spelling-other-language": "/words declares German (lang=de)",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -498,6 +502,28 @@ load();` }));
 <p><label for="r-password">Password</label><br><input id="r-password" name="password" type="password"${tab(4)}></p>
 <p><button type="submit">Register</button></p>
 </form>`));
+    }
+    // TFP-187: interface text, with what the spelling check must not read: a list of 20+ names (countries),
+    // a footer's credit and a short aria-label.
+    if (url.pathname === "/words" && req.method === "GET") {
+        const places = ["Saba", "Sint Maarten", "Bonaire", "Burkina Faso", "Cabo Verde", "Costa Rica", "Eswatini", "Faroe Islands", "Mayotte", "Niue", "Palau", "Papua New Guinea", "Tokelau", "Turks and Caicos", "Wallis and Futuna", "Timor-Leste", "Sri Lanka", "Sao Tome", "Saint Barthelemy", "Svalbard and Jan Mayen", "Norfolk Island", "Bouvet Island", "Curacao", "Kiribati"];
+        return send(200, `<!doctype html>
+<html lang="${defect === "spelling-other-language" ? "de" : "en"}">
+<head><meta charset="utf-8"><title>Write to Acme</title></head>
+<body>
+<nav aria-label="nav"><a href="/">Home</a> <a href="/words">Write to us</a></nav>
+<main>
+<h1>${defect === "spelling-misspelt" ? "Contakt us" : "Contact us"}</h1>
+<form aria-label="Message" action="/words" method="get">
+<p><label for="w-topic">Topic</label> <select id="w-topic" name="topic"><option>Orders</option><option>Returns</option><option>Warranty</option></select></p>
+<p><label for="w-country">Country</label> <select id="w-country" name="country">${places.map((place) => `<option>${place}</option>`).join("")}</select></p>
+<p><label for="w-message">Message</label> <textarea id="w-message" name="message" placeholder="${defect === "spelling-placeholder" ? "Your massage" : "Your message"}"></textarea></p>
+<p><button type="submit">Send</button></p>
+</form>
+</main>
+<footer><p>Photos by <a href="https://unsplash.com/">Unsplash</a></p></footer>
+</body>
+</html>`);
     }
     // TFP-186: two pages with the same components - cards with images and an order form whose button is half its width.
     if ((url.pathname === "/gallery" || url.pathname === "/gallery/more") && req.method === "GET") {

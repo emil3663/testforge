@@ -15,6 +15,7 @@ import { buildFormFieldNameTests } from "./form-field-names";
 import { buildCookieSessionTests } from "./cookie-session-checks";
 import { buildControlTests } from "./controls";
 import { buildLayoutTests } from "./layout";
+import { buildSpellingTests } from "./spelling";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { buildRevealHelper } from "./link-audits/reveal";
@@ -160,6 +161,8 @@ ${elementChecks}
     }
 
     if (areas.includes("seo/content")) {
+        // Phase 41 (TFP-187): the spelling of the interface text on every inspected page.
+        const spelling = buildSpellingTests(contentProfile);
         const suite = createSuite("seo/content", [
             `  test('exposes core SEO and content signals on the landing page', async ({ page }) => {
     await page.goto('/');
@@ -172,10 +175,11 @@ ${elementChecks}
       await expect(metaDescription.first()).toHaveAttribute('content', /.+/);
     }
   });`,
+            ...spelling.tests,
         ]);
 
         if (suite) {
-            suites.push(suite);
+            suites.push(spelling.helpers ? { ...suite, preamble: spelling.helpers } : suite);
         }
     }
 

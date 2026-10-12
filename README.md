@@ -339,3 +339,8 @@ Invoke-WebRequest http://localhost:3000 -UseBasicParsing | Select-Object -Expand
 ```
 
 Expected: both commands return `200` when Plane and TestForge are running.
+
+## Licence
+
+MIT (`LICENSE`). The spelling check uses `nspell` and two SCOWL-derived
+Hunspell dictionaries, whose notices are in `THIRD_PARTY_NOTICES.md`.
