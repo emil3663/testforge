@@ -75,6 +75,16 @@ export const DEFECTS = {
     // shows beside its name ("Stock: 12").
     "security-api-internal-fields": "/api/store/products items carry a stock count that /store never shows",
     "security-api-internal-fields-shown": "as security-api-internal-fields, but /store shows each item's stock (not a defect)",
+    // Phase 41 (TFP-186): layout on /gallery and /gallery/more, which share their cards and their order form.
+    "layout-field-padding": "/gallery's Email field has no left padding",
+    "layout-label-font": "/gallery's Email label is in Comic Sans",
+    "layout-option-font": "/gallery's Size list shows M in a smaller font",
+    "layout-card-align": "one /gallery card title is right-aligned",
+    "layout-hidden-image": "one /gallery card's image is hidden",
+    "layout-overlap": "/gallery's Save and Share buttons overlap",
+    "layout-broken-image": "/gallery shows an image that doesn't load",
+    "layout-centred-titles": "/gallery/more's card titles are centred",
+    "layout-submit-width": "/gallery/more's Order button loses its width",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -488,6 +498,28 @@ load();` }));
 <p><label for="r-password">Password</label><br><input id="r-password" name="password" type="password"${tab(4)}></p>
 <p><button type="submit">Register</button></p>
 </form>`));
+    }
+    // TFP-186: two pages with the same components - cards with images and an order form whose button is half its width.
+    if ((url.pathname === "/gallery" || url.pathname === "/gallery/more") && req.method === "GET") {
+        const more = url.pathname === "/gallery/more";
+        const pic = (fill) => `<img alt="" width="40" height="40" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23${fill}'/%3E%3C/svg%3E">`;
+        const names = more ? ["Chisel", "Mallet", "File"] : ["Claw Hammer", "Bolt Cutters", "Wood Saw", "Pliers"];
+        const cards = names.map((cardName, index) => {
+            const align = more && defect === "layout-centred-titles" ? ' style="text-align:center"' : !more && index === 2 && defect === "layout-card-align" ? ' style="text-align:right"' : "";
+            const hidden = !more && index === 1 && defect === "layout-hidden-image" ? ' style="display:none"' : "";
+            return `<li class="card"><span${hidden}>${pic(["336", "633", "363", "663"][index])}</span><h2 class="card-title"${align}>${cardName}</h2></li>`;
+        }).join("");
+        const submitWidth = more && defect === "layout-submit-width" ? "width:auto" : "width:50%";
+        return send(200, page(more ? "More" : "Gallery", `<style>input,select{padding:6px 12px;font:16px sans-serif}label{font:16px sans-serif}.cards{list-style:none;display:flex;gap:16px}.card-title{font:20px sans-serif}</style>
+<h1>${more ? "More tools" : "Gallery"}</h1>
+<ul class="cards">${cards}</ul>
+<form aria-label="Order" action="/gallery" method="get">
+<p><label for="g-name">Name</label> <input id="g-name" name="name"></p>
+<p><label for="g-email"${!more && defect === "layout-label-font" ? ' style="font-family:\'Comic Sans MS\'"' : ""}>Email</label> <input id="g-email" name="email" type="email"${!more && defect === "layout-field-padding" ? ' style="padding-left:0"' : ""}></p>
+<p><label for="g-size">Size</label> <select id="g-size" name="size"><option>S</option><option${!more && defect === "layout-option-font" ? ' style="font-size:smaller"' : ""}>M</option><option>L</option></select></p>
+<div><button type="submit" class="btn-submit" style="${submitWidth}">Order</button></div>
+</form>
+${more ? "" : `<p><button type="button" class="tool">Save</button><button type="button" class="tool" style="margin-left:${defect === "layout-overlap" ? "-30px" : "12px"}">Share</button></p>`}${!more && defect === "layout-broken-image" ? '\n<p><img src="/missing-logo.png" alt="Acme" width="40" height="40"></p>' : ""}`));
     }
     const storeItem = /^\/store\/item\/([^/]+)$/.exec(url.pathname);
     if (storeItem && req.method === "GET") {

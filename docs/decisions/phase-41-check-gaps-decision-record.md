@@ -385,6 +385,23 @@ its ISTQB technique and its gate.
   59, 63, 66 and 67; on the clean copy, no failure, and every finding
   labelled.
 - **Dependencies:** Gate A.
+- **Decided while building (Emil, 2026-10-12):** Decision 1's "for buttons
+  in one row, width" is dropped. On the fixture's clean page it reported
+  two ordinary text-sized buttons ("Save" 46 px, "Share" 52 px), as it
+  would on most toolbars. A button's width is compared as one component
+  across pages instead (its share of its container), which is what finds
+  58 and 66: the submit is 10% of its container on register and contact,
+  50% on login and forgot-password. Rejected: keeping it for big gaps only,
+  and keeping it as written.
+- **Found while building:** across pages, a heading is one component only
+  when it is a page title (`h1`) or has a class naming it (`card-title`).
+  The clean Toolshop's bare `h3` is a form's title on login, register and
+  contact (centred) and a section's on the product page (left), which the
+  first version reported as one component differing.
+- **For TFP-188:** the with-bugs Standard selection has `/#/chainsaws` and
+  no rentals page, so bug 49 (rentals' card titles centred) is outside a
+  Standard run's pages there; it is found when rentals is inspected
+  (clean's selection has rentals). Phase 40's selection is not changed here.
 
 ### TFP-187 — Spelling of interface text
 

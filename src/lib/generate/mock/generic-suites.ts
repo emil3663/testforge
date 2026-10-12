@@ -14,6 +14,7 @@ import { buildDragDropTests } from "./drag-drop";
 import { buildFormFieldNameTests } from "./form-field-names";
 import { buildCookieSessionTests } from "./cookie-session-checks";
 import { buildControlTests } from "./controls";
+import { buildLayoutTests } from "./layout";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { buildRevealHelper } from "./link-audits/reveal";
@@ -360,6 +361,9 @@ export function buildGenericSuites(
   });`);
         usabilityTests.push(...buildUsabilityElementTests(contentProfile, "/"));
     }
+    // Phase 41 (TFP-186): layout consistency, overlap and images that don't render, on the inspected pages.
+    const layout = areas.includes("usability") ? buildLayoutTests(contentProfile) : { tests: [], helpers: "" };
+    usabilityTests.push(...layout.tests);
 
     // Phase 41 (TFP-182): sort, filter, stepper, option-list and link-destination checks on the inspected pages.
     const controls = areas.includes("functional") ? buildControlTests(contentProfile) : { tests: [], helpers: "" };
@@ -372,7 +376,7 @@ export function buildGenericSuites(
 
     const usabilitySuite = createSuite("usability", usabilityTests);
     if (usabilitySuite) {
-        suites.push(usabilitySuite);
+        suites.push(layout.helpers ? { ...usabilitySuite, preamble: layout.helpers } : usabilitySuite);
     }
 
     return [...suites, ...buildSharedBestPracticeSuites(baseUrl, description, areas, contentProfile)];
