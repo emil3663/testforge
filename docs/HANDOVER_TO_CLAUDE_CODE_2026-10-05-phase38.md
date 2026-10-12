@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `3fdf84f`; `69511a4`, `4f636b1`, `044a1cd` and
-`8769970` are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `951ae34`; batch 1's five commits (`7069078` to
+`7b632cf`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -43,14 +43,21 @@ starts, so a session opened before then doesn't use it.
 - **Phase 41 Gate A passed 2026-10-08:** TFP-189, TFP-179 and TFP-180
   verified. The local Toolshop runs from `scripts/toolshop-local/` (Docker
   Desktop must be started first; one version at a time).
-- **Now: Phase 41 batch 1** (`docs/decisions/phase-41-check-gaps-decision-record.md`):
-  TFP-181 (the GET-only request guard), TFP-182 (controls), TFP-183 (tab
-  order and grouping), TFP-184 (known paths and guessable ids) and TFP-185
-  (undisplayed internal API fields). Each ticket gets its own commit and
-  targeted tests, proved on the fixture and on the local copies (with-bugs
-  finds its targets, clean passes). The full unit suite, the regression
-  suite and `check:template-unchanged` run once at the end. Stop for
-  verification after the batch; don't start batch 2 (TFP-186, TFP-187).
+- **Phase 41 batch 1 verified 2026-10-12** (TFP-181 to TFP-185, `7069078`
+  to `7b632cf`): all 10 present targets found on local with-bugs; clean
+  has no unlabelled failure.
+- **Now: Phase 41 batch 2** (`docs/decisions/phase-41-check-gaps-decision-record.md`):
+  TFP-186 (layout, overlap, unrendered and hidden images; bug 4 is random)
+  and TFP-187 (spelling of interface text; check the dictionary's licence
+  first). Each with its own commit and targeted tests, proved on the fixture
+  and on the local copies, with the evidence run on the committed code. Also
+  fix bug 80's log for TFP-188 (batch 1's entry): with-bugs keeps file
+  logging, and the start script checks `/logs/laravel.log` answers. Full
+  unit, regression and `check:template-unchanged` once at the end. Stop for
+  verification; don't start TFP-188.
+- **After Phase 41: Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
+  locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
+  41's Gate B.
 - **Not started, not next:**
   - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
     the current batch). Docker works on Emil's machine (checked 2026-10-07:

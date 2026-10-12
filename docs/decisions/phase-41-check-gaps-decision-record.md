@@ -337,6 +337,24 @@ its ISTQB technique and its gate.
   clean site's ordinary fields.
 - **Dependencies:** Gate A.
 
+- **Batch 1 done, verified 2026-10-12 (Cowork):** TFP-181 (`7069078`),
+  TFP-182 (`4fda321`), TFP-183 (`a8dfc03`), TFP-184 (`b43e14e`), TFP-185
+  (`7b632cf`). On the local with-bugs copy the new checks find all 10
+  present targets: 2, 27, 29, 40, 60 (failures), 53, 94 (failures), 80 (a
+  failure: `GET http://localhost:8091/logs/laravel.log` answers 200), 82 and
+  75 (findings: sequential ids; `stock` on `/products` items). The clean
+  copy has no unlabelled failure or finding; R19 (ungrouped category
+  checkboxes) fails on both and is labelled real. QUERY is RFC 10008.
+  - **The evidence ran on working trees, not the final commits** (for
+    example `ebbe066`, TFP-182 before its amend). TFP-188 measures on
+    committed code only.
+  - **Bug 80 needs a log file to exist.** with-bugs serves its log through
+    an explicit route (`routes/api.php:43`); the file it served was written
+    on 2026-10-08, before `compose.local.yml` sent logs to stderr. A fresh
+    with-bugs copy may have no log, so the probe would miss a bug that is
+    there. Before TFP-188: with-bugs keeps file logging (its override),
+    and the start script confirms `/logs/laravel.log` answers.
+
 ### TFP-186 — Layout consistency, overlap and images that don't render
 
 - **Priority:** P1 · **Labels:** `generate`, `usability`
@@ -387,6 +405,8 @@ its ISTQB technique and its gate.
 2. Batch 1: TFP-181, TFP-182, TFP-183, TFP-184, TFP-185.
 3. Batch 2: TFP-186, TFP-187.
 4. TFP-188. **Gate B.**
+
+Batch 1 verified 2026-10-12.
 
 ## Gates
 

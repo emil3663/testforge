@@ -323,6 +323,17 @@ the hosted sites. Tickets TFP-179 to TFP-189.
 
 See `phase-41-check-gaps-decision-record.md`.
 
+### Phase 42 — Reusable suites, a test library and gap tests (locked 2026-10-12, not started)
+Each site's Standard tests are saved and reused, regenerated only for page
+types that changed; Comprehensive tests live in a library written against
+component patterns; a coverage map at element and flow level shows what no
+test touches, and Claude Code (opt-in per site) writes tests only for those
+gaps, once per gap. Each gap also yields a candidate for the library, run on
+other sites outside the verdict until it earns promotion with Emil's
+approval. Tickets TFP-190 to TFP-197. Starts after Phase 41's Gate B.
+
+See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
+
 ---
 
 ## Sequencing note
