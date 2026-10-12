@@ -41,3 +41,14 @@ check.
 R19 and R20 are labelled in `docs/decisions/data/labelled-failures.md`: both
 real, R19 shared by both versions, R20 with-bugs only and outside the
 answer key.
+
+## TFP-184: known paths and guessable ids
+
+| Run | File | Result |
+| --- | --- | --- |
+| with-bugs, Comprehensive security, 8 pages | `runs/tfp184-185-with-bugs.json` | the probe fails on `http://localhost:8091/logs/laravel.log` (80); `/#/product/:id` ids recorded on home, category and product (82); also TFP-185's findings (75) |
+| clean, Comprehensive security, 8 pages | `runs/tfp184-clean.json` | the probe passes on `http://localhost:4200` and `http://localhost:8091`; no id finding |
+
+The with-bugs run was made with the probe judging "not a page" by the body:
+the first run, which also trusted the `text/html` content type, missed the
+log, which the Toolshop sends as `text/html`.

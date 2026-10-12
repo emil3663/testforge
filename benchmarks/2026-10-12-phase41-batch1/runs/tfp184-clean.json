@@ -1,0 +1,94 @@
+{
+  "label": "clean-184",
+  "site": "local clean Toolshop, http://localhost:4200 (API http://localhost:8091)",
+  "commit": "a8dfc03 + TFP-184 working tree (final)",
+  "startedAt": "2026-10-12T19:33:26.957Z",
+  "durationSeconds": 20,
+  "tests": 9,
+  "records": [
+    {
+      "title": "TFSC-005: / uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-010: /category/hand-tools uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-015: /product/01M4RRPCT3K8B5HS66J75ADSTZ uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/product/01M4RRPCT3K8B5HS66J75ADSTZ",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-020: /contact uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-025: /auth/login uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-030: /auth/register uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-035: /auth/forgot-password uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-040: /rentals uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-042: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API",
+      "status": "Passed",
+      "page": "(known-path probe)",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": [
+        "known paths: 19 paths on http://localhost:4200, http://localhost:8091, one GET each",
+        "known paths: 19 paths on http://localhost:4200, http://localhost:8091, one GET each"
+      ]
+    }
+  ]
+}

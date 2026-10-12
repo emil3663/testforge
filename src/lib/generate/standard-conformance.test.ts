@@ -109,6 +109,11 @@ const SECURITY_DEFECTS: Record<string, { page: string; check: string; shows: Reg
     "security-mixed-cookies": { page: "/", check: "/ sends its security headers and session cookies", shows: /session cookie "sid" set on \/ has no HttpOnly/ },
 };
 
+// Phase 41: checks only a Comprehensive security run makes (Decision 5; their placement decided by Emil,
+// 2026-10-12) - TFP-184's guessable ids per page and its known-path probe once. The shared checks must agree.
+const COMPREHENSIVE_ONLY = /uses no guessable sequential ids|known paths that leak/;
+const COMPREHENSIVE_ONLY_PER_PAGE = 1;
+
 test("in a real browser: on the fixture, a Standard security run and a Comprehensive one report the same for every page, for the clean site and each passive defect; the Standard run sends one missing-page probe", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
     try {
@@ -125,7 +130,9 @@ test("in a real browser: on the fixture, a Standard security run and a Comprehen
             fixture.recorded.length = 0;
             const standardOutcomes = outcomes((await runSuite(standard, "standard")).records);
             const probes = fixture.recorded.filter((request) => request.path.startsWith(PROBE)).length;
-            const comprehensiveOutcomes = outcomes((await runSuite(comprehensive, "comprehensive")).records);
+            const comprehensiveRecords = (await runSuite(comprehensive, "comprehensive")).records;
+            const comprehensiveOutcomes = outcomes(comprehensiveRecords, (record) => !COMPREHENSIVE_ONLY.test(record.title));
+            assert.equal(comprehensiveRecords.filter((record) => COMPREHENSIVE_ONLY.test(record.title)).length, PAGES.length * COMPREHENSIVE_ONLY_PER_PAGE + 1, `${defect}: Comprehensive's own checks, per page and the known-path probe`);
 
             assert.equal(probes, 1, `${defect}: the Standard run sends exactly one missing-page probe`);
             assert.equal(Object.keys(standardOutcomes).length, PAGES.length * 4 + 1, `${defect}: 4 checks per page and the probe`);

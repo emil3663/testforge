@@ -4,6 +4,7 @@ import type { CheckStandard } from "@/lib/comprehensive/standards";
 import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
 import { checkDetails, PAGE_ANNOTATION, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { ACCESSIBILITY_HELPERS, accessibilityPageTests } from "./comprehensive-accessibility";
+import { guessableIdsTest, knownPathsTest, PROBE_HELPERS, PROBE_STANDARDS } from "./security-probes";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { localModelSuiteTitle } from "./gap-fill";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
@@ -40,20 +41,31 @@ const detailsFor = checkDetails;
 
 export const PAGE_CHECKS: Record<ComprehensiveArea, PageCheck[]> = {
     // TFP-133: the passive checks; "the page responds" is the first of them.
-    security: [({ escapedPath, details }) => passiveSecurityPageTests({ escapedPath, details: (standard) => details(standard) })],
+    security: [
+        ({ escapedPath, details }) => passiveSecurityPageTests({ escapedPath, details: (standard) => details(standard) }),
+        // Phase 41 (TFP-184): integer ids counting up in the page's addresses, as a finding.
+        ({ escapedPath, details }) => [guessableIdsTest({ escapedPath, details: (standard) => details(standard) })],
+    ],
     // TFP-134: the axe-core WCAG scan, then TFP-121's field-name check.
     accessibility: [({ path, escapedPath, details }) =>
         accessibilityPageTests({ path, escapedPath, details: (category) => details({ category, asvs: [], why: "" }) })],
 };
 
 /** Checks made once per run, not per page, each in its own describe. */
-const RUN_CHECKS: Record<ComprehensiveArea, { title: string; tests: () => string[] }[]> = {
-    security: [{ title: "Missing page probe", tests: () => passiveSecurityRunTests((standard) => detailsFor(PROBE_PAGE)(standard)) }],
+const RUN_CHECKS: Record<ComprehensiveArea, { title: string; tests: (scope: ComprehensivePageScope) => string[] }[]> = {
+    security: [
+        { title: "Missing page probe", tests: () => passiveSecurityRunTests((standard) => detailsFor(PROBE_PAGE)(standard)) },
+        // Phase 41 (TFP-184, Decision 5): the known paths, from the run's first page.
+        { title: "Known path probe", tests: (scope) => [knownPathsTest(detailsFor(KNOWN_PATHS_PAGE)(PROBE_STANDARDS.knownPaths), escapeForSingleQuotedString(scope.covered[0] ?? "/"))] },
+    ],
     accessibility: [],
 };
 
+/** The page the known-path probe reports under, in the per-page table. */
+export const KNOWN_PATHS_PAGE = "(known-path probe)";
+
 const HELPERS: Record<ComprehensiveArea, string> = {
-    security: PASSIVE_SECURITY_HELPERS,
+    security: PASSIVE_SECURITY_HELPERS + PROBE_HELPERS,
     accessibility: ACCESSIBILITY_HELPERS,
 };
 
@@ -117,7 +129,7 @@ export function buildComprehensiveSuite(baseUrl: string, mode: ComprehensiveRunM
         const tests = numbered(PAGE_CHECKS[mode.area].flatMap((check) => check(context)));
         return `  test.describe('Page ${escapedPath}', () => {\n${tests.join("\n\n")}\n  });`;
     });
-    const runBlocks = RUN_CHECKS[mode.area].map(({ title, tests }) => `  test.describe('${title}', () => {\n${numbered(tests()).join("\n\n")}\n  });`);
+    const runBlocks = RUN_CHECKS[mode.area].map(({ title, tests }) => `  test.describe('${title}', () => {\n${numbered(tests(scope)).join("\n\n")}\n  });`);
 
     const notCovered = scope.notCovered.length > 0
         ? `// Not covered (beyond the ${scope.pageCap}-page cap): ${scope.notCovered.join(", ")}\n`

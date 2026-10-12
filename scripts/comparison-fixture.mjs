@@ -63,6 +63,13 @@ export const DEFECTS = {
     "a11y-positive-tabindex": "/store/register's fields carry positive tabindex values (Email first)",
     "a11y-tab-order-jumps": "/store/register's name row is laid out right to left, so Tab goes against the reading order",
     "a11y-ungrouped-choices": "/store's category checkboxes lose their fieldset",
+    // Phase 41 (TFP-184): read-only security probes. The site's "own API" is
+    // the fixture's own port: behind the recording proxy the site is the
+    // proxy's origin, and these defects make the home page call the fixture
+    // directly, as the Toolshop's app calls its API host.
+    "security-log-on-api": "the home page calls its API on another port, which serves its log at /logs/laravel.log",
+    "security-sequential-ids": "/store's products have integer ids (1 to 6) in their addresses",
+    "security-catch-all": "every unknown path answers 200 with a page, as a single-page app's catch-all does (not a defect)",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -88,7 +95,10 @@ const STORE_PRODUCTS = [
     { id: "01J8Z3K4RNMTAPE0", name: "Measuring Tape", price: 5.5, category: "measuring" },
 ];
 
-const LCP_DELAYS ={ "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
+// TFP-184: security-sequential-ids gives the products integer ids, 1 to 6.
+const storeProducts = () => (defect === "security-sequential-ids" ? STORE_PRODUCTS.map((p, index) => ({ ...p, id: String(index + 1) })) : STORE_PRODUCTS);
+
+const LCP_DELAYS = { "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
 const SHIFT_SCORES = { "performance-shift-0.15": 0.15, "performance-shift-0.3": 0.3 };
 
 // The hero image. Chrome leaves low-entropy images (under about 0.05 bits per
@@ -127,10 +137,11 @@ ${script ? `<script>${script}</script>` : ""}
 function home() {
     // The page calls its own API. Clean: a failed call shows a message.
     // Defect: the failure is not caught, so it surfaces as a page error.
+    const api = defect === "security-log-on-api" ? `http://127.0.0.1:${port}` : "";
     const script =
         defect === "reliability-api-crash"
             ? `fetch('/api/status').then((r) => r.json()).then((s) => { document.getElementById('status').textContent = s.message; });`
-            : `fetch('/api/status').then((r) => r.json()).then((s) => { document.getElementById('status').textContent = s.message; }).catch(() => { document.getElementById('status').textContent = 'Status unavailable'; });`;
+            : `fetch('${api}/api/status').then((r) => r.json()).then((s) => { document.getElementById('status').textContent = s.message; }).catch(() => { document.getElementById('status').textContent = 'Status unavailable'; });`;
     const crashScript =
         defect === "reliability-api-crash"
             ? `${script}\nwindow.addEventListener('unhandledrejection', (e) => { throw e.reason; });`
@@ -238,7 +249,11 @@ const server = createServer(async (req, res) => {
         await new Promise((r) => setTimeout(r, Math.min(Number(url.searchParams.get("delay")) || 0, 10000)));
         return send(200, HERO_SVG, "image/svg+xml");
     }
-    if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json");
+    if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json", { "access-control-allow-origin": "*" });
+    // TFP-184: the log, only on the API origin (a request that reached this port directly, not through the proxy).
+    if (url.pathname === "/logs/laravel.log" && defect === "security-log-on-api" && req.headers.host === `127.0.0.1:${port}`) {
+        return send(200, "[2026-10-12 09:14:02] local.INFO: Fetching products <br />\n[2026-10-12 09:14:03] local.ERROR: SQLSTATE[HY000] Connection refused <br />\n", "text/html; charset=utf-8");
+    }
     // TFP-161: a page inspection can't load - the connection is dropped, as
     // the-internet's host did. hub-down does the same to the home page,
     // which links to every other page.
@@ -425,7 +440,7 @@ draw();
         const [key, direction] = (url.searchParams.get("sort") ?? "").split(",");
         const [low, high] = (url.searchParams.get("between") ?? "").split(",").slice(1).map(Number);
         const category = url.searchParams.get("category");
-        const sorted = STORE_PRODUCTS.filter((p) => (!(low >= 0) || p.price >= low) && (!(high >= 0) || p.price <= high) && (!category || p.category === category));
+        const sorted = storeProducts().filter((p) => (!(low >= 0) || p.price >= low) && (!(high >= 0) || p.price <= high) && (!category || p.category === category));
         if (key === "name" || key === "price") {
             sorted.sort((a, b) => (key === "name" ? a.name.localeCompare(b.name) : a.price - b.price) * (direction === "desc" ? -1 : 1));
         }
@@ -470,7 +485,7 @@ load();` }));
     }
     const storeItem = /^\/store\/item\/([^/]+)$/.exec(url.pathname);
     if (storeItem && req.method === "GET") {
-        const product = STORE_PRODUCTS.find((p) => p.id === storeItem[1]);
+        const product = storeProducts().find((p) => p.id === storeItem[1]);
         if (!product) return send(404, page("Not found", "<h1>Not found</h1>"));
         return send(200, page(product.name, `<h1>${escapeHtml(product.name)}</h1>
 <p class="price">$${product.price.toFixed(2)}</p>
@@ -506,6 +521,8 @@ document.querySelector('[aria-label="Decrease quantity"]').addEventListener('cli
     at Object.openSync (node:fs:573:18)
     at renderView (/srv/acme-notes/server/render.js:41:17)</pre>`));
     }
+    // TFP-184: a single-page app's catch-all answers 200 with its page for any path - not a leak.
+    if (defect === "security-catch-all") return send(200, page("Acme Notes", "<h1>Acme Notes</h1>"));
     send(404, page("Not found", "<h1>Not found</h1>"));
 });
 

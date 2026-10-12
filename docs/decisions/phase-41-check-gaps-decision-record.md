@@ -309,6 +309,22 @@ its ISTQB technique and its gate.
 - **Acceptance criteria:** on the local with-bugs copy they find the present
   ones of 80 and 82; the clean copy shows no known-path failure.
 - **Dependencies:** Gate A.
+- **Decided while building (Emil, 2026-10-12):**
+  - **Where the probe goes:** the site's origin and every same-site origin
+    its start page calls with XHR or fetch (the same host on any port, or
+    the same registrable domain). Bug 80's log is on the Toolshop's API host
+    (`localhost:8091`; hosted, `api.practicesoftwaretesting.com`), not on
+    the site's. Rejected: the site's origin only, which leaves 80 out of
+    reach.
+  - **The list:** 19 paths - `.env`, `.git/HEAD`, `.git/config`,
+    `.svn/entries`, `.DS_Store`, five backup and dump names, and
+    `error.log`, `debug.log` and `laravel.log` under `/logs`, `/log` and
+    `/storage/logs`. It includes the Toolshop's `/logs/laravel.log` as one
+    case of the pattern, and the report says so. Rejected: generic names
+    only, with no framework's log.
+  - **Placement:** guessable ids run per page in Comprehensive security,
+    like the probe; Standard's security area is unchanged. (TFP-185's check
+    goes there too.)
 
 ### TFP-185 — API responses that expose undisplayed internal fields
 
