@@ -23,6 +23,7 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
+import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
 import type { ExecutionRecord, JsonReport } from "../report/types.ts";
 
 const { buildComprehensiveSuite } = await import("./comprehensive.ts");
@@ -74,7 +75,7 @@ test("the Standard accessibility suite carries both checks for every inspected p
 test("in a real browser: on the fixture, positive tabindex, a Tab order against the reading order and loose checkboxes each fail, named; the clean pages pass (decision table)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
     try {
-        const code = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area: "accessibility" }), { covered: ["/store", "/store/register"], notCovered: [], pageCap: 20 });
+        const code = buildComprehensiveSuite(fixture.origin, (normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as ComprehensiveRunMode), { covered: ["/store", "/store/register"], notCovered: [], pageCap: 20 });
         assert.deepEqual(findTypeErrors(code), []);
         const tab = "/store/register is tabbed through in reading order";
         const group = "/store groups its checkboxes and radio buttons";

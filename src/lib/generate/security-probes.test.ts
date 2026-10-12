@@ -21,6 +21,7 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
+import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
 import type { JsonReport } from "../report/types.ts";
 
 const { buildComprehensiveSuite } = await import("./comprehensive.ts");
@@ -61,7 +62,7 @@ async function runSuite(code: string, label: string) {
 test("the probe's list: 19 paths - version control, .env, backups and dumps, and three log files in three folders - named with its count in the test's title", () => {
     assert.equal(KNOWN_PATHS.length, 19);
     assert.ok(KNOWN_PATHS.includes("/logs/laravel.log") && KNOWN_PATHS.includes("/storage/logs/laravel.log") && KNOWN_PATHS.includes("/.git/HEAD") && KNOWN_PATHS.includes("/.env"));
-    const code = buildComprehensiveSuite("http://example.test", normalizeRunMode({ kind: "comprehensive", area: "security" }), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
+    const code = buildComprehensiveSuite("http://example.test", (normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
     assert.deepEqual(findTypeErrors(code), []);
     assert.match(code, /test\('TFSC-\d+: 19 known paths that leak \(\/\.env, \/\.git\/HEAD, .*\/storage\/logs\/laravel\.log\) are not reachable on the site or its own API', \{ annotation: \[\{ type: 'page', description: '\(known-path probe\)' \}, \{ type: 'gate', description: 'read-only' \}, \{ type: 'category', description: 'A01:2025 Broken Access Control' \}, \{ type: 'asvs', description: '13\.4\.1' \}, \{ type: 'asvs', description: '13\.4\.7' \}\] \}/);
     assert.equal(code.match(/known paths that leak/g)?.length, 1, "once per run");
@@ -71,7 +72,7 @@ test("the probe's list: 19 paths - version control, .env, backups and dumps, and
 test("in a real browser: the probe finds a log on the site's own API and not a catch-all page; integer ids are a finding (decision table)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
     try {
-        const code = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area: "security" }), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
+        const code = buildComprehensiveSuite(fixture.origin, (normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
         const run = async (defect: string) => {
             await fixture.control(`/__fixture/defect?set=${defect}`);
             fixture.recorded.length = 0;

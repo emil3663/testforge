@@ -19,6 +19,7 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
+import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
 import type { ExecutionRecord, JsonReport } from "../report/types.ts";
 
 const { buildComprehensiveSuite } = await import("./comprehensive.ts");
@@ -55,7 +56,7 @@ async function runSuite(code: string, label: string): Promise<ExecutionRecord[]>
 }
 
 test("the check is per page, tagged A01:2025 and ASVS 15.3.1, read-only", () => {
-    const code = buildComprehensiveSuite("http://example.test", normalizeRunMode({ kind: "comprehensive", area: "security" }), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
+    const code = buildComprehensiveSuite("http://example.test", (normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode), { covered: ["/", "/store"], notCovered: [], pageCap: 20 });
     assert.deepEqual(findTypeErrors(code), []);
     assert.equal(code.match(/fetches no internal fields it never shows/g)?.length, 2);
     assert.match(code, /test\('TFSC-\d+: \/store fetches no internal fields it never shows \(recorded as a finding\)', \{ annotation: \[\{ type: 'page', description: '\/store' \}, \{ type: 'gate', description: 'read-only' \}, \{ type: 'category', description: 'A01:2025 Broken Access Control' \}, \{ type: 'asvs', description: '15\.3\.1' \}\] \}/);
@@ -64,7 +65,7 @@ test("the check is per page, tagged A01:2025 and ASVS 15.3.1, read-only", () => 
 test("in a real browser: a stock count the store never shows is a finding; a yes/no flag, and a count the page shows, are not (decision table)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
     try {
-        const code = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area: "security" }), { covered: ["/store"], notCovered: [], pageCap: 20 });
+        const code = buildComprehensiveSuite(fixture.origin, (normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode), { covered: ["/store"], notCovered: [], pageCap: 20 });
         const findings = async (defect: string) => {
             await fixture.control(`/__fixture/defect?set=${defect}`);
             const [record] = (await runSuite(code, defect)).filter((r) => r.title.endsWith("/store fetches no internal fields it never shows (recorded as a finding)"));
