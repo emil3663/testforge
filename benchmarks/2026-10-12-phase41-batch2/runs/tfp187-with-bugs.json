@@ -1,0 +1,114 @@
+{
+  "label": "tfp187-with-bugs",
+  "site": "local with-bugs Toolshop, http://localhost:4200",
+  "commit": "9a9ac3b (clean tree)",
+  "startedAt": "2026-10-12T23:25:34.612Z",
+  "durationSeconds": 20,
+  "tests": 9,
+  "records": [
+    {
+      "title": "TFSE-002: /#/ spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Serch\" in the button \"Serch\" on /#/ is not in the dictionary (en-US, en-GB); did you mean \"Search\" or \"Perch\"?",
+        "\"Sorth\" in the heading \"Sorth\" on /#/ is not in the dictionary (en-US, en-GB); did you mean \"Sort\" or \"Sorta\" or \"Sorts\"?",
+        "\"Contakt\" in the link \"Contakt\" on /#/ is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-003: /#/product/6 spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Reltded\" in the heading \"Reltded products\" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean \"Receded\" or \"Deluded\" or \"Felted\"?",
+        "\"Contakt\" in the link \"Contakt\" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?",
+        "\"Unsplash\" in the link \"Unsplash\" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean \"splash\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-004: /#/category/hand-tools spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/category/hand-tools is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-005: /#/auth/register spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/auth/register is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-006: /#/contact spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/contact is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?",
+        "\"Massage\" in the placeholder \"Massage\" on /#/contact looks like a misspelling of its label's \"Message\""
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-007: /#/auth/login spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/auth/login is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-008: /#/auth/forgot-password spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/auth/forgot-password is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-009: /#/chainsaws spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/chainsaws",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/chainsaws is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-010: /#/rentals spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Contakt\" in the link \"Contakt\" on /#/rentals is not in the dictionary (en-US, en-GB); did you mean \"Contact\"?"
+      ],
+      "probe": []
+    }
+  ]
+}

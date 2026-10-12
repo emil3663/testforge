@@ -1,0 +1,284 @@
+{
+  "label": "tfp186-with-bugs",
+  "site": "local with-bugs Toolshop, http://localhost:4200",
+  "commit": "9a9ac3b (clean tree)",
+  "startedAt": "2026-10-12T23:24:04.631Z",
+  "durationSeconds": 68,
+  "tests": 28,
+  "records": [
+    {
+      "title": "TFUS-024: /#/ keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "the card titles on /#/: \"Long Nose Pliers\" has text-align left, where the other 5 have right",
+        "the card titles on /#/: \"Claw Hammer with Shock Reduction Grip\" has text-align left, where the other 5 have right",
+        "the card titles on /#/: \"Hammer\" has text-align left, where the other 5 have right",
+        "the card titles on /#/: \"Thor Hammer\" has text-align left, where the other 5 have right",
+        "the cards on /#/: \"Slip Joint Pliers\" has its image hidden, where the other 8 show theirs"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFUS-025: /#/ has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-026: /#/ shows every image it loads",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: images on /#/ that loaded but can't be shown: broken.png, broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-027: /#/product/6 keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-028: /#/product/6 has no overlapping controls",
+      "status": "Failed",
+      "page": "/#/product/6",
+      "message": "Error: \"Add to cart\" and \"Add to favourites\" overlap by 50 x 38 px on /#/product/6",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-029: /#/product/6 shows every image it loads",
+      "status": "Failed",
+      "page": "/#/product/6",
+      "message": "Error: images on /#/product/6 that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-030: /#/category/hand-tools keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "the card titles on /#/category/hand-tools: \"Claw Hammer with Shock Reduction Grip\" has text-align left, where the other 5 have right",
+        "the card titles on /#/category/hand-tools: \"Thor Hammer\" has text-align left, where the other 5 have right",
+        "the card titles on /#/category/hand-tools: \"Court Hammer\" has text-align left, where the other 5 have right",
+        "the card titles on /#/category/hand-tools: \"Wood Saw\" has text-align left, where the other 5 have right"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFUS-031: /#/category/hand-tools has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-032: /#/category/hand-tools shows every image it loads",
+      "status": "Failed",
+      "page": "/#/category/hand-tools",
+      "message": "Error: images on /#/category/hand-tools that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-033: /#/auth/register keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "the options of the \"State\" list on /#/auth/register: \"Austria\" has font-size 13.3333px, where the other 247 have 16px",
+        "the options of the \"State\" list on /#/auth/register: \"Netherlands (the)\" has font-size 13.3333px, where the other 247 have 16px"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFUS-034: /#/auth/register has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-035: /#/auth/register shows every image it loads",
+      "status": "Failed",
+      "page": "/#/auth/register",
+      "message": "Error: images on /#/auth/register that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-036: /#/contact keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "the labels of a form on /#/contact: \"Attachment\" has font-family \"Comic Sans\", where the other 5 have system-ui",
+        "the options of the \"Subject\" list on /#/contact: \"Return\" has font-size 13.3333px, where the other 8 have 16px"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFUS-037: /#/contact has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-038: /#/contact shows every image it loads",
+      "status": "Failed",
+      "page": "/#/contact",
+      "message": "Error: images on /#/contact that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-039: /#/auth/login keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "the fields of a form on /#/auth/login differ in padding-left: \"Your E-mail *\" 0px, \"Your password *\" 12px"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFUS-040: /#/auth/login has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-041: /#/auth/login shows every image it loads",
+      "status": "Failed",
+      "page": "/#/auth/login",
+      "message": "Error: images on /#/auth/login that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-042: /#/auth/forgot-password keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Not run",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /#/auth/forgot-password",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-043: /#/auth/forgot-password has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-044: /#/auth/forgot-password shows every image it loads",
+      "status": "Failed",
+      "page": "/#/auth/forgot-password",
+      "message": "Error: images on /#/auth/forgot-password that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-045: /#/chainsaws keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Not run",
+      "page": "/#/chainsaws",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /#/chainsaws",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-046: /#/chainsaws has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/chainsaws",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-047: /#/chainsaws shows every image it loads",
+      "status": "Failed",
+      "page": "/#/chainsaws",
+      "message": "Error: images on /#/chainsaws that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-048: /#/rentals keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-049: /#/rentals has no overlapping controls",
+      "status": "Passed",
+      "page": "/#/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-050: /#/rentals shows every image it loads",
+      "status": "Failed",
+      "page": "/#/rentals",
+      "message": "Error: images on /#/rentals that loaded but can't be shown: broken.png",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-051: the same components look the same on every inspected page (recorded as findings)",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "h5.card-title differs across pages in text-align: right on /#/, /#/category/hand-tools; left on /#/product/6; center on /#/rentals",
+        "submit .btnSubmit differs across pages in share of its container's width: 10% on /#/auth/register, /#/contact; 50% on /#/auth/login, /#/auth/forgot-password"
+      ],
+      "probe": []
+    }
+  ]
+}

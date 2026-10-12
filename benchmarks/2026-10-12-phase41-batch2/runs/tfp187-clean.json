@@ -1,0 +1,84 @@
+{
+  "label": "tfp187-clean",
+  "site": "local clean Toolshop, http://localhost:4200",
+  "commit": "9a9ac3b; src/ unchanged (only benchmarks/2026-10-12-phase41-batch1/slim.mjs modified)",
+  "startedAt": "2026-10-12T23:33:22.469Z",
+  "durationSeconds": 15,
+  "tests": 8,
+  "records": [
+    {
+      "title": "TFSE-002: / spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-003: /product/01M4S7369RNS53865AZRHN3YP1 spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/product/01M4S7369RNS53865AZRHN3YP1",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "\"Unsplash\" in the link \"Unsplash\" on /product/01M4S7369RNS53865AZRHN3YP1 is not in the dictionary (en-US, en-GB); did you mean \"splash\"?"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSE-004: /category/hand-tools spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-005: /auth/register spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-006: /contact spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-007: /auth/login spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-008: /auth/forgot-password spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSE-009: /rentals spells its interface text correctly (recorded as findings)",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

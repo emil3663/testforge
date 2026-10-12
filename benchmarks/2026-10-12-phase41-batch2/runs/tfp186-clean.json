@@ -1,0 +1,235 @@
+{
+  "label": "tfp186-clean",
+  "site": "local clean Toolshop, http://localhost:4200",
+  "commit": "9a9ac3b; src/ unchanged (only benchmarks/2026-10-12-phase41-batch1/slim.mjs modified)",
+  "startedAt": "2026-10-12T23:32:13.424Z",
+  "durationSeconds": 47,
+  "tests": 25,
+  "records": [
+    {
+      "title": "TFUS-016: / keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-017: / has no overlapping controls",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-018: / shows every image it loads",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-019: /product/01M4S7369RNS53865AZRHN3YP1 keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/product/01M4S7369RNS53865AZRHN3YP1",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-020: /product/01M4S7369RNS53865AZRHN3YP1 has no overlapping controls",
+      "status": "Passed",
+      "page": "/product/01M4S7369RNS53865AZRHN3YP1",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-021: /product/01M4S7369RNS53865AZRHN3YP1 shows every image it loads",
+      "status": "Passed",
+      "page": "/product/01M4S7369RNS53865AZRHN3YP1",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-022: /category/hand-tools keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-023: /category/hand-tools has no overlapping controls",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-024: /category/hand-tools shows every image it loads",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-025: /auth/register keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-026: /auth/register has no overlapping controls",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-027: /auth/register shows every image it loads",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-028: /contact keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-029: /contact has no overlapping controls",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-030: /contact shows every image it loads",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-031: /auth/login keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-032: /auth/login has no overlapping controls",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-033: /auth/login shows every image it loads",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-034: /auth/forgot-password keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Not run",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /auth/forgot-password",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-035: /auth/forgot-password has no overlapping controls",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-036: /auth/forgot-password shows every image it loads",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-037: /rentals keeps its forms, lists and cards consistent (recorded as findings)",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-038: /rentals has no overlapping controls",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-039: /rentals shows every image it loads",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFUS-040: the same components look the same on every inspected page (recorded as findings)",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}
