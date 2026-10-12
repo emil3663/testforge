@@ -29,3 +29,15 @@ stable.
 The link check's with-bugs failure also names "Contakt", whose destination
 ("Contact") shares no word with it: bug 31's misspelling, seen by this
 check.
+
+## TFP-183: tab order and grouping
+
+| Run | File | Result |
+| --- | --- | --- |
+| with-bugs, Standard, the committed profile's 8 pages | `runs/tfp183-with-bugs-standard.json` | register fails tab order (53); home fails grouping (94); category fails grouping (R19); contact and login fail tab order (R20) |
+| with-bugs, Comprehensive, 8 pages | `runs/tfp183-with-bugs-comprehensive.json` | the same outcomes as Standard, page for page |
+| clean, Comprehensive, 8 pages | `runs/tfp183-clean-comprehensive.json` | tab order passes on every form; grouping passes on home and fails on category (R19) |
+
+R19 and R20 are labelled in `docs/decisions/data/labelled-failures.md`: both
+real, R19 shared by both versions, R20 with-bugs only and outside the
+answer key.

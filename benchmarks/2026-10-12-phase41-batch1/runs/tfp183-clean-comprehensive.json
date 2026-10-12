@@ -1,0 +1,154 @@
+{
+  "label": "clean-183",
+  "site": "local clean Toolshop, http://localhost:4200",
+  "commit": "7069078 + TFP-182/183 working tree (tab-order and grouping builders as committed)",
+  "startedAt": "2026-10-12T18:47:23.118Z",
+  "durationSeconds": 32,
+  "tests": 16,
+  "records": [
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-007: /category/hand-tools is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/hand-tools",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-008: /category/hand-tools groups its checkboxes and radio buttons",
+      "status": "Failed",
+      "page": "/category/hand-tools",
+      "message": "Error: 8 checkboxes sharing the name \"category_id\" (\"Hand Tools\", \"Hammer\", \"Hand Saw\", \"Wrench\" and 4 more) are not in a fieldset with a legend or a named group on /category/hand-tools; 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/hand-tools",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-011: /product/01M4RPF2NKQHZJHRXG3J6W2QJD is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-012: /product/01M4RPF2NKQHZJHRXG3J6W2QJD groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M4RPF2NKQHZJHRXG3J6W2QJD",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-015: /contact is tabbed through in reading order",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-016: /contact groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /contact",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-019: /auth/login is tabbed through in reading order",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-020: /auth/login groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/login",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-023: /auth/register is tabbed through in reading order",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-024: /auth/register groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/register",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-027: /auth/forgot-password is tabbed through in reading order",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-028: /auth/forgot-password groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/forgot-password",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-031: /rentals is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "no form with two or more fields on /rentals",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-032: /rentals groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /rentals",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

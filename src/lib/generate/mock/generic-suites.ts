@@ -25,7 +25,7 @@ import {
     resolveLinkAuditPaths,
 } from "./locators";
 import { createSuite, inspectedPagePaths } from "./suite";
-import { ACCESSIBILITY_HELPERS, axeScanTest } from "../comprehensive-accessibility";
+import { ACCESSIBILITY_HELPERS, axeScanTest, keyboardAndGroupingTests } from "../comprehensive-accessibility";
 import { checkDetails } from "../comprehensive-security";
 import type { ActionableElementDetail, BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
@@ -145,6 +145,11 @@ ${elementChecks}
             ...inspectedPagePaths(contentProfile).map((path) => {
                 const escapedPath = escapeForSingleQuotedString(path);
                 return axeScanTest({ path, escapedPath, details: (category) => checkDetails(escapedPath)({ category, asvs: [], why: "" }) });
+            }),
+            // Phase 41 (TFP-183, Decision 4): tab order and grouping, the same builders as Comprehensive.
+            ...inspectedPagePaths(contentProfile).flatMap((path) => {
+                const escapedPath = escapeForSingleQuotedString(path);
+                return keyboardAndGroupingTests({ path, escapedPath, details: (category) => checkDetails(escapedPath)({ category, asvs: [], why: "" }) });
             }),
         ]);
 

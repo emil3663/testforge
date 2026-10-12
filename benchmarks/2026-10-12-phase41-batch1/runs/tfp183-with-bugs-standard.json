@@ -1,0 +1,154 @@
+{
+  "label": "wb-183-standard",
+  "site": "local with-bugs Toolshop, http://localhost:4200",
+  "commit": "ebbe066 + TFP-183 working tree",
+  "startedAt": "2026-10-12T18:59:55.789Z",
+  "durationSeconds": 35,
+  "tests": 16,
+  "records": [
+    {
+      "title": "TFAC-057: /#/ is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-058: /#/ groups its checkboxes and radio buttons",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: 10 checkboxes sharing the name \"category_id\" (\"Hammer\", \"Hand Saw\", \"Wrench\", \"Screwdriver\" and 6 more) are not in a fieldset with a legend or a named group on /#/; 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-059: /#/product/6 is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/6",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-060: /#/product/6 groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/6",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-061: /#/category/hand-tools is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/category/hand-tools",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-062: /#/category/hand-tools groups its checkboxes and radio buttons",
+      "status": "Failed",
+      "page": "/#/category/hand-tools",
+      "message": "Error: 5 checkboxes sharing the name \"category_id\" (\"Hammer\", \"Hand Saw\", \"Wrench\", \"Screwdriver\" and 1 more) are not in a fieldset with a legend or a named group on /#/category/hand-tools; 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/category/hand-tools",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-063: /#/auth/register is tabbed through in reading order",
+      "status": "Failed",
+      "page": "/#/auth/register",
+      "message": "Error: positive tabindex on /#/auth/register, which overrides the reading order: \"First name\" (1), \"Last name\" (2), \"Address\" (5), \"Postcode\" (6), \"City\" (7), \"Country\" (8), \"State\" (9), \"Phone\" (10), \"E-mail address\" (11); Tab on /#/auth/register goes from \"E-mail address\" back to \"Date of birth\", against the reading order (First name, Last name, Date of birth, Address, Postcode, City, Country, State, Phone, E-mail address, Your password *)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-064: /#/auth/register groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/register",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-065: /#/contact is tabbed through in reading order",
+      "status": "Failed",
+      "page": "/#/contact",
+      "message": "Error: positive tabindex on /#/contact, which overrides the reading order: \"First name\" (1), \"Last name\" (2), \"Email address\" (3), \"Subject\" (4), \"Message\" (5), \"Attachment\" (6), \"submit\" (7)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-066: /#/contact groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/contact",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-067: /#/auth/login is tabbed through in reading order",
+      "status": "Failed",
+      "page": "/#/auth/login",
+      "message": "Error: positive tabindex on /#/auth/login, which overrides the reading order: \"Your E-mail *\" (1), \"submit\" (3); Tab on /#/auth/login goes from \"submit\" back to \"Your password *\", against the reading order (Your E-mail *, Your password *, submit)",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-068: /#/auth/login groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/login",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-069: /#/auth/forgot-password is tabbed through in reading order",
+      "status": "Passed",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-070: /#/auth/forgot-password groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/forgot-password",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-071: /#/chainsaws is tabbed through in reading order",
+      "status": "Not run",
+      "page": "/#/chainsaws",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/chainsaws",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFAC-072: /#/chainsaws groups its checkboxes and radio buttons",
+      "status": "Not run",
+      "page": "/#/chainsaws",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/chainsaws",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

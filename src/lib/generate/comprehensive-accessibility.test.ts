@@ -98,9 +98,10 @@ test("in a real browser: violations split by impact under their WCAG criterion, 
         const row = (path: string) => c.pages.find((r) => r.path === path)!;
 
         assert.deepEqual([row("/").passed, row("/").failed, row("/").findings], [2, 0, 0], "a clean page passes both checks");
-        assert.deepEqual([row("/locked").passed, row("/locked").failed, row("/locked").notRun], [0, 0, 2], "a 401 page: both checks not run - there is nothing to check");
+        // TFP-183: tab order and grouping join the scan and the field-name check, and skip a 401 page the same way.
+        assert.deepEqual([row("/locked").passed, row("/locked").failed, row("/locked").notRun], [0, 0, 4], "a 401 page: every check not run - there is nothing to check");
         const lockedReasons = report.execution.filter((r) => r.page === "/locked").map((r) => r.skipReason);
-        assert.deepEqual(lockedReasons, ["/locked answered HTTP 401: it is behind a login, and this run does not sign in", "/locked answered HTTP 401: it is behind a login, and this run does not sign in"]);
+        assert.deepEqual(lockedReasons, Array(4).fill("/locked answered HTTP 401: it is behind a login, and this run does not sign in"));
         const failures = c.groups.flatMap((group) => group.failures.map((f) => ({ category: group.category, page: f.page, detail: f.detail })));
         const failureFor = (page: string, rule: string) => failures.find((f) => f.page === page && f.detail.startsWith(rule));
         assert.equal(failureFor("/alt", "image-alt (critical)")?.category, "WCAG 1.1.1");

@@ -59,6 +59,10 @@ export const DEFECTS = {
     "controls-stepper-broken": "the quantity + and - on a /store item do nothing",
     "controls-home-link-wrong": "the nav's Home link goes to /notes",
     "controls-option-errors": "a /store item's gift-wrap list offers an error entry",
+    // Phase 41 (TFP-183): keyboard order and grouping.
+    "a11y-positive-tabindex": "/store/register's fields carry positive tabindex values (Email first)",
+    "a11y-tab-order-jumps": "/store/register's name row is laid out right to left, so Tab goes against the reading order",
+    "a11y-ungrouped-choices": "/store's category checkboxes lose their fieldset",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -435,7 +439,7 @@ draw();
         return send(200, page("Store", `<h1>Store</h1>
 <p><label for="sort">Sort</label> <select id="sort"><option value="">Choose an order</option><option value="name,${defect === "controls-sort-reversed" ? "desc" : "asc"}">Name (A - Z)</option><option value="name,${defect === "controls-sort-reversed" ? "asc" : "desc"}">Name (Z - A)</option><option value="price,asc">Price (Low - High)</option><option value="price,desc">Price (High - Low)</option></select></p>
 <fieldset><legend>Price</legend><label>Lowest <input type="range" id="price-min" aria-label="Lowest price" min="0" max="50" value="0"></label> <label>Highest <input type="range" id="price-max" aria-label="Highest price" min="0" max="50" value="50"></label></fieldset>
-<fieldset><legend>Category</legend><label><input type="checkbox" name="category" value="hand-tools"> Hand tools</label> <label><input type="checkbox" name="category" value="measuring"> Measuring</label></fieldset>
+${defect === "a11y-ungrouped-choices" ? "<div>" : "<fieldset><legend>Category</legend>"}<label><input type="checkbox" name="category" value="hand-tools"> Hand tools</label> <label><input type="checkbox" name="category" value="measuring"> Measuring</label>${defect === "a11y-ungrouped-choices" ? "</div>" : "</fieldset>"}
 <ul id="products" class="cards">Loading...</ul>`, { script: `const money = (n) => '$' + n.toFixed(2);
 const value = (id) => document.getElementById(id).value;
 async function load() {
@@ -451,6 +455,18 @@ async function load() {
 for (const id of ['sort', 'price-min', 'price-max']) document.getElementById(id).addEventListener('change', load);
 for (const box of document.querySelectorAll('input[name="category"]')) box.addEventListener('change', load);
 load();` }));
+    }
+    // TFP-183: a registration form, first and last name side by side. Never
+    // submitted by a read-only run; it only takes focus.
+    if (url.pathname === "/store/register" && req.method === "GET") {
+        const tab = (n) => (defect === "a11y-positive-tabindex" ? ` tabindex="${n}"` : "");
+        return send(200, page("Create an account", `<h1>Create an account</h1>
+<form aria-label="Create an account" action="/store/register" method="post">
+<div style="display:flex;gap:16px;${defect === "a11y-tab-order-jumps" ? "flex-direction:row-reverse;justify-content:flex-end" : ""}"><p><label for="r-first">First name</label><br><input id="r-first" name="first"${tab(2)}></p><p><label for="r-last">Last name</label><br><input id="r-last" name="last"${tab(3)}></p></div>
+<p><label for="r-email">Email</label><br><input id="r-email" name="email" type="email"${tab(1)}></p>
+<p><label for="r-password">Password</label><br><input id="r-password" name="password" type="password"${tab(4)}></p>
+<p><button type="submit">Register</button></p>
+</form>`));
     }
     const storeItem = /^\/store\/item\/([^/]+)$/.exec(url.pathname);
     if (storeItem && req.method === "GET") {
