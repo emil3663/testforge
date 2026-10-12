@@ -110,9 +110,9 @@ const SECURITY_DEFECTS: Record<string, { page: string; check: string; shows: Reg
 };
 
 // Phase 41: checks only a Comprehensive security run makes (Decision 5; their placement decided by Emil,
-// 2026-10-12) - TFP-184's guessable ids per page and its known-path probe once. The shared checks must agree.
-const COMPREHENSIVE_ONLY = /uses no guessable sequential ids|known paths that leak/;
-const COMPREHENSIVE_ONLY_PER_PAGE = 1;
+// 2026-10-12) - TFP-184's guessable ids and TFP-185's API fields per page, and the known-path probe once. The shared checks must agree.
+const COMPREHENSIVE_ONLY = /uses no guessable sequential ids|fetches no internal fields|known paths that leak/;
+const COMPREHENSIVE_ONLY_PER_PAGE = 2;
 
 test("in a real browser: on the fixture, a Standard security run and a Comprehensive one report the same for every page, for the clean site and each passive defect; the Standard run sends one missing-page probe", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();

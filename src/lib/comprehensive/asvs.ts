@@ -47,7 +47,8 @@ export const ASVS_CHAPTERS: readonly AsvsChapter[] = [
     { id: "V12", name: "Secure Communication", passiveReach: "in reach", why: "12.2.1: plain-HTTP pages and forms that carry a password are visible" },
     { id: "V13", name: "Configuration", passiveReach: "in reach", why: "13.4.6: backend version details in response headers are visible" },
     { id: "V14", name: "Data Protection", passiveReach: "in reach", why: "14.2.1: session tokens and passwords in URLs are visible" },
-    { id: "V15", name: "Secure Coding and Architecture", passiveReach: "out of reach", why: "server-side, not visible over HTTP" },
+    // Phase 41 (TFP-185): 15.3.1 is read from the API responses a page already fetches.
+    { id: "V15", name: "Secure Coding and Architecture", passiveReach: "in reach", why: "15.3.1: API responses the page fetches show fields it never displays" },
     { id: "V16", name: "Security Logging and Error Handling", passiveReach: "in reach", why: "16.5.1: the missing-page probe shows whether an error page leaks internals" },
     { id: "V17", name: "WebRTC", passiveReach: "out of reach", why: "needs a WebRTC session (not in this slice)" },
 ];

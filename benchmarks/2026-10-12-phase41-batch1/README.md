@@ -52,3 +52,14 @@ answer key.
 The with-bugs run was made with the probe judging "not a page" by the body:
 the first run, which also trusted the `text/html` content type, missed the
 log, which the Toolshop sends as `text/html`.
+
+## TFP-185: undisplayed internal API fields
+
+| Run | File | Result |
+| --- | --- | --- |
+| with-bugs, Comprehensive security, 8 pages (TFP-184's checks too, final code) | `runs/tfp184-185-with-bugs-final.json` | `stock` recorded on home, category and product (75); and TFP-184's 80 and 82 again |
+| clean, Comprehensive security, 8 pages | `runs/tfp185-clean.json` | no finding |
+
+`runs/tfp184-185-with-bugs.json` is the earlier with-bugs run, from before
+TFP-184 read the site's origin from the loaded page; the final run repeats
+it on the committed code.

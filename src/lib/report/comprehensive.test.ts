@@ -49,7 +49,7 @@ test("the suite: one describe per covered page under the area's title, every tes
     assert.deepEqual(findDuplicateTests(code), []);
     assert.match(code, /test\.describe\('Security Coverage', \(\) => \{/);
     assert.deepEqual([...code.matchAll(/test\.describe\('Page ([^']|\\')*'/g)].length, 3);
-    assert.deepEqual([...code.matchAll(/test\('(TFSC-\d{3}):/g)].map((m) => m[1]), Array.from({ length: 17 }, (_, i) => `TFSC-${String(i + 1).padStart(3, "0")}`), "3 pages x 5 checks (TFP-184 adds guessable ids), then the missing-page probe and the known-path probe");
+    assert.deepEqual([...code.matchAll(/test\('(TFSC-\d{3}):/g)].map((m) => m[1]), Array.from({ length: 20 }, (_, i) => `TFSC-${String(i + 1).padStart(3, "0")}`), "3 pages x 6 checks (TFP-184 adds guessable ids, TFP-185 API fields), then the missing-page probe and the known-path probe");
     assert.match(code, /\{ annotation: \[\{ type: 'page', description: '\/it\\'s' \}, \{ type: 'gate', description: 'read-only' \}, \{ type: 'category', description: 'A02:2025 Security Misconfiguration' \}/);
     assert.match(code, /\/\/ Not covered \(beyond the 3-page cap\): \/d/);
     assert.doesNotMatch(code, /fill\(|click\(|submit|onerror/, "the passive level sends no input");
@@ -91,7 +91,7 @@ test("the report: per-page counts, failures and findings grouped by category nam
     assert.match(asvs.source, /^OWASP ASVS 5\.0\.0 \(May 2025\), github\.com\/OWASP\/ASVS tag v5\.0\.0_release$/);
     assert.deepEqual(asvs.chapters.map((c) => c.id), ASVS_CHAPTERS.map((c) => c.id));
     assert.deepEqual(asvs.chapters.filter((c) => c.testedInRun).map((c) => c.id), ["V3"], "V14's only check did not run, so V14 is not tested");
-    assert.deepEqual(asvs.chapters.filter((c) => c.passiveReach === "in reach").map((c) => c.id), ["V3", "V12", "V13", "V14", "V16"]);
+    assert.deepEqual(asvs.chapters.filter((c) => c.passiveReach === "in reach").map((c) => c.id), ["V3", "V12", "V13", "V14", "V15", "V16"]);
 });
 
 test("the report: a clean run never reads as a clean bill of health; accessibility has no ASVS table", () => {
@@ -142,8 +142,8 @@ test("in a real browser: a generated Comprehensive run's report shows the area o
         const json = await runWithPlaywright(code);
         const report = buildReport(json, ["security"], "", origin, pageData as never, code, null, "", SECURITY, 4);
 
-        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 5, 0], ["/about", 5, 0], ["/gone", 1, 0], ["(missing-page probe)", 1, 0], ["(known-path probe)", 1, 0]], "a 404 page's checks are not run, not failed (TFP-136); its version check still reads the headers");
-        assert.equal(report.comprehensive!.pages.find((row) => row.path === "/gone")!.notRun, 4);
+        assert.deepEqual(report.comprehensive!.pages.map((row) => [row.path, row.passed, row.failed]), [["/", 6, 0], ["/about", 6, 0], ["/gone", 1, 0], ["(missing-page probe)", 1, 0], ["(known-path probe)", 1, 0]], "a 404 page's checks are not run, not failed (TFP-136); its version check still reads the headers");
+        assert.equal(report.comprehensive!.pages.find((row) => row.path === "/gone")!.notRun, 5);
         assert.deepEqual(report.comprehensive!.groups.flatMap((group) => group.failures), []);
         assert.deepEqual(report.comprehensive!.pagesNotCovered, ["/beyond-the-cap"]);
         assert.equal(report.comprehensive!.workerNote, "4 workers.");

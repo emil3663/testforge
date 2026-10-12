@@ -5,6 +5,7 @@ import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
 import { checkDetails, PAGE_ANNOTATION, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { ACCESSIBILITY_HELPERS, accessibilityPageTests } from "./comprehensive-accessibility";
 import { guessableIdsTest, knownPathsTest, PROBE_HELPERS, PROBE_STANDARDS } from "./security-probes";
+import { apiFieldsTest } from "./api-fields";
 import { escapeForSingleQuotedString } from "./mock/format";
 import { localModelSuiteTitle } from "./gap-fill";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
@@ -45,6 +46,8 @@ export const PAGE_CHECKS: Record<ComprehensiveArea, PageCheck[]> = {
         ({ escapedPath, details }) => passiveSecurityPageTests({ escapedPath, details: (standard) => details(standard) }),
         // Phase 41 (TFP-184): integer ids counting up in the page's addresses, as a finding.
         ({ escapedPath, details }) => [guessableIdsTest({ escapedPath, details: (standard) => details(standard) })],
+        // Phase 41 (TFP-185): fields with internal-sounding names that the page's API responses carry and it never shows, as a finding.
+        ({ escapedPath, details }) => [apiFieldsTest({ escapedPath, details: (standard) => details(standard) })],
     ],
     // TFP-134: the axe-core WCAG scan, then TFP-121's field-name check.
     accessibility: [({ path, escapedPath, details }) =>

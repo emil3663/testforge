@@ -1,0 +1,186 @@
+{
+  "label": "wb-final",
+  "site": "local with-bugs Toolshop, http://localhost:4200 (API http://localhost:8091)",
+  "commit": "b43e14e + TFP-185 working tree",
+  "startedAt": "2026-10-12T19:40:04.559Z",
+  "durationSeconds": 37,
+  "tests": 17,
+  "records": [
+    {
+      "title": "TFSC-005: /#/ uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/ uses sequential integer ids (1, 2, 3, 4, 5, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)",
+        "http://localhost:4200/#/product/:id on /#/ uses sequential integer ids (1, 2, 3, 4, 5, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-006: /#/ fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products returns \"stock\" (11, 0, ...) on its items, which /#/ never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products returns \"stock\" (11, 0, ...) on its items, which /#/ never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-011: /#/category/hand-tools uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/category/hand-tools uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)",
+        "http://localhost:4200/#/product/:id on /#/category/hand-tools uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-012: /#/category/hand-tools fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products returns \"stock\" (11, ...) on its items, which /#/category/hand-tools never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products returns \"stock\" (11, ...) on its items, which /#/category/hand-tools never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-017: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/6 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)",
+        "http://localhost:4200/#/product/:id on /#/product/6 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-018: /#/product/6 fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/product/6",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/6 returns \"stock\" (11) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/6/related returns \"stock\" (11, ...) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/6 returns \"stock\" (11) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/6/related returns \"stock\" (11, ...) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "probe": []
+    },
+    {
+      "title": "TFSC-023: /#/contact uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-024: /#/contact fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-029: /#/auth/login uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-030: /#/auth/login fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-035: /#/auth/register uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-036: /#/auth/register fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-041: /#/auth/forgot-password uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-042: /#/auth/forgot-password fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-047: /#/rentals uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-048: /#/rentals fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/#/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-050: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API",
+      "status": "Failed",
+      "page": "(known-path probe)",
+      "message": "Error: files anyone can read: http://localhost:8091/logs/laravel.log answers 200 with its contents (\"[2026-10-08 05:44:24] local.INFO: Fetching products  <br /> [2026-10-08 05:44:24] local.DEBUG: Fetch\")",
+      "skipReason": "",
+      "findings": [],
+      "probe": [
+        "known paths: 19 paths on http://localhost:4200, http://localhost:8091, one GET each",
+        "known paths: 19 paths on http://localhost:4200, http://localhost:8091, one GET each"
+      ]
+    }
+  ]
+}

@@ -70,6 +70,11 @@ export const DEFECTS = {
     "security-log-on-api": "the home page calls its API on another port, which serves its log at /logs/laravel.log",
     "security-sequential-ids": "/store's products have integer ids (1 to 6) in their addresses",
     "security-catch-all": "every unknown path answers 200 with a page, as a single-page app's catch-all does (not a defect)",
+    // Phase 41 (TFP-185): /api/store/products items always carry in_stock (a
+    // yes/no flag); these add a stock count, which /store never shows, or
+    // shows beside its name ("Stock: 12").
+    "security-api-internal-fields": "/api/store/products items carry a stock count that /store never shows",
+    "security-api-internal-fields-shown": "as security-api-internal-fields, but /store shows each item's stock (not a defect)",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -444,7 +449,8 @@ draw();
         if (key === "name" || key === "price") {
             sorted.sort((a, b) => (key === "name" ? a.name.localeCompare(b.name) : a.price - b.price) * (direction === "desc" ? -1 : 1));
         }
-        return send(200, JSON.stringify(sorted), "application/json");
+        const stock = defect === "security-api-internal-fields" || defect === "security-api-internal-fields-shown";
+        return send(200, JSON.stringify(sorted.map(({ category: _category, ...product }, index) => ({ ...product, in_stock: true, ...(stock ? { stock: 12 + index * 7 } : {}) }))), "application/json");
     }
     if (url.pathname === "/api/store/cart" && req.method === "POST") {
         await readForm(req);
@@ -465,7 +471,7 @@ async function load() {
   if (category) query.set('category', category.value);
   const response = await fetch('/api/store/products?' + query);
   const products = await response.json();
-  document.getElementById('products').innerHTML = products.map((p) => '<li class="card"><a href="/store/item/' + p.id + '"><h2 class="card-title">' + p.name + '</h2></a> <span class="price">' + money(p.price) + '</span></li>').join('');
+  document.getElementById('products').innerHTML = products.map((p) => '<li class="card"><a href="/store/item/' + p.id + '"><h2 class="card-title">' + p.name + '</h2></a> <span class="price">' + money(p.price) + '</span>'${defect === "security-api-internal-fields-shown" ? " + ' <span class=stock>Stock: ' + p.stock + '</span>'" : ""} + '</li>').join('');
 }
 for (const id of ['sort', 'price-min', 'price-max']) document.getElementById(id).addEventListener('change', load);
 for (const box of document.querySelectorAll('input[name="category"]')) box.addEventListener('change', load);

@@ -1,0 +1,82 @@
+{
+  "label": "clean-185",
+  "site": "local clean Toolshop, http://localhost:4200 (API http://localhost:8091)",
+  "commit": "a8dfc03 + TFP-184/185 working tree",
+  "startedAt": "2026-10-12T19:22:17.793Z",
+  "durationSeconds": 13,
+  "tests": 8,
+  "records": [
+    {
+      "title": "TFSC-006: / fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-012: /category/hand-tools fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/category/hand-tools",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-018: /product/01M4RRPCT3K8B5HS66J75ADSTZ fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/product/01M4RRPCT3K8B5HS66J75ADSTZ",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-024: /contact fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/contact",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-030: /auth/login fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/login",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-036: /auth/register fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/register",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-042: /auth/forgot-password fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/auth/forgot-password",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    },
+    {
+      "title": "TFSC-048: /rentals fetches no internal fields it never shows (recorded as a finding)",
+      "status": "Passed",
+      "page": "/rentals",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": []
+    }
+  ]
+}

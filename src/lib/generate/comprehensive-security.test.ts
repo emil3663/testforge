@@ -52,15 +52,15 @@ test("the suite sends no input: no typing, clicking, submitting or non-GET reque
     // Phase 41 (TFP-184): the known-path probe's one call, made for each of its paths on each origin, beside the missing-page probe.
     assert.equal(code.match(/request\.get\(/g)?.length, 2, "the missing-page probe and the known-path probe, once each per run");
     // TFP-167: every page load goes through tfGoto, whose own body holds the only page.goto calls.
-    // TFP-184: five per page (the guessable-id check is the fifth), and the known-path probe's start page.
-    assert.equal(code.match(/tfGoto\(page, /g)?.length, 3 * 5 + 1, "five page loads per page, and the probe's start page");
+    // TFP-184: five per page (the guessable-id check is the fifth), and the known-path probe's start page; TFP-185's API-field check is a sixth.
+    assert.equal(code.match(/tfGoto\(page, /g)?.length, 3 * 6 + 1, "six page loads per page, and the probe's start page");
 });
 
 test("every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirements from chapters in a passive run's reach", () => {
     const code = suiteFor("https://site.test", ["/"]);
     const tests = [...code.matchAll(/test\('(TFSC-\d{3}: [^']*)', \{ annotation: \[(.*?)\] \}/g)];
-    // TFP-184: the guessable-id check per page and the known-path probe join the five.
-    assert.equal(tests.length, 7);
+    // TFP-184: the guessable-id check per page and the known-path probe join the five; TFP-185: the API-field check per page.
+    assert.equal(tests.length, 8);
     const categories = new Set<string>(Object.values(TOP10_2025));
     const inReach = new Set(ASVS_CHAPTERS.filter((chapter) => chapter.passiveReach === "in reach").map((chapter) => chapter.id));
     for (const [, title, annotations] of tests) {
@@ -77,6 +77,7 @@ test("every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirement
         "A01:2025 Broken Access Control",
         "A04:2025 Cryptographic Failures",
         "A06:2025 Insecure Design",
+        "A01:2025 Broken Access Control",
         "A01:2025 Broken Access Control",
         "A10:2025 Mishandling of Exceptional Conditions",
         "A01:2025 Broken Access Control",
@@ -169,7 +170,7 @@ test("in a real browser: a hardened HTTPS site passes every passive check with n
     const outcomes = await runPageTests(suiteFor("https://secure.site.test", ["/login"]), {
         "https://secure.site.test/login": { headers: HARDENED_HEADERS, body: HTML(`<form method="post" action="/session"><input type="password" name="password"></form><a href="/help?page=2">Help</a>`) },
     });
-    assert.deepEqual(outcomes.map((o) => [o.passed, o.findings]), [[true, []], [true, []], [true, []], [true, []], [true, []]], JSON.stringify(outcomes, null, 1));
+    assert.deepEqual(outcomes.map((o) => [o.passed, o.findings]), [[true, []], [true, []], [true, []], [true, []], [true, []], [true, []]], JSON.stringify(outcomes, null, 1));
 });
 
 test("in a real browser: every hardening gap on an HTTPS site is a named finding, not a failure", { skip: needsChromium }, async () => {
@@ -224,7 +225,7 @@ test("in a real browser: a page behind a login (401) is not run, with why; its r
         "https://secure.site.test/basic_auth": { status: 401, headers: { "www-authenticate": 'Basic realm="x"', server: "nginx/1.2.3" }, body: "Not authorized" },
     });
     const reason = "/basic_auth answered HTTP 401: it is behind a login, and this run does not sign in";
-    assert.deepEqual(outcomes.map((o) => [o.passed, o.skipped ?? null]), [[true, reason], [true, null], [true, reason], [true, reason], [true, reason]]);
+    assert.deepEqual(outcomes.map((o) => [o.passed, o.skipped ?? null]), [[true, reason], [true, null], [true, reason], [true, reason], [true, reason], [true, reason]]);
     assert.deepEqual(outcomes[1].findings, ["server: nginx/1.2.3 on /basic_auth names a software version"]);
 });
 
@@ -326,11 +327,11 @@ test("request recording: the passive run sends only GET page loads, one missing-
         assert.equal(known.length, KNOWN_PATHS.length, "one GET per known path");
         const others = recorded.filter((r) => !r.path.startsWith("/testforge-missing-") && !(KNOWN_PATHS as readonly string[]).includes(r.path));
         assert.deepEqual([...new Set(others.map((r) => r.path))].sort(), ["/", "/favicon.ico", "/login", "/notes"].filter((p) => p !== "/favicon.ico" || others.some((r) => r.path === p)).sort(), "only the covered pages (and the browser's own favicon request) are loaded");
-        assert.equal(others.filter((r) => r.path !== "/favicon.ico").length, 3 * 5 + 1, "five loads per page, and the known-path probe's start page");
+        assert.equal(others.filter((r) => r.path !== "/favicon.ico").length, 3 * 6 + 1, "six loads per page (TFP-185's is the sixth), and the known-path probe's start page");
         assert.equal(maxInFlight(), 1, "never two requests at once");
 
         const results = (json.suites ?? []).length > 0 ? flattenSuites(json.suites) : [];
-        assert.equal(results.length, 3 * 5 + 2);
+        assert.equal(results.length, 3 * 6 + 2);
         assert.ok(results.every((r) => r.status === "Passed"), JSON.stringify(results.filter((r) => r.status !== "Passed").map((r) => [r.title, r.rawMessage])));
         const parallelIndexes = new Set(JSON.stringify(json).match(/"parallelIndex":\s*\d+/g));
         assert.deepEqual([...parallelIndexes].map((s) => s.replace(/\s/g, "")), ['"parallelIndex":0'], "one worker slot, despite --workers=4 --fully-parallel");
