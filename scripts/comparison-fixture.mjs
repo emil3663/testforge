@@ -68,7 +68,17 @@ export const DEFECTS = {
     "performance-shift-0.3": "the home page's content is pushed down after it renders: CLS about 0.3 (poor)",
 };
 
-const LCP_DELAYS = { "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
+// Phase 41 (TFP-181): the /store products. Ids are ULID-like, as the clean Toolshop's are.
+const STORE_PRODUCTS = [
+    { id: "01J8Z3K4QWHAMMER", name: "Claw Hammer", price: 12.5 },
+    { id: "01J8Z3K4R2CUTTER", name: "Bolt Cutters", price: 48 },
+    { id: "01J8Z3K4R7WDSAW0", name: "Wood Saw", price: 21.75 },
+    { id: "01J8Z3K4RCWRENCH", name: "Adjustable Wrench", price: 9.99 },
+    { id: "01J8Z3K4RHPLIERS", name: "Pliers", price: 7.25 },
+    { id: "01J8Z3K4RNMTAPE0", name: "Measuring Tape", price: 5.5 },
+];
+
+const LCP_DELAYS ={ "performance-lcp-3s": 3000, "performance-lcp-5s": 5000 };
 const SHIFT_SCORES = { "performance-shift-0.15": 0.15, "performance-shift-0.3": 0.3 };
 
 // The hero image. Chrome leaves low-entropy images (under about 0.05 bits per
@@ -393,6 +403,46 @@ draw();
         };
         const nav = `<nav>${all.map((href) => `<a href="${href}">${href}</a>`).join(" ")}</nav>`;
         return send(200, `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Types shop</title></head><body><header><a href="/types">Types shop</a></header>${nav}${bodies[url.pathname]}<footer><p>Footer</p></footer></body></html>`);
+    }
+    // Phase 41 (TFP-181): a small client-side shop, for the read-only gate's
+    // request guard. /store draws its products from /api/store/products, and
+    // its sort asks for them again, sorted - GET only. An item's "Add to
+    // cart" POSTs /api/store/cart: the kind of control the guard aborts. Not
+    // linked from the nav, like /anchors.
+    if (url.pathname === "/api/store/products" && req.method === "GET") {
+        const [key, direction] = (url.searchParams.get("sort") ?? "").split(",");
+        const sorted = [...STORE_PRODUCTS];
+        if (key === "name" || key === "price") {
+            sorted.sort((a, b) => (key === "name" ? a.name.localeCompare(b.name) : a.price - b.price) * (direction === "desc" ? -1 : 1));
+        }
+        return send(200, JSON.stringify(sorted), "application/json");
+    }
+    if (url.pathname === "/api/store/cart" && req.method === "POST") {
+        await readForm(req);
+        return send(201, JSON.stringify({ added: true }), "application/json");
+    }
+    if (url.pathname === "/store" && req.method === "GET") {
+        return send(200, page("Store", `<h1>Store</h1>
+<p><label for="sort">Sort</label> <select id="sort"><option value="">Choose an order</option><option value="name,asc">Name (A - Z)</option><option value="name,desc">Name (Z - A)</option><option value="price,asc">Price (Low - High)</option><option value="price,desc">Price (High - Low)</option></select></p>
+<ul id="products" class="cards">Loading...</ul>`, { script: `const money = (n) => '$' + n.toFixed(2);
+async function load(sort) {
+  const response = await fetch('/api/store/products' + (sort ? '?sort=' + encodeURIComponent(sort) : ''));
+  const products = await response.json();
+  document.getElementById('products').innerHTML = products.map((p) => '<li class="card"><a href="/store/item/' + p.id + '"><h2 class="card-title">' + p.name + '</h2></a> <span class="price">' + money(p.price) + '</span></li>').join('');
+}
+document.getElementById('sort').addEventListener('change', (e) => load(e.target.value));
+load('');` }));
+    }
+    const storeItem = /^\/store\/item\/([^/]+)$/.exec(url.pathname);
+    if (storeItem && req.method === "GET") {
+        const product = STORE_PRODUCTS.find((p) => p.id === storeItem[1]);
+        if (!product) return send(404, page("Not found", "<h1>Not found</h1>"));
+        return send(200, page(product.name, `<h1>${escapeHtml(product.name)}</h1>
+<p class="price">$${product.price.toFixed(2)}</p>
+<p><button type="button" id="add-to-cart">Add to cart</button> <span id="cart-status"></span></p>`, { script: `document.getElementById('add-to-cart').addEventListener('click', async () => {
+  const response = await fetch('/api/store/cart', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: 'id=${product.id}&quantity=1' });
+  document.getElementById('cart-status').textContent = response.ok ? 'Added' : 'Could not add';
+});` }));
     }
     if (url.pathname === "/notes" && req.method === "POST") {
         const form = await readForm(req);

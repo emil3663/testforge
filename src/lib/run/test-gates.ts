@@ -2,7 +2,11 @@
 // three gates, declared in a static `gate` annotation.
 // - read-only: loading pages and reading what comes back, the axe scan,
 //   interactions that send nothing to the server, and one missing-page probe
-//   per run. Always on.
+//   per run. Always on. Phase 41 Decision 3 (TFP-181) widens it: an
+//   interaction whose requests are all GETs and that submits no form (a
+//   sort, a filter, a stepper, a link followed) is read-only too, run under
+//   the request guard (src/lib/generate/read-only-guard.ts), which aborts
+//   anything else and fails the test as a guard breach.
 // - interactive: submitting forms with valid or harmlessly invalid data. Runs
 //   only with TESTFORGE_INTERACTIVE=1 (Phase 19 Decision 2, unchanged).
 // - active: attack-shaped input, lockout and rate-limit probing, load testing.
