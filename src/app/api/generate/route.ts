@@ -97,7 +97,8 @@ export async function POST(req: NextRequest) {
         const identity = isComprehensive(normalizedRunMode)
             ? { runType: "comprehensive" as const, area: normalizedRunMode.area, practices: [], auditMode: "" }
             : { runType: "standard" as const, practices: normalizedPractices, auditMode: normalizedAuditMode };
-        const applied = await applySiteSuite(code, normalizedContentProfile, origin, identity);
+        const inputs = { baseUrl: normalizedBaseUrl.value, description, practices: normalizedPractices, contentRules: normalizedContentRules, auditMode: normalizedAuditMode, runMode: normalizedRunMode };
+        const applied = await applySiteSuite(code, normalizedContentProfile, origin, identity, inputs);
         siteSuite = applied.record;
         return applied.code;
     };

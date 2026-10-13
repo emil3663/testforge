@@ -372,6 +372,30 @@ export interface SiteSuiteRecord {
     goneTypes: string[];
     /** Hand-edited tests whose page changed or is gone: kept, and named here. */
     editedOnChangedPages: string[];
+    /** After the run (TFP-191): the failing reused tests whose pages were read again, and what that found. */
+    recheck?: SiteSuiteRecheck;
+}
+
+/** Phase 42 (TFP-191): failing reused tests, their pages read again after the run. */
+export interface SiteSuiteRecheck {
+    /** Failing tests that were reused, not edited, and of one page type: the ones read again. */
+    failedReused: number;
+    /** Of those, the ones whose page was unchanged: their failures stand. */
+    unchanged: number;
+    /** Each page type found changed: written again from a fresh inspection and re-run. */
+    regenerations: SiteSuiteRegeneration[];
+}
+
+export interface SiteSuiteRegeneration {
+    type: string;
+    /** The failing tests' pages whose structural signature changed, before and after. */
+    pages: Array<{ path: string; before: string; after: string }>;
+    /** The reused tests that failed on it. */
+    failed: string[];
+    /** The type's regenerated tests that were re-run, and how they ended. */
+    rerun: number;
+    passed: number;
+    failedAgain: number;
 }
 
 /** Phase 40 Decision 7 (TFP-173): one page type in the report. */

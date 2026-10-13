@@ -211,6 +211,15 @@ on the local Toolshop copies (Phase 41 Decision 7).
   tests are regenerated from a fresh inspection and re-run, and only the
   re-run's results count; the report names the regeneration and the
   signature change. If it is the same, the failure stands.
+- **Built:** `src/lib/site-suites/stale.ts`, run from the executor once
+  Playwright closes and before the run is finalized. The page is read again
+  with the same inspection that saved its signature. A reused test is one
+  written before this generation (each saved test records when it was
+  written). Site-wide tests are not read again: their failures stand. The
+  re-run covers what the run ran of that type, plus the type's new tests,
+  so a run of selected tests stays one; hand-edited tests keep their
+  result. The site suite saves its generation inputs and page data for
+  this.
 
 ### TFP-192 — The coverage map and its index
 

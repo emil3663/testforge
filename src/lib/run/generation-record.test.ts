@@ -103,3 +103,19 @@ test("normalizeGenerationRecord: a site suite record is kept as is; a malformed 
     );
     assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { reused: 3 } })?.siteSuite, undefined);
 });
+
+/** Phase 42 (TFP-191). ISTQB technique: equivalence partitioning - a recheck that regenerated a type, one that found pages unchanged, and a malformed one. */
+test("the site suite's recheck: kept, described, and cleaned when malformed", () => {
+    const base = { store: "C:/data/site-suites/x/standard", firstRun: false, reused: 10, generated: 0, regenerated: 0, retired: 0, edited: 0, changedTypes: [], newTypes: [], goneTypes: [], editedOnChangedPages: [] };
+    const recheck = { failedReused: 2, unchanged: 1, regenerations: [{ type: "/account/:slug", pages: [{ path: "/account/contact", before: "forms:1[email,text]", after: "forms:1[email,select]" }], failed: ["TFFU-020: subject [Email] [input]"], rerun: 4, passed: 4, failedAgain: 0 }] };
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, recheck } })?.siteSuite?.recheck, recheck);
+    assert.deepEqual(
+        normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, recheck: { failedReused: "2", regenerations: [{ pages: [] }, { type: "/a", pages: [{ before: "x" }], failed: [3], rerun: -1 }] } } })?.siteSuite?.recheck,
+        { failedReused: 0, unchanged: 0, regenerations: [{ type: "/a", pages: [], failed: [], rerun: 0, passed: 0, failedAgain: 0 }] }
+    );
+    assert.equal(
+        describeSiteSuite({ ...base, recheck }),
+        "Site suite: 10 tests reused, 0 generated, 0 regenerated, 0 retired (saved in C:/data/site-suites/x/standard). /account/:slug changed since its tests were saved (/account/contact: forms:1[email,text] -> forms:1[email,select]), so 1 failing reused test (TFFU-020: subject [Email] [input]) and the rest of its tests were regenerated from a fresh inspection and re-run: 4 passed, 0 failed of 4. Only the re-run's results are reported. 1 failing reused test is on a page that has not changed: reported as it is."
+    );
+    assert.equal(describeSiteSuite({ ...base, recheck: { failedReused: 0, unchanged: 0, regenerations: [] } }), describeSiteSuite(base), "nothing to say when no reused test failed");
+});

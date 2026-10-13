@@ -2,7 +2,7 @@ import type { ContentProfile } from "@/lib/generate/mock/types";
 import { signatureOf } from "@/lib/selection/page-outline";
 import { groupPagesByAddress } from "@/lib/selection/page-types";
 import type { SiteSuiteRecord } from "@/lib/report/types";
-import { hashOf, loadSiteSuite, saveSiteSuite, unitFileName, type SiteSuiteIdentity, type SiteSuiteManifest, type StoredType, type StoredUnit } from "./store";
+import { hashOf, loadSiteSuite, saveSiteSuite, unitFileName, type SiteSuiteIdentity, type SiteSuiteInputs, type SiteSuiteManifest, type StoredType, type StoredUnit } from "./store";
 import { parseTestUnits, withId, type TestUnit } from "./units";
 
 /**
@@ -44,11 +44,12 @@ export function fingerprintOf(profile: ContentProfile | null): SiteFingerprint {
     const types: Record<string, StoredType> = {};
     const typeOfPath = new Map<string, string>();
     for (const type of groupPagesByAddress(pages.map((page) => page.path))) {
-        const signatures = type.pages.map((path) => {
+        const bySignature: Record<string, string> = {};
+        for (const path of type.pages) {
             const outline = pages.find((page) => page.path === path)?.outline;
-            return outline ? signatureOf(outline) : "";
-        }).sort();
-        types[type.pattern] = { signatures, paths: [...type.pages] };
+            bySignature[path] = outline ? signatureOf(outline) : "";
+        }
+        types[type.pattern] = { signatures: Object.values(bySignature).sort(), paths: [...type.pages], pages: bySignature };
         for (const path of type.pages) typeOfPath.set(path, type.pattern);
     }
     return { types, siteTypes: Object.keys(types).sort(), typeOfPath };
@@ -76,9 +77,11 @@ export interface SiteSuiteResult {
  * Applies the site's saved suite to a freshly generated one and saves the
  * result. `fresh` is the suite the generator wrote for this run; the result
  * keeps its scaffolding (imports, helpers, describes) and replaces, keeps or
- * drops its tests as Decision 1 says.
+ * drops its tests as Decision 1 says. `inputs` and the page data are saved
+ * with it, so a page type can be written again after a run (TFP-191).
  */
-export async function applySiteSuite(fresh: string, profile: ContentProfile | null, origin: string, identity: SiteSuiteIdentity): Promise<SiteSuiteResult> {
+export async function applySiteSuite(fresh: string, profile: ContentProfile | null, origin: string, identity: SiteSuiteIdentity, inputs?: SiteSuiteInputs): Promise<SiteSuiteResult> {
+    const savedAt = new Date().toISOString();
     const fingerprint = fingerprintOf(profile);
     const units = parseTestUnits(fresh);
     const saved = await loadSiteSuite(origin, identity);
@@ -123,7 +126,7 @@ export async function applySiteSuite(fresh: string, profile: ContentProfile | nu
         else counts.generated++;
         const file = unitFileName(unit.key);
         files.set(file, written);
-        kept.push({ unit: file, key: unit.key, describe: unit.describe, title: unit.title, type, writtenHash: hashOf(written) });
+        kept.push({ unit: file, key: unit.key, describe: unit.describe, title: unit.title, type, writtenHash: hashOf(written), writtenAt: savedAt });
     }
 
     // Saved tests the generator didn't write this time: hand-edited ones stay (appended to their
@@ -155,12 +158,13 @@ export async function applySiteSuite(fresh: string, profile: ContentProfile | nu
         version: 1,
         origin,
         identity: { ...identity, practices: [...identity.practices].sort() },
-        savedAt: new Date().toISOString(),
+        savedAt,
         siteTypes: fingerprint.siteTypes,
         types: fingerprint.types,
         units: kept,
+        ...(inputs ? { inputs } : {}),
     };
-    const store = await saveSiteSuite(manifest, files);
+    const store = await saveSiteSuite(manifest, files, profile);
     const changedTypes = fingerprint.siteTypes.filter((type) => saved?.manifest.types[type] && !sameType(saved.manifest.types[type], fingerprint.types[type]));
     const newTypes = saved ? fingerprint.siteTypes.filter((type) => !saved.manifest.types[type]) : [];
     const goneTypes = saved ? Object.keys(saved.manifest.types).filter((type) => !fingerprint.types[type]) : [];

@@ -1,4 +1,4 @@
-import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, SiteSuiteRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, SiteSuiteRecheck, SiteSuiteRecord } from "@/lib/report/types";
 import { MAX_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
@@ -85,7 +85,28 @@ function normalizeSiteSuite(value: unknown): SiteSuiteRecord | null {
         newTypes: list("newTypes"),
         goneTypes: list("goneTypes"),
         editedOnChangedPages: list("editedOnChangedPages"),
+        ...(normalizeRecheck(v.recheck) ? { recheck: normalizeRecheck(v.recheck)! } : {}),
     };
+}
+
+function normalizeRecheck(value: unknown): SiteSuiteRecheck | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const count = (from: Record<string, unknown>, key: string) => (typeof from[key] === "number" && Number.isInteger(from[key]) && (from[key] as number) >= 0 ? Math.min(from[key] as number, 100000) : 0);
+    const regenerations = (Array.isArray(v.regenerations) ? v.regenerations : []).slice(0, 50).flatMap((item: unknown) => {
+        if (!item || typeof item !== "object") return [];
+        const r = item as Record<string, unknown>;
+        const type = text(r.type);
+        if (!type) return [];
+        const pages = (Array.isArray(r.pages) ? r.pages : []).slice(0, 50).flatMap((page: unknown) => {
+            const p = (page && typeof page === "object" ? page : {}) as Record<string, unknown>;
+            const path = text(p.path);
+            return path ? [{ path, before: text(p.before, 400) ?? "", after: text(p.after, 400) ?? "" }] : [];
+        });
+        const failed = (Array.isArray(r.failed) ? r.failed : []).map((title: unknown) => text(title)).filter((title): title is string => Boolean(title)).slice(0, 50);
+        return [{ type, pages, failed, rerun: count(r, "rerun"), passed: count(r, "passed"), failedAgain: count(r, "failedAgain") }];
+    });
+    return { failedReused: count(v, "failedReused"), unchanged: count(v, "unchanged"), regenerations };
 }
 
 // Phase 40 (TFP-172): a run inspects its selected pages, up to MAX_PAGE_CAP; it was the first 5.

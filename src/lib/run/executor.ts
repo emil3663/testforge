@@ -11,6 +11,7 @@ import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
+import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { comprehensiveLabel, isComprehensive, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
@@ -253,8 +254,16 @@ export async function startRunJob(
             clearTimeout(forceStopTimer);
         }
         appendProcessOutput(job, "", true);
-        void removeAuthState(authDir);
-        void finalizeRunJob(job);
+        // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
+        // first, with this run's login state, so the report has only the re-run's results.
+        void recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout })
+            .catch((error: unknown) => {
+                job.outputChunks.push(`Site suite: the failing reused tests' pages could not be read again (${error instanceof Error ? error.message : String(error)}); their failures stand.\n`);
+            })
+            .finally(() => {
+                void removeAuthState(authDir);
+                void finalizeRunJob(job);
+            });
     });
 
     return buildRunSnapshot(job);

@@ -15,5 +15,17 @@ export function describeSiteSuite(record: SiteSuiteRecord): string {
     if (record.edited > 0) parts.push(`${record.edited} edited by hand and kept`);
     const newTypes = record.newTypes.length > 0 ? `; new page types: ${record.newTypes.join(", ")}` : "";
     const flagged = record.editedOnChangedPages.length > 0 ? ` Edited by hand, on a page that changed - check these: ${record.editedOnChangedPages.join("; ")}.` : "";
-    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}`;
+    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}${describeRecheck(record)}`;
+}
+
+/** TFP-191: what reading the failing reused tests' pages again found, after the run. */
+function describeRecheck(record: SiteSuiteRecord): string {
+    const recheck = record.recheck;
+    if (!recheck || recheck.failedReused === 0) return "";
+    const sentences = recheck.regenerations.map((regeneration) => {
+        const changes = regeneration.pages.map((page) => `${page.path}: ${page.before} -> ${page.after}`).join("; ");
+        return ` ${regeneration.type} changed since its tests were saved (${changes}), so ${plural(regeneration.failed.length, "failing reused test")} (${regeneration.failed.join("; ")}) and the rest of its tests were regenerated from a fresh inspection and re-run: ${regeneration.passed} passed, ${regeneration.failedAgain} failed of ${regeneration.rerun}. Only the re-run's results are reported.`;
+    });
+    const unchanged = recheck.unchanged > 0 ? ` ${plural(recheck.unchanged, "failing reused test")} ${recheck.unchanged === 1 ? "is" : "are"} on ${recheck.unchanged === 1 ? "a page" : "pages"} that has not changed: reported as ${recheck.unchanged === 1 ? "it is" : "they are"}.` : "";
+    return `${sentences.join("")}${unchanged}`;
 }

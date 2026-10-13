@@ -1,6 +1,8 @@
 import { createHash } from "crypto";
 import { mkdir, readFile, rename, rm, writeFile } from "fs/promises";
-import { join } from "path";
+import { isAbsolute, join, relative, resolve } from "path";
+import type { RunMode } from "@/lib/comprehensive/run-mode";
+import type { BestPracticeArea, ContentProfile, ContentRules, TestAuditMode } from "@/lib/generate/mock/types";
 import { dataDir } from "@/lib/storage/data-dir";
 
 /**
@@ -8,6 +10,7 @@ import { dataDir } from "@/lib/storage/data-dir";
  * TestForge's local data folder, never in the repo - and its shape on disk.
  *
  *   <data>/site-suites/<site>/<suite>/manifest.json
+ *   <data>/site-suites/<site>/<suite>/profile.json   (the page data it was written from)
  *   <data>/site-suites/<site>/<suite>/tests/<unit>.ts
  *
  * `<site>` is the origin, made safe as a folder name. `<suite>` is the suite
@@ -31,6 +34,18 @@ export interface StoredType {
     /** The structural signatures of the type's pages (Phase 40), sorted; "" for a page whose outline couldn't be read. */
     signatures: string[];
     paths: string[];
+    /** Each page's own signature, so a failing test's page can be read again and compared (TFP-191). */
+    pages: Record<string, string>;
+}
+
+/** What the template was asked for, so a changed page type can be written again after a run (TFP-191). */
+export interface SiteSuiteInputs {
+    baseUrl: string;
+    description: string;
+    practices: BestPracticeArea[];
+    contentRules: ContentRules;
+    auditMode: TestAuditMode;
+    runMode: RunMode;
 }
 
 export interface StoredUnit {
@@ -42,6 +57,8 @@ export interface StoredUnit {
     type: string;
     /** sha256 of the file as TestForge wrote it. */
     writtenHash: string;
+    /** When TestForge wrote it: the manifest's savedAt for a test this run generated, earlier for a reused one. */
+    writtenAt: string;
 }
 
 export interface SiteSuiteManifest {
@@ -53,6 +70,7 @@ export interface SiteSuiteManifest {
     siteTypes: string[];
     types: Record<string, StoredType>;
     units: StoredUnit[];
+    inputs?: SiteSuiteInputs;
 }
 
 export function hashOf(text: string) {
@@ -84,7 +102,22 @@ export interface LoadedSiteSuite {
 }
 
 export async function loadSiteSuite(origin: string, identity: SiteSuiteIdentity): Promise<LoadedSiteSuite | null> {
-    const dir = siteSuiteDir(origin, identity);
+    return loadSiteSuiteAt(siteSuiteDir(origin, identity));
+}
+
+/**
+ * A run names its site suite by folder (the generation record's `store`).
+ * The record comes from the client, so the folder must be inside the data
+ * folder's site-suites; anything else is no suite.
+ */
+export function siteSuiteDirFromStore(store: string): string | null {
+    const root = join(dataDir(), "site-suites");
+    const dir = resolve(store);
+    const inside = relative(root, dir);
+    return inside && !inside.startsWith("..") && !isAbsolute(inside) ? dir : null;
+}
+
+export async function loadSiteSuiteAt(dir: string): Promise<LoadedSiteSuite | null> {
     const text = await readFile(join(dir, "manifest.json"), "utf8").catch(() => null);
     if (!text) return null;
     let manifest: SiteSuiteManifest;
@@ -108,7 +141,17 @@ export async function loadSiteSuite(origin: string, identity: SiteSuiteIdentity)
  * units the new manifest no longer lists are removed. One TestForge process
  * at a time (the run-evidence-sweep backlog's Decision 3).
  */
-export async function saveSiteSuite(manifest: SiteSuiteManifest, files: Map<string, string>) {
+export async function loadSiteSuiteProfile(dir: string): Promise<ContentProfile | null> {
+    const text = await readFile(join(dir, "profile.json"), "utf8").catch(() => null);
+    if (!text) return null;
+    try {
+        return JSON.parse(text) as ContentProfile;
+    } catch {
+        return null;
+    }
+}
+
+export async function saveSiteSuite(manifest: SiteSuiteManifest, files: Map<string, string>, profile: ContentProfile | null = null) {
     const dir = siteSuiteDir(manifest.origin, manifest.identity);
     const testsDir = join(dir, "tests");
     await mkdir(testsDir, { recursive: true });
@@ -120,6 +163,10 @@ export async function saveSiteSuite(manifest: SiteSuiteManifest, files: Map<stri
     const kept = new Set(manifest.units.map((unit) => unit.unit));
     for (const unit of previous?.manifest.units ?? []) {
         if (!kept.has(unit.unit)) await rm(join(testsDir, unit.unit), { force: true });
+    }
+    if (profile) {
+        await writeFile(join(dir, "profile.json.tmp"), JSON.stringify(profile), "utf8");
+        await rename(join(dir, "profile.json.tmp"), join(dir, "profile.json"));
     }
     const target = join(dir, "manifest.json");
     await writeFile(`${target}.tmp`, JSON.stringify(manifest, null, 2), "utf8");

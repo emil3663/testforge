@@ -76,6 +76,12 @@ on macOS, `$XDG_DATA_HOME/testforge` (or `~/.local/share/testforge`)
 elsewhere. Set `TESTFORGE_DATA_DIR` to put it somewhere else. Edit a saved
 test in `site-suites/<site>/<suite>/tests/`.
 
+When a reused test fails, its page is read again after the run. If the
+page's structure has changed since the test was saved, that page type's
+tests are written again from a fresh inspection and re-run, and only the
+re-run's results are reported, with the change named. If it hasn't, the
+failure stands.
+
 ---
 
 ## Authenticated runs

@@ -94,6 +94,12 @@ export const DEFECTS = {
     // page type's fingerprint changes; types-privacy-removed takes a page, and its type, away.
     "types-contact-phone": "/types/account/contact's form gains a phone field (a tel input)",
     "types-privacy-removed": "/types/legal/privacy is gone: not linked, and 404",
+    // TFP-191: a saved test that then fails - on a page whose structure changed (the Subject
+    // field becomes a list), and on one whose structure didn't (a field becomes read-only).
+    // The list has an aria-label: wrapped in its label alone, the template names it "Subject
+    // OrderOther" (its options' text) where the browser doesn't - a template bug, left for Emil.
+    "types-contact-subject-list": "/types/account/contact's Subject is a list, not a text field",
+    "types-quantity-readonly": "/types/product/101's quantity field is read-only",
     // TFP-199: not a defect - as the hosted Toolshops' Cloudflare does, every page sends analytics
     // beacons as it is left: a navigator.sendBeacon POST and a keepalive fetch POST to /cdn-cgi/rum.
     "site-beacons": "every page sends a sendBeacon POST and a fetch POST to /cdn-cgi/rum as it is left (not a defect)",
@@ -439,7 +445,7 @@ draw();
         const aside = `<aside><h2>Related</h2><p>More things.</p></aside>`;
         const bodies = {
             "/types": `<main><h1>Types shop</h1><search><form action="/types"><input type="search" name="q" aria-label="Search"></form></search></main>`,
-            "/types/product/101": `<main><h1>Item 101</h1>${qty}</main>`,
+            "/types/product/101": `<main><h1>Item 101</h1>${defect === "types-quantity-readonly" ? qty.replace('name="qty"', 'name="qty" readonly') : qty}</main>`,
             "/types/product/102": `<main><h1>Item 102</h1>${qty}</main>`,
             "/types/product/103": `<main><h1>Item 103</h1><p>Sold out.</p></main>${aside}`,
             "/types/category/tools": `<main><h1>Tools</h1>${cards}</main>`,
@@ -447,7 +453,7 @@ draw();
             // TFP-176: a category with nothing in it - no cards. It stays in its listing type: cards don't split.
             "/types/category/empty": `<main><h1>Empty</h1><p>Nothing here yet.</p></main>`,
             "/types/account/login": `<main><h1>Sign in</h1><form action="/types/account/login" method="post"><label>Email <input type="email" name="email"></label><label>Password <input type="password" name="password"></label><button>Sign in</button></form></main>`,
-            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject <input name="subject"></label>${defect === "types-contact-phone" ? `<label>Phone <input type="tel" name="phone"></label>` : ""}<label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
+            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject ${defect === "types-contact-subject-list" ? `<select name="subject" aria-label="Subject"><option>Order</option><option>Other</option></select>` : `<input name="subject">`}</label>${defect === "types-contact-phone" ? `<label>Phone <input type="tel" name="phone"></label>` : ""}<label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
             "/types/legal/privacy": `<main><h1>Privacy</h1><p>We keep little.</p></main>`,
             "/types/help/terms": `<main><h1>Terms</h1><p>Be kind.</p></main>`,
             "/p/iphone15promaxblack2023": `<main><h1>Phone A</h1>${qty}</main>${aside}`,
