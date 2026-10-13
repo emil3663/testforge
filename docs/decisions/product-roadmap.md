@@ -323,6 +323,12 @@ the hosted sites. Tickets TFP-179 to TFP-189.
 
 See `phase-41-check-gaps-decision-record.md`.
 
+### Before Phase 42: TFP-198, the run evidence sweep (GitHub issue #2; approved 2026-10-13)
+The automatic archiving deleted an older run's evidence when a newer run
+simply didn't run the failing test. Fixed first: only a test that ran and
+passed clears a failure, and only runs of the same kind are compared. See
+`run-evidence-sweep-backlog-2026-10-13.md`.
+
 ### Phase 42 — Reusable suites, a test library and gap tests (locked 2026-10-12, not started)
 Each site's Standard tests are saved and reused, regenerated only for page
 types that changed; Comprehensive tests live in a library written against
@@ -333,6 +339,17 @@ other sites outside the verdict until it earns promotion with Emil's
 approval. Tickets TFP-190 to TFP-197. Starts after Phase 41's Gate B.
 
 See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
+
+### After Phase 42 (Emil, 2026-10-13), in this order
+1. **A full review of everything built so far:** each phase's claims checked
+   against the code and the measurements, the docs brought up to date, and
+   what's left open listed.
+2. **GitHub issue #2:** read with Emil 2026-10-13 and moved ahead of
+   Phase 42 as TFP-198 (above); the review confirms it closed.
+3. **The skills, relooked:** the skills TestForge and its build work rely on
+   (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
+   skills) adjusted for what Phases 38 to 42 changed, and new skills added
+   where the work has a repeatable procedure worth capturing.
 
 ---
 

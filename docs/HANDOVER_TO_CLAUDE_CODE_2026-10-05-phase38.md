@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `951ae34`; batch 1's five commits (`7069078` to
-`7b632cf`) are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `e5b1add`; batch 2's five commits (`6897b1e` to
+`094e574`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -46,18 +46,23 @@ starts, so a session opened before then doesn't use it.
 - **Phase 41 batch 1 verified 2026-10-12** (TFP-181 to TFP-185, `7069078`
   to `7b632cf`): all 10 present targets found on local with-bugs; clean
   has no unlabelled failure.
-- **Now: Phase 41 batch 2** (`docs/decisions/phase-41-check-gaps-decision-record.md`):
-  TFP-186 (layout, overlap, unrendered and hidden images; bug 4 is random)
-  and TFP-187 (spelling of interface text; check the dictionary's licence
-  first). Each with its own commit and targeted tests, proved on the fixture
-  and on the local copies, with the evidence run on the committed code. Also
-  fix bug 80's log for TFP-188 (batch 1's entry): with-bugs keeps file
-  logging, and the start script checks `/logs/laravel.log` answers. Full
-  unit, regression and `check:template-unchanged` once at the end. Stop for
-  verification; don't start TFP-188.
+- **Phase 41 batch 2 verified 2026-10-13** (`6897b1e` to `094e574`): all
+  15 present layout and spelling targets found on local with-bugs.
+- **Now: TFP-188, Phase 41's Gate B.** Re-score on both local copies
+  (started with `scripts/toolshop-local/start-toolshop.ps1`, one at a time)
+  on the committed code, with TFP-154's rule and Phase 40's selection
+  unchanged: Standard, Comprehensive security and accessibility, read-only,
+  one worker, Chromium. Apply Decision 6's keep rule per check, recorded
+  beside the earlier scores. Then the hosted sites, beside their scores.
+  Stop at Gate B.
+- **After Phase 41's Gate B: TFP-198** (`run-evidence-sweep-backlog-2026-10-13.md`,
+  GitHub issue #2, P0, approved 2026-10-13), before Phase 42.
 - **After Phase 41: Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.
+- **After Phase 42 (Emil, 2026-10-13):** a full review, then the skills
+  relooked (`product-roadmap.md`, "After Phase 42"). Planned in
+  Cowork with Emil; nothing for Code to start.
 - **Not started, not next:**
   - Phase 39 (`phase-39-run-concurrency-decision-record.md`, locked; after
     the current batch). Docker works on Emil's machine (checked 2026-10-07:

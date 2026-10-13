@@ -439,6 +439,20 @@ its ISTQB technique and its gate.
   so the check keeps two spellers; and `dictionary-en` 4 ships its files as
   `Uint8Array`s, which `nspell` 2 needs decoded to text.
 
+- **Batch 2 done, verified 2026-10-13 (Cowork):** bug 80's log
+  (`6897b1e`), batch 1's test types (`4f0df79`), TFP-186 (`085037f`), TFP-187
+  (`9a9ac3b`), evidence on committed code (`094e574`, `src/` unchanged from
+  `9a9ac3b`). On local with-bugs: TFP-186 finds 4, 19, 26 (a card's image
+  hidden among 8 shown), 45 (a failure: 50 x 38 px overlap), 49, 58, 59, 63,
+  66, 67; TFP-187 finds 31, 33, 34, 42, 62. The clean copy's one finding is
+  "Unsplash" (T32), labelled.
+  - **Scoring 49 in TFP-188:** with Phase 40's selection unchanged, with-bugs
+    Standard has `/#/chainsaws`, not rentals, so 49 is scored as the runs
+    fall, with the reason recorded (the check works; the page wasn't
+    selected). The selection isn't tuned to the benchmark.
+  - **T32 recurs** on any page crediting Unsplash under the calibrated rule;
+    it's a finding, never a failure.
+
 ### TFP-188 — Re-score with the new checks (Gate B)
 
 - **Priority:** P1 · **Labels:** `measurement`, `benchmark`
