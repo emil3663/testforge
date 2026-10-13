@@ -1,0 +1,2186 @@
+{
+  "crawlId": "3ffd09f6-2bcf-4a33-ba88-d6c51822935b",
+  "crawlStatus": "completed",
+  "duration": 75427,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 46,
+    "queuedUrls": 0,
+    "discoveredPages": 46,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/product/01M4SFTXA043M83GEZ191Q0EXB",
+    "lastCompletedTitle": "Washers - Practice Software Testing - Toolshop - v5.0"
+  },
+  "result": {
+    "crawledAt": "2026-10-13T02:24:25.455Z",
+    "baseUrl": "https://practicesoftwaretesting.com",
+    "pageCount": 46,
+    "pages": [
+      {
+        "path": "/",
+        "url": "https://practicesoftwaretesting.com/",
+        "title": "Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ],
+            [
+              "text"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 76
+        }
+      },
+      {
+        "path": "/auth/forgot-password",
+        "url": "https://practicesoftwaretesting.com/auth/forgot-password",
+        "title": "Forgot Password - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 25
+        }
+      },
+      {
+        "path": "/auth/login",
+        "url": "https://practicesoftwaretesting.com/auth/login",
+        "title": "Login - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "password"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/auth/register",
+        "url": "https://practicesoftwaretesting.com/auth/register",
+        "title": "Register - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "password",
+              "select",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 37
+        }
+      },
+      {
+        "path": "/category/hand-tools",
+        "url": "https://practicesoftwaretesting.com/category/hand-tools",
+        "title": "Hand Tools - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 59
+        }
+      },
+      {
+        "path": "/category/other",
+        "url": "https://practicesoftwaretesting.com/category/other",
+        "title": "Other - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 56
+        }
+      },
+      {
+        "path": "/category/power-tools",
+        "url": "https://practicesoftwaretesting.com/category/power-tools",
+        "title": "Power Tools - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 49
+        }
+      },
+      {
+        "path": "/category/special-tools",
+        "url": "https://practicesoftwaretesting.com/category/special-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4"
+          ],
+          "interactive": 28
+        }
+      },
+      {
+        "path": "/contact",
+        "url": "https://practicesoftwaretesting.com/contact",
+        "title": "Contact Us - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "file",
+              "select",
+              "text",
+              "textarea"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/privacy",
+        "url": "https://practicesoftwaretesting.com/privacy",
+        "title": "Privacy Policy - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 23
+        }
+      },
+      {
+        "path": "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+        "title": "Combination Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX78H4YGCBMMT4PK39VA",
+        "title": "Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+        "title": "Bolt Cutters - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+        "title": "Long Nose Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+        "title": "Slip Joint Pliers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 39
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "title": "Claw Hammer with Shock Reduction Grip - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+        "title": "Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7N1W03VPEKWXWQ705M",
+        "title": "Claw Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7PST95HN1NYTH5MHTN",
+        "title": "Thor Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+        "title": "Sledgehammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+        "title": "Claw Hammer with Fiberglass Handle - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX808K638G0WQ291H995",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX808K638G0WQ291H995",
+        "title": "Court Hammer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+        "title": "Safety Goggles - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+        "title": "Safety Helmet Face Shield - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX914AP300K5V1Z9T3Q6",
+        "title": "Protective Gloves - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX93D85XJ06Y91TP50W5",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX93D85XJ06Y91TP50W5",
+        "title": "Super-thin Protection Gloves - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+        "title": "Construction Helmet - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+        "title": "Ear Protection - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+        "title": "Screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+        "title": "Nuts and bolts - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9QA2XMJMS39P380WS9",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9QA2XMJMS39P380WS9",
+        "title": "Cross-head screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/other",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9TP2GY5737080YPTRK",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9TP2GY5737080YPTRK",
+        "title": "Flat-Head Wood Screws - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+        "title": "M4 Nuts - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTXA043M83GEZ191Q0EXB",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXA043M83GEZ191Q0EXB",
+        "title": "Washers - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 41
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+        "title": "Sheet Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAFBZ9D11A8HX65760R",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAFBZ9D11A8HX65760R",
+        "title": "Belt Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+        "title": "Circular Saw - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2"
+          ],
+          "interactive": 31
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+        "title": "Random Orbit Sander - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5"
+          ],
+          "interactive": 35
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+        "title": "Cordless Drill 20V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+        "title": "Cordless Drill 24V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+        "title": "Cordless Drill 18V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTXARM3XJT874P10E7E8T",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXARM3XJT874P10E7E8T",
+        "title": "Cordless Drill 12V - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h3",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 43
+        }
+      },
+      {
+        "path": "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+        "title": "Excavator - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/product/01M4SFTXATMVEVM12H3GEE00MP",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXATMVEVM12H3GEE00MP",
+        "title": "Bulldozer - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+        "url": "https://practicesoftwaretesting.com/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+        "title": "Crane - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h2",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 40
+        }
+      },
+      {
+        "path": "/rentals",
+        "url": "https://practicesoftwaretesting.com/rentals",
+        "title": "Rentals Overview - Practice Software Testing - Toolshop - v5.0",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 23
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/",
+        "patterns": [
+          "/"
+        ],
+        "pages": [
+          "/"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:2[select][text]|cards:yes",
+        "formSignature": "forms:2[select][text]",
+        "label": "home"
+      },
+      {
+        "pattern": "/category/:slug",
+        "patterns": [
+          "/category/:slug"
+        ],
+        "pages": [
+          "/category/hand-tools",
+          "/category/power-tools",
+          "/category/other",
+          "/category/special-tools"
+        ],
+        "signature": "",
+        "formSignature": "forms:1[select]",
+        "label": "listing"
+      },
+      {
+        "pattern": "/rentals",
+        "patterns": [
+          "/rentals"
+        ],
+        "pages": [
+          "/rentals"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/contact",
+        "patterns": [
+          "/contact"
+        ],
+        "pages": [
+          "/contact"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email,file,select,text,textarea]|cards:no",
+        "formSignature": "forms:1[email,file,select,text,textarea]",
+        "label": "form"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/login"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email,password]|cards:no",
+        "formSignature": "forms:1[email,password]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/register"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[password,select,text]|cards:no",
+        "formSignature": "forms:1[password,select,text]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "patterns": [
+          "/auth/:slug"
+        ],
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email]|cards:no",
+        "formSignature": "forms:1[email]",
+        "label": "form"
+      },
+      {
+        "pattern": "/product/:id",
+        "patterns": [
+          "/product/:id"
+        ],
+        "pages": [
+          "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+          "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+          "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+          "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+          "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+          "/product/01M4SFTX7HPC83VJQDYG809N8V",
+          "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+          "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+          "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+          "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+          "/product/01M4SFTXAFBZ9D11A8HX65760R",
+          "/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+          "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+          "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+          "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+          "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+          "/product/01M4SFTXARM3XJT874P10E7E8T",
+          "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+          "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+          "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+          "/product/01M4SFTX93D85XJ06Y91TP50W5",
+          "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+          "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+          "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+          "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+          "/product/01M4SFTX9QA2XMJMS39P380WS9",
+          "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+          "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+          "/product/01M4SFTX808K638G0WQ291H995",
+          "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+          "/product/01M4SFTXATMVEVM12H3GEE00MP",
+          "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+          "/product/01M4SFTX9TP2GY5737080YPTRK",
+          "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+          "/product/01M4SFTXA043M83GEZ191Q0EXB"
+        ],
+        "signature": "",
+        "formSignature": "forms:0",
+        "label": "detail"
+      },
+      {
+        "pattern": "/privacy",
+        "patterns": [
+          "/privacy"
+        ],
+        "pages": [
+          "/privacy"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      }
+    ],
+    "rankedTypes": [
+      {
+        "pattern": "/",
+        "label": "home",
+        "pages": [
+          "/"
+        ],
+        "pagesByInteractive": [
+          "/"
+        ],
+        "representative": "/",
+        "forms": 2,
+        "interactive": 76,
+        "alwaysCovered": [
+          "home",
+          "form"
+        ],
+        "rank": 1,
+        "placedBy": "first",
+        "placement": "always covered (home, form); home is always ranked first"
+      },
+      {
+        "pattern": "/product/:id",
+        "label": "detail",
+        "pages": [
+          "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+          "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+          "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+          "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+          "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+          "/product/01M4SFTX7HPC83VJQDYG809N8V",
+          "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+          "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+          "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+          "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+          "/product/01M4SFTXAFBZ9D11A8HX65760R",
+          "/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+          "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+          "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+          "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+          "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+          "/product/01M4SFTXARM3XJT874P10E7E8T",
+          "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+          "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+          "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+          "/product/01M4SFTX93D85XJ06Y91TP50W5",
+          "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+          "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+          "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+          "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+          "/product/01M4SFTX9QA2XMJMS39P380WS9",
+          "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+          "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+          "/product/01M4SFTX808K638G0WQ291H995",
+          "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+          "/product/01M4SFTXATMVEVM12H3GEE00MP",
+          "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+          "/product/01M4SFTX9TP2GY5737080YPTRK",
+          "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+          "/product/01M4SFTXA043M83GEZ191Q0EXB"
+        ],
+        "pagesByInteractive": [
+          "/product/01M4SFTX7HPC83VJQDYG809N8V",
+          "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+          "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+          "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+          "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+          "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+          "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+          "/product/01M4SFTXARM3XJT874P10E7E8T",
+          "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+          "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+          "/product/01M4SFTX808K638G0WQ291H995",
+          "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+          "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+          "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+          "/product/01M4SFTX93D85XJ06Y91TP50W5",
+          "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+          "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+          "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+          "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+          "/product/01M4SFTX9QA2XMJMS39P380WS9",
+          "/product/01M4SFTX9TP2GY5737080YPTRK",
+          "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+          "/product/01M4SFTXA043M83GEZ191Q0EXB",
+          "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+          "/product/01M4SFTXATMVEVM12H3GEE00MP",
+          "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+          "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+          "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+          "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+          "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+          "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+          "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+          "/product/01M4SFTXAFBZ9D11A8HX65760R",
+          "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+          "/product/01M4SFTXAHDBX82A1SXJEZD0FB"
+        ],
+        "representative": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+        "forms": 0,
+        "interactive": 43,
+        "alwaysCovered": [
+          "largest"
+        ],
+        "rank": 2,
+        "placedBy": "home first",
+        "placement": "always covered (largest); after home, which is always ranked first"
+      },
+      {
+        "pattern": "/category/:slug",
+        "label": "listing",
+        "pages": [
+          "/category/hand-tools",
+          "/category/power-tools",
+          "/category/other",
+          "/category/special-tools"
+        ],
+        "pagesByInteractive": [
+          "/category/hand-tools",
+          "/category/other",
+          "/category/power-tools",
+          "/category/special-tools"
+        ],
+        "representative": "/category/hand-tools",
+        "forms": 1,
+        "interactive": 59,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 3,
+        "placedBy": "pages",
+        "placement": "always covered (form); after /product/:id by pages (4 pages against 35 pages)"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "label": "sign-in",
+        "pages": [
+          "/auth/register"
+        ],
+        "pagesByInteractive": [
+          "/auth/register"
+        ],
+        "representative": "/auth/register",
+        "forms": 1,
+        "interactive": 37,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 4,
+        "placedBy": "pages",
+        "placement": "always covered (form); after /category/:slug by pages (1 page against 4 pages)"
+      },
+      {
+        "pattern": "/contact",
+        "label": "form",
+        "pages": [
+          "/contact"
+        ],
+        "pagesByInteractive": [
+          "/contact"
+        ],
+        "representative": "/contact",
+        "forms": 1,
+        "interactive": 30,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 5,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /auth/:slug by interactive elements (30 interactive elements against 37 interactive elements)"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "label": "sign-in",
+        "pages": [
+          "/auth/login"
+        ],
+        "pagesByInteractive": [
+          "/auth/login"
+        ],
+        "representative": "/auth/login",
+        "forms": 1,
+        "interactive": 30,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 6,
+        "placedBy": "crawl order",
+        "placement": "always covered (form); after /contact by crawl order (crawled 5th against crawled 4th)"
+      },
+      {
+        "pattern": "/auth/:slug",
+        "label": "form",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "pagesByInteractive": [
+          "/auth/forgot-password"
+        ],
+        "representative": "/auth/forgot-password",
+        "forms": 1,
+        "interactive": 25,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 7,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /auth/:slug by interactive elements (25 interactive elements against 30 interactive elements)"
+      },
+      {
+        "pattern": "/rentals",
+        "label": "content",
+        "pages": [
+          "/rentals"
+        ],
+        "pagesByInteractive": [
+          "/rentals"
+        ],
+        "representative": "/rentals",
+        "forms": 0,
+        "interactive": 23,
+        "alwaysCovered": null,
+        "rank": 8,
+        "placedBy": "content type",
+        "placement": "after every other type: content types are dropped first"
+      },
+      {
+        "pattern": "/privacy",
+        "label": "content",
+        "pages": [
+          "/privacy"
+        ],
+        "pagesByInteractive": [
+          "/privacy"
+        ],
+        "representative": "/privacy",
+        "forms": 0,
+        "interactive": 23,
+        "alwaysCovered": null,
+        "rank": 9,
+        "placedBy": "crawl order",
+        "placement": "after /rentals by crawl order (crawled 9th against crawled 3rd)"
+      }
+    ],
+    "pageSelection": {
+      "standard": {
+        "cap": 8,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 2,
+            "interactive": 76,
+            "alwaysCovered": [
+              "home",
+              "form"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home, form); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/product/:id",
+            "label": "detail",
+            "pages": [
+              "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+              "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+              "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+              "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+              "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+              "/product/01M4SFTX7HPC83VJQDYG809N8V",
+              "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+              "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+              "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+              "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+              "/product/01M4SFTXAFBZ9D11A8HX65760R",
+              "/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+              "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+              "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+              "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+              "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+              "/product/01M4SFTXARM3XJT874P10E7E8T",
+              "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+              "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+              "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+              "/product/01M4SFTX93D85XJ06Y91TP50W5",
+              "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+              "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+              "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+              "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+              "/product/01M4SFTX9QA2XMJMS39P380WS9",
+              "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+              "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+              "/product/01M4SFTX808K638G0WQ291H995",
+              "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+              "/product/01M4SFTXATMVEVM12H3GEE00MP",
+              "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+              "/product/01M4SFTX9TP2GY5737080YPTRK",
+              "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+              "/product/01M4SFTXA043M83GEZ191Q0EXB"
+            ],
+            "pagesByInteractive": [
+              "/product/01M4SFTX7HPC83VJQDYG809N8V",
+              "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+              "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+              "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+              "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+              "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+              "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+              "/product/01M4SFTXARM3XJT874P10E7E8T",
+              "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+              "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+              "/product/01M4SFTX808K638G0WQ291H995",
+              "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+              "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+              "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+              "/product/01M4SFTX93D85XJ06Y91TP50W5",
+              "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+              "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+              "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+              "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+              "/product/01M4SFTX9QA2XMJMS39P380WS9",
+              "/product/01M4SFTX9TP2GY5737080YPTRK",
+              "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+              "/product/01M4SFTXA043M83GEZ191Q0EXB",
+              "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+              "/product/01M4SFTXATMVEVM12H3GEE00MP",
+              "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+              "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+              "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+              "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+              "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+              "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+              "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+              "/product/01M4SFTXAFBZ9D11A8HX65760R",
+              "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+              "/product/01M4SFTXAHDBX82A1SXJEZD0FB"
+            ],
+            "representative": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+            "forms": 0,
+            "interactive": 43,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/product/01M4SFTX7HPC83VJQDYG809N8V"
+            ]
+          },
+          {
+            "pattern": "/category/:slug",
+            "label": "listing",
+            "pages": [
+              "/category/hand-tools",
+              "/category/power-tools",
+              "/category/other",
+              "/category/special-tools"
+            ],
+            "pagesByInteractive": [
+              "/category/hand-tools",
+              "/category/other",
+              "/category/power-tools",
+              "/category/special-tools"
+            ],
+            "representative": "/category/hand-tools",
+            "forms": 1,
+            "interactive": 59,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /product/:id by pages (4 pages against 35 pages)",
+            "selected": [
+              "/category/hand-tools"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/auth/register"
+            ],
+            "pagesByInteractive": [
+              "/auth/register"
+            ],
+            "representative": "/auth/register",
+            "forms": 1,
+            "interactive": 37,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /category/:slug by pages (1 page against 4 pages)",
+            "selected": [
+              "/auth/register"
+            ]
+          },
+          {
+            "pattern": "/contact",
+            "label": "form",
+            "pages": [
+              "/contact"
+            ],
+            "pagesByInteractive": [
+              "/contact"
+            ],
+            "representative": "/contact",
+            "forms": 1,
+            "interactive": 30,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /auth/:slug by interactive elements (30 interactive elements against 37 interactive elements)",
+            "selected": [
+              "/contact"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/auth/login"
+            ],
+            "pagesByInteractive": [
+              "/auth/login"
+            ],
+            "representative": "/auth/login",
+            "forms": 1,
+            "interactive": 30,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /contact by crawl order (crawled 5th against crawled 4th)",
+            "selected": [
+              "/auth/login"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "form",
+            "pages": [
+              "/auth/forgot-password"
+            ],
+            "pagesByInteractive": [
+              "/auth/forgot-password"
+            ],
+            "representative": "/auth/forgot-password",
+            "forms": 1,
+            "interactive": 25,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /auth/:slug by interactive elements (25 interactive elements against 30 interactive elements)",
+            "selected": [
+              "/auth/forgot-password"
+            ]
+          },
+          {
+            "pattern": "/rentals",
+            "label": "content",
+            "pages": [
+              "/rentals"
+            ],
+            "pagesByInteractive": [
+              "/rentals"
+            ],
+            "representative": "/rentals",
+            "forms": 0,
+            "interactive": 23,
+            "alwaysCovered": null,
+            "rank": 8,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "selected": [
+              "/rentals"
+            ]
+          }
+        ],
+        "skipped": [
+          {
+            "pattern": "/privacy",
+            "label": "content",
+            "pages": [
+              "/privacy"
+            ],
+            "pagesByInteractive": [
+              "/privacy"
+            ],
+            "representative": "/privacy",
+            "forms": 0,
+            "interactive": 23,
+            "alwaysCovered": null,
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "after /rentals by crawl order (crawled 9th against crawled 3rd)",
+            "reason": "over the cap of 8 types: ranked 9th; after /rentals by crawl order (crawled 9th against crawled 3rd)"
+          }
+        ],
+        "pages": [
+          "/",
+          "/product/01M4SFTX7HPC83VJQDYG809N8V",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ]
+      },
+      "comprehensive": {
+        "cap": 20,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 2,
+            "interactive": 76,
+            "alwaysCovered": [
+              "home",
+              "form"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home, form); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/product/:id",
+            "label": "detail",
+            "pages": [
+              "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+              "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+              "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+              "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+              "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+              "/product/01M4SFTX7HPC83VJQDYG809N8V",
+              "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+              "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+              "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+              "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+              "/product/01M4SFTXAFBZ9D11A8HX65760R",
+              "/product/01M4SFTXAHDBX82A1SXJEZD0FB",
+              "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+              "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+              "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+              "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+              "/product/01M4SFTXARM3XJT874P10E7E8T",
+              "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+              "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+              "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+              "/product/01M4SFTX93D85XJ06Y91TP50W5",
+              "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+              "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+              "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+              "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+              "/product/01M4SFTX9QA2XMJMS39P380WS9",
+              "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+              "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+              "/product/01M4SFTX808K638G0WQ291H995",
+              "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+              "/product/01M4SFTXATMVEVM12H3GEE00MP",
+              "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+              "/product/01M4SFTX9TP2GY5737080YPTRK",
+              "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+              "/product/01M4SFTXA043M83GEZ191Q0EXB"
+            ],
+            "pagesByInteractive": [
+              "/product/01M4SFTX7HPC83VJQDYG809N8V",
+              "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+              "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+              "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+              "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+              "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+              "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+              "/product/01M4SFTXARM3XJT874P10E7E8T",
+              "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+              "/product/01M4SFTX7W0XG8KXJW4CJQ0TMA",
+              "/product/01M4SFTX808K638G0WQ291H995",
+              "/product/01M4SFTX8Y2PJEGKJPTFEA38DE",
+              "/product/01M4SFTX90VPCWBY4Q2VSSSHYV",
+              "/product/01M4SFTX914AP300K5V1Z9T3Q6",
+              "/product/01M4SFTX93D85XJ06Y91TP50W5",
+              "/product/01M4SFTX963HCFM4VPBJ3JR6DN",
+              "/product/01M4SFTX9843D8TR9Q11SNNAXJ",
+              "/product/01M4SFTX9JJCZZZH2NXBRGDN2C",
+              "/product/01M4SFTX9M6H98DV3TAXZVMZ0A",
+              "/product/01M4SFTX9QA2XMJMS39P380WS9",
+              "/product/01M4SFTX9TP2GY5737080YPTRK",
+              "/product/01M4SFTX9XJ1PSTP1ZD2AVS13T",
+              "/product/01M4SFTXA043M83GEZ191Q0EXB",
+              "/product/01M4SFTXASH5F3J28PQ2JQFCF5",
+              "/product/01M4SFTXATMVEVM12H3GEE00MP",
+              "/product/01M4SFTXAWH8ZDJY23MY2VEHF4",
+              "/product/01M4SFTX74MDQ61JZAS6RWFKW1",
+              "/product/01M4SFTX78H4YGCBMMT4PK39VA",
+              "/product/01M4SFTX7A5K04ZVTBVMDGF8T3",
+              "/product/01M4SFTX7DP2WNCMBPZ2TN39SW",
+              "/product/01M4SFTX7G4Z47YPV4ZWSAR9DP",
+              "/product/01M4SFTXAE3EWWTGDKSRAE6YRJ",
+              "/product/01M4SFTXAFBZ9D11A8HX65760R",
+              "/product/01M4SFTXAJV90Z1N0WKGVQTYG8",
+              "/product/01M4SFTXAHDBX82A1SXJEZD0FB"
+            ],
+            "representative": "/product/01M4SFTX7HPC83VJQDYG809N8V",
+            "forms": 0,
+            "interactive": 43,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/product/01M4SFTX7HPC83VJQDYG809N8V",
+              "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+              "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+              "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+              "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+              "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+              "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+              "/product/01M4SFTXARM3XJT874P10E7E8T",
+              "/product/01M4SFTX7RFKZWK2MNWTSCQ61C"
+            ]
+          },
+          {
+            "pattern": "/category/:slug",
+            "label": "listing",
+            "pages": [
+              "/category/hand-tools",
+              "/category/power-tools",
+              "/category/other",
+              "/category/special-tools"
+            ],
+            "pagesByInteractive": [
+              "/category/hand-tools",
+              "/category/other",
+              "/category/power-tools",
+              "/category/special-tools"
+            ],
+            "representative": "/category/hand-tools",
+            "forms": 1,
+            "interactive": 59,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /product/:id by pages (4 pages against 35 pages)",
+            "selected": [
+              "/category/hand-tools",
+              "/category/other",
+              "/category/power-tools",
+              "/category/special-tools"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/auth/register"
+            ],
+            "pagesByInteractive": [
+              "/auth/register"
+            ],
+            "representative": "/auth/register",
+            "forms": 1,
+            "interactive": 37,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /category/:slug by pages (1 page against 4 pages)",
+            "selected": [
+              "/auth/register"
+            ]
+          },
+          {
+            "pattern": "/contact",
+            "label": "form",
+            "pages": [
+              "/contact"
+            ],
+            "pagesByInteractive": [
+              "/contact"
+            ],
+            "representative": "/contact",
+            "forms": 1,
+            "interactive": 30,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /auth/:slug by interactive elements (30 interactive elements against 37 interactive elements)",
+            "selected": [
+              "/contact"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/auth/login"
+            ],
+            "pagesByInteractive": [
+              "/auth/login"
+            ],
+            "representative": "/auth/login",
+            "forms": 1,
+            "interactive": 30,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /contact by crawl order (crawled 5th against crawled 4th)",
+            "selected": [
+              "/auth/login"
+            ]
+          },
+          {
+            "pattern": "/auth/:slug",
+            "label": "form",
+            "pages": [
+              "/auth/forgot-password"
+            ],
+            "pagesByInteractive": [
+              "/auth/forgot-password"
+            ],
+            "representative": "/auth/forgot-password",
+            "forms": 1,
+            "interactive": 25,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /auth/:slug by interactive elements (25 interactive elements against 30 interactive elements)",
+            "selected": [
+              "/auth/forgot-password"
+            ]
+          },
+          {
+            "pattern": "/rentals",
+            "label": "content",
+            "pages": [
+              "/rentals"
+            ],
+            "pagesByInteractive": [
+              "/rentals"
+            ],
+            "representative": "/rentals",
+            "forms": 0,
+            "interactive": 23,
+            "alwaysCovered": null,
+            "rank": 8,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "selected": [
+              "/rentals"
+            ]
+          },
+          {
+            "pattern": "/privacy",
+            "label": "content",
+            "pages": [
+              "/privacy"
+            ],
+            "pagesByInteractive": [
+              "/privacy"
+            ],
+            "representative": "/privacy",
+            "forms": 0,
+            "interactive": 23,
+            "alwaysCovered": null,
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "after /rentals by crawl order (crawled 9th against crawled 3rd)",
+            "selected": [
+              "/privacy"
+            ]
+          }
+        ],
+        "skipped": [],
+        "pages": [
+          "/",
+          "/product/01M4SFTX7HPC83VJQDYG809N8V",
+          "/product/01M4SFTX7KRP4K4E3F0Q8MVETQ",
+          "/product/01M4SFTX7N1W03VPEKWXWQ705M",
+          "/product/01M4SFTX7PST95HN1NYTH5MHTN",
+          "/product/01M4SFTXAM0CNA0V270Z5JM0BK",
+          "/product/01M4SFTXAND0Y5KC0BNPRZ2RB6",
+          "/product/01M4SFTXAPGCMAMJHQ6YJXB14N",
+          "/product/01M4SFTXARM3XJT874P10E7E8T",
+          "/product/01M4SFTX7RFKZWK2MNWTSCQ61C",
+          "/category/hand-tools",
+          "/category/other",
+          "/category/power-tools",
+          "/category/special-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals",
+          "/privacy"
+        ]
+      }
+    },
+    "warnings": []
+  }
+}

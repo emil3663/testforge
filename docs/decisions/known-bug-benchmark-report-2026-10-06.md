@@ -513,3 +513,79 @@ TFP-175 run by check and cause, the page and the site's address taken out
 | clean | "link types": "Claw Hammer with Shock Reduction Grip ABCDE$13.41" not found | **T31**, a card's name joined without spaces |
 
 Every failure on either copy is a scored bug or labelled.
+
+## Re-score with Phase 41's checks (TFP-188, Gate B, 2026-10-13)
+
+Phase 41's fifteen checks and its request guard (TFP-181 to TFP-187), scored with TFP-154's
+committed rule and Phase 40's selection, unchanged, first on the local copies
+and then on the hosted sites. Code under test: `f3fcf9a` (`src/` as at
+`9a9ac3b`; the runs refuse uncommitted code). Read-only gate, one worker,
+Chromium. Evidence: `benchmarks/2026-10-13-tfp188/` (scorecards
+`score-local.md` and `score-hosted.md`, the raw evidence, every run).
+
+### The score, beside the earlier ones
+
+| | Hosted re-score | Hosted, automatic (TFP-175) | Local baseline (TFP-180) | **Local, Phase 41 (TFP-188)** | **Hosted, Phase 41 (TFP-188)** |
+| --- | --- | --- | --- | --- | --- |
+| Found | 9 | 9 | 9 | **33** | **32** |
+| Hinted | 4 | 4 | 4 | **0** | **0** |
+| Missed | 24 | 24 | 24 | **4** | **5** |
+
+- **Locally, 24 of the 25 present targets Phase 41 aimed at are found,** and
+  all 9 earlier finds stay found. The four misses: 22 and 23 show only in
+  Edge and Firefox; 54 isn't in this version; 49 (rentals' titles centred) is
+  on a page Phase 40 doesn't select for with-bugs Standard (chainsaws took
+  the slot), scored as the runs fall per Emil's ruling.
+- **Hosted, 29 is also missed:** the link-destination check failed as a guard
+  breach on Cloudflare's beacon (`POST .../cdn-cgi/rum?`, T33) before it
+  judged a link. The same breach fails the check on the hosted clean site.
+- **Bug 4 is random per load** and showed on these loads (category's titles
+  mixed left and right); its absence on another load would not be a pass.
+- **The control:** no evidence for a scored bug is also on the clean copy
+  (`evidence.mjs` marks shared items; Gate A's diff finds 128 shared items
+  overall, none of them evidence).
+
+### Run times
+
+| Where | Run | Tests | Passed | Failed | Not run | Run time |
+| --- | --- | --- | --- | --- | --- | --- |
+| local with-bugs | Standard, 8 pages | 461 | 357 | 84 | 20 | **1,235 s** |
+| local with-bugs | Comprehensive security, 20 pages | 122 | 119 | 3 | 0 | 209 s |
+| local with-bugs | Comprehensive accessibility, 20 pages | 80 | 7 | 41 | 32 | 220 s |
+| local clean | Standard, 8 pages | 451 | 387 | 46 | 18 | **1,049 s** |
+| local clean | Comprehensive security, 20 pages | 122 | 120 | 2 | 0 | 216 s |
+| local clean | Comprehensive accessibility, 20 pages | 80 | 30 | 19 | 31 | 215 s |
+| hosted with-bugs | Standard, 8 pages | 464 | 350 | 95 | 19 | **1,816 s** |
+| hosted with-bugs | Comprehensive security, 20 pages | 122 | 119 | 3 | 0 | 298 s |
+| hosted with-bugs | Comprehensive accessibility, 20 pages | 80 | 7 | 41 | 32 | 264 s |
+| hosted clean | Standard, 8 pages | 459 | 399 | 42 | 18 | **1,335 s** |
+| hosted clean | Comprehensive security, 20 pages | 122 | 120 | 2 | 0 | 330 s |
+| hosted clean | Comprehensive accessibility, 20 pages | 80 | 30 | 19 | 31 | 272 s |
+
+- **Both local Standard runs are within 1,800 s** (1,118 s and 884 s at Gate
+  A). Phase 41's 59 Standard tests cost 145 s locally.
+- **Hosted with-bugs Standard took 1,816 s, 16 s over.** Phase 41's 59 tests
+  cost 185 s there; five older checks timed out on the slow host and cost
+  198 s (U11), where they passed locally and in TFP-175. Decision 6's time
+  limit is measured on the local copies.
+- Comprehensive security grows from 81 to 122 tests (the guessable-id and
+  API-field checks per page, and the known-path probe); accessibility from
+  40 to 80 (tab order and grouping per page).
+
+### New failures and findings, read by hand
+
+Every failure or finding new since Gate A (local) or TFP-175 (hosted) is a
+scored bug or labelled (`docs/decisions/data/labelled-failures.md`):
+
+| Where | New | Verdict |
+| --- | --- | --- |
+| local and hosted, both versions | grouping on the category pages | **R19**, real, shared (now on every category page Comprehensive covered) |
+| local and hosted with-bugs | positive tabindex on contact and login | **R20**, real, outside the answer key |
+| both versions | "Unsplash" in the product photo credit | **T32**, a brand |
+| hosted, both versions | the link-destination check's guard breach on `/cdn-cgi/rum` | **T33**, new: Cloudflare's beacon |
+| local and hosted with-bugs | the route check's "routes not checked: stops after 14 s" | **U9**, new: a coverage note |
+| local with-bugs | CLS 0.100 on home | **U10**, new: a lab reading at a band's edge |
+| hosted with-bugs | "More information" `href="#"` on the product page | **R21**, new: placeholder links (R17's elements) |
+| hosted with-bugs | five older checks timed out | **U11**, new: host speed |
+| hosted clean | "Search" 905 px down at desktop width | **U12**, new: 5 px past a threshold |
+| with-bugs | `broken.png` in the image check on every page | bugs 28 and 30 (already found) |

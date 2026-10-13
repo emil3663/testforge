@@ -1,0 +1,1741 @@
+{
+  "crawlId": "a657538a-d00a-431e-8c97-36183e341f37",
+  "crawlStatus": "completed",
+  "duration": 49696,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 34,
+    "queuedUrls": 0,
+    "discoveredPages": 34,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/#/product/16",
+    "lastCompletedTitle": "Practice Software Testing - Toolshop - v5.0 with bugs"
+  },
+  "result": {
+    "crawledAt": "2026-10-13T01:43:08.063Z",
+    "baseUrl": "https://with-bugs.practicesoftwaretesting.com",
+    "pageCount": 34,
+    "pages": [
+      {
+        "path": "/#/",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ],
+            [
+              "text"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 54
+        }
+      },
+      {
+        "path": "/#/auth/forgot-password",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/forgot-password",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 21
+        }
+      },
+      {
+        "path": "/#/auth/login",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/login",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "password",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 25
+        }
+      },
+      {
+        "path": "/#/auth/register",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/auth/register",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/auth/login",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "password",
+              "select",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/category/hand-tools",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/hand-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 46
+        }
+      },
+      {
+        "path": "/#/category/power-tools",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/power-tools",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": true,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 44
+        }
+      },
+      {
+        "path": "/#/category/undefined",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/category/undefined",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "select"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4",
+            "h4",
+            "h4",
+            "h4",
+            "h4"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/chainsaws",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/chainsaws",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1"
+          ],
+          "interactive": 19
+        }
+      },
+      {
+        "path": "/#/contact",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/contact",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "file",
+              "select",
+              "text",
+              "textarea"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 26
+        }
+      },
+      {
+        "path": "/#/product/1",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/1",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 34
+        }
+      },
+      {
+        "path": "/#/product/10",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/10",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/11",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/11",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/12",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/12",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/13",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/13",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1"
+          ],
+          "interactive": 26
+        }
+      },
+      {
+        "path": "/#/product/14",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/14",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/hand-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/15",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/15",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/product/14",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/16",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/16",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/product/14",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/19",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/19",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/2",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/2",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 34
+        }
+      },
+      {
+        "path": "/#/product/20",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/20",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/21",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/21",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1"
+          ],
+          "interactive": 26
+        }
+      },
+      {
+        "path": "/#/product/22",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/22",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5"
+          ],
+          "interactive": 30
+        }
+      },
+      {
+        "path": "/#/product/23",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/23",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/product/24",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/24",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/product/25",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/25",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/product/26",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/26",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/category/power-tools",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 32
+        }
+      },
+      {
+        "path": "/#/product/3",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/3",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 34
+        }
+      },
+      {
+        "path": "/#/product/4",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/4",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 34
+        }
+      },
+      {
+        "path": "/#/product/5",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/5",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 34
+        }
+      },
+      {
+        "path": "/#/product/6",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/6",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/7",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/7",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/8",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/8",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/product/9",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/product/9",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h1",
+            "h1",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 38
+        }
+      },
+      {
+        "path": "/#/rentals",
+        "url": "https://with-bugs.practicesoftwaretesting.com/#/rentals",
+        "title": "Practice Software Testing - Toolshop - v5.0 with bugs",
+        "discoveredFrom": "/#/",
+        "outline": {
+          "landmarks": [
+            "contentinfo",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 19
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/#/",
+        "patterns": [
+          "/#/"
+        ],
+        "pages": [
+          "/#/"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:2[select][text]|cards:yes",
+        "formSignature": "forms:2[select][text]",
+        "label": "home"
+      },
+      {
+        "pattern": "/#/contact",
+        "patterns": [
+          "/#/contact"
+        ],
+        "pages": [
+          "/#/contact"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[email,file,select,text,textarea]|cards:no",
+        "formSignature": "forms:1[email,file,select,text,textarea]",
+        "label": "form"
+      },
+      {
+        "pattern": "/#/category/:slug",
+        "patterns": [
+          "/#/category/:slug"
+        ],
+        "pages": [
+          "/#/category/hand-tools",
+          "/#/category/power-tools",
+          "/#/category/undefined"
+        ],
+        "signature": "",
+        "formSignature": "forms:1[select]",
+        "label": "listing"
+      },
+      {
+        "pattern": "/#/chainsaws",
+        "patterns": [
+          "/#/chainsaws"
+        ],
+        "pages": [
+          "/#/chainsaws"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/#/rentals",
+        "patterns": [
+          "/#/rentals"
+        ],
+        "pages": [
+          "/#/rentals"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "patterns": [
+          "/#/auth/:slug"
+        ],
+        "pages": [
+          "/#/auth/login"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[password,text]|cards:no",
+        "formSignature": "forms:1[password,text]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "patterns": [
+          "/#/auth/:slug"
+        ],
+        "pages": [
+          "/#/auth/register"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[password,select,text]|cards:no",
+        "formSignature": "forms:1[password,select,text]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "patterns": [
+          "/#/auth/:slug"
+        ],
+        "pages": [
+          "/#/auth/forgot-password"
+        ],
+        "signature": "landmarks:contentinfo,navigation|forms:1[text]|cards:no",
+        "formSignature": "forms:1[text]",
+        "label": "form"
+      },
+      {
+        "pattern": "/#/product/:id",
+        "patterns": [
+          "/#/product/:id"
+        ],
+        "pages": [
+          "/#/product/1",
+          "/#/product/2",
+          "/#/product/3",
+          "/#/product/4",
+          "/#/product/5",
+          "/#/product/6",
+          "/#/product/7",
+          "/#/product/8",
+          "/#/product/9",
+          "/#/product/10",
+          "/#/product/11",
+          "/#/product/12",
+          "/#/product/13",
+          "/#/product/14",
+          "/#/product/19",
+          "/#/product/20",
+          "/#/product/22",
+          "/#/product/21",
+          "/#/product/23",
+          "/#/product/24",
+          "/#/product/25",
+          "/#/product/26",
+          "/#/product/15",
+          "/#/product/16"
+        ],
+        "signature": "",
+        "formSignature": "forms:0",
+        "label": "detail"
+      }
+    ],
+    "rankedTypes": [
+      {
+        "pattern": "/#/",
+        "label": "home",
+        "pages": [
+          "/#/"
+        ],
+        "pagesByInteractive": [
+          "/#/"
+        ],
+        "representative": "/#/",
+        "forms": 2,
+        "interactive": 54,
+        "alwaysCovered": [
+          "home",
+          "form"
+        ],
+        "rank": 1,
+        "placedBy": "first",
+        "placement": "always covered (home, form); home is always ranked first"
+      },
+      {
+        "pattern": "/#/product/:id",
+        "label": "detail",
+        "pages": [
+          "/#/product/1",
+          "/#/product/2",
+          "/#/product/3",
+          "/#/product/4",
+          "/#/product/5",
+          "/#/product/6",
+          "/#/product/7",
+          "/#/product/8",
+          "/#/product/9",
+          "/#/product/10",
+          "/#/product/11",
+          "/#/product/12",
+          "/#/product/13",
+          "/#/product/14",
+          "/#/product/19",
+          "/#/product/20",
+          "/#/product/22",
+          "/#/product/21",
+          "/#/product/23",
+          "/#/product/24",
+          "/#/product/25",
+          "/#/product/26",
+          "/#/product/15",
+          "/#/product/16"
+        ],
+        "pagesByInteractive": [
+          "/#/product/6",
+          "/#/product/7",
+          "/#/product/8",
+          "/#/product/9",
+          "/#/product/10",
+          "/#/product/11",
+          "/#/product/12",
+          "/#/product/1",
+          "/#/product/2",
+          "/#/product/3",
+          "/#/product/4",
+          "/#/product/5",
+          "/#/product/23",
+          "/#/product/24",
+          "/#/product/25",
+          "/#/product/26",
+          "/#/product/14",
+          "/#/product/19",
+          "/#/product/20",
+          "/#/product/22",
+          "/#/product/15",
+          "/#/product/16",
+          "/#/product/13",
+          "/#/product/21"
+        ],
+        "representative": "/#/product/6",
+        "forms": 0,
+        "interactive": 38,
+        "alwaysCovered": [
+          "largest"
+        ],
+        "rank": 2,
+        "placedBy": "home first",
+        "placement": "always covered (largest); after home, which is always ranked first"
+      },
+      {
+        "pattern": "/#/category/:slug",
+        "label": "listing",
+        "pages": [
+          "/#/category/hand-tools",
+          "/#/category/power-tools",
+          "/#/category/undefined"
+        ],
+        "pagesByInteractive": [
+          "/#/category/hand-tools",
+          "/#/category/power-tools",
+          "/#/category/undefined"
+        ],
+        "representative": "/#/category/hand-tools",
+        "forms": 1,
+        "interactive": 46,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 3,
+        "placedBy": "pages",
+        "placement": "always covered (form); after /#/product/:id by pages (3 pages against 24 pages)"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "label": "sign-in",
+        "pages": [
+          "/#/auth/register"
+        ],
+        "pagesByInteractive": [
+          "/#/auth/register"
+        ],
+        "representative": "/#/auth/register",
+        "forms": 1,
+        "interactive": 32,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 4,
+        "placedBy": "pages",
+        "placement": "always covered (form); after /#/category/:slug by pages (1 page against 3 pages)"
+      },
+      {
+        "pattern": "/#/contact",
+        "label": "form",
+        "pages": [
+          "/#/contact"
+        ],
+        "pagesByInteractive": [
+          "/#/contact"
+        ],
+        "representative": "/#/contact",
+        "forms": 1,
+        "interactive": 26,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 5,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /#/auth/:slug by interactive elements (26 interactive elements against 32 interactive elements)"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "label": "sign-in",
+        "pages": [
+          "/#/auth/login"
+        ],
+        "pagesByInteractive": [
+          "/#/auth/login"
+        ],
+        "representative": "/#/auth/login",
+        "forms": 1,
+        "interactive": 25,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 6,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /#/contact by interactive elements (25 interactive elements against 26 interactive elements)"
+      },
+      {
+        "pattern": "/#/auth/:slug",
+        "label": "form",
+        "pages": [
+          "/#/auth/forgot-password"
+        ],
+        "pagesByInteractive": [
+          "/#/auth/forgot-password"
+        ],
+        "representative": "/#/auth/forgot-password",
+        "forms": 1,
+        "interactive": 21,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 7,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /#/auth/:slug by interactive elements (21 interactive elements against 25 interactive elements)"
+      },
+      {
+        "pattern": "/#/chainsaws",
+        "label": "content",
+        "pages": [
+          "/#/chainsaws"
+        ],
+        "pagesByInteractive": [
+          "/#/chainsaws"
+        ],
+        "representative": "/#/chainsaws",
+        "forms": 0,
+        "interactive": 19,
+        "alwaysCovered": null,
+        "rank": 8,
+        "placedBy": "content type",
+        "placement": "after every other type: content types are dropped first"
+      },
+      {
+        "pattern": "/#/rentals",
+        "label": "content",
+        "pages": [
+          "/#/rentals"
+        ],
+        "pagesByInteractive": [
+          "/#/rentals"
+        ],
+        "representative": "/#/rentals",
+        "forms": 0,
+        "interactive": 19,
+        "alwaysCovered": null,
+        "rank": 9,
+        "placedBy": "crawl order",
+        "placement": "after /#/chainsaws by crawl order (crawled 5th against crawled 4th)"
+      }
+    ],
+    "pageSelection": {
+      "standard": {
+        "cap": 8,
+        "covered": [
+          {
+            "pattern": "/#/",
+            "label": "home",
+            "pages": [
+              "/#/"
+            ],
+            "pagesByInteractive": [
+              "/#/"
+            ],
+            "representative": "/#/",
+            "forms": 2,
+            "interactive": 54,
+            "alwaysCovered": [
+              "home",
+              "form"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home, form); home is always ranked first",
+            "selected": [
+              "/#/"
+            ]
+          },
+          {
+            "pattern": "/#/product/:id",
+            "label": "detail",
+            "pages": [
+              "/#/product/1",
+              "/#/product/2",
+              "/#/product/3",
+              "/#/product/4",
+              "/#/product/5",
+              "/#/product/6",
+              "/#/product/7",
+              "/#/product/8",
+              "/#/product/9",
+              "/#/product/10",
+              "/#/product/11",
+              "/#/product/12",
+              "/#/product/13",
+              "/#/product/14",
+              "/#/product/19",
+              "/#/product/20",
+              "/#/product/22",
+              "/#/product/21",
+              "/#/product/23",
+              "/#/product/24",
+              "/#/product/25",
+              "/#/product/26",
+              "/#/product/15",
+              "/#/product/16"
+            ],
+            "pagesByInteractive": [
+              "/#/product/6",
+              "/#/product/7",
+              "/#/product/8",
+              "/#/product/9",
+              "/#/product/10",
+              "/#/product/11",
+              "/#/product/12",
+              "/#/product/1",
+              "/#/product/2",
+              "/#/product/3",
+              "/#/product/4",
+              "/#/product/5",
+              "/#/product/23",
+              "/#/product/24",
+              "/#/product/25",
+              "/#/product/26",
+              "/#/product/14",
+              "/#/product/19",
+              "/#/product/20",
+              "/#/product/22",
+              "/#/product/15",
+              "/#/product/16",
+              "/#/product/13",
+              "/#/product/21"
+            ],
+            "representative": "/#/product/6",
+            "forms": 0,
+            "interactive": 38,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/#/product/6"
+            ]
+          },
+          {
+            "pattern": "/#/category/:slug",
+            "label": "listing",
+            "pages": [
+              "/#/category/hand-tools",
+              "/#/category/power-tools",
+              "/#/category/undefined"
+            ],
+            "pagesByInteractive": [
+              "/#/category/hand-tools",
+              "/#/category/power-tools",
+              "/#/category/undefined"
+            ],
+            "representative": "/#/category/hand-tools",
+            "forms": 1,
+            "interactive": 46,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /#/product/:id by pages (3 pages against 24 pages)",
+            "selected": [
+              "/#/category/hand-tools"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/#/auth/register"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/register"
+            ],
+            "representative": "/#/auth/register",
+            "forms": 1,
+            "interactive": 32,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /#/category/:slug by pages (1 page against 3 pages)",
+            "selected": [
+              "/#/auth/register"
+            ]
+          },
+          {
+            "pattern": "/#/contact",
+            "label": "form",
+            "pages": [
+              "/#/contact"
+            ],
+            "pagesByInteractive": [
+              "/#/contact"
+            ],
+            "representative": "/#/contact",
+            "forms": 1,
+            "interactive": 26,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/auth/:slug by interactive elements (26 interactive elements against 32 interactive elements)",
+            "selected": [
+              "/#/contact"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/#/auth/login"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/login"
+            ],
+            "representative": "/#/auth/login",
+            "forms": 1,
+            "interactive": 25,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/contact by interactive elements (25 interactive elements against 26 interactive elements)",
+            "selected": [
+              "/#/auth/login"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "form",
+            "pages": [
+              "/#/auth/forgot-password"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/forgot-password"
+            ],
+            "representative": "/#/auth/forgot-password",
+            "forms": 1,
+            "interactive": 21,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/auth/:slug by interactive elements (21 interactive elements against 25 interactive elements)",
+            "selected": [
+              "/#/auth/forgot-password"
+            ]
+          },
+          {
+            "pattern": "/#/chainsaws",
+            "label": "content",
+            "pages": [
+              "/#/chainsaws"
+            ],
+            "pagesByInteractive": [
+              "/#/chainsaws"
+            ],
+            "representative": "/#/chainsaws",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 8,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "selected": [
+              "/#/chainsaws"
+            ]
+          }
+        ],
+        "skipped": [
+          {
+            "pattern": "/#/rentals",
+            "label": "content",
+            "pages": [
+              "/#/rentals"
+            ],
+            "pagesByInteractive": [
+              "/#/rentals"
+            ],
+            "representative": "/#/rentals",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "after /#/chainsaws by crawl order (crawled 5th against crawled 4th)",
+            "reason": "over the cap of 8 types: ranked 9th; after /#/chainsaws by crawl order (crawled 5th against crawled 4th)"
+          }
+        ],
+        "pages": [
+          "/#/",
+          "/#/product/6",
+          "/#/category/hand-tools",
+          "/#/auth/register",
+          "/#/contact",
+          "/#/auth/login",
+          "/#/auth/forgot-password",
+          "/#/chainsaws"
+        ]
+      },
+      "comprehensive": {
+        "cap": 20,
+        "covered": [
+          {
+            "pattern": "/#/",
+            "label": "home",
+            "pages": [
+              "/#/"
+            ],
+            "pagesByInteractive": [
+              "/#/"
+            ],
+            "representative": "/#/",
+            "forms": 2,
+            "interactive": 54,
+            "alwaysCovered": [
+              "home",
+              "form"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home, form); home is always ranked first",
+            "selected": [
+              "/#/"
+            ]
+          },
+          {
+            "pattern": "/#/product/:id",
+            "label": "detail",
+            "pages": [
+              "/#/product/1",
+              "/#/product/2",
+              "/#/product/3",
+              "/#/product/4",
+              "/#/product/5",
+              "/#/product/6",
+              "/#/product/7",
+              "/#/product/8",
+              "/#/product/9",
+              "/#/product/10",
+              "/#/product/11",
+              "/#/product/12",
+              "/#/product/13",
+              "/#/product/14",
+              "/#/product/19",
+              "/#/product/20",
+              "/#/product/22",
+              "/#/product/21",
+              "/#/product/23",
+              "/#/product/24",
+              "/#/product/25",
+              "/#/product/26",
+              "/#/product/15",
+              "/#/product/16"
+            ],
+            "pagesByInteractive": [
+              "/#/product/6",
+              "/#/product/7",
+              "/#/product/8",
+              "/#/product/9",
+              "/#/product/10",
+              "/#/product/11",
+              "/#/product/12",
+              "/#/product/1",
+              "/#/product/2",
+              "/#/product/3",
+              "/#/product/4",
+              "/#/product/5",
+              "/#/product/23",
+              "/#/product/24",
+              "/#/product/25",
+              "/#/product/26",
+              "/#/product/14",
+              "/#/product/19",
+              "/#/product/20",
+              "/#/product/22",
+              "/#/product/15",
+              "/#/product/16",
+              "/#/product/13",
+              "/#/product/21"
+            ],
+            "representative": "/#/product/6",
+            "forms": 0,
+            "interactive": 38,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/#/product/6",
+              "/#/product/7",
+              "/#/product/8",
+              "/#/product/9",
+              "/#/product/10",
+              "/#/product/11",
+              "/#/product/12",
+              "/#/product/1",
+              "/#/product/2",
+              "/#/product/3"
+            ]
+          },
+          {
+            "pattern": "/#/category/:slug",
+            "label": "listing",
+            "pages": [
+              "/#/category/hand-tools",
+              "/#/category/power-tools",
+              "/#/category/undefined"
+            ],
+            "pagesByInteractive": [
+              "/#/category/hand-tools",
+              "/#/category/power-tools",
+              "/#/category/undefined"
+            ],
+            "representative": "/#/category/hand-tools",
+            "forms": 1,
+            "interactive": 46,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /#/product/:id by pages (3 pages against 24 pages)",
+            "selected": [
+              "/#/category/hand-tools",
+              "/#/category/power-tools",
+              "/#/category/undefined"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/#/auth/register"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/register"
+            ],
+            "representative": "/#/auth/register",
+            "forms": 1,
+            "interactive": 32,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /#/category/:slug by pages (1 page against 3 pages)",
+            "selected": [
+              "/#/auth/register"
+            ]
+          },
+          {
+            "pattern": "/#/contact",
+            "label": "form",
+            "pages": [
+              "/#/contact"
+            ],
+            "pagesByInteractive": [
+              "/#/contact"
+            ],
+            "representative": "/#/contact",
+            "forms": 1,
+            "interactive": 26,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/auth/:slug by interactive elements (26 interactive elements against 32 interactive elements)",
+            "selected": [
+              "/#/contact"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "sign-in",
+            "pages": [
+              "/#/auth/login"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/login"
+            ],
+            "representative": "/#/auth/login",
+            "forms": 1,
+            "interactive": 25,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/contact by interactive elements (25 interactive elements against 26 interactive elements)",
+            "selected": [
+              "/#/auth/login"
+            ]
+          },
+          {
+            "pattern": "/#/auth/:slug",
+            "label": "form",
+            "pages": [
+              "/#/auth/forgot-password"
+            ],
+            "pagesByInteractive": [
+              "/#/auth/forgot-password"
+            ],
+            "representative": "/#/auth/forgot-password",
+            "forms": 1,
+            "interactive": 21,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /#/auth/:slug by interactive elements (21 interactive elements against 25 interactive elements)",
+            "selected": [
+              "/#/auth/forgot-password"
+            ]
+          },
+          {
+            "pattern": "/#/chainsaws",
+            "label": "content",
+            "pages": [
+              "/#/chainsaws"
+            ],
+            "pagesByInteractive": [
+              "/#/chainsaws"
+            ],
+            "representative": "/#/chainsaws",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 8,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "selected": [
+              "/#/chainsaws"
+            ]
+          },
+          {
+            "pattern": "/#/rentals",
+            "label": "content",
+            "pages": [
+              "/#/rentals"
+            ],
+            "pagesByInteractive": [
+              "/#/rentals"
+            ],
+            "representative": "/#/rentals",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "after /#/chainsaws by crawl order (crawled 5th against crawled 4th)",
+            "selected": [
+              "/#/rentals"
+            ]
+          }
+        ],
+        "skipped": [],
+        "pages": [
+          "/#/",
+          "/#/product/6",
+          "/#/product/7",
+          "/#/product/8",
+          "/#/product/9",
+          "/#/product/10",
+          "/#/product/11",
+          "/#/product/12",
+          "/#/product/1",
+          "/#/product/2",
+          "/#/product/3",
+          "/#/category/hand-tools",
+          "/#/category/power-tools",
+          "/#/category/undefined",
+          "/#/auth/register",
+          "/#/contact",
+          "/#/auth/login",
+          "/#/auth/forgot-password",
+          "/#/chainsaws",
+          "/#/rentals"
+        ]
+      }
+    },
+    "warnings": []
+  }
+}

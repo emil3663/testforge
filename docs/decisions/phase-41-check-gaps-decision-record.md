@@ -462,6 +462,47 @@ its ISTQB technique and its gate.
   written, kept, revised or dropped, and recorded either way; run times.
 - **Dependencies:** TFP-181 to TFP-187.
 - **Stop at Gate B.**
+- **Done (2026-10-13), not yet verified.** Code under test `f3fcf9a` (`src/`
+  as at `9a9ac3b`); evidence `benchmarks/2026-10-13-tfp188/`; the score and
+  run times in `known-bug-benchmark-report-2026-10-06.md`, "Re-score with
+  Phase 41's checks". **Local: 33 found, 0 hinted, 4 missed** (Gate A: 9, 4,
+  24); **hosted: 32, 0, 5** (TFP-175: 9, 4, 24). Local Standard 1,235 s
+  (with-bugs) and 1,049 s (clean); hosted with-bugs 1,816 s (see below).
+  - **Decision 6's keep rule, check by check, on the local copies:**
+
+    | Check | Present targets | Found | Clean copy | Outcome as written |
+    | --- | --- | --- | --- | --- |
+    | TFP-182 sort | 2 | 2 | passes | kept |
+    | TFP-182 filter | 27 | 27 | passes | kept |
+    | TFP-182 stepper | 40 | 40 | passes | kept |
+    | TFP-182 option lists | 60 | 60 | passes | kept |
+    | TFP-182 link destination | 29 | 29 | passes | kept (hosted: see T33 below) |
+    | TFP-183 tab order | 53 | 53 | passes; R20 on with-bugs labelled | kept |
+    | TFP-183 grouping | 94 | 94 | R19, real and labelled | kept |
+    | TFP-184 known paths | 80 | 80 | passes | kept |
+    | TFP-184 guessable ids | 82 | 82 | no finding | kept |
+    | TFP-185 API fields | 75 | 75 | no finding | kept |
+    | TFP-186 consistency | 4, 19, 26, 59, 63, 67 | all (4 on these loads) | no finding | kept |
+    | TFP-186 overlap | 45 | 45 | passes | kept |
+    | TFP-186 images | 26 (Decision 1) | none: Gate A moved 26 to the consistency check, as hidden, not broken | passes | **not met as written** (no present target of its own); it fails 28 and 30 on every with-bugs page, already found by older checks. Keep or drop is Emil's at Gate B |
+    | TFP-186 across pages | 4, 49, 58, 66 | 4, 58, 66 | no finding | kept; **49 unreached**: present, but not on a selected page (Emil's ruling) |
+    | TFP-187 spelling | 31, 33, 34, 42, 62 | all | T32, labelled | kept |
+    | TFP-181 guard | (none) | - | no breach locally | kept locally; **hosted: T33** |
+
+    Standard stays within 1,800 s on one worker on both local copies.
+  - **Hosted, the guard breaches on Cloudflare's beacon (T33).** Following a
+    header link, the hosted pages send `POST /cdn-cgi/rum?`; the guard aborts
+    it and fails the link-destination check on both sites, which hides bug
+    29 on hosted with-bugs. The risk was named in `7069078`. A revision -
+    for example letting the browser's own beacons (Chromium's `ping`
+    resource type) through - is for Emil at Gate B; nothing was changed.
+  - **Hosted with-bugs Standard took 1,816 s,** 16 s over the limit Decision
+    6 sets on the local copies: five older checks timed out on the slow host
+    (198 s, U11); Phase 41's 59 Standard tests took 185 s.
+  - **Found while running, fixed:** `f3fcf9a` - the start script now waits
+    for Testsmith's composer service to end, however long (it took 10.5
+    minutes once), before giving the log folder to php-fpm; `6897b1e`'s
+    600 s cap had let composer's chown undo it.
 
 ## Recommended Execution Order
 
