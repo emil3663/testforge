@@ -1,6 +1,7 @@
 import { CollapsibleSection } from "@/app/_components/CollapsibleSection";
 import { ComprehensiveReportView } from "@/app/_components/ComprehensiveReportView";
 import { PageTypesPanel } from "@/app/_components/PageTypesPanel";
+import { CoverageMapPanel } from "@/app/_components/CoverageMapPanel";
 import { CoverageTab } from "@/app/_components/CoverageTab";
 import { DefectsTab } from "@/app/_components/DefectsTab";
 import { DonutChart } from "@/app/_components/DonutChart";
@@ -119,6 +120,7 @@ export function ReportSection({
                                 rawOutputExportLabel={rawOutputExportLabel}
                             />
                             <PageTypesPanel report={report} />
+                            <CoverageMapPanel report={report} />
                         </div>
                     </CollapsibleSection>
                 ) : result && report ? (
@@ -316,6 +318,7 @@ export function ReportSection({
                                 />
                             )}
                             {report && <PageTypesPanel report={report} />}
+                            {report && <CoverageMapPanel report={report} />}
                         </div>
                     </CollapsibleSection>
                 ) : result ? (

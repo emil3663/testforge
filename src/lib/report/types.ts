@@ -269,6 +269,8 @@ export interface RunReport {
     // its own. Empty when no contentProfile was available for this run
     // (e.g. runs persisted before this field existed).
     notTested: NotTestedElement[];
+    /** Phase 42 (TFP-192): absent when the run had no page data or no suite source. */
+    coverageMap?: CoverageMap;
     // Phase 34 (TFP-119): how the suite was generated - the gap-fill outcome
     // and every gate's verdict - as recorded at generation (Decision 8). Null
     // when the run was started without one (template-only, or older runs).
@@ -541,4 +543,34 @@ export interface ComprehensiveReport {
         pagesNotCovered: string | null;
         asvs: { source: string; chapters: ComprehensiveAsvsRow[] } | null;
     };
+}
+
+/** Phase 42 (TFP-192, Decision 3): each element and flow the inspection found, and the tests that touch it (src/lib/report/coverage-map.ts). */
+export type CoverageMapKind = "element" | "link" | "flow";
+
+export interface CoverageMapEntry {
+    /** Stable across runs while the element is the same: its page, kind and locator (a flow: its journey). */
+    key: string;
+    page: string;
+    kind: CoverageMapKind;
+    /** What a person reads: "Subject [input]", "Home [link]", "journey ...". */
+    name: string;
+    /** The full titles (with ids) of the tests that touch it. */
+    tests: string[];
+}
+
+export interface CoverageMapType {
+    pattern: string;
+    pages: number;
+    total: number;
+    covered: number;
+    /** Each untouched element, "page: name". */
+    uncovered: string[];
+}
+
+export interface CoverageMap {
+    entries: CoverageMapEntry[];
+    types: CoverageMapType[];
+    total: number;
+    covered: number;
 }

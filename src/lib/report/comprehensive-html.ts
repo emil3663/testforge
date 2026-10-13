@@ -1,6 +1,7 @@
 import { escapeReportHtml, formatMilliseconds } from "./text";
 import type { RunReport } from "./types";
 import { buildPageTypesHtmlSection } from "./page-types-html";
+import { buildCoverageMapHtmlSection } from "./coverage-map-html";
 
 // Phase 35 (TFP-132, Decision 7): the saved report of a Comprehensive run
 // shows that area only, on one page and in a fixed order: the area summary,
@@ -85,6 +86,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
             <pre>${e(report.rawOutput)}</pre>
         </details>
         ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
+        ${buildCoverageMapHtmlSection(report.coverageMap)}
     </main>
 </body>
 </html>`;

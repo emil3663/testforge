@@ -234,6 +234,15 @@ on the local Toolshop copies (Phase 41 Decision 7).
   Toolshop, the uncovered list is recorded; the index selects the tests for
   one changed element.
 - **Dependencies:** TFP-190.
+- **Built:** `src/lib/report/coverage-map.ts`, in every run's report and
+  its HTML export. What a test touches is read from its code: an element
+  is touched by a test on its page that uses the locator the generator
+  writes for it (a form without an id as the form check finds it), a link
+  likewise or by a site-wide link check that requests its URL, a flow by
+  its journey test. A whole-page check (the WCAG scan, headings) touches
+  the page, not each element, so it makes no element covered. The map is
+  static: an element counts as touched whether or not the test ran or
+  passed.
 - **Stop for verification after TFP-190 to TFP-192 (batch 1).**
 
 ### TFP-193 — The library: pattern entries, seeded from Phase 41

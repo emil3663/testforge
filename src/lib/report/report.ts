@@ -3,6 +3,7 @@ import { extractDeclaredTestTitles } from "@/lib/run/selection";
 import { flattenSuites } from "./execution";
 import { buildDefects, buildDefectTrend, buildHeatmap } from "./defects";
 import { computeDiscoveredElementCoverage, buildDiscoveredCoverageMatrix } from "./discovered-coverage";
+import { buildCoverageMap } from "./coverage-map";
 import { buildPerformanceReport } from "./performance";
 import { buildUsabilityReport } from "./usability";
 import { buildSeoReport } from "./seo";
@@ -51,6 +52,8 @@ export function buildReport(
         suiteCode === null ? null : extractDeclaredTestTitles(suiteCode)
     );
     const coverage = buildDiscoveredCoverageMatrix(selectedPractices, execution, matches);
+    // Phase 42 (TFP-192): what each test touches, read from the suite that ran.
+    const coverageMap = buildCoverageMap(contentProfile, suiteCode);
     const summary = buildSummary(execution, defects, report.stats?.duration ?? 0, interactiveEnabled);
     const performance = buildPerformanceReport(execution, report.stats?.duration ?? 0);
     const usability = buildUsabilityReport(execution, defects);
@@ -71,6 +74,7 @@ export function buildReport(
         },
         coverage,
         notTested,
+        ...(coverageMap ? { coverageMap } : {}),
         generation,
         emptyAreas,
         ...(!isComprehensive(runMode) && standardManualReview(execution).length > 0 ? { manualReview: standardManualReview(execution) } : {}),

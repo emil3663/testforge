@@ -6,6 +6,7 @@ import { formatNotRunByGate, noTestRan } from "./summary";
 import type { RunReport } from "./types";
 import { buildComprehensiveHtmlDocument } from "./comprehensive-html";
 import { buildPageTypesHtmlSection } from "./page-types-html";
+import { buildCoverageMapHtmlSection } from "./coverage-map-html";
 
 interface RunResultLike {
     runId: string;
@@ -380,6 +381,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         </details>
         <!-- Phase 40 (TFP-173): page types and the copyable re-run lists, last -->
         ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
+        ${buildCoverageMapHtmlSection(report.coverageMap)}
     </main>
     <script>
         function showTab(btn, id) {
