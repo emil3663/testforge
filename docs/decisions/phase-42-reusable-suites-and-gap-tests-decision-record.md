@@ -143,6 +143,8 @@ Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197.
 
 - After Phase 41's Gate B: its checks seed the library, and its remaining
   misses are the gap writer's targets.
+- After TFP-198 (`run-evidence-sweep-backlog-2026-10-13.md`): site suites
+  retire tests, which today's sweep would read as defects fixed.
 - Phase 39's workers and Phase 41's request guard apply to every test this
   phase runs.
 - Claude Code as the gap writer needs it installed and signed in on Emil's

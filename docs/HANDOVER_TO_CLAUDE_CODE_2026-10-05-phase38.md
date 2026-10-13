@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `e5b1add`; batch 2's five commits (`6897b1e` to
-`094e574`) are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `c45a45f`; `f3fcf9a` and `02ab6e5` (TFP-188) are
+committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -48,15 +48,15 @@ starts, so a session opened before then doesn't use it.
   has no unlabelled failure.
 - **Phase 41 batch 2 verified 2026-10-13** (`6897b1e` to `094e574`): all
   15 present layout and spelling targets found on local with-bugs.
-- **Now: TFP-188, Phase 41's Gate B.** Re-score on both local copies
-  (started with `scripts/toolshop-local/start-toolshop.ps1`, one at a time)
-  on the committed code, with TFP-154's rule and Phase 40's selection
-  unchanged: Standard, Comprehensive security and accessibility, read-only,
-  one worker, Chromium. Apply Decision 6's keep rule per check, recorded
-  beside the earlier scores. Then the hosted sites, beside their scores.
-  Stop at Gate B.
-- **After Phase 41's Gate B: TFP-198** (`run-evidence-sweep-backlog-2026-10-13.md`,
-  GitHub issue #2, P0, approved 2026-10-13), before Phase 42.
+- **Phase 41 is complete** (Gate B passed 2026-10-13, Emil): local 33 found,
+  0 hinted, 4 missed; the image-render check kept.
+- **Now: one batch, TFP-198 and TFP-199** (`run-evidence-sweep-backlog-2026-10-13.md`),
+  before Phase 42. TFP-198: the sweep keeps evidence until a defect is shown
+  fixed (GitHub issue #2; `Refs #2`, don't close the issue). TFP-199: the
+  read-only guard notes site beacons instead of failing. Each with its own
+  commit and targeted tests; the full unit suite, regression suite and
+  `check:template-unchanged` once at the end; then TFP-199's hosted link
+  re-run. Stop for verification; don't start Phase 42.
 - **After Phase 41: Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.

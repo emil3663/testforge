@@ -7,7 +7,7 @@ consistency, spelling and wording, the behaviour of controls on read-only
 pages, keyboard order and grouping, and read-only security probes. Each
 check is measured on the Toolshop answer key, with the clean site as the
 false-failure control.
-Status: Locked 2026-10-07. Every decision confirmed by Emil as recommended,
+Status: Complete 2026-10-13 (Gate B passed, Emil). Locked 2026-10-07. Every decision confirmed by Emil as recommended,
 with one change of venue: Phase 41 is built and measured on local copies of
 both Toolshops first (Decision 7); the hosted sites come after, once the
 issues are worked through locally. Tickets TFP-179 to TFP-189.
@@ -523,6 +523,22 @@ the local baseline is 9 found, 4 hinted, 24 missed.
 - Today's code is scored on both local copies.
 
 ### Gate B — Checks measured
+**Passed 2026-10-13 (Emil)** on `f3fcf9a` / `02ab6e5` (verified in Cowork:
+every run on `f3fcf9a`, the scoring rule unchanged since `91a7141`). Local:
+33 found, 0 hinted, 4 missed (22 and 23 not visible in Chromium, 54 absent,
+49 on a page the selection doesn't pick). Hosted: 32, 0, 5 (29 lost to the
+guard breach below). 14 of 15 checks kept as written, and the guard.
+- **The image-render check is kept (Emil, 2026-10-13)** though its own
+  target (26) moved to the consistency check at Gate A: it catches an image
+  that loads but can't display, which request checks miss, and adds no false
+  failure on the clean copy.
+- **The guard fails on site beacons (T33):** Cloudflare's `POST
+  /cdn-cgi/rum` fires as a page navigates, so the link check fails as a
+  breach on both hosted sites. Fixed by TFP-199
+  (`run-evidence-sweep-backlog-2026-10-13.md`), before Phase 42.
+- **Hosted with-bugs Standard took 1,816 s,** 16 s over; Decision 6's limit
+  applies locally, and five older checks timed out on the slow host.
+  Recorded for Phase 39's workers.
 - TFP-181 to TFP-188 landed and independently verified.
 - Decision 6's keep rule applied per check, locally and then on the hosted
   sites.
