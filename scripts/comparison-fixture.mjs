@@ -89,6 +89,9 @@ export const DEFECTS = {
     "spelling-misspelt": "/words' heading reads Contakt",
     "spelling-placeholder": "/words' Message field's placeholder reads massage",
     "spelling-other-language": "/words declares German (lang=de)",
+    // TFP-199: not a defect - as the hosted Toolshops' Cloudflare does, every page sends analytics
+    // beacons as it is left: a navigator.sendBeacon POST and a keepalive fetch POST to /cdn-cgi/rum.
+    "site-beacons": "every page sends a sendBeacon POST and a fetch POST to /cdn-cgi/rum as it is left (not a defect)",
     // TFP-161: the home page drops the connection (/unreachable always does).
     "hub-down": "the home page cannot be loaded: the connection is dropped",
     // Phase 38 (TFP-149): Core Web Vitals bands. The slow-LCP defects hold
@@ -148,7 +151,7 @@ ${meta ? `<meta name="description" content="${title}: keep short notes with Acme
 <main>
 ${body}
 </main>
-${script ? `<script>${script}</script>` : ""}
+${script ? `<script>${script}</script>` : ""}${defect === "site-beacons" ? `<script>addEventListener("pagehide", () => { navigator.sendBeacon("/cdn-cgi/rum?beacon", "{}"); fetch("/cdn-cgi/rum?", { method: "POST", body: "{}", keepalive: true }); });</script>` : ""}
 </body>
 </html>`;
 }
@@ -268,6 +271,7 @@ const server = createServer(async (req, res) => {
         await new Promise((r) => setTimeout(r, Math.min(Number(url.searchParams.get("delay")) || 0, 10000)));
         return send(200, HERO_SVG, "image/svg+xml");
     }
+    if (url.pathname === "/cdn-cgi/rum" && req.method === "POST") return send(204, "", "text/plain");
     if (url.pathname === "/api/status") return send(200, JSON.stringify({ message: "All systems normal" }), "application/json", { "access-control-allow-origin": "*" });
     // TFP-184: the log, only on the API origin (a request that reached this port directly, not through the proxy).
     if (url.pathname === "/logs/laravel.log" && defect === "security-log-on-api" && req.headers.host === `127.0.0.1:${port}`) {

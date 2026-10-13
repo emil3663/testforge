@@ -25,6 +25,16 @@
  * loaded, so a request the interaction starts a moment later (a debounced
  * filter) was never waited for.
  *
+ * TFP-199 (run-evidence-sweep backlog; Emil, 2026-10-13; Phase 41 Gate B's
+ * T33): a site's own beacons are aborted too - nothing leaves the browser -
+ * but noted, not counted as a breach. On the hosted Toolshops, Cloudflare's
+ * analytics fire as a page navigates (measured: one POST of resource type
+ * `ping`, from navigator.sendBeacon, and one `xhr` POST, both to
+ * /cdn-cgi/rum), so the link-destination check failed on every hosted page.
+ * A beacon is any request Chromium types `ping` (sendBeacon, a link's ping
+ * attribute), or a non-safe request to a named analytics path. Every other
+ * non-safe request, and every form submission, is still a breach.
+ *
  * Generated code, kept as a raw string like the passive security helpers, so
  * it reaches the generated file exactly as written here.
  */
@@ -48,16 +58,22 @@ async function tfSettle(page: import('@playwright/test').Page, quietMs = 500, ma
   page.off('requestfailed', ended);
 }
 
+// TFP-199: analytics paths whose beacons a site sends with ordinary fetch or XHR. Cloudflare's first (measured).
+const TF_BEACON_PATHS = ['/cdn-cgi/rum'];
+
 // TFP-181 (Phase 41 Decision 3): a read-only test that interacts runs its
 // interaction here. Any request but a safe one (GET, HEAD, QUERY) is aborted, and any form
-// submission stopped, and either fails the test as a guard breach, named.
+// submission stopped, and either fails the test as a guard breach, named. TFP-199: a site's
+// beacon is aborted too, but noted, not counted as a breach.
 async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact: () => Promise<void>) {
   const breaches: string[] = [];
+  const beacons: string[] = [];
   await page.exposeBinding('__tfGuardBreach', (_source, what: string) => { breaches.push(what); });
   await page.route('**/*', async (route) => {
     const request = route.request();
     if (['GET', 'HEAD', 'QUERY'].includes(request.method())) return route.fallback();
-    breaches.push(request.method() + ' ' + request.url());
+    const beacon = request.resourceType() === 'ping' || TF_BEACON_PATHS.some((path) => new URL(request.url()).pathname.startsWith(path));
+    (beacon ? beacons : breaches).push(request.method() + ' ' + request.url() + (beacon ? ' (' + request.resourceType() + ')' : ''));
     await route.abort('blockedbyclient');
   });
   const stopSubmissions = () => {
@@ -85,6 +101,7 @@ async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact
   } catch (error) {
     failure = error;
   }
+  if (beacons.length > 0) test.info().annotations.push({ type: 'note', description: 'read-only guard: aborted ' + beacons.length + ' site beacon(s), not a breach: ' + [...new Set(beacons)].join('; ') });
   expect(breaches, 'read-only guard breach, aborted: ' + breaches.join('; ') + ' (the read-only gate allows only GET, HEAD and QUERY requests and no form submission)').toEqual([]);
   if (failure) throw failure;
 }`;
