@@ -323,14 +323,14 @@ the hosted sites. Tickets TFP-179 to TFP-189.
 
 See `phase-41-check-gaps-decision-record.md`.
 
-### Before Phase 42: TFP-198 (the evidence sweep, GitHub issue #2) and TFP-199 (the guard's beacons), approved 2026-10-13
+### Before Phase 42: TFP-198 (the evidence sweep, GitHub issue #2) and TFP-199 (the guard's beacons), done 2026-10-13
 The automatic archiving deleted an older run's evidence when a newer run
 simply didn't run the failing test. Fixed first: only a test that ran and
 passed clears a failure, and only runs of the same kind are compared. See
 `run-evidence-sweep-backlog-2026-10-13.md`. TFP-199: the read-only guard
 notes site beacons (Cloudflare's `/cdn-cgi/rum`) instead of failing on them.
 
-### Phase 42 — Reusable suites, a test library and gap tests (locked 2026-10-12, not started)
+### Phase 42 — Reusable suites, a test library and gap tests (locked 2026-10-12, in progress)
 Each site's Standard tests are saved and reused, regenerated only for page
 types that changed; Comprehensive tests live in a library written against
 component patterns; a coverage map at element and flow level shows what no

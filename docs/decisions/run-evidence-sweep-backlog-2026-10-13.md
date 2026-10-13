@@ -5,8 +5,9 @@ Source: https://github.com/emil3663/testforge/issues/2, filed 2026-09-23 by
 hugo76 at Martin's request ("sweep deletes evidence for defects the newer run
 never tested"). Read with Emil on 2026-10-13; every problem in it is still in
 `src/lib/run/persistence.ts` at `e5b1add`.
-Status: Approved by Emil 2026-10-13. TFP-198 and TFP-199 are built as one
-batch after Phase 41's Gate B (passed 2026-10-13), before Phase 42.
+Status: Done and verified 2026-10-13 (Cowork): TFP-198 `15e0205`, TFP-199
+`3a8f420`, records and the hosted re-run `3955847`. GitHub issue #2 can be
+closed once these are pushed.
 
 ## Why before Phase 42
 
@@ -93,3 +94,20 @@ make the bug fire more often, not less.
   (`benchmarks/2026-10-13-tfp199/`): with-bugs fails naming bug 29 (`"Home"
   on /#/ leads to /contact`), 9 beacons noted; the clean site passes, 19
   beacons noted.
+
+## Verification (2026-10-13, Cowork)
+
+- **TFP-198:** the sweep now groups by `suiteIdentity` (base URL, sorted
+  practices, run type) and keeps a candidate unless every one of its failing
+  titles is in the newest run's Passed set, so absent, Not run, Blocked,
+  Flaky and failed all keep the evidence. `run.json` is written to
+  `run.json.tmp` and renamed; the artifact-root check adds the path
+  separator; the one-process assumption is in the code and the README. The
+  issue's test is unchanged; the four new cases fail on the old code.
+- **TFP-199:** a request Chromium types `ping`, or a non-safe request to a
+  path in `TF_BEACON_PATHS` (`/cdn-cgi/rum`, measured), is aborted and
+  recorded as a note; every other non-safe request and every form
+  submission is still a breach. Hosted re-run: bug 29 found on with-bugs,
+  clean passes; T33 fixed.
+- **End checks:** unit 515/515, regression 57/57, `check:template-unchanged`
+  162/166 identical (the 4 differ only by the guard's beacon lines).

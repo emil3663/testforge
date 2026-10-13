@@ -23,7 +23,7 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `c45a45f`; `f3fcf9a` and `02ab6e5` (TFP-188) are
+`origin/main` is at `aeaf238`; `15e0205`, `3a8f420` and `3955847` are
 committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
@@ -50,14 +50,16 @@ committed, not pushed. Phase 38 is complete. Since then:
   15 present layout and spelling targets found on local with-bugs.
 - **Phase 41 is complete** (Gate B passed 2026-10-13, Emil): local 33 found,
   0 hinted, 4 missed; the image-render check kept.
-- **Now: one batch, TFP-198 and TFP-199** (`run-evidence-sweep-backlog-2026-10-13.md`),
-  before Phase 42. TFP-198: the sweep keeps evidence until a defect is shown
-  fixed (GitHub issue #2; `Refs #2`, don't close the issue). TFP-199: the
-  read-only guard notes site beacons instead of failing. Each with its own
-  commit and targeted tests; the full unit suite, regression suite and
-  `check:template-unchanged` once at the end; then TFP-199's hosted link
-  re-run. Stop for verification; don't start Phase 42.
-- **After Phase 41: Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
+- **TFP-198 and TFP-199 verified 2026-10-13** (`15e0205`, `3a8f420`,
+  `3955847`). GitHub issue #2 is fixed; Emil closes it.
+- **Now: Phase 42 batch 1** (`docs/decisions/phase-42-reusable-suites-and-gap-tests-decision-record.md`):
+  TFP-190 (site suites: save, fingerprint, reuse), TFP-191 (a stale reused
+  test is regenerated and re-run before it counts) and TFP-192 (the coverage
+  map and its index). Site suites live in TestForge's local data folder,
+  never in the repo. Each ticket with its own commit and targeted tests; the
+  full unit suite, regression suite and `check:template-unchanged` once at
+  the end. Stop at Phase 42's Gate A; don't start TFP-193.
+- **Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.
 - **After Phase 42 (Emil, 2026-10-13):** a full review, then the skills
