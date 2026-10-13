@@ -1,0 +1,22 @@
+{
+  "label": "links-clean",
+  "site": "https://practicesoftwaretesting.com",
+  "commit": "3a8f420",
+  "startedAt": "2026-10-13T04:50:25.017Z",
+  "durationSeconds": 13,
+  "tests": 1,
+  "records": [
+    {
+      "title": "TFFU-035: navigation links land where their text says, from /",
+      "status": "Passed",
+      "page": "/",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "probe": [],
+      "notes": [
+        "read-only guard: aborted 19 site beacon(s), not a breach: POST https://practicesoftwaretesting.com/cdn-cgi/rum? (ping); POST https://practicesoftwaretesting.com/cdn-cgi/rum? (xhr)"
+      ]
+    }
+  ]
+}

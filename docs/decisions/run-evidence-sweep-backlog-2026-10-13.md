@@ -54,6 +54,11 @@ make the bug fire more often, not less.
   - the commit references the issue (`Refs #2`); the issue is closed only
     once Emil has seen the verification.
 - **Dependencies:** none. After Phase 41's Gate B, before Phase 42.
+- **Done (2026-10-13), not yet verified: `15e0205`** (`Refs #2`; the issue
+  is open). The issue's test fails on the previous sweep and passes; with
+  the decision table, the interrupted-write case and the prefix case, the
+  four new tests fail on the previous code and the ten existing ones pass on
+  both. RUN-28.
 
 ### TFP-199 — The read-only guard notes site beacons instead of failing
 
@@ -80,3 +85,11 @@ make the bug fire more often, not less.
   - the hosted link check, re-run alone on both Toolshops: bug 29 found on
     with-bugs, the clean site passes.
 - **Dependencies:** none. Built with TFP-198.
+- **Done (2026-10-13), not yet verified: `3a8f420`.** Measured first: one
+  link followed on the hosted clean site sends two POSTs to `/cdn-cgi/rum`,
+  typed `ping` and `xhr`; both are now beacons (`ping`, and the named path).
+  Fixture: the beacon case passes with both named in a note; the POST
+  control and form submissions still fail. **Hosted re-run on `3a8f420`**
+  (`benchmarks/2026-10-13-tfp199/`): with-bugs fails naming bug 29 (`"Home"
+  on /#/ leads to /contact`), 9 beacons noted; the clean site passes, 19
+  beacons noted.

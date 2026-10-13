@@ -1,0 +1,22 @@
+{
+  "label": "links-with-bugs",
+  "site": "https://with-bugs.practicesoftwaretesting.com",
+  "commit": "3a8f420",
+  "startedAt": "2026-10-13T04:50:02.490Z",
+  "durationSeconds": 13,
+  "tests": 1,
+  "records": [
+    {
+      "title": "TFFU-043: navigation links land where their text says, from /#/",
+      "status": "Failed",
+      "page": "/#/",
+      "message": "Error: \"Home\" on /#/ leads to /contact (\"Contact\"), not the start page; \"Contakt\" on /#/ leads to /contact (\"Contact\"), whose title and heading share no word with it",
+      "skipReason": "",
+      "findings": [],
+      "probe": [],
+      "notes": [
+        "read-only guard: aborted 9 site beacon(s), not a breach: POST https://with-bugs.practicesoftwaretesting.com/cdn-cgi/rum? (xhr); POST https://with-bugs.practicesoftwaretesting.com/cdn-cgi/rum? (ping)"
+      ]
+    }
+  ]
+}
