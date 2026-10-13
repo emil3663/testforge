@@ -1,6 +1,6 @@
 import type { GenerationRecord } from "@/lib/report/types";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
-import { dirname, join, resolve } from "path";
+import { dirname, join, resolve, sep } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import type { LoginConfig } from "@/lib/run/auth";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
@@ -48,6 +48,13 @@ export interface RunRecord {
     runMode?: RunMode;
 }
 
+// TFP-198 (run-evidence-sweep backlog, Decision 3): run storage assumes one
+// TestForge process at a time. Nothing here locks: two processes sharing a
+// runs/ directory could interleave a record's read-modify-write (pin, first
+// access, archive) and lose one update, and would share run.json.tmp. Each
+// record write is atomic (a temporary file, then a rename), so a write that
+// is interrupted leaves the previous record, never truncated JSON.
+
 // Overridable so tests never read or write the real runs/ directory a live
 // dev server is using. Default is today's exact behavior - unset, this
 // resolves identically to before the override existed.
@@ -83,8 +90,12 @@ export function runEvidenceDir(runId: string) {
     return join(runDir(runId), "evidence");
 }
 
+/** TFP-198: written whole to run.json.tmp, then renamed over run.json, so a failed write never leaves a truncated record. */
 async function writeRunRecord(record: RunRecord) {
-    await writeFile(runJsonPath(record.runId), JSON.stringify(record, null, 2), "utf8");
+    const target = runJsonPath(record.runId);
+    const temporary = `${target}.tmp`;
+    await writeFile(temporary, JSON.stringify(record, null, 2), "utf8");
+    await rename(temporary, target);
 }
 
 /**
@@ -119,7 +130,8 @@ export async function persistRunJob(
 
     for (const [artifactId, artifact] of job.artifactFiles) {
         const oldPath = resolve(artifact.filePath);
-        const isUnderArtifactRoot = oldPath.startsWith(oldArtifactRoot);
+        // TFP-198: the root plus a separator, so .../artifacts-run1 never claims .../artifacts-run10/file.png.
+        const isUnderArtifactRoot = oldPath.startsWith(oldArtifactRoot + sep);
         const relativePath = isUnderArtifactRoot
             ? oldPath.slice(oldArtifactRoot.length).replace(/^[\\/]+/, "")
             : artifact.fileName;
@@ -234,39 +246,60 @@ export async function archiveRun(runId: string): Promise<RunRecord | null> {
     return record;
 }
 
-function failingTestTitles(record: RunRecord): Set<string> {
+function testTitlesWithStatus(record: RunRecord, status: "Failed" | "Passed"): Set<string> {
     const titles = (record.result.report?.execution ?? [])
-        .filter((execution) => execution.status === "Failed")
+        .filter((execution) => execution.status === status)
         .map((execution) => execution.title);
 
     return new Set(titles);
 }
 
 /**
+ * TFP-198 (Decision 2): which runs can supersede each other - the same
+ * baseUrl, the same selected practices (in any order) and the same run type
+ * (Standard, or Comprehensive for one area). A link audit never supersedes
+ * an accessibility audit of the same site. Records written before runMode
+ * existed are Standard, as they were.
+ */
+export function suiteIdentity(record: Pick<RunRecord, "baseUrl" | "selectedPractices" | "runMode">): string {
+    const runType = record.runMode?.kind === "comprehensive" ? `comprehensive:${record.runMode.area}` : "standard";
+    return JSON.stringify([record.baseUrl || "", [...(record.selectedPractices ?? [])].sort(), runType]);
+}
+
+/**
  * On-demand sweep (Decision 5): a non-pinned run becomes eligible for
- * automatic archiving once a newer run exists for the same baseUrl AND
- * none of its own failing tests are still failing in that newest run - i.e.
- * it isn't the only evidence for a still-open defect. Not a scheduler; this
- * runs once per call, triggered by an API call or manual command.
+ * automatic archiving once a newer run of the same suite exists AND every
+ * one of its own failing tests ran and passed in that newest run - i.e. it
+ * isn't the only evidence for a defect nobody has shown fixed. Not a
+ * scheduler; this runs once per call, triggered by an API call or manual
+ * command.
+ *
+ * TFP-198 (GitHub issue #2; Emil, 2026-10-13): only positive evidence clears
+ * a failure. A failing title that is absent from the newest run, or skipped,
+ * Not run, Blocked, Flaky or failing there, keeps the older run - and its
+ * evidence - as it is (Decision 1). Before, "not failing in the newest run"
+ * counted as fixed, so a later audit that never ran the test deleted the
+ * only evidence of an open defect. Runs are compared only within one suite
+ * identity (Decision 2).
  */
 export async function sweepAutomaticArchiving(): Promise<string[]> {
     const records = await listRunRecords();
-    const byBaseUrl = new Map<string, RunRecord[]>();
+    const bySuite = new Map<string, RunRecord[]>();
 
     for (const record of records) {
-        const key = record.baseUrl || "";
-        const group = byBaseUrl.get(key);
+        const key = suiteIdentity(record);
+        const group = bySuite.get(key);
 
         if (group) {
             group.push(record);
         } else {
-            byBaseUrl.set(key, [record]);
+            bySuite.set(key, [record]);
         }
     }
 
     const archivedIds: string[] = [];
 
-    for (const group of byBaseUrl.values()) {
+    for (const group of bySuite.values()) {
         if (group.length < 2) {
             continue;
         }
@@ -275,15 +308,15 @@ export async function sweepAutomaticArchiving(): Promise<string[]> {
             (a, b) => new Date(a.finishedAt).getTime() - new Date(b.finishedAt).getTime()
         );
         const newest = sorted[sorted.length - 1];
-        const newestFailingTitles = failingTestTitles(newest);
+        const newestPassingTitles = testTitlesWithStatus(newest, "Passed");
 
         for (const candidate of sorted.slice(0, -1)) {
             if (candidate.retention === "archived" || candidate.pinned) {
                 continue;
             }
 
-            const candidateFailingTitles = failingTestTitles(candidate);
-            const stillOpen = [...candidateFailingTitles].some((title) => newestFailingTitles.has(title));
+            const candidateFailingTitles = testTitlesWithStatus(candidate, "Failed");
+            const stillOpen = [...candidateFailingTitles].some((title) => !newestPassingTitles.has(title));
 
             if (stillOpen) {
                 continue;

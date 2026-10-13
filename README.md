@@ -42,11 +42,20 @@ Runs have a tiered retention state:
   is never auto-archived, regardless of any other rule.
 
 A non-pinned run becomes eligible for **automatic archiving** once (a) a
-newer run exists for the same `baseUrl` (it's been superseded), and (b)
-none of its failing tests, if any, are still failing in that newest run —
-in other words, it isn't the only evidence for a still-open defect.
-Automatic archiving runs as an on-demand sweep, not a background daemon;
-nothing is archived until the sweep is triggered.
+newer run of the same suite exists — the same `baseUrl`, the same selected
+practices and the same run type (Standard, or Comprehensive for one area)
+— and (b) every one of its failing tests, if any, ran and passed in that
+newest run. A failing test the newer run didn't run, skipped, or that
+failed, was blocked or was flaky there keeps the older run and its
+evidence: only a passing re-test shows a defect fixed (TFP-198, GitHub
+issue #2). Automatic archiving runs as an on-demand sweep, not a
+background daemon; nothing is archived until the sweep is triggered.
+
+Run storage assumes **one TestForge process at a time** on a `runs/`
+directory: nothing locks a record, so two processes could lose one
+another's pin or archive. Each `run.json` is written to a temporary file
+and renamed into place, so an interrupted write leaves the previous record,
+never a truncated one.
 
 `lastAccessedAt` is `null` on a freshly persisted run and is set the first
 time that run's report is read back through the API — an informational

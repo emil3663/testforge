@@ -327,3 +327,107 @@ test("isValidRunId: rejects path-traversal-shaped and otherwise malformed input 
     assert.equal(isValidRunId(12345), false);
     assert.equal(isValidRunId(["../../evil"]), false);
 });
+
+// --- TFP-198: GitHub issue #2 ------------------------------------------------
+
+// The issue's drop-in test, unchanged. It fails on e5b1add's sweep: the link run never ran the
+// accessibility test, and "not failing in the newest run" counted as fixed.
+test("sweep: a newer run that never ran the failing test must not make the older run sweep-eligible", async () => {
+    const baseUrl = `https://untested-defect.example/${randomUUID()}`;
+
+    // An accessibility audit finds a real defect. Nobody fixes it.
+    const accessibilityRun = await makeJob({
+        baseUrl,
+        selectedPractices: ["accessibility"],
+        finishedAt: Date.now(),
+        result: fakeResult(randomUUID(), ["tool list missing aria-checked"]),
+    });
+    await persistRunJob(accessibilityRun as never);
+
+    // A later LINK audit of the same site. Different suite, different
+    // practices - it never ran the accessibility test at all.
+    const linkRun = await makeJob({
+        baseUrl,
+        selectedPractices: ["links"],
+        finishedAt: Date.now() + 1000,
+        result: fakeResult(randomUUID(), [], ["external links resolve"]),
+    });
+    await persistRunJob(linkRun as never);
+
+    const archived = await sweepAutomaticArchiving();
+    assert.ok(
+        !archived.includes(accessibilityRun.id),
+        "absence of a test is not evidence the defect is fixed - the only evidence for an untested, unfixed defect must not be swept"
+    );
+});
+
+/** A result whose execution has one record per [title, status]. */
+function resultWith(entries: Array<[string, "Passed" | "Failed" | "Not run" | "Blocked" | "Flaky"]>) {
+    const result = fakeResult(randomUUID(), entries.filter(([, status]) => status === "Failed").map(([title]) => title));
+    result.report.execution = entries.map(([title, status]) => ({ ...executionRecord(title, "Passed"), status })) as never;
+    return result;
+}
+
+/**
+ * TFP-198 (Decisions 1 and 2), ISTQB: decision table. Conditions: what the newest run of the
+ * same suite says about the older run's failing test (passed; failed; absent; Not run; Blocked;
+ * Flaky), and whether the two runs are the same suite (practices in another order; different
+ * practices; Standard against Comprehensive). Only "passed, same suite" clears the older run.
+ */
+test("sweep (decision table): only a passing re-test of the same title, in the same suite, clears an older failing run", async () => {
+    const SAME = ["functional", "accessibility"];
+    const columns: Array<{ name: string; newer: ReturnType<typeof resultWith>; practices?: string[]; runMode?: unknown; archived: boolean }> = [
+        { name: "same title passed", newer: resultWith([["save button works", "Passed"]]), archived: true },
+        { name: "same title passed, practices in another order", newer: resultWith([["save button works", "Passed"]]), practices: ["accessibility", "functional"], archived: true },
+        { name: "same title failed", newer: resultWith([["save button works", "Failed"]]), archived: false },
+        { name: "title absent", newer: resultWith([["a different test", "Passed"]]), archived: false },
+        { name: "title Not run", newer: resultWith([["save button works", "Not run"]]), archived: false },
+        { name: "title Blocked", newer: resultWith([["save button works", "Blocked"]]), archived: false },
+        { name: "title Flaky", newer: resultWith([["save button works", "Flaky"]]), archived: false },
+        { name: "different practices", newer: resultWith([["save button works", "Passed"]]), practices: ["functional"], archived: false },
+        { name: "Comprehensive against Standard", newer: resultWith([["save button works", "Passed"]]), runMode: { kind: "comprehensive", area: "accessibility", level: null, pageCap: 20 }, archived: false },
+    ];
+    for (const column of columns) {
+        const baseUrl = `https://sweep-table.example/${randomUUID()}`;
+        const older = await makeJob({ baseUrl, selectedPractices: SAME, finishedAt: Date.now(), result: fakeResult(randomUUID(), ["save button works"]) });
+        await persistRunJob(older as never);
+        const newer = await makeJob({ baseUrl, selectedPractices: column.practices ?? SAME, finishedAt: Date.now() + 1000, result: column.newer, ...(column.runMode ? { runMode: column.runMode } : {}) });
+        await persistRunJob(newer as never);
+
+        const archived = await sweepAutomaticArchiving();
+        assert.equal(archived.includes(older.id), column.archived, `${column.name}: archived ${archived.includes(older.id)}`);
+        const record = await loadRunRecord(older.id);
+        mustExist(record, `${column.name}: the older run's record is still there`);
+        assert.equal(record.retention, column.archived ? "archived" : "full", column.name);
+    }
+});
+
+test("record writes are atomic: a write that fails leaves the previous run.json whole, not truncated", async () => {
+    const job = await makeJob();
+    await persistRunJob(job as never);
+    const before = await readFile(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json"), "utf8");
+
+    // Something already sits where the temporary file goes, so the write fails before it can replace run.json.
+    await mkdir(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json.tmp"));
+    await assert.rejects(setRunPinned(job.id, true));
+
+    const after = await readFile(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json"), "utf8");
+    assert.equal(after, before, "run.json is exactly what it was");
+    const record = await loadRunRecord(job.id);
+    mustExist(record, "the run still loads");
+    assert.equal(record.pinned, false);
+    assert.ok((await listRunRecords()).some((listed) => listed.runId === job.id), "the run doesn't vanish from the list");
+});
+
+test("persistRunJob: an artifact in a sibling directory whose name starts with the artifact root's isn't treated as under it", async () => {
+    const job = await makeJob();
+    // artifacts-<id> is the job's root; artifacts-<id>0 is another directory whose name merely starts with it.
+    const siblingDir = `${job.artifactDir}0`;
+    await mkdir(siblingDir, { recursive: true });
+    const stray = join(siblingDir, "shot.png");
+    await writeFile(stray, "png", "utf8");
+    job.artifactFiles = new Map([["a1", { filePath: stray, fileName: "shot.png", contentType: "image/png" }]]);
+
+    const persisted = await persistRunJob(job as never);
+    assert.equal(resolve(persisted.a1.filePath), resolve(join(runEvidenceDir(job.id), "shot.png")), "kept by its file name, not as '0/shot.png'");
+});
