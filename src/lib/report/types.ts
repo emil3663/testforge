@@ -348,6 +348,30 @@ export interface GenerationRecord {
     pageInspection?: PageInspectionRecord;
     /** Phase 40 Decision 7 (TFP-173): page types found, covered and skipped; present when the pages came from a crawl. */
     pageTypes?: PageTypeCoverageRecord;
+    /** Phase 42 (TFP-190): what the site's saved suite gave this run; absent when none was used. */
+    siteSuite?: SiteSuiteRecord;
+}
+
+/** Phase 42 (TFP-190, Decision 1): what a run reused from its site suite, regenerated and retired. */
+export interface SiteSuiteRecord {
+    /** Where the site suite is kept (TestForge's local data folder). */
+    store: string;
+    /** No suite was saved for this site and suite type before this run. */
+    firstRun: boolean;
+    reused: number;
+    /** New tests: a new page type, or a new test on an unchanged one. */
+    generated: number;
+    /** Tests of a page type whose fingerprint changed. */
+    regenerated: number;
+    /** Saved tests, not edited, that the generator no longer writes: their page, or what they tested, is gone. */
+    retired: number;
+    /** Hand-edited tests, kept as they are. */
+    edited: number;
+    changedTypes: string[];
+    newTypes: string[];
+    goneTypes: string[];
+    /** Hand-edited tests whose page changed or is gone: kept, and named here. */
+    editedOnChangedPages: string[];
 }
 
 /** Phase 40 Decision 7 (TFP-173): one page type in the report. */

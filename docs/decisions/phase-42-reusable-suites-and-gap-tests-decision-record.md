@@ -174,6 +174,27 @@ on the local Toolshop copies (Phase 41 Decision 7).
   hand-edited test survives a change and is flagged; nothing is written
   inside the repo.
 - **Dependencies:** Phase 41 Gate B.
+- **Decided while building (Emil, 2026-10-13):**
+  - **The data folder** is the OS app-data folder: `%LOCALAPPDATA%\TestForge`
+    on Windows, `~/Library/Application Support/TestForge` on macOS,
+    `$XDG_DATA_HOME/testforge` (or `~/.local/share/testforge`) elsewhere;
+    `TESTFORGE_DATA_DIR` overrides it, and every test sets it to a
+    temporary folder.
+  - **Site-wide tests** (a test that visits no inspected page, or pages of
+    several types) are reused while the site has the same set of page
+    types.
+  - **Scope:** Standard and Comprehensive runs both keep a site suite, one
+    per suite identity (run type, Comprehensive area, practices, audit
+    mode), so a links run never retires an accessibility suite's tests.
+    Tests from OpenAI and the local model's blocks are not saved.
+  - **TFP-191's stale-test check** re-reads the page on failure (below).
+- **Built:** `src/lib/site-suites/` and `src/lib/storage/data-dir.ts`. A
+  test is matched across runs by its describe chain, its title without the
+  id, and the pages it visits; position alone would match a removed page's
+  per-page checks to the next page's. A saved test the generator no longer
+  writes is retired even when its page type is unchanged: the signature is
+  coarse, and such a test tests something that is gone (a link taken off a
+  page). Only a hand-edited test outlives that.
 
 ### TFP-191 — A stale reused test is regenerated and re-run before it counts
 
@@ -184,6 +205,12 @@ on the local Toolshop copies (Phase 41 Decision 7).
   result is reported, and the report names the regeneration and its reason;
   a reused test failing on an unchanged page is reported as it is.
 - **Dependencies:** TFP-190.
+- **Decided while building (Emil, 2026-10-13):** when a reused test that
+  wasn't edited by hand fails, its page is read again and its structural
+  signature compared with the saved one. If it differs, that page type's
+  tests are regenerated from a fresh inspection and re-run, and only the
+  re-run's results count; the report names the regeneration and the
+  signature change. If it is the same, the failure stands.
 
 ### TFP-192 — The coverage map and its index
 

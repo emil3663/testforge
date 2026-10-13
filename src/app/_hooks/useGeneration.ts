@@ -246,9 +246,11 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
                 })
                 : undefined;
             // A template-only generation answers without `generatedBy` (no model or key configured); the
-            // page types still need a record to travel in, and "template" is what wrote that suite.
-            const generatedBy = typeof data.generatedBy === "string" ? data.generatedBy : pageTypes ? "template" : null;
-            setLastGeneration(generatedBy ? { generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates ?? [], ...(pageTypes ? { pageTypes } : {}) } : null);
+            // page types and the site suite's record (Phase 42, TFP-190) still need a record to travel
+            // in, and "template" is what wrote that suite.
+            const siteSuite = data.siteSuite && typeof data.siteSuite === "object" ? data.siteSuite : undefined;
+            const generatedBy = typeof data.generatedBy === "string" ? data.generatedBy : pageTypes || siteSuite ? "template" : null;
+            setLastGeneration(generatedBy ? { generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates ?? [], ...(pageTypes ? { pageTypes } : {}), ...(siteSuite ? { siteSuite } : {}) } : null);
             if (params.urlListPages) {
                 // The list stays in the field as typed, so the same pages can be run again.
             } else if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {

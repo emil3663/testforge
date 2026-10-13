@@ -6,8 +6,11 @@
  * Not a test file itself (it is not listed in package.json's test:unit).
  * Each test file calls installFakeServer() once at the top level.
  */
+import { mkdtempSync, rmSync } from "node:fs";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { after, afterEach, before, beforeEach } from "node:test";
 
 const { POST } = await import("./route.ts");
@@ -39,6 +42,11 @@ const ENV_KEYS = [
  */
 export function installFakeServer() {
     const savedEnv = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
+    // Phase 42 (TFP-190): the route saves each site's suite in TestForge's data folder. Each
+    // test file gets its own temporary one, so no test reads or writes the real folder.
+    const savedDataDir = process.env.TESTFORGE_DATA_DIR;
+    const dataDir = mkdtempSync(join(tmpdir(), "testforge-data-"));
+    process.env.TESTFORGE_DATA_DIR = dataDir;
 
     before(async () => {
         // Connection: close on every response, so the SDK never reuses a pooled
@@ -61,6 +69,9 @@ export function installFakeServer() {
             if (savedEnv[k] === undefined) delete process.env[k];
             else process.env[k] = savedEnv[k];
         }
+        if (savedDataDir === undefined) delete process.env.TESTFORGE_DATA_DIR;
+        else process.env.TESTFORGE_DATA_DIR = savedDataDir;
+        rmSync(dataDir, { recursive: true, force: true });
     });
 
     beforeEach(() => {

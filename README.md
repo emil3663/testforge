@@ -62,6 +62,20 @@ time that run's report is read back through the API — an informational
 "has this even been looked at" signal, not itself a reason to delete
 anything.
 
+### Site suites (Phase 42)
+
+Each site's template-written suite is saved with the structural
+fingerprint of every page type it covers, and later runs reuse it: an
+unchanged page type keeps its saved tests, a changed one gets new ones, a
+removed page's tests are retired, and a test you edit by hand is kept and
+flagged when its page changes. The report says what was reused,
+regenerated and retired. Site suites hold one site's selectors and pages,
+so they live in TestForge's local data folder, never in the repo:
+`%LOCALAPPDATA%\TestForge` on Windows, `~/Library/Application Support/TestForge`
+on macOS, `$XDG_DATA_HOME/testforge` (or `~/.local/share/testforge`)
+elsewhere. Set `TESTFORGE_DATA_DIR` to put it somewhere else. Edit a saved
+test in `site-suites/<site>/<suite>/tests/`.
+
 ---
 
 ## Authenticated runs

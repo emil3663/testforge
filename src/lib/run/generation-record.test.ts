@@ -47,6 +47,7 @@ test("normalizeGenerationRecord: long strings and long lists are capped", () => 
 // --- Phase 34 TFP-122: automatic page inspection ------------------------------
 
 const { describePageInspection } = await import("../report/page-inspection-text.ts");
+const { describeSiteSuite } = await import("../report/site-suite-text.ts");
 
 test("normalizeGenerationRecord: an automatic inspection record is kept, and capped", () => {
     const inspected = { status: "inspected", paths: ["/", "/notes"], pages: 2, warnings: [] };
@@ -79,4 +80,26 @@ test("describePageInspection: one sentence saying where the page data came from,
         describePageInspection({ status: "failed", paths: ["/"], pages: 0, warnings: [], reason: "Could not inspect http://x/: net::ERR_CONNECTION_REFUSED at http://x/" }),
         "No page data was supplied and automatic inspection of / failed (Could not inspect http://x/: net::ERR_CONNECTION_REFUSED at http://x/), so the suite was generated without page data."
     );
+});
+
+/** Phase 42 (TFP-190). ISTQB technique: equivalence partitioning - a first run, a run that reused everything, a run with changes and a flagged edit. */
+test("describeSiteSuite: what the run reused, generated, regenerated and retired, and the edits to check", () => {
+    const base = { store: "C:/data/site-suites/x/standard", firstRun: false, reused: 0, generated: 0, regenerated: 0, retired: 0, edited: 0, changedTypes: [], newTypes: [], goneTypes: [], editedOnChangedPages: [] };
+    assert.equal(describeSiteSuite({ ...base, firstRun: true, generated: 12 }), "Site suite: first run for this site and suite type, so all 12 tests were generated and saved in C:/data/site-suites/x/standard.");
+    assert.equal(describeSiteSuite({ ...base, reused: 12 }), "Site suite: 12 tests reused, 0 generated, 0 regenerated, 0 retired (saved in C:/data/site-suites/x/standard).");
+    assert.equal(
+        describeSiteSuite({ ...base, reused: 8, regenerated: 3, retired: 2, edited: 1, changedTypes: ["/account/:slug"], goneTypes: ["/legal/privacy"], editedOnChangedPages: ["names the fields (/account/:slug changed)"] }),
+        "Site suite: 8 tests reused, 0 generated, 3 regenerated (page types changed: /account/:slug), 2 retired (page types gone: /legal/privacy), 1 edited by hand and kept (saved in C:/data/site-suites/x/standard). Edited by hand, on a page that changed - check these: names the fields (/account/:slug changed)."
+    );
+});
+
+/** Phase 42 (TFP-190). ISTQB technique: equivalence partitioning - a real record, and a stored one that isn't (boundary: no store). */
+test("normalizeGenerationRecord: a site suite record is kept as is; a malformed one is cleaned or dropped", () => {
+    const siteSuite = { store: "C:/data/site-suites/x/standard", firstRun: false, reused: 8, generated: 1, regenerated: 3, retired: 2, edited: 1, changedTypes: ["/a/:id"], newTypes: ["/b"], goneTypes: ["/c"], editedOnChangedPages: ["t (/a/:id changed)"] };
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite })?.siteSuite, siteSuite);
+    assert.deepEqual(
+        normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { store: "s", reused: -1, generated: 2.5, retired: "3", changedTypes: ["/a", 4, ""], extra: 1 } })?.siteSuite,
+        { store: "s", firstRun: false, reused: 0, generated: 0, regenerated: 0, retired: 0, edited: 0, changedTypes: ["/a"], newTypes: [], goneTypes: [], editedOnChangedPages: [] }
+    );
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { reused: 3 } })?.siteSuite, undefined);
 });

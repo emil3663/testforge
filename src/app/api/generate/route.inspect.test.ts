@@ -81,7 +81,7 @@ async function closedPort() {
 test("inspection fails: today's output without page data, plus the reason - generation is never blocked", { skip: needsChromium }, async () => {
     const closed = `http://127.0.0.1:${await closedPort()}`;
     const body = await generate({ baseUrl: closed, description: "Check that notes are saved.", selectedPractices: ["database"] });
-    assert.deepEqual(Object.keys(body).sort(), ["code", "generatedBy", "pageInspection"]);
+    assert.deepEqual(Object.keys(body).sort(), ["code", "generatedBy", "pageInspection", "siteSuite"]);
     assert.equal(body.code, withoutPageData(closed, ["database"]));
     assert.equal(body.pageInspection.status, "failed");
     assert.equal(body.pageInspection.pages, 0);
@@ -91,13 +91,15 @@ test("inspection fails: today's output without page data, plus the reason - gene
 
 test("autoInspect: false behaves exactly as before TFP-122", async () => {
     const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"], autoInspect: false });
-    assert.deepEqual(body, { code: withoutPageData(siteUrl, ["database"]) });
+    // Phase 42 (TFP-190): the one addition is what the site suite reused.
+    assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
+    assert.equal(body.code, withoutPageData(siteUrl, ["database"]));
 });
 
 test("supplied page data is used as-is and nothing is inspected", async () => {
     const body = await generate({ baseUrl: "http://127.0.0.1:9", description: "Check that notes are saved.", selectedPractices: ["database"], contentProfile: { pages: [] } });
     assert.equal(body.pageInspection, undefined);
-    assert.deepEqual(Object.keys(body), ["code"]);
+    assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
 });
 
 test("with a local model configured, an inspected database request is no gap: the model is not called", { skip: needsChromium }, async () => {

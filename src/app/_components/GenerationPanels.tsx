@@ -1,5 +1,6 @@
 import { ReportPanel } from "@/app/_components/ReportPanel";
 import { describePageInspection } from "@/lib/report/page-inspection-text";
+import { describeSiteSuite } from "@/lib/report/site-suite-text";
 import type { RunReport } from "@/lib/report/types";
 
 interface GenerationPanelsProps {
@@ -57,6 +58,9 @@ export function GenerationPanels({ report }: GenerationPanelsProps) {
                     </p>
                     {generation.pageInspection ? (
                         <p className="mt-2 text-sm leading-6 text-zinc-600">{describePageInspection(generation.pageInspection)}</p>
+                    ) : null}
+                    {generation.siteSuite ? (
+                        <p className="mt-2 text-sm leading-6 text-zinc-600">{describeSiteSuite(generation.siteSuite)}</p>
                     ) : null}
                     {generation.gates.length > 0 ? (
                         <div className="mt-4 overflow-x-auto">

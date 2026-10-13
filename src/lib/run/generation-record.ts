@@ -1,4 +1,4 @@
-import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, SiteSuiteRecord } from "@/lib/report/types";
 import { MAX_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
@@ -60,7 +60,32 @@ export function normalizeGenerationRecord(input: unknown, baseUrl?: string): Gen
     if (pageInspection) record.pageInspection = pageInspection;
     const pageTypes = normalizePageTypes(v.pageTypes, baseUrl);
     if (pageTypes) record.pageTypes = pageTypes;
+    const siteSuite = normalizeSiteSuite(v.siteSuite);
+    if (siteSuite) record.siteSuite = siteSuite;
     return record;
+}
+
+/** Phase 42 (TFP-190): the site-suite counts /api/generate reported, kept only in their known shape. */
+function normalizeSiteSuite(value: unknown): SiteSuiteRecord | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const store = text(v.store, 400);
+    const count = (key: string) => (typeof v[key] === "number" && Number.isInteger(v[key]) && (v[key] as number) >= 0 ? Math.min(v[key] as number, 100000) : 0);
+    const list = (key: string) => (Array.isArray(v[key]) ? (v[key] as unknown[]).map((item) => text(item)).filter((item): item is string => Boolean(item)).slice(0, 50) : []);
+    if (!store) return null;
+    return {
+        store,
+        firstRun: v.firstRun === true,
+        reused: count("reused"),
+        generated: count("generated"),
+        regenerated: count("regenerated"),
+        retired: count("retired"),
+        edited: count("edited"),
+        changedTypes: list("changedTypes"),
+        newTypes: list("newTypes"),
+        goneTypes: list("goneTypes"),
+        editedOnChangedPages: list("editedOnChangedPages"),
+    };
 }
 
 // Phase 40 (TFP-172): a run inspects its selected pages, up to MAX_PAGE_CAP; it was the first 5.

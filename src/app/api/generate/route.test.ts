@@ -74,7 +74,8 @@ test("POST /api/generate: no key leaves the response shape untouched", async () 
     const body = await res.json();
 
     assert.equal(res.status, 200);
-    assert.deepEqual(Object.keys(body), ["code"]);
+    // Phase 42 (TFP-190): the site suite's record is the one addition; nothing about OpenAI.
+    assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
     assert.ok(body.code.length > 0);
 });
 

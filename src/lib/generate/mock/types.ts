@@ -122,6 +122,8 @@ export interface ContentProfilePage {
     dragDropTargets?: DragDropTargetDetail[];
     visibleTextSnippets: string[];
     storageUsage?: StorageUsage;
+    /** Phase 42 (TFP-190): see the introspection type. Absent in older profiles. */
+    outline?: import("@/lib/selection/page-outline").PageOutline;
 }
 
 // TFP-084/086: re-exported from introspect/types.ts (not redeclared) so the

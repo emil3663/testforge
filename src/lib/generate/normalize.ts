@@ -278,6 +278,18 @@ function normalizeSiteGraph(input: unknown): SiteGraph {
     return { nodes, edges };
 }
 
+/** Phase 42 (TFP-190): a page outline from the request, kept only in its known shape; null otherwise. */
+function normalizeOutline(value: unknown): import("@/lib/selection/page-outline").PageOutline | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const strings = (list: unknown) => (Array.isArray(list) ? list.filter((item): item is string => typeof item === "string").slice(0, 200) : null);
+    const landmarks = strings(v.landmarks);
+    const headings = strings(v.headings);
+    const forms = Array.isArray(v.forms) ? v.forms.map(strings).filter((form): form is string[] => form !== null).slice(0, 50) : null;
+    if (!landmarks || !headings || !forms || typeof v.cards !== "boolean" || typeof v.interactive !== "number") return null;
+    return { landmarks, forms, cards: v.cards, headings, interactive: v.interactive };
+}
+
 export function normalizeContentProfile(input: unknown): ContentProfile | null {
     if (!input || typeof input !== "object") {
         return null;
@@ -456,6 +468,7 @@ export function normalizeContentProfile(input: unknown): ContentProfile | null {
                 : [],
             visibleTextSnippets: normalizeStringList(page.visibleTextSnippets),
             storageUsage: normalizeStorageUsage(page.storageUsage),
+            ...(normalizeOutline(page.outline) ? { outline: normalizeOutline(page.outline)! } : {}),
         }));
 
     const siteGraph = normalizeSiteGraph(profile.siteGraph);

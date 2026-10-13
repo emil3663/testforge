@@ -95,7 +95,7 @@ async function expectFallback(reason: string, practices = GAP) {
 
 test("Option B: with TESTFORGE_OLLAMA_MODEL unset the response is exactly the template-only one", async () => {
     const body = await (await POST(request(GAP))).json();
-    assert.deepEqual(Object.keys(body), ["code"]);
+    assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
     assert.equal(chatBodies.length, 0);
 });
 

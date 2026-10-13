@@ -89,6 +89,11 @@ export const DEFECTS = {
     "spelling-misspelt": "/words' heading reads Contakt",
     "spelling-placeholder": "/words' Message field's placeholder reads massage",
     "spelling-other-language": "/words declares German (lang=de)",
+    // Phase 42 (TFP-190): a site that changed between two runs, for the site suite's reuse.
+    // types-contact-phone changes one page's structure (its form gains a field type), so its
+    // page type's fingerprint changes; types-privacy-removed takes a page, and its type, away.
+    "types-contact-phone": "/types/account/contact's form gains a phone field (a tel input)",
+    "types-privacy-removed": "/types/legal/privacy is gone: not linked, and 404",
     // TFP-199: not a defect - as the hosted Toolshops' Cloudflare does, every page sends analytics
     // beacons as it is left: a navigator.sendBeacon POST and a keepalive fetch POST to /cdn-cgi/rum.
     "site-beacons": "every page sends a sendBeacon POST and a fetch POST to /cdn-cgi/rum as it is left (not a defect)",
@@ -425,7 +430,8 @@ draw();
     // privacy and help terms stay apart, and so do /shop/men/shirts and
     // /shop/women/shoes; /p/:id and /p/:slug still merge. 11 types.
     if (url.pathname === "/types" || /^\/(types|p|shop)\//.test(url.pathname)) {
-        const all = ["/types", "/types/product/101", "/types/product/102", "/types/product/103", "/types/category/tools", "/types/category/garden", "/types/category/empty", "/types/account/login", "/types/account/contact", "/types/legal/privacy", "/types/help/terms", "/p/iphone15promaxblack2023", "/p/galaxy-s24", "/shop/men/shirts", "/shop/women/shoes"];
+        const all = ["/types", "/types/product/101", "/types/product/102", "/types/product/103", "/types/category/tools", "/types/category/garden", "/types/category/empty", "/types/account/login", "/types/account/contact", "/types/legal/privacy", "/types/help/terms", "/p/iphone15promaxblack2023", "/p/galaxy-s24", "/shop/men/shirts", "/shop/women/shoes"]
+            .filter((path) => !(defect === "types-privacy-removed" && path === "/types/legal/privacy"));
         if (!all.includes(url.pathname)) return send(404, "<!doctype html><title>Not found</title><h1>Not found</h1>");
         const img = `<img alt="" width="40" height="40" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23336'/%3E%3C/svg%3E">`;
         const cards = `<div class="cards">${[101, 102, 103].map((id) => `<a class="card" href="/types/product/${id}">${img}<h2>Item ${id}</h2></a>`).join("")}</div>`;
@@ -441,7 +447,7 @@ draw();
             // TFP-176: a category with nothing in it - no cards. It stays in its listing type: cards don't split.
             "/types/category/empty": `<main><h1>Empty</h1><p>Nothing here yet.</p></main>`,
             "/types/account/login": `<main><h1>Sign in</h1><form action="/types/account/login" method="post"><label>Email <input type="email" name="email"></label><label>Password <input type="password" name="password"></label><button>Sign in</button></form></main>`,
-            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject <input name="subject"></label><label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
+            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject <input name="subject"></label>${defect === "types-contact-phone" ? `<label>Phone <input type="tel" name="phone"></label>` : ""}<label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
             "/types/legal/privacy": `<main><h1>Privacy</h1><p>We keep little.</p></main>`,
             "/types/help/terms": `<main><h1>Terms</h1><p>Be kind.</p></main>`,
             "/p/iphone15promaxblack2023": `<main><h1>Phone A</h1>${qty}</main>${aside}`,

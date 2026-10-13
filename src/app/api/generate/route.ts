@@ -23,6 +23,8 @@ import { selectJourneys } from "@/lib/introspect/journeys";
 import { isComprehensive, normalizeRunMode, RunModeError, type RunMode } from "@/lib/comprehensive/run-mode";
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
 import { buildComprehensiveSuite, mergeComprehensiveScenarios } from "@/lib/generate/comprehensive";
+import { applySiteSuite } from "@/lib/site-suites/reuse";
+import type { SiteSuiteRecord } from "@/lib/report/types";
 
 export async function POST(req: NextRequest) {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect, runMode } = await req.json().catch(() => ({}));
@@ -73,8 +75,12 @@ export async function POST(req: NextRequest) {
     }
     // Every response below goes through here. Without an automatic inspection
     // it is exactly what it was before TFP-122; with one, it says so.
-    const respond = (body: Record<string, unknown>) =>
-        NextResponse.json(pageInspection ? { ...body, generatedBy: body.generatedBy ?? "template", pageInspection } : body);
+    // Phase 42 (TFP-190): when the template's suite went through the site's saved suite, what that gave.
+    let siteSuite: SiteSuiteRecord | undefined;
+    const respond = (body: Record<string, unknown>) => {
+        const withSiteSuite = siteSuite ? { ...body, siteSuite } : body;
+        return NextResponse.json(pageInspection ? { ...withSiteSuite, generatedBy: body.generatedBy ?? "template", pageInspection } : withSiteSuite);
+    };
 
     const normalizedContentRules = normalizeContentRules(contentRules);
     normalizedContentRules.selectedJourneyIds = selectJourneys(
@@ -84,15 +90,26 @@ export async function POST(req: NextRequest) {
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
     const apiKey = process.env.OPENAI_API_KEY;
 
+    const origin = new URL(normalizedBaseUrl.value).origin;
+    // Phase 42 (TFP-190, Decision 1): the template's suite, with the site's saved tests reused, regenerated or
+    // retired, and saved again. Standard and Comprehensive (Emil, 2026-10-13); model and OpenAI code is not saved.
+    const withSiteSuite = async (code: string) => {
+        const identity = isComprehensive(normalizedRunMode)
+            ? { runType: "comprehensive" as const, area: normalizedRunMode.area, practices: [], auditMode: "" }
+            : { runType: "standard" as const, practices: normalizedPractices, auditMode: normalizedAuditMode };
+        const applied = await applySiteSuite(code, normalizedContentProfile, origin, identity);
+        siteSuite = applied.record;
+        return applied.code;
+    };
     const template = () =>
-        mockGenerate(
+        withSiteSuite(mockGenerate(
             normalizedBaseUrl.value,
             description,
             normalizedPractices,
             normalizedContentProfile,
             normalizedContentRules,
             normalizedAuditMode
-        );
+        ));
 
     const requestContext: GenerationRequestContext = {
         baseUrl: normalizedBaseUrl.value,
@@ -109,7 +126,7 @@ export async function POST(req: NextRequest) {
     // verdict. Rejected or timed out, the template's checks stand alone.
     if (isComprehensive(normalizedRunMode)) {
         const pageScope = selectComprehensivePages(normalizedContentProfile, normalizedBaseUrl.value, normalizedRunMode.pageCap);
-        const suite = buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope);
+        const suite = await withSiteSuite(buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope));
         const scope = { runMode: normalizedRunMode, pageScope };
         const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
         if (!localModel) return respond({ code: suite, generatedBy: "template", ...scope, gates: [] });
@@ -143,6 +160,7 @@ export async function POST(req: NextRequest) {
             normalizedContentRules,
             normalizedAuditMode
         );
+        generated.code = await withSiteSuite(generated.code);
         const gapAreas = findGapAreas(generated.areas, generated.testsByArea, generated.notApplicable);
         const notApplicableAreas = Object.keys(generated.notApplicable);
         if (gapAreas.length === 0) {
@@ -173,7 +191,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!apiKey) {
-        return respond({ code: template() });
+        return respond({ code: await template() });
     }
 
     // TFP-083: every failure of the OpenAI call (rejection, timeout, no
@@ -189,14 +207,14 @@ export async function POST(req: NextRequest) {
         const catalog = await client.models.list({ signal });
         const model = pickModel(catalog.data.map((m) => m.id));
         if (!model) {
-            return respond(fallback(template(), "no_candidate_model"));
+            return respond(fallback(await template(), "no_candidate_model"));
         }
 
         const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });
 
         const code = chat.choices[0]?.message?.content;
         if (typeof code !== "string" || code.trim() === "") {
-            return respond(fallback(template(), "empty_completion", model));
+            return respond(fallback(await template(), "empty_completion", model));
         }
         // Phase 38 (TFP-146): the whole suite sits behind one gate - active when
         // the run's areas (selected or keyword-triggered, as the template
@@ -208,7 +226,7 @@ export async function POST(req: NextRequest) {
             "[api/generate] OpenAI call failed, using template generator:",
             error instanceof Error ? error.message : error
         );
-        return respond(fallback(template(), signal.aborted ? "timeout" : "openai_error"));
+        return respond(fallback(await template(), signal.aborted ? "timeout" : "openai_error"));
     }
 }
 

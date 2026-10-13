@@ -6,6 +6,7 @@ import { aggregateDependencyMap, dependenciesFromEmbeddedLinks } from "./depende
 import { installStorageAccessProbe, readStorageAccessProbe } from "./storage-probe";
 import type { DependencyDetail, NamedFlow, PageSnapshot } from "./types";
 import { gotoPage } from "./routes";
+import { capturePageOutline } from "@/lib/selection/page-outline";
 
 const MAX_TEXT_ITEMS = 8;
 const MAX_ACTIONABLE_ITEMS = 40;
@@ -128,6 +129,8 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
                 });
 
                 const storageUsage = await readStorageAccessProbe(page);
+                // Phase 42 (TFP-190): the page's outline, as the crawl reads it (Phase 40), for its site-suite fingerprint.
+                const outline = await page.evaluate(capturePageOutline).catch(() => undefined);
 
                 pages.push({
                     ...snapshot,
@@ -140,6 +143,7 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
                     dragDropTargets: snapshot.dragDropTargets,
                     visibleTextSnippets: cleanTextList(snapshot.visibleTextSnippets),
                     storageUsage,
+                    ...(outline ? { outline } : {}),
                 });
 
                 const redirectDependencies = response

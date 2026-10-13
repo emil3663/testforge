@@ -123,6 +123,8 @@ export interface PageSnapshot {
     dragDropTargets: DragDropTargetDetail[];
     visibleTextSnippets: string[];
     storageUsage: StorageUsage;
+    /** Phase 42 (TFP-190): Phase 40's outline of the page, for its site-suite fingerprint; absent when it couldn't be read. */
+    outline?: import("@/lib/selection/page-outline").PageOutline;
 }
 
 // TFP-084: a single outbound dependency observed for one page, before

@@ -115,8 +115,10 @@ test("TFP-135: with no local model configured, the template's suite alone, and t
 test("generate: a Standard request - no run mode, or { kind: 'standard' } - is answered exactly as before", async () => {
     const before = await (await generate(post("http://localhost/api/generate", generateBody()))).json();
     const explicit = await (await generate(post("http://localhost/api/generate", generateBody({ kind: "standard" })))).json();
-    assert.deepEqual(Object.keys(before), ["code"]);
-    assert.deepEqual(explicit, before);
+    // Phase 42 (TFP-190): the one addition is what the site suite reused; the second request finds the first's saved suite.
+    assert.deepEqual(Object.keys(before), ["code", "siteSuite"]);
+    assert.equal(explicit.code, before.code);
+    assert.equal(explicit.siteSuite.store, before.siteSuite.store, "no run mode and { kind: 'standard' } are the same suite");
 });
 
 test("generate and run: an invalid run mode is refused with 400, never run as a different run", async () => {
