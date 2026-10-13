@@ -106,8 +106,11 @@ try {
         # composer image is uid 82, while php-fpm runs as uid 1000: Laravel then can't write its log and
         # every request that logs answers 500. So once composer has exited, the folder goes to the user
         # php-fpm runs as (process 1), not to a name.
+        # As long as composer takes: one start took 10.5 minutes (2026-10-13), and giving the folder away
+        # before composer's own chown has run is undone by it, so every request that logs answers 500.
         $waited = 0
-        while (-not ((docker compose @ComposeFiles ps -a --format "{{.State}}" composer 2>$null) -match "exited") -and $waited -lt 600) {
+        while (-not ((docker compose @ComposeFiles ps -a --format "{{.State}}" composer 2>$null) -match "exited")) {
+            if ($waited -ge 1800) { throw "Testsmith's composer service was still running after 30 minutes; the API's log folder can't be given to php-fpm before it ends" }
             Start-Sleep -Seconds 5
             $waited += 5
         }
