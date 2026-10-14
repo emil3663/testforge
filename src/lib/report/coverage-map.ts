@@ -19,10 +19,20 @@ import type { CoverageMap, CoverageMapEntry, CoverageMapType } from "./types";
  * - an element (a field, button, list, form) is touched by a test that
  *   visits its page and uses its locator - the expression the generator
  *   writes for it, so a hand-edited test that keeps the locator still counts;
- * - a link, likewise, or by a site-wide link check that requests its URL;
+ * - a link, likewise;
  * - a flow (a candidate journey) by the journey test written for it.
  * A whole-page check (the WCAG scan, a heading check) touches the page, not
  * each element on it, so it doesn't make an element covered.
+ *
+ * TFP-201 (Gate A ruling 1, Emil, 2026-10-14): coverage in two tiers.
+ * - **In context:** found and checked on its page, as above. This tier is
+ *   the gap list, the index, and TFP-194's targets.
+ * - **Reachability:** a link whose URL a site-wide check requests (link
+ *   health, HTTPS) without finding it on any page.
+ * A link with the same text and target on several pages (the header's, the
+ * footer's) is one item, covered in context when it is checked on any one
+ * of them. The inspection records no page region, so "the same link" is
+ * the same text and target wherever it appears.
  */
 
 const MAX_TESTS_PER_ENTRY = 50;
@@ -53,6 +63,8 @@ export function buildCoverageMap(profile: ContentProfile | null, suiteCode: stri
     const touching = (candidates: TestUnit[], needle: string) => candidates.filter((unit) => unit.source.includes(needle)).map(fullTitle).slice(0, MAX_TESTS_PER_ENTRY);
 
     const entries: CoverageMapEntry[] = [];
+    const links = new Map<string, CoverageMapEntry>();
+    let linksOnPages = 0;
     const seen = new Set<string>();
     const add = (entry: CoverageMapEntry) => {
         if (seen.has(entry.key)) return;
@@ -68,30 +80,56 @@ export function buildCoverageMap(profile: ContentProfile | null, suiteCode: stri
             if (element.elementType === "link" && (page.linkDetails?.length ?? 0) > 0) continue;
             const needles = needlesFor(element, forms);
             const touched = [...new Set(needles.flatMap((needle) => touching(tests, needle)))].slice(0, MAX_TESTS_PER_ENTRY);
-            add({ key: `${page.path} element ${needles.at(-1)}`, page: page.path, kind: "element", name: `${getActionableElementDisplayName(element)} [${element.elementType}]`, tests: touched });
+            add({ key: `${page.path} element ${needles.at(-1)}`, page: page.path, pages: [page.path], kind: "element", name: `${getActionableElementDisplayName(element)} [${element.elementType}]`, tests: touched });
         }
         for (const link of page.linkDetails ?? []) {
-            const locator = buildLinkLocatorExpression(link);
-            const byRequest = touching(siteWide, `"url":${JSON.stringify(link.url)}`);
-            add({ key: `${page.path} link ${locator}`, page: page.path, kind: "link", name: `${link.text || link.url} [link]`, tests: [...new Set([...touching(tests, locator), ...byRequest])].slice(0, MAX_TESTS_PER_ENTRY) });
+            linksOnPages++;
+            const key = `link ${JSON.stringify([link.text, link.url])}`;
+            const inContext = touching(tests, buildLinkLocatorExpression(link));
+            const known = links.get(key);
+            if (known) {
+                if (!known.pages!.includes(page.path)) known.pages!.push(page.path);
+                known.tests = [...new Set([...known.tests, ...inContext])].slice(0, MAX_TESTS_PER_ENTRY);
+                continue;
+            }
+            const entry: CoverageMapEntry = { key, page: page.path, pages: [page.path], kind: "link", name: `${link.text || link.url} [link]`, tests: inContext, reachedBy: touching(siteWide, `"url":${JSON.stringify(link.url)}`) };
+            links.set(key, entry);
+            add(entry);
         }
     }
     for (const journey of profile?.journeys ?? []) {
         const title = buildJourneyTitle(journey);
-        add({ key: `flow ${journey.id}`, page: journey.path[0] ?? "/", kind: "flow", name: title, tests: units.filter((unit) => stripTestIdPrefix(unit.title) === title).map(fullTitle) });
+        add({ key: `flow ${journey.id}`, page: journey.path[0] ?? "/", pages: [journey.path[0] ?? "/"], kind: "flow", name: title, tests: units.filter((unit) => stripTestIdPrefix(unit.title) === title).map(fullTitle) });
     }
 
+    const reachedOnly = (entry: CoverageMapEntry) => entry.tests.length === 0 && (entry.reachedBy?.length ?? 0) > 0;
+    // A repeated link is counted in each page type it appears on, and once in the totals.
     const types: CoverageMapType[] = groupPagesByAddress(pages.map((page) => page.path)).map((type) => {
-        const inType = entries.filter((entry) => type.pages.includes(entry.page));
+        const inType = entries.filter((entry) => (entry.pages ?? [entry.page]).some((path) => type.pages.includes(path)));
         return {
             pattern: type.pattern,
             pages: type.pages.length,
             total: inType.length,
             covered: inType.filter((entry) => entry.tests.length > 0).length,
-            uncovered: inType.filter((entry) => entry.tests.length === 0).map((entry) => `${entry.page}: ${entry.name}`),
+            reachedOnly: inType.filter(reachedOnly).length,
+            uncovered: inType.filter((entry) => entry.tests.length === 0).map(gapName),
         };
     });
-    return { entries, types, total: entries.length, covered: entries.filter((entry) => entry.tests.length > 0).length };
+    return {
+        entries,
+        types,
+        total: entries.length,
+        covered: entries.filter((entry) => entry.tests.length > 0).length,
+        reachedOnly: entries.filter(reachedOnly).length,
+        links: { onPages: linksOnPages, distinct: links.size },
+    };
+}
+
+/** "page: name" for the gap list; a repeated link names how many pages it is on, and one reached by its URL says so. */
+function gapName(entry: CoverageMapEntry): string {
+    const pages = entry.pages ?? [entry.page];
+    const where = pages.length > 1 ? `${entry.page} and ${pages.length - 1} more ${pages.length === 2 ? "page" : "pages"}` : entry.page;
+    return `${where}: ${entry.name}${(entry.reachedBy?.length ?? 0) > 0 ? " (its URL is requested, but it isn't checked on a page)" : ""}`;
 }
 
 /** The index: the tests that touch one element (by its key), to run just those when it changes. */
@@ -104,7 +142,7 @@ export function touchedBy(map: CoverageMap, testTitle: string): CoverageMapEntry
     return map.entries.filter((entry) => entry.tests.includes(testTitle));
 }
 
-/** What no test touches: the gap list. */
+/** What no test checks in context: the gap list (a link only reached by its URL is on it). */
 export function untouched(map: CoverageMap): CoverageMapEntry[] {
     return map.entries.filter((entry) => entry.tests.length === 0);
 }

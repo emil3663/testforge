@@ -11,13 +11,13 @@ export function CoverageMapPanel({ report }: { report: RunReport }) {
         <ReportPanel
             eyebrow="Coverage Map"
             title="What the tests touch"
-            description="Each element, link and flow the inspection found, by page type, and what no test touches."
+            description="Each element, link and flow the inspection found, by page type: what a test checks on its page, what is only reached by its URL, and what nothing touches. A link repeated across pages counts once."
         >
             <p className="text-sm font-semibold leading-6 text-zinc-900" data-testid="coverage-map-headline">{describeCoverageMap(map)}</p>
             <div className="mt-3 overflow-x-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="text-xs uppercase text-zinc-500">
-                        <tr><th className="px-3 py-2">Page type</th><th className="px-3 py-2">Touched by a test</th><th className="px-3 py-2">Touched by none</th></tr>
+                        <tr><th className="px-3 py-2">Page type</th><th className="px-3 py-2">Checked in context</th><th className="px-3 py-2">Not checked in context</th></tr>
                     </thead>
                     <tbody>
                         {map.types.map((type) => (

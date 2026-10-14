@@ -14,7 +14,7 @@ export function buildCoverageMapHtmlSection(map: CoverageMap | undefined): strin
             <h2 style="font-size:17px;margin:0 0 8px">Coverage map</h2>
             <p style="font-weight:600">${e(describeCoverageMap(map))}</p>
             <table style="width:100%;border-collapse:collapse;font-size:13px">
-                <thead><tr><th style="text-align:left">Page type</th><th style="text-align:left">Touched by a test</th><th style="text-align:left">Touched by none</th></tr></thead>
+                <thead><tr><th style="text-align:left">Page type</th><th style="text-align:left">Checked in context</th><th style="text-align:left">Not checked in context</th></tr></thead>
                 <tbody>${map.types.map((type) => `
                     <tr style="vertical-align:top"><td>${e(type.pattern)}</td><td>${e(describeCoverageMapType(type))}</td><td>${type.uncovered.length > 0 ? type.uncovered.map((item) => e(item)).join("<br>") : "-"}</td></tr>`).join("")}</tbody>
             </table>

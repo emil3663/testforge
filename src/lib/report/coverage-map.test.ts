@@ -4,13 +4,14 @@
  * the pages inspected in a real browser.
  *
  * ISTQB technique: equivalence partitioning over what touches an element:
- *   a test on its page that uses its locator     -> covered, by that test (a field, a button, a form by its record)
- *   a link, checked on its page and by request   -> covered, by both
- *   an element whose test is gone from the suite -> listed as touched by none, in its page type's row
- *   a flow no journey test was written for       -> listed as touched by none
- * And the index, both ways: one changed element selects exactly the tests
- * that touch it (a run of just those), and every element check maps to the
- * element it checks. Gate: Phase 42 Gate A.
+ *   a test on its page that uses its locator      -> covered in context, by that test (a field, a button, a form by its record)
+ *   a link checked only by a site-wide request    -> reachability only: on the gap list, saying so (TFP-201)
+ *   a link on every page, checked on one of them  -> one item, covered in context (TFP-201)
+ *   an element whose test is gone from the suite  -> listed as touched by none, in its page type's row
+ *   a flow no journey test was written for        -> listed as touched by none
+ * And the index, both ways, on the in-context tier: one changed element
+ * selects exactly the tests that check it (a run of just those), and every
+ * element check maps to the element it checks. Gate: Phase 42 Gate A.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/report/coverage-map.test.ts
@@ -102,11 +103,12 @@ test("an element no test touches is listed by name in its page type's row, and s
     const flows = map.entries.filter((entry) => entry.kind === "flow");
     assert.ok(flows.length > 0);
     assert.ok(flows.every((entry) => entry.tests.length === 0 && untouched(map).includes(entry)));
-    // With the Subject check, the contact page's only gaps are its flows.
+    // With the Subject check, every element of the contact type is checked; its gaps are flows and links only reached by URL (TFP-201).
     const full = buildCoverageMap(profile, code)!;
-    assert.deepEqual(full.types.find((type) => type.pattern === "/types/account/:slug")!.uncovered.filter((item) => !item.includes(": journey ")), []);
+    assert.deepEqual(full.types.find((type) => type.pattern === "/types/account/:slug")!.uncovered.filter((item) => !item.includes(": journey ") && !item.includes(" [link] (its URL is requested")), []);
 
-    assert.equal(describeCoverageMap(map), `${map.covered} of the ${map.total} elements, links and flows the inspection found are touched by a test; ${map.total - map.covered} are touched by none.`);
+    const untouchedCount = map.total - map.covered - map.reachedOnly!;
+    assert.equal(describeCoverageMap(map), `${map.covered} of the ${map.total} elements, links and flows the inspection found are checked in context by a test; ${map.reachedOnly} more are only reached (a link's URL requested, the link not checked on a page), and ${untouchedCount} are touched by no test. Links are counted once each: ${map.links!.distinct} distinct links, found ${map.links!.onPages} times across the pages.`);
     const html = buildCoverageMapHtmlSection(map);
     assert.match(html, /<h2[^>]*>Coverage map<\/h2>/);
     assert.ok(html.includes("/types/account/contact: subject [input]"));
@@ -119,14 +121,45 @@ test("the index selects the tests for one changed element: a run of just those (
     assert.deepEqual(selected, [titleOf(SUBJECT)]);
     assert.equal(buildRunSelection(code, [], selected).runnableTestCount, 1);
 
-    // A link on one page: its check on that page, and the site-wide link check that requests it.
-    const link = map.entries.find((entry) => entry.page === "/types/help/terms" && entry.kind === "link" && entry.name === "/types/product/101 [link]")!;
+    // A link: the checks that find it on a page - on every page it is on - and not the site-wide request (TFP-201).
+    const link = map.entries.find((entry) => entry.kind === "link" && entry.name === "/types/product/101 [link]")!;
     const linkTests = testsTouching(map, link.key);
-    const onPage = parseTestUnits(code).filter((unit) => unit.paths.includes("/types/help/terms") && unit.title === "navigation link health: /types/product/101").map((unit) => `${unit.id}: ${unit.title}`);
-    assert.equal(onPage.length, 1);
-    assert.ok(linkTests.includes(onPage[0]), linkTests.join(" | "));
-    assert.ok(linkTests.some((title) => title.endsWith("link health: internal, external, and download links do not return broken responses")), linkTests.join(" | "));
+    const onPages = parseTestUnits(code).filter((unit) => unit.paths.length === 1 && unit.title === "navigation link health: /types/product/101").map((unit) => `${unit.id}: ${unit.title}`);
+    assert.ok(onPages.length > 1);
+    assert.deepEqual([...linkTests].sort(), [...onPages].sort());
+    assert.ok(link.reachedBy!.some((title) => title.endsWith("link health: internal, external, and download links do not return broken responses")), link.reachedBy!.join(" | "));
     assert.equal(buildRunSelection(code, [], linkTests).runnableTestCount, linkTests.length);
+});
+
+test("a link checked only by a site-wide request is reachability-covered and on the gap list (TFP-201)", { skip: needsChromium }, () => {
+    const map = buildCoverageMap(profile, code)!;
+    const privacy = map.entries.find((entry) => entry.kind === "link" && entry.name === "/types/legal/privacy [link]")!;
+    assert.ok(privacy);
+    assert.deepEqual(privacy.tests, [], "no test finds it on a page");
+    assert.ok(privacy.reachedBy!.length > 0, "a site-wide check requests its URL");
+    assert.ok(untouched(map).includes(privacy));
+    const terms = map.types.find((type) => type.pattern === "/types/help/terms")!;
+    assert.ok(terms.uncovered.some((item) => item.endsWith("/types/legal/privacy [link] (its URL is requested, but it isn't checked on a page)")), terms.uncovered.join(" | "));
+    assert.ok(terms.reachedOnly! > 0);
+    assert.ok(map.reachedOnly! >= terms.reachedOnly!);
+});
+
+test("a link on every page, checked on one of them, is one item covered in context (TFP-201)", { skip: needsChromium }, () => {
+    // Keep the check of /types/product/101's link on the terms page alone; take it off every other page.
+    const checks = parseTestUnits(code).filter((unit) => unit.title === "navigation link health: /types/product/101" && unit.paths.length === 1);
+    const kept = checks.find((unit) => unit.paths[0] === "/types/help/terms")!;
+    assert.ok(kept && checks.length >= 3, `${checks.length} pages check it`);
+    let fewer = code;
+    for (const unit of [...checks].filter((unit) => unit !== kept).sort((a, b) => b.start - a.start)) fewer = fewer.slice(0, unit.start) + fewer.slice(unit.end);
+    const map = buildCoverageMap(profile, fewer)!;
+
+    const items = map.entries.filter((entry) => entry.kind === "link" && entry.name === "/types/product/101 [link]");
+    assert.equal(items.length, 1, "one item, however many pages it is on");
+    assert.ok(items[0].pages!.length >= 3, items[0].pages!.join(", "));
+    assert.deepEqual(items[0].tests, [`${kept.id}: ${kept.title}`]);
+    assert.ok(!untouched(map).includes(items[0]));
+    assert.ok(map.links!.distinct < map.links!.onPages, `${map.links!.distinct} distinct of ${map.links!.onPages}`);
+    assert.equal(map.links!.distinct, map.entries.filter((entry) => entry.kind === "link").length);
 });
 
 test("no page data or no suite source: no map", () => {

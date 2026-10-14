@@ -287,6 +287,13 @@ on the local Toolshop copies (Phase 41 Decision 7).
   reports both tiers with the distinct-link count; the index and the gap
   list use the in-context tier.
 - **Dependencies:** TFP-192. Before TFP-193.
+- **Built:** `src/lib/report/coverage-map.ts`. A link's site-wide request
+  is its reachability tier (`reachedBy`); only a check that finds it on a
+  page is in context (`tests`), which the index, the gap list and the
+  headline's first count use. The inspection records no page region, so a
+  repeated link is the same text and target on several pages, whichever
+  region it is in. A repeated link counts once in the totals and in each
+  page type it appears on.
 
 ### TFP-200 — A list wrapped in its label is named as the browser names it
 
