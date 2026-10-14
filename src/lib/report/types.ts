@@ -1,5 +1,13 @@
 import type { TestGate } from "@/lib/run/test-gates";
 
+// Phase 40's page types and Phase 42's site-suite and coverage-map records, kept in their own files (the 500-line limit).
+import type { SiteSuiteRecord } from "./site-suite-types";
+import type { CoverageMap } from "./coverage-map-types";
+import type { PageTypeCoverageRecord } from "./page-type-types";
+export type { PageTypeCoverageEntry, PageTypeCoverageRecord } from "./page-type-types";
+export type { GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord, SiteSuiteRegeneration } from "./site-suite-types";
+export type { CoverageMap, CoverageMapEntry, CoverageMapKind, CoverageMapType } from "./coverage-map-types";
+
 // "Not run" (Phase 34 Option C): the test skipped itself with a stated reason -
 // not run by choice, e.g. interactive tests off. "Blocked" is a skip or
 // interruption nobody explained.
@@ -354,110 +362,6 @@ export interface GenerationRecord {
     siteSuite?: SiteSuiteRecord;
 }
 
-/** Phase 42 (TFP-190, Decision 1): what a run reused from its site suite, regenerated and retired. */
-export interface SiteSuiteRecord {
-    /** Where the site suite is kept (TestForge's local data folder). */
-    store: string;
-    /** No suite was saved for this site and suite type before this run. */
-    firstRun: boolean;
-    reused: number;
-    /** New tests: a new page type, or a new test on an unchanged one. */
-    generated: number;
-    /** Tests of a page type whose fingerprint changed. */
-    regenerated: number;
-    /** Saved tests, not edited, that the generator no longer writes: their page, or what they tested, is gone. */
-    retired: number;
-    /** Hand-edited tests, kept as they are. */
-    edited: number;
-    changedTypes: string[];
-    newTypes: string[];
-    goneTypes: string[];
-    /** Hand-edited tests whose page changed or is gone: kept, and named here. */
-    editedOnChangedPages: string[];
-    /** After the run (TFP-191): the failing reused tests whose pages were read again, and what that found. */
-    recheck?: SiteSuiteRecheck;
-    /** TFP-194: the gap tests written at this generation, when the site opted in. */
-    gapTests?: GapWritingRecord;
-}
-
-/** Phase 42 (TFP-194): what the site's gap writer was asked for, what it cost, and what came of it. */
-export interface GapWritingRecord {
-    writer: string;
-    /** Gaps on the in-context gap list not yet written for or tried. */
-    gaps: number;
-    /** Of those, the ones the writer was asked for (at most the limit). */
-    asked: number;
-    saved: number;
-    /** Rejected: a breach of the read-only gate. */
-    rejected: number;
-    /** Not kept: still failing after the last attempt, invalid, or the writer couldn't be reached. */
-    failed: number;
-    /** What the writer reported it cost, in US dollars (Claude Code); 0 for the local model. */
-    costUsd: number;
-    tests: Array<{ title: string; covers: string; attempts: number; costUsd: number; outcome: string }>;
-    /** Why no writer was asked, when the opt-in was on but none could be. */
-    note?: string;
-    /** TFP-195: gaps a pool candidate already matched (no test written), and candidates added or not kept. */
-    candidates?: { matched: number; added: number; notKept: number };
-}
-
-/** Phase 42 (TFP-191): failing reused tests, their pages read again after the run. */
-export interface SiteSuiteRecheck {
-    /** Failing tests that were reused, not edited, and of one page type: the ones read again. */
-    failedReused: number;
-    /** Of those, the ones whose page was unchanged: their failures stand. */
-    unchanged: number;
-    /** Each page type found changed: written again from a fresh inspection and re-run. */
-    regenerations: SiteSuiteRegeneration[];
-}
-
-export interface SiteSuiteRegeneration {
-    type: string;
-    /** The failing tests' pages whose structural signature changed, before and after. */
-    pages: Array<{ path: string; before: string; after: string }>;
-    /** The reused tests that failed on it. */
-    failed: string[];
-    /** The type's regenerated tests that were re-run, and how they ended. */
-    rerun: number;
-    passed: number;
-    failedAgain: number;
-}
-
-/** Phase 40 Decision 7 (TFP-173): one page type in the report. */
-export interface PageTypeCoverageEntry {
-    /** The address pattern: `/product/:id`, `/#/contact`. */
-    pattern: string;
-    /** Decision 3's report-only label. */
-    label: string;
-    /** How many crawled pages the type has. */
-    pages: number;
-    /** The full URL of the page that represented the type, as the address bar shows it. */
-    url: string;
-    /** Every page of the type the run covered, as full URLs; empty for a skipped type. */
-    covered: string[];
-    /** A skipped type: why, in one line. */
-    reason?: string;
-}
-
-/** Phase 40 Decision 7 (TFP-173): which page types a run covered, and which it skipped. */
-export interface PageTypeCoverageRecord {
-    /**
-     * "type": the pages chosen by type (Decisions 4 to 6); "user": chosen by
-     * hand from the crawl, an override; "list": a list of pages pasted into
-     * the URL field (Decision 8, TFP-174), so selection by type was skipped.
-     */
-    selectedBy: "type" | "user" | "list";
-    runType: "standard" | "comprehensive";
-    /** Standard's type cap (8) or Comprehensive's page budget. */
-    cap: number;
-    /** Types found by the crawl; 0 for a URL-field list run without a crawl of its site. */
-    found: number;
-    covered: PageTypeCoverageEntry[];
-    skipped: PageTypeCoverageEntry[];
-    /** A hand-made selection: full URLs added to, and left out of, what the type selection chose. */
-    override?: { added: string[]; removed: string[] };
-}
-
 export interface PageInspectionRecord {
     /** "inspected": page data was gathered automatically; "failed": generated without it, for `reason`. */
     status: "inspected" | "failed";
@@ -574,47 +478,4 @@ export interface ComprehensiveReport {
         pagesNotCovered: string | null;
         asvs: { source: string; chapters: ComprehensiveAsvsRow[] } | null;
     };
-}
-
-/** Phase 42 (TFP-192, Decision 3): each element and flow the inspection found, and the tests that touch it (src/lib/report/coverage-map.ts). */
-export type CoverageMapKind = "element" | "link" | "flow";
-
-export interface CoverageMapEntry {
-    /** Stable across runs while the item is the same: an element's page and locator; a link's text and target; a flow's journey. */
-    key: string;
-    /** The first page it is on. */
-    page: string;
-    /** TFP-201: every page it is on - a link repeated across pages (header, footer) is one item. Absent on maps from before TFP-201. */
-    pages?: string[];
-    kind: CoverageMapKind;
-    /** What a person reads: "Subject [input]", "Home [link]", "journey ...". */
-    name: string;
-    /** The full titles (with ids) of the tests that touch it in context: found and checked on its page (Gate A ruling 1). */
-    tests: string[];
-    /** TFP-201: a link's reachability tier - tests that request its URL without finding it on a page. */
-    reachedBy?: string[];
-}
-
-export interface CoverageMapType {
-    pattern: string;
-    pages: number;
-    total: number;
-    /** Checked in context. */
-    covered: number;
-    /** TFP-201: not checked in context, but its URL requested. */
-    reachedOnly?: number;
-    /** Each item not checked in context, "page: name" (the gap list). */
-    uncovered: string[];
-}
-
-export interface CoverageMap {
-    entries: CoverageMapEntry[];
-    types: CoverageMapType[];
-    total: number;
-    /** Checked in context. */
-    covered: number;
-    /** TFP-201: not checked in context, but its URL requested. */
-    reachedOnly?: number;
-    /** TFP-201: links as found on each page, and as distinct items. */
-    links?: { onPages: number; distinct: number };
 }
