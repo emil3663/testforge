@@ -1,3 +1,4 @@
+import { entryApplies } from "@/lib/library/entries";
 import { NOT_A_PAGE_HELPER } from "./comprehensive-security-helpers";
 import { formFieldNamesTest } from "./mock/form-field-names";
 
@@ -44,6 +45,8 @@ function tfWhere(nodes: Array<{ target: unknown[] }>): string {
 export interface AccessibilityCheckPage {
     escapedPath: string;
     path: string;
+    /** Phase 42 (TFP-193): the page as inspection recorded it, when it did; the library's patterns read it. */
+    inspected?: import("./mock/types").ContentProfilePage;
     /** `{ annotation: [...] }`: the page, plus the given category. */
     details: (category: string) => string;
 }
@@ -173,10 +176,17 @@ const GROUPING = String.raw`    test('__PATH__ groups its checkboxes and radio b
       expect(result.problems, result.problems.map((problem) => problem + ' on __PATH__').join('; ')).toEqual([]);
     });`;
 
-/** TFP-183: the tab-order and grouping checks of one page. They need ACCESSIBILITY_HELPERS in scope. */
+/**
+ * TFP-183: the tab-order and grouping checks of one page. They need ACCESSIBILITY_HELPERS in scope.
+ * Phase 42 (TFP-193): each is a library entry, applied when its pattern matches the page (a page known
+ * only by its path matches an entry for any page).
+ */
 export function keyboardAndGroupingTests(page: AccessibilityCheckPage): string[] {
     const fill = (template: string, criterion: string) => template.split("__PATH__").join(page.escapedPath).split("__DETAILS__").join(page.details(criterion));
-    return [fill(TAB_ORDER, "WCAG 2.4.3"), fill(GROUPING, "WCAG 1.3.1")];
+    return [
+        ...(entryApplies("keyboard.tab-order", page.inspected) ? [fill(TAB_ORDER, "WCAG 2.4.3")] : []),
+        ...(entryApplies("keyboard.grouping", page.inspected) ? [fill(GROUPING, "WCAG 1.3.1")] : []),
+    ];
 }
 
 function indent(code: string) {

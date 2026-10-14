@@ -331,6 +331,18 @@ on the local Toolshop copies (Phase 41 Decision 7).
   shown by `check:template-unchanged` and the local score); each entry lists
   its caught bugs.
 - **Dependencies:** TFP-192.
+- **Built:** `src/lib/library/` - 15 entries, one per Phase 41 check
+  (TFP-182 to TFP-187; TFP-181's guard is a helper, not a check). Each
+  entry records its pattern, binding (page, or site), ISTQB technique,
+  gate, where it runs, its builder, and the bugs it caught at Phase 41's
+  Gate B. The controls' page patterns (sort list, filter field, number
+  field, list) moved from the controls check into the library; the other
+  entries bind to every inspected page, or to the run, as their checks
+  already did. Each check's code stays with its generator, which asks
+  the library which pages each entry binds to. Measured: the generators'
+  whole output on the fixture's and the Toolshop's page data, Standard
+  and Comprehensive, is byte-identical before and after
+  (`benchmarks/2026-10-14-tfp193-library/`).
 
 ### TFP-194 — Claude Code writes gap tests, once per gap, opt-in per site
 

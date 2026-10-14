@@ -1,3 +1,4 @@
+import { boundPaths } from "@/lib/library/entries";
 import { checkDetails } from "../comprehensive-security";
 import { escapeForSingleQuotedString } from "./format";
 import { inspectedPagePaths } from "./suite";
@@ -154,13 +155,15 @@ ${body}
 export function buildLayoutTests(contentProfile: ContentProfile | null): { tests: string[]; helpers: string } {
     const paths = inspectedPagePaths(contentProfile);
     const tests: string[] = [];
+    // Phase 42 (TFP-193): each check is a library entry; it runs on the pages its pattern binds to.
+    const [consistency, overlap, images] = ["layout.consistency", "layout.overlap", "layout.images"].map((id) => new Set(boundPaths(id, contentProfile)));
     for (const path of paths) {
         const escapedPath = escapeForSingleQuotedString(path);
-        tests.push(layoutTest(`${escapedPath} keeps its forms, lists and cards consistent (recorded as findings)`, escapedPath, "equivalence partitioning (each group's members should look alike)", `    await page.goto('${escapedPath}');
+        if (consistency.has(path)) tests.push(layoutTest(`${escapedPath} keeps its forms, lists and cards consistent (recorded as findings)`, escapedPath, "equivalence partitioning (each group's members should look alike)", `    await page.goto('${escapedPath}');
     const layout = await tfLayoutFindings(page, '${escapedPath}');
     test.skip(layout.groups === 0, 'no form, list or set of cards on ${escapedPath}');
     for (const description of layout.findings) test.info().annotations.push({ type: 'finding', description });`));
-        tests.push(layoutTest(`${escapedPath} has no overlapping controls`, escapedPath, "boundary value analysis (boxes that touch or share a border against boxes that overlap)", `    await page.goto('${escapedPath}');
+        if (overlap.has(path)) tests.push(layoutTest(`${escapedPath} has no overlapping controls`, escapedPath, "boundary value analysis (boxes that touch or share a border against boxes that overlap)", `    await page.goto('${escapedPath}');
     const overlaps = await page.evaluate((path) => {
       const controls = Array.from(document.querySelectorAll('a[href], button, input:not([type="hidden"]), select, textarea, [role="button"]')).filter((element) => {
         const box = element.getBoundingClientRect();
@@ -181,7 +184,7 @@ export function buildLayoutTests(contentProfile: ContentProfile | null): { tests
       return found;
     }, '${escapedPath}');
     expect(overlaps, overlaps.join('; ')).toEqual([]);`));
-        tests.push(layoutTest(`${escapedPath} shows every image it loads`, escapedPath, "error guessing (an image that loaded but can't be shown)", `    await page.goto('${escapedPath}');
+        if (images.has(path)) tests.push(layoutTest(`${escapedPath} shows every image it loads`, escapedPath, "error guessing (an image that loaded but can't be shown)", `    await page.goto('${escapedPath}');
     const broken = await page.evaluate(async () => {
       const images = Array.from(document.images).filter((image) => image.complete && image.naturalWidth === 0 && image.getBoundingClientRect().width > 0 && getComputedStyle(image).visibility !== 'hidden');
       const failed = await Promise.all(images.map((image) => image.decode().then(() => null, () => image.getAttribute('src') ?? image.currentSrc)));
@@ -189,9 +192,10 @@ export function buildLayoutTests(contentProfile: ContentProfile | null): { tests
     });
     expect(broken, 'images on ${escapedPath} that loaded but can\\'t be shown: ' + broken.join(', ')).toEqual([]);`));
     }
-    if (paths.length >= 2) {
-        const list = paths.map((path) => `'${escapeForSingleQuotedString(path)}'`).join(", ");
-        tests.push(layoutTest("the same components look the same on every inspected page (recorded as findings)", escapeForSingleQuotedString(paths[0]), "equivalence partitioning (one component on different pages is one partition)", `    const pages = [${list}];
+    const shared = boundPaths("layout.across-pages", contentProfile);
+    if (shared.length >= 2) {
+        const list = shared.map((path) => `'${escapeForSingleQuotedString(path)}'`).join(", ");
+        tests.push(layoutTest("the same components look the same on every inspected page (recorded as findings)", escapeForSingleQuotedString(shared[0]), "equivalence partitioning (one component on different pages is one partition)", `    const pages = [${list}];
     const seen = new Map<string, Map<string, Map<string, number>>>();
     for (const path of pages) {
       await page.goto(path);

@@ -1,7 +1,8 @@
+import { entryApplies } from "@/lib/library/entries";
 import { checkDetails } from "../comprehensive-security";
 import { READ_ONLY_GUARD_HELPER } from "../read-only-guard";
 import { escapeForSingleQuotedString } from "./format";
-import type { ContentProfile, ContentProfilePage } from "./types";
+import type { ContentProfile } from "./types";
 
 /**
  * Phase 41 (TFP-182, Decision 3): controls on read-only pages do their job.
@@ -36,29 +37,11 @@ import type { ContentProfile, ContentProfilePage } from "./types";
  * or range field, a number field). Inspection doesn't record a slider built
  * from spans (the Toolshop's), so the filter check runs where it recorded a
  * checkbox or a range field and looks for both kinds.
+ *
+ * Phase 42 (TFP-193): which pages get which check is the library's
+ * (src/lib/library/entries.ts, `controls.*`): each check is an entry, and
+ * its pattern decides the pages it binds to.
  */
-
-const SORT_WORDS = /\b(a\s*(-|–|to)\s*z|z\s*(-|–|to)\s*a|low(est)?\s*(-|–|to)\s*high(est)?|high(est)?\s*(-|–|to)\s*low(est)?|ascending|descending)\b/gi;
-
-function elements(page: ContentProfilePage) {
-    return page.actionableElements ?? [];
-}
-
-function hasSortSelect(page: ContentProfilePage) {
-    return elements(page).some((element) => element.elementType === "select" && (element.text.match(SORT_WORDS) ?? []).length >= 2);
-}
-
-function hasSelect(page: ContentProfilePage) {
-    return elements(page).some((element) => element.elementType === "select");
-}
-
-function hasFilterField(page: ContentProfilePage) {
-    return elements(page).some((element) => element.elementType === "input" && ["checkbox", "range"].includes(element.locator.inputType));
-}
-
-function hasNumberField(page: ContentProfilePage) {
-    return elements(page).some((element) => element.elementType === "input" && (element.locator.inputType === "number" || element.locator.role === "spinbutton"));
-}
 
 export const CONTROL_HELPERS = READ_ONLY_GUARD_HELPER + "\n\n" + String.raw`// TFP-182 (Phase 41 Decision 3): controls on read-only pages do their job.
 type TfItem = { name: string; price: number | null };
@@ -334,19 +317,19 @@ export function buildControlTests(contentProfile: ContentProfile | null): { test
         if (seen.has(page.path)) continue;
         seen.add(page.path);
         const escapedPath = escapeForSingleQuotedString(page.path);
-        if (hasSortSelect(page)) {
+        if (entryApplies("controls.sort", page)) {
             tests.push(controlTest(`sort options order the items on ${escapedPath}`, escapedPath, "decision table (each sort option's label sets the expected order)",
                 guardedCheck("tfCheckSorts", escapedPath, "no sort option with items to compare")));
         }
-        if (hasFilterField(page)) {
+        if (entryApplies("controls.filters", page)) {
             tests.push(controlTest(`filters send and respect the chosen values on ${escapedPath}`, escapedPath, "boundary value analysis (one step in from each handle's value)",
                 guardedCheck("tfCheckFilters", escapedPath, "no range slider or option filter that changes")));
         }
-        if (hasNumberField(page)) {
+        if (entryApplies("controls.steppers", page)) {
             tests.push(controlTest(`quantity steppers change the value by one on ${escapedPath}`, escapedPath, "state transition (n, n + 1, n, within the field's bounds)",
                 guardedCheck("tfCheckSteppers", escapedPath, "no number field with + and - buttons")));
         }
-        if (hasSelect(page)) {
+        if (entryApplies("controls.option-lists", page)) {
             tests.push(controlTest(`option lists show no error text on ${escapedPath}`, escapedPath, "error guessing", `    await page.goto('${escapedPath}');
     const lists = await page.locator('select').evaluateAll((selects) => selects.map((select) => ({
       name: (select.getAttribute('aria-label') || (select as HTMLSelectElement).labels?.[0]?.textContent || select.getAttribute('name') || select.id || 'a list').replace(/\\s+/g, ' ').trim(),
@@ -356,7 +339,7 @@ export function buildControlTests(contentProfile: ContentProfile | null): { test
     expect(problems, problems.join('; ')).toEqual([]);`));
         }
     }
-    if (pages.length > 0) {
+    if (pages.length > 0 && entryApplies("controls.link-destination", pages[0])) {
         const escapedStart = escapeForSingleQuotedString(pages[0].path);
         tests.push(controlTest(`navigation links land where their text says, from ${escapedStart}`, escapedStart, "decision table (a \"Home\" link must reach the start page; any other must share a word with where it lands)",
             guardedCheck("tfCheckNavLinks", escapedStart, "no header or nav link to follow")));

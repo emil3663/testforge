@@ -151,7 +151,7 @@ ${elementChecks}
             // Phase 41 (TFP-183, Decision 4): tab order and grouping, the same builders as Comprehensive.
             ...inspectedPagePaths(contentProfile).flatMap((path) => {
                 const escapedPath = escapeForSingleQuotedString(path);
-                return keyboardAndGroupingTests({ path, escapedPath, details: (category) => checkDetails(escapedPath)({ category, asvs: [], why: "" }) });
+                return keyboardAndGroupingTests({ path, escapedPath, inspected: contentProfile?.pages.find((page) => page.path === path), details: (category) => checkDetails(escapedPath)({ category, asvs: [], why: "" }) });
             }),
         ]);
 

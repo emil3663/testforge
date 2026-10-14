@@ -1,6 +1,6 @@
+import { boundPaths } from "@/lib/library/entries";
 import { checkDetails } from "../comprehensive-security";
 import { escapeForSingleQuotedString } from "./format";
-import { inspectedPagePaths } from "./suite";
 import type { ContentProfile } from "./types";
 
 /**
@@ -112,7 +112,8 @@ function tfWordsOf(text: string): string[] {
 
 /** TFP-187's test for each inspected page, and the helpers they share. */
 export function buildSpellingTests(contentProfile: ContentProfile | null): { tests: string[]; helpers: string } {
-    const tests = inspectedPagePaths(contentProfile).map((path) => {
+    // Phase 42 (TFP-193): the library's `spelling` entry binds the check to its pages.
+    const tests = boundPaths("spelling", contentProfile).map((path) => {
         const escapedPath = escapeForSingleQuotedString(path);
         return `  test('${escapedPath} spells its interface text correctly (recorded as findings)', ${checkDetails(escapedPath)()}, async ({ page }) => {
     // ISTQB: error guessing (the slips that reach an interface).

@@ -1,0 +1,34 @@
+{
+ "toolshop standard fast": {
+  "sha256": "f79366f1ddcb8074d7677b126b1717ecabac21c058a7c2a0e47e6c51d433ef44",
+  "length": 882389
+ },
+ "toolshop standard deep": {
+  "sha256": "2be2863469a3127c00469fbaa94de2a613669768ceb5a4117028cfef7e379ae6",
+  "length": 1263573
+ },
+ "toolshop comprehensive security": {
+  "sha256": "c106d330a7cae0c5c94cc7ff40eaedd2f550741658f0aaa08130541e9ce5ac0e",
+  "length": 325333
+ },
+ "toolshop comprehensive accessibility": {
+  "sha256": "5f4c333da5a03bcf6c767eb372ac732dcdbe4f88f8441db2f34970c4cfdae46d",
+  "length": 266807
+ },
+ "fixture standard fast": {
+  "sha256": "e2672613a23b6d6552fd36dca445c3fbdf9defbcf0edfec81245429757fbc6d9",
+  "length": 615930
+ },
+ "fixture standard deep": {
+  "sha256": "e5c00e22661ac2b0d9b2a6869df35987d2adfbb32423fcb445d4e21e2b7b0ccf",
+  "length": 689948
+ },
+ "fixture comprehensive security": {
+  "sha256": "7ff281c1d717c4c8286323443a41f3237e02683f4b6b6c16811026e142fb179a",
+  "length": 270887
+ },
+ "fixture comprehensive accessibility": {
+  "sha256": "cb2eee6bd56eb6655ff9f530793d185f77b35039e40f117ce03969185a7911e1",
+  "length": 223197
+ }
+}
