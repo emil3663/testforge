@@ -3,7 +3,7 @@ import { NOT_TESTED_STATEMENTS, notCoveredPagesStatement } from "@/lib/comprehen
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
 import { comprehensiveLabel, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
 import type { ContentProfile } from "@/lib/generate/mock/types";
-import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensiveModelSection, ComprehensivePageRow, ComprehensiveReport, ExecutionRecord, GenerationRecord } from "./types";
+import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensiveCandidateSection, ComprehensiveModelSection, ComprehensivePageRow, ComprehensiveReport, ExecutionRecord, GenerationRecord } from "./types";
 
 // Phase 35 (TFP-132, Decision 7): a single-area run's report shows only that
 // area - a summary, a per-page table, failures and findings grouped by OWASP
@@ -56,6 +56,18 @@ function modelSection(modelRecords: ExecutionRecord[], generation: GenerationRec
     return { status: "not-configured", note: MODEL_NOT_CONFIGURED_NOTE, tests: [] };
 }
 
+/** TFP-195: the candidates' results, none counted. */
+function candidateSection(records: ExecutionRecord[]): ComprehensiveCandidateSection {
+    return {
+        note: "Tests from the candidate pool: written for this component on another site, bound to this one, and not yet in the library. They count toward no pass or fail, no recommendation and no coverage figure; each run adds to their evidence. A failure here needs review; it is not a defect in the site.",
+        tests: records.map((record) => ({
+            title: record.title,
+            outcome: record.status === "Passed" || record.status === "Flaky" ? ("passed" as const) : record.status === "Not run" ? ("not run" as const) : ("failed: needs review" as const),
+            detail: record.status === "Not run" ? record.skipReason ?? "" : record.status === "Passed" || record.status === "Flaky" ? "" : firstLine(record.rawMessage),
+        })),
+    };
+}
+
 const FAILED_STATUSES = new Set(["Failed", "Blocked"]);
 
 function firstLine(message: string): string {
@@ -79,8 +91,9 @@ export function buildComprehensiveReport(
     workerCount: number | null,
     generation: GenerationRecord | null = null
 ): ComprehensiveReport {
-    // Decision 5: the local model's tests are outside everything below.
-    const execution = allExecution.filter((record) => record.generator !== "local model");
+    // Decision 5: the local model's tests are outside everything below; so are pool candidates (Phase 42, TFP-195).
+    const execution = allExecution.filter((record) => record.generator !== "local model" && record.generator !== "candidate");
+    const candidateRecords = allExecution.filter((record) => record.generator === "candidate");
     const modelRecords = allExecution.filter((record) => record.generator === "local model");
     const scope = selectComprehensivePages(contentProfile, baseUrl, mode.pageCap);
 
@@ -175,6 +188,7 @@ export function buildComprehensiveReport(
         groups: [...groups.values()],
         manualReview,
         model: modelSection(modelRecords, generation, mode.area),
+        ...(candidateRecords.length > 0 ? { candidates: candidateSection(candidateRecords) } : {}),
         notTested: {
             statements: [...NOT_TESTED_STATEMENTS[mode.area]],
             pagesNotCovered: notCoveredPagesStatement(scope.notCovered, scope.pageCap),

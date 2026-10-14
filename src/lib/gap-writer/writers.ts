@@ -39,7 +39,16 @@ export interface GapWriter {
     write(target: GapTarget, baseUrl: string): Promise<GapWriterReply>;
     /** A revision, given what the last attempt's run said. */
     revise(feedback: string): Promise<GapWriterReply>;
+    /** TFP-195: the test it just wrote, generalised to the component's pattern (Decision 8's second output). */
+    generalise(): Promise<GapWriterReply>;
 }
+
+/** TFP-195 (Decision 8): the candidate - the same test with the site's page and locator left as blanks. */
+export const GENERALISE_PROMPT = [
+    "Generalise the test you just wrote to the component's pattern, so it can run on another site that has the same component.",
+    "Write __PAGE__ wherever it names the page's path, and __LOCATOR__ wherever it finds the element (the whole locator expression, as given to you); TestForge fills both in for each site.",
+    "Keep everything else. Answer with the body only, in one ```ts code block.",
+].join("\n");
 
 export function gapPrompt(target: GapTarget, baseUrl: string): string {
     return [
@@ -106,6 +115,11 @@ export function claudeCodeWriter(): GapWriter {
             session = reply.sessionId ?? session;
             return { body: body(reply.result), costUsd: reply.costUsd };
         },
+        async generalise() {
+            const reply = await runClaude(GENERALISE_PROMPT, session);
+            session = reply.sessionId ?? session;
+            return { body: body(reply.result), costUsd: reply.costUsd };
+        },
     };
 }
 
@@ -125,7 +139,12 @@ export function localModelWriter(configuredModel: string): GapWriter {
     };
     return {
         name: "local-model",
-        write: (target, baseUrl) => ask(gapPrompt(target, baseUrl)),
+        write: (target, baseUrl) => {
+            // One conversation per gap.
+            messages.length = 0;
+            return ask(gapPrompt(target, baseUrl));
+        },
         revise: (feedback) => ask(feedback),
+        generalise: () => ask(GENERALISE_PROMPT),
     };
 }

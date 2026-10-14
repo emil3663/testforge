@@ -2,6 +2,7 @@ import type { ChildProcess } from "child_process";
 import { readFile, unlink } from "fs/promises";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { flattenSuites } from "@/lib/report/execution";
+import { recordCandidateRuns } from "@/lib/candidates/evidence";
 import { buildReport } from "@/lib/report/report";
 import type { GenerationRecord, JsonReport, RunReport } from "@/lib/report/types";
 import { buildConsoleSummary, collectArtifactFiles, finalizeInterruptedPlannedExecutions, withArtifactDownloadPath } from "@/lib/run/output";
@@ -203,6 +204,10 @@ async function finalizeRunJobUnredacted(job: RunJob) {
 
     if (parsedReport) {
         const executionRecords = flattenSuites(parsedReport.suites ?? []);
+        // Phase 42 (TFP-195): each pool candidate that ran adds this run to its evidence.
+        await recordCandidateRuns(executionRecords, job.baseUrl, job.id).catch((error: unknown) => {
+            job.outputChunks.push(`Candidate pool: this run's results could not be recorded (${error instanceof Error ? error.message : String(error)}).\n`);
+        });
         const aggregatedReport = buildReport(
             parsedReport,
             job.selectedPractices,

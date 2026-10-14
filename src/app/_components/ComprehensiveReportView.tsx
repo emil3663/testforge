@@ -78,6 +78,20 @@ export function ComprehensiveReportView({ report }: { report: ComprehensiveRepor
                 ) : null}
             </section>
 
+            {report.candidates ? (
+                <section className="rounded-[28px] border border-zinc-200 bg-white p-5">
+                    <h3 className="text-sm font-semibold text-zinc-900">Candidate tests</h3>
+                    <p className="mt-2 text-sm text-zinc-600">{report.candidates.note}</p>
+                    <ul className="mt-2 space-y-1 text-sm">
+                        {report.candidates.tests.map((candidate, index) => (
+                            <li key={index} className={candidate.outcome === "failed: needs review" ? "text-amber-800" : "text-zinc-700"}>
+                                {candidate.outcome} · {candidate.title}{candidate.detail ? `: ${candidate.detail}` : ""}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            ) : null}
+
             <section className="rounded-[28px] border border-amber-200 bg-amber-50/60 p-5">
                 <h3 className="text-sm font-semibold text-zinc-900">What this run did not test</h3>
                 <div className="mt-2 space-y-2 text-sm text-zinc-700">

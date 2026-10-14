@@ -5,6 +5,8 @@
 //   good    - a body that finds the target with TestForge's own locator
 //   revise  - first a body that fails, then (on --resume) the good one
 //   breach  - a body that POSTs, which the read-only gate must reject
+// TFP-195: a prompt asking to generalise is answered with the good body, its
+// page and locator written as the __PAGE__ and __LOCATOR__ blanks.
 import { appendFileSync, existsSync, readFileSync } from "node:fs";
 
 const log = process.env.FAKE_CLAUDE_LOG;
@@ -21,7 +23,9 @@ const page = /await page\.goto\('([^']+)'\)/.exec(first)?.[1] ?? "/";
 const locator = /TestForge finds it with: (.+)/.exec(first)?.[1]?.trim() ?? "page.locator('body')";
 const good = `await page.goto('${page}');\nawait expect(${locator}.first()).toBeAttached();`;
 const mode = process.env.FAKE_CLAUDE_MODE ?? "good";
-const body = mode === "breach"
+const body = prompt.startsWith("Generalise")
+    ? `await page.goto('__PAGE__');\nawait expect(__LOCATOR__.first()).toBeAttached();`
+    : mode === "breach"
     ? `await page.goto('${page}');\nawait page.evaluate(() => fetch('/api/store/cart', { method: 'POST', body: '{}' }));`
     : mode === "revise" && !resumed
         ? `await page.goto('${page}');\nawait expect(page.locator('#testforge-not-there')).toBeVisible({ timeout: 1000 });`

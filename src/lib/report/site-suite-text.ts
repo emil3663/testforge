@@ -24,11 +24,13 @@ function describeGapTests(record: SiteSuiteRecord): string {
     if (!gaps) return "";
     const writer = gaps.writer === "claude-code" ? "Claude Code" : gaps.writer === "local-model" ? "the local model" : gaps.writer;
     if (gaps.note) return ` Gap tests: none written, as ${gaps.note}.`;
-    if (gaps.asked === 0) return ` Gap tests: ${writer} was asked for nothing; ${gaps.gaps === 0 ? "no gap is left that hasn't been written for or tried" : `${gaps.gaps} gaps wait, over this run's limit`}.`;
+    const pool = gaps.candidates && gaps.candidates.matched > 0 ? ` ${plural(gaps.candidates.matched, "gap")} already had a pool candidate, so no test was written for ${gaps.candidates.matched === 1 ? "it" : "them"}.` : "";
+    if (gaps.asked === 0) return ` Gap tests: ${writer} was asked for nothing; ${gaps.gaps === 0 ? "no gap is left that hasn't been written for or tried" : `${gaps.gaps} gaps wait, over this run's limit`}.${pool}`;
     const cost = gaps.writer === "claude-code" ? `, at a cost of $${gaps.costUsd.toFixed(2)}` : "";
-    const saved = gaps.tests.filter((test) => test.outcome === "saved").map((test) => test.title);
+    const saved = gaps.tests.filter((test) => test.outcome.startsWith("saved")).map((test) => test.title);
     const left = gaps.gaps - gaps.asked;
-    return ` Gap tests: ${writer} was asked for ${plural(gaps.asked, "gap")}${cost}: ${gaps.saved} saved to the site suite${saved.length ? ` (${saved.join("; ")})` : ""}, ${gaps.rejected} rejected for breaching the read-only gate, ${gaps.failed} not kept.${left > 0 ? ` ${left} more ${left === 1 ? "waits" : "wait"} for a later run.` : ""}`;
+    const candidates = gaps.candidates && gaps.candidates.added + gaps.candidates.notKept > 0 ? ` Candidates for the pool: ${gaps.candidates.added} added, ${gaps.candidates.notKept} not kept.` : "";
+    return ` Gap tests: ${writer} was asked for ${plural(gaps.asked, "gap")}${cost}: ${gaps.saved} saved to the site suite${saved.length ? ` (${saved.join("; ")})` : ""}, ${gaps.rejected} rejected for breaching the read-only gate, ${gaps.failed} not kept.${left > 0 ? ` ${left} more ${left === 1 ? "waits" : "wait"} for a later run.` : ""}${candidates}${pool}`;
 }
 
 /** TFP-191: what reading the failing reused tests' pages again found, after the run. */

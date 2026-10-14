@@ -27,6 +27,7 @@ import { applySiteSuite } from "@/lib/site-suites/reuse";
 import { loadSiteSettings } from "@/lib/gap-writer/settings";
 import { claudeCodeWriter, localModelWriter } from "@/lib/gap-writer/writers";
 import { writeGapTests } from "@/lib/gap-writer/write";
+import { applyCandidates } from "@/lib/candidates/apply";
 import type { SiteSuiteRecord } from "@/lib/report/types";
 
 export async function POST(req: NextRequest) {
@@ -141,7 +142,8 @@ export async function POST(req: NextRequest) {
     // verdict. Rejected or timed out, the template's checks stand alone.
     if (isComprehensive(normalizedRunMode)) {
         const pageScope = selectComprehensivePages(normalizedContentProfile, normalizedBaseUrl.value, normalizedRunMode.pageCap);
-        const suite = await withSiteSuite(buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope));
+        // Phase 42 (TFP-195): pool candidates matching this site's gaps run with it, outside the verdict. Not saved in the site suite.
+        const suite = (await applyCandidates(await withSiteSuite(buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope)), normalizedContentProfile, siteSuite?.store)).code;
         const scope = { runMode: normalizedRunMode, pageScope };
         const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
         if (!localModel) return respond({ code: suite, generatedBy: "template", ...scope, gates: [] });

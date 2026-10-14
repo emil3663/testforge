@@ -104,7 +104,12 @@ function normalizeGapWriting(value: unknown): GapWritingRecord | null {
         return title ? [{ title, covers: text(t.covers, 400) ?? "", attempts: count(t, "attempts"), costUsd: money(t), outcome: text(t.outcome, 400) ?? "" }] : [];
     });
     const note = text(v.note, 400);
-    return { writer, gaps: count(v, "gaps"), asked: count(v, "asked"), saved: count(v, "saved"), rejected: count(v, "rejected"), failed: count(v, "failed"), costUsd: money(v), tests, ...(note ? { note } : {}) };
+    const pool = v.candidates && typeof v.candidates === "object" ? (v.candidates as Record<string, unknown>) : null;
+    return {
+        writer, gaps: count(v, "gaps"), asked: count(v, "asked"), saved: count(v, "saved"), rejected: count(v, "rejected"), failed: count(v, "failed"), costUsd: money(v), tests,
+        ...(note ? { note } : {}),
+        ...(pool ? { candidates: { matched: count(pool, "matched"), added: count(pool, "added"), notKept: count(pool, "notKept") } } : {}),
+    };
 }
 
 function normalizeRecheck(value: unknown): SiteSuiteRecheck | null {

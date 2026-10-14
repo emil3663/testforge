@@ -42,7 +42,8 @@ export function buildReport(
     // model's tests count toward nothing - no pass/fail, recommendation or
     // coverage figure. They stay in the execution list and get their own
     // report section. A Standard run is unchanged: this is all of them.
-    const execution = isComprehensive(runMode) ? allExecution.filter((record) => record.generator !== "local model") : allExecution;
+    // Phase 42 (TFP-195): pool candidates count toward nothing either; their own section is the Comprehensive report's.
+    const execution = isComprehensive(runMode) ? allExecution.filter((record) => record.generator !== "local model" && record.generator !== "candidate") : allExecution;
     const defects = buildDefects(execution);
     const { matches, notTested } = computeDiscoveredElementCoverage(
         selectedPractices,

@@ -6,6 +6,7 @@ import type { CoverageMapEntry, GapWritingRecord } from "@/lib/report/types";
 import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
 import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
+import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
 import { composeGapTest, runGapTest, type GapRunOutcome } from "./gap-run";
 import type { GapTarget, GapWriter } from "./writers";
 
@@ -22,6 +23,12 @@ import type { GapTarget, GapWriter } from "./writers";
  * A gap that ended without a test is recorded, and not asked for again
  * while its page type holds. A re-run of an unchanged site therefore asks
  * the writer for nothing.
+ *
+ * TFP-195 (Decision 8): the pool is checked first - a gap whose pattern a
+ * candidate already matches gets no new test (Comprehensive runs the
+ * candidate; Standard never does). After a test is saved, the writer
+ * generalises it, TestForge binds that back to the same element and runs
+ * it, and a candidate that passes joins the pool.
  */
 
 export const GAP_DESCRIBE = "Gap tests";
@@ -29,7 +36,7 @@ export const DEFAULT_GAP_LIMIT = 5;
 export const MAX_GAP_ATTEMPTS = 3;
 
 /** The element's locator as the coverage map recorded it in its key, or the link's by its text. */
-function targetOf(entry: CoverageMapEntry): GapTarget {
+export function targetOf(entry: CoverageMapEntry): GapTarget {
     const element = / element (.+)$/.exec(entry.key)?.[1] ?? null;
     const link = entry.kind === "link" ? (JSON.parse(entry.key.slice("link ".length)) as [string, string]) : null;
     const locator = element ?? (link && link[0] ? `page.getByRole('link', { name: ${JSON.stringify(link[0])}, exact: true })` : null);
@@ -52,7 +59,7 @@ export async function writeGapTests(options: {
 }): Promise<{ code: string; record: GapWritingRecord }> {
     const run = options.run ?? runGapTest;
     const limit = options.limit ?? gapLimit();
-    const record: GapWritingRecord = { writer: options.writer.name, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [] };
+    const record: GapWritingRecord = { writer: options.writer.name, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], candidates: { matched: 0, added: 0, notKept: 0 } };
     const dir = siteSuiteDirFromStore(options.store);
     const saved = dir ? await loadSiteSuiteAt(dir) : null;
     const map = buildCoverageMap(options.profile, options.code);
@@ -63,7 +70,11 @@ export async function writeGapTests(options: {
         ...saved.manifest.units.filter((unit) => unit.origin === "gap-writer" && unit.covers).map((unit) => unit.covers!),
         ...(saved.manifest.gapAttempts ?? []).map((attempt) => attempt.key),
     ]);
-    const gaps = untouched(map).filter((entry) => (entry.kind === "element" || entry.kind === "link") && !done.has(entry.key));
+    const pool = await loadPool();
+    const open = untouched(map).filter((entry) => (entry.kind === "element" || entry.kind === "link") && !done.has(entry.key));
+    // A gap a pool candidate already matches gets no new test.
+    const gaps = open.filter((entry) => !matchingCandidate(pool, patternOf(entry.kind === "link" ? "link" : "element", entry.name)));
+    record.candidates!.matched = open.length - gaps.length;
     record.gaps = gaps.length;
     const fingerprint = fingerprintOf(options.profile);
     const typeOf = (path: string) => fingerprint.typeOfPath.get(path) ?? "site";
@@ -104,7 +115,30 @@ export async function writeGapTests(options: {
             sources.push(source);
             newUnits.push({ unit: file, key: unit.key, describe: [GAP_DESCRIBE], title: unit.title, type: typeOf(target.page), writtenHash: hashOf(source), writtenAt: new Date().toISOString(), origin: "gap-writer", covers: target.key, writer: options.writer.name });
             record.saved++;
-            record.tests.push({ title, covers: target.key, attempts: tries, costUsd: cost, outcome: "saved" });
+            // TFP-195: the second output - the same test, generalised, checked, then pooled.
+            const pattern = patternOf(target.kind, target.name);
+            let candidateNote = "";
+            if (!poolHas(pool, pattern) && target.locator) {
+                try {
+                    const general = await options.writer.generalise();
+                    cost += general.costUsd ?? 0;
+                    record.costUsd += general.costUsd ?? 0;
+                    const back = general.body.includes("__LOCATOR__") ? await run(options.baseUrl, target, bindCandidate({ body: general.body }, target.page, target.locator)) : null;
+                    if (back?.verdict === "passed") {
+                        const added = await addToPool({ pattern, body: general.body, gate: "read-only", technique: `error guessing (written by ${options.writer.name} for one uncovered ${target.kind}, generalised to its pattern)`, writer: options.writer.name, sources: [{ origin: new URL(options.baseUrl).origin, page: target.page, at: new Date().toISOString() }], costUsd: general.costUsd ?? 0 });
+                        pool.push(added.candidate);
+                        record.candidates!.added++;
+                        candidateNote = `; candidate ${added.candidate.id} ${added.merged ? "merged" : "added"}`;
+                    } else {
+                        record.candidates!.notKept++;
+                        candidateNote = back ? `; its candidate didn't pass bound back to this ${target.kind}` : "; its candidate had no __LOCATOR__ blank";
+                    }
+                } catch (caught) {
+                    record.candidates!.notKept++;
+                    candidateNote = `; no candidate: ${caught instanceof Error ? caught.message : String(caught)}`;
+                }
+            }
+            record.tests.push({ title, covers: target.key, attempts: tries, costUsd: cost, outcome: `saved${candidateNote}` });
             continue;
         }
         const verdict: GapAttempt["outcome"] = error ? "error" : outcome?.verdict === "breach" ? "breach" : outcome?.verdict === "invalid" ? "invalid" : "failed";

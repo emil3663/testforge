@@ -89,7 +89,7 @@ export interface ExecutionRecord {
      * local model's tests to the template suite inside a describe titled
      * "Local model (<model>)"; everything else is the template's.
      */
-    generator?: "template" | "local model";
+    generator?: "template" | "local model" | "candidate";
     /** Phase 34 Option C: why a "Not run" test did not run (its skip annotation). */
     skipReason?: string;
     /** Phase 38 Decision 1: the gate the test declared; absent on runs from before TFP-146. */
@@ -397,6 +397,8 @@ export interface GapWritingRecord {
     tests: Array<{ title: string; covers: string; attempts: number; costUsd: number; outcome: string }>;
     /** Why no writer was asked, when the opt-in was on but none could be. */
     note?: string;
+    /** TFP-195: gaps a pool candidate already matched (no test written), and candidates added or not kept. */
+    candidates?: { matched: number; added: number; notKept: number };
 }
 
 /** Phase 42 (TFP-191): failing reused tests, their pages read again after the run. */
@@ -511,6 +513,12 @@ export interface ComprehensiveModelTest {
     detail: string;
 }
 
+/** Phase 42 (TFP-195): the pool candidates bound to this site and run outside the verdict. */
+export interface ComprehensiveCandidateSection {
+    note: string;
+    tests: Array<{ title: string; outcome: "passed" | "failed: needs review" | "not run"; detail: string }>;
+}
+
 export interface ComprehensiveModelSection {
     /** not-configured: no local model; rejected: asked, but its suite fell back; added: its tests are below. */
     status: "not-configured" | "rejected" | "added";
@@ -558,6 +566,8 @@ export interface ComprehensiveReport {
     manualReview: ComprehensiveIssue[];
     /** Decision 5 (TFP-135): the local model's scenarios, outside the verdict. */
     model: ComprehensiveModelSection;
+    /** TFP-195: present when candidates ran. */
+    candidates?: ComprehensiveCandidateSection;
     /** Decision 6: the fixed statement of what this run did not test. */
     notTested: {
         statements: string[];

@@ -116,9 +116,15 @@ test("opt-in on: a test for each uncovered element only, each run and saved; the
     const gaps = first.siteSuite.gapTests;
     assert.ok(gaps, "the record says what the writer did");
     assert.ok(gaps.asked > 0 && gaps.asked === gaps.gaps, `${gaps.asked} asked of ${gaps.gaps}`);
-    assert.equal(gaps.saved, gaps.asked, JSON.stringify(gaps.tests.filter((t) => t.outcome !== "saved")));
-    assert.equal(calls().length, gaps.asked, "one call per gap, no revision needed");
-    assert.equal(gaps.costUsd.toFixed(4), (0.0125 * gaps.asked).toFixed(4));
+    assert.equal(gaps.saved, gaps.asked, JSON.stringify(gaps.tests.filter((t) => !t.outcome.startsWith("saved"))));
+    // One call to write each test, one per revision (a run can fail under load and be revised), and one to
+    // generalise each saved test into a candidate (TFP-195); the cost is what the calls reported.
+    const revisions = gaps.tests.reduce((sum, written) => sum + written.attempts - 1, 0);
+    assert.equal(calls().filter((call) => call.prompt.startsWith("Write the body")).length, gaps.asked);
+    assert.equal(calls().filter((call) => call.prompt.startsWith("Generalise")).length, gaps.saved);
+    assert.equal(calls().length, gaps.asked + revisions + gaps.saved);
+    assert.equal(gaps.costUsd.toFixed(4), (0.0125 * calls().length).toFixed(4));
+    assert.deepEqual(gaps.candidates, { matched: 0, added: gaps.asked, notKept: 0 });
 
     // Only uncovered elements: every target was on the in-context gap list of the suite before the gap tests.
     const profile = await loadSiteSuiteProfile(first.siteSuite.store);
@@ -127,16 +133,17 @@ test("opt-in on: a test for each uncovered element only, each run and saved; the
     for (const written of gaps.tests) assert.ok(gapKeys.has(written.covers), `${written.covers} was uncovered`);
     const covered = buildCoverageMap(profile, before)!.entries.filter((entry) => entry.tests.length > 0);
     assert.ok(covered.length > 0);
-    for (const call of calls()) for (const entry of covered.filter((e) => e.kind === "link")) assert.ok(!call.prompt.includes(`  ${entry.name}\n`), `${entry.name} is covered and was not asked for`);
+    for (const call of calls().filter((c) => c.prompt.startsWith("Write the body"))) for (const entry of covered.filter((e) => e.kind === "link")) assert.ok(!call.prompt.includes(`  ${entry.name}\n`), `${entry.name} is covered and was not asked for`);
 
     const manifest = await manifestOf(first.siteSuite.store);
     assert.equal(manifest.units.filter((unit) => unit.origin === "gap-writer").length, gaps.saved);
     assert.equal(parseTestUnits(first.code).filter((unit) => unit.describe[0] === "Gap tests").length, gaps.saved);
-    assert.match(describeSiteSuite(first.siteSuite), new RegExp(`Gap tests: Claude Code was asked for ${gaps.asked} gaps, at a cost of \\$${(0.0125 * gaps.asked).toFixed(2)}: ${gaps.saved} saved to the site suite`));
+    assert.match(describeSiteSuite(first.siteSuite), new RegExp(`Gap tests: Claude Code was asked for ${gaps.asked} gaps, at a cost of \\$${gaps.costUsd.toFixed(2)}: ${gaps.saved} saved to the site suite`));
 
     // The same site again: nothing asked, the gap tests reused as saved.
+    const callsBefore = calls().length;
     const again = await generate();
-    assert.equal(calls().length, gaps.asked, "no new call");
+    assert.equal(calls().length, callsBefore, "no new call");
     assert.equal(again.siteSuite.gapTests?.asked, 0);
     assert.equal(again.siteSuite.generated, 0);
     assert.equal(parseTestUnits(again.code).filter((unit) => unit.describe[0] === "Gap tests").length, gaps.saved);
@@ -151,7 +158,7 @@ test("a test that fails is revised in the same session and saved once it passes 
     const body = await generate();
     delete process.env.TESTFORGE_GAP_LIMIT;
     const [written] = body.siteSuite.gapTests!.tests;
-    assert.deepEqual({ outcome: written.outcome, attempts: written.attempts }, { outcome: "saved", attempts: 2 });
+    assert.deepEqual({ outcome: written.outcome.replace(/; candidate \w+ added$/, ""), attempts: written.attempts }, { outcome: "saved", attempts: 2 });
     const [firstCall, secondCall] = calls();
     assert.ok(!firstCall.args.includes("--resume"));
     assert.deepEqual(secondCall.args.slice(-2), ["--resume", firstCall.session], "the revision resumes the first call's session");

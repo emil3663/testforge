@@ -92,6 +92,12 @@ that passes joins the site suite, and one that breaches the gate is
 rejected. At most 5 gaps per generation (`TESTFORGE_GAP_LIMIT`). The
 report says what was written and what Claude Code reported it cost.
 
+Each saved gap test is also generalised to its component's pattern and
+kept in the candidate pool (`candidates/` in the data folder). On a
+Comprehensive run of any site, a candidate whose pattern matches an
+uncovered element runs in its own "Candidate tests" section, outside the
+verdict, and each run adds to its evidence. Standard never runs them.
+
 ---
 
 ## Authenticated runs

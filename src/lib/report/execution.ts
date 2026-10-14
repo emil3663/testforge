@@ -1,6 +1,7 @@
 import { normalizeExecutionTitle, sanitizeDiagnosticText, simplifyExecutionTarget, classifyFailureReason } from "./text";
 import { createExecutionArtifacts } from "./artifacts";
 import { LOCAL_MODEL_SUITE_PREFIX } from "@/lib/generate/gap-fill";
+import { CANDIDATE_DESCRIBE } from "@/lib/candidates/constants";
 import { GATE_ANNOTATION, isTestGate } from "@/lib/run/test-gates";
 import type {
     ComprehensiveIssueRecord,
@@ -391,7 +392,8 @@ export function flattenSuites(
                     ),
                     findings: findingsOf(test),
                     ...(measurementsOf(test).length > 0 ? { measurements: measurementsOf(test) } : {}),
-                    generator: localModel ? "local model" : "template",
+                    // TFP-195: a pool candidate, bound to this site and run outside the verdict.
+                    generator: localModel ? "local model" : nextLineage.includes(CANDIDATE_DESCRIBE) ? "candidate" : "template",
                     ...(status === "Not run" && skipReason ? { skipReason } : {}),
                     ...gateOf(test),
                     ...comprehensiveTags(test),

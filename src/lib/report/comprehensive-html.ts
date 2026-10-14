@@ -74,6 +74,11 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
             <p>${e(c.model.note)}</p>
             ${c.model.tests.length > 0 ? `<ul>${c.model.tests.map((t) => `<li><strong>${e(t.outcome)}</strong> - ${e(t.title)}${t.detail ? `: ${e(t.detail)}` : ""}</li>`).join("")}</ul>` : ""}
         </section>
+        ${c.candidates ? `<section id="candidates">
+            <h2>Candidate tests</h2>
+            <p>${e(c.candidates.note)}</p>
+            <ul>${c.candidates.tests.map((t) => `<li><strong>${e(t.outcome)}</strong> - ${e(t.title)}${t.detail ? `: ${e(t.detail)}` : ""}</li>`).join("")}</ul>
+        </section>` : ""}
         <section id="not-tested">
             <h2>What this run did not test</h2>
             ${c.notTested.statements.map((statement) => `<p>${e(statement)}</p>`).join("")}

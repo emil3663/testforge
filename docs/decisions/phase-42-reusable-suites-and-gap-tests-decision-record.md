@@ -388,6 +388,19 @@ on the local Toolshop copies (Phase 41 Decision 7).
   is reported outside the verdict, and gains a run of evidence; Standard
   never runs candidates.
 - **Dependencies:** TFP-194.
+- **Built:** `src/lib/candidates/`. After a gap test is saved, the writer
+  is asked in the same session to generalise it, leaving `__PAGE__` and
+  `__LOCATOR__` blanks. TestForge binds the candidate back to the same
+  element and runs it, and only one that passes joins the pool. A pattern
+  is the element's kind, type and name (lower-cased), read from the
+  coverage map; one pattern is one file, so a second source is merged. On
+  a Comprehensive run, each in-context gap a candidate matches gets it,
+  bound to that site, in "Candidate tests": filtered out of every count,
+  listed in the report's own section, and recorded as evidence when the
+  run ends (site, page, run, status). Matching doesn't wait for the
+  site's opt-in, since nothing leaves the machine. Before writing, a gap a
+  candidate matches gets no new test, on either run type, so on Standard
+  such a gap stays uncovered.
 
 ### TFP-196 — Promotion
 
