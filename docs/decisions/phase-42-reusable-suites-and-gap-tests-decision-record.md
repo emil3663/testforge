@@ -307,6 +307,16 @@ on the local Toolshop copies (Phase 41 Decision 7).
   `check:template-unchanged` difference is only that list's name, accepted
   in the commit.
 - **Dependencies:** none. In batch 2.
+- **Built:** the fix is in the inspection, not the template
+  (`src/lib/introspect/dom-snapshot.ts`): a label's text is read without
+  the labelled control's own content, as Chromium names it (measured:
+  "Subject", "Size *", "Message"). It applies to a `label[for]` too. The
+  template writes what the inspection records, so
+  `check:template-unchanged`, which replays recorded profiles, shows no
+  difference; the change reaches suites through new inspections. The
+  fixture's case is `/wrapped`, and the TFP-191 defect's list lost its
+  `aria-label`. The coverage map's blind-spot note was never added, since
+  the fix came in the same batch.
 
 ### TFP-193 — The library: pattern entries, seeded from Phase 41
 

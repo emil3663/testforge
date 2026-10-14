@@ -83,11 +83,27 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
         return cleanText(element.textContent ?? "");
     };
 
+    // TFP-200: a label's text as the browser names its control with it - without the control's own
+    // content. A <select> inside its <label> was named with its options' text ("Subject OrderOther"),
+    // and a <textarea> with what it held; Chromium names them "Subject" and "Message", so their checks
+    // found nothing.
+    const labelTextWithout = (label: Element, control: Element) => {
+        const parts: string[] = [];
+        const walk = (node: Node) => {
+            if (node === control) return;
+            if (node.nodeType === Node.TEXT_NODE) parts.push(node.textContent ?? "");
+            else node.childNodes.forEach(walk);
+        };
+        walk(label);
+        return cleanText(parts.join(""));
+    };
+
     const getAssociatedLabel = (element: Element) => {
         const htmlElement = element as HTMLElement;
 
-        if (htmlElement.closest("label")) {
-            return cleanText(htmlElement.closest("label")?.textContent ?? "");
+        const wrapping = htmlElement.closest("label");
+        if (wrapping) {
+            return labelTextWithout(wrapping, element);
         }
 
         const elementId = htmlElement.getAttribute("id");
@@ -95,9 +111,8 @@ export function captureDomSnapshot({ requestedPath, maxActionableItems, maxLinkD
             return "";
         }
 
-        return cleanText(
-            document.querySelector(`label[for="${CSS.escape(elementId)}"]`)?.textContent ?? ""
-        );
+        const forLabel = document.querySelector(`label[for="${CSS.escape(elementId)}"]`);
+        return forLabel ? labelTextWithout(forLabel, element) : "";
     };
 
     const getRole = (element: Element, elementType: ActionableElementType, inputType: string) => {

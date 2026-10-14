@@ -96,8 +96,7 @@ export const DEFECTS = {
     "types-privacy-removed": "/types/legal/privacy is gone: not linked, and 404",
     // TFP-191: a saved test that then fails - on a page whose structure changed (the Subject
     // field becomes a list), and on one whose structure didn't (a field becomes read-only).
-    // The list has an aria-label: wrapped in its label alone, the template names it "Subject
-    // OrderOther" (its options' text) where the browser doesn't - a template bug, left for Emil.
+    // The list is named by its wrapping label alone (TFP-200 named it as the browser does).
     "types-contact-subject-list": "/types/account/contact's Subject is a list, not a text field",
     "types-quantity-readonly": "/types/product/101's quantity field is read-only",
     // TFP-199: not a defect - as the hosted Toolshops' Cloudflare does, every page sends analytics
@@ -309,6 +308,14 @@ const server = createServer(async (req, res) => {
         return send(303, "", "text/plain", { location: "/notes" });
     }
     if (url.pathname === "/notes" && req.method === "GET") return send(200, notesPage());
+    // TFP-200: controls inside their <label>, with no other name - a list (its options' text is not
+    // its name), a list with text after it, and a textarea that holds text. Not linked from the nav.
+    if (url.pathname === "/wrapped" && req.method === "GET") {
+        return send(200, page("Wrapped labels", `<h1>Wrapped labels</h1>
+<form action="/notes" method="get"><label>Subject <select name="subject"><option>Order</option><option>Other</option></select></label>
+<label>Size <select name="size"><option value="">Choose</option><option>M</option></select> *</label>
+<label>Message <textarea name="message">Hello</textarea></label></form>`));
+    }
     // TFP-141: the in-page links the anchor-target check met on a real site -
     // a placeholder href="#" (which crashed it), a real target and #top. The
     // check passes here, with a finding for the placeholder. Not linked from
@@ -453,7 +460,7 @@ draw();
             // TFP-176: a category with nothing in it - no cards. It stays in its listing type: cards don't split.
             "/types/category/empty": `<main><h1>Empty</h1><p>Nothing here yet.</p></main>`,
             "/types/account/login": `<main><h1>Sign in</h1><form action="/types/account/login" method="post"><label>Email <input type="email" name="email"></label><label>Password <input type="password" name="password"></label><button>Sign in</button></form></main>`,
-            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject ${defect === "types-contact-subject-list" ? `<select name="subject" aria-label="Subject"><option>Order</option><option>Other</option></select>` : `<input name="subject">`}</label>${defect === "types-contact-phone" ? `<label>Phone <input type="tel" name="phone"></label>` : ""}<label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
+            "/types/account/contact": `<main><h1>Contact</h1><form action="/types/account/contact" method="post"><label>Email <input type="email" name="email"></label><label>Subject ${defect === "types-contact-subject-list" ? `<select name="subject"><option>Order</option><option>Other</option></select>` : `<input name="subject">`}</label>${defect === "types-contact-phone" ? `<label>Phone <input type="tel" name="phone"></label>` : ""}<label>Message <textarea name="message"></textarea></label><button>Send</button></form></main>`,
             "/types/legal/privacy": `<main><h1>Privacy</h1><p>We keep little.</p></main>`,
             "/types/help/terms": `<main><h1>Terms</h1><p>Be kind.</p></main>`,
             "/p/iphone15promaxblack2023": `<main><h1>Phone A</h1>${qty}</main>${aside}`,
