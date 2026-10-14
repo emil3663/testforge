@@ -1,4 +1,4 @@
-import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, SiteSuiteRecheck, SiteSuiteRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord } from "@/lib/report/types";
 import { MAX_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
@@ -86,7 +86,25 @@ function normalizeSiteSuite(value: unknown): SiteSuiteRecord | null {
         goneTypes: list("goneTypes"),
         editedOnChangedPages: list("editedOnChangedPages"),
         ...(normalizeRecheck(v.recheck) ? { recheck: normalizeRecheck(v.recheck)! } : {}),
+        ...(normalizeGapWriting(v.gapTests) ? { gapTests: normalizeGapWriting(v.gapTests)! } : {}),
     };
+}
+
+function normalizeGapWriting(value: unknown): GapWritingRecord | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const writer = text(v.writer, 40);
+    if (!writer) return null;
+    const count = (from: Record<string, unknown>, key: string) => (typeof from[key] === "number" && Number.isInteger(from[key]) && (from[key] as number) >= 0 ? Math.min(from[key] as number, 100000) : 0);
+    const money = (from: Record<string, unknown>) => (typeof from.costUsd === "number" && Number.isFinite(from.costUsd) && from.costUsd >= 0 ? Math.min(from.costUsd, 100000) : 0);
+    const tests = (Array.isArray(v.tests) ? v.tests : []).slice(0, 50).flatMap((item: unknown) => {
+        if (!item || typeof item !== "object") return [];
+        const t = item as Record<string, unknown>;
+        const title = text(t.title);
+        return title ? [{ title, covers: text(t.covers, 400) ?? "", attempts: count(t, "attempts"), costUsd: money(t), outcome: text(t.outcome, 400) ?? "" }] : [];
+    });
+    const note = text(v.note, 400);
+    return { writer, gaps: count(v, "gaps"), asked: count(v, "asked"), saved: count(v, "saved"), rejected: count(v, "rejected"), failed: count(v, "failed"), costUsd: money(v), tests, ...(note ? { note } : {}) };
 }
 
 function normalizeRecheck(value: unknown): SiteSuiteRecheck | null {

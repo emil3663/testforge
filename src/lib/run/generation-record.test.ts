@@ -119,3 +119,15 @@ test("the site suite's recheck: kept, described, and cleaned when malformed", ()
     );
     assert.equal(describeSiteSuite({ ...base, recheck: { failedReused: 0, unchanged: 0, regenerations: [] } }), describeSiteSuite(base), "nothing to say when no reused test failed");
 });
+
+/** Phase 42 (TFP-194). ISTQB technique: equivalence partitioning - a real gap-writing record, and a stored one that isn't. */
+test("the site suite's gap tests: kept as recorded, cleaned when malformed, dropped with no writer", () => {
+    const base = { store: "C:/data/site-suites/x/standard", firstRun: false, reused: 4, generated: 0, regenerated: 0, retired: 0, edited: 0, changedTypes: [], newTypes: [], goneTypes: [], editedOnChangedPages: [] };
+    const gapTests = { writer: "claude-code", gaps: 3, asked: 2, saved: 1, rejected: 1, failed: 0, costUsd: 0.025, tests: [{ title: "gap test: Rentals [link] on /", covers: "link [\"Rentals\",\"http://x/rentals\"]", attempts: 1, costUsd: 0.0125, outcome: "saved" }] };
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, gapTests } })?.siteSuite?.gapTests, gapTests);
+    assert.deepEqual(
+        normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, gapTests: { writer: "claude-code", asked: -2, costUsd: "1", tests: [{ covers: "x" }, { title: "t", attempts: 1.5 }], extra: true } } })?.siteSuite?.gapTests,
+        { writer: "claude-code", gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [{ title: "t", covers: "", attempts: 0, costUsd: 0, outcome: "" }] }
+    );
+    assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, gapTests: { saved: 1 } } })?.siteSuite?.gapTests, undefined);
+});

@@ -24,6 +24,9 @@ import { isComprehensive, normalizeRunMode, RunModeError, type RunMode } from "@
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
 import { buildComprehensiveSuite, mergeComprehensiveScenarios } from "@/lib/generate/comprehensive";
 import { applySiteSuite } from "@/lib/site-suites/reuse";
+import { loadSiteSettings } from "@/lib/gap-writer/settings";
+import { claudeCodeWriter, localModelWriter } from "@/lib/gap-writer/writers";
+import { writeGapTests } from "@/lib/gap-writer/write";
 import type { SiteSuiteRecord } from "@/lib/report/types";
 
 export async function POST(req: NextRequest) {
@@ -100,7 +103,18 @@ export async function POST(req: NextRequest) {
         const inputs = { baseUrl: normalizedBaseUrl.value, description, practices: normalizedPractices, contentRules: normalizedContentRules, auditMode: normalizedAuditMode, runMode: normalizedRunMode };
         const applied = await applySiteSuite(code, normalizedContentProfile, origin, identity, inputs);
         siteSuite = applied.record;
-        return applied.code;
+        // Phase 42 (TFP-194, Decision 6): gap tests only for a site that opted in; off, nothing is sent anywhere.
+        const { gapWriter } = await loadSiteSettings(origin);
+        if (gapWriter === "off") return applied.code;
+        const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+        const writer = gapWriter === "claude-code" ? claudeCodeWriter() : localModel ? localModelWriter(localModel) : null;
+        if (!writer) {
+            siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set" } };
+            return applied.code;
+        }
+        const gaps = await writeGapTests({ baseUrl: normalizedBaseUrl.value, store: applied.record.store, code: applied.code, profile: normalizedContentProfile, writer });
+        siteSuite = { ...applied.record, gapTests: gaps.record };
+        return gaps.code;
     };
     const template = () =>
         withSiteSuite(mockGenerate(

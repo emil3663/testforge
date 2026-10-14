@@ -8,14 +8,27 @@ const plural = (count: number, one: string, many = `${one}s`) => `${count} ${cou
  * report and the HTML export alike.
  */
 export function describeSiteSuite(record: SiteSuiteRecord): string {
-    if (record.firstRun) return `Site suite: first run for this site and suite type, so all ${plural(record.generated, "test")} were generated and saved in ${record.store}.`;
+    if (record.firstRun) return `Site suite: first run for this site and suite type, so all ${plural(record.generated, "test")} were generated and saved in ${record.store}.${describeGapTests(record)}`;
     const parts = [`${plural(record.reused, "test")} reused`, `${record.generated} generated`];
     parts.push(record.regenerated > 0 ? `${record.regenerated} regenerated (page types changed: ${record.changedTypes.join(", ") || "the site's set of page types"})` : "0 regenerated");
     parts.push(record.retired > 0 ? `${record.retired} retired${record.goneTypes.length > 0 ? ` (page types gone: ${record.goneTypes.join(", ")})` : ""}` : "0 retired");
     if (record.edited > 0) parts.push(`${record.edited} edited by hand and kept`);
     const newTypes = record.newTypes.length > 0 ? `; new page types: ${record.newTypes.join(", ")}` : "";
     const flagged = record.editedOnChangedPages.length > 0 ? ` Edited by hand, on a page that changed - check these: ${record.editedOnChangedPages.join("; ")}.` : "";
-    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}${describeRecheck(record)}`;
+    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}${describeRecheck(record)}${describeGapTests(record)}`;
+}
+
+/** TFP-194: which gap tests the site's writer wrote, and what it cost. */
+function describeGapTests(record: SiteSuiteRecord): string {
+    const gaps = record.gapTests;
+    if (!gaps) return "";
+    const writer = gaps.writer === "claude-code" ? "Claude Code" : gaps.writer === "local-model" ? "the local model" : gaps.writer;
+    if (gaps.note) return ` Gap tests: none written, as ${gaps.note}.`;
+    if (gaps.asked === 0) return ` Gap tests: ${writer} was asked for nothing; ${gaps.gaps === 0 ? "no gap is left that hasn't been written for or tried" : `${gaps.gaps} gaps wait, over this run's limit`}.`;
+    const cost = gaps.writer === "claude-code" ? `, at a cost of $${gaps.costUsd.toFixed(2)}` : "";
+    const saved = gaps.tests.filter((test) => test.outcome === "saved").map((test) => test.title);
+    const left = gaps.gaps - gaps.asked;
+    return ` Gap tests: ${writer} was asked for ${plural(gaps.asked, "gap")}${cost}: ${gaps.saved} saved to the site suite${saved.length ? ` (${saved.join("; ")})` : ""}, ${gaps.rejected} rejected for breaching the read-only gate, ${gaps.failed} not kept.${left > 0 ? ` ${left} more ${left === 1 ? "waits" : "wait"} for a later run.` : ""}`;
 }
 
 /** TFP-191: what reading the failing reused tests' pages again found, after the run. */

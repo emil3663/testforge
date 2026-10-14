@@ -3,6 +3,8 @@ import { signatureOf } from "@/lib/selection/page-outline";
 import { groupPagesByAddress } from "@/lib/selection/page-types";
 import type { SiteSuiteRecord } from "@/lib/report/types";
 import { hashOf, loadSiteSuite, saveSiteSuite, unitFileName, type SiteSuiteIdentity, type SiteSuiteInputs, type SiteSuiteManifest, type StoredType, type StoredUnit } from "./store";
+import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
+import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
 import { parseTestUnits, withId, type TestUnit } from "./units";
 
 /**
@@ -132,18 +134,24 @@ export async function applySiteSuite(fresh: string, profile: ContentProfile | nu
     // Saved tests the generator didn't write this time: hand-edited ones stay (appended to their
     // describe); the rest are retired. Not kept for an unchanged type: the signature is coarse, and
     // a test the generator stopped writing tests something that is gone (a link taken off a page).
+    // TFP-194: a gap test was never the generator's: it stays while its page type is unchanged.
     const appended = new Map<string, string[]>();
     for (const stored of saved?.manifest.units ?? []) {
         if (matched.has(stored.key)) continue;
         const source = saved!.sources.get(stored.unit);
         const isEdited = edited(stored);
-        if (source === undefined || !isEdited) {
+        const gapTest = stored.origin === "gap-writer" && unchanged(stored.type);
+        if (source === undefined || (!isEdited && !gapTest)) {
             counts.retired++;
             continue;
         }
         const describe = JSON.stringify(stored.describe);
         appended.set(describe, [...(appended.get(describe) ?? []), source]);
         kept.push(stored);
+        if (!isEdited) {
+            counts.reused++;
+            continue;
+        }
         counts.edited++;
         if (!unchanged(stored.type)) editedOnChangedPages.push(`${stored.title} (${fingerprint.types[stored.type] || stored.type === "site" ? `${stored.type === "site" ? "the site's page types" : stored.type} changed` : `${stored.type} is gone`})`);
     }
@@ -163,6 +171,8 @@ export async function applySiteSuite(fresh: string, profile: ContentProfile | nu
         types: fingerprint.types,
         units: kept,
         ...(inputs ? { inputs } : {}),
+        // TFP-194: a gap tried without a saved test isn't asked for again while its page type holds.
+        ...(saved?.manifest.gapAttempts?.length ? { gapAttempts: saved.manifest.gapAttempts.filter((attempt) => unchanged(attempt.type)) } : {}),
     };
     const store = await saveSiteSuite(manifest, files, profile);
     const changedTypes = fingerprint.siteTypes.filter((type) => saved?.manifest.types[type] && !sameType(saved.manifest.types[type], fingerprint.types[type]));
@@ -174,16 +184,29 @@ export async function applySiteSuite(fresh: string, profile: ContentProfile | nu
     };
 }
 
-/** Adds saved tests to the end of the describe with their chain; a chain the suite no longer has gets them at the top level. */
-function appendToDescribes(code: string, appended: Map<string, string[]>): string {
+/**
+ * Adds saved tests to the end of the describe with their chain. A chain the suite no longer has is
+ * written again around them, so their keys stay the same on the next run (TFP-194: the gap tests'
+ * own describe). Tests that use the request guard get its helper when the suite has none.
+ */
+export function appendToDescribes(code: string, appended: Map<string, string[]>): string {
     if (appended.size === 0) return code;
     let result = code;
     for (const [describe, sources] of appended) {
         const chain = JSON.parse(describe) as string[];
         const last = parseTestUnits(result).filter((unit) => JSON.stringify(unit.describe) === describe).pop();
         const block = sources.join("\n\n");
-        if (last) result = `${result.slice(0, last.end)}\n\n${block}${result.slice(last.end)}`;
-        else result = `${result.trimEnd()}\n\n// Kept from the site suite (${chain.join(" > ") || "top level"}):\n${block}\n`;
+        if (last) {
+            result = `${result.slice(0, last.end)}\n\n${block}${result.slice(last.end)}`;
+            continue;
+        }
+        const opened = chain.map((title) => `test.describe('${escapeForSingleQuotedString(title)}', () => {`).join("\n");
+        const closed = chain.map(() => "});").join("\n");
+        result = `${result.trimEnd()}\n\n// Kept from the site suite (${chain.join(" > ") || "top level"}):\n${opened ? `${opened}\n` : ""}${block}${closed ? `\n${closed}` : ""}\n`;
+    }
+    if (result.includes("tfReadOnlyGuarded(") && !result.includes("async function tfReadOnlyGuarded")) {
+        const firstTest = result.search(/^(test\.describe\(|test\(|\/\/ Kept from the site suite)/m);
+        result = firstTest > 0 ? `${result.slice(0, firstTest)}${READ_ONLY_GUARD_HELPER}\n\n${result.slice(firstTest)}` : `${result}\n${READ_ONLY_GUARD_HELPER}\n`;
     }
     return result;
 }

@@ -59,6 +59,20 @@ export interface StoredUnit {
     writtenHash: string;
     /** When TestForge wrote it: the manifest's savedAt for a test this run generated, earlier for a reused one. */
     writtenAt: string;
+    /** TFP-194: who wrote it - the template (absent), or a gap writer for one uncovered element. */
+    origin?: "gap-writer";
+    /** TFP-194: the coverage map key of the element a gap test was written for. */
+    covers?: string;
+    /** TFP-194: the gap writer ("claude-code", "local-model"). */
+    writer?: string;
+}
+
+/** TFP-194: a gap a writer was asked for and that didn't end in a saved test - not asked again while its page type holds. */
+export interface GapAttempt {
+    key: string;
+    type: string;
+    outcome: "breach" | "failed" | "invalid" | "error";
+    at: string;
 }
 
 export interface SiteSuiteManifest {
@@ -71,6 +85,8 @@ export interface SiteSuiteManifest {
     types: Record<string, StoredType>;
     units: StoredUnit[];
     inputs?: SiteSuiteInputs;
+    /** TFP-194: gaps already tried without a saved test. */
+    gapAttempts?: GapAttempt[];
 }
 
 export function hashOf(text: string) {

@@ -82,6 +82,16 @@ tests are written again from a fresh inspection and re-run, and only the
 re-run's results are reported, with the change named. If it hasn't, the
 failure stands.
 
+**Gap tests (opt-in per site, off by default).** A site can have its
+uncovered elements written for, once per gap: `POST /api/site-settings`
+with `{ "baseUrl": "...", "gapWriter": "claude-code" }` (or
+`"local-model"`, which needs `TESTFORGE_OLLAMA_MODEL`; `"off"` turns it
+back off). Turning it on sends that site's page structure to the writer.
+Each written test runs at the read-only gate, inside the request guard; one
+that passes joins the site suite, and one that breaches the gate is
+rejected. At most 5 gaps per generation (`TESTFORGE_GAP_LIMIT`). The
+report says what was written and what Claude Code reported it cost.
+
 ---
 
 ## Authenticated runs

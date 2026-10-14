@@ -358,6 +358,20 @@ on the local Toolshop copies (Phase 41 Decision 7).
   uncovered elements; a re-run of an unchanged site writes nothing new; a
   written test that breaches a gate is rejected and never saved.
 - **Dependencies:** TFP-193.
+- **Built:** `src/lib/gap-writer/`. The opt-in is a per-site setting in
+  the data folder (`settings.json`, set through `/api/site-settings`;
+  absent reads as off). The targets are TFP-201's in-context gap list,
+  elements and links (flows are interactive and stay out). The writer
+  gives a test body; TestForge composes the test at the read-only gate
+  with the whole body in the request guard, type-checks it, refuses a
+  body that reaches for Node, and runs it. A failure goes back for a
+  revision in the same session, up to 3 attempts; a breach is rejected
+  at once. Saved gap tests are kept while their page type holds; a gap
+  tried without a saved test is recorded, so it isn't asked for again. At
+  most 5 gaps per generation (`TESTFORGE_GAP_LIMIT`), so a first run's
+  cost is bounded. Claude Code is called with the prompt on stdin, never
+  as an argument, since the prompt carries text from the site. Not built:
+  a control in the app for the setting (the route only).
 
 ### TFP-195 — The candidate pool
 

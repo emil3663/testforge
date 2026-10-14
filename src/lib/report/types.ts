@@ -376,6 +376,27 @@ export interface SiteSuiteRecord {
     editedOnChangedPages: string[];
     /** After the run (TFP-191): the failing reused tests whose pages were read again, and what that found. */
     recheck?: SiteSuiteRecheck;
+    /** TFP-194: the gap tests written at this generation, when the site opted in. */
+    gapTests?: GapWritingRecord;
+}
+
+/** Phase 42 (TFP-194): what the site's gap writer was asked for, what it cost, and what came of it. */
+export interface GapWritingRecord {
+    writer: string;
+    /** Gaps on the in-context gap list not yet written for or tried. */
+    gaps: number;
+    /** Of those, the ones the writer was asked for (at most the limit). */
+    asked: number;
+    saved: number;
+    /** Rejected: a breach of the read-only gate. */
+    rejected: number;
+    /** Not kept: still failing after the last attempt, invalid, or the writer couldn't be reached. */
+    failed: number;
+    /** What the writer reported it cost, in US dollars (Claude Code); 0 for the local model. */
+    costUsd: number;
+    tests: Array<{ title: string; covers: string; attempts: number; costUsd: number; outcome: string }>;
+    /** Why no writer was asked, when the opt-in was on but none could be. */
+    note?: string;
 }
 
 /** Phase 42 (TFP-191): failing reused tests, their pages read again after the run. */
