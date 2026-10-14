@@ -118,7 +118,9 @@ a real defect or run clean on 3 sites, is offered for promotion
 `{ "action": "approve", "id", "by" }` or `{ "action": "reject", "id",
 "reason" }`. `npm run library:promote` then writes each approved one, with
 its evidence, under `src/lib/library/promoted/`, to be reviewed and
-committed.
+committed. Once committed, a promoted entry runs on every Standard run with
+the functional area, on each page that has its pattern, inside the verdict
+like the rest of the library.
 
 ---
 

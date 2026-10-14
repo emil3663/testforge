@@ -29,6 +29,8 @@ import { claudeCodeWriter, localModelWriter } from "@/lib/gap-writer/writers";
 import { writeGapTests } from "@/lib/gap-writer/write";
 import { applyCandidates } from "@/lib/candidates/apply";
 import { bindCandidatesToGaps } from "@/lib/candidates/standard";
+import { loadPromotedEntries } from "@/lib/candidates/promotion";
+import { bindPromotedEntries } from "@/lib/library/promoted";
 import type { SiteSuiteRecord } from "@/lib/report/types";
 
 export async function POST(req: NextRequest) {
@@ -103,7 +105,12 @@ export async function POST(req: NextRequest) {
             ? { runType: "comprehensive" as const, area: normalizedRunMode.area, practices: [], auditMode: "" }
             : { runType: "standard" as const, practices: normalizedPractices, auditMode: normalizedAuditMode };
         const inputs = { baseUrl: normalizedBaseUrl.value, description, practices: normalizedPractices, contentRules: normalizedContentRules, auditMode: normalizedAuditMode, runMode: normalizedRunMode };
-        const fromSuite = await applySiteSuite(code, normalizedContentProfile, origin, identity, inputs);
+        // Phase 42 (TFP-204, batch 2 ruling 3): the library's promoted entries join the template's checks where the
+        // library's control checks run (Standard, functional), and are saved with them.
+        const library = identity.runType === "standard" && getBestPracticeAreas(description, normalizedPractices).includes("functional")
+            ? bindPromotedEntries(code, normalizedContentProfile, await loadPromotedEntries()).code
+            : code;
+        const fromSuite = await applySiteSuite(library, normalizedContentProfile, origin, identity, inputs);
         // Phase 42 (TFP-203, batch 2 ruling 2): on Standard, a pool candidate matching a gap becomes its test once it
         // passes the gates here. Nothing leaves the machine, so it doesn't wait for the opt-in.
         const bound = identity.runType === "standard" ? await bindCandidatesToGaps({ baseUrl: normalizedBaseUrl.value, store: fromSuite.record.store, code: fromSuite.code, profile: normalizedContentProfile }) : null;

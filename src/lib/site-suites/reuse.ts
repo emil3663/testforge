@@ -204,9 +204,12 @@ export function appendToDescribes(code: string, appended: Map<string, string[]>)
         const closed = chain.map(() => "});").join("\n");
         result = `${result.trimEnd()}\n\n// Kept from the site suite (${chain.join(" > ") || "top level"}):\n${opened ? `${opened}\n` : ""}${block}${closed ? `\n${closed}` : ""}\n`;
     }
-    if (result.includes("tfReadOnlyGuarded(") && !result.includes("async function tfReadOnlyGuarded")) {
-        const firstTest = result.search(/^(test\.describe\(|test\(|\/\/ Kept from the site suite)/m);
-        result = firstTest > 0 ? `${result.slice(0, firstTest)}${READ_ONLY_GUARD_HELPER}\n\n${result.slice(firstTest)}` : `${result}\n${READ_ONLY_GUARD_HELPER}\n`;
-    }
-    return result;
+    return withGuardHelper(result);
+}
+
+/** The request guard's helper, before the first test, when the suite uses it and has none (shared with TFP-204). */
+export function withGuardHelper(code: string): string {
+    if (!code.includes("tfReadOnlyGuarded(") || code.includes("async function tfReadOnlyGuarded")) return code;
+    const firstTest = code.search(/^(test\.describe\(|test\(|\/\/ Kept from the site suite|\/\/ Phase 42 \(TFP-204\))/m);
+    return firstTest > 0 ? `${code.slice(0, firstTest)}${READ_ONLY_GUARD_HELPER}\n\n${code.slice(firstTest)}` : `${code}\n${READ_ONLY_GUARD_HELPER}\n`;
 }

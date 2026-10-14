@@ -535,6 +535,20 @@ on the local Toolshop copies (Phase 41 Decision 7).
   library entry; with nothing promoted, `check:template-unchanged` is
   166/166.
 - **Dependencies:** none. Before TFP-197.
+- **Built:** `src/lib/library/promoted.ts`, called by `/api/generate` on
+  Standard runs with the functional area in scope (where the library's
+  control checks run), before the site suite is applied, so promoted tests
+  are saved and reused like the template's. Each entry is matched by its
+  pattern against the inspected pages: an element gets a test on each page
+  it is on, a repeated link one test on its first page; the blanks take the
+  page and the generator's own locator, so the coverage map counts it
+  covered. The tests sit in the functional describe at the read-only gate,
+  inside the request guard, titled `library promoted.<id>: ...`. An entry
+  the TFP-202 code check refuses is not applied, and an unreadable entry
+  file is skipped. The template generator itself is untouched (its arity is
+  fixed by `check:template-unchanged`), so with nothing promoted its output
+  is byte for byte the same. Not done: promoted entries on Comprehensive
+  runs, and in `entries.ts`'s catalogue.
 
 ### TFP-197 — Measure the gap writer (Gate B)
 

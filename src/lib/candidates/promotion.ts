@@ -136,8 +136,20 @@ export async function promoteApproved(libraryDir: string = join(process.cwd(), P
     return written;
 }
 
-/** The library's promoted entries, as committed. */
-export async function loadPromotedEntries(libraryDir: string = join(process.cwd(), PROMOTED_DIR)): Promise<PromotedEntry[]> {
+/**
+ * The library's promoted entries, as committed. TFP-204: generation reads them, so a file that can't be read or
+ * parsed is skipped rather than failing every generation. `TESTFORGE_LIBRARY_PROMOTED_DIR` replaces the folder;
+ * tests point it at their own.
+ */
+export async function loadPromotedEntries(libraryDir: string = process.env.TESTFORGE_LIBRARY_PROMOTED_DIR?.trim() || join(process.cwd(), PROMOTED_DIR)): Promise<PromotedEntry[]> {
     const names = (await readdir(libraryDir).catch(() => [] as string[])).filter((name) => name.endsWith(".json")).sort();
-    return Promise.all(names.map(async (name) => JSON.parse(await readFile(join(libraryDir, name), "utf8")) as PromotedEntry));
+    const entries: PromotedEntry[] = [];
+    for (const name of names) {
+        try {
+            entries.push(JSON.parse(await readFile(join(libraryDir, name), "utf8")) as PromotedEntry);
+        } catch {
+            // Not an entry.
+        }
+    }
+    return entries;
 }
