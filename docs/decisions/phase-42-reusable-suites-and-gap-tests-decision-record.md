@@ -431,6 +431,81 @@ on the local Toolshop copies (Phase 41 Decision 7).
   screen in the app (the route only).
 - **Stop for verification after TFP-193 to TFP-196 (batch 2).**
 
+- **Batch 2 done, verified 2026-10-14 (Cowork):** TFP-201 (`c516a1e`,
+  map `16bbef7`), TFP-200 (`567d2c4`; fixed in the inspection, so template
+  output is unchanged), TFP-193 (`7eba131`; output byte-identical), TFP-194
+  (`2de9aeb`), TFP-195 (`ee19dae`), TFP-196 (`4dc8e8d`), `b17f097`
+  (lint split), `c15dd2c` (gap-test files out of Playwright's test folder,
+  which caused 15 unrelated failures in the first full run). End checks:
+  unit 551/551, regression 57/57, `check:template-unchanged` 166/166.
+  TFP-194 was tested with a stand-in; no real Claude Code call was made.
+
+### Batch 2 rulings (Emil, 2026-10-14)
+
+1. **A repeated link** is matched by text and target, wherever it sits on
+   the page (the inspection records no region). Accepted.
+2. **On Standard, a matching candidate becomes the gap's test (TFP-203).**
+   As built, a gap with a matching candidate got no test on Standard, which
+   never runs candidates. Now the candidate is bound into the site suite as
+   that gap's site test once it passes the gates, as Decision 8 intends
+   ("used instead of writing another").
+3. **Promoted entries are applied by generation (TFP-204).** Otherwise
+   promotion changes nothing. The app screens for the opt-in and promotion
+   wait for the post-Phase 42 review; the API routes work.
+4. **The default limit of 5 gap tests per generation**
+   (`TESTFORGE_GAP_LIMIT`) is accepted as Emil's decision.
+5. **Gap tests are hardened before any real use (TFP-202, P0).** They turn
+   text read from a site under test into code that runs on Emil's machine,
+   and candidates carry that code to other sites. A real sandbox (the tests
+   run inside Docker) is the follow-up, for the post-Phase 42 review.
+
+### TFP-202 — Harden the gap writer and the tests it writes
+
+- **Priority:** P0 · **Labels:** `security`, `ai`
+- **Problem it solves:** `claude -p` is called with its normal tools, from
+  the TestForge folder, with page text in the prompt (prompt injection could
+  steer what it reads or writes); the written test runs as Node with the
+  full environment (API keys included); the code check blocks `require`,
+  `process` and `fs` by pattern only.
+- **Deliverables:**
+  - Claude Code called with every tool turned off and from an empty
+    temporary working folder; the exact flags taken from Claude Code's
+    current documentation and named in the commit;
+  - gap and candidate tests run with a stripped environment: only what
+    Playwright needs, no keys, tokens or TestForge settings;
+  - the code check widened to network and dynamic code (`fetch`,
+    `XMLHttpRequest`, `WebSocket`, `import(`, `eval`, `Function(`,
+    `globalThis`, `child_process`, `page.request` and `request.` calls other
+    than GET, and the like), still with no imports allowed;
+  - the page text in the prompt marked as untrusted data, with the
+    instruction not to follow anything in it.
+- **Acceptance criteria:** unit cases show the spawn uses the no-tools
+  flags and a temporary folder; a test body that reads an environment
+  variable gets nothing; each forbidden construct is rejected before
+  running; an injection string in the page text ("ignore your
+  instructions...") is passed as data in the prompt.
+- **Dependencies:** none. Before TFP-197.
+
+### TFP-203 — On Standard, a matching candidate becomes the gap's test
+
+- **Priority:** P1 · **Labels:** `library`
+- **Scope:** batch 2 ruling 2.
+- **Acceptance criteria:** on a fixture site with a matching candidate, a
+  Standard run binds it into the site suite (after the gates) and writes no
+  new gap test; the coverage map counts the gap covered; a candidate that
+  fails the gates there is not bound.
+- **Dependencies:** none. Before TFP-197.
+
+### TFP-204 — Generation applies promoted library entries
+
+- **Priority:** P1 · **Labels:** `library`, `generate`
+- **Scope:** batch 2 ruling 3.
+- **Acceptance criteria:** a promoted entry in `src/lib/library/promoted/`
+  is bound and run on a site with its pattern, inside the verdict like any
+  library entry; with nothing promoted, `check:template-unchanged` is
+  166/166.
+- **Dependencies:** none. Before TFP-197.
+
 ### TFP-197 — Measure the gap writer (Gate B)
 
 - **Priority:** P1 · **Labels:** `measurement`, `benchmark`
@@ -448,7 +523,8 @@ on the local Toolshop copies (Phase 41 Decision 7).
 1. Batch 1: TFP-190, TFP-191, TFP-192. **Gate A passed 2026-10-14.**
 2. Batch 2: TFP-201 first, TFP-200, then TFP-193, TFP-194, TFP-195,
    TFP-196.
-3. TFP-197. **Gate B.**
+3. Before TFP-197: TFP-202, TFP-203, TFP-204 (one batch; batch 2's rulings).
+4. TFP-197. **Gate B.**
 
 ## Gates
 

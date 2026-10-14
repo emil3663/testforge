@@ -347,7 +347,10 @@ See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
    what's left open listed.
 2. **GitHub issue #2:** read with Emil 2026-10-13 and moved ahead of
    Phase 42 as TFP-198 (above); the review confirms it closed.
-3. **The skills, relooked:** the skills TestForge and its build work rely on
+3. **Also for the review (2026-10-14):** a real sandbox for gap and
+   candidate tests (run inside Docker), and app screens for the gap-writer
+   opt-in and candidate promotion (API routes only so far).
+4. **The skills, relooked:** the skills TestForge and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
    where the work has a repeatable procedure worth capturing.

@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `cf14cb8`; batch 1's four commits (`4841a7a` to
-`612b144`) are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `bd81c58`; batch 2's nine commits (`c516a1e` to
+`c15dd2c`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -54,14 +54,14 @@ starts, so a session opened before then doesn't use it.
   `3955847`). GitHub issue #2 is fixed; Emil closes it.
 - **Phase 42 Gate A passed 2026-10-14** (batch 1, `4841a7a` to `612b144`),
   with four rulings in the Phase 42 record.
-- **Now: Phase 42 batch 2:** TFP-201 first (coverage in two tiers, a
-  repeated link counted once), then TFP-200 (the label-wrapped `<select>`
-  name; its known-failure fixture case first), then TFP-193 (the library),
-  TFP-194 (Claude Code writes gap tests, opt-in per site), TFP-195 (the
-  candidate pool) and TFP-196 (promotion). Each with its own commit and
-  targeted tests; the full unit suite, regression suite and
-  `check:template-unchanged` once at the end. Stop for verification; don't
-  start TFP-197.
+- **Phase 42 batch 2 verified 2026-10-14** (`c516a1e` to `c15dd2c`), with
+  five rulings in the Phase 42 record.
+- **Now: one batch before TFP-197:** TFP-202 (P0: harden the gap writer and
+  the tests it writes), TFP-203 (on Standard, a matching candidate becomes
+  the gap's test) and TFP-204 (generation applies promoted entries). Each
+  with its own commit and targeted tests; the full unit suite, regression
+  suite and `check:template-unchanged` once at the end. No real Claude Code
+  call yet. Stop for verification; don't start TFP-197.
 - **Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.
