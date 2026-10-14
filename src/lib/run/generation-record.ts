@@ -1,4 +1,4 @@
-import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord } from "@/lib/report/types";
+import type { GenerationGateVerdict, GenerationRecord, PageInspectionRecord, PageTypeCoverageEntry, PageTypeCoverageRecord, CandidateBindingRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord } from "@/lib/report/types";
 import { MAX_PAGE_CAP } from "@/lib/comprehensive/run-mode";
 
 // Phase 34 (TFP-119): /api/run accepts the generation record the client got
@@ -87,7 +87,22 @@ function normalizeSiteSuite(value: unknown): SiteSuiteRecord | null {
         editedOnChangedPages: list("editedOnChangedPages"),
         ...(normalizeRecheck(v.recheck) ? { recheck: normalizeRecheck(v.recheck)! } : {}),
         ...(normalizeGapWriting(v.gapTests) ? { gapTests: normalizeGapWriting(v.gapTests)! } : {}),
+        ...(normalizeCandidateBinding(v.candidateTests) ? { candidateTests: normalizeCandidateBinding(v.candidateTests)! } : {}),
     };
+}
+
+/** TFP-203: pool candidates bound as gaps' tests on Standard. */
+function normalizeCandidateBinding(value: unknown): CandidateBindingRecord | null {
+    if (!value || typeof value !== "object") return null;
+    const v = value as Record<string, unknown>;
+    const count = (key: string) => (typeof v[key] === "number" && Number.isInteger(v[key]) && (v[key] as number) >= 0 ? Math.min(v[key] as number, 100000) : 0);
+    const tests = (Array.isArray(v.tests) ? v.tests : []).slice(0, 50).flatMap((item: unknown) => {
+        if (!item || typeof item !== "object") return [];
+        const t = item as Record<string, unknown>;
+        const title = text(t.title);
+        return title ? [{ title, covers: text(t.covers, 400) ?? "", candidate: text(t.candidate, 40) ?? "", outcome: text(t.outcome, 400) ?? "" }] : [];
+    });
+    return { bound: count("bound"), notBound: count("notBound"), tests };
 }
 
 function normalizeGapWriting(value: unknown): GapWritingRecord | null {

@@ -29,6 +29,15 @@ export interface SiteSuiteRecord {
     recheck?: SiteSuiteRecheck;
     /** TFP-194: the gap tests written at this generation, when the site opted in. */
     gapTests?: GapWritingRecord;
+    /** TFP-203: pool candidates bound into a Standard suite as their gaps' tests at this generation. */
+    candidateTests?: CandidateBindingRecord;
+}
+
+/** Phase 42 (TFP-203): candidates tried as gaps' tests on Standard - bound after the gates, or not. */
+export interface CandidateBindingRecord {
+    bound: number;
+    notBound: number;
+    tests: Array<{ title: string; covers: string; candidate: string; outcome: string }>;
 }
 
 /** Phase 42 (TFP-194): what the site's gap writer was asked for, what it cost, and what came of it. */

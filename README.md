@@ -105,7 +105,11 @@ Each saved gap test is also generalised to its component's pattern and
 kept in the candidate pool (`candidates/` in the data folder). On a
 Comprehensive run of any site, a candidate whose pattern matches an
 uncovered element runs in its own "Candidate tests" section, outside the
-verdict, and each run adds to its evidence. Standard never runs them.
+verdict, and each run adds to its evidence. On a Standard run, a candidate
+matching a gap becomes that gap's test: bound to the site, run through the
+same gates, and saved in the site suite under "Gap tests" if it passes. One
+that fails the gates there is not bound, and not tried again while the
+page type holds.
 
 A candidate that has passed the gates on every run, and has either caught
 a real defect or run clean on 3 sites, is offered for promotion

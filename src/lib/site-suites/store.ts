@@ -63,8 +63,10 @@ export interface StoredUnit {
     origin?: "gap-writer";
     /** TFP-194: the coverage map key of the element a gap test was written for. */
     covers?: string;
-    /** TFP-194: the gap writer ("claude-code", "local-model"). */
+    /** TFP-194: the gap writer ("claude-code", "local-model"), or "candidate" for a pool candidate bound as the gap's test (TFP-203). */
     writer?: string;
+    /** TFP-203: the pool candidate it was bound from. */
+    candidate?: string;
 }
 
 /** TFP-194: a gap a writer was asked for and that didn't end in a saved test - not asked again while its page type holds. */
@@ -73,6 +75,8 @@ export interface GapAttempt {
     type: string;
     outcome: "breach" | "failed" | "invalid" | "error";
     at: string;
+    /** TFP-203: a pool candidate that was tried for the gap on Standard and failed the gates here. */
+    candidate?: string;
 }
 
 export interface SiteSuiteManifest {

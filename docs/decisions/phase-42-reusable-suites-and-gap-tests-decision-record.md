@@ -513,6 +513,18 @@ on the local Toolshop copies (Phase 41 Decision 7).
   new gap test; the coverage map counts the gap covered; a candidate that
   fails the gates there is not bound.
 - **Dependencies:** none. Before TFP-197.
+- **Built:** `src/lib/candidates/standard.ts`, called by `/api/generate` on
+  Standard runs after the site suite is applied and before the gap writer.
+  The bound candidate goes through `runGapTest` (code check, type check, a
+  run at the read-only gate) and is saved as a gap test with
+  `writer: "candidate"` and its id, so the existing reuse rules keep it
+  while its page type holds. It doesn't wait for the opt-in (nothing leaves
+  the machine, as TFP-195's matching). A failure is recorded as a tried gap
+  with the candidate's id. Found on the way: `targetOf` gave a link's
+  locator in double quotes, which the coverage map never matched, so no
+  gap test of a link counted it covered; it now uses the generator's own
+  expression. Not done: a Standard run of a bound candidate adds nothing to
+  its evidence (Comprehensive runs still do).
 
 ### TFP-204 — Generation applies promoted library entries
 

@@ -131,3 +131,13 @@ test("the site suite's gap tests: kept as recorded, cleaned when malformed, drop
     );
     assert.equal(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, gapTests: { saved: 1 } } })?.siteSuite?.gapTests, undefined);
 });
+
+/** Phase 42 (TFP-203). ISTQB technique: equivalence partitioning - a real binding record, and a malformed one. */
+test("the site suite's bound candidates: kept as recorded, cleaned when malformed, and said in the report", () => {
+    const base = { store: "C:/data/site-suites/x/standard", firstRun: false, reused: 4, generated: 0, regenerated: 0, retired: 0, edited: 0, changedTypes: [], newTypes: [], goneTypes: [], editedOnChangedPages: [] };
+    const candidateTests = { bound: 1, notBound: 1, tests: [{ title: "gap test: Rentals [link] on /", covers: "link [\"Rentals\",\"/rentals\"]", candidate: "0123456789ab", outcome: "bound" }, { title: "gap test: Help [link] on /", covers: "link [\"Help\",\"/help\"]", candidate: "ba9876543210", outcome: "not bound: read-only gate breach" }] };
+    const kept = normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, candidateTests } })?.siteSuite;
+    assert.deepEqual(kept?.candidateTests, candidateTests);
+    assert.deepEqual(normalizeGenerationRecord({ generatedBy: "template", gates: [], siteSuite: { ...base, candidateTests: { bound: -1, tests: [{ covers: "x" }, { title: "t" }] } } })?.siteSuite?.candidateTests, { bound: 0, notBound: 0, tests: [{ title: "t", covers: "", candidate: "", outcome: "" }] });
+    assert.match(describeSiteSuite(kept!), / Pool candidates: 1 bound as its gap's test \(gap test: Rentals \[link\] on \/\), 1 not bound, failing the gates here\.$/);
+});

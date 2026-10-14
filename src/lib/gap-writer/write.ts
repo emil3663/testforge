@@ -1,10 +1,11 @@
 import { join } from "path";
 import { writeFile } from "fs/promises";
-import type { ContentProfile } from "@/lib/generate/mock/types";
+import type { ContentProfile, LinkDetail } from "@/lib/generate/mock/types";
+import { buildLinkLocatorExpression } from "@/lib/generate/mock/locators";
 import { buildCoverageMap, untouched } from "@/lib/report/coverage-map";
 import type { CoverageMapEntry, GapWritingRecord } from "@/lib/report/types";
 import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
-import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type StoredUnit } from "@/lib/site-suites/store";
+import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type SiteSuiteManifest, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
 import { composeGapTest, runGapTest, type GapRunOutcome } from "./gap-run";
@@ -26,7 +27,8 @@ import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
  *
  * TFP-195 (Decision 8): the pool is checked first - a gap whose pattern a
  * candidate already matches gets no new test (Comprehensive runs the
- * candidate; Standard never does). After a test is saved, the writer
+ * candidate; on Standard it becomes the gap's test, TFP-203,
+ * src/lib/candidates/standard.ts). After a test is saved, the writer
  * generalises it, TestForge binds that back to the same element and runs
  * it, and a candidate that passes joins the pool.
  */
@@ -35,12 +37,24 @@ export const GAP_DESCRIBE = "Gap tests";
 export const DEFAULT_GAP_LIMIT = 5;
 export const MAX_GAP_ATTEMPTS = 3;
 
-/** The element's locator as the coverage map recorded it in its key, or the link's by its text. */
+/**
+ * The element's locator as the coverage map recorded it in its key, or the link's by its text. TFP-203: the link's is
+ * the generator's own expression, which is what the coverage map looks for; a double-quoted one never matched it, so a
+ * gap test of a link never counted it covered.
+ */
 export function targetOf(entry: CoverageMapEntry): GapTarget {
     const element = / element (.+)$/.exec(entry.key)?.[1] ?? null;
     const link = entry.kind === "link" ? (JSON.parse(entry.key.slice("link ".length)) as [string, string]) : null;
-    const locator = element ?? (link && link[0] ? `page.getByRole('link', { name: ${JSON.stringify(link[0])}, exact: true })` : null);
+    const locator = element ?? (link && link[0] ? buildLinkLocatorExpression({ text: link[0], url: link[1] } as LinkDetail) : null);
     return { key: entry.key, page: entry.page, name: entry.name, kind: entry.kind === "link" ? "link" : "element", locator };
+}
+
+/** The gaps a site suite already has a test for (written, or a bound candidate's, TFP-203), or has tried. */
+export function doneGaps(manifest: SiteSuiteManifest): Set<string> {
+    return new Set([
+        ...manifest.units.filter((unit) => unit.origin === "gap-writer" && unit.covers).map((unit) => unit.covers!),
+        ...(manifest.gapAttempts ?? []).map((attempt) => attempt.key),
+    ]);
 }
 
 export function gapLimit(): number {
@@ -66,10 +80,7 @@ export async function writeGapTests(options: {
     if (!dir || !saved || !map) return { code: options.code, record };
 
     // Gaps already written for, or already tried, are not asked for again.
-    const done = new Set([
-        ...saved.manifest.units.filter((unit) => unit.origin === "gap-writer" && unit.covers).map((unit) => unit.covers!),
-        ...(saved.manifest.gapAttempts ?? []).map((attempt) => attempt.key),
-    ]);
+    const done = doneGaps(saved.manifest);
     const pool = await loadPool();
     const open = untouched(map).filter((entry) => (entry.kind === "element" || entry.kind === "link") && !done.has(entry.key));
     // A gap a pool candidate already matches gets no new test.

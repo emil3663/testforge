@@ -8,14 +8,22 @@ const plural = (count: number, one: string, many = `${one}s`) => `${count} ${cou
  * report and the HTML export alike.
  */
 export function describeSiteSuite(record: SiteSuiteRecord): string {
-    if (record.firstRun) return `Site suite: first run for this site and suite type, so all ${plural(record.generated, "test")} were generated and saved in ${record.store}.${describeGapTests(record)}`;
+    if (record.firstRun) return `Site suite: first run for this site and suite type, so all ${plural(record.generated, "test")} were generated and saved in ${record.store}.${describeCandidateTests(record)}${describeGapTests(record)}`;
     const parts = [`${plural(record.reused, "test")} reused`, `${record.generated} generated`];
     parts.push(record.regenerated > 0 ? `${record.regenerated} regenerated (page types changed: ${record.changedTypes.join(", ") || "the site's set of page types"})` : "0 regenerated");
     parts.push(record.retired > 0 ? `${record.retired} retired${record.goneTypes.length > 0 ? ` (page types gone: ${record.goneTypes.join(", ")})` : ""}` : "0 retired");
     if (record.edited > 0) parts.push(`${record.edited} edited by hand and kept`);
     const newTypes = record.newTypes.length > 0 ? `; new page types: ${record.newTypes.join(", ")}` : "";
     const flagged = record.editedOnChangedPages.length > 0 ? ` Edited by hand, on a page that changed - check these: ${record.editedOnChangedPages.join("; ")}.` : "";
-    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}${describeRecheck(record)}${describeGapTests(record)}`;
+    return `Site suite: ${parts.join(", ")}${newTypes} (saved in ${record.store}).${flagged}${describeRecheck(record)}${describeCandidateTests(record)}${describeGapTests(record)}`;
+}
+
+/** TFP-203: pool candidates bound as gaps' tests on a Standard run, and those that failed the gates here. */
+function describeCandidateTests(record: SiteSuiteRecord): string {
+    const candidates = record.candidateTests;
+    if (!candidates) return "";
+    const bound = candidates.tests.filter((test) => test.outcome === "bound").map((test) => test.title);
+    return ` Pool candidates: ${plural(candidates.bound, "bound as its gap's test", "bound as their gaps' tests")}${bound.length ? ` (${bound.join("; ")})` : ""}, ${candidates.notBound} not bound, failing the gates here.`;
 }
 
 /** TFP-194: which gap tests the site's writer wrote, and what it cost. */

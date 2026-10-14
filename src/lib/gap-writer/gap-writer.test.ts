@@ -136,7 +136,7 @@ test("opt-in on: a test for each uncovered element only, each run and saved; the
     for (const written of gaps.tests) assert.ok(gapKeys.has(written.covers), `${written.covers} was uncovered`);
     const covered = buildCoverageMap(profile, before)!.entries.filter((entry) => entry.tests.length > 0);
     assert.ok(covered.length > 0);
-    for (const call of calls().filter((c) => c.prompt.startsWith("Write the body"))) for (const entry of covered.filter((e) => e.kind === "link")) assert.ok(!call.prompt.includes(`  ${entry.name}\n`), `${entry.name} is covered and was not asked for`);
+    for (const call of calls().filter((c) => c.prompt.startsWith("Write the body"))) for (const entry of covered.filter((e) => e.kind === "link")) assert.ok(!call.prompt.includes(`name: ${JSON.stringify(entry.name)}\n`), `${entry.name} is covered and was not asked for`);
 
     const manifest = await manifestOf(first.siteSuite.store);
     assert.equal(manifest.units.filter((unit) => unit.origin === "gap-writer").length, gaps.saved);

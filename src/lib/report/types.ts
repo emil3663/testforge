@@ -5,7 +5,7 @@ import type { SiteSuiteRecord } from "./site-suite-types";
 import type { CoverageMap } from "./coverage-map-types";
 import type { PageTypeCoverageRecord } from "./page-type-types";
 export type { PageTypeCoverageEntry, PageTypeCoverageRecord } from "./page-type-types";
-export type { GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord, SiteSuiteRegeneration } from "./site-suite-types";
+export type { CandidateBindingRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord, SiteSuiteRegeneration } from "./site-suite-types";
 export type { CoverageMap, CoverageMapEntry, CoverageMapKind, CoverageMapType } from "./coverage-map-types";
 
 // "Not run" (Phase 34 Option C): the test skipped itself with a stated reason -
