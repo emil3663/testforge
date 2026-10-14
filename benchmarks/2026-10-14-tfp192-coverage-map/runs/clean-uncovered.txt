@@ -1,0 +1,8 @@
+clean (dd9d9b8): 243 of the 243 elements, links and flows the inspection found are touched by a test; nothing is left untouched.
+
+/: 45 of 45 on 1 page
+/product/:id: 32 of 32 on 1 page
+/category/hand-tools: 41 of 41 on 1 page
+/auth/:slug: 79 of 79 on 3 pages
+/contact: 27 of 27 on 1 page
+/rentals: 19 of 19 on 1 page
