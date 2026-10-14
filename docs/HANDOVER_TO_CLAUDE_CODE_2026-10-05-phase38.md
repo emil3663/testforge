@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `aeaf238`; `15e0205`, `3a8f420` and `3955847` are
-committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `cf14cb8`; batch 1's four commits (`4841a7a` to
+`612b144`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -52,13 +52,16 @@ committed, not pushed. Phase 38 is complete. Since then:
   0 hinted, 4 missed; the image-render check kept.
 - **TFP-198 and TFP-199 verified 2026-10-13** (`15e0205`, `3a8f420`,
   `3955847`). GitHub issue #2 is fixed; Emil closes it.
-- **Now: Phase 42 batch 1** (`docs/decisions/phase-42-reusable-suites-and-gap-tests-decision-record.md`):
-  TFP-190 (site suites: save, fingerprint, reuse), TFP-191 (a stale reused
-  test is regenerated and re-run before it counts) and TFP-192 (the coverage
-  map and its index). Site suites live in TestForge's local data folder,
-  never in the repo. Each ticket with its own commit and targeted tests; the
-  full unit suite, regression suite and `check:template-unchanged` once at
-  the end. Stop at Phase 42's Gate A; don't start TFP-193.
+- **Phase 42 Gate A passed 2026-10-14** (batch 1, `4841a7a` to `612b144`),
+  with four rulings in the Phase 42 record.
+- **Now: Phase 42 batch 2:** TFP-201 first (coverage in two tiers, a
+  repeated link counted once), then TFP-200 (the label-wrapped `<select>`
+  name; its known-failure fixture case first), then TFP-193 (the library),
+  TFP-194 (Claude Code writes gap tests, opt-in per site), TFP-195 (the
+  candidate pool) and TFP-196 (promotion). Each with its own commit and
+  targeted tests; the full unit suite, regression suite and
+  `check:template-unchanged` once at the end. Stop for verification; don't
+  start TFP-197.
 - **Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.

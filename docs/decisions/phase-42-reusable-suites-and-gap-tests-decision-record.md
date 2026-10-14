@@ -8,7 +8,7 @@ flow every test covers; and write new tests only for what the map shows is
 uncovered, so analysis time goes to the outliers instead of the standard
 things.
 Status: Locked 2026-10-12. Every decision confirmed by Emil the same day.
-Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197.
+Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197, plus TFP-200 and TFP-201 from Gate A.
 
 ## Context
 
@@ -245,6 +245,62 @@ on the local Toolshop copies (Phase 41 Decision 7).
   passed.
 - **Stop for verification after TFP-190 to TFP-192 (batch 1).**
 
+- **Batch 1 done, verified 2026-10-14 (Cowork):** TFP-190 (`4841a7a`),
+  TFP-191 (`73604e0`), TFP-192 (`dd9d9b8`), the Toolshop coverage map
+  (`612b144`, run on `dd9d9b8`). Site suites live in the OS app-data folder;
+  saved tests are matched by describe chain, title and the pages they visit.
+  End checks: unit 530/530, regression 57/57, `check:template-unchanged`
+  166/166.
+
+### Gate A rulings (Emil, 2026-10-14)
+
+1. **Coverage is reported in two tiers, and a repeated link counts once.**
+   The Toolshop map read 243 of 243 because a site-wide link check that
+   requests a URL counted every link as touched; only 16 of 132 links had an
+   on-page check. But the 132 are 37 distinct links: 17 repeat across pages
+   (header and footer) and make up 112 of the entries.
+   - **Reachability:** a link's URL was requested and answered.
+   - **In context:** the link was found and checked on its page.
+   - A link with the same text and target in a shared region of several
+     pages is one item, covered in context when checked on any one of
+     them. The gap list (and TFP-194's targets) is the in-context tier.
+   - Built first in batch 2 as TFP-201, before TFP-193.
+2. **The label-wrapped `<select>` naming bug is ticketed (TFP-200),** with a
+   fixture case of a bare label-wrapped list marked as a known failure until
+   the fix, and the coverage map naming the pattern as a known blind spot.
+   The fix changes template output, so it is its own commit, the change to
+   `check:template-unchanged` accepted deliberately.
+3. **Accepted:** template runs no longer show "no local model result was
+   recorded" (they carry a generation record; a test pins it).
+4. **Accepted:** site-wide tests are not re-read after a run, so their
+   failures stand. The report says so: a real site change can show up as a
+   site-wide failure that isn't re-checked for staleness.
+
+### TFP-201 — Coverage in two tiers, a repeated link counted once
+
+- **Priority:** P1 · **Labels:** `report`, `selection`
+- **Scope:** Gate A ruling 1.
+- **Acceptance criteria:** on the fixture, a link checked only by a
+  site-wide request is reachability-covered and uncovered in context; a
+  header link present on three pages and checked on one is one item,
+  covered in context; the Toolshop map, re-read from `612b144`'s suite,
+  reports both tiers with the distinct-link count; the index and the gap
+  list use the in-context tier.
+- **Dependencies:** TFP-192. Before TFP-193.
+
+### TFP-200 — A list wrapped in its label is named as the browser names it
+
+- **Priority:** P2 · **Labels:** `bug`, `generate`
+- **Scope:** Gate A ruling 2.
+- **Deliverables:** the template names a `<select>` inside its `<label>` the
+  way the browser's accessibility tree does (the label's own text, not the
+  options' text), so its check finds it; the fixture's known-failure case
+  turned into a passing case; the coverage map's blind-spot note removed.
+- **Acceptance criteria:** the bare label-wrapped list's check passes; the
+  `check:template-unchanged` difference is only that list's name, accepted
+  in the commit.
+- **Dependencies:** none. In batch 2.
+
 ### TFP-193 — The library: pattern entries, seeded from Phase 41
 
 - **Priority:** P1 · **Labels:** `generate`, `library`
@@ -318,13 +374,15 @@ on the local Toolshop copies (Phase 41 Decision 7).
 
 ## Recommended Execution Order
 
-1. Batch 1: TFP-190, TFP-191, TFP-192.
-2. Batch 2: TFP-193, TFP-194, TFP-195, TFP-196.
+1. Batch 1: TFP-190, TFP-191, TFP-192. **Gate A passed 2026-10-14.**
+2. Batch 2: TFP-201 first, TFP-200, then TFP-193, TFP-194, TFP-195,
+   TFP-196.
 3. TFP-197. **Gate B.**
 
 ## Gates
 
 ### Gate A — Reuse and coverage
+**Passed 2026-10-14 (Emil),** with the four rulings above.
 - TFP-190 to TFP-192 landed and verified: an unchanged site reuses
   everything, and the coverage map names what nothing tests.
 
