@@ -485,6 +485,24 @@ on the local Toolshop copies (Phase 41 Decision 7).
   running; an injection string in the page text ("ignore your
   instructions...") is passed as data in the prompt.
 - **Dependencies:** none. Before TFP-197.
+- **Built:** `src/lib/gap-writer/code-check.ts`, `src/lib/run/child-env.ts`,
+  and the writer's call and prompts in `writers.ts`.
+  - The flags, from code.claude.com/docs/en/cli-reference (read
+    2026-10-14; Claude Code 2.1.238 on Emil's machine): `--tools ""`,
+    `--disallowedTools "*"`, `--strict-mcp-config`,
+    `--disable-slash-commands`. Not used: `--restricted` (needs 2.1.248),
+    `--permission-prompts none` (2.1.259), `--bare` (API key only, no
+    subscription sign-in) and `--no-session-persistence` (would stop the
+    `--resume` revisions need). One empty temporary folder per generation.
+  - The code check parses the body and walks its syntax tree, so spacing,
+    line breaks and quoted or computed names don't get past it; it also
+    refuses `arguments` (the module wrapper's second is `require`), `this`,
+    prototype access and `context()`/`newPage` (a page the guard isn't
+    armed on). Bound candidates are checked again.
+  - The stripped environment applies to every Playwright run TestForge
+    starts (the main run, its stale re-check, gap-test runs), since saved
+    gap tests and candidates run inside the main run.
+  - No real Claude Code call was made.
 
 ### TFP-203 — On Standard, a matching candidate becomes the gap's test
 

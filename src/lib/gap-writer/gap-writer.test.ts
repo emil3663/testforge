@@ -165,7 +165,8 @@ test("a test that fails is revised in the same session and saved once it passes 
     const [firstCall, secondCall] = calls();
     assert.ok(!firstCall.args.includes("--resume"));
     assert.deepEqual(secondCall.args.slice(-2), ["--resume", firstCall.session], "the revision resumes the first call's session");
-    assert.match(secondCall.prompt, /^The test failed: /);
+    // TFP-202: what the run said goes back as untrusted data.
+    assert.match(secondCall.prompt, /^The test failed\.\nWhat TestForge's run of it said is between the two RUN-OUTPUT lines/);
 });
 
 test("a test that breaches the read-only gate is rejected, never saved, and not asked for again (TFP-194)", { skip: needsChromium }, async () => {

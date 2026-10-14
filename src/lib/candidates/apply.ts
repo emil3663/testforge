@@ -2,6 +2,7 @@ import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildCoverageMap, untouched } from "@/lib/report/coverage-map";
 import { targetOf } from "@/lib/gap-writer/write";
+import { forbiddenConstruct } from "@/lib/gap-writer/code-check";
 import { appendToDescribes } from "@/lib/site-suites/reuse";
 import { loadSiteSuiteAt, siteSuiteDirFromStore } from "@/lib/site-suites/store";
 import { CANDIDATE_DESCRIBE } from "./constants";
@@ -41,7 +42,8 @@ export async function applyCandidates(code: string, profile: ContentProfile | nu
     for (const entry of untouched(map).filter((item) => (item.kind === "element" || item.kind === "link") && !ownGapTests.has(item.key))) {
         const target = targetOf(entry);
         const candidate = matchingCandidate(pool, patternOf(target.kind, target.name));
-        if (!candidate || !target.locator) continue;
+        // TFP-202: a candidate is model-written code from another site; one the code check refuses is never bound.
+        if (!candidate || !target.locator || forbiddenConstruct(candidate.body)) continue;
         const body = bindCandidate(candidate, target.page, target.locator);
         const indented = body.split("\n").map((line) => (line.trim() ? `      ${line}` : "")).join("\n");
         sources.push(`  test('${escapeForSingleQuotedString(`candidate ${candidate.id}: ${target.name} on ${target.page}`)}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(target.page)}' }, { type: 'candidate', description: '${candidate.id}' }] }, async ({ page }) => {

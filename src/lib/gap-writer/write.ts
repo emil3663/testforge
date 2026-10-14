@@ -8,7 +8,7 @@ import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFile
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
 import { composeGapTest, runGapTest, type GapRunOutcome } from "./gap-run";
-import type { GapTarget, GapWriter } from "./writers";
+import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
 
 /**
  * Phase 42 (TFP-194, Decisions 5 and 6): gap tests, once per gap. For each
@@ -96,7 +96,7 @@ export async function writeGapTests(options: {
                 tries++;
                 const reply = tries === 1
                     ? await options.writer.write(target, options.baseUrl)
-                    : await options.writer.revise(`The test ${outcome!.verdict === "invalid" ? "was not run" : "failed"}: ${"message" in outcome! ? outcome!.message : ""}\nAnswer with the corrected body only, in one \`\`\`ts code block.`);
+                    : await options.writer.revise(revisionPrompt(outcome!.verdict === "invalid", "message" in outcome! ? outcome!.message : ""));
                 cost += reply.costUsd ?? 0;
                 body = reply.body;
                 outcome = await run(options.baseUrl, target, body);

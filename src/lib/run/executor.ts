@@ -5,6 +5,7 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, relative } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
+import { runEnv } from "@/lib/run/child-env";
 import { authDirFor, prepareRunLogin, removeAuthState, removeStaleAuthDirs, STORAGE_STATE_ENV_VAR } from "@/lib/run/auth";
 import type { LoginConfig } from "@/lib/run/auth";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
@@ -169,8 +170,9 @@ export async function startRunJob(
         result: null,
     };
 
-    const childEnv: NodeJS.ProcessEnv = {
-        ...process.env,
+    // Phase 42 (TFP-202): only what the run needs, never TestForge's own environment (keys, tokens,
+    // settings) - a run can hold tests a model wrote (gap tests, candidates, promoted entries).
+    const childEnv = runEnv({
         // Always set, never inherited: skipped-by-default interactive tests
         // (journeys) run only when this run explicitly asked.
         [INTERACTIVE_ENV_VAR]: enableInteractive ? "1" : "0",
@@ -180,13 +182,9 @@ export async function startRunJob(
             process.env.HOME ??
             process.env.USERPROFILE ??
             process.cwd(),
-    };
-    // Likewise never inherited: only this run's own login state, if any.
-    if (storageStateFile) {
-        childEnv[STORAGE_STATE_ENV_VAR] = storageStateFile;
-    } else {
-        delete childEnv[STORAGE_STATE_ENV_VAR];
-    }
+        // Likewise never inherited: only this run's own login state, if any.
+        ...(storageStateFile ? { [STORAGE_STATE_ENV_VAR]: storageStateFile } : {}),
+    });
 
     const child = spawn(
         process.execPath,

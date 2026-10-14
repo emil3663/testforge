@@ -92,6 +92,15 @@ that passes joins the site suite, and one that breaches the gate is
 rejected. At most 5 gaps per generation (`TESTFORGE_GAP_LIMIT`). The
 report says what was written and what Claude Code reported it cost.
 
+Claude Code is called with every tool off (`--tools ""`,
+`--disallowedTools "*"`, `--strict-mcp-config`, `--disable-slash-commands`)
+from an empty temporary folder, and the page text is marked in the prompt as
+untrusted data. A written test may use only the page and `expect`: imports,
+Node, the network (`fetch`, `page.request` other than GET, routes) and code
+built at run time are refused before it runs. Every Playwright run, gap
+tests and candidates included, gets only the environment Playwright needs:
+no keys, tokens or TestForge settings. This is not a sandbox.
+
 Each saved gap test is also generalised to its component's pattern and
 kept in the candidate pool (`candidates/` in the data folder). On a
 Comprehensive run of any site, a candidate whose pattern matches an

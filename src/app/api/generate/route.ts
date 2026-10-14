@@ -113,7 +113,8 @@ export async function POST(req: NextRequest) {
             siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set" } };
             return applied.code;
         }
-        const gaps = await writeGapTests({ baseUrl: normalizedBaseUrl.value, store: applied.record.store, code: applied.code, profile: normalizedContentProfile, writer });
+        // TFP-202: the writer's working folder goes when the generation's gaps are done.
+        const gaps = await writeGapTests({ baseUrl: normalizedBaseUrl.value, store: applied.record.store, code: applied.code, profile: normalizedContentProfile, writer }).finally(() => writer.dispose?.());
         siteSuite = { ...applied.record, gapTests: gaps.record };
         return gaps.code;
     };

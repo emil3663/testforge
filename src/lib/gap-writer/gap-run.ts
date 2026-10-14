@@ -6,6 +6,8 @@ import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
 import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { flattenSuites } from "@/lib/report/execution";
+import { runEnv } from "@/lib/run/child-env";
+import { forbiddenConstruct } from "./code-check";
 import type { JsonReport } from "@/lib/report/types";
 import type { GapTarget } from "./writers";
 
@@ -22,9 +24,13 @@ import type { GapTarget } from "./writers";
  * (require, import(), process, the file system, child processes). A test
  * runs in Node, not only in the page, so model-written code is held to the
  * page and Playwright's API. This is a heuristic, not a sandbox.
+ *
+ * TFP-202: the check reads the body's syntax tree and covers the network and
+ * code built at run time too (code-check.ts), and the test runs with only the
+ * environment Playwright needs (src/lib/run/child-env.ts): no keys, tokens or
+ * TestForge settings.
  */
 
-const NODE_ACCESS = /\b(require\s*\(|import\s*\(|process\.|child_process|node:|fs\.|globalThis|eval\s*\(|Function\s*\()/;
 
 export function gapTestTitle(target: GapTarget) {
     return `gap test: ${target.name} on ${target.page}`;
@@ -60,8 +66,8 @@ export type GapRunOutcome =
 /** The checks before a run: Node access, then the type check of the whole spec. */
 export function checkGapBody(baseUrl: string, target: GapTarget, body: string): GapRunOutcome | null {
     if (!body.trim()) return { verdict: "invalid", message: "the answer held no test body" };
-    const reached = NODE_ACCESS.exec(body);
-    if (reached) return { verdict: "invalid", message: `the body reaches for Node (${reached[0].trim()}); a gap test may use only the page and Playwright's API` };
+    const reached = forbiddenConstruct(body);
+    if (reached) return { verdict: "invalid", message: `the body uses ${reached}, which a gap test may not; it may use only the page, expect and Playwright's API, with no imports, no Node and no requests but the page's own` };
     const errors = findTypeErrors(gapSpec(baseUrl, [composeGapTest(target, body)]));
     return errors.length > 0 ? { verdict: "invalid", message: `the test does not type-check: ${errors.slice(0, 5).join("; ")}` } : null;
 }
@@ -70,6 +76,11 @@ export function checkGapBody(baseUrl: string, target: GapTarget, body: string): 
 export async function runGapTest(baseUrl: string, target: GapTarget, body: string): Promise<GapRunOutcome> {
     const invalid = checkGapBody(baseUrl, target, body);
     if (invalid) return invalid;
+    return runGapSpec(gapSpec(baseUrl, [composeGapTest(target, body)]));
+}
+
+/** Runs one spec as given. Only for a spec whose bodies have passed checkGapBody (runGapTest), or a test's own. */
+export async function runGapSpec(spec: string): Promise<GapRunOutcome> {
     const dir = join(process.cwd(), ".playwright-runs");
     await mkdir(dir, { recursive: true });
     const name = `gap-test-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -78,12 +89,12 @@ export async function runGapTest(baseUrl: string, target: GapTarget, body: strin
     // Artifacts outside .playwright-runs, Playwright's testDir: every run scans that folder for test
     // files, and a folder made and removed there while another run scans it left that run with no tests.
     const outputDir = join(tmpdir(), `${name}-artifacts`);
-    await writeFile(specFile, gapSpec(baseUrl, [composeGapTest(target, body)]), "utf8");
+    await writeFile(specFile, spec, "utf8");
     try {
         await new Promise<void>((resolve) => {
             const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
                 cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
+                env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" }),
                 stdio: "ignore",
                 windowsHide: true,
             });
