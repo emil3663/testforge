@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
+import { tmpdir } from "os";
 import { join } from "path";
 import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
 import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
@@ -74,10 +75,13 @@ export async function runGapTest(baseUrl: string, target: GapTarget, body: strin
     const name = `gap-test-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const specFile = join(dir, `${name}.spec.ts`);
     const jsonFile = join(dir, `${name}.json`);
+    // Artifacts outside .playwright-runs, Playwright's testDir: every run scans that folder for test
+    // files, and a folder made and removed there while another run scans it left that run with no tests.
+    const outputDir = join(tmpdir(), `${name}-artifacts`);
     await writeFile(specFile, gapSpec(baseUrl, [composeGapTest(target, body)]), "utf8");
     try {
         await new Promise<void>((resolve) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=.playwright-runs/${name}-artifacts`], {
+            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
                 cwd: process.cwd(),
                 env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
                 stdio: "ignore",
@@ -95,6 +99,6 @@ export async function runGapTest(baseUrl: string, target: GapTarget, body: strin
     } finally {
         await rm(specFile, { force: true });
         await rm(jsonFile, { force: true });
-        await rm(join(dir, `${name}-artifacts`), { recursive: true, force: true });
+        await rm(outputDir, { recursive: true, force: true });
     }
 }
