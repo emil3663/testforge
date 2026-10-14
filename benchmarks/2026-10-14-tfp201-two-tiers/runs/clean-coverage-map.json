@@ -1,0 +1,2377 @@
+{
+  "commit": "567d2c4",
+  "site": "http://localhost:4200",
+  "paths": [
+    "/",
+    "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+    "/category/hand-tools",
+    "/auth/register",
+    "/contact",
+    "/auth/login",
+    "/auth/forgot-password",
+    "/rentals"
+  ],
+  "pageInspection": {
+    "status": "inspected",
+    "paths": [
+      "/",
+      "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+      "/category/hand-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals"
+    ],
+    "pages": 8,
+    "warnings": []
+  },
+  "map": {
+    "entries": [
+      {
+        "key": "/ element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-003: action element check: Testing Guide [button]",
+          "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+          "TFRM-001: keeps the core journey visible across common viewport sizes"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-004: navigation element check: Toggle navigation [button]",
+          "TFAC-005: accessible name and role: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/ element page.getByText('Categories', { exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-005: navigation element check: Categories [button]",
+          "TFRM-001: keeps the core journey visible across common viewport sizes"
+        ]
+      },
+      {
+        "key": "/ element page.locator('[id=\"language\"]').first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-006: navigation element check: EN [button]",
+          "TFAC-015: accessible name and role: EN [button]"
+        ]
+      },
+      {
+        "key": "/ element page.getByText('Filters', { exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Filters [button]",
+        "tests": [
+          "TFFU-007: form element check: Filters [button]"
+        ]
+      },
+      {
+        "key": "/ element page.locator('form').nth(0)",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [form]",
+        "tests": [
+          "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+          "TFFU-008: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [form]",
+          "TFAC-024: accessible name and role: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [form]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('combobox', { name: 'sort', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [select]",
+        "tests": [
+          "TFFU-009: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [select]",
+          "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+          "TFAC-025: accessible name and role: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [select]"
+        ]
+      },
+      {
+        "key": "/ element page.locator('form').nth(1)",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "SearchX Search [form]",
+        "tests": [
+          "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+          "TFFU-010: form element check: SearchX Search [Search] [form]",
+          "TFAC-026: accessible name and role: SearchX Search [form]"
+        ]
+      },
+      {
+        "key": "/ element page.locator('[id=\"search-query\"]').first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Search [input]",
+        "tests": [
+          "TFFU-011: form element check: Search [Search] [input]",
+          "TFUS-002: usability: Search [input] uses non-generic guidance text",
+          "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+          "TFAC-027: accessible name and role: Search [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByText('X', { exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "X [button]",
+        "tests": [
+          "TFFU-012: form element check: X [Search] [button]"
+        ]
+      },
+      {
+        "key": "/ element page.getByText('Search', { exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "Search [button]",
+        "tests": [
+          "TFFU-013: form element check: Search [Search] [button]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Hand Tools', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWFTR1S6G5SVQT63AQS [input]",
+        "tests": [
+          "TFFU-014: form element check: 01M4WSTTWFTR1S6G5SVQT63AQS [Categories] [input]",
+          "TFUS-003: usability: 01M4WSTTWFTR1S6G5SVQT63AQS [input] uses non-generic guidance text",
+          "TFAC-030: accessible name and role: 01M4WSTTWFTR1S6G5SVQT63AQS [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Hammer', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q6 [input]",
+        "tests": [
+          "TFFU-015: form element check: 01M4WSTTWP5WMTVMMCKDN383Q6 [Categories] [input]",
+          "TFUS-004: usability: 01M4WSTTWP5WMTVMMCKDN383Q6 [input] uses non-generic guidance text",
+          "TFAC-031: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383Q6 [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Hand Saw', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q7 [input]",
+        "tests": [
+          "TFFU-016: form element check: 01M4WSTTWP5WMTVMMCKDN383Q7 [Categories] [input]",
+          "TFUS-005: usability: 01M4WSTTWP5WMTVMMCKDN383Q7 [input] uses non-generic guidance text",
+          "TFAC-032: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383Q7 [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Wrench', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q8 [input]",
+        "tests": [
+          "TFFU-017: form element check: 01M4WSTTWP5WMTVMMCKDN383Q8 [Categories] [input]",
+          "TFUS-006: usability: 01M4WSTTWP5WMTVMMCKDN383Q8 [input] uses non-generic guidance text",
+          "TFAC-033: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383Q8 [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Screwdriver', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q9 [input]",
+        "tests": [
+          "TFFU-018: form element check: 01M4WSTTWP5WMTVMMCKDN383Q9 [Categories] [input]",
+          "TFUS-007: usability: 01M4WSTTWP5WMTVMMCKDN383Q9 [input] uses non-generic guidance text",
+          "TFAC-034: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383Q9 [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Pliers', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QA [input]",
+        "tests": [
+          "TFFU-019: form element check: 01M4WSTTWP5WMTVMMCKDN383QA [Categories] [input]",
+          "TFUS-008: usability: 01M4WSTTWP5WMTVMMCKDN383QA [input] uses non-generic guidance text",
+          "TFAC-035: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QA [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Chisels', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QB [input]",
+        "tests": [
+          "TFFU-020: form element check: 01M4WSTTWP5WMTVMMCKDN383QB [Categories] [input]",
+          "TFUS-009: usability: 01M4WSTTWP5WMTVMMCKDN383QB [input] uses non-generic guidance text",
+          "TFAC-036: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QB [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Measures', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QC [input]",
+        "tests": [
+          "TFFU-021: form element check: 01M4WSTTWP5WMTVMMCKDN383QC [Categories] [input]",
+          "TFUS-010: usability: 01M4WSTTWP5WMTVMMCKDN383QC [input] uses non-generic guidance text",
+          "TFAC-037: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QC [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Power Tools', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWFTR1S6G5SVQT63AQT [input]",
+        "tests": [
+          "TFFU-022: form element check: 01M4WSTTWFTR1S6G5SVQT63AQT [Categories] [input]",
+          "TFUS-011: usability: 01M4WSTTWFTR1S6G5SVQT63AQT [input] uses non-generic guidance text",
+          "TFAC-038: accessible name and role: 01M4WSTTWFTR1S6G5SVQT63AQT [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Grinder', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QD [input]",
+        "tests": [
+          "TFFU-023: form element check: 01M4WSTTWP5WMTVMMCKDN383QD [Categories] [input]",
+          "TFUS-012: usability: 01M4WSTTWP5WMTVMMCKDN383QD [input] uses non-generic guidance text",
+          "TFAC-039: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QD [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Sander', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QE [input]",
+        "tests": [
+          "TFFU-024: form element check: 01M4WSTTWP5WMTVMMCKDN383QE [Categories] [input]",
+          "TFUS-013: usability: 01M4WSTTWP5WMTVMMCKDN383QE [input] uses non-generic guidance text",
+          "TFAC-040: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QE [input]"
+        ]
+      },
+      {
+        "key": "/ element page.getByRole('checkbox', { name: 'Saw', exact: true }).first()",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QF [input]",
+        "tests": [
+          "TFFU-025: form element check: 01M4WSTTWP5WMTVMMCKDN383QF [Categories] [input]",
+          "TFUS-014: usability: 01M4WSTTWP5WMTVMMCKDN383QF [input] uses non-generic guidance text",
+          "TFAC-041: accessible name and role: 01M4WSTTWP5WMTVMMCKDN383QF [input]"
+        ]
+      },
+      {
+        "key": "link [\"Documentation\",\"https://testsmith-io.github.io/practice-software-testing/#/\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Documentation [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-125: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-137: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-150: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-162: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-174: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-186: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-198: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-210: HTTPS/SSL: secure links remain on HTTPS when marked as secure"
+        ]
+      },
+      {
+        "key": "link [\"\",\"http://localhost:4200/\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "http://localhost:4200/ [link]",
+        "tests": [
+          "TFFU-115: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-127: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-140: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-152: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-164: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-176: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-188: navigation link health: Untitled link to http://localhost:4200/",
+          "TFFU-200: navigation link health: Untitled link to http://localhost:4200/"
+        ],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Home\",\"http://localhost:4200/\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Home [link]",
+        "tests": [
+          "TFFU-116: navigation link health: Home",
+          "TFFU-128: navigation link health: Home",
+          "TFFU-141: navigation link health: Home",
+          "TFFU-153: navigation link health: Home",
+          "TFFU-165: navigation link health: Home",
+          "TFFU-177: navigation link health: Home",
+          "TFFU-189: navigation link health: Home",
+          "TFFU-201: navigation link health: Home"
+        ],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Hand Tools\",\"http://localhost:4200/category/hand-tools\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Hand Tools [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Power Tools\",\"http://localhost:4200/category/power-tools\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Power Tools [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Other\",\"http://localhost:4200/category/other\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Other [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Special Tools\",\"http://localhost:4200/category/special-tools\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Special Tools [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Rentals\",\"http://localhost:4200/rentals\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Rentals [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Contact\",\"http://localhost:4200/contact\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Contact [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Sign in\",\"http://localhost:4200/auth/login\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Sign in [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Combination Pliers ABCDE$14.15\",\"http://localhost:4200/product/01M4WSTV1ZSFAA8WA77D9SP730\"]",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "link",
+        "name": "Combination Pliers ABCDE$14.15 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Pliers ABCDE$12.01\",\"http://localhost:4200/product/01M4WSTV21060SKT76V5Q1J7QD\"]",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "link",
+        "name": "Pliers ABCDE$12.01 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Bolt Cutters ABCDE$48.41\",\"http://localhost:4200/product/01M4WSTV23PMJA8DD9NHXZ889C\"]",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "link",
+        "name": "Bolt Cutters ABCDE$48.41 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Long Nose Pliers ABCDEOut of stock$14.24\",\"http://localhost:4200/product/01M4WSTV24GEF9V8E7BQ4B0HQC\"]",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "link",
+        "name": "Long Nose Pliers ABCDEOut of stock$14.24 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Slip Joint Pliers ABCDE$9.17\",\"http://localhost:4200/product/01M4WSTV25PG4X4JWP95SER7DT\"]",
+        "page": "/",
+        "pages": [
+          "/"
+        ],
+        "kind": "link",
+        "name": "Slip Joint Pliers ABCDE$9.17 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Claw Hammer with Shock Reduction Grip ABCDE$13.41\",\"http://localhost:4200/product/01M4WSTV26H8W1S2HW7QKFBP0F\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Hammer ABCDE$12.58\",\"http://localhost:4200/product/01M4WSTV2770VJA9EQWBHQZJTP\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Hammer ABCDE$12.58 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Claw Hammer ABCDE$11.48\",\"http://localhost:4200/product/01M4WSTV28KSBK34SXB3WWF6X1\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Claw Hammer ABCDE$11.48 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Thor Hammer ABCDE$11.14\",\"http://localhost:4200/product/01M4WSTV2ANGJH28SK8CVN57TB\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Thor Hammer ABCDE$11.14 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Privacy Policy\",\"http://localhost:4200/privacy\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Privacy Policy [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Barn Images\",\"https://unsplash.com/@barnimages\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Barn Images [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-125: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-137: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-150: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-162: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-174: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-186: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-198: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-210: HTTPS/SSL: secure links remain on HTTPS when marked as secure"
+        ]
+      },
+      {
+        "key": "link [\"Unsplash\",\"https://unsplash.com/photos/t5YUoHW6zRo\"]",
+        "page": "/",
+        "pages": [
+          "/",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+          "/category/hand-tools",
+          "/auth/register",
+          "/contact",
+          "/auth/login",
+          "/auth/forgot-password",
+          "/rentals"
+        ],
+        "kind": "link",
+        "name": "Unsplash [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-125: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-137: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses",
+          "TFFU-150: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-155: link health: internal, external, and download links do not return broken responses",
+          "TFFU-162: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-167: link health: internal, external, and download links do not return broken responses",
+          "TFFU-174: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-186: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-191: link health: internal, external, and download links do not return broken responses",
+          "TFFU-198: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+          "TFFU-203: link health: internal, external, and download links do not return broken responses",
+          "TFFU-210: HTTPS/SSL: secure links remain on HTTPS when marked as secure"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-026: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-027: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.getByText('Categories', { exact: true }).first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-028: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"language\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-029: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"btn-decrease-quantity\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Decrease quantity [button]",
+        "tests": [
+          "TFFU-030: action element check: Decrease quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"quantity-input\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "1 [input]",
+        "tests": [
+          "TFFU-031: form element check: 1 [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [input]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"btn-increase-quantity\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Increase quantity [button]",
+        "tests": [
+          "TFFU-032: action element check: Increase quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"btn-add-to-cart\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Add to cart [button]",
+        "tests": [
+          "TFFU-033: action element check: Add to cart [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.locator('[id=\"btn-add-to-favorites\"]').first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Add to favourites [button]",
+        "tests": [
+          "TFFU-034: action element check: Add to favourites [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.getByText('Compare', { exact: true }).first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Compare [button]",
+        "tests": [
+          "TFFU-035: action element check: Compare [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]"
+        ]
+      },
+      {
+        "key": "/product/01M4WSTV26H8W1S2HW7QKFBP0F element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-036: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "link [\"iMattSmart\",\"https://unsplash.com/@imattsmart\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "iMattSmart [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-137: HTTPS/SSL: secure links remain on HTTPS when marked as secure"
+        ]
+      },
+      {
+        "key": "link [\"Unsplash\",\"https://unsplash.com/photos/jaLaLQdkBOE\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Unsplash [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-137: HTTPS/SSL: secure links remain on HTTPS when marked as secure"
+        ]
+      },
+      {
+        "key": "link [\"Hammer More information\",\"http://localhost:4200/product/01M4WSTV2770VJA9EQWBHQZJTP\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Hammer More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"More information\",\"http://localhost:4200/product/01M4WSTV26H8W1S2HW7QKFBP0F#\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Claw Hammer More information\",\"http://localhost:4200/product/01M4WSTV28KSBK34SXB3WWF6X1\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Claw Hammer More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Thor Hammer More information\",\"http://localhost:4200/product/01M4WSTV2ANGJH28SK8CVN57TB\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Thor Hammer More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-118: link health: internal, external, and download links do not return broken responses",
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Sledgehammer More information\",\"http://localhost:4200/product/01M4WSTV2B24C0M1RB4NPZVG5G\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Sledgehammer More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Claw Hammer with Fiberglass Handle More information\",\"http://localhost:4200/product/01M4WSTV2CH8Q47EMR5VSNJMJG\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Claw Hammer with Fiberglass Handle More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Court Hammer More information\",\"http://localhost:4200/product/01M4WSTV2DZYCN03MHC8JCYNVD\"]",
+        "page": "/product/01M4WSTV26H8W1S2HW7QKFBP0F",
+        "pages": [
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F"
+        ],
+        "kind": "link",
+        "name": "Court Hammer More information [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-037: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-038: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByText('Categories', { exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-039: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.locator('[id=\"language\"]').first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-040: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByText('Filters', { exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Filters [button]",
+        "tests": [
+          "TFFU-041: form element check: Filters [button]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.locator('form').nth(0)",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [form]",
+        "tests": [
+          "TFFU-042: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [form]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('combobox', { name: 'Sort products', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [select]",
+        "tests": [
+          "TFFU-043: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [select]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Hand Tools', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWFTR1S6G5SVQT63AQS [input]",
+        "tests": [
+          "TFFU-044: form element check: 01M4WSTTWFTR1S6G5SVQT63AQS [By category:] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Hammer', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q6 [input]",
+        "tests": [
+          "TFFU-045: form element check: 01M4WSTTWP5WMTVMMCKDN383Q6 [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Hand Saw', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q7 [input]",
+        "tests": [
+          "TFFU-046: form element check: 01M4WSTTWP5WMTVMMCKDN383Q7 [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Wrench', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q8 [input]",
+        "tests": [
+          "TFFU-047: form element check: 01M4WSTTWP5WMTVMMCKDN383Q8 [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Screwdriver', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383Q9 [input]",
+        "tests": [
+          "TFFU-048: form element check: 01M4WSTTWP5WMTVMMCKDN383Q9 [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Pliers', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QA [input]",
+        "tests": [
+          "TFFU-049: form element check: 01M4WSTTWP5WMTVMMCKDN383QA [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Chisels', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QB [input]",
+        "tests": [
+          "TFFU-050: form element check: 01M4WSTTWP5WMTVMMCKDN383QB [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Measures', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTWP5WMTVMMCKDN383QC [input]",
+        "tests": [
+          "TFFU-051: form element check: 01M4WSTTWP5WMTVMMCKDN383QC [Hand Tools] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'ForgeFlex Tools', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTANQ32N5P5VN9K13N6M [input]",
+        "tests": [
+          "TFFU-052: form element check: 01M4WSTTANQ32N5P5VN9K13N6M [By brand:] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'MightyCraft Hardware', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "01M4WSTTANQ32N5P5VN9K13N6N [input]",
+        "tests": [
+          "TFFU-053: form element check: 01M4WSTTANQ32N5P5VN9K13N6N [By brand:] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('checkbox', { name: 'Show only eco-friendly products', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "on [input]",
+        "tests": [
+          "TFFU-054: form element check: on [Eco-Friendly Products] [input]"
+        ]
+      },
+      {
+        "key": "/category/hand-tools element page.getByRole('button', { name: 'Compare', exact: true }).first()",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "element",
+        "name": "Compare [button]",
+        "tests": [
+          "TFFU-055: action element check: Compare [button]",
+          "TFFU-056: action element check: Compare [button]"
+        ]
+      },
+      {
+        "key": "link [\"Sledgehammer ABCDE$17.75\",\"http://localhost:4200/product/01M4WSTV2B24C0M1RB4NPZVG5G\"]",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Sledgehammer ABCDE$17.75 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Claw Hammer with Fiberglass Handle ABCDE$20.14\",\"http://localhost:4200/product/01M4WSTV2CH8Q47EMR5VSNJMJG\"]",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Claw Hammer with Fiberglass Handle ABCDE$20.14 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Court Hammer ABCDE$18.63\",\"http://localhost:4200/product/01M4WSTV2DZYCN03MHC8JCYNVD\"]",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Court Hammer ABCDE$18.63 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-130: link health: internal, external, and download links do not return broken responses",
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"ECO Wood Saw ABCDE$12.18\",\"http://localhost:4200/product/01M4WSTV2E0HWFEGEMR1BJHRY0\"]",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "ECO Wood Saw ABCDE$12.18 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "link [\"Adjustable Wrench ABCDE$20.33\",\"http://localhost:4200/product/01M4WSTV2FWX3E4K15CXGB82NN\"]",
+        "page": "/category/hand-tools",
+        "pages": [
+          "/category/hand-tools"
+        ],
+        "kind": "link",
+        "name": "Adjustable Wrench ABCDE$20.33 [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-143: link health: internal, external, and download links do not return broken responses"
+        ]
+      },
+      {
+        "key": "/auth/register element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-057: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-058: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.getByText('Categories', { exact: true }).first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-059: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"language\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-060: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('form').nth(0)",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "First nameLast nameDate of Birth *CountryYour country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe Choose your country and enter the postal code and house number. Street, city and state will be filled in automatically. Postal codeHouse numberStreetCityStatePhoneEmail addressPassword Your password must: Be at least 8 characters long Contain both uppercase and lowercase letters Include at least one number Have at least one special symbol (e.g., @, #, $, etc.) Password strength: WeakModerateStrongVery StrongExcellentRegister [form]",
+        "tests": [
+          "TFFU-061: form element check: First nameLast nameDate of Birth *CountryYour country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe Choose your country and enter the postal code and house number. Street, city and state will be filled in automatically. Postal codeHouse numberStreetCityStatePhoneEmail addressPassword Your password must: Be at least 8 characters long Contain both uppercase and lowercase letters Include at least one number Have at least one special symbol (e.g., @, #, $, etc.) Password strength: WeakModerateStrongVery StrongExcellentRegister [Customer registration] [form]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"first_name\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "First name * [input]",
+        "tests": [
+          "TFFU-062: form element check: First name * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"last_name\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your last name * [input]",
+        "tests": [
+          "TFFU-063: form element check: Your last name * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"dob\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "YYYY-MM-DD [input]",
+        "tests": [
+          "TFFU-064: form element check: YYYY-MM-DD [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"country\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe [select]",
+        "tests": [
+          "TFFU-065: form element check: Your country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe [Customer registration] [select]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"postal_code\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your Postcode * [input]",
+        "tests": [
+          "TFFU-066: form element check: Your Postcode * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"house_number\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "e.g. 42 * [input]",
+        "tests": [
+          "TFFU-067: form element check: e.g. 42 * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"street\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your Street * [input]",
+        "tests": [
+          "TFFU-068: form element check: Your Street * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"city\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your City * [input]",
+        "tests": [
+          "TFFU-069: form element check: Your City * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"state\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your State * [input]",
+        "tests": [
+          "TFFU-070: form element check: Your State * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"phone\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your phone * [input]",
+        "tests": [
+          "TFFU-071: form element check: Your phone * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"email\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your email * [input]",
+        "tests": [
+          "TFFU-072: form element check: Your email * [Customer registration] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.locator('[id=\"password\"]').first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Your password [input]",
+        "tests": [
+          "TFFU-073: form element check: Your password [Password] [input]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.getByText('Register', { exact: true }).first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Register [button]",
+        "tests": [
+          "TFFU-074: form element check: Register [Customer registration] [button]"
+        ]
+      },
+      {
+        "key": "/auth/register element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/auth/register",
+        "pages": [
+          "/auth/register"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-075: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-076: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-077: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByText('Categories', { exact: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-078: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"language\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-079: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('form').nth(0)",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "First nameLast nameEmail addressSubjectSelect a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my orderMessage * AttachmentOnly files with the txt extension are allowed, and files must be 0kb. [form]",
+        "tests": [
+          "TFFU-080: form element check: First nameLast nameEmail addressSubjectSelect a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my orderMessage * AttachmentOnly files with the txt extension are allowed, and files must be 0kb. [Contact] [form]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"first_name\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Your first name * [input]",
+        "tests": [
+          "TFFU-081: form element check: Your first name * [Contact] [input]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"last_name\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Your last name * [input]",
+        "tests": [
+          "TFFU-082: form element check: Your last name * [Contact] [input]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"email\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Your email * [input]",
+        "tests": [
+          "TFFU-083: form element check: Your email * [Contact] [input]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"subject\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Select a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my order [select]",
+        "tests": [
+          "TFFU-084: form element check: Select a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my order [Contact] [select]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"message\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Message * [textarea]",
+        "tests": [
+          "TFFU-085: form element check: Message * [Message *] [textarea]"
+        ]
+      },
+      {
+        "key": "/contact element page.locator('[id=\"attachment\"]').first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Attachment [input]",
+        "tests": [
+          "TFFU-086: form element check: Attachment [Attachment] [input]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByText('Send', { exact: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Send [button]",
+        "tests": [
+          "TFFU-087: form element check: Send [Contact] [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-088: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "/contact element page.getByRole('button', { name: 'Show live shop activity', exact: true }).first()",
+        "page": "/contact",
+        "pages": [
+          "/contact"
+        ],
+        "kind": "element",
+        "name": "Show live shop activity [button]",
+        "tests": [
+          "TFFU-089: action element check: Show live shop activity [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-090: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-091: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByText('Categories', { exact: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-092: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.locator('[id=\"language\"]').first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-093: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.locator('form').nth(0)",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Email address *Password * [form]",
+        "tests": [
+          "TFFU-094: form element check: Email address *Password * [Login] [form]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.locator('[id=\"email\"]').first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Your email [input]",
+        "tests": [
+          "TFFU-095: form element check: Your email [Login] [input]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.locator('[id=\"password\"]').first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Your password [input]",
+        "tests": [
+          "TFFU-096: form element check: Your password [Password *] [input]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByRole('button', { name: 'Login', exact: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Login [button]",
+        "tests": [
+          "TFFU-097: form element check: Login [Login] [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-098: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "/auth/login element page.getByRole('button', { name: 'Show live shop activity', exact: true }).first()",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "element",
+        "name": "Show live shop activity [button]",
+        "tests": [
+          "TFFU-099: action element check: Show live shop activity [button]"
+        ]
+      },
+      {
+        "key": "link [\"Register your account\",\"http://localhost:4200/auth/register\"]",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "link",
+        "name": "Register your account [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "link [\"Forgot your Password?\",\"http://localhost:4200/auth/forgot-password\"]",
+        "page": "/auth/login",
+        "pages": [
+          "/auth/login"
+        ],
+        "kind": "link",
+        "name": "Forgot your Password? [link]",
+        "tests": [],
+        "reachedBy": [
+          "TFFU-126: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-139: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-151: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-163: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-175: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-179: link health: internal, external, and download links do not return broken responses",
+          "TFFU-187: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-199: orphan page approximation: each scanned page is linked from another scanned page",
+          "TFFU-211: orphan page approximation: each scanned page is linked from another scanned page"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-100: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-101: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByText('Categories', { exact: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-102: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.locator('[id=\"language\"]').first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-103: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.locator('form').nth(0)",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Email address * [form]",
+        "tests": [
+          "TFFU-104: form element check: Email address * [Forgot Password] [form]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.locator('[id=\"email\"]').first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Your email [input]",
+        "tests": [
+          "TFFU-105: form element check: Your email [Forgot Password] [input]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByText('Set New Password', { exact: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Set New Password [button]",
+        "tests": [
+          "TFFU-106: action element check: Set New Password [Forgot Password] [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-107: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "/auth/forgot-password element page.getByRole('button', { name: 'Show live shop activity', exact: true }).first()",
+        "page": "/auth/forgot-password",
+        "pages": [
+          "/auth/forgot-password"
+        ],
+        "kind": "element",
+        "name": "Show live shop activity [button]",
+        "tests": [
+          "TFFU-108: action element check: Show live shop activity [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.getByText('Testing Guide', { exact: true }).first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "Testing Guide [button]",
+        "tests": [
+          "TFFU-109: action element check: Testing Guide [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "Toggle navigation [button]",
+        "tests": [
+          "TFFU-110: navigation element check: Toggle navigation [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.getByText('Categories', { exact: true }).first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "Categories [button]",
+        "tests": [
+          "TFFU-111: navigation element check: Categories [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.locator('[id=\"language\"]').first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "EN [button]",
+        "tests": [
+          "TFFU-112: navigation element check: EN [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.getByRole('button', { name: 'Open chat', exact: true }).first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "Open chat [button]",
+        "tests": [
+          "TFFU-113: navigation element check: Open chat [button]"
+        ]
+      },
+      {
+        "key": "/rentals element page.getByRole('button', { name: 'Show live shop activity', exact: true }).first()",
+        "page": "/rentals",
+        "pages": [
+          "/rentals"
+        ],
+        "kind": "element",
+        "name": "Show live shop activity [button]",
+        "tests": [
+          "TFFU-114: action element check: Show live shop activity [button]"
+        ]
+      }
+    ],
+    "types": [
+      {
+        "pattern": "/",
+        "pages": 1,
+        "total": 45,
+        "covered": 25,
+        "reachedOnly": 20,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/: Combination Pliers ABCDE$14.15 [link] (its URL is requested, but it isn't checked on a page)",
+          "/: Pliers ABCDE$12.01 [link] (its URL is requested, but it isn't checked on a page)",
+          "/: Bolt Cutters ABCDE$48.41 [link] (its URL is requested, but it isn't checked on a page)",
+          "/: Long Nose Pliers ABCDEOut of stock$14.24 [link] (its URL is requested, but it isn't checked on a page)",
+          "/: Slip Joint Pliers ABCDE$9.17 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Hammer ABCDE$12.58 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Claw Hammer ABCDE$11.48 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Thor Hammer ABCDE$11.14 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      },
+      {
+        "pattern": "/product/:id",
+        "pages": 1,
+        "total": 33,
+        "covered": 13,
+        "reachedOnly": 20,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: iMattSmart [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Unsplash [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Hammer More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Claw Hammer More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Thor Hammer More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Sledgehammer More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Claw Hammer with Fiberglass Handle More information [link] (its URL is requested, but it isn't checked on a page)",
+          "/product/01M4WSTV26H8W1S2HW7QKFBP0F: Court Hammer More information [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      },
+      {
+        "pattern": "/category/hand-tools",
+        "pages": 1,
+        "total": 41,
+        "covered": 21,
+        "reachedOnly": 20,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Hammer ABCDE$12.58 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Claw Hammer ABCDE$11.48 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 1 more page: Thor Hammer ABCDE$11.14 [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)",
+          "/category/hand-tools: Sledgehammer ABCDE$17.75 [link] (its URL is requested, but it isn't checked on a page)",
+          "/category/hand-tools: Claw Hammer with Fiberglass Handle ABCDE$20.14 [link] (its URL is requested, but it isn't checked on a page)",
+          "/category/hand-tools: Court Hammer ABCDE$18.63 [link] (its URL is requested, but it isn't checked on a page)",
+          "/category/hand-tools: ECO Wood Saw ABCDE$12.18 [link] (its URL is requested, but it isn't checked on a page)",
+          "/category/hand-tools: Adjustable Wrench ABCDE$20.33 [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      },
+      {
+        "pattern": "/auth/:slug",
+        "pages": 3,
+        "total": 53,
+        "covered": 40,
+        "reachedOnly": 13,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)",
+          "/auth/login: Register your account [link] (its URL is requested, but it isn't checked on a page)",
+          "/auth/login: Forgot your Password? [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      },
+      {
+        "pattern": "/contact",
+        "pages": 1,
+        "total": 27,
+        "covered": 16,
+        "reachedOnly": 11,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      },
+      {
+        "pattern": "/rentals",
+        "pages": 1,
+        "total": 19,
+        "covered": 8,
+        "reachedOnly": 11,
+        "uncovered": [
+          "/ and 7 more pages: Documentation [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Hand Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Power Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Other [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Special Tools [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Rentals [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Contact [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Sign in [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Privacy Policy [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Barn Images [link] (its URL is requested, but it isn't checked on a page)",
+          "/ and 7 more pages: Unsplash [link] (its URL is requested, but it isn't checked on a page)"
+        ]
+      }
+    ],
+    "total": 149,
+    "covered": 113,
+    "reachedOnly": 36,
+    "links": {
+      "onPages": 133,
+      "distinct": 38
+    }
+  }
+}
