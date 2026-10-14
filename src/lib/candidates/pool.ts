@@ -33,6 +33,12 @@ export interface CandidateEvidence {
     /** The run's verdict for it: "Passed", "Failed", "Not run"... */
     status: string;
     run: string | null;
+    /** TFP-196: the run failed it as a breach of the read-only gate. */
+    breach?: boolean;
+    /** TFP-196: a person's label for a failure - a real defect, or not one. */
+    label?: "real" | "not a defect";
+    /** TFP-196: the benchmark bug the failure caught, by the answer key's number. */
+    bug?: number;
 }
 
 export interface Candidate {
@@ -46,9 +52,12 @@ export interface Candidate {
     sources: Array<{ origin: string; page: string; at: string }>;
     /** Every later run it took part in. */
     evidence: CandidateEvidence[];
-    status: "candidate" | "rejected" | "promoted";
+    /** TFP-196: "approved" by Emil and waiting for its library commit; "promoted" once it is a library entry. */
+    status: "candidate" | "approved" | "rejected" | "promoted";
     /** Why it was rejected (TFP-196), or the library entry it became. */
     reason?: string;
+    /** TFP-196: who approved it, and when. */
+    approved?: { by: string; at: string };
     costUsd: number;
 }
 
@@ -113,10 +122,10 @@ export async function addToPool(candidate: Omit<Candidate, "id" | "evidence" | "
     return { candidate: created, merged: false };
 }
 
-/** The active candidate for a pattern, if the pool has one (rejected and promoted ones aren't run as candidates). */
+/** The active candidate for a pattern, if the pool has one (rejected and promoted ones aren't run as candidates; approved ones still are, until their commit). */
 export function matchingCandidate(pool: Candidate[], pattern: CandidatePattern): Candidate | null {
     const id = candidateId(pattern);
-    return pool.find((candidate) => candidate.id === id && candidate.status === "candidate") ?? null;
+    return pool.find((candidate) => candidate.id === id && (candidate.status === "candidate" || candidate.status === "approved")) ?? null;
 }
 
 /** Whether the pool has the pattern at all, in any state: then no new candidate is proposed for it. */

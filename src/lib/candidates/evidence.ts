@@ -14,7 +14,9 @@ export async function recordCandidateRuns(records: ExecutionRecord[], baseUrl: s
     for (const record of records.filter((candidate) => candidate.generator === "candidate")) {
         const id = candidateIdOf(record.title);
         if (!id) continue;
-        await recordEvidence(id, { origin, page: record.page ?? "", at: new Date().toISOString(), status: record.status, run: runId });
+        // TFP-196: a breach of the read-only gate is what "passed the gates on every run" rules out.
+        const breach = /read-only guard breach/.test(record.rawMessage ?? "");
+        await recordEvidence(id, { origin, page: record.page ?? "", at: new Date().toISOString(), status: record.status, run: runId, ...(breach ? { breach } : {}) });
         recorded++;
     }
     return recorded;

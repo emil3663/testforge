@@ -414,6 +414,21 @@ on the local Toolshop copies (Phase 41 Decision 7).
   approved one becomes a library entry with its evidence; a rejected one is
   not proposed again.
 - **Dependencies:** TFP-195.
+- **Built:** `src/lib/candidates/promotion.ts`, `/api/candidates`, and
+  `npm run library:promote`. The rule reads each candidate's evidence:
+  - "passed the gates on every run": at least one run, and no run that
+    failed as a read-only gate breach (recorded with each run since this
+    ticket);
+  - "a real defect": a run a person labelled real, or one credited with a
+    benchmark bug (labelled through the route);
+  - "3 sites with no unlabelled failure": three distinct sites in its
+    runs, and every failure labelled.
+  Approving one below the rule is refused. Approval marks it; Claude Code
+  runs `library:promote`, which writes each approved candidate with its
+  evidence and caught bugs under `src/lib/library/promoted/` and marks it
+  promoted, and then commits the entries. Not built: running promoted
+  entries in generated suites (they are recorded, not yet applied), and a
+  screen in the app (the route only).
 - **Stop for verification after TFP-193 to TFP-196 (batch 2).**
 
 ### TFP-197 — Measure the gap writer (Gate B)

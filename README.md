@@ -98,6 +98,15 @@ Comprehensive run of any site, a candidate whose pattern matches an
 uncovered element runs in its own "Candidate tests" section, outside the
 verdict, and each run adds to its evidence. Standard never runs them.
 
+A candidate that has passed the gates on every run, and has either caught
+a real defect or run clean on 3 sites, is offered for promotion
+(`GET /api/candidates`); a run's failure is labelled with
+`POST /api/candidates { "action": "label", ... }`. Approve or reject it with
+`{ "action": "approve", "id", "by" }` or `{ "action": "reject", "id",
+"reason" }`. `npm run library:promote` then writes each approved one, with
+its evidence, under `src/lib/library/promoted/`, to be reviewed and
+committed.
+
 ---
 
 ## Authenticated runs
