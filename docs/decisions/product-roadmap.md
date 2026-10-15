@@ -274,23 +274,37 @@ The coverage proposal measured the Standard run against the published standards 
 All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
 
 
-### Phase 39 — Run concurrency (locked 2026-10-06, not started)
-Standard and Comprehensive spread their tests over several workers from a
-shared queue. Each area gets its own file, or one per page for page-level
-areas. Tests that change data run one at a time.
+### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16, not started; next after the review)
+Amended 2026-10-16 (Emil). R1 (TFP-207) found that almost every test loads its
+page afresh, and that Standard on with-bugs takes 1,535 s of its 1,800 s
+limit. So the phase now cuts page visits before adding workers, in this
+order:
+1. **Measure first** where run time goes, three runs per site. The
+   keep-or-revert targets are set from the numbers and locked by Emil before
+   anything is built.
+2. **One visit per page for read-only checks,** across areas, each check
+   still its own test and result.
+3. **Rules for shared pages:**
+   - reload after a failure, and after a test that left the page;
+   - typed text cleared;
+   - a failure re-run on a fresh page only when a state-changing test ran
+     before it on the same visit.
+4. **Functional checks share pages by kind of control** (in place, in-app
+   navigation, full navigation).
+5. **The settle wait and read-only timeouts tuned** from the measurements.
+6. **Workers,** as locked on 2026-10-06:
+   - local hosts are limited only by the machine;
+   - other hosts get at most 3 workers and 5 requests per second, shared;
+   - the owner's sign-off on Comprehensive testing (Phase 35 Decision 8)
+     removes the caps with no separate ask;
+   - data-changing tests run one at a time, after the read-only ones.
 
-The worker limit depends on the host:
-- local hosts are limited only by the machine;
-- other hosts get a worker maximum and a shared requests-per-second cap;
-- with the owner's sign-off on Comprehensive testing (Phase 35 Decision 8)
-  the caps are removed with no separate ask, and the run goes all out
-  (Emil, 2026-10-06).
+   This replaces Phase 35's one-worker rule and Standard's fixed 4 and 2.
 
-This replaces Phase 35's one-worker rule and Standard's fixed 4 and 2.
-
-Values (Emil, 2026-10-06): at most 3 workers and 5 requests per second on
-other hosts; otherwise half the CPU cores. Tickets TFP-155 to TFP-158;
-starts after Phase 38 Gate B. See
+Performance, responsive, cookie and session checks, and everything at the
+interactive or active gates, keep their own fresh page. Results must not
+change, only run time. Tickets TFP-211 to TFP-215, then TFP-155 to TFP-158.
+No new Standard check is added until TFP-211 has measured. See
 `phase-39-run-concurrency-decision-record.md`.
 
 
@@ -312,7 +326,7 @@ in crawl order.
 
 See `phase-40-page-type-selection-decision-record.md`.
 
-### Phase 41 — Check gaps (locked 2026-10-07, not started)
+### Phase 41 — Check gaps (complete 2026-10-13)
 New checks for the known bugs TestForge reaches but misses at the read-only
 gate (24 of 37): layout consistency, overlap and unrendered images; spelling
 of interface text; controls that don't do their job (with the read-only gate
@@ -320,6 +334,11 @@ widened to GET-only interactions behind a request guard); tab order and
 grouping; known-path probes, guessable ids and API fields that expose
 internals. Built and measured on local copies of both Toolshops first, then
 the hosted sites. Tickets TFP-179 to TFP-189.
+
+Gate B passed 2026-10-13 (Emil): local copies 33 found, 0 hinted, 4 missed of
+37, with Standard plus Comprehensive security and accessibility (TFP-188).
+Standard alone, re-measured in the review's R1 (TFP-207, 2026-10-16): 30
+found. The 3 differences are found only by Comprehensive security.
 
 See `phase-41-check-gaps-decision-record.md`.
 
@@ -330,24 +349,34 @@ passed clears a failure, and only runs of the same kind are compared. See
 `run-evidence-sweep-backlog-2026-10-13.md`. TFP-199: the read-only guard
 notes site beacons (Cloudflare's `/cdn-cgi/rum`) instead of failing on them.
 
-### Phase 42 — Reusable suites, a test library and gap tests (locked 2026-10-12, in progress)
+### Phase 42 — Reusable suites, a test library and gap tests (complete 2026-10-15)
 Each site's Standard tests are saved and reused, regenerated only for page
 types that changed; Comprehensive tests live in a library written against
 component patterns; a coverage map at element and flow level shows what no
 test touches, and Claude Code (opt-in per site) writes tests only for those
 gaps, once per gap. Each gap also yields a candidate for the library, run on
 other sites outside the verdict until it earns promotion with Emil's
-approval. Tickets TFP-190 to TFP-197. Starts after Phase 41's Gate B.
+approval. Tickets TFP-190 to TFP-197, then TFP-200 to TFP-205.
+
+Gate B passed 2026-10-15 (Emil): the gap writer is not kept as a bug finder.
+Its code stays, off unless a site opts in. Phase 42 closed when TFP-205 (a
+template test for every link on the selected pages) was verified,
+2026-10-15.
 
 See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
 
 ### After Phase 42 (Emil, 2026-10-13), in this order
 Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
+- **Done (2026-10-16):** R1 (TFP-207) is verified, R3's findings are listed
+  and its doc fixes are made (`post-phase-42-review-findings.md`), and the
+  Phase 39 amendment is locked.
+- **Next for Code:** TFP-208, then TFP-206 and TFP-209, then TFP-210.
+- **After the review:** Phase 39, measurement first (Emil, 2026-10-16).
 1. **A full review of everything built so far:** each phase's claims checked
    against the code and the measurements, the docs brought up to date, and
    what's left open listed.
 2. **GitHub issue #2:** read with Emil 2026-10-13 and moved ahead of
-   Phase 42 as TFP-198 (above); the review confirms it closed.
+   Phase 42 as TFP-198 (above); closed, as the review confirmed.
 3. **Also for the review (2026-10-14):** a real sandbox for gap and
    candidate tests (run inside Docker), and app screens for the gap-writer
    opt-in and candidate promotion (API routes only so far).
@@ -361,7 +390,9 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
    benchmark re-run after TFP-205 (TFP-205 verified 2026-10-15, Phase 42
    complete); TFP-206; the load flakes (`comprehensive-scenarios`,
    `performance-bands`, a Comprehensive security case), and the first
-   clean full unit run since TFP-205.
+   clean full unit run since TFP-205. The re-run and the unit runs were R1
+   (TFP-207). The flakes it actually found, two different ones, are in
+   TFP-208 with these three.
 4. **The skills, relooked:** the skills TestForge and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
