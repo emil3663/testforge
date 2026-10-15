@@ -44,7 +44,7 @@ const { mockGenerate } = await import("../generate/mock/index.ts");
 const { SUITE_TITLES } = await import("../generate/mock/suite.ts");
 const { normalizeContentProfile, normalizeContentRules, normalizeTestAuditMode } = await import("../generate/normalize.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
-const { buildCoverageMap, untouched } = await import("../report/coverage-map.ts");
+const { buildCoverageMap } = await import("../report/coverage-map.ts");
 const generateRoute = await import("../../app/api/generate/route.ts");
 const runRoute = await import("../../app/api/run/route.ts");
 const { runJobs } = await import("../run/jobs.ts");
@@ -143,8 +143,9 @@ test("through the routes: a promoted entry is generated on Standard functional a
     assert.equal(libraryUnits(plain.code).length, 0);
     const { loadSiteSuiteProfile } = await import("../site-suites/store.ts");
     const siteProfile = await loadSiteSuiteProfile(plain.siteSuite.store);
-    const gap = untouched(buildCoverageMap(siteProfile, plain.code)!).find((item) => item.kind === "link")!;
-    assert.ok(gap, "the site has an uncovered link");
+    // TFP-205: the template checks every link now, so none is a gap; a promoted entry binds by its pattern, gap or not.
+    const gap = buildCoverageMap(siteProfile, plain.code)!.entries.find((item) => item.kind === "link" && !item.name.startsWith("http"))!;
+    assert.ok(gap, "the site has a link");
 
     const dir = join(scratch, "promoted");
     mkdirSync(dir, { recursive: true });
@@ -155,7 +156,7 @@ test("through the routes: a promoted entry is generated on Standard functional a
         const body = await generate(["functional"]);
         const units = libraryUnits(body.code);
         assert.equal(units.length, 1, parseTestUnits(body.code).map((unit) => unit.title).join(" | "));
-        assert.ok(!untouched(buildCoverageMap(siteProfile, body.code)!).some((item) => item.key === gap.key), "the gap is covered");
+        assert.ok(buildCoverageMap(siteProfile, body.code)!.entries.find((item) => item.key === gap.key)!.tests.some((title) => title.includes("library promoted.")), "the promoted entry checks the link in context");
         // Only where the library's control checks run: not on a Standard run without functional.
         assert.equal(libraryUnits((await generate(["accessibility"])).code).length, 0);
 
