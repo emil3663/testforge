@@ -165,7 +165,7 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 | Tool | Purpose |
 |---|---|
 | **Node.js 20+** | TestForge runs on Next.js |
-| **Docker Desktop** | Runs Plane — the test target application |
+| **Docker Desktop** | Runs local test targets: the Toolshop copies (`scripts/toolshop-local/`) and, optionally, Plane |
 | **VS Code** | Code editor — open this repo as a workspace (optional) |
 | **GitHub Copilot** | AI assistant in VS Code (optional, install from the extension marketplace) |
 | **Git** | Version control |
@@ -174,14 +174,17 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 
 ## Features
 
-- **Plain-English input** — Describe what you want to test the way you'd explain it to a colleague.
-- **AI-generated TypeScript code** — OpenAI GPT-4o generates `.spec.ts` Playwright suites with descriptive test names; a template-based generator produces a working suite when no API key is configured.
-- **Site crawl and page introspection** — TestForge can crawl the target site and inspect individual pages to generate content-aware coverage instead of guessing at selectors. Coverage is denominated against that discovered element surface, not just the tests that ran: every unmatched element is bucketed as not-selected, excluded-by-generator, or a genuine generator gap.
-- **In-browser code editor** — Review and edit the generated suite before running it.
-- **Async run lifecycle** — Runs execute in the background with live progress, cancellation, and targeted rerun of just the failed tests.
-- **Seven-tab structured report** — Summary, execution, defects, coverage, performance, usability, and (when SEO coverage is selected) SEO, each with an HTML export.
-- **Run diffing** — Compare two persisted runs of the same target: which tests flipped pass/fail, the coverage-percentage delta per practice area, and elements newly discovered or newly missing between runs.
-- **No lock-in** — The generated code is a standard Playwright TypeScript suite you can copy, version-control, and extend, or open directly in VS Code's Test Explorer.
+- **Deterministic generation, no API key needed.** A template generator writes a standard Playwright TypeScript suite from what TestForge actually finds on the site. A local model (Ollama) or OpenAI can fill only the areas the template left empty; neither is required, and no live OpenAI completion has succeeded yet (`TEST_PLAN.md`, known limitation 5).
+- **Crawl, page types and inspection.** TestForge crawls the site, groups its pages into page types by address pattern and form signature, and tests one page of each type (up to 8), then inspects those pages so every check targets real elements.
+- **Standard and Comprehensive runs.** Standard tests the critical working path. Comprehensive goes deep on one area, or all of them, and tries to break fields and flows.
+- **Three gates.** Read-only by default; interactive when switched on; active (tests that change data) only behind a typed ownership confirmation.
+- **Checks across the areas.** Functional controls (sorts, filters, steppers, links), layout consistency and overlap, spelling, tab order and grouping, WCAG 2.2 A/AA with axe, passive security headers and probes, SEO, and performance graded by Core Web Vitals bands.
+- **Measured against known bugs.** On local copies of the Toolshop practice site with 37 known bugs in reach, Standard alone finds 30 (TFP-207, 2026-10-16), and Standard plus Comprehensive security and accessibility finds 33 (Phase 41 Gate B). See `docs/decisions/phase-41-check-gaps-decision-record.md`.
+- **Reusable site suites and a test library.** Each site's Standard suite is kept and reused, regenerated only for page types that changed. Comprehensive tests live in a library written against component patterns.
+- **A coverage map.** Element by element, in two tiers: reachability (the URL answered) and in context (the element was found and checked on its page). The gap list shows what no test touches.
+- **Run persistence and diffing.** Runs survive a restart; two runs of the same site can be compared test by test.
+- **A structured report** with execution, defects, coverage, performance, usability and SEO detail, and an HTML export.
+- **No lock-in.** The suite is plain Playwright TypeScript you can copy, version-control and run without TestForge.
 
 ---
 
@@ -197,7 +200,7 @@ Beyond the web app, `skills/` packages TestForge's own testing and engineering j
 |---|---|---|
 | Node.js | 20+ | [nodejs.org](https://nodejs.org) |
 | Git | any | [git-scm.com](https://git-scm.com) |
-| Docker Desktop | latest | [docker.com](https://docker.com) — needed to run Plane |
+| Docker Desktop | latest | [docker.com](https://docker.com) — needed for the local test targets |
 | VS Code | latest | [code.visualstudio.com](https://code.visualstudio.com) (optional) |
 | GitHub Copilot | extension | Install from VS Code marketplace (optional) |
 
@@ -234,16 +237,23 @@ Edit `.env` and add your OpenAI API key (optional — TestForge works without it
 OPENAI_API_KEY=sk-...
 ```
 
-### 5. Start the test target (Plane) with Docker
+### 5. Start a test target with Docker
 
-```bash
-docker compose up -d
+TestForge can test any site you're allowed to test. For a local target,
+everything measured since Phase 38 uses local copies of the Toolshop
+practice site (`practicesoftwaretesting.com`), one version at a time, with
+Docker Desktop running:
+
+```powershell
+.\scripts\toolshop-local\start-toolshop.ps1 -Sprint sprint5-with-bugs   # or -Sprint sprint5 for the clean copy
 ```
 
-Wait about 60 seconds for all services to initialise. Plane will be available at **<http://localhost>**.
+The site is then at **<http://localhost:4200>**.
 
-> **First run**: Plane will prompt you to create an admin account at <http://localhost>.  
-> Use those credentials when describing login tests to TestForge.
+The repo's `docker-compose.yml` also starts Plane at **<http://localhost>**
+(`docker compose up -d`, then about 60 seconds to initialise; Plane asks
+you to create an admin account on first run). That setup hasn't been
+re-checked since Phase 38.
 
 ### 6. Start TestForge
 
@@ -257,44 +267,45 @@ Open **<http://localhost:3000>** in your browser.
 
 ## How it works
 
-1. **Enter the base URL** — e.g. `http://localhost` (where Plane is running).
-2. **Describe your test** — in plain English, as you'd explain it to a colleague. Optionally crawl the site or introspect a page first so generation is content-aware.
-3. **Click "Generate test suite"** — TestForge calls OpenAI and returns a complete TypeScript Playwright `.spec.ts` file.
-4. **Review the code** — read it, understand each step, edit if needed.
-5. **Click "Run suite"** — the suite runs against Chromium and a structured report appears with execution, defect, coverage, performance, usability, and (when applicable) SEO detail.
+1. **Enter the base URL**, e.g. `http://localhost:4200`, and choose Standard or a Comprehensive area.
+2. **Crawl.** TestForge finds the pages, groups them into page types and picks one page of each.
+3. **Generate.** It inspects the selected pages and writes the suite with the template generator (and a local model or OpenAI for empty areas, if configured). Review or edit the code.
+4. **Run.** The suite runs in Chromium at the gate you chose, and the report shows each result, the findings, the page types covered and skipped, and the coverage map.
 
 ---
 
 ## Example generated test
 
+Two tests from a real generated suite, unedited: the Standard run on the
+local clean Toolshop copy in TFP-207
+(`benchmarks/2026-10-15-tfp207-regression/runs/clean-standard-suite.spec.ts`).
+`tfGoto`, `tfReadOnlyGuarded` and `tfCheckSteppers` are helpers the suite
+defines at its top.
+
 ```typescript
-import { test, expect } from '@playwright/test';
-
-test.describe('Login flow', () => {
-  test('user can sign in and reach the workspace dashboard', async ({ page }) => {
-    // Open the Plane login page
-    await page.goto('http://localhost');
-
-    // Fill in credentials
-    await page.getByLabel('Email').fill('admin@example.com');
-    await page.getByLabel('Password').fill('your-password');
-    await page.getByRole('button', { name: 'Sign in' }).click();
-
-    // Verify the dashboard is visible after login
-    await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible();
+  test('TFFU-217: quantity steppers change the value by one on /product/01M50R4WFGYYZ0RG0YQDW0DTQ3', { annotation: [{ type: 'page', description: '/product/01M50R4WFGYYZ0RG0YQDW0DTQ3' }, { type: 'gate', description: 'read-only' }] }, async ({ page }) => {
+    // ISTQB: state transition (n, n + 1, n, within the field's bounds).
+    await tfGoto(page, '/product/01M50R4WFGYYZ0RG0YQDW0DTQ3');
+    let result = { problems: [] as string[], checked: 0 };
+    await tfReadOnlyGuarded(page, async () => { result = await tfCheckSteppers(page, '/product/01M50R4WFGYYZ0RG0YQDW0DTQ3'); });
+    test.skip(result.checked === 0, 'no number field with + and - buttons on /product/01M50R4WFGYYZ0RG0YQDW0DTQ3');
+    expect(result.problems, result.problems.join('; ')).toEqual([]);
   });
 
-  test('wrong password shows an error', async ({ page }) => {
-    await page.goto('http://localhost');
-    await page.getByLabel('Email').fill('admin@example.com');
-    await page.getByLabel('Password').fill('wrong-password');
-    await page.getByRole('button', { name: 'Sign in' }).click();
-
-    // Error message should be visible
-    await expect(page.getByText('Invalid credentials')).toBeVisible();
+  test('TFFU-220: option lists show no error text on /category/hand-tools', { annotation: [{ type: 'page', description: '/category/hand-tools' }, { type: 'gate', description: 'read-only' }] }, async ({ page }) => {
+    // ISTQB: error guessing.
+    await tfGoto(page, '/category/hand-tools');
+    const lists = await page.locator('select').evaluateAll((selects) => selects.map((select) => ({
+      name: (select.getAttribute('aria-label') || (select as HTMLSelectElement).labels?.[0]?.textContent || select.getAttribute('name') || select.id || 'a list').replace(/\s+/g, ' ').trim(),
+      options: Array.from((select as HTMLSelectElement).options).map((option) => (option.textContent || '').replace(/\s+/g, ' ').trim()),
+    })));
+    const problems = lists.flatMap((list) => list.options.filter((option) => TF_OPTION_ERROR.test(option)).map((option) => 'the "' + list.name + '" list on /category/hand-tools offers "' + option + '"'));
+    expect(problems, problems.join('; ')).toEqual([]);
   });
-});
 ```
+
+On the with-bugs copy, the stepper test fails with `"+" beside "quantity"
+left it at 1 (it was 1; expected 2)` (known bug 40).
 
 ---
 
@@ -321,9 +332,9 @@ npx playwright test --project=chromium
 | Framework | [Next.js](https://nextjs.org/) (App Router, TypeScript) |
 | Browser automation | [Playwright](https://playwright.dev/) |
 | Test runner | [Playwright Test](https://playwright.dev/docs/test-intro), Chromium only |
-| AI | [OpenAI GPT-4o](https://platform.openai.com/) |
+| Generation | Template generator (default); optional local model via [Ollama](https://ollama.com/) or [OpenAI](https://platform.openai.com/) for areas the template leaves empty |
 | Reporting | [Allure](https://allurereport.org/) (smoke and regression suites) |
-| Test target | [Plane](https://plane.so) via Docker |
+| Test targets | Local Toolshop copies via Docker (`scripts/toolshop-local/`); [Plane](https://plane.so) via `docker-compose.yml` |
 
 ---
 
@@ -334,13 +345,22 @@ npx playwright test --project=chromium
 | `npm run dev` | Start TestForge (dev mode) |
 | `npm run build` | Build TestForge for production |
 | `npm run start` | Start the production build |
+| `npm run dev:development` | Start TestForge in dev mode with `.env.development` |
 | `npm run lint` | Run ESLint |
+| `npm run test:unit` | Run the unit suite (572 tests at TFP-207; about 13 min) |
+| `npm run check:template-unchanged -- <commit>` | Compare the template generator's output on 166 fixed inputs with a commit's |
 | `npm run test:self` | Run the smoke suite |
 | `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
 | `npm run test:regression` | Run the regression suite |
 | `npm run test:regression:allure` | Run the regression suite and generate an Allure report in `artifacts/allure-report/regression` |
 | `npm run report:open:smoke` | Open the latest local smoke Allure report |
 | `npm run report:open:regression` | Open the latest local regression Allure report |
+| `npm run build:self-test` / `start:self-test` / `serve:self-test` | Build and serve the self-test target on :3001 (the regression suite starts it) |
+| `npm run library:promote` | Promote a candidate test into the library (with Emil's approval) |
+| `npm run compare:generators` | Compare the template alone with the template plus the local model's gap-fill (setup in `docs/GENERATOR_COMPARISON.md`) |
+| `npm run benchmark:local` | Benchmark local (Ollama) models |
+| `npm run comparison:fixture` | Serve the comparison fixture: a small site with one switchable injected defect per area |
+| `npm run check:openai-models` | Check which OpenAI candidate model `/api/generate` would pick, with one tiny live completion (needs `OPENAI_API_KEY`) |
 | `docker compose up -d` | Start Plane (test target) |
 | `docker compose down` | Stop Plane |
 | `docker compose down -v` | Stop Plane and remove all data |
@@ -352,6 +372,7 @@ npx playwright test --project=chromium
 - The PR validation workflow runs lint, build, and the smoke suite with Allure on every pull request, and uploads a smoke Allure artifact.
 - The self-test workflow runs the same checks on every push to `main` and keeps the latest 5 smoke-report artifacts.
 - The regression workflow can be triggered manually from GitHub Actions and keeps the latest 5 regression-report artifacts.
+- The unit suite and `check:template-unchanged` don't run in CI yet; they run locally before each change is accepted. TFP-210 adds them as a nightly and manual job.
 
 ---
 
