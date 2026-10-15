@@ -24,7 +24,9 @@ import { bindCandidate, loadPool, matchingCandidate, patternOf } from "./pool";
  * type check, a run at the read-only gate inside the request guard).
  * - It passes: it joins the site suite under "Gap tests" as that gap's
  *   test, inside the verdict, and is reused while its page type holds, like
- *   a written one. No writer is asked for the gap.
+ *   a written one. No writer is asked for the gap. Its runs add to the
+ *   candidate's evidence, as Comprehensive runs do (Emil, 2026-10-15: the
+ *   promotion rule counts distinct sites, so this is cross-site evidence).
  * - It fails: it is not bound, and the gap is recorded as tried, so it isn't
  *   run again while its page type holds.
  *
@@ -64,7 +66,8 @@ export async function bindCandidatesToGaps(options: {
         const outcome: GapRunOutcome = reached ? { verdict: "invalid", message: `the candidate uses ${reached}` } : await run(options.baseUrl, target, body);
         const title = `gap test: ${target.name} on ${target.page}`;
         if (outcome.verdict === "passed") {
-            const source = composeGapTest(target, body);
+            // Named as the candidate's, so each run of it here adds to its evidence (evidence.ts), as on Comprehensive.
+            const source = composeGapTest(target, body, candidate.id);
             const unit = parseTestUnits(`test.describe('${GAP_DESCRIBE}', () => {\n${source}\n});`)[0];
             const file = unitFileName(unit.key);
             files.set(file, source);

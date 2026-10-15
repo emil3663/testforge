@@ -11,8 +11,9 @@ export async function recordCandidateRuns(records: ExecutionRecord[], baseUrl: s
     if (!baseUrl) return 0;
     const origin = new URL(baseUrl).origin;
     let recorded = 0;
-    for (const record of records.filter((candidate) => candidate.generator === "candidate")) {
-        const id = candidateIdOf(record.title);
+    // TFP-203: a candidate bound as a gap's test on Standard runs in the verdict, named by its annotation.
+    for (const record of records.filter((candidate) => candidate.generator === "candidate" || candidate.candidate)) {
+        const id = record.candidate ?? candidateIdOf(record.title);
         if (!id) continue;
         // TFP-196: a breach of the read-only gate is what "passed the gates on every run" rules out.
         const breach = /read-only guard breach/.test(record.rawMessage ?? "");

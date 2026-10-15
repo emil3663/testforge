@@ -303,12 +303,13 @@ function issuesOf(test: JsonTest): ComprehensiveIssueRecord[] {
     });
 }
 
-function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "category" | "asvs" | "issues"> {
+function comprehensiveTags(test: JsonTest): Pick<ExecutionRecord, "page" | "category" | "candidate" | "asvs" | "issues"> {
     const [page] = annotationValues(test, "page");
     const [category] = annotationValues(test, "category");
+    const [candidate] = annotationValues(test, "candidate");
     const asvs = annotationValues(test, "asvs");
     const issues = issuesOf(test);
-    return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(asvs.length > 0 ? { asvs } : {}), ...(issues.length > 0 ? { issues } : {}) };
+    return { ...(page ? { page } : {}), ...(category ? { category } : {}), ...(candidate ? { candidate } : {}), ...(asvs.length > 0 ? { asvs } : {}), ...(issues.length > 0 ? { issues } : {}) };
 }
 
 // Phase 38 Decision 1: the gate a test declared, on itself or on its describe.

@@ -36,10 +36,13 @@ export function gapTestTitle(target: GapTarget) {
     return `gap test: ${target.name} on ${target.page}`;
 }
 
-/** The test as it is saved and run: title, the read-only gate, its page and target, and the body inside the guard. */
-export function composeGapTest(target: GapTarget, body: string): string {
+/**
+ * The test as it is saved and run: title, the read-only gate, its page and target, and the body inside the guard.
+ * TFP-203: a pool candidate bound as the gap's test also names the candidate, so its runs count as its evidence.
+ */
+export function composeGapTest(target: GapTarget, body: string, candidate?: string): string {
     const indented = body.split("\n").map((line) => (line.trim() ? `      ${line}` : "")).join("\n");
-    return `  test('${escapeForSingleQuotedString(gapTestTitle(target))}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(target.page)}' }, { type: 'gap-test', description: '${escapeForSingleQuotedString(target.key)}' }] }, async ({ page }) => {
+    return `  test('${escapeForSingleQuotedString(gapTestTitle(target))}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(target.page)}' }, { type: 'gap-test', description: '${escapeForSingleQuotedString(target.key)}' }${candidate ? `, { type: 'candidate', description: '${escapeForSingleQuotedString(candidate)}' }` : ""}] }, async ({ page }) => {
     await tfReadOnlyGuarded(page, async () => {
 ${indented}
     });

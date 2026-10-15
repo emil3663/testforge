@@ -523,8 +523,15 @@ on the local Toolshop copies (Phase 41 Decision 7).
   with the candidate's id. Found on the way: `targetOf` gave a link's
   locator in double quotes, which the coverage map never matched, so no
   gap test of a link counted it covered; it now uses the generator's own
-  expression. Not done: a Standard run of a bound candidate adds nothing to
-  its evidence (Comprehensive runs still do).
+  expression.
+- **Verified 2026-10-15 (Emil), with a fix:** a bound candidate's Standard
+  runs count toward its promotion evidence, like Comprehensive runs (the
+  rule counts distinct sites, so this is cross-site evidence). The bound
+  test names its candidate (a `candidate` annotation) and each run's
+  record carries it. Found on the way: gap tests and bound candidates on a
+  Standard functional run with control checks failed with
+  `tfReadOnlyGuarded is not defined` (the template's helper sits inside the
+  functional describe); the suite now gets a top-level copy.
 
 ### TFP-204 — Generation applies promoted library entries
 

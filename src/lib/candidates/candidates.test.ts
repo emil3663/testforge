@@ -13,6 +13,7 @@
  *   second site, Standard               -> TFP-203: bound into the site suite as the gap's test once it passes the
  *                                          gates there, inside the verdict; no gap test written; the gap counted covered
  *   another site, Standard, failing     -> TFP-203: a candidate that breaches or fails the code check there is not bound
+ *   second site, Standard, run          -> TFP-203: its run counts as evidence, so the site counts in its verdict
  *   second site, opt-in on              -> no new gap test for the candidate's pattern
  *   one pattern from a second site      -> merged into the one candidate, not kept beside it
  *   rejected                            -> kept with its reason, never bound, never proposed again
@@ -47,6 +48,7 @@ const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { addToPool, loadCandidate, loadPool, matchingCandidate, patternOf, poolHas, saveCandidate } = await import("./pool.ts");
+const { promotionVerdict } = await import("./promotion.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
 const { loadSiteSuiteProfile } = await import("../site-suites/store.ts");
 const { buildCoverageMap, untouched } = await import("../report/coverage-map.ts");
@@ -193,6 +195,40 @@ test("another site, Standard: a candidate that fails the gates there is not boun
         } finally {
             process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
         }
+    }
+});
+
+test("second site, Standard: the bound candidate's run counts toward its promotion evidence, gaining that site (TFP-203)", { skip: needsChromium }, async () => {
+    const candidate = (await loadCandidate(candidateId))!;
+    process.env.TESTFORGE_DATA_DIR = join(scratch, "standard-evidence");
+    try {
+        // One clean run on the first site so far: one site in its verdict.
+        await saveCandidate({ ...candidate, evidence: [{ origin: siteA.origin, page: "/", at: "2026-10-15T00:00:00.000Z", status: "Passed", run: "earlier" }] });
+        assert.equal(promotionVerdict((await loadCandidate(candidateId))!).sites, 1);
+        const body = await generate(siteB.origin);
+        assert.equal(body.siteSuite.candidateTests?.bound, 1);
+        const unit = parseTestUnits(body.code).find((item) => item.describe[0] === "Gap tests")!;
+        assert.match(unit.source, new RegExp(`\\{ type: 'candidate', description: '${candidateId}' \\}`), "the bound test names its candidate");
+
+        // A Standard run of it, inside the verdict, as the app would.
+        const title = unit.id ? `${unit.id}: ${unit.title}` : unit.title;
+        const response = await runRoute.POST(post("http://localhost/api/run", { code: body.code, baseUrl: siteB.origin, selectedPractices: ["functional"], description: "Check the pages.", includeTestTitles: [title], generation: { generatedBy: "template", gates: [], siteSuite: body.siteSuite } }));
+        assert.equal(response.status, 202);
+        const { runId } = (await response.json()) as { runId: string };
+        const started = Date.now();
+        while (!runJobs.get(runId)?.result) {
+            assert.ok(Date.now() - started < 180_000, "the run finished within 3 minutes");
+            await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+        const report = runJobs.get(runId)!.result!.report as RunReport;
+        assert.deepEqual({ executed: report.summary.executed, passed: report.summary.passed }, { executed: 1, passed: 1 }, `in the verdict: ${JSON.stringify(report.execution.map((e) => [e.status, e.rawMessage]))}`);
+
+        const after = (await loadCandidate(candidateId))!;
+        assert.deepEqual(after.evidence.map((evidence) => [evidence.origin, evidence.status, evidence.run]), [[siteA.origin, "Passed", "earlier"], [siteB.origin, "Passed", runId]]);
+        const verdict = promotionVerdict(after);
+        assert.deepEqual({ runs: verdict.runs, sites: verdict.sites, gatesPassedEveryRun: verdict.gatesPassedEveryRun }, { runs: 2, sites: 2, gatesPassedEveryRun: true }, "the second site counts in its verdict");
+    } finally {
+        process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
     }
 });
 
