@@ -59,7 +59,7 @@ export interface GapWriter {
 /** TFP-195 (Decision 8): the candidate - the same test with the site's page and locator left as blanks. */
 export const GENERALISE_PROMPT = [
     "Generalise the test you just wrote to the component's pattern, so it can run on another site that has the same component.",
-    "Write __PAGE__ wherever it names the page's path, and __LOCATOR__ wherever it finds the element (the whole locator expression, as given to you); TestForge fills both in for each site.",
+    "Write __PAGE__ wherever it names the page's path, as an expression with no quotes around it (`await page.goto(__PAGE__);`: TestForge puts the quoted path there), and __LOCATOR__ wherever it finds the element (the whole locator expression, as given to you); TestForge fills both in for each site.",
     "Keep everything else. Answer with the body only, in one ```ts code block.",
 ].join("\n");
 

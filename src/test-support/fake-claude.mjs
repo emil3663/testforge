@@ -7,7 +7,8 @@
 //   breach  - a body that submits a form by POST, which the read-only gate must reject
 //             (TFP-202: a fetch would be refused by the code check before it ran)
 // TFP-195: a prompt asking to generalise is answered with the good body, its
-// page and locator written as the __PAGE__ and __LOCATOR__ blanks.
+// page and locator written as the __PAGE__ and __LOCATOR__ blanks. TFP-197: as
+// the real Claude Code writes them, both as bare expressions.
 import { appendFileSync, existsSync, readdirSync, readFileSync } from "node:fs";
 
 const log = process.env.FAKE_CLAUDE_LOG;
@@ -26,7 +27,7 @@ const locator = field("locator") && field("locator") !== "(none)" ? JSON.parse(f
 const good = `await page.goto('${page}');\nawait expect(${locator}.first()).toBeAttached();`;
 const mode = process.env.FAKE_CLAUDE_MODE ?? "good";
 const body = prompt.startsWith("Generalise")
-    ? `await page.goto('__PAGE__');\nawait expect(__LOCATOR__.first()).toBeAttached();`
+    ? `await page.goto(__PAGE__);\nawait expect(__LOCATOR__.first()).toBeAttached();`
     : mode === "breach"
     ? `await page.goto('${page}');\nawait page.evaluate(() => { const form = document.createElement('form'); form.method = 'post'; form.action = '/api/store/cart'; document.body.append(form); form.submit(); });`
     : mode === "revise" && !resumed

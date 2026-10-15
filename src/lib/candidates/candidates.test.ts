@@ -47,7 +47,7 @@ const { runJobs } = await import("../run/jobs.ts");
 const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
-const { addToPool, loadCandidate, loadPool, matchingCandidate, patternOf, poolHas, saveCandidate } = await import("./pool.ts");
+const { addToPool, bindCandidate, loadCandidate, loadPool, matchingCandidate, patternOf, poolHas, saveCandidate } = await import("./pool.ts");
 const { promotionVerdict } = await import("./promotion.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
 const { loadSiteSuiteProfile } = await import("../site-suites/store.ts");
@@ -243,6 +243,20 @@ test("second site, opted in: no new gap test for the candidate's pattern (TFP-19
     const written = body.siteSuite.gapTests!.tests.map((t) => t.title.toLowerCase());
     assert.ok(written.length > 0, "the writer was asked for another gap");
     assert.ok(!written.some((title) => title.startsWith(`gap test: ${candidate.pattern.name} [`)), `the candidate's gap wasn't written for: ${written.join(" | ")}`);
+});
+
+/** TFP-197 (found in its first real run). ISTQB technique: equivalence partitioning over how a writer writes the page's blank. */
+test("binding: a bare __PAGE__ gets the quoted path, one inside a string the path's text; __LOCATOR__ is an expression (TFP-197)", () => {
+    const locator = "page.getByRole('link', { name: 'Rentals', exact: true }).first()";
+    const bind = (body: string, page = "/it's/here") => bindCandidate({ body }, page, locator);
+    // As Claude Code wrote it: a bare expression, which used to bind as `page.goto(/)`.
+    assert.equal(bind("await page.goto(__PAGE__);\nawait expect(__LOCATOR__).toBeVisible();"), `await page.goto('/it\\'s/here');\nawait expect(${locator}).toBeVisible();`);
+    // As TFP-194's stand-in wrote it: inside a string, single or double quoted, or in a template.
+    assert.equal(bind("await page.goto('__PAGE__');"), "await page.goto('/it\\'s/here');");
+    assert.equal(bind('await page.goto("__PAGE__");', "/rentals"), 'await page.goto("/rentals");');
+    assert.equal(bind("await expect(page).toHaveURL(`${'x'}__PAGE__`);", "/rentals"), "await expect(page).toHaveURL(`${'x'}/rentals`);");
+    // Both forms in one body, and a comment naming it, which stays text.
+    assert.equal(bind("await page.goto(__PAGE__); // back on __PAGE__\nawait expect(page).toHaveURL(new RegExp('__PAGE__'));", "/a"), "await page.goto('/a'); // back on /a\nawait expect(page).toHaveURL(new RegExp('/a'));");
 });
 
 test("one pattern from two sites is one candidate; a rejected one is kept, never bound, never proposed again (TFP-195)", async () => {

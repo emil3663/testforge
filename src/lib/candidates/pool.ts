@@ -1,6 +1,8 @@
 import { createHash } from "crypto";
 import { mkdir, readdir, readFile, rename, writeFile } from "fs/promises";
 import { join } from "path";
+import ts from "typescript";
+import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
 import { dataDir } from "@/lib/storage/data-dir";
 
 /**
@@ -134,9 +136,27 @@ export function poolHas(pool: Candidate[], pattern: CandidatePattern): boolean {
     return pool.some((candidate) => candidate.id === id);
 }
 
-/** The body bound to one site: its page's path and the element's locator in the blanks. */
+/**
+ * The body bound to one site: its page's path and the element's locator in the blanks.
+ *
+ * TFP-197 (found in its first real run): `__PAGE__` is written two ways. TFP-194's stand-in wrote it inside a
+ * string (`page.goto('__PAGE__')`); Claude Code wrote it as an expression (`page.goto(__PAGE__)`), which the
+ * plain substitution turned into `page.goto(/)`, so every candidate failed its bound-back run. The body's syntax
+ * tree tells the two apart: a bare `__PAGE__` becomes the path as a quoted string, one inside a string or a
+ * template becomes the path's text. `__LOCATOR__` is always an expression.
+ */
 export function bindCandidate(candidate: Pick<Candidate, "body">, page: string, locator: string): string {
-    return candidate.body.split("__PAGE__").join(page).split("__LOCATOR__").join(locator);
+    const prefix = "async function __candidate__() {\n";
+    const source = ts.createSourceFile("candidate.ts", `${prefix}${candidate.body}\n}`, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    const bare: number[] = [];
+    const visit = (node: ts.Node) => {
+        if (ts.isIdentifier(node) && node.text === "__PAGE__") bare.push(node.getStart(source) - prefix.length);
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    let body = candidate.body;
+    for (const at of bare.sort((a, b) => b - a)) body = `${body.slice(0, at)}'${escapeForSingleQuotedString(page)}'${body.slice(at + "__PAGE__".length)}`;
+    return body.split("__PAGE__").join(page.replace(/\\/g, "\\\\").replace(/['"`]/g, "\\$&")).split("__LOCATOR__").join(locator);
 }
 
 export async function recordEvidence(id: string, evidence: CandidateEvidence): Promise<void> {
