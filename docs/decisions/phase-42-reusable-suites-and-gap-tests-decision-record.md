@@ -609,6 +609,77 @@ on the local Toolshop copies (Phase 41 Decision 7).
 - **Dependencies:** TFP-196.
 - **Stop at Gate B.**
 
+### Gate B ruling (Emil, 2026-10-15)
+
+- **TFP-197 measured and verified** (`ae88e0b` to `a12aee1`; outcome in
+  `benchmarks/2026-10-15-tfp197-gap-writer/outcome.md`). Official score 0 of
+  4, expected by design: none of the 4 is in Chromium's reach on the
+  selected pages, and a gap test is revised until it passes on its own
+  site. No unlabelled failure on clean; an unchanged clean re-run reused
+  468 of 468 tests with 0 Claude Code calls. 446 calls, $11.84 in all
+  (224 of them, $5.87, on first attempts cut short by `394a096` and
+  `31c0afd`). The second measure showed nothing: clean routes by path and
+  with-bugs by `#/`, so every page type changed and clean's 19 gap tests
+  were retired; 9 of clean's candidates were bound on with-bugs and passed.
+- **The gap writer is not kept as a bug finder.** Decision 7's first
+  condition failed. What it wrote here were in-context link checks
+  (visible, has an `href`, the `href` equals itself): inventory the
+  template could test for nothing. The code stays, off unless a site opts
+  in; the hardening, site suites, reuse, candidates, promotion, the coverage
+  map and the default limit of 5 all stay.
+- **What a gap is (Emil, 2026-10-15).** An *inventory gap* (an element or
+  link inspection found that no test checks) is the template's job and
+  should be closed deterministically: TFP-205. A *scenario gap* (a
+  behaviour or edge case nothing in the suite exercises) is what a model's
+  judgement is for; designing it is for the post-Phase 42 review, with its
+  own decision record.
+- **The gap limit:** 50 was Emil's approval for TFP-197's driver only; the
+  default stays 5 (50 takes too long).
+- **Not measured again now (Emil):** TFP-205 is tested by its own targeted
+  tests; the full Toolshop benchmark re-run waits for the full regression
+  in the review.
+- **Phase 42 closes when TFP-205 is verified.**
+
+### TFP-205 — The template checks every link on the pages it selects
+
+- **Priority:** P1 · **Labels:** `generate`, `coverage`
+- **Problem it solves:** on the Toolshop copies the coverage map's
+  in-context gap list was links only (36 on clean): the template checks
+  every element in context, but not links. TFP-197 paid Claude Code to
+  write those checks.
+- **Scope:** a deterministic, read-only test per distinct link (text and
+  target, counted once as the coverage map counts it) on the selected
+  pages, in the functional area:
+  - the link is visible on its page with a usable name, by the generator's
+    own locator expression, so the map counts it covered in context;
+  - its `href` is a valid URL;
+  - a same-origin target loads without an error status, through `tfGoto`
+    inside the request guard (reuse the existing site-wide link check where
+    it already loads that URL, rather than loading it twice); external
+    targets get the `href` check only, no request;
+  - a cap on target loads per run, with any left over named in the report
+    as not loaded.
+- **Acceptance criteria (no live benchmark run, Emil 2026-10-15):**
+  - fixture cases: a working link, a broken same-origin link (fails), an
+    external link (no request), a link repeated across pages (one test);
+  - on the committed TFP-197 crawls (`runs/clean-crawl.json`,
+    `runs/with-bugs-crawl.json`), offline generation leaves no link in the
+    in-context gap list;
+  - `check:template-unchanged` changes only by the added link tests, with
+    the baseline updated deliberately and the change described in the
+    commit;
+  - unit and regression suites pass.
+- **Dependencies:** none. Last before Phase 42 closes.
+
+### TFP-206 — Code check: allow `response.request().method()`
+
+- **Priority:** P3 · **Labels:** `security`, `gap-writer`
+- **Problem it solves:** TFP-202's check refused it as "a request other than
+  GET" 9 times in TFP-197, costing revisions.
+- **Scope:** allow exactly `<response>.request().method()` (and nothing else
+  on `request()`); a test that the other refused forms stay refused.
+- **Dependencies:** none. With the review, not before.
+
 ## Recommended Execution Order
 
 1. Batch 1: TFP-190, TFP-191, TFP-192. **Gate A passed 2026-10-14.**
@@ -616,7 +687,9 @@ on the local Toolshop copies (Phase 41 Decision 7).
    TFP-196.
 3. Before TFP-197: TFP-202, TFP-203, TFP-204 (one batch; batch 2's rulings).
    **Done, verified 2026-10-15.**
-4. TFP-197. **Gate B.**
+4. TFP-197. **Gate B.** Measured 2026-10-15; ruling above.
+5. TFP-205 (template link checks). Phase 42 closes when it is verified.
+   TFP-206 waits for the review.
 
 ## Gates
 
@@ -626,4 +699,6 @@ on the local Toolshop copies (Phase 41 Decision 7).
   everything, and the coverage map names what nothing tests.
 
 ### Gate B — Gap tests measured
+**Passed 2026-10-15 (Emil),** with the gap writer not kept as a bug finder
+(Gate B ruling above); Phase 42 closes after TFP-205.
 - TFP-193 to TFP-197 landed and verified; Decision 7 applied and recorded.

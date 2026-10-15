@@ -353,6 +353,11 @@ See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
    Added 2026-10-15: Claude Code as gap writer still loads the user's
    CLAUDE.md, memory and hooks (`--safe-mode` would turn them off), and the
    trimmed run environment drops proxy settings.
+   Added after Gate B (2026-10-15): a decision record for *scenario gaps*
+   (behaviour and edge cases the suite doesn't exercise) as the gap
+   writer's redefined purpose, with how scenarios are found and measured
+   and a prompt rule against self-confirming checks; the full Toolshop
+   benchmark re-run after TFP-205; TFP-206.
 4. **The skills, relooked:** the skills TestForge and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
