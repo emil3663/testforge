@@ -1,0 +1,7 @@
+
+> testforge@0.1.0 test:regression
+> dotenv -e .env.development -o -- playwright test -c playwright.regression.config.ts
+
+Error: Timed out waiting 120000ms from config.webServer.
+
+[1A[2Kexit=1

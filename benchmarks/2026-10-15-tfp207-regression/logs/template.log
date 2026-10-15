@@ -1,0 +1,7 @@
+
+> testforge@0.1.0 check:template-unchanged
+> node scripts/check-template-unchanged.mjs 18b47d8
+
+template-unchanged: 18b47d8 -> worktree: 166 inputs, 166 identical, 0 different
+outputs kept in C:\Users\MSI workstation\source\repos\testforge\comparisons\template-unchanged\18b47d8-worktree
+exit=0
