@@ -5,7 +5,7 @@ import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
 import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { forbiddenConstruct } from "@/lib/gap-writer/code-check";
-import { composeGapTest, runGapTest, type GapRunOutcome } from "@/lib/gap-writer/gap-run";
+import { composeGapTest, gapTestTitle, runGapTest, type GapRunOutcome } from "@/lib/gap-writer/gap-run";
 import { doneGaps, GAP_DESCRIBE, targetOf } from "@/lib/gap-writer/write";
 import type { GapTarget } from "@/lib/gap-writer/writers";
 import { bindCandidate, loadPool, matchingCandidate, patternOf } from "./pool";
@@ -58,13 +58,13 @@ export async function bindCandidatesToGaps(options: {
     const sources: string[] = [];
 
     for (const entry of untouched(map).filter((item) => (item.kind === "element" || item.kind === "link") && !done.has(item.key))) {
-        const target = targetOf(entry);
+        const target = targetOf(entry, map.entries);
         const candidate = matchingCandidate(pool, patternOf(target.kind, target.name));
         if (!candidate || !target.locator) continue;
         const reached = forbiddenConstruct(candidate.body);
         const body = bindCandidate(candidate, target.page, target.locator);
         const outcome: GapRunOutcome = reached ? { verdict: "invalid", message: `the candidate uses ${reached}` } : await run(options.baseUrl, target, body);
-        const title = `gap test: ${target.name} on ${target.page}`;
+        const title = gapTestTitle(target);
         if (outcome.verdict === "passed") {
             // Named as the candidate's, so each run of it here adds to its evidence (evidence.ts), as on Comprehensive.
             const source = composeGapTest(target, body, candidate.id);

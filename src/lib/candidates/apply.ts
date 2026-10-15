@@ -40,13 +40,13 @@ export async function applyCandidates(code: string, profile: ContentProfile | nu
     const bound: Array<{ id: string; covers: string }> = [];
     const sources: string[] = [];
     for (const entry of untouched(map).filter((item) => (item.kind === "element" || item.kind === "link") && !ownGapTests.has(item.key))) {
-        const target = targetOf(entry);
+        const target = targetOf(entry, map.entries);
         const candidate = matchingCandidate(pool, patternOf(target.kind, target.name));
         // TFP-202: a candidate is model-written code from another site; one the code check refuses is never bound.
         if (!candidate || !target.locator || forbiddenConstruct(candidate.body)) continue;
         const body = bindCandidate(candidate, target.page, target.locator);
         const indented = body.split("\n").map((line) => (line.trim() ? `      ${line}` : "")).join("\n");
-        sources.push(`  test('${escapeForSingleQuotedString(`candidate ${candidate.id}: ${target.name} on ${target.page}`)}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(target.page)}' }, { type: 'candidate', description: '${candidate.id}' }] }, async ({ page }) => {
+        sources.push(`  test('${escapeForSingleQuotedString(`candidate ${candidate.id}: ${target.label ?? target.name} on ${target.page}`)}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(target.page)}' }, { type: 'candidate', description: '${candidate.id}' }] }, async ({ page }) => {
     await tfReadOnlyGuarded(page, async () => {
 ${indented}
     });

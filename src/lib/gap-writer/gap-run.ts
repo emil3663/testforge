@@ -33,7 +33,7 @@ import type { GapTarget } from "./writers";
 
 
 export function gapTestTitle(target: GapTarget) {
-    return `gap test: ${target.name} on ${target.page}`;
+    return `gap test: ${target.label ?? target.name} on ${target.page}`;
 }
 
 /**

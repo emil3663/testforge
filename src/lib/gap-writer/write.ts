@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { join } from "path";
 import { writeFile } from "fs/promises";
 import type { ContentProfile, LinkDetail } from "@/lib/generate/mock/types";
@@ -8,7 +9,7 @@ import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
 import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type SiteSuiteManifest, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
-import { composeGapTest, runGapTest, type GapRunOutcome } from "./gap-run";
+import { composeGapTest, gapTestTitle, runGapTest, type GapRunOutcome } from "./gap-run";
 import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
 
 /**
@@ -42,11 +43,24 @@ export const MAX_GAP_ATTEMPTS = 3;
  * the generator's own expression, which is what the coverage map looks for; a double-quoted one never matched it, so a
  * gap test of a link never counted it covered.
  */
-export function targetOf(entry: CoverageMapEntry): GapTarget {
+export function targetOf(entry: CoverageMapEntry, all: CoverageMapEntry[] = []): GapTarget {
     const element = / element (.+)$/.exec(entry.key)?.[1] ?? null;
     const link = entry.kind === "link" ? (JSON.parse(entry.key.slice("link ".length)) as [string, string]) : null;
     const locator = element ?? (link && link[0] ? buildLinkLocatorExpression({ text: link[0], url: link[1] } as LinkDetail) : null);
-    return { key: entry.key, page: entry.page, name: entry.name, kind: entry.kind === "link" ? "link" : "element", locator };
+    const label = distinctLabel(entry.name, entry.page, entry.key, all.filter((other) => other.page === entry.page).map((other) => other.name));
+    return { key: entry.key, page: entry.page, name: entry.name, kind: entry.kind === "link" ? "link" : "element", locator, ...(label !== entry.name ? { label } : {}) };
+}
+
+/**
+ * TFP-197 (found in its run on the with-bugs copy): a page can have two elements the coverage map names alike
+ * (form fields named "3 [input]" and "3 [input]"), and two tests with one title make Playwright refuse the whole
+ * file - the run had no tests at all. A name another element on the page shares gets a short, stable suffix from
+ * its key (`3 [input] #1a2b3c`); every other name is left as it is, so their titles don't change.
+ */
+export function distinctLabel(name: string, page: string, key: string, namesOnPage: string[]): string {
+    if (namesOnPage.filter((other) => other === name).length < 2) return name;
+    return `${name} #${createHash("sha256").update(`${page}
+${key}`).digest("hex").slice(0, 6)}`;
 }
 
 /** The gaps a site suite already has a test for (written, or a bound candidate's, TFP-203), or has tried. */
@@ -95,7 +109,7 @@ export async function writeGapTests(options: {
     const sources: string[] = [];
 
     for (const entry of gaps.slice(0, limit)) {
-        const target = targetOf(entry);
+        const target = targetOf(entry, map.entries);
         record.asked++;
         let cost = 0;
         let outcome: GapRunOutcome | null = null;
@@ -117,7 +131,7 @@ export async function writeGapTests(options: {
             error = caught instanceof Error ? caught.message : String(caught);
         }
         record.costUsd += cost;
-        const title = `gap test: ${target.name} on ${target.page}`;
+        const title = gapTestTitle(target);
         if (outcome?.verdict === "passed" && !error) {
             const source = composeGapTest(target, body);
             const unit = parseTestUnits(`test.describe('${GAP_DESCRIBE}', () => {\n${source}\n});`)[0];

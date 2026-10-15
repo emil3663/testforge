@@ -3,6 +3,7 @@ import { buildLinkLocatorExpression, buildLocatorExpression, getActionableElemen
 import { SUITE_TITLES } from "@/lib/generate/mock/suite";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { forbiddenConstruct } from "@/lib/gap-writer/code-check";
+import { distinctLabel } from "@/lib/gap-writer/write";
 import { bindCandidate, candidateId, patternOf } from "@/lib/candidates/pool";
 import type { PromotedEntry } from "@/lib/candidates/promotion";
 import { appendToDescribes, withGuardHelper } from "@/lib/site-suites/reuse";
@@ -38,9 +39,12 @@ export function bindPromotedEntries(code: string, profile: ContentProfile | null
     const bound: Array<{ id: string; page: string; name: string }> = [];
     const sources: string[] = [];
     const linksSeen = new Set<string>();
+    // TFP-197: names the page repeats get a short suffix, so no two tests share a title (gap-writer/write.ts).
+    let namesOnPage: string[] = [];
     const bind = (entry: PromotedEntry, page: string, name: string, locator: string) => {
+        const label = distinctLabel(name, page, locator, namesOnPage);
         const body = bindCandidate(entry, page, locator).split("\n").map((line) => (line.trim() ? `      ${line}` : "")).join("\n");
-        sources.push(`  test('${escapeForSingleQuotedString(`library promoted.${entry.id}: ${name} on ${page}`)}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(page)}' }, { type: 'library', description: 'promoted.${entry.id}' }] }, async ({ page }) => {
+        sources.push(`  test('${escapeForSingleQuotedString(`library promoted.${entry.id}: ${label} on ${page}`)}', { annotation: [{ type: 'gate', description: 'read-only' }, { type: 'page', description: '${escapeForSingleQuotedString(page)}' }, { type: 'library', description: 'promoted.${entry.id}' }] }, async ({ page }) => {
     await tfReadOnlyGuarded(page, async () => {
 ${body}
     });
@@ -48,6 +52,10 @@ ${body}
         bound.push({ id: entry.id, page, name });
     };
     for (const page of profile.pages) {
+        namesOnPage = [
+            ...(page.actionableElements ?? []).filter((element) => !(element.elementType === "link" && (page.linkDetails?.length ?? 0) > 0)).map((element) => `${getActionableElementDisplayName(element)} [${element.elementType}]`),
+            ...(page.linkDetails ?? []).map((link) => `${link.text || link.url} [link]`),
+        ];
         for (const element of page.actionableElements ?? []) {
             // Links are matched from the page's link list, where it has one, as the coverage map maps them.
             if (element.elementType === "link" && (page.linkDetails?.length ?? 0) > 0) continue;

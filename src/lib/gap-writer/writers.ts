@@ -37,6 +37,8 @@ export interface GapTarget {
     kind: "element" | "link";
     /** How the template's own checks would find it (a Playwright locator expression), when there is one. */
     locator: string | null;
+    /** TFP-197: the name as test titles carry it, told apart from another on the page with the same name. */
+    label?: string;
 }
 
 export interface GapWriterReply {
