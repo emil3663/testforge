@@ -22,6 +22,15 @@ R1 comes first so every later step works from today's numbers. R3 needs
 R1's numbers. R4 can run alongside R3. R5 builds nothing until a decision
 record is locked. R6 is last, so the skills describe what the review left.
 
+Progress (2026-10-16):
+- R1 is verified.
+- R3's findings are done and its doc fixes are made
+  (`post-phase-42-review-findings.md`). TFP-210 is written there.
+- R5's Phase 39 amendment is locked. Phase 39 comes straight after the
+  review, measurement first.
+- Code's next ticket is **TFP-208**, then TFP-206 and TFP-209 (R4), then
+  TFP-210.
+
 ## R1 — Baseline (TFP-207)
 
 ### TFP-207 — The full regression after Phase 42
@@ -53,11 +62,90 @@ record is locked. R6 is last, so the skills describe what the review left.
   the two Toolshop copies. Projected times reported as it goes.
 - **Stop for verification.**
 
+## R1 result (verified 2026-10-16, Cowork)
+
+TFP-207 accepted (`bfd900a..6d8f7e4`), with three corrections made to its
+`outcome.md`. Findings and the numbers used since:
+`post-phase-42-review-findings.md`.
+
 ## R2 — Flakes (TFP-208)
 
-Written after R1 from its flake table. Done when each flaky test either has
-its cause fixed (timing, a shared resource, load), with three full unit runs
-clean, or is recorded as a known flake with its cause and a ticket.
+### TFP-208 — Flakes, and the link tests on changing content
+
+- **Priority:** P1 · **Labels:** `flaky`, `test`, `generate`
+- **Problem it solves:** R1 (TFP-207) left two kinds of unreliable result.
+  - **Unit tests that fail once in three full runs and pass alone.**
+  - **Five false or doubtful failures from TFP-205's link tests** on
+    with-bugs' `/#/category/hand-tools`. The page drew a different window of
+    products from one load to the next: products 1 to 9 at Gate B, 6 to 14 at
+    R1's inspection, and 10 to 14 gone by the time the tests ran.
+- **Scope:**
+  1. **The unit flakes.** For each one, find the cause (timing, a shared
+     resource or port, load) and fix it, or record it as a known flake with
+     its cause and a ticket:
+     - `read-only-guard.test.ts:168`, TFP-199's beacon case (R1 run 1:
+       `sendBeacon's POST, typed ping` expected true, got false);
+     - `cookie-scope.test.ts:90` (R1 run 3: a record missing from the run,
+       `reading 'status'` of undefined);
+     - the three named in the Phase 42 record, all of which passed 3 of 3 in
+       R1: `comprehensive-scenarios.test.ts:85`,
+       `performance-bands.test.ts:67`, `api-fields.test.ts:65`. Look for a
+       shared cause with the two above before closing them as passing;
+     - TFP-169 (security case `ECONNRESET` at fixture start-up), probably
+       the same load flake as the Comprehensive security case.
+  2. **The regression suite's web server.** Its `next build` and start missed
+     the config's 120 s once in R1. Either raise the timeout, or build in a
+     step before and only start in `webServer`. Pick one, name it in the
+     commit; TFP-210's CI job uses the same.
+  3. **The 5 link failures: the answer key, then the design gap.**
+     - First, the answer key. Read 2026-10-16 (Cowork): no listed bug varies
+       the category listing; bug 4 randomises the titles' alignment only.
+       Confirm against with-bugs' `category.component` source and say whether
+       the window moves by design, by data (the database or its pagination)
+       or by a planted bug.
+     - **Whatever it says, decide the design gap** (Emil, 2026-10-16). A link
+       test written for content that changes between loads, like a rotating
+       product list, fails whenever the list moves. TFP-205 doesn't
+       distinguish such content today. Choose, and record the choice in the
+       Phase 42 record as a ruling for Emil to confirm:
+       - **skip:** links inside repeated product cards (a repeated card
+         layout on a listing page) get no per-link test; the listing is
+         covered by one test that its cards are present and each has a
+         working link, by position rather than by name; or
+       - **find by something stable:** a card link is found by a stable
+         attribute or by its target's address pattern
+         (`/product/:id`), not by its text, and the test passes when any
+         card's link matches the pattern and loads.
+     - Either way, fixture cases cover a listing whose cards change between
+       loads (it must pass), and a listing whose card links are broken (it
+       must still fail).
+  4. **Time headroom (Emil, 2026-10-16).** Standard on with-bugs took
+     1,535 s against its 1,800 s limit at R1, leaving 265 s. The fix in 3
+     must not add run time. Report its cost in seconds on both local copies.
+     It may lower it, since the skip option removes tests. This is also why
+     Phase 39 comes straight after the review, measurement first
+     (`phase-39-run-concurrency-decision-record.md`, locked 2026-10-16).
+- **No Claude Code calls.**
+- **Acceptance criteria:**
+  - three full unit runs clean in a row after the fixes, or each remaining
+    flake recorded with its cause, its rate in those three runs and a
+    ticket;
+  - the regression suite starts within its limit in three attempts in a row;
+  - the 5 hand-tools failures gone on with-bugs, with the reason (answer key
+    or design) recorded, and no link-test failure on clean;
+  - Standard re-run on both local copies, one worker, Gate B's driver:
+    - the failure sets are R1's except the 5, and any change is explained;
+    - the score is still 30 found through Standard;
+    - the link-test count and run time are reported against R1's (39, 38;
+      1535 s, 1131 s);
+  - `check:template-unchanged`: if 3 changes template output, the change is
+    described and the baseline is updated in its own commit, as TFP-205's
+    was;
+  - `TEST_PLAN.md` cases for the changing-listing fixture, in the same
+    commit as the code.
+- **Time:** about 40 min of unit runs, 8 min regression, about 1.5 h for
+  the two Toolshop copies.
+- **Stop for verification.**
 
 ## R3 — Claims audit (Cowork)
 
