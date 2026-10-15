@@ -342,6 +342,7 @@ approval. Tickets TFP-190 to TFP-197. Starts after Phase 41's Gate B.
 See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
 
 ### After Phase 42 (Emil, 2026-10-13), in this order
+Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
 1. **A full review of everything built so far:** each phase's claims checked
    against the code and the measurements, the docs brought up to date, and
    what's left open listed.
