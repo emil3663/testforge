@@ -20,8 +20,8 @@ sign-off on Comprehensive testing removing the caps with no separate ask
 to TFP-215) was locked by Emil on 2026-10-16, with the narrower re-run in
 Decision 4. The keep-or-revert targets are still to be set: TFP-211
 measures, and Emil locks them here before TFP-212 starts. Nothing is
-started. **Phase 39 is next after the review** (Emil, 2026-10-16; see
-Dependencies and order).
+started. **Phase 39 is next after TFP-208 and TFP-210** (Emil, 2026-10-16;
+see Dependencies and order).
 
 ## Context
 
@@ -332,13 +332,17 @@ Dependencies and order).
 
 ## Dependencies and order
 
-- **Straight after the post-Phase 42 review, measurement first** (Emil,
-  2026-10-16). Standard on with-bugs takes 1,535 s against its 1,800 s
+- **After TFP-208 and TFP-210, ahead of the rest of the review,
+  measurement first** (Emil, 2026-10-16). R4 (TFP-206, TFP-209) follows
+  Phase 39 or fits between its gates. R5 and R6 run in Cowork alongside
+  it. Standard on with-bugs takes 1,535 s against its 1,800 s
   limit, leaving 265 s. Another check or two could push it over, so no new
   Standard check is added until TFP-211 has measured and a check's run-time
   cost can be weighed against the margin.
-- TFP-208 (flakes) before TFP-211, so the three-run measurements aren't read
-  through known flakes.
+- TFP-208 before TFP-211, so the three-run measurements and Decision 7's
+  same-results proof aren't read through flakes and the hand-tools link
+  failures. TFP-210 before TFP-211, so a nightly unit run guards the
+  phase.
 - The local Toolshop copies (TFP-179) are in place. Docker Desktop must be
   started first, one version at a time.
 - The ownership row needs Phase 35 Decision 8's typed confirmation. The rest

@@ -17,7 +17,7 @@ the phase records.
 
 ## State on 2026-10-16
 
-- **`origin/main` is at `6d8f7e4`.** Phases 38, 40, 41 and 42 are complete
+- **`origin/main` is at `60c1fc4`** (the review's doc commits, 2026-10-16). Phases 38, 40, 41 and 42 are complete
   (42 on 2026-10-15). The phase records hold each gate and ruling.
 - **R1 (TFP-207) is verified.**
   - Unit runs: 571, 572 and 571 of 572.
@@ -26,36 +26,31 @@ the phase records.
   - Toolshop score, Standard only, local copies: 30 found, 0 hinted,
     7 missed. Gate B's 33 also needed Comprehensive security.
   - Standard on one worker: with-bugs 1,535 s, clean 1,131 s.
-- **R3 is done.** The doc fixes are in the uncommitted changes listed under
-  "Commit first".
+- **R3 is done,** its doc fixes committed (`e0ce8f6` to `60c1fc4`).
 - **Phase 39 is amended and locked** (2026-10-16): fewer page visits first,
-  then workers, measurement before anything is built. It comes straight
-  after the review. Until its TFP-211 has measured, add no new Standard
+  then workers, measurement before anything is built. It comes after
+  TFP-208 and TFP-210, ahead of the rest of the review. Until its TFP-211 has measured, add no new Standard
   check: with-bugs has 265 s left under the 1,800 s limit.
 
 ## Commit first
 
-These docs changed in Cowork. Commit them as `docs` commits, push, then
-start TFP-208:
-1. `benchmarks/2026-10-15-tfp207-regression/outcome.md`: R1's three
-   corrections from verification.
-2. `docs/decisions/post-phase-42-review-findings.md` (new),
-   `post-phase-42-review-plan.md` (progress, and TFP-208 written), and
-   `post-phase-42-review-notes-2026-10-15.md` (new, Cowork's working notes).
-3. `docs/decisions/phase-39-run-concurrency-decision-record.md` (amended and
-   locked) and `product-roadmap.md`.
-4. `docs/decisions/phase-42-reusable-suites-and-gap-tests-decision-record.md`
-   (R3's correction notes).
-5. `TEST_PLAN.md` and `README.md` (R3's fixes).
-6. This handover, with the Phase 38 handover deleted.
+Commit the order change as one `docs(decisions)` commit and push:
+`post-phase-42-review-plan.md`, `product-roadmap.md`,
+`phase-39-run-concurrency-decision-record.md` and this handover.
 
-## Next, in order
+## Next, in order (Emil, 2026-10-16)
 
 1. **TFP-208:** flakes, the regression web server's timeout, and the
    link tests on changing content. Stop for verification.
-2. **TFP-206 and TFP-209** (R4), when told.
-3. **TFP-210** (CI runs the unit suite and the template check), when told.
-4. **Phase 39,** from TFP-211, when the review is closed.
+2. **TFP-210:** CI runs the unit suite and the template check, nightly and
+   on manual dispatch (`post-phase-42-review-findings.md`, Tickets).
+3. **Phase 39,** from TFP-211
+   (`docs/decisions/phase-39-run-concurrency-decision-record.md`).
+4. **TFP-206 and TFP-209** (R4), after Phase 39 or between its gates.
+
+TFP-208 goes first so Phase 39's measurements and same-results proof aren't
+read through flakes and false failures. TFP-210 goes next so a nightly unit
+run guards Phase 39.
 
 Don't start any of them before Emil's word.
 

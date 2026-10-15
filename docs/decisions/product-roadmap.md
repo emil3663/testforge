@@ -274,7 +274,7 @@ The coverage proposal measured the Standard run against the published standards 
 All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
 
 
-### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16, not started; next after the review)
+### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16, not started; next after TFP-208 and TFP-210)
 Amended 2026-10-16 (Emil). R1 (TFP-207) found that almost every test loads its
 page afresh, and that Standard on with-bugs takes 1,535 s of its 1,800 s
 limit. So the phase now cuts page visits before adding workers, in this
@@ -370,8 +370,13 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
 - **Done (2026-10-16):** R1 (TFP-207) is verified, R3's findings are listed
   and its doc fixes are made (`post-phase-42-review-findings.md`), and the
   Phase 39 amendment is locked.
-- **Next for Code:** TFP-208, then TFP-206 and TFP-209, then TFP-210.
-- **After the review:** Phase 39, measurement first (Emil, 2026-10-16).
+- **Order for Code (Emil, 2026-10-16):**
+  1. TFP-208;
+  2. TFP-210;
+  3. Phase 39, measurement first;
+  4. TFP-206 and TFP-209 after it, or between its gates.
+
+  R5's decisions and R6's skills relook run in Cowork alongside Phase 39.
 1. **A full review of everything built so far:** each phase's claims checked
    against the code and the measurements, the docs brought up to date, and
    what's left open listed.

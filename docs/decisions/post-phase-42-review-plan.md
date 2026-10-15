@@ -26,10 +26,18 @@ Progress (2026-10-16):
 - R1 is verified.
 - R3's findings are done and its doc fixes are made
   (`post-phase-42-review-findings.md`). TFP-210 is written there.
-- R5's Phase 39 amendment is locked. Phase 39 comes straight after the
-  review, measurement first.
-- Code's next ticket is **TFP-208**, then TFP-206 and TFP-209 (R4), then
-  TFP-210.
+- R5's Phase 39 amendment is locked.
+- **Order for Code (Emil, 2026-10-16):**
+  1. **TFP-208**;
+  2. **TFP-210**;
+  3. **Phase 39**, from TFP-211;
+  4. TFP-206 and TFP-209 (R4) afterwards, or between Phase 39's gates.
+
+  TFP-208 first, so Phase 39's measurements and its same-results proof
+aren't read through flakes and false failures. TFP-210 next, so a nightly
+unit run guards Phase 39 while it changes how every test reaches its page.
+- R5's three decision records and R6 (skills) run in Cowork alongside
+  Phase 39, not before it.
 
 ## R1 — Baseline (TFP-207)
 
@@ -123,7 +131,7 @@ TFP-207 accepted (`bfd900a..6d8f7e4`), with three corrections made to its
      1,535 s against its 1,800 s limit at R1, leaving 265 s. The fix in 3
      must not add run time. Report its cost in seconds on both local copies.
      It may lower it, since the skip option removes tests. This is also why
-     Phase 39 comes straight after the review, measurement first
+     Phase 39 comes straight after TFP-208 and TFP-210, measurement first
      (`phase-39-run-concurrency-decision-record.md`, locked 2026-10-16).
 - **No Claude Code calls.**
 - **Acceptance criteria:**
