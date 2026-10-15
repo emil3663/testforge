@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "barn images"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nconst startUrl = page.url();\nconst popupPromise = page.waitForEvent('popup').catch(() => null);\nawait link.click();\nconst popup = await popupPromise;\nif (popup) {\n  await popup.waitForLoadState('load');\n  await expect(popup).toHaveURL(/.+/);\n} else {\n  const urlChanged = page.url() !== startUrl;\n  const dialogVisible = await page.getByRole('dialog').count();\n  expect(urlChanged || dialogVisible > 0).toBeTruthy();\n}",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/",
+      "at": "2026-10-15T10:47:36.387Z"
+    }
+  ],
+  "costUsd": 0.021204,
+  "id": "7d434e516fc0",
+  "evidence": [],
+  "status": "candidate"
+}

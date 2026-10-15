@@ -1,0 +1,23 @@
+{
+  "writer": "claude-code",
+  "gaps": 1,
+  "asked": 1,
+  "saved": 1,
+  "rejected": 0,
+  "failed": 0,
+  "costUsd": 0.05670589999999999,
+  "tests": [
+    {
+      "title": "gap test: Court Hammer More information [link] on /#/product/6",
+      "covers": "link [\"Court Hammer More information\",\"http://localhost:4200/#/product/12\"]",
+      "attempts": 1,
+      "costUsd": 0.05670589999999999,
+      "outcome": "saved; candidate 967b2f2c2b0b added"
+    }
+  ],
+  "candidates": {
+    "matched": 0,
+    "added": 1,
+    "notKept": 0
+  }
+}

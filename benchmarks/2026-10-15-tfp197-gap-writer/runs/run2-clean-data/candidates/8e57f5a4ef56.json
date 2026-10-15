@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "contact"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait expect(link).toBeEnabled();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/",
+      "at": "2026-10-15T10:37:40.873Z"
+    }
+  ],
+  "costUsd": 0.0068925,
+  "id": "8e57f5a4ef56",
+  "evidence": [],
+  "status": "candidate"
+}

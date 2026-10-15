@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "contakt"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\n\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait link.focus();\nawait expect(link).toBeFocused();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T17:32:18.698Z"
+    }
+  ],
+  "costUsd": 0.007037999999999999,
+  "id": "a8e8cc0b7223",
+  "evidence": [],
+  "status": "candidate"
+}

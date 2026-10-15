@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "forgot your password?"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nconst href = await link.getAttribute('href');\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nexpect(href).not.toBeNull();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/auth/login",
+      "at": "2026-10-15T10:59:58.076Z"
+    }
+  ],
+  "costUsd": 0.0072444,
+  "id": "acf57396d954",
+  "evidence": [],
+  "status": "candidate"
+}

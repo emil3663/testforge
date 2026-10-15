@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "element",
+    "type": "input",
+    "name": "on"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst checkbox = __LOCATOR__;\n\nawait expect(checkbox).toBeVisible();\nawait expect(checkbox).toBeEnabled();\n\nconst initiallyChecked = await checkbox.isChecked();\n\nawait checkbox.focus();\nawait expect(checkbox).toBeFocused();\n\nawait checkbox.hover();\n\nawait checkbox.check();\nawait expect(checkbox).toBeChecked();\n\nawait checkbox.uncheck();\nawait expect(checkbox).not.toBeChecked();\n\nif (initiallyChecked) {\n  await checkbox.check();\n}",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered element, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T11:59:46.958Z"
+    }
+  ],
+  "costUsd": 0.0090498,
+  "id": "7f3c70d7715f",
+  "evidence": [],
+  "status": "candidate"
+}

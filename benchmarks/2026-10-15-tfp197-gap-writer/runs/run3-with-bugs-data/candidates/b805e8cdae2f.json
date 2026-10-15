@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "element",
+    "type": "button",
+    "name": "x"
+  },
+  "body": "await page.goto(__PAGE__);\nconst element = __LOCATOR__;\nawait expect(element).toBeVisible();\nawait expect(element).toBeEnabled();\nawait element.hover();\nawait element.focus();\nawait expect(element).toBeFocused();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered element, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T17:19:46.220Z"
+    }
+  ],
+  "costUsd": 0.006407400000000001,
+  "id": "b805e8cdae2f",
+  "evidence": [],
+  "status": "candidate"
+}

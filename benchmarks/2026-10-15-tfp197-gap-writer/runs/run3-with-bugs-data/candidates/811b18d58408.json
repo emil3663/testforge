@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "documentation"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\n\nconst href = await link.getAttribute('href');\nawait link.hover();\nawait expect(link).toBeEnabled();\n\nif (href) {\n  await expect(link).toHaveAttribute('href', href);\n}",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/",
+      "at": "2026-10-15T10:30:27.168Z"
+    }
+  ],
+  "costUsd": 0.0074226,
+  "id": "811b18d58408",
+  "evidence": [],
+  "status": "candidate"
+}

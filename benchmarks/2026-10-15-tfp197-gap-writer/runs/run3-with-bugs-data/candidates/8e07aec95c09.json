@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "imattsmart"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\n\nconst href = await link.getAttribute('href');\nexpect(href).toBeTruthy();\n\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait link.focus();\nawait expect(link).toBeFocused();\n\nconst popupPromise = page.waitForEvent('popup', { timeout: 3000 }).catch(() => null);\nawait link.click();\nconst popup = await popupPromise;\n\nif (popup) {\n  await popup.waitForLoadState();\n  expect(popup.url()).toBeTruthy();\n  await popup.close();\n} else {\n  await expect(link).toBeVisible();\n}",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+      "at": "2026-10-15T10:49:06.014Z"
+    }
+  ],
+  "costUsd": 0.0156723,
+  "id": "8e07aec95c09",
+  "evidence": [],
+  "status": "candidate"
+}

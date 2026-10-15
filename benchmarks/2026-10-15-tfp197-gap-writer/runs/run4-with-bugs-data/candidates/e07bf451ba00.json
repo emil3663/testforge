@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "element",
+    "type": "button",
+    "name": "toggle navigation"
+  },
+  "body": "await page.setViewportSize({ width: 375, height: 812 });\nawait page.goto(__PAGE__);\n\nconst toggleButton = __LOCATOR__;\n\nawait expect(toggleButton).toBeVisible();\nawait expect(toggleButton).toBeEnabled();\n\nawait toggleButton.focus();\nawait expect(toggleButton).toBeFocused();\n\nconst expandedBefore = await toggleButton.getAttribute('aria-expanded');\n\nawait toggleButton.click();\n\nif (expandedBefore !== null) {\n  const expandedAfter = await toggleButton.getAttribute('aria-expanded');\n  expect(expandedAfter).not.toBe(expandedBefore);\n}\n\nawait toggleButton.click();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered element, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T17:18:21.111Z"
+    }
+  ],
+  "costUsd": 0.011339100000000001,
+  "id": "e07bf451ba00",
+  "evidence": [],
+  "status": "candidate"
+}

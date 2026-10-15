@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "claw hammer with fiberglass handle more information"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\n\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\n\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait link.focus();\nawait expect(link).toBeFocused();\n\nawait link.click();\n\nawait expect(page).not.toHaveURL(__PAGE__);",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/product/6",
+      "at": "2026-10-15T12:19:56.032Z"
+    }
+  ],
+  "costUsd": 0.0098436,
+  "id": "6c0c38a6bc78",
+  "evidence": [],
+  "status": "candidate"
+}

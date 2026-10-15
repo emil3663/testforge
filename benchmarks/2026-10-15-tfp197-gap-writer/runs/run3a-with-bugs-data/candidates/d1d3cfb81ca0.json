@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "unsplash"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/",
+      "at": "2026-10-15T10:47:52.580Z"
+    }
+  ],
+  "costUsd": 0.0065919,
+  "id": "d1d3cfb81ca0",
+  "evidence": [],
+  "status": "candidate"
+}

@@ -1,0 +1,299 @@
+{
+  "siteSuite": {
+    "store": "C:\\Users\\MSI workstation\\AppData\\Local\\Temp\\testforge-tfp197-data\\site-suites\\http_localhost_4200\\standard-fast-bec985a04d",
+    "firstRun": true,
+    "reused": 0,
+    "generated": 449,
+    "regenerated": 0,
+    "retired": 0,
+    "edited": 0,
+    "changedTypes": [],
+    "newTypes": [],
+    "goneTypes": [],
+    "editedOnChangedPages": [],
+    "gapTests": {
+      "writer": "claude-code",
+      "gaps": 36,
+      "asked": 36,
+      "saved": 23,
+      "rejected": 0,
+      "failed": 13,
+      "costUsd": 2.6873089999999995,
+      "tests": [
+        {
+          "title": "gap test: Documentation [link] on /",
+          "covers": "link [\"Documentation\",\"https://testsmith-io.github.io/practice-software-testing/#/\"]",
+          "attempts": 1,
+          "costUsd": 0.05541889999999999,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Hand Tools [link] on /",
+          "covers": "link [\"Hand Tools\",\"http://localhost:4200/category/hand-tools\"]",
+          "attempts": 3,
+          "costUsd": 0.0838696,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Power Tools [link] on /",
+          "covers": "link [\"Power Tools\",\"http://localhost:4200/category/power-tools\"]",
+          "attempts": 3,
+          "costUsd": 0.0708447,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Other [link] on /",
+          "covers": "link [\"Other\",\"http://localhost:4200/category/other\"]",
+          "attempts": 3,
+          "costUsd": 0.07472469999999999,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Special Tools [link] on /",
+          "covers": "link [\"Special Tools\",\"http://localhost:4200/category/special-tools\"]",
+          "attempts": 3,
+          "costUsd": 0.07700699999999999,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Rentals [link] on /",
+          "covers": "link [\"Rentals\",\"http://localhost:4200/rentals\"]",
+          "attempts": 3,
+          "costUsd": 0.0892032,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /rentals/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisible\" with"
+        },
+        {
+          "title": "gap test: Contact [link] on /",
+          "covers": "link [\"Contact\",\"http://localhost:4200/contact\"]",
+          "attempts": 2,
+          "costUsd": 0.0753615,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Sign in [link] on /",
+          "covers": "link [\"Sign in\",\"http://localhost:4200/auth/login\"]",
+          "attempts": 1,
+          "costUsd": 0.0547124,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Combination Pliers ABCDE$14.15 [link] on /",
+          "covers": "link [\"Combination Pliers ABCDE$14.15\",\"http://localhost:4200/product/01M4ZDX97SVVAN1E22B6FWT4G9\"]",
+          "attempts": 3,
+          "costUsd": 0.0781698,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Pliers ABCDE$12.01 [link] on /",
+          "covers": "link [\"Pliers ABCDE$12.01\",\"http://localhost:4200/product/01M4ZDX97VF6C8ATZASP7JM5E1\"]",
+          "attempts": 3,
+          "costUsd": 0.09759879999999999,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Bolt Cutters ABCDE$48.41 [link] on /",
+          "covers": "link [\"Bolt Cutters ABCDE$48.41\",\"http://localhost:4200/product/01M4ZDX97W2ABAEKA99CTAB5RX\"]",
+          "attempts": 3,
+          "costUsd": 0.08519790000000001,
+          "outcome": "not kept after 3 attempts: Error: expect(received).toBeTruthy() Received: undefined"
+        },
+        {
+          "title": "gap test: Long Nose Pliers ABCDEOut of stock$14.24 [link] on /",
+          "covers": "link [\"Long Nose Pliers ABCDEOut of stock$14.24\",\"http://localhost:4200/product/01M4ZDX97XP4C89FR96E5V1PGV\"]",
+          "attempts": 3,
+          "costUsd": 0.0841624,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Slip Joint Pliers ABCDE$9.17 [link] on /",
+          "covers": "link [\"Slip Joint Pliers ABCDE$9.17\",\"http://localhost:4200/product/01M4ZDX97XP4C89FR96E5V1PGW\"]",
+          "attempts": 3,
+          "costUsd": 0.07211509999999999,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toHaveAttribute(expected) failed Locator: getByText('Slip Joint Pliers ABCDE').first() Expected pattern: /.+/ Received string: \"\" Timeout: 5000ms Call log: - Expect \"toHaveAttri"
+        },
+        {
+          "title": "gap test: Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link] on /",
+          "covers": "link [\"Claw Hammer with Shock Reduction Grip ABCDE$13.41\",\"http://localhost:4200/product/01M4ZDX97Y3PYDJJ40TBJX0V3W\"]",
+          "attempts": 3,
+          "costUsd": 0.08574989999999999,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Hammer ABCDE$12.58 [link] on /",
+          "covers": "link [\"Hammer ABCDE$12.58\",\"http://localhost:4200/product/01M4ZDX97Z00Q01MVRYK62EFC4\"]",
+          "attempts": 3,
+          "costUsd": 0.0766484,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Hammer ABCDE/i }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect \"toBeVisible"
+        },
+        {
+          "title": "gap test: Claw Hammer ABCDE$11.48 [link] on /",
+          "covers": "link [\"Claw Hammer ABCDE$11.48\",\"http://localhost:4200/product/01M4ZDX980J0X7DAHZ05T52MG0\"]",
+          "attempts": 3,
+          "costUsd": 0.07634969999999999,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Claw Hammer ABCDE/i }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect \"toBeVi"
+        },
+        {
+          "title": "gap test: Thor Hammer ABCDE$11.14 [link] on /",
+          "covers": "link [\"Thor Hammer ABCDE$11.14\",\"http://localhost:4200/product/01M4ZDX980J0X7DAHZ05T52MG1\"]",
+          "attempts": 3,
+          "costUsd": 0.08333429999999999,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Privacy Policy [link] on /",
+          "covers": "link [\"Privacy Policy\",\"http://localhost:4200/privacy\"]",
+          "attempts": 1,
+          "costUsd": 0.0565518,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Barn Images [link] on /",
+          "covers": "link [\"Barn Images\",\"https://unsplash.com/@barnimages\"]",
+          "attempts": 2,
+          "costUsd": 0.0712417,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Unsplash [link] on /",
+          "covers": "link [\"Unsplash\",\"https://unsplash.com/photos/t5YUoHW6zRo\"]",
+          "attempts": 1,
+          "costUsd": 0.057064500000000004,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: iMattSmart [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"iMattSmart\",\"https://unsplash.com/@imattsmart\"]",
+          "attempts": 2,
+          "costUsd": 0.07146779999999998,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Unsplash [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Unsplash\",\"https://unsplash.com/photos/jaLaLQdkBOE\"]",
+          "attempts": 2,
+          "costUsd": 0.08561890000000001,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Hammer More information\",\"http://localhost:4200/product/01M4ZDX97Z00Q01MVRYK62EFC4\"]",
+          "attempts": 2,
+          "costUsd": 0.0717718,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"More information\",\"http://localhost:4200/product/01M4ZDX97Y3PYDJJ40TBJX0V3W#\"]",
+          "attempts": 1,
+          "costUsd": 0.0568849,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Claw Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Claw Hammer More information\",\"http://localhost:4200/product/01M4ZDX980J0X7DAHZ05T52MG0\"]",
+          "attempts": 3,
+          "costUsd": 0.0908021,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Thor Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Thor Hammer More information\",\"http://localhost:4200/product/01M4ZDX980J0X7DAHZ05T52MG1\"]",
+          "attempts": 3,
+          "costUsd": 0.0812814,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Sledgehammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Sledgehammer More information\",\"http://localhost:4200/product/01M4ZDX982939QH7JAR55ST7XN\"]",
+          "attempts": 2,
+          "costUsd": 0.07144030000000001,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Claw Hammer with Fiberglass Handle More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Claw Hammer with Fiberglass Handle More information\",\"http://localhost:4200/product/01M4ZDX982939QH7JAR55ST7XP\"]",
+          "attempts": 2,
+          "costUsd": 0.06957010000000001,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Court Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+          "covers": "link [\"Court Hammer More information\",\"http://localhost:4200/product/01M4ZDX983KA44TEHME00HZMEC\"]",
+          "attempts": 2,
+          "costUsd": 0.0694038,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Sledgehammer ABCDE$17.75 [link] on /category/hand-tools",
+          "covers": "link [\"Sledgehammer ABCDE$17.75\",\"http://localhost:4200/product/01M4ZDX982939QH7JAR55ST7XN\"]",
+          "attempts": 3,
+          "costUsd": 0.072959,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Sledgehammer ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVis"
+        },
+        {
+          "title": "gap test: Claw Hammer with Fiberglass Handle ABCDE$20.14 [link] on /category/hand-tools",
+          "covers": "link [\"Claw Hammer with Fiberglass Handle ABCDE$20.14\",\"http://localhost:4200/product/01M4ZDX982939QH7JAR55ST7XP\"]",
+          "attempts": 3,
+          "costUsd": 0.0715827,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Claw Hammer with Fiberglass Handle ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call "
+        },
+        {
+          "title": "gap test: Court Hammer ABCDE$18.63 [link] on /category/hand-tools",
+          "covers": "link [\"Court Hammer ABCDE$18.63\",\"http://localhost:4200/product/01M4ZDX983KA44TEHME00HZMEC\"]",
+          "attempts": 3,
+          "costUsd": 0.08827319999999998,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: ECO Wood Saw ABCDE$12.18 [link] on /category/hand-tools",
+          "covers": "link [\"ECO Wood Saw ABCDE$12.18\",\"http://localhost:4200/product/01M4ZDX98411BH75V94X1J5V4A\"]",
+          "attempts": 3,
+          "costUsd": 0.07049949999999999,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Wood Saw/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisible\""
+        },
+        {
+          "title": "gap test: Adjustable Wrench ABCDE$20.33 [link] on /category/hand-tools",
+          "covers": "link [\"Adjustable Wrench ABCDE$20.33\",\"http://localhost:4200/product/01M4ZDX985D95VXPWT23119EVK\"]",
+          "attempts": 3,
+          "costUsd": 0.0820074,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Register your account [link] on /auth/login",
+          "covers": "link [\"Register your account\",\"http://localhost:4200/auth/register\"]",
+          "attempts": 2,
+          "costUsd": 0.07011970000000001,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: Forgot your Password? [link] on /auth/login",
+          "covers": "link [\"Forgot your Password?\",\"http://localhost:4200/auth/forgot-password\"]",
+          "attempts": 1,
+          "costUsd": 0.05830010000000001,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        }
+      ],
+      "candidates": {
+        "matched": 0,
+        "added": 0,
+        "notKept": 23
+      }
+    }
+  },
+  "generatedBy": "template",
+  "pageInspection": {
+    "status": "inspected",
+    "paths": [
+      "/",
+      "/product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+      "/category/hand-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals"
+    ],
+    "pages": 8,
+    "warnings": []
+  }
+}

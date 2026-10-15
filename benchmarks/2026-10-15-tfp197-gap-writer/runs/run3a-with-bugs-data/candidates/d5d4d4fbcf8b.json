@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "register your account"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nconst href = await link.getAttribute('href');\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait expect(link).toBeEnabled();\nexpect(href).toBeTruthy();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/auth/login",
+      "at": "2026-10-15T10:59:40.809Z"
+    }
+  ],
+  "costUsd": 0.0075333,
+  "id": "d5d4d4fbcf8b",
+  "evidence": [],
+  "status": "candidate"
+}

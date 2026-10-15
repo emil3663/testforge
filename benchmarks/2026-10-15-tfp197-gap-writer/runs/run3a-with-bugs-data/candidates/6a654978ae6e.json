@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "thor hammer more information"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nawait link.hover();\nawait link.focus();\nawait expect(link).toBeFocused();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/product/6",
+      "at": "2026-10-15T12:18:07.616Z"
+    }
+  ],
+  "costUsd": 0.0066927,
+  "id": "6a654978ae6e",
+  "evidence": [],
+  "status": "candidate"
+}

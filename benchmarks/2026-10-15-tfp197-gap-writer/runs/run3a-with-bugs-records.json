@@ -1,0 +1,28 @@
+{
+  "label": "run3-with-bugs",
+  "site": "http://localhost:4200",
+  "kind": "standard",
+  "paths": [
+    "/#/",
+    "/#/product/6",
+    "/#/category/hand-tools",
+    "/#/auth/register",
+    "/#/contact",
+    "/#/auth/login",
+    "/#/auth/forgot-password",
+    "/#/chainsaws"
+  ],
+  "commit": "394a096",
+  "startedAt": "2026-10-15T11:50:36.910Z",
+  "generateSeconds": 1760,
+  "runSeconds": 2,
+  "claude": {
+    "calls": 114,
+    "failedCalls": 0,
+    "costUsd": 3.1762,
+    "seconds": 763
+  },
+  "tests": 0,
+  "byStatus": {},
+  "records": []
+}

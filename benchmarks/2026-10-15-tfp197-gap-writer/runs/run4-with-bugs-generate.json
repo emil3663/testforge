@@ -1,0 +1,54 @@
+{
+  "siteSuite": {
+    "store": "C:\\Users\\MSI workstation\\AppData\\Local\\Temp\\testforge-tfp197-data-3\\site-suites\\http_localhost_4200\\standard-fast-bec985a04d",
+    "firstRun": false,
+    "reused": 506,
+    "generated": 0,
+    "regenerated": 0,
+    "retired": 0,
+    "edited": 0,
+    "changedTypes": [],
+    "newTypes": [],
+    "goneTypes": [],
+    "editedOnChangedPages": [],
+    "gapTests": {
+      "writer": "claude-code",
+      "gaps": 1,
+      "asked": 1,
+      "saved": 1,
+      "rejected": 0,
+      "failed": 0,
+      "costUsd": 0.05670589999999999,
+      "tests": [
+        {
+          "title": "gap test: Court Hammer More information [link] on /#/product/6",
+          "covers": "link [\"Court Hammer More information\",\"http://localhost:4200/#/product/12\"]",
+          "attempts": 1,
+          "costUsd": 0.05670589999999999,
+          "outcome": "saved; candidate 967b2f2c2b0b added"
+        }
+      ],
+      "candidates": {
+        "matched": 0,
+        "added": 1,
+        "notKept": 0
+      }
+    }
+  },
+  "generatedBy": "template",
+  "pageInspection": {
+    "status": "inspected",
+    "paths": [
+      "/#/",
+      "/#/product/6",
+      "/#/category/hand-tools",
+      "/#/auth/register",
+      "/#/contact",
+      "/#/auth/login",
+      "/#/auth/forgot-password",
+      "/#/chainsaws"
+    ],
+    "pages": 8,
+    "warnings": []
+  }
+}

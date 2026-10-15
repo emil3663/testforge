@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "privacy policy"
+  },
+  "body": "await page.goto(__PAGE__);\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/",
+      "at": "2026-10-15T10:46:38.509Z"
+    }
+  ],
+  "costUsd": 0.0066039,
+  "id": "935b56c06fef",
+  "evidence": [],
+  "status": "candidate"
+}

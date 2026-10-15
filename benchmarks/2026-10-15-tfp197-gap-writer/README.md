@@ -24,7 +24,18 @@ worker and Chromium, with TFP-202's run environment.
 | `run-local.sh` | One run of one copy: on a copy's first run, the crawl and Phase 40's selection (TFP-175's `crawl-and-select.mts`); then `run.mts` |
 | `run.mts` | Generation through `POST /api/generate` (site suite, candidates, promoted entries, the gap writer opted in for `http://localhost:4200`), then the suite run as TFP-175's driver runs it |
 | `claude-logger.mjs` | A pass-through in front of `claude.exe`: TestForge's call path is unchanged, and each call's arguments, prompt, reply, cost and time are kept (`runs/*-claude-calls.jsonl`) |
-| `runs/` | Each run's selection, suite, the route's answer, Playwright's report, the records, the Claude Code calls, and the data folder's site suite and candidate pool as they stood after it |
+| `runs/` | Each run's selection, suite, the route's answer, Playwright's report, the records, the Claude Code calls, and the data folder's site suite and candidate pool as they stood after it. `run1a-*` and `run3a-*` are the first attempts, each cut short by a bug the run found (`outcome.md`) |
+| `analyse.mjs`, `analysis.txt` | The measures Emil asked for, read from `runs/`, and their output |
+| `outcome.md` | The score, the acceptance criteria, the second measure, the hints, cost and time, what the runs found, and Gate B by Decision 7 |
+
+## As run
+
+Run 1 was redone, after `394a096`, in a fresh data folder. Run 3 was
+redone after `31c0afd`, in a fresh data folder seeded with run 2's
+candidate pool byte for byte and no site suite (Emil, 2026-10-15). The
+with-bugs copy then counts as a first run; run 3a measured what became of
+clean's site suite. Code under test (each record's `commit`): run 1a on
+`ae88e0b`; runs 1, 2 and 3a on `394a096`; runs 3 and 4 on `31c0afd`.
 
 ## Reproduce
 

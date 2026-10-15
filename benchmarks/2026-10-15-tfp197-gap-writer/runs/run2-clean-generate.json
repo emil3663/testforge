@@ -1,0 +1,46 @@
+{
+  "siteSuite": {
+    "store": "C:\\Users\\MSI workstation\\AppData\\Local\\Temp\\testforge-tfp197-data-2\\site-suites\\http_localhost_4200\\standard-fast-bec985a04d",
+    "firstRun": false,
+    "reused": 468,
+    "generated": 0,
+    "regenerated": 0,
+    "retired": 0,
+    "edited": 0,
+    "changedTypes": [],
+    "newTypes": [],
+    "goneTypes": [],
+    "editedOnChangedPages": [],
+    "gapTests": {
+      "writer": "claude-code",
+      "gaps": 0,
+      "asked": 0,
+      "saved": 0,
+      "rejected": 0,
+      "failed": 0,
+      "costUsd": 0,
+      "tests": [],
+      "candidates": {
+        "matched": 0,
+        "added": 0,
+        "notKept": 0
+      }
+    }
+  },
+  "generatedBy": "template",
+  "pageInspection": {
+    "status": "inspected",
+    "paths": [
+      "/",
+      "/product/01M4ZDX97Y3PYDJJ40TBJX0V3W",
+      "/category/hand-tools",
+      "/auth/register",
+      "/contact",
+      "/auth/login",
+      "/auth/forgot-password",
+      "/rentals"
+    ],
+    "pages": 8,
+    "warnings": []
+  }
+}

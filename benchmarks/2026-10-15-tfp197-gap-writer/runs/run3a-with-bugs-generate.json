@@ -1,0 +1,471 @@
+{
+  "siteSuite": {
+    "store": "C:\\Users\\MSI workstation\\AppData\\Local\\Temp\\testforge-tfp197-data-2\\site-suites\\http_localhost_4200\\standard-fast-bec985a04d",
+    "firstRun": false,
+    "reused": 0,
+    "generated": 309,
+    "regenerated": 150,
+    "retired": 416,
+    "edited": 0,
+    "changedTypes": [],
+    "newTypes": [
+      "/#/",
+      "/#/auth/:slug",
+      "/#/category/hand-tools",
+      "/#/chainsaws",
+      "/#/contact",
+      "/#/product/:id"
+    ],
+    "goneTypes": [
+      "/",
+      "/product/:id",
+      "/category/hand-tools",
+      "/auth/:slug",
+      "/contact",
+      "/rentals"
+    ],
+    "editedOnChangedPages": [],
+    "candidateTests": {
+      "bound": 9,
+      "notBound": 0,
+      "tests": [
+        {
+          "title": "gap test: Documentation [link] on /#/",
+          "covers": "link [\"Documentation\",\"https://testsmith-io.github.io/practice-software-testing/#/\"]",
+          "candidate": "811b18d58408",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Sign in [link] on /#/",
+          "covers": "link [\"Sign in\",\"http://localhost:4200/#/auth/login\"]",
+          "candidate": "427d2751ca32",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Barn Images [link] on /#/",
+          "covers": "link [\"Barn Images\",\"https://unsplash.com/@barnimages\"]",
+          "candidate": "7d434e516fc0",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Unsplash [link] on /#/",
+          "covers": "link [\"Unsplash\",\"https://unsplash.com/photos/t5YUoHW6zRo\"]",
+          "candidate": "d1d3cfb81ca0",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: iMattSmart [link] on /#/product/6",
+          "covers": "link [\"iMattSmart\",\"https://unsplash.com/@imattsmart\"]",
+          "candidate": "8e07aec95c09",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Unsplash [link] on /#/product/6",
+          "covers": "link [\"Unsplash\",\"https://unsplash.com/photos/jaLaLQdkBOE\"]",
+          "candidate": "d1d3cfb81ca0",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: More information [link] on /#/product/6",
+          "covers": "link [\"More information\",\"http://localhost:4200/#\"]",
+          "candidate": "62fd2f16fab5",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Register your account [link] on /#/auth/login",
+          "covers": "link [\"Register your account\",\"http://localhost:4200/#/auth/register\"]",
+          "candidate": "d5d4d4fbcf8b",
+          "outcome": "bound"
+        },
+        {
+          "title": "gap test: Forgot your Password? [link] on /#/auth/login",
+          "covers": "link [\"Forgot your Password?\",\"http://localhost:4200/#/auth/forgot-password\"]",
+          "candidate": "acf57396d954",
+          "outcome": "bound"
+        }
+      ]
+    },
+    "gapTests": {
+      "writer": "claude-code",
+      "gaps": 56,
+      "asked": 50,
+      "saved": 36,
+      "rejected": 0,
+      "failed": 14,
+      "costUsd": 3.1762472000000006,
+      "tests": [
+        {
+          "title": "gap test: Bug Hunting Guide [button] on /#/",
+          "covers": "/#/ element page.getByText('Bug Hunting Guide', { exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.054784299999999994,
+          "outcome": "saved; candidate aa9e43ddbd61 added"
+        },
+        {
+          "title": "gap test: Toggle navigation [button] on /#/",
+          "covers": "/#/ element page.getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first()",
+          "attempts": 3,
+          "costUsd": 0.0828269,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toHaveAttribute(expected) failed Locator: getByRole('button', { name: 'Toggle navigation', exact: true, includeHidden: true }).first() Expected: \"false\" Received: \"true\" Timeout"
+        },
+        {
+          "title": "gap test: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [form] on /#/",
+          "covers": "/#/ element page.locator('form').nth(0)",
+          "attempts": 1,
+          "costUsd": 0.0691389,
+          "outcome": "saved; its candidate didn't pass bound back to this element"
+        },
+        {
+          "title": "gap test: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [select] on /#/",
+          "covers": "/#/ element page.getByText('Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First)', { exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.07219270000000001,
+          "outcome": "saved; candidate da0a04c62820 added"
+        },
+        {
+          "title": "gap test: X Serch [form] on /#/",
+          "covers": "/#/ element page.locator('form').nth(1)",
+          "attempts": 1,
+          "costUsd": 0.056270600000000004,
+          "outcome": "saved; candidate 912a3a7b1ab7 added"
+        },
+        {
+          "title": "gap test: X [button] on /#/",
+          "covers": "/#/ element page.getByText('X', { exact: true }).first()",
+          "attempts": 2,
+          "costUsd": 0.06627140000000001,
+          "outcome": "saved; candidate b805e8cdae2f added"
+        },
+        {
+          "title": "gap test: Serch [button] on /#/",
+          "covers": "/#/ element page.getByText('Serch', { exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.055298799999999995,
+          "outcome": "saved; candidate 18e2c4bbc7b9 added"
+        },
+        {
+          "title": "gap test: 3 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Hammer', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0558423,
+          "outcome": "saved; candidate 0c7a33d9ae2a added"
+        },
+        {
+          "title": "gap test: 4 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Hand Saw', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0558883,
+          "outcome": "saved; candidate 38287780f20f added"
+        },
+        {
+          "title": "gap test: 5 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Wrench', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.05581679999999999,
+          "outcome": "saved; candidate caeebc414d94 added"
+        },
+        {
+          "title": "gap test: 6 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Screwdriver', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.06061180000000001,
+          "outcome": "saved; candidate 196c7a1ef720 added"
+        },
+        {
+          "title": "gap test: 7 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Pliers', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.057999999999999996,
+          "outcome": "saved; candidate 6db89cc61d7a added"
+        },
+        {
+          "title": "gap test: 8 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Grinder', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0558546,
+          "outcome": "saved; candidate 974326fdea2c added"
+        },
+        {
+          "title": "gap test: 9 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Sander', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.05580209999999999,
+          "outcome": "saved; candidate e1eb8ff5f541 added"
+        },
+        {
+          "title": "gap test: 10 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Saw', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.058002200000000004,
+          "outcome": "saved; candidate 569b774c14e8 added"
+        },
+        {
+          "title": "gap test: 11 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Drill', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.057687,
+          "outcome": "saved; candidate 0b3f39a2cff7 added"
+        },
+        {
+          "title": "gap test: 12 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Other', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0585131,
+          "outcome": "saved; candidate 57a39cf195bb added"
+        },
+        {
+          "title": "gap test: 1 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 1', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.055368299999999995,
+          "outcome": "saved; candidate b32c8d324c2d added"
+        },
+        {
+          "title": "gap test: 2 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 2', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0559746,
+          "outcome": "saved; candidate aa89591da656 added"
+        },
+        {
+          "title": "gap test: 3 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 3', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0492397,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 4 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 4', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.050162700000000005,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 5 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 5', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0492637,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 6 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 6', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.049213700000000006,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 7 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 7', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.049261700000000005,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 8 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 8', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.050187699999999995,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 9 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 9', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.051069699999999996,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: 10 [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Brand name 10', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.050146699999999995,
+          "outcome": "saved"
+        },
+        {
+          "title": "gap test: on [input] on /#/",
+          "covers": "/#/ element page.getByRole('checkbox', { name: 'Show only eco-friendly products', exact: true }).first()",
+          "attempts": 1,
+          "costUsd": 0.0601015,
+          "outcome": "saved; candidate 7f3c70d7715f added"
+        },
+        {
+          "title": "gap test: Categories [link] on /#/",
+          "covers": "link [\"Categories\",\"http://localhost:4200/#\"]",
+          "attempts": 3,
+          "costUsd": 0.08491560000000001,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Hand Tools [link] on /#/",
+          "covers": "link [\"Hand Tools\",\"http://localhost:4200/#/category/hand-tools\"]",
+          "attempts": 3,
+          "costUsd": 0.0831426,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Hand Tools' }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect \"toBeVisible\" w"
+        },
+        {
+          "title": "gap test: Power Tools [link] on /#/",
+          "covers": "link [\"Power Tools\",\"http://localhost:4200/#/category/power-tools\"]",
+          "attempts": 3,
+          "costUsd": 0.07118340000000001,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: UNDEFINED [link] on /#/",
+          "covers": "link [\"UNDEFINED\",\"http://localhost:4200/#/category/undefined\"]",
+          "attempts": 3,
+          "costUsd": 0.06766430000000001,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'UNDEFINED', exact: true }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect \"to"
+        },
+        {
+          "title": "gap test: Chainsaws [link] on /#/",
+          "covers": "link [\"Chainsaws\",\"http://localhost:4200/#/chainsaws\"]",
+          "attempts": 3,
+          "costUsd": 0.0757131,
+          "outcome": "not kept after 3 attempts: Test timeout of 30000ms exceeded."
+        },
+        {
+          "title": "gap test: Rentals [link] on /#/",
+          "covers": "link [\"Rentals\",\"http://localhost:4200/#/rentals\"]",
+          "attempts": 3,
+          "costUsd": 0.0689312,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Rentals', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect \"toBe"
+        },
+        {
+          "title": "gap test: Contakt [link] on /#/",
+          "covers": "link [\"Contakt\",\"http://localhost:4200/#/contact\"]",
+          "attempts": 1,
+          "costUsd": 0.056284200000000006,
+          "outcome": "saved; candidate a8e8cc0b7223 added"
+        },
+        {
+          "title": "gap test: Filters [link] on /#/",
+          "covers": "link [\"Filters\",\"http://localhost:4200/#filters\"]",
+          "attempts": 3,
+          "costUsd": 0.07722050000000001,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Filters', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect \"toBe"
+        },
+        {
+          "title": "gap test: ECO Combination Pliers ABCDE$14.15 [link] on /#/",
+          "covers": "link [\"ECO Combination Pliers ABCDE$14.15\",\"http://localhost:4200/#/product/1\"]",
+          "attempts": 3,
+          "costUsd": 0.0740565,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'ECO Combination Pliers ABCDE$14.15', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not fou"
+        },
+        {
+          "title": "gap test: ECO Pliers ABCDE$12.01 [link] on /#/",
+          "covers": "link [\"ECO Pliers ABCDE$12.01\",\"http://localhost:4200/#/product/2\"]",
+          "attempts": 3,
+          "costUsd": 0.0973777,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: ECO Bolt Cutters ABCDE$48.41 [link] on /#/",
+          "covers": "link [\"ECO Bolt Cutters ABCDE$48.41\",\"http://localhost:4200/#/product/3\"]",
+          "attempts": 3,
+          "costUsd": 0.0792493,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: ECO Long Nose Pliers ABCDEOut of stock$14.24 [link] on /#/",
+          "covers": "link [\"ECO Long Nose Pliers ABCDEOut of stock$14.24\",\"http://localhost:4200/#/product/4\"]",
+          "attempts": 3,
+          "costUsd": 0.0781723,
+          "outcome": "saved; its candidate didn't pass bound back to this link"
+        },
+        {
+          "title": "gap test: ECO Slip Joint Pliers ABCDE$9.17 [link] on /#/",
+          "covers": "link [\"ECO Slip Joint Pliers ABCDE$9.17\",\"http://localhost:4200/#/product/5\"]",
+          "attempts": 3,
+          "costUsd": 0.0718631,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'ECO Slip Joint Pliers ABCDE$9.17', exact: true }).first() Expected: visible Timeout: 20000ms Error: element(s) not found"
+        },
+        {
+          "title": "gap test: ECO Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link] on /#/",
+          "covers": "link [\"ECO Claw Hammer with Shock Reduction Grip ABCDE$13.41\",\"http://localhost:4200/#/product/6\"]",
+          "attempts": 3,
+          "costUsd": 0.0768548,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Claw Hammer with Shock Reduction Grip ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not foun"
+        },
+        {
+          "title": "gap test: ECO Hammer ABCDE$12.58 [link] on /#/",
+          "covers": "link [\"ECO Hammer ABCDE$12.58\",\"http://localhost:4200/#/product/7\"]",
+          "attempts": 3,
+          "costUsd": 0.07052080000000001,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Hammer ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisib"
+        },
+        {
+          "title": "gap test: ECO Claw Hammer ABCDE$11.48 [link] on /#/",
+          "covers": "link [\"ECO Claw Hammer ABCDE$11.48\",\"http://localhost:4200/#/product/8\"]",
+          "attempts": 3,
+          "costUsd": 0.07008070000000001,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Claw Hammer ABCDE/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toB"
+        },
+        {
+          "title": "gap test: ECO Thor Hammer ABCDE$11.14 [link] on /#/",
+          "covers": "link [\"ECO Thor Hammer ABCDE$11.14\",\"http://localhost:4200/#/product/9\"]",
+          "attempts": 3,
+          "costUsd": 0.07755329999999999,
+          "outcome": "not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'ECO Thor Hammer ABCDE$11.14', exact: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call "
+        },
+        {
+          "title": "gap test: Hammer More information [link] on /#/product/6",
+          "covers": "link [\"Hammer More information\",\"http://localhost:4200/#/product/7\"]",
+          "attempts": 1,
+          "costUsd": 0.055075200000000005,
+          "outcome": "saved; candidate 72b4cb15f9a4 added"
+        },
+        {
+          "title": "gap test: Claw Hammer More information [link] on /#/product/6",
+          "covers": "link [\"Claw Hammer More information\",\"http://localhost:4200/#/product/8\"]",
+          "attempts": 1,
+          "costUsd": 0.0565627,
+          "outcome": "saved; candidate b601abbc1afa added"
+        },
+        {
+          "title": "gap test: Thor Hammer More information [link] on /#/product/6",
+          "covers": "link [\"Thor Hammer More information\",\"http://localhost:4200/#/product/9\"]",
+          "attempts": 1,
+          "costUsd": 0.0560754,
+          "outcome": "saved; candidate 6a654978ae6e added"
+        },
+        {
+          "title": "gap test: Sledgehammer More information [link] on /#/product/6",
+          "covers": "link [\"Sledgehammer More information\",\"http://localhost:4200/#/product/10\"]",
+          "attempts": 1,
+          "costUsd": 0.0565408,
+          "outcome": "saved; candidate 61736d585a48 added"
+        },
+        {
+          "title": "gap test: Claw Hammer with Fiberglass Handle More information [link] on /#/product/6",
+          "covers": "link [\"Claw Hammer with Fiberglass Handle More information\",\"http://localhost:4200/#/product/11\"]",
+          "attempts": 2,
+          "costUsd": 0.0724179,
+          "outcome": "saved; candidate 6c0c38a6bc78 added"
+        }
+      ],
+      "candidates": {
+        "matched": 0,
+        "added": 24,
+        "notKept": 4
+      }
+    }
+  },
+  "generatedBy": "template",
+  "pageInspection": {
+    "status": "inspected",
+    "paths": [
+      "/#/",
+      "/#/product/6",
+      "/#/category/hand-tools",
+      "/#/auth/register",
+      "/#/contact",
+      "/#/auth/login",
+      "/#/auth/forgot-password",
+      "/#/chainsaws"
+    ],
+    "pages": 8,
+    "warnings": []
+  }
+}

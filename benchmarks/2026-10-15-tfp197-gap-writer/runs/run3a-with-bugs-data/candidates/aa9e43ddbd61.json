@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "element",
+    "type": "button",
+    "name": "bug hunting guide"
+  },
+  "body": "await page.goto(__PAGE__);\nconst button = __LOCATOR__;\nawait expect(button).toBeVisible();\nawait button.hover();\nawait expect(button).toBeEnabled();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered element, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T11:51:48.059Z"
+    }
+  ],
+  "costUsd": 0.006027599999999999,
+  "id": "aa9e43ddbd61",
+  "evidence": [],
+  "status": "candidate"
+}

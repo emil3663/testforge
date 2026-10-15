@@ -1,0 +1,86 @@
+== 1. Claude Code calls, cost and time per run
+run1-clean: 106 calls {"write":36,"generalise":18,"revise":52}, 0 failed, $2.7397, 741 s in Claude Code (7.0 s a call); generate 1812 s, run 1023 s; 468 tests {"Passed":404,"Failed":46,"Not run":18}; models claude-haiku-4-5-20251001, claude-sonnet-5
+run2-clean: 0 calls {}, 0 failed, $0.0000, 0 s in Claude Code; generate 22 s, run 1031 s; 468 tests {"Passed":404,"Failed":46,"Not run":18}
+run3-with-bugs: 114 calls {"write":50,"generalise":30,"revise":34}, 0 failed, $3.1775, 662 s in Claude Code (5.8 s a call); generate 1692 s, run 1319 s; 506 tests {"Passed":402,"Failed":84,"Not run":20}; models claude-haiku-4-5-20251001, claude-sonnet-5
+run4-with-bugs: 2 calls {"write":1,"generalise":1}, 0 failed, $0.0567, 10 s in Claude Code (5.0 s a call); generate 42 s, run 1319 s; 507 tests {"Passed":403,"Failed":84,"Not run":20}; models claude-haiku-4-5-20251001, claude-sonnet-5
+
+== 2. Site suite per run
+run1-clean: firstRun true, reused 0, generated 449, regenerated 0, retired 0; new types [], gone []
+  gap writer: 36 gaps, 36 asked, 19 saved, 0 rejected, 17 not kept, $2.7397; pool: {"matched":0,"added":10,"notKept":8}
+run2-clean: firstRun false, reused 468, generated 0, regenerated 0, retired 0; new types [], gone []
+  gap writer: 0 gaps, 0 asked, 0 saved, 0 rejected, 0 not kept, $0.0000; pool: {"matched":0,"added":0,"notKept":0}
+run3-with-bugs: firstRun true, reused 0, generated 459, regenerated 0, retired 0; new types [], gone []
+  gap writer: 51 gaps, 50 asked, 38 saved, 0 rejected, 12 not kept, $3.1775; pool: {"matched":0,"added":25,"notKept":5}
+  candidates bound on Standard: 9 bound, 0 not bound
+run4-with-bugs: firstRun false, reused 506, generated 0, regenerated 0, retired 0; new types [], gone []
+  gap writer: 1 gaps, 1 asked, 1 saved, 0 rejected, 0 not kept, $0.0567; pool: {"matched":0,"added":1,"notKept":0}
+
+== 3. Run 1's gap tests on with-bugs (run3a: same data folder as runs 1 and 2)
+run3a: reused 0, generated 309, retired 416; page types gone ["/","/product/:id","/category/hand-tools","/auth/:slug","/contact","/rentals"], new ["/#/","/#/auth/:slug","/#/category/hand-tools","/#/chainsaws","/#/contact","/#/product/:id"]
+retired (its page type is gone) [/] gap test: Documentation [link] on /
+retired (its page type is gone) [/] gap test: Contact [link] on /
+retired (its page type is gone) [/] gap test: Sign in [link] on /
+retired (its page type is gone) [/] gap test: Combination Pliers ABCDE$14.15 [link] on /
+retired (its page type is gone) [/] gap test: Privacy Policy [link] on /
+retired (its page type is gone) [/] gap test: Barn Images [link] on /
+retired (its page type is gone) [/] gap test: Unsplash [link] on /
+retired (its page type is gone) [/product/:id] gap test: iMattSmart [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Unsplash [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Claw Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Thor Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Sledgehammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/product/:id] gap test: Claw Hammer with Fiberglass Handle More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W
+retired (its page type is gone) [/category/hand-tools] gap test: Court Hammer ABCDE$18.63 [link] on /category/hand-tools
+retired (its page type is gone) [/category/hand-tools] gap test: Adjustable Wrench ABCDE$20.33 [link] on /category/hand-tools
+retired (its page type is gone) [/auth/:slug] gap test: Register your account [link] on /auth/login
+retired (its page type is gone) [/auth/:slug] gap test: Forgot your Password? [link] on /auth/login
+
+== 4. Tests written in run 1, run in run 3: clean's gap tests, generalised and bound on with-bugs (TFP-203)
+Passed | candidate 811b18d58408 | gap test: Documentation [link] on /#/
+Passed | candidate 427d2751ca32 | gap test: Sign in [link] on /#/
+Passed | candidate 7d434e516fc0 | gap test: Barn Images [link] on /#/
+Passed | candidate d1d3cfb81ca0 | gap test: Unsplash [link] on /#/
+Passed | candidate 8e07aec95c09 | gap test: iMattSmart [link] on /#/product/6
+Passed | candidate d1d3cfb81ca0 | gap test: Unsplash [link] on /#/product/6
+Passed | candidate 62fd2f16fab5 | gap test: More information [link] on /#/product/6
+Passed | candidate d5d4d4fbcf8b | gap test: Register your account [link] on /#/auth/login
+Passed | candidate acf57396d954 | gap test: Forgot your Password? [link] on /#/auth/login
+9 ran, 0 failed
+every gap test in run 3 (written there or bound): 47, {"Passed":47}
+
+== 5. Failing attempts not kept (possible hints)
+run1-clean | gap test: Hand Tools [link] on / | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run1-clean | gap test: Power Tools [link] on / | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run1-clean | gap test: Other [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Other', exact: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVis
+run1-clean | gap test: Special Tools [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Special Tools' }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect "toBeVisible
+run1-clean | gap test: Rentals [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Rentals', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect "toBe
+run1-clean | gap test: Pliers ABCDE$12.01 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toContainText(expected) failed Locator: locator('a').filter({ hasText: 'Pliers ABCDE' }).first() Expected substring: "$12.01" Received string: " Combination Pliers ABCDE$14.15" 
+run1-clean | gap test: Bolt Cutters ABCDE$48.41 [link] on / | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run1-clean | gap test: Long Nose Pliers ABCDEOut of stock$14.24 [link] on / | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run1-clean | gap test: Slip Joint Pliers ABCDE$9.17 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Slip Joint Pliers ABCDE$9.17' }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expe
+run1-clean | gap test: Claw Hammer with Shock Reduction Grip ABCDE$13.41 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(received).not.toBeNull() Received: null
+run1-clean | gap test: Hammer ABCDE$12.58 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Hammer ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVisible" 
+run1-clean | gap test: Claw Hammer ABCDE$11.48 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Claw Hammer ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVisi
+run1-clean | gap test: Thor Hammer ABCDE$11.14 [link] on / | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Thor Hammer ABCDE/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVis
+run1-clean | gap test: Court Hammer More information [link] on /product/01M4ZDX97Y3PYDJJ40TBJX0V3W | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Court Hammer More information', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Ca
+run1-clean | gap test: Sledgehammer ABCDE$17.75 [link] on /category/hand-tools | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Sledgehammer ABCDE/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVis
+run1-clean | gap test: Claw Hammer with Fiberglass Handle ABCDE$20.14 [link] on /category/hand-tools | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /Claw Hammer with Fiberglass Handle ABCDE\s*\$20\.14/ }).first() Expected: visible Timeout: 5000ms Error: element(s) not 
+run1-clean | gap test: ECO Wood Saw ABCDE$12.18 [link] on /category/hand-tools | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Wood Saw ABCDE/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toBeVi
+run3-with-bugs | gap test: Categories [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Categories', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect "t
+run3-with-bugs | gap test: Hand Tools [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Hand Tools', exact: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "to
+run3-with-bugs | gap test: Power Tools [link] on /#/ | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run3-with-bugs | gap test: UNDEFINED [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /^undefined$/i }).first() Expected: visible Timeout: 10000ms Error: element(s) not found Call log: - Expect "toBeVisible"
+run3-with-bugs | gap test: Chainsaws [link] on /#/ | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run3-with-bugs | gap test: Rentals [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Rentals', exact: true }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect "toBe
+run3-with-bugs | gap test: Filters [link] on /#/ | 3 attempts | not kept after 3 attempts: Test timeout of 30000ms exceeded.
+run3-with-bugs | gap test: ECO Combination Pliers ABCDE$14.15 [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO\s+Combination\s+Pliers[\s\S]*ABCDE[\s\S]*14\.15/i }).first() Expected: visible Timeout: 15000ms Error: element(s) no
+run3-with-bugs | gap test: ECO Pliers ABCDE$12.01 [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Pliers ABCDE/ }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: - Expect "toBeVisi
+run3-with-bugs | gap test: ECO Bolt Cutters ABCDE$48.41 [link] on /#/ | 3 attempts | not kept after 3 attempts: TimeoutError: locator.waitFor: Timeout 15000ms exceeded. Call log: - waiting for getByRole('link', { name: 'ECO Bolt Cutters ABCDE$48.41', exact: true }).first() to be visible
+run3-with-bugs | gap test: ECO Slip Joint Pliers ABCDE$9.17 [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Slip Joint Pliers ABCDE\$9\.17/ }).first() Expected: visible Timeout: 15000ms Error: element(s) not found Call log: 
+run3-with-bugs | gap test: ECO Thor Hammer ABCDE$11.14 [link] on /#/ | 3 attempts | not kept after 3 attempts: Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: /ECO Thor Hammer ABCDE/i }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect "toB
+
+== 6. Failures Gate B's matching run didn't have
+run1-clean: 46 failures, Gate B 37; not in Gate B: 0
+run3-with-bugs: 84 failures, Gate B 62; not in Gate B: 0

@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "sledgehammer more information"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\n\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait link.focus();\nawait expect(link).toBeFocused();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/product/6",
+      "at": "2026-10-15T17:44:27.569Z"
+    }
+  ],
+  "costUsd": 0.0070896,
+  "id": "61736d585a48",
+  "evidence": [],
+  "status": "candidate"
+}

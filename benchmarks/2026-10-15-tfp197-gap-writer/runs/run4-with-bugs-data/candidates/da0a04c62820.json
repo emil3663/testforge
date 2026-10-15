@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "element",
+    "type": "select",
+    "name": "name (a - z)name (z - a)price (high - low)price (low - high)co₂ rating (best first)co₂ rating (worst first)"
+  },
+  "body": "await page.goto(__PAGE__);\nconst sortSelect = __LOCATOR__;\nawait expect(sortSelect).toBeVisible();\nawait sortSelect.scrollIntoViewIfNeeded();\nawait sortSelect.focus();\nawait expect(sortSelect).toBeEnabled();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered element, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/",
+      "at": "2026-10-15T17:19:13.799Z"
+    }
+  ],
+  "costUsd": 0.0071684999999999995,
+  "id": "da0a04c62820",
+  "evidence": [],
+  "status": "candidate"
+}

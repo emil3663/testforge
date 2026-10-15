@@ -1,0 +1,22 @@
+{
+  "pattern": {
+    "kind": "link",
+    "type": "link",
+    "name": "claw hammer more information"
+  },
+  "body": "await page.goto(__PAGE__);\n\nconst link = __LOCATOR__;\n\nawait expect(link).toBeVisible();\nawait expect(link).toHaveAttribute('href', /.+/);\n\nawait link.scrollIntoViewIfNeeded();\nawait link.hover();\nawait expect(link).toBeEnabled();",
+  "gate": "read-only",
+  "technique": "error guessing (written by claude-code for one uncovered link, generalised to its pattern)",
+  "writer": "claude-code",
+  "sources": [
+    {
+      "origin": "http://localhost:4200",
+      "page": "/#/product/6",
+      "at": "2026-10-15T12:17:47.178Z"
+    }
+  ],
+  "costUsd": 0.006966,
+  "id": "b601abbc1afa",
+  "evidence": [],
+  "status": "candidate"
+}
