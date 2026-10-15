@@ -9,6 +9,7 @@ uncovered, so analysis time goes to the outliers instead of the standard
 things.
 Status: Locked 2026-10-12. Every decision confirmed by Emil the same day.
 Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197, plus TFP-200 and TFP-201 from Gate A.
+**Complete 2026-10-15** (TFP-205 verified; TFP-206 moves to the post-Phase 42 review).
 
 ## Context
 
@@ -685,6 +686,31 @@ on the local Toolshop copies (Phase 41 Decision 7).
   writer's and candidates' tests now generate without the functional area,
   where the fixture's links are still gaps.
 
+- **TFP-205 done, verified 2026-10-15 (Cowork):** `fda373f`, `263db24`
+  (expectations it changed: the read-only test count over the 166 inputs,
+  1374 to 1390, and a promoted-entry case), `63de663` (the template
+  baseline). One test per distinct link, at the end of the functional
+  suite so no existing test id moves: on its page by the generator's
+  locator or, failing that, its own address; a visible link visible and
+  named, a hidden one present; a valid `href`; a same-origin target loaded
+  only when no existing check (link health, linked routes, the start page)
+  already loads it, up to 20 a run, the rest named. External links: `href`
+  only. `check:template-unchanged` against `78a64fb`: 162 identical, 4
+  different, and those 4 identical once their 16 added link tests are
+  taken out. Offline on TFP-197's selections (with Gate B's committed
+  inspection for the link data): no link left on the gap list. Regression
+  57/57. Unit 569/572 on its one full run: the two TFP-205 expectations
+  fixed in `263db24`, and one Comprehensive security case TFP-205 doesn't
+  touch; the three files then passed alone, 14/14. The next full unit run
+  is the review's.
+- **Accepted as built:** the address fallback means a link whose text
+  changed is still found by its `href` (its wording is the spelling and
+  naming checks' job); the page visit itself is a plain `page.goto`, the
+  target load goes through the request guard.
+- **Load flakes to look at in the review:** `comprehensive-scenarios.test.ts`,
+  `performance-bands.test.ts` and now a Comprehensive security case, each
+  failing once in a full run and passing alone.
+
 ### TFP-206 — Code check: allow `response.request().method()`
 
 - **Priority:** P3 · **Labels:** `security`, `gap-writer`
@@ -702,7 +728,7 @@ on the local Toolshop copies (Phase 41 Decision 7).
 3. Before TFP-197: TFP-202, TFP-203, TFP-204 (one batch; batch 2's rulings).
    **Done, verified 2026-10-15.**
 4. TFP-197. **Gate B.** Measured 2026-10-15; ruling above.
-5. TFP-205 (template link checks). Phase 42 closes when it is verified.
+5. TFP-205 (template link checks). **Verified 2026-10-15; Phase 42 complete.**
    TFP-206 waits for the review.
 
 ## Gates
@@ -714,5 +740,5 @@ on the local Toolshop copies (Phase 41 Decision 7).
 
 ### Gate B — Gap tests measured
 **Passed 2026-10-15 (Emil),** with the gap writer not kept as a bug finder
-(Gate B ruling above); Phase 42 closes after TFP-205.
+(Gate B ruling above). TFP-205 verified the same day; Phase 42 complete.
 - TFP-193 to TFP-197 landed and verified; Decision 7 applied and recorded.

@@ -23,8 +23,8 @@ starts, so a session opened before then doesn't use it.
 
 ## State on 2026-10-07 (read this first)
 
-`origin/main` is at `7e0116b`; TFP-197's four commits (`ae88e0b` to
-`a12aee1`) are committed, not pushed. Phase 38 is complete. Since then:
+`origin/main` is at `78a64fb`; TFP-205's three commits (`fda373f`,
+`263db24`, `63de663`) are committed, not pushed. Phase 38 is complete. Since then:
 - **Done and verified:**
   - TFP-151, TFP-159 to TFP-161 (template false failures);
   - TFP-165 (`#/` routes as pages) and TFP-166 (the orphan check on routes);
@@ -62,11 +62,11 @@ starts, so a session opened before then doesn't use it.
 - **Phase 42 Gate B passed 2026-10-15** (TFP-197, `ae88e0b` to
   `a12aee1`): the gap writer is not kept as a bug finder; its code stays,
   off unless a site opts in. Ruling in the Phase 42 record.
-- **Now: TFP-205,** the template checks every link on the pages it
-  selects, tested by its own targeted tests plus the unit suite, the
-  regression suite and `check:template-unchanged`. No live Toolshop
-  benchmark run (that waits for the review's full regression). Then Phase
-  42 closes. TFP-206 waits for the review.
+- **Phase 42 complete 2026-10-15:** TFP-205 verified (`fda373f` to
+  `63de663`); the template checks every link on the pages it selects.
+- **Now: the post-Phase 42 review** (`product-roadmap.md`, "After Phase
+  42"), planned with Emil in Cowork first. Don't start code work for it
+  until a review ticket says so. TFP-206 and the load flakes are in it.
 - **Phase 42** (`phase-42-reusable-suites-and-gap-tests-decision-record.md`,
   locked 2026-10-12, TFP-190 to TFP-197). Not to be started before Phase
   41's Gate B.

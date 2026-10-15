@@ -357,7 +357,10 @@ See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
    (behaviour and edge cases the suite doesn't exercise) as the gap
    writer's redefined purpose, with how scenarios are found and measured
    and a prompt rule against self-confirming checks; the full Toolshop
-   benchmark re-run after TFP-205; TFP-206.
+   benchmark re-run after TFP-205 (TFP-205 verified 2026-10-15, Phase 42
+   complete); TFP-206; the load flakes (`comprehensive-scenarios`,
+   `performance-bands`, a Comprehensive security case), and the first
+   clean full unit run since TFP-205.
 4. **The skills, relooked:** the skills TestForge and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
