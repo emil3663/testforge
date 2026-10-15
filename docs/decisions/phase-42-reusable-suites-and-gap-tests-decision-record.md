@@ -10,6 +10,9 @@ things.
 Status: Locked 2026-10-12. Every decision confirmed by Emil the same day.
 Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197, plus TFP-200 and TFP-201 from Gate A.
 **Complete 2026-10-15** (TFP-205 verified; TFP-206 moves to the post-Phase 42 review).
+Corrections from the review's claims audit (R3, 2026-10-16) are marked
+**Correction (R3, 2026-10-16)** where they apply. The history above them is
+left as written. Findings: `post-phase-42-review-findings.md`.
 
 ## Context
 
@@ -148,6 +151,10 @@ Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197, plus TFP-200 and TFP
   retire tests, which today's sweep would read as defects fixed.
 - Phase 39's workers and Phase 41's request guard apply to every test this
   phase runs.
+  - **Correction (R3, 2026-10-16):** Phase 39 was never started, so no
+    test in this phase ran on its workers. Phase 41's request guard does
+    apply. Phase 39 (amended and locked 2026-10-16) keeps gap-writer and
+    candidate tests on a fresh page of their own.
 - Claude Code as the gap writer needs it installed and signed in on Emil's
   machine, and network access; a site with the opt-in off never calls it.
 
@@ -648,6 +655,16 @@ on the local Toolshop copies (Phase 41 Decision 7).
   in-context gap list was links only (36 on clean): the template checks
   every element in context, but not links. TFP-197 paid Claude Code to
   write those checks.
+- **Correction (R3, 2026-10-16):** the gap list was not links only, and the
+  template did not check every element in context. Gate B's own suites
+  (TFP-188), re-read in R1, had 31 element gaps on with-bugs and 5 on clean,
+  besides the links (31 on with-bugs, 35 on clean):
+  - with-bugs: the home page's filter checkboxes, its sort and search forms,
+    and three page forms;
+  - clean: five forms.
+
+  R1 (TFP-207) shows the same elements still uncovered. "Every element in
+  context" holds only for clean's elements other than forms.
 - **Scope:** a deterministic, read-only test per distinct link (text and
   target, counted once as the coverage map counts it) on the selected
   pages, in the functional area:
@@ -710,6 +727,27 @@ on the local Toolshop copies (Phase 41 Decision 7).
 - **Load flakes to look at in the review:** `comprehensive-scenarios.test.ts`,
   `performance-bands.test.ts` and now a Comprehensive security case, each
   failing once in a full run and passing alone.
+- **Correction (R3, 2026-10-16), the flakes:** in R1's three full unit
+  runs, all three of those passed 3 of 3. The two that failed once each were
+  different:
+  - `read-only-guard.test.ts:168`, TFP-199's beacon case;
+  - `cookie-scope.test.ts:90`.
+
+  TFP-208 takes all five, with TFP-169.
+- **Correction (R3, 2026-10-16), the run-time cost:** "send no request of
+  their own" holds for target loads. But each link test is still a visit of
+  its page, so TFP-205 adds run time:
+  - with-bugs: 39 tests, 104 s;
+  - clean: 38 tests, 67 s.
+
+  Standard on with-bugs went from 1,235 s at Gate B to 1,535 s in R1, of
+  its 1,800 s limit. The rest of the rise is a run about 15% slower all
+  round.
+- **R1 finding for TFP-208:** 5 link tests failed falsely, or doubtfully,
+  on with-bugs' `/#/category/hand-tools`, whose product window changes
+  between loads. TFP-205 has no rule for content that changes between
+  loads. TFP-208 decides whether card links are skipped or found by
+  something stable, as a ruling for Emil.
 
 ### TFP-206 — Code check: allow `response.request().method()`
 
