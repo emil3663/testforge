@@ -2,7 +2,7 @@
 
 Run on 2026-10-15/16. No code changes, no Claude Code calls, gap writer
 off.
-- **Code under test:** the suites and template check ran on `bfd900a` (`logs/commit.txt`), the benchmark on `076fba5`, which adds only its own script under `benchmarks/`. `src/` is the same in both.
+- **Code under test:** unit run 1 started on `bfd900a` (`logs/commit.txt`). `076fba5`, which adds only the benchmark's own script under `benchmarks/`, was committed 22 s into that run, so unit runs 2 and 3, the regression, the template check and the benchmark ran on `076fba5`'s tree. `src/` is the same in both. (Corrected in verification, 2026-10-16.)
 - **Benchmark:** TFP-175's driver (the template's suite, as Phase 41's Gate B ran it), Standard only as the ticket says, Phase 40's selection unedited, at the read-only gate, one worker, Chromium.
 
 ## Suites
@@ -50,9 +50,9 @@ through Comprehensive security, which this ticket doesn't run:
 
 | Bug | Gate B | TFP-207 | Why |
 | --- | --- | --- | --- |
-| 75 Products API exposes stock | found | missed | all 8 of Gate B's evidence items were from Comprehensive security; its Standard run had none either |
+| 75 Products API exposes stock | found | missed | all 23 of Gate B's evidence items were from Comprehensive security; its Standard run had none either |
 | 80 Log file reachable from the web | found | missed | Gate B's 1 item was from Comprehensive security, none from Standard (present now: the start check answered 200) |
-| 82 Sequential, guessable ids | found | missed | all 8 of Gate B's items were from Comprehensive security, none from Standard |
+| 82 Sequential, guessable ids | found | missed | all 13 of Gate B's items were from Comprehensive security, none from Standard |
 
 The other 4 misses are Gate B's own:
 - 22 is Edge only and 23 is Firefox only;
@@ -60,22 +60,24 @@ The other 4 misses are Gate B's own:
 - 54 isn't in this version. Its one evidence item is bug 53's tab-order failure, matched by a wide pattern: a near miss, as at Gate B.
 
 Checked by hand where the first item wasn't the cited one:
-- **92:** the axe `image-alt` items on the product cards are in the full Playwright report, beyond the records' 600-character cut. They are identical to Gate B's (8, 40 and 16 occurrences), and clean has none.
+- **92:** the axe `image-alt` items on the product cards are in the full Playwright report, beyond the records' 600-character cut. They are identical to Gate B's (8, 40 and 16 occurrences; Cowork's check found the same `image-alt` and `card-img-top` counts in both reports), and clean has none.
 - **46 and 60:** the cited items are present: the product pages' axe `color-contrast` items, and `the "Subject" list on /#/contact offers "Error 101: Subject not found"`.
 
 ## Failures against Gate B
 
-- **Clean:** 46 failures, exactly the 46 of Gate B's clean Standard run, all labelled then. None is new, and none is gone. TFP-205's 37 link tests all passed.
+- **Clean:** 46 failures, exactly the 46 of Gate B's clean Standard run, all labelled then. None is new, and none is gone. TFP-205's 38 link tests all passed.
 - **With-bugs:** 89 failures. 84 are Gate B's, with none gone. **5 are new, all TFP-205 link tests**, on product-card links on `/#/category/hand-tools`. Example: `"ECO Sledgehammer ABCDE$17.75" is on /#/category/hand-tools`, found neither by name nor by its address `#/product/10`.
   - **Cause:** the page draws a different window of products from one load to the next. Gate B's inspection had products 1 to 9 there, this one had 6 to 14, and by the run, 10 to 14 were gone.
   - **What it is:** a false failure TFP-205 brings to pages whose content varies between loads. It isn't labelled yet. It is for TFP-208 or a review ticket; it is recorded here, not fixed.
 
 ## TFP-205's link tests and the gap list
 
+Counts corrected in verification (2026-10-16): `analyse.mts`'s `isLink` pattern missed the external-link title form (`link "Unsplash" to https://… on …`), one passing test on each copy. The test-count changes since Gate B (+39, +38) agree.
+
 | Copy | Link tests run | Failed | In-context gaps: elements | links |
 | --- | --- | --- | --- | --- |
-| With-bugs | 38 | 5 (the drift above) | 31 (Gate B's suite: 31) | **0** (Gate B's: 31) |
-| Clean | 37 | 0 | 5 (Gate B's: 5) | **0** (Gate B's: 35) |
+| With-bugs | 39 | 5 (the drift above) | 31 (Gate B's suite: 31) | **0** (Gate B's: 31) |
+| Clean | 38 | 0 | 5 (Gate B's: 5) | **0** (Gate B's: 35) |
 
 As expected, no link is left on either copy's gap list. The element gaps
 are unchanged from Gate B: the same elements, which TFP-205 doesn't touch.
