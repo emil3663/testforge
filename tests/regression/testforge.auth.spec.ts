@@ -190,9 +190,13 @@ test('TFFU-001: deliberately tries to leak the session and the credentials', asy
   const cookies = await context.cookies();
   const session = cookies.find((cookie) => cookie.name === 'fixture_session')!.value;
   console.log('LEAK-ATTEMPT stdout session=' + session);
+  // TFP-202: a run's tests get only the environment Playwright needs, so the credentials TestForge was given as
+  // environment variables can't be read here. They are typed as literals, so their redaction is still tested.
+  expect(process.env.${AUTH_FIXTURE_USER_ENV}, 'the username is not in the run environment').toBeUndefined();
+  expect(process.env.${AUTH_FIXTURE_PASS_ENV}, 'the password is not in the run environment').toBeUndefined();
   await page.goto('/login');
-  await page.fill('#username', process.env.${AUTH_FIXTURE_USER_ENV}!);
-  await page.fill('#password', process.env.${AUTH_FIXTURE_PASS_ENV}!);
+  await page.fill('#username', ${JSON.stringify(AUTH_FIXTURE_USER)});
+  await page.fill('#password', ${JSON.stringify(AUTH_FIXTURE_PASS)});
   expect(session, 'LEAK-ATTEMPT assertion session=' + session).toBe('not-the-session');
 });
 `;
@@ -221,6 +225,8 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
         const resultText = JSON.stringify(snapshot.result);
         expect(resultText).toContain("LEAK-ATTEMPT assertion session=");
         expect(resultText).toContain("Failed");
+        // TFP-202: it got that far, so reading the credentials from the run's environment gave undefined.
+        expect(resultText).not.toContain("is not in the run environment");
 
         const secrets = [AUTH_FIXTURE_PASS, AUTH_FIXTURE_USER, AUTH_FIXTURE_SESSION];
         const leaks: string[] = [];
@@ -259,6 +265,12 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
 
         for (const file of files) {
             const label = file.slice(runDir.length + 1);
+            // TFP-202: the run's own copy of the suite as it was sent, which now holds the credentials as the
+            // literals this test wrote in it. Exactly what the caller sent, nothing TestForge captured.
+            if (label === "suite.spec.ts") {
+                expect(await readFile(file, "utf8")).toBe(leakAttemptCode);
+                continue;
+            }
             if (file.endsWith(".zip")) {
                 for (const entry of await entriesOf(file)) {
                     scan(`${label}!${entry.name}`, entry.data.toString("utf8"));
