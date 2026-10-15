@@ -7,6 +7,8 @@
  *   a test on its page that uses its locator      -> covered in context, by that test (a field, a button, a form by its record)
  *   a link checked only by a site-wide request    -> reachability only: on the gap list, saying so (TFP-201)
  *   a link on every page, checked on one of them  -> one item, covered in context (TFP-201)
+ *   a link with its own check (TFP-205)           -> covered in context by it; the template now writes one for every
+ *                                                    link, so the TFP-201 columns take those checks out of the suite
  *   an element whose test is gone from the suite  -> listed as touched by none, in its page type's row
  *   a flow no journey test was written for        -> listed as touched by none
  * And the index, both ways, on the in-context tier: one changed element
@@ -68,6 +70,9 @@ after(() => {
 });
 
 const SUBJECT = "form element check: subject [Email] [input]";
+// TFP-205: the template's own check of each link. Taken out where a case is about a link no test finds on a page.
+const isLinkCheck = (title: string) => title.startsWith('link "');
+const withoutLinkChecks = (source: string) => parseTestUnits(source).filter((unit) => isLinkCheck(unit.title)).sort((a, b) => b.start - a.start).reduce((rest, unit) => rest.slice(0, unit.start) + rest.slice(unit.end), source);
 const titleOf = (title: string) => {
     const unit = parseTestUnits(code).find((candidate) => candidate.title === title);
     assert.ok(unit, title);
@@ -91,7 +96,7 @@ test("every element check maps to the element it checks, and a form is matched b
 test("an element no test touches is listed by name in its page type's row, and so is a flow with no journey test (TFP-192)", { skip: needsChromium }, () => {
     // The suite without its Subject check, as when that test is gone.
     const subject = parseTestUnits(code).find((unit) => unit.title === SUBJECT)!;
-    const without = code.slice(0, subject.start) + code.slice(subject.end);
+    const without = withoutLinkChecks(code.slice(0, subject.start) + code.slice(subject.end));
     const map = buildCoverageMap(profile, without)!;
 
     const account = map.types.find((type) => type.pattern === "/types/account/:slug");
@@ -124,15 +129,20 @@ test("the index selects the tests for one changed element: a run of just those (
     // A link: the checks that find it on a page - on every page it is on - and not the site-wide request (TFP-201).
     const link = map.entries.find((entry) => entry.kind === "link" && entry.name === "/types/product/101 [link]")!;
     const linkTests = testsTouching(map, link.key);
-    const onPages = parseTestUnits(code).filter((unit) => unit.paths.length === 1 && unit.title === "navigation link health: /types/product/101").map((unit) => `${unit.id}: ${unit.title}`);
+    const onPages = parseTestUnits(code).filter((unit) => unit.paths.length === 1 && (unit.title === "navigation link health: /types/product/101" || unit.title.startsWith('link "/types/product/101" on '))).map((unit) => `${unit.id}: ${unit.title}`);
     assert.ok(onPages.length > 1);
     assert.deepEqual([...linkTests].sort(), [...onPages].sort());
     assert.ok(link.reachedBy!.some((title) => title.endsWith("link health: internal, external, and download links do not return broken responses")), link.reachedBy!.join(" | "));
     assert.equal(buildRunSelection(code, [], linkTests).runnableTestCount, linkTests.length);
 });
 
-test("a link checked only by a site-wide request is reachability-covered and on the gap list (TFP-201)", { skip: needsChromium }, () => {
-    const map = buildCoverageMap(profile, code)!;
+test("a link checked only by a site-wide request is reachability-covered and on the gap list (TFP-201); its own check covers it in context (TFP-205)", { skip: needsChromium }, () => {
+    // TFP-205: with the template's link checks, the privacy link is checked on its page.
+    const withChecks = buildCoverageMap(profile, code)!.entries.find((entry) => entry.kind === "link" && entry.name === "/types/legal/privacy [link]")!;
+    assert.ok(withChecks.tests.some((title) => isLinkCheck(title.replace(/^TF[A-Z]+-\d+: /, ""))), withChecks.tests.join(" | "));
+    assert.ok(!untouched(buildCoverageMap(profile, code)!).some((entry) => entry.kind === "link"), "no link is left on the gap list");
+    // Without them, as before TFP-205: reached by a site-wide request only.
+    const map = buildCoverageMap(profile, withoutLinkChecks(code))!;
     const privacy = map.entries.find((entry) => entry.kind === "link" && entry.name === "/types/legal/privacy [link]")!;
     assert.ok(privacy);
     assert.deepEqual(privacy.tests, [], "no test finds it on a page");
@@ -149,7 +159,7 @@ test("a link on every page, checked on one of them, is one item covered in conte
     const checks = parseTestUnits(code).filter((unit) => unit.title === "navigation link health: /types/product/101" && unit.paths.length === 1);
     const kept = checks.find((unit) => unit.paths[0] === "/types/help/terms")!;
     assert.ok(kept && checks.length >= 3, `${checks.length} pages check it`);
-    let fewer = code;
+    let fewer = withoutLinkChecks(code);
     for (const unit of [...checks].filter((unit) => unit !== kept).sort((a, b) => b.start - a.start)) fewer = fewer.slice(0, unit.start) + fewer.slice(unit.end);
     const map = buildCoverageMap(profile, fewer)!;
 

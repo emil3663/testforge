@@ -85,7 +85,9 @@ async function optIn(origin: string, gapWriter: string) {
 }
 
 async function generate(origin: string, runMode?: unknown) {
-    const response = await generateRoute.POST(post("http://localhost/api/generate", { baseUrl: origin, description: "Check the pages.", selectedPractices: ["functional"], contentRules: { paths: PATHS }, ...(runMode ? { runMode } : {}) }));
+    // TFP-205: the template's functional checks now check every link on these pages, so they leave no gap for the
+    // writer. Without the functional area, the pages' 16 links are gaps, as they were here before TFP-205.
+    const response = await generateRoute.POST(post("http://localhost/api/generate", { baseUrl: origin, description: "Check the pages.", selectedPractices: ["seo/content"], contentRules: { paths: PATHS }, ...(runMode ? { runMode } : {}) }));
     assert.equal(response.status, 200);
     return (await response.json()) as { code: string; siteSuite: SiteSuiteRecord };
 }

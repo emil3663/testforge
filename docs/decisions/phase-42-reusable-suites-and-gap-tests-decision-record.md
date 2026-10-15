@@ -670,6 +670,20 @@ on the local Toolshop copies (Phase 41 Decision 7).
     commit;
   - unit and regression suites pass.
 - **Dependencies:** none. Last before Phase 42 closes.
+- **Built:** `src/lib/generate/mock/link-audits/inventory-tests.ts`, at the
+  end of the functional suite, so no existing test's id moves. A same-origin
+  target is already loaded by link health (internal and download links) or
+  the linked-routes check (hash routes), and the start page by every test,
+  so in today's template these tests send no request of their own. The load
+  through the guard, with its cap of 20 and the named rest, is for a target
+  no other check loads, and is proven on the fixture with the reuse turned
+  off. A link inspection found hidden is checked by the hidden-link locator
+  (present, valid `href`), and the coverage map counts that locator too. The
+  committed TFP-197 crawls hold the selection but no link data, so the
+  offline check uses Gate B's committed inspection of the same pages
+  (TFP-188; clean's product id differs, its database re-seeded). The gap
+  writer's and candidates' tests now generate without the functional area,
+  where the fixture's links are still gaps.
 
 ### TFP-206 — Code check: allow `response.request().method()`
 

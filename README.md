@@ -82,6 +82,11 @@ tests are written again from a fresh inspection and re-run, and only the
 re-run's results are reported, with the change named. If it hasn't, the
 failure stands.
 
+**Every link on the selected pages** gets its own read-only check: on its
+page, named, with a valid `href`, its target loaded once a run (an external
+target is checked by its `href` only). So the coverage map leaves no link
+uncovered on a page it inspected.
+
 **Gap tests (opt-in per site, off by default).** A site can have its
 uncovered elements written for, once per gap: `POST /api/site-settings`
 with `{ "baseUrl": "...", "gapWriter": "claude-code" }` (or

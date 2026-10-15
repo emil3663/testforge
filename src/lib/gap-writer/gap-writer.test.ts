@@ -81,8 +81,10 @@ async function optIn(gapWriter: string) {
     assert.equal(response.status, 200);
 }
 
-async function generate() {
-    const response = await generateRoute.POST(post("http://localhost/api/generate", { baseUrl: fixture.origin, description: "Check the pages.", selectedPractices: ["functional"], contentRules: { paths: PATHS } }));
+async function generate(practices = ["seo/content"]) {
+    // TFP-205: the template's functional checks now check every link on these pages, so they leave no gap for the
+    // writer. Without the functional area, the pages' 16 links are gaps, as they were here before TFP-205.
+    const response = await generateRoute.POST(post("http://localhost/api/generate", { baseUrl: fixture.origin, description: "Check the pages.", selectedPractices: practices, contentRules: { paths: PATHS } }));
     assert.equal(response.status, 200);
     return (await response.json()) as { code: string; siteSuite: SiteSuiteRecord };
 }
@@ -134,9 +136,12 @@ test("opt-in on: a test for each uncovered element only, each run and saved; the
     const before = first.code.slice(0, first.code.indexOf("// Kept from the site suite (Gap tests)"));
     const gapKeys = new Set(untouched(buildCoverageMap(profile, before)!).map((entry) => entry.key));
     for (const written of gaps.tests) assert.ok(gapKeys.has(written.covers), `${written.covers} was uncovered`);
-    const covered = buildCoverageMap(profile, before)!.entries.filter((entry) => entry.tests.length > 0);
-    assert.ok(covered.length > 0);
-    for (const call of calls().filter((c) => c.prompt.startsWith("Write the body"))) for (const entry of covered.filter((e) => e.kind === "link")) assert.ok(!call.prompt.includes(`name: ${JSON.stringify(entry.name)}\n`), `${entry.name} is covered and was not asked for`);
+    // Covered ones are never asked for. TFP-205: with the functional area the template checks every link and element
+    // on these pages, so the same site, opted in, asks the writer for nothing.
+    const callsSoFar = calls().length;
+    const functional = await generate(["functional"]);
+    assert.equal(functional.siteSuite.gapTests?.gaps, 0, JSON.stringify(functional.siteSuite.gapTests));
+    assert.equal(calls().length, callsSoFar, "nothing covered is asked for");
 
     const manifest = await manifestOf(first.siteSuite.store);
     assert.equal(manifest.units.filter((unit) => unit.origin === "gap-writer").length, gaps.saved);

@@ -19,6 +19,8 @@ import { buildSpellingTests } from "./spelling";
 import { escapeForSingleQuotedString, includesAny } from "./format";
 import { buildTestMyLinksAuditTests } from "./link-audits";
 import { buildRevealHelper } from "./link-audits/reveal";
+import { buildLinkInventoryTests } from "./link-audits/inventory-tests";
+import { READ_ONLY_GUARD_HELPER } from "../read-only-guard";
 import {
     buildLocatorExpression,
     findMatchingProfilePage,
@@ -373,9 +375,14 @@ export function buildGenericSuites(
     const controls = areas.includes("functional") ? buildControlTests(contentProfile) : { tests: [], helpers: "" };
     functionalTests.push(...controls.tests);
 
+    // Phase 42 (TFP-205): every link on the inspected pages, each once - last, so no existing test's id moves.
+    const links = areas.includes("functional") && discoveredLinkCount > 0 ? buildLinkInventoryTests(contentProfile) : { tests: [], usesGuard: false };
+    functionalTests.push(...links.tests);
+    const functionalPreamble = controls.helpers || (links.usesGuard ? READ_ONLY_GUARD_HELPER : "");
+
     const functionalSuite = createSuite("functional", functionalTests);
     if (functionalSuite) {
-        suites.push(controls.helpers ? { ...functionalSuite, preamble: controls.helpers } : functionalSuite);
+        suites.push(functionalPreamble ? { ...functionalSuite, preamble: functionalPreamble } : functionalSuite);
     }
 
     const usabilitySuite = createSuite("usability", usabilityTests);

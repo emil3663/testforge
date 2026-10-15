@@ -1,6 +1,7 @@
 import { buildJourneyTitle } from "@/lib/generate/mock/journey-tests";
 import { buildLinkLocatorExpression, buildLocatorExpression, getActionableElementDisplayName } from "@/lib/generate/mock/locators";
 import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
+import { buildHiddenLinkLocatorExpression } from "@/lib/generate/mock/link-audits/reveal";
 import type { ActionableElementDetail, ContentProfile } from "@/lib/generate/mock/types";
 import { groupPagesByAddress } from "@/lib/selection/page-types";
 import { parseTestUnits, type TestUnit } from "@/lib/site-suites/units";
@@ -19,7 +20,8 @@ import type { CoverageMap, CoverageMapEntry, CoverageMapType } from "./types";
  * - an element (a field, button, list, form) is touched by a test that
  *   visits its page and uses its locator - the expression the generator
  *   writes for it, so a hand-edited test that keeps the locator still counts;
- * - a link, likewise;
+ * - a link, likewise (TFP-205: or by the hidden-link locator, for a link
+ *   inspection found in a closed menu);
  * - a flow (a candidate journey) by the journey test written for it.
  * A whole-page check (the WCAG scan, a heading check) touches the page, not
  * each element on it, so it doesn't make an element covered.
@@ -85,7 +87,8 @@ export function buildCoverageMap(profile: ContentProfile | null, suiteCode: stri
         for (const link of page.linkDetails ?? []) {
             linksOnPages++;
             const key = `link ${JSON.stringify([link.text, link.url])}`;
-            const inContext = touching(tests, buildLinkLocatorExpression(link));
+            // TFP-205: a link inspection found hidden (a closed menu) is found by the generator's hidden-link locator.
+            const inContext = [...new Set([...touching(tests, buildLinkLocatorExpression(link)), ...touching(tests, buildHiddenLinkLocatorExpression(link))])].slice(0, MAX_TESTS_PER_ENTRY);
             const known = links.get(key);
             if (known) {
                 if (!known.pages!.includes(page.path)) known.pages!.push(page.path);
