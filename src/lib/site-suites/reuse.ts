@@ -209,20 +209,24 @@ export function appendToDescribes(code: string, appended: Map<string, string[]>)
 }
 
 /**
- * Whether the suite declares the guard at its top level. The template writes each suite's helpers inside that
- * suite's describe (mock/index.ts), so the functional suite's copy (the control checks') can't be reached from
- * another describe: a gap test or bound candidate in "Gap tests" failed with "tfReadOnlyGuarded is not defined"
- * on a Standard run (found by TFP-203's evidence test). A top-level copy beside it is harmless: the describe's own
- * copy shadows it inside that describe.
+ * Whether some call to the guard can't reach a declaration of it. The template writes each suite's helpers inside
+ * that suite's describe (mock/index.ts), so the functional suite's copy (the control checks') can't be reached from
+ * another describe: a gap test or bound candidate in "Gap tests" failed with "tfReadOnlyGuarded is not defined" on
+ * a Standard run (found by TFP-203's evidence test). So: a top-level declaration covers every call; otherwise each
+ * top-level statement (a describe, a test) that calls it must declare its own.
  */
-function hasTopLevelGuard(code: string): boolean {
-    const source = ts.createSourceFile("suite.spec.ts", code, ts.ScriptTarget.ES2022, false, ts.ScriptKind.TS);
-    return source.statements.some((statement) => ts.isFunctionDeclaration(statement) && statement.name?.text === "tfReadOnlyGuarded");
+function guardOutOfReach(code: string): boolean {
+    const source = ts.createSourceFile("suite.spec.ts", code, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    const declares = (node: ts.Node) => ts.isFunctionDeclaration(node) && node.name?.text === "tfReadOnlyGuarded";
+    if (source.statements.some(declares)) return false;
+    const has = (node: ts.Node, found: (inner: ts.Node) => boolean): boolean => found(node) || (ts.forEachChild(node, (child) => has(child, found) || undefined) ?? false);
+    const calls = (node: ts.Node) => ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === "tfReadOnlyGuarded";
+    return source.statements.some((statement) => has(statement, calls) && !has(statement, declares));
 }
 
-/** The request guard's helper, before the first test, when the suite uses it and has none at its top level (shared with TFP-204). */
+/** The request guard's helper, before the first test, when a test calls it out of reach of any copy (shared with TFP-204). */
 export function withGuardHelper(code: string): string {
-    if (!code.includes("tfReadOnlyGuarded(") || hasTopLevelGuard(code)) return code;
+    if (!code.includes("tfReadOnlyGuarded(") || !guardOutOfReach(code)) return code;
     const firstTest = code.search(/^(test\.describe\(|test\(|\/\/ Kept from the site suite|\/\/ Phase 42 \(TFP-204\))/m);
     return firstTest > 0 ? `${code.slice(0, firstTest)}${READ_ONLY_GUARD_HELPER}\n\n${code.slice(firstTest)}` : `${code}\n${READ_ONLY_GUARD_HELPER}\n`;
 }
