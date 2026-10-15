@@ -350,6 +350,9 @@ See `phase-42-reusable-suites-and-gap-tests-decision-record.md`.
 3. **Also for the review (2026-10-14):** a real sandbox for gap and
    candidate tests (run inside Docker), and app screens for the gap-writer
    opt-in and candidate promotion (API routes only so far).
+   Added 2026-10-15: Claude Code as gap writer still loads the user's
+   CLAUDE.md, memory and hooks (`--safe-mode` would turn them off), and the
+   trimmed run environment drops proxy settings.
 4. **The skills, relooked:** the skills TestForge and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added

@@ -459,6 +459,46 @@ on the local Toolshop copies (Phase 41 Decision 7).
    and candidates carry that code to other sites. A real sandbox (the tests
    run inside Docker) is the follow-up, for the post-Phase 42 review.
 
+- **Batch 3 done, verified 2026-10-15 (Cowork):** TFP-202 (`edfa507`),
+  TFP-203 (`c7ce21f`), TFP-204 (`9a9681c`), then `97aac4d` (the TFP-094
+  leak test), `defcc40` (Standard runs count as evidence), `fd48f77` and
+  `7e0116b` (the guard's helper). Pushed; `origin/main` at `7e0116b`. End
+  checks on the final code: unit 566/566, regression 57/57;
+  `check:template-unchanged` 166/166 after TFP-204 (nothing since touches
+  the template). Claude Code's four no-tools flags checked against its CLI
+  reference. No real Claude Code call was made.
+
+### Batch 3 rulings (Emil, 2026-10-15)
+
+1. **The TFP-094 leak test** types the credentials as literals and asserts
+   that a run's tests can't read them from the environment: the first
+   end-to-end proof of TFP-202's environment rule. The run's stored copy
+   of the submitted code holds the literals, so the scan checks it is
+   exactly what was sent and skips it; everything TestForge captured is
+   still scanned.
+2. **Promoted entries run on Standard only, accepted.** Every promoted
+   entry so far is a read-only functional check, and the library's
+   functional entries run only in "Standard functional"; Comprehensive has
+   no functional area (security and accessibility only). An entry for an
+   area Comprehensive has would follow `entries.ts`'s `runsIn` rule.
+3. **A bound candidate's Standard runs count toward its promotion
+   (`defcc40`).** Binding already completes the site's own suite: the
+   candidate is that gap's test there, the gap counts covered and no
+   writer is asked again. Promotion only decides whether it is offered to
+   every site, and the rule counts distinct sites, so a run on another
+   site is the cross-site evidence it asks for. A failure there is an
+   unlabelled failure and blocks promotion until labelled.
+4. **Found by fix 2's test (`fd48f77`, `7e0116b`):** on a Standard run with
+   control checks, every test under "Gap tests" failed with
+   `tfReadOnlyGuarded is not defined`, because the template declares the
+   helper inside the functional describe. It hit written gap tests since
+   TFP-194 and bound candidates; the gates before saving were unaffected. A
+   top-level copy is now added only where a call can't reach one.
+5. **For the post-Phase 42 review:** Claude Code still loads Emil's
+   user-level CLAUDE.md, memory and hooks (`--safe-mode` would turn them
+   off); the run environment drops proxy settings (`HTTPS_PROXY`,
+   `NODE_EXTRA_CA_CERTS`), fine locally, not behind a corporate proxy.
+
 ### TFP-202 — Harden the gap writer and the tests it writes
 
 - **Priority:** P0 · **Labels:** `security`, `ai`
@@ -575,6 +615,7 @@ on the local Toolshop copies (Phase 41 Decision 7).
 2. Batch 2: TFP-201 first, TFP-200, then TFP-193, TFP-194, TFP-195,
    TFP-196.
 3. Before TFP-197: TFP-202, TFP-203, TFP-204 (one batch; batch 2's rulings).
+   **Done, verified 2026-10-15.**
 4. TFP-197. **Gate B.**
 
 ## Gates
