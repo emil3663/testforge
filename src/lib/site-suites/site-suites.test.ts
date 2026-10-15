@@ -181,3 +181,15 @@ test("the data folder: TESTFORGE_DATA_DIR, else where the platform keeps app dat
     assert.equal(dataDir({ XDG_DATA_HOME: "/data" }, "linux", home), join("/data", "testforge"));
     assert.equal(dataDir({ XDG_DATA_HOME: "  " }, "linux", home), join(home, ".local", "share", "testforge"));
 });
+
+/** Phase 42 (TFP-203 verification): the guard's helper reaches every describe. ISTQB technique: equivalence partitioning. */
+test("withGuardHelper: a copy inside one describe doesn't count; a top-level one does; none needed, nothing added", async () => {
+    const { withGuardHelper } = await import("./reuse.ts");
+    const scoped = "import { test } from '@playwright/test';\n\ntest.describe('Functional', () => {\nasync function tfReadOnlyGuarded(page: unknown, interact: () => Promise<void>) { await interact(); }\n  test('a', async ({ page }) => { await tfReadOnlyGuarded(page, async () => {}); });\n});\n\ntest.describe('Gap tests', () => {\n  test('b', async ({ page }) => { await tfReadOnlyGuarded(page, async () => {}); });\n});\n";
+    const fixed = withGuardHelper(scoped);
+    assert.ok(fixed.indexOf("async function tfReadOnlyGuarded") < fixed.indexOf("test.describe('Functional'"), "a top-level copy, before the first describe");
+    assert.equal(fixed.split("async function tfReadOnlyGuarded").length - 1, 2);
+    assert.equal(withGuardHelper(fixed), fixed, "a top-level copy is enough");
+    const plain = "import { test } from '@playwright/test';\n\ntest('c', async ({ page }) => { await page.goto('/'); });\n";
+    assert.equal(withGuardHelper(plain), plain);
+});

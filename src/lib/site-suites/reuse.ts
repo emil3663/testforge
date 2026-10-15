@@ -5,6 +5,7 @@ import type { SiteSuiteRecord } from "@/lib/report/types";
 import { hashOf, loadSiteSuite, saveSiteSuite, unitFileName, type SiteSuiteIdentity, type SiteSuiteInputs, type SiteSuiteManifest, type StoredType, type StoredUnit } from "./store";
 import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
 import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
+import ts from "typescript";
 import { parseTestUnits, withId, type TestUnit } from "./units";
 
 /**
@@ -207,9 +208,21 @@ export function appendToDescribes(code: string, appended: Map<string, string[]>)
     return withGuardHelper(result);
 }
 
-/** The request guard's helper, before the first test, when the suite uses it and has none (shared with TFP-204). */
+/**
+ * Whether the suite declares the guard at its top level. The template writes each suite's helpers inside that
+ * suite's describe (mock/index.ts), so the functional suite's copy (the control checks') can't be reached from
+ * another describe: a gap test or bound candidate in "Gap tests" failed with "tfReadOnlyGuarded is not defined"
+ * on a Standard run (found by TFP-203's evidence test). A top-level copy beside it is harmless: the describe's own
+ * copy shadows it inside that describe.
+ */
+function hasTopLevelGuard(code: string): boolean {
+    const source = ts.createSourceFile("suite.spec.ts", code, ts.ScriptTarget.ES2022, false, ts.ScriptKind.TS);
+    return source.statements.some((statement) => ts.isFunctionDeclaration(statement) && statement.name?.text === "tfReadOnlyGuarded");
+}
+
+/** The request guard's helper, before the first test, when the suite uses it and has none at its top level (shared with TFP-204). */
 export function withGuardHelper(code: string): string {
-    if (!code.includes("tfReadOnlyGuarded(") || code.includes("async function tfReadOnlyGuarded")) return code;
+    if (!code.includes("tfReadOnlyGuarded(") || hasTopLevelGuard(code)) return code;
     const firstTest = code.search(/^(test\.describe\(|test\(|\/\/ Kept from the site suite|\/\/ Phase 42 \(TFP-204\))/m);
     return firstTest > 0 ? `${code.slice(0, firstTest)}${READ_ONLY_GUARD_HELPER}\n\n${code.slice(firstTest)}` : `${code}\n${READ_ONLY_GUARD_HELPER}\n`;
 }
