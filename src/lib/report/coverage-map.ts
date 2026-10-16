@@ -1,6 +1,7 @@
 import { buildJourneyTitle } from "@/lib/generate/mock/journey-tests";
 import { buildLinkLocatorExpression, buildLocatorExpression, getActionableElementDisplayName } from "@/lib/generate/mock/locators";
 import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
+import { cardGroupLocator, cardGroups, linkKey } from "@/lib/generate/mock/link-audits/inventory-tests";
 import { buildHiddenLinkLocatorExpression } from "@/lib/generate/mock/link-audits/reveal";
 import type { ActionableElementDetail, ContentProfile } from "@/lib/generate/mock/types";
 import { groupPagesByAddress } from "@/lib/selection/page-types";
@@ -21,7 +22,8 @@ import type { CoverageMap, CoverageMapEntry, CoverageMapType } from "./types";
  *   visits its page and uses its locator - the expression the generator
  *   writes for it, so a hand-edited test that keeps the locator still counts;
  * - a link, likewise (TFP-205: or by the hidden-link locator, for a link
- *   inspection found in a closed menu);
+ *   inspection found in a closed menu; TFP-208: or, for a link in a
+ *   listing's repeated cards, by its card group's locator);
  * - a flow (a candidate journey) by the journey test written for it.
  * A whole-page check (the WCAG scan, a heading check) touches the page, not
  * each element on it, so it doesn't make an element covered.
@@ -84,11 +86,15 @@ export function buildCoverageMap(profile: ContentProfile | null, suiteCode: stri
             const touched = [...new Set(needles.flatMap((needle) => touching(tests, needle)))].slice(0, MAX_TESTS_PER_ENTRY);
             add({ key: `${page.path} element ${needles.at(-1)}`, page: page.path, pages: [page.path], kind: "element", name: `${getActionableElementDisplayName(element)} [${element.elementType}]`, tests: touched });
         }
+        const groups = cardGroups(page.linkDetails ?? []);
         for (const link of page.linkDetails ?? []) {
             linksOnPages++;
             const key = `link ${JSON.stringify([link.text, link.url])}`;
             // TFP-205: a link inspection found hidden (a closed menu) is found by the generator's hidden-link locator.
-            const inContext = [...new Set([...touching(tests, buildLinkLocatorExpression(link)), ...touching(tests, buildHiddenLinkLocatorExpression(link))])].slice(0, MAX_TESTS_PER_ENTRY);
+            // TFP-208: a card's link, by its card group's locator, which finds every card on the page by position.
+            const group = groups.find((candidate) => candidate.keys.has(linkKey(link)));
+            const needles = [buildLinkLocatorExpression(link), buildHiddenLinkLocatorExpression(link), ...(group ? [cardGroupLocator(group)] : [])];
+            const inContext = [...new Set(needles.flatMap((needle) => touching(tests, needle)))].slice(0, MAX_TESTS_PER_ENTRY);
             const known = links.get(key);
             if (known) {
                 if (!known.pages!.includes(page.path)) known.pages!.push(page.path);

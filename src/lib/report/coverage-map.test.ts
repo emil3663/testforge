@@ -71,7 +71,8 @@ after(() => {
 
 const SUBJECT = "form element check: subject [Email] [input]";
 // TFP-205: the template's own check of each link. Taken out where a case is about a link no test finds on a page.
-const isLinkCheck = (title: string) => title.startsWith('link "');
+// TFP-205's check per link, and TFP-208's per listing's cards.
+const isLinkCheck = (title: string) => title.startsWith('link "') || title.startsWith("cards linking to ");
 const withoutLinkChecks = (source: string) => parseTestUnits(source).filter((unit) => isLinkCheck(unit.title)).sort((a, b) => b.start - a.start).reduce((rest, unit) => rest.slice(0, unit.start) + rest.slice(unit.end), source);
 const titleOf = (title: string) => {
     const unit = parseTestUnits(code).find((candidate) => candidate.title === title);
@@ -129,7 +130,7 @@ test("the index selects the tests for one changed element: a run of just those (
     // A link: the checks that find it on a page - on every page it is on - and not the site-wide request (TFP-201).
     const link = map.entries.find((entry) => entry.kind === "link" && entry.name === "/types/product/101 [link]")!;
     const linkTests = testsTouching(map, link.key);
-    const onPages = parseTestUnits(code).filter((unit) => unit.paths.length === 1 && (unit.title === "navigation link health: /types/product/101" || unit.title.startsWith('link "/types/product/101" on '))).map((unit) => `${unit.id}: ${unit.title}`);
+    const onPages = parseTestUnits(code).filter((unit) => unit.paths.length === 1 && (unit.title === "navigation link health: /types/product/101" || unit.title.startsWith('link "/types/product/101" on ') || unit.title.startsWith("cards linking to /types/product/:id on "))).map((unit) => `${unit.id}: ${unit.title}`);
     assert.ok(onPages.length > 1);
     assert.deepEqual([...linkTests].sort(), [...onPages].sort());
     assert.ok(link.reachedBy!.some((title) => title.endsWith("link health: internal, external, and download links do not return broken responses")), link.reachedBy!.join(" | "));
