@@ -13,20 +13,17 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/actionable-elements/accessible-names.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { ContentProfile } from "../types.ts";
-import type { JsonReport } from "../../../report/types.ts";
 
 const { buildAccessibilityElementTests } = await import("./index.ts");
 const { inspectPages } = await import("../../../introspect/inspector.ts");
 const { findTypeErrors } = await import("../../validate.ts");
 const { flattenSuites } = await import("../../../report/execution.ts");
 const { chromiumSkipReason } = await import("../../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 // A menu link whose text is in a <span>, the same link again in the footer
@@ -91,31 +88,11 @@ async function serve(pages: Record<string, string>) {
 
 /** Runs generated tests through the Playwright CLI, returning each one's outcome and message by title. */
 async function runGenerated(tests: string[], baseURL: string) {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `accessible-names-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
     // Real suites number their tests (TFAC-NNN); same-text links share a title, so number them here too.
     const numbered = tests.map((code, index) => code.replace("test('", `test('${index + 1}: `));
-    await writeFile(specFile, `import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${numbered.join("\n")}\n`, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? [])
-            .map((record) => ({ title: record.title.replace(/^\d+: accessible name and role: /, ""), status: record.status, message: record.status === "Passed" ? "" : record.rawMessage }));
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(`import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${numbered.join("\n")}\n`, `accessible-names-unit`, ["--workers=1"]);
+    return flattenSuites(report.suites)
+        .map((record) => ({ title: record.title.replace(/^\d+: accessible name and role: /, ""), status: record.status, message: record.status === "Passed" ? "" : record.rawMessage }));
 }
 
 test("in a real browser: a span-wrapped menu link passes; same-text links each test their own link; unnamed links fail by name", { skip: needsChromium }, async () => {

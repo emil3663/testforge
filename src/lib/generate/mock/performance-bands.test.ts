@@ -15,43 +15,21 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/performance-bands.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../../report/types.ts";
+import type { ExecutionRecord } from "../../report/types.ts";
 
 const { buildPerformanceChecks, LAB_NOTE } = await import("./performance-checks.ts");
 const { flattenSuites } = await import("../../report/execution.ts");
 const { startRecordedFixture } = await import("../../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 async function runPerformance(baseURL: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `performance-bands-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
     const tests = buildPerformanceChecks().map((code, index) => code.replace("test('", `test('TFPL-${String(index + 1).padStart(3, "0")}: `));
-    await writeFile(specFile, `import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\ntest.describe('Performance Coverage', () => {\n${tests.join("\n\n")}\n});\n`, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            // One worker: timings are what is under test, so nothing else loads the machine meanwhile.
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    // One worker: timings are what is under test, so nothing else loads the machine meanwhile.
+    const { report } = await runPlaywrightSpec(`import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\ntest.describe('Performance Coverage', () => {\n${tests.join("\n\n")}\n});\n`, "performance-bands-unit", ["--workers=1"]);
+    return flattenSuites(report.suites);
 }
 
 const check = (records: ExecutionRecord[], title: string) => {

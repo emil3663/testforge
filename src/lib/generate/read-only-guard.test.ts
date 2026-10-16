@@ -18,42 +18,20 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/read-only-guard.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../report/types.ts";
+import type { ExecutionRecord, JsonSuite } from "../report/types.ts";
 
 const { READ_ONLY_GUARD_HELPER } = await import("./read-only-guard.ts");
 const { flattenSuites } = await import("../report/execution.ts");
 const { findTypeErrors } = await import("./validate.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 async function runSuite(code: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `read-only-guard-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, "read-only-guard-unit", ["--timeout=30000", "--workers=1"], { TESTFORGE_INTERACTIVE: "0" });
+    return flattenSuites(report.suites);
 }
 
 const suite = (origin: string) => `import { test, expect } from '@playwright/test';
@@ -157,19 +135,40 @@ test("in a real browser: the guard lets a GET-only sort through and aborts, and 
     }
 });
 
+/** Each test's notes from the guard, by title, from a Playwright JSON report. */
+function guardNotes(suites: JsonSuite[]): Map<string, string[]> {
+    const notes = new Map<string, string[]>();
+    const walk = (list: JsonSuite[]) => list.forEach((suite) => {
+        suite.specs.forEach((spec) => notes.set(spec.title, spec.tests.flatMap((t) => t.annotations ?? []).filter((a) => a.type === "note" && a.description?.startsWith("read-only guard: aborted")).map((a) => a.description ?? "")));
+        walk(suite.suites ?? []);
+    });
+    walk(suites);
+    return notes;
+}
+
 /**
  * TFP-199 (Emil, 2026-10-13; Phase 41 Gate B's T33): a site's own beacons are aborted but noted,
  * not counted as a breach. ISTQB technique: equivalence partitioning - non-safe requests split into
  * beacons (Chromium's `ping` type; a named analytics path such as Cloudflare's /cdn-cgi/rum) and
- * everything else. The fixture's site-beacons case sends both kinds as a page is left, as the hosted
- * Toolshops do; following a link there passes with a note naming both, and neither reaches the
- * server. A control that POSTs still fails (the decision table above, run with the same guard).
+ * everything else. A control that POSTs still fails (the decision table above, run with the same
+ * guard).
+ *
+ * Two cases, one run:
+ * - Following a link from a page that sends both kinds as it is left, as the hosted Toolshops do:
+ *   it passes, and no beacon reaches the server.
+ * - The same two beacons sent while the page stays: both are noted, with their types.
+ *
+ * TFP-208: the first case used to require both beacons in the note, and failed 1 time in R1's 3
+ * full unit runs. Measured on 2026-10-16 under 10 to 14 parallel copies: 15 of 350 runs noted one
+ * beacon or none. In every failure Chromium failed the beacons (net::ERR_ABORTED, the old page torn
+ * down as the new one committed) within a millisecond of issuing them, before Playwright handed
+ * them to the guard's route, so the guard never saw them. In all 320 timed runs the test passed,
+ * nothing reached the server, and no beacon came after the guard returned. What the note holds as
+ * a page is left is Chromium's timing, not the guard's, so that case checks only that whatever it
+ * names is one of the two beacons; the classification is checked where nothing races it.
  */
-test("in a real browser: a page's beacons, sent as a link is followed, are aborted and noted, not a breach (TFP-199)", { skip: needsChromium }, async () => {
+test("in a real browser: a page's beacons are aborted and noted, not a breach, whether a link is followed or the page stays (TFP-199)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();
-    const dir = join(process.cwd(), ".playwright-runs");
-    const name = `read-only-guard-beacons-${process.pid}-${Date.now()}`;
-    const jsonFile = join(dir, `${name}.json`);
     try {
         await fixture.control("/__fixture/defect?set=site-beacons");
         const code = `import { test, expect } from '@playwright/test';
@@ -185,30 +184,37 @@ test('following a link from a page that sends beacons', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Notes' })).toBeVisible();
   });
 });
+
+test('beacons sent while the page stays', async ({ page }) => {
+  await page.goto('/store');
+  await tfReadOnlyGuarded(page, async () => {
+    await page.evaluate(() => {
+      navigator.sendBeacon('/cdn-cgi/rum?beacon', '{}');
+      fetch('/cdn-cgi/rum?', { method: 'POST', body: '{}', keepalive: true }).catch(() => undefined);
+    });
+  });
+});
 `;
         assert.deepEqual(findTypeErrors(code), []);
-        await mkdir(dir, { recursive: true });
-        await writeFile(join(dir, `${name}.spec.ts`), code, "utf8");
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        const raw = await readFile(jsonFile, "utf8");
-        const [record] = flattenSuites((JSON.parse(raw) as JsonReport).suites ?? []);
-        assert.equal(record.status, "Passed", record.rawMessage);
-        const note = /read-only guard: aborted \d+ site beacon\(s\), not a breach: [^"]*/.exec(raw)?.[0] ?? "";
-        assert.ok(note.includes(`POST ${fixture.origin}/cdn-cgi/rum?beacon (ping)`), `sendBeacon's POST, typed ping: ${note}`);
-        assert.ok(note.includes(`POST ${fixture.origin}/cdn-cgi/rum? (fetch)`), `the fetch POST to the named path: ${note}`);
+        const { report } = await runPlaywrightSpec(code, "read-only-guard-beacons", ["--timeout=30000", "--workers=1"]);
+        const records = flattenSuites(report.suites);
+        const notes = guardNotes(report.suites);
+        const ping = `POST ${fixture.origin}/cdn-cgi/rum?beacon (ping)`;
+        const named = `POST ${fixture.origin}/cdn-cgi/rum? (fetch)`;
+
+        const link = one(records, "following a link from a page that sends beacons");
+        assert.equal(link.status, "Passed", link.rawMessage);
+        const linkNoted = (notes.get("following a link from a page that sends beacons") ?? []).flatMap((note) => note.replace(/^read-only guard: aborted \d+ site beacon\(s\), not a breach: /, "").split("; "));
+        assert.deepEqual(linkNoted.filter((beacon) => beacon !== ping && beacon !== named), [], `only the two beacons are named: ${linkNoted.join("; ")}`);
+
+        const stays = one(records, "beacons sent while the page stays");
+        assert.equal(stays.status, "Passed", stays.rawMessage);
+        const staysNote = (notes.get("beacons sent while the page stays") ?? []).join(" | ");
+        assert.ok(staysNote.includes(ping), `sendBeacon's POST, typed ping: ${staysNote}`);
+        assert.ok(staysNote.includes(named), `the fetch POST to the named path: ${staysNote}`);
+
         assert.deepEqual(fixture.recorded.filter((request) => request.method !== "GET"), [], "no beacon reached the server");
     } finally {
-        await rm(join(dir, `${name}.spec.ts`), { force: true });
-        await rm(jsonFile, { force: true });
         await fixture.close();
     }
 });

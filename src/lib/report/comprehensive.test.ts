@@ -7,11 +7,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/report/comprehensive.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { ExecutionRecord, JsonReport } from "./types.ts";
 import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
@@ -27,6 +24,7 @@ const { buildReportHtmlDocument } = await import("./html.ts");
 const { findTypeErrors, findUnawaitedAssertions, findPromisesToPlainMatchers, findDuplicateTests } = await import("../generate/validate.ts");
 
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const SECURITY = normalizeRunMode({ kind: "comprehensive", area: "security", pageCap: 3 }) as ComprehensiveRunMode;
@@ -105,28 +103,8 @@ test("the report: a clean run never reads as a clean bill of health; accessibili
 
 /** Runs a generated suite through the Playwright CLI the way the executor does, returning its JSON report. */
 async function runWithPlaywright(code: string): Promise<JsonReport> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `comprehensive-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--workers=1", "--project=chromium"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport;
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `comprehensive-unit`, ["--workers=1"]);
+    return report;
 }
 
 test("in a real browser: a generated Comprehensive run's report shows the area only, each page's result, the page left out, and ends with what it did not test", { skip: needsChromium }, async () => {

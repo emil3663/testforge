@@ -8,11 +8,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/comprehensive-security.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
 import type { JsonReport } from "../report/types.ts";
@@ -26,6 +23,7 @@ const { findTypeErrors, findUnawaitedAssertions, findPromisesToPlainMatchers, fi
 const { flattenSuites } = await import("../report/execution.ts");
 
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const SECURITY = normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode;
@@ -245,28 +243,8 @@ interface Recorded {
 }
 
 async function runWithPlaywright(code: string, extraArgs: string[]): Promise<JsonReport> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `passive-security-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", ...extraArgs], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport;
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, "passive-security-unit", extraArgs);
+    return report;
 }
 
 async function withRecordingSite(errorBody: string, run: (origin: string, recorded: Recorded[], maxInFlight: () => number) => Promise<void>, redirects: Record<string, string> = {}) {

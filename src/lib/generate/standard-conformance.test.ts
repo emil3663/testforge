@@ -22,9 +22,6 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/standard-conformance.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
 import type { ExecutionRecord, JsonReport, JsonSuite } from "../report/types.ts";
@@ -40,6 +37,7 @@ const { buildReportHtmlDocument } = await import("../report/html.ts");
 const { findTypeErrors } = await import("./validate.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const PAGES = ["/", "/login", "/notes"];
@@ -47,29 +45,8 @@ const PROBE = "/testforge-missing-";
 const AXE_SCAN = "passes the WCAG 2.2 A and AA scan";
 
 async function runSuite(code: string, label: string): Promise<{ records: ExecutionRecord[]; json: JsonReport }> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `standard-conformance-unit-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        const json = JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport;
-        return { records: flattenSuites(json.suites ?? []), json };
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `standard-conformance-unit-${label}`, [], { TESTFORGE_INTERACTIVE: "0" });
+    return { records: flattenSuites(report.suites), json: report };
 }
 
 interface Outcome {

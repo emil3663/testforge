@@ -18,11 +18,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/controls.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../../report/types.ts";
+import type { ExecutionRecord } from "../../report/types.ts";
 import type { ContentProfile } from "./types.ts";
 
 const { mockGenerate } = await import("./index.ts");
@@ -33,34 +30,15 @@ const { flattenSuites } = await import("../../report/execution.ts");
 const { findTypeErrors } = await import("../validate.ts");
 const { startRecordedFixture } = await import("../../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const NEW_CHECKS = "sort options|filters send|quantity steppers|option lists show|navigation links land";
 const ITEM = "/store/item/01J8Z3K4QWHAMMER";
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `controls-unit-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=60000", "--workers=1", "--grep", NEW_CHECKS], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `controls-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", NEW_CHECKS], { TESTFORGE_INTERACTIVE: "0" });
+    return flattenSuites(report.suites);
 }
 
 const page = (path: string, actionableElements: unknown[]) => ({ path, url: path, title: "", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [], actionableElements });

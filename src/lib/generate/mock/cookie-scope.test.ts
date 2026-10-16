@@ -16,13 +16,9 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/cookie-scope.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { JsonReport } from "../../report/types.ts";
 
 const { buildSecurityChecks } = await import("./security-checks.ts");
 const { checkDetails, passiveSecurityPageTests } = await import("../comprehensive-security.ts");
@@ -30,6 +26,7 @@ const { PASSIVE_SECURITY_HELPERS } = await import("../comprehensive-security-hel
 const { findTypeErrors } = await import("../validate.ts");
 const { flattenSuites } = await import("../../report/execution.ts");
 const { chromiumSkipReason } = await import("../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const COOKIE_CHECK = "sends its security headers and session cookies";
@@ -62,29 +59,9 @@ test("the Standard cookie check is the passive check, built by the same function
 
 /** Runs one generated test through the Playwright CLI, returning its outcome, message and findings. */
 async function runGenerated(code: string, baseURL: string) {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `cookie-scope-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, `import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${code}\n`, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        const [record] = flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-        return { status: record.status, message: record.status === "Not run" ? (record.skipReason ?? "") : record.rawMessage, findings: record.findings ?? [] };
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(`import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${code}\n`, "cookie-scope-unit", ["--workers=1"]);
+    const [record] = flattenSuites(report.suites);
+    return { status: record.status, message: record.status === "Not run" ? (record.skipReason ?? "") : record.rawMessage, findings: record.findings ?? [] };
 }
 
 test("in a real browser: on a page with a session cookie and two that are not, none with HttpOnly, both checks name the same one", { skip: needsChromium }, async () => {

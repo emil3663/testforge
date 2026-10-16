@@ -28,6 +28,7 @@ dist/
 # testing
 /coverage
 /.playwright-runs/
+/.playwright-unit-runs/
 /test-results/
 /playwright-report/
 /artifacts/

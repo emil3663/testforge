@@ -15,11 +15,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/introspect/label-names.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../report/types.ts";
+import type { ExecutionRecord } from "../report/types.ts";
 
 const { inspectPages } = await import("./inspector.ts");
 const { mockGenerate } = await import("../generate/mock/index.ts");
@@ -27,30 +24,12 @@ const { normalizeContentProfile, normalizeContentRules, normalizeTestAuditMode }
 const { flattenSuites } = await import("../report/execution.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 async function runSuite(code: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `label-names-unit-${process.pid}-${Date.now()}`;
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(join(dir, `${name}.spec.ts`), code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", "--grep", "element check"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(join(dir, `${name}.spec.ts`), { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, "label-names-unit", ["--timeout=30000", "--workers=1", "--grep", "element check"], { TESTFORGE_INTERACTIVE: "0" });
+    return flattenSuites(report.suites);
 }
 
 test("a control inside its label is named as the browser names it, and its check finds it (TFP-200)", { skip: needsChromium }, async () => {

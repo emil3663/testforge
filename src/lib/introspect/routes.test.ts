@@ -12,11 +12,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/introspect/routes.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../report/types.ts";
+import type { ExecutionRecord } from "../report/types.ts";
 import type { LinkDetail } from "../generate/mock/types.ts";
 
 const { isRouteFragment, pagePathOf, crawlKeyOf } = await import("./routes.ts");
@@ -27,6 +24,7 @@ const { findTypeErrors } = await import("../generate/validate.ts");
 const { flattenSuites } = await import("../report/execution.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 test("Decision 1 and 2: a fragment starting with / or !/ is a route, named as the address bar shows it; anything else is an in-page anchor", () => {
@@ -47,28 +45,8 @@ test("Decision 1 and 2: a fragment starting with / or !/ is a route, named as th
 });
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `hash-routes-unit-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `hash-routes-unit-${label}`, ["--workers=1"], { TESTFORGE_INTERACTIVE: "0" });
+    return flattenSuites(report.suites);
 }
 
 test("in a real browser: the crawl finds every linked route of the fixture's hash-routed app as its own page", { skip: needsChromium }, async () => {

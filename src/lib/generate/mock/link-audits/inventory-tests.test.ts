@@ -21,14 +21,12 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/inventory-tests.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../../../report/types.ts";
+import type { ExecutionRecord } from "../../../report/types.ts";
 import type { BestPracticeArea, ContentProfile } from "../types.ts";
 
 const { mockGenerate } = await import("../index.ts");
@@ -41,6 +39,7 @@ const { findTypeErrors } = await import("../../validate.ts");
 const { READ_ONLY_GUARD_HELPER } = await import("../../read-only-guard.ts");
 const { buildLinkInventoryTests } = await import("./inventory-tests.ts");
 const { chromiumSkipReason } = await import("../../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const AREAS: BestPracticeArea[] = ["functional", "responsive/mobile", "performance/load", "security", "accessibility", "usability", "seo/content", "cookie/session", "database", "reliability"];
@@ -76,28 +75,8 @@ after(async () => {
 });
 
 async function runSpec(code: string, label: string, grep?: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `link-inventory-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", ...(grep ? [`--grep=${grep}`] : [])], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `link-inventory-${label}`, ["--timeout=30000", "--workers=1", ...(grep ? [`--grep=${grep}`] : [])], { TESTFORGE_INTERACTIVE: "0" });
+    return flattenSuites(report.suites);
 }
 
 const one = (records: ExecutionRecord[], title: RegExp) => {

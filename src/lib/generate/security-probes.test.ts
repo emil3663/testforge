@@ -17,12 +17,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/security-probes.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { ComprehensiveRunMode } from "../comprehensive/run-mode.ts";
-import type { JsonReport } from "../report/types.ts";
 
 const { buildComprehensiveSuite } = await import("./comprehensive.ts");
 const { KNOWN_PATHS } = await import("./security-probes.ts");
@@ -31,32 +27,13 @@ const { flattenSuites } = await import("../report/execution.ts");
 const { findTypeErrors } = await import("./validate.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 async function runSuite(code: string, label: string) {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `security-probes-unit-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=60000", "--workers=1", "--grep", "known paths|guessable"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        const json = JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport;
-        return flattenSuites(json.suites ?? []).map((record) => ({ ...record, probe: JSON.stringify(json).match(/known paths: [^"]*/)?.[0] ?? "" }));
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `security-probes-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", "known paths|guessable"], { TESTFORGE_INTERACTIVE: "0" });
+    const json = report;
+    return flattenSuites(json.suites ?? []).map((record) => ({ ...record, probe: JSON.stringify(json).match(/known paths: [^"]*/)?.[0] ?? "" }));
 }
 
 test("the probe's list: 19 paths - version control, .env, backups and dumps, and three log files in three folders - named with its count in the test's title", () => {

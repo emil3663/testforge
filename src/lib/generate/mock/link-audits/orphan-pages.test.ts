@@ -24,11 +24,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/orphan-pages.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { test } from "node:test";
-import type { ExecutionRecord, JsonReport } from "../../../report/types.ts";
+import type { ExecutionRecord } from "../../../report/types.ts";
 
 const { buildTestMyLinksAuditTests } = await import("./index.ts");
 const { inspectPages } = await import("../../../introspect/inspector.ts");
@@ -36,33 +33,14 @@ const { flattenSuites } = await import("../../../report/execution.ts");
 const { findTypeErrors } = await import("../../validate.ts");
 const { startRecordedFixture } = await import("../../../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 const ORPHAN = "orphan page approximation";
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `orphan-pages-unit-${label}-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, code, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        return flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(code, `orphan-pages-unit-${label}`, []);
+    return flattenSuites(report.suites);
 }
 
 test("in a real browser: on the fixture, the orphan check follows the decision table (start lost, another lost, unlinked, all linked)", { skip: needsChromium }, async () => {

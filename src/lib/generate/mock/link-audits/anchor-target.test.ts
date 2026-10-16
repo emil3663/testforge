@@ -8,19 +8,16 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/link-audits/anchor-target.test.ts
  */
 import assert from "node:assert";
-import { spawn } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { join } from "node:path";
 import { test } from "node:test";
 import type { LinkDetail } from "../types.ts";
-import type { JsonReport } from "../../../report/types.ts";
 
 const { buildLinkExperienceTests } = await import("./experience-tests.ts");
 const { findTypeErrors } = await import("../../validate.ts");
 const { flattenSuites } = await import("../../../report/execution.ts");
 const { chromiumSkipReason } = await import("../../../../test-support/chromium.ts");
+const { runPlaywrightSpec } = await import("../../../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
 function anchor(rawHref: string, text: string): LinkDetail {
@@ -41,29 +38,9 @@ test("the generated anchor test type-checks and never builds a CSS selector from
 
 /** Runs one generated test through the Playwright CLI, as a real run does, returning its outcome, message and findings. */
 async function runGenerated(code: string, baseURL: string) {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
-    const name = `anchor-unit-${process.pid}-${Date.now()}`;
-    const specFile = join(dir, `${name}.spec.ts`);
-    const jsonFile = join(dir, `${name}.json`);
-    await writeFile(specFile, `import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${code}\n`, "utf8");
-    try {
-        await new Promise<void>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--workers=1"], {
-                cwd: process.cwd(),
-                env: { ...process.env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" },
-                stdio: "ignore",
-                windowsHide: true,
-            });
-            child.on("error", reject);
-            child.on("close", () => resolve());
-        });
-        const [record] = flattenSuites((JSON.parse(await readFile(jsonFile, "utf8")) as JsonReport).suites ?? []);
-        return { passed: record.status === "Passed", message: record.status === "Passed" ? "" : record.rawMessage, findings: record.findings ?? [] };
-    } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
-    }
+    const { report } = await runPlaywrightSpec(`import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${code}\n`, `anchor-unit`, ["--workers=1"]);
+    const [record] = flattenSuites(report.suites);
+    return { passed: record.status === "Passed", message: record.status === "Passed" ? "" : record.rawMessage, findings: record.findings ?? [] };
 }
 
 const PAGES: Record<string, string> = {
