@@ -110,6 +110,11 @@ export async function GET(req: NextRequest) {
     const job = runJobs.get(runId);
 
     if (artifactId) {
+        // TFP-208: a run reads as finished once its result is set, before its evidence has been moved into its
+        // folder. An artifact asked for in between could name a file already moved: 404 "Artifact file is
+        // unavailable" (a regression run, 2026-10-16). Wait for the save; a failed save falls through to the
+        // paths as they are.
+        await job?.saving?.catch(() => undefined);
         const liveArtifact = job?.artifactFiles.get(artifactId) ?? null;
         let artifact = liveArtifact;
 

@@ -14,8 +14,8 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/app/api/run/route.test.ts
  */
 import assert from "node:assert";
-import { mkdtempSync, rmSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdir, rename, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
@@ -121,4 +121,47 @@ test("POST /api/run: truncated JSON body returns 400 with a JSON error body, not
 
     assert.equal(res.status, 400);
     assert.equal(typeof body.error, "string");
+});
+
+/**
+ * TFP-208: an artifact asked for while its run is being saved is served once the save is done, not refused.
+ * ISTQB technique: state transition - a finished run goes from saving (its evidence being moved into its folder)
+ * to saved. The regression suite's evidence download failed once (2026-10-16) with 404 "Artifact file is
+ * unavailable": the run read as finished, and its file had just been moved. Here the save moves the file at
+ * once and names its new place only later; a request in between must wait and get the file.
+ */
+test("GET /api/run?artifactId: during the run's save, waits for it and serves the moved file (TFP-208)", async () => {
+    const { runJobs } = await import("../../../lib/run/jobs.ts");
+    const { runEvidenceDir } = await import("../../../lib/run/persistence.ts");
+    const runId = randomUUID();
+    const artifactDir = join(scratchRoot, `artifacts-${runId}`);
+    await mkdir(artifactDir, { recursive: true });
+    const oldPath = join(artifactDir, "video.webm");
+    await writeFile(oldPath, "the video", "utf8");
+    const newPath = join(runEvidenceDir(runId), "video.webm");
+    const job = {
+        id: runId,
+        artifactDir,
+        artifactFiles: new Map([["video", { filePath: oldPath, fileName: "video.webm", contentType: "video/webm" }]]),
+        result: { runId, runStatus: "failed" },
+        saving: undefined as Promise<void> | undefined,
+    };
+    let finish: () => void = () => undefined;
+    job.saving = (async () => {
+        await mkdir(runEvidenceDir(runId), { recursive: true });
+        await rename(oldPath, newPath);
+        await new Promise<void>((done) => { finish = done; });
+        job.artifactFiles = new Map([["video", { filePath: newPath, fileName: "video.webm", contentType: "video/webm" }]]);
+    })();
+    runJobs.set(runId, job as never);
+    try {
+        while (existsSync(oldPath)) await new Promise((done) => setTimeout(done, 10));
+        const pending = GET(new NextRequest(new URL(`http://localhost/api/run?runId=${runId}&artifactId=video`)));
+        setTimeout(() => finish(), 50);
+        const res = await pending;
+        assert.equal(res.status, 200);
+        assert.equal(await res.text(), "the video");
+    } finally {
+        runJobs.delete(runId);
+    }
 });

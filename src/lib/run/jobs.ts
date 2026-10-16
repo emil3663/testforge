@@ -107,6 +107,10 @@ export interface RunJob {
     // snapshot, never persisted, and cleared once the run is finalized.
     redactions: string[];
     artifactFiles: Map<string, { filePath: string; fileName: string; contentType: string }>;
+    // TFP-208: set, with no await between, where the result is set, and settled once the run is saved
+    // (its evidence moved into the run's folder and artifactFiles pointing there). Until then
+    // artifactFiles still names the files where Playwright left them, while they are being moved.
+    saving?: Promise<void>;
     result: RunResultPayload | null;
 }
 
@@ -141,6 +145,14 @@ export function buildRunSnapshot(job: RunJob): RunStatusPayload {
         cancellationRequested: job.cancellationRequested,
         result: job.result ?? undefined,
     };
+}
+
+/** TFP-208: saves the run, and keeps the save on the job, so an artifact asked for meanwhile waits for it. */
+async function saveRunJob(job: RunJob) {
+    job.saving = persistRunJob(job).then((files) => {
+        job.artifactFiles = new Map(Object.entries(files));
+    });
+    await job.saving;
 }
 
 export async function finalizeRunJob(job: RunJob) {
@@ -256,7 +268,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
                 job.process = null;
 
                 sealResult(job, redactor);
-                job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
+                await saveRunJob(job);
 
                 await Promise.all([
                     unlink(job.testFile).catch(() => { }),
@@ -295,7 +307,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             job.process = null;
 
             sealResult(job, redactor);
-            job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
+            await saveRunJob(job);
 
             await Promise.all([
                 unlink(job.testFile).catch(() => { }),
@@ -369,7 +381,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     job.process = null;
 
     sealResult(job, redactor);
-    job.artifactFiles = new Map(Object.entries(await persistRunJob(job)));
+    await saveRunJob(job);
 
     await Promise.all([
         unlink(job.testFile).catch(() => { }),
