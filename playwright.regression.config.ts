@@ -36,7 +36,10 @@ export default defineConfig({
         headless: true,
     },
     webServer: {
-        command: "npm run serve:self-test",
+        // TFP-208: only the start. `npm run test:regression` builds first (build:self-test), so the
+        // 120 s covers the server starting, not a `next build` as well, which missed it once in R1
+        // (TFP-207). Run outside those scripts, the suite needs that build first.
+        command: "npm run start:self-test",
         url: "http://127.0.0.1:3001",
         reuseExistingServer: false,
         timeout: 120_000,
