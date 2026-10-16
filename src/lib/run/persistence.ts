@@ -91,6 +91,30 @@ export function runEvidenceDir(runId: string) {
 }
 
 /** TFP-198: written whole to run.json.tmp, then renamed over run.json, so a failed write never leaves a truncated record. */
+// Who hears that a run was persisted (napi, docs/NAPI.md): told after
+// run.json is in place, never before, and a listener that throws is logged
+// rather than failing the run.
+type RunPersistedListener = (record: RunRecord) => void | Promise<void>;
+// On globalThis, not module state: in `next dev` the instrumentation hook and
+// the route handlers can load this module twice, and a listener added to one
+// copy would never hear the other copy's runs.
+const runPersistedListeners: Set<RunPersistedListener> = ((globalThis as { __testforgeRunPersisted?: Set<RunPersistedListener> }).__testforgeRunPersisted ??= new Set());
+
+export function onRunPersisted(listener: RunPersistedListener): () => void {
+    runPersistedListeners.add(listener);
+    return () => runPersistedListeners.delete(listener);
+}
+
+async function announceRunPersisted(record: RunRecord): Promise<void> {
+    for (const listener of runPersistedListeners) {
+        try {
+            await listener(record);
+        } catch (error) {
+            console.error(`run ${record.runId}: a persisted-run listener failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+}
+
 async function writeRunRecord(record: RunRecord) {
     const target = runJsonPath(record.runId);
     const temporary = `${target}.tmp`;
@@ -168,6 +192,7 @@ export async function persistRunJob(
     };
 
     await writeRunRecord(record);
+    void announceRunPersisted(record);
 
     // Best-effort: the shared per-run artifact directory should now be empty
     // (everything moved into evidence/); clearing it avoids an orphaned,

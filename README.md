@@ -19,6 +19,16 @@ so exposes arbitrary remote code execution to anyone who can reach the port.
 
 ---
 
+## Lighthouse (napi), optionally
+
+TestForge can keep a second copy of every run's record in napi, the back
+end of Guardian360's Lighthouse, where a builder reads runs beside the pages
+they build and labels failed tests. It is off unless four `NAPI_*` variables
+are set, nothing changes shape for it, and napi never calls TestForge. See
+[docs/NAPI.md](docs/NAPI.md).
+
+---
+
 ## Run persistence and retention
 
 A finished run is written to `runs/<runId>/` on disk (gitignored, no
