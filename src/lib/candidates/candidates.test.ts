@@ -47,6 +47,7 @@ const { runJobs } = await import("../run/jobs.ts");
 const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { addToPool, bindCandidate, loadCandidate, loadPool, matchingCandidate, patternOf, poolHas, saveCandidate } = await import("./pool.ts");
 const { promotionVerdict } = await import("./promotion.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
@@ -131,11 +132,7 @@ test("second site, Comprehensive: the candidate runs in its own section, outside
     const response = await runRoute.POST(post("http://localhost/api/run", { code: body.code, baseUrl: siteB.origin, selectedPractices: ["functional"], description: "Check the pages.", includeTestTitles: titles, runMode: COMPREHENSIVE, generation: { generatedBy: "template", gates: [], siteSuite: body.siteSuite } }));
     assert.equal(response.status, 202);
     const { runId } = (await response.json()) as { runId: string };
-    const started = Date.now();
-    while (!runJobs.get(runId)?.result) {
-        assert.ok(Date.now() - started < 300_000, "the run finished within 5 minutes");
-        await new Promise((resolve) => setTimeout(resolve, 250));
-    }
+    await waitForSavedRun(runId, 300_000);
     const report = runJobs.get(runId)!.result!.report as RunReport;
     const section = report.comprehensive?.candidates;
     assert.ok(section, "the Comprehensive report has the candidates' section");
@@ -217,11 +214,7 @@ test("second site, Standard: the bound candidate's run counts toward its promoti
         const response = await runRoute.POST(post("http://localhost/api/run", { code: body.code, baseUrl: siteB.origin, selectedPractices: ["functional"], description: "Check the pages.", includeTestTitles: [title], generation: { generatedBy: "template", gates: [], siteSuite: body.siteSuite } }));
         assert.equal(response.status, 202);
         const { runId } = (await response.json()) as { runId: string };
-        const started = Date.now();
-        while (!runJobs.get(runId)?.result) {
-            assert.ok(Date.now() - started < 180_000, "the run finished within 3 minutes");
-            await new Promise((resolve) => setTimeout(resolve, 250));
-        }
+        await waitForSavedRun(runId, 180_000);
         const report = runJobs.get(runId)!.result!.report as RunReport;
         assert.deepEqual({ executed: report.summary.executed, passed: report.summary.passed }, { executed: 1, passed: 1 }, `in the verdict: ${JSON.stringify(report.execution.map((e) => [e.status, e.rawMessage]))}`);
 

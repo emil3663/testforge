@@ -40,6 +40,7 @@ const runRoute = await import("../../app/api/run/route.ts");
 const { runJobs } = await import("../run/jobs.ts");
 const { NextRequest } = await import("next/server");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const needsChromium = await chromiumSkipReason();
 
 after(() => {
@@ -199,11 +200,7 @@ test('the environment', async () => {
         const response = await runRoute.POST(new NextRequest(new URL("http://localhost/api/run"), { method: "POST", body: JSON.stringify({ code, selectedPractices: ["functional"], description: "env" }), headers: { "content-type": "application/json" } }));
         assert.equal(response.status, 202);
         const { runId } = (await response.json()) as { runId: string };
-        const started = Date.now();
-        while (!runJobs.get(runId)?.result) {
-            assert.ok(Date.now() - started < 120_000, "the run finished within 2 minutes");
-            await new Promise((done) => setTimeout(done, 250));
-        }
+        await waitForSavedRun(runId, 120_000);
         const summary = (runJobs.get(runId)!.result!.report as RunReport).summary;
         assert.deepEqual({ passed: summary.passed, failed: summary.failed }, { passed: 1, failed: 0 }, runJobs.get(runId)!.outputChunks.join(""));
     } finally {

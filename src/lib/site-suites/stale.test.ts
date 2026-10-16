@@ -33,6 +33,7 @@ const { runJobs } = await import("../run/jobs.ts");
 const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { parseTestUnits } = await import("./units.ts");
 const { describeSiteSuite } = await import("../report/site-suite-text.ts");
 const needsChromium = await chromiumSkipReason();
@@ -79,11 +80,7 @@ async function runPage(generated: { code: string; siteSuite: SiteSuiteRecord }, 
     }));
     assert.equal(response.status, 202);
     const { runId } = (await response.json()) as { runId: string };
-    const started = Date.now();
-    while (!runJobs.get(runId)?.result) {
-        assert.ok(Date.now() - started < 300_000, "the run finished within 5 minutes");
-        await new Promise((resolve) => setTimeout(resolve, 250));
-    }
+    await waitForSavedRun(runId, 300_000);
     const report = runJobs.get(runId)!.result!.report;
     assert.ok(report, runJobs.get(runId)!.result!.output);
     return report;

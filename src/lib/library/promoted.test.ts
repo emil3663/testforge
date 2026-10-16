@@ -51,6 +51,7 @@ const { runJobs } = await import("../run/jobs.ts");
 const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const needsChromium = await chromiumSkipReason();
 
 const profile = normalizeContentProfile(JSON.parse(readFileSync(join(process.cwd(), "benchmarks/2026-10-14-tfp193-library/fixture-profile.json"), "utf8"))) as ContentProfile;
@@ -164,11 +165,7 @@ test("through the routes: a promoted entry is generated on Standard functional a
         const response = await runRoute.POST(post("http://localhost/api/run", { code: body.code, baseUrl: fixture.origin, selectedPractices: ["functional"], description: "Check the pages.", includeTestTitles: [title] }));
         assert.equal(response.status, 202);
         const { runId } = (await response.json()) as { runId: string };
-        const started = Date.now();
-        while (!runJobs.get(runId)?.result) {
-            assert.ok(Date.now() - started < 180_000, "the run finished within 3 minutes");
-            await new Promise((done) => setTimeout(done, 250));
-        }
+        await waitForSavedRun(runId, 180_000);
         const summary = (runJobs.get(runId)!.result!.report as RunReport).summary;
         // Inside the verdict: counted in the run's own summary, like any library entry.
         assert.deepEqual({ executed: summary.executed, passed: summary.passed }, { executed: 1, passed: 1 }, runJobs.get(runId)!.outputChunks.join("").slice(-2000));
