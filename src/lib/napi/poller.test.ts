@@ -38,14 +38,25 @@ test("one pass claims a queued run once, generates and starts it here, and cance
     };
     const self = async (url: string, init?: RequestInit) => {
         calls.push(`${init?.method ?? "GET"} ${url.replace("http://127.0.0.1:3000", "self")}`);
+        if (url.endsWith("/api/crawl") && init?.method === "POST") return json({ crawlId: "c1", crawlStatus: "running" }, 202);
+        if (url.includes("/api/crawl?crawlId=c1")) return json({ crawlStatus: "completed", result: { pages: [{ path: "/" }, { path: "/forgot-password" }, { path: "/login" }], pageSelection: { standard: { pages: ["/", "/forgot-password"] } } } });
+        if (url.endsWith("/api/introspect")) {
+            assert.deepEqual(JSON.parse(String(init?.body)).paths, ["/", "/forgot-password"]);
+            return json({ pages: [{ path: "/" }, { path: "/forgot-password" }] });
+        }
         if (url.endsWith("/api/generate")) {
-            assert.equal(JSON.parse(String(init?.body)).auditMode, "deep");
+            const g = JSON.parse(String(init?.body));
+            assert.equal(g.auditMode, "deep");
+            assert.deepEqual(g.contentRules.paths, ["/", "/forgot-password"], "the crawl's pages reach generation");
+            assert.equal(g.contentProfile.pages.length, 2);
             return json({ code: "// generated", generatedBy: "template", gates: [] });
         }
         if (url.endsWith("/api/run") && init?.method === "POST") {
             const body = JSON.parse(String(init?.body));
             assert.equal(body.code, "// generated");
             assert.equal(body.generation.generatedBy, "template");
+            assert.equal(body.contentProfile.pages.length, 2, "the run is measured against the inspection");
+            assert.deepEqual(body.generation.pageTypes, { pages: ["/", "/forgot-password"] });
             return json({ runId: "tf-run-1" }, 202);
         }
         if (url.endsWith("/api/run") && init?.method === "DELETE") return json({ runId: JSON.parse(String(init?.body)).runId });
@@ -54,7 +65,7 @@ test("one pass claims a queued run once, generates and starts it here, and cance
     claimRun("tf-run-old", { uuid: "row-old", runUid: "queued-old" });
     const lines: string[] = [];
 
-    await pollOnce({ client: new NapiClient(CONFIG, napi), config: CONFIG, fetchImpl: self, log: (l) => lines.push(l) });
+    await pollOnce({ client: new NapiClient(CONFIG, napi), config: CONFIG, fetchImpl: self, log: (l) => lines.push(l), sleep: async () => {} });
 
     assert.ok(calls.includes("DELETE self/api/run"), "the stopping run was cancelled here");
     assert.ok(calls.includes("POST /api/v2/testforge-runs/row-a/hand-off"));
@@ -64,6 +75,7 @@ test("one pass claims a queued run once, generates and starts it here, and cance
     assert.deepEqual(activeClaims().find(([id]) => id === "tf-run-1")?.[1], { uuid: "row-a", runUid: "queued-a" });
     assert.ok(lines.some((l) => l.includes("queued-c has no config")));
     assert.ok(lines.some((l) => l.includes("queued-a started here as tf-run-1")));
+    assert.ok(lines.some((l) => l.includes("3 page(s) found, 2 selected")));
 });
 
 function json(body: unknown, status = 200): Response {
