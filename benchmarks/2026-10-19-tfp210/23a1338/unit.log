@@ -1,0 +1,1400 @@
+﻿2026-10-19T20:15:37.9341538Z Current runner version: '2.337.0'
+2026-10-19T20:15:37.9365429Z ##[group]Runner Image Provisioner
+2026-10-19T20:15:37.9366295Z Hosted Compute Agent
+2026-10-19T20:15:37.9366933Z Version: 20261015.610
+2026-10-19T20:15:37.9367560Z Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+2026-10-19T20:15:37.9368268Z Build Date: 2026-10-14T17:06:54Z
+2026-10-19T20:15:37.9369036Z Worker ID: {41ad7649-37db-47aa-8be9-205c30925c86}
+2026-10-19T20:15:37.9369731Z Region: westus3
+2026-10-19T20:15:37.9370287Z Cloud: Azure
+2026-10-19T20:15:37.9371302Z ##[endgroup]
+2026-10-19T20:15:37.9372793Z ##[group]Operating System
+2026-10-19T20:15:37.9373537Z Ubuntu
+2026-10-19T20:15:37.9374062Z 24.04.5
+2026-10-19T20:15:37.9374637Z LTS
+2026-10-19T20:15:37.9375216Z ##[endgroup]
+2026-10-19T20:15:37.9375788Z ##[group]Runner Image
+2026-10-19T20:15:37.9376457Z Image: ubuntu-24.04
+2026-10-19T20:15:37.9377026Z Version: 20261018.339.1
+2026-10-19T20:15:37.9378280Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-19T20:15:37.9379790Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+2026-10-19T20:15:37.9381205Z ##[endgroup]
+2026-10-19T20:15:37.9382294Z ##[group]GITHUB_TOKEN Permissions
+2026-10-19T20:15:37.9384682Z Contents: read
+2026-10-19T20:15:37.9385263Z Metadata: read
+2026-10-19T20:15:37.9385863Z ##[endgroup]
+2026-10-19T20:15:37.9387835Z Secret source: Actions
+2026-10-19T20:15:37.9389086Z Cache mode: write
+2026-10-19T20:15:37.9389915Z Prepare workflow directory
+2026-10-19T20:15:37.9762923Z Prepare all required actions
+2026-10-19T20:15:37.9814855Z Getting action download info
+2026-10-19T20:15:38.3026987Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-19T20:15:38.4510765Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-19T20:15:38.6253313Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-19T20:15:38.8888736Z Complete job name: unit
+2026-10-19T20:15:38.9639085Z ##[group]Run actions/checkout@v4
+2026-10-19T20:15:38.9640154Z with:
+2026-10-19T20:15:38.9640977Z   repository: emil3663/testforge
+2026-10-19T20:15:38.9645488Z   token: ***
+2026-10-19T20:15:38.9646153Z   ssh-strict: true
+2026-10-19T20:15:38.9646868Z   ssh-user: git
+2026-10-19T20:15:38.9647509Z   persist-credentials: true
+2026-10-19T20:15:38.9648132Z   clean: true
+2026-10-19T20:15:38.9648786Z   sparse-checkout-cone-mode: true
+2026-10-19T20:15:38.9649521Z   fetch-depth: 1
+2026-10-19T20:15:38.9650105Z   fetch-tags: false
+2026-10-19T20:15:38.9650936Z   show-progress: true
+2026-10-19T20:15:38.9651551Z   lfs: false
+2026-10-19T20:15:38.9652170Z   submodules: false
+2026-10-19T20:15:38.9652774Z   set-safe-directory: true
+2026-10-19T20:15:38.9653472Z   allow-unsafe-pr-checkout: false
+2026-10-19T20:15:38.9654329Z env:
+2026-10-19T20:15:38.9654893Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:15:38.9655573Z ##[endgroup]
+2026-10-19T20:15:39.0692740Z Syncing repository: emil3663/testforge
+2026-10-19T20:15:39.0695203Z ##[group]Getting Git version info
+2026-10-19T20:15:39.0696086Z Working directory is '/home/runner/work/testforge/testforge'
+2026-10-19T20:15:39.0697436Z [command]/usr/bin/git version
+2026-10-19T20:15:39.0747562Z git version 2.55.0
+2026-10-19T20:15:39.0768104Z ##[endgroup]
+2026-10-19T20:15:39.0782322Z Temporarily overriding HOME='/home/runner/work/_temp/5b1b00f4-de20-4916-af21-baf381ee672d' before making global git config changes
+2026-10-19T20:15:39.0784941Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T20:15:39.0788817Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-19T20:15:39.0845523Z Deleting the contents of '/home/runner/work/testforge/testforge'
+2026-10-19T20:15:39.0849213Z ##[group]Initializing the repository
+2026-10-19T20:15:39.0850880Z [command]/usr/bin/git init /home/runner/work/testforge/testforge
+2026-10-19T20:15:39.0937207Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-19T20:15:39.0938713Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-19T20:15:39.0939955Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-19T20:15:39.0941429Z hint: call:
+2026-10-19T20:15:39.0942621Z hint:
+2026-10-19T20:15:39.0943922Z hint: 	git config --global init.defaultBranch <name>
+2026-10-19T20:15:39.0944849Z hint:
+2026-10-19T20:15:39.0945608Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-19T20:15:39.0946743Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-19T20:15:39.0947742Z hint:
+2026-10-19T20:15:39.0948296Z hint: 	git branch -m <name>
+2026-10-19T20:15:39.0948907Z hint:
+2026-10-19T20:15:39.0949724Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-19T20:15:39.0953251Z Initialized empty Git repository in /home/runner/work/testforge/testforge/.git/
+2026-10-19T20:15:39.0964143Z [command]/usr/bin/git remote add origin https://github.com/emil3663/testforge
+2026-10-19T20:15:39.1044782Z ##[endgroup]
+2026-10-19T20:15:39.1046271Z ##[group]Disabling automatic garbage collection
+2026-10-19T20:15:39.1048185Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-19T20:15:39.1082141Z ##[endgroup]
+2026-10-19T20:15:39.1083576Z ##[group]Setting up auth
+2026-10-19T20:15:39.1089531Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T20:15:39.1123212Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T20:15:39.1445113Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T20:15:39.1478791Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T20:15:39.1714172Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T20:15:39.1749513Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T20:15:39.1942445Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-19T20:15:39.1981120Z ##[endgroup]
+2026-10-19T20:15:39.1982399Z ##[group]Fetching the repository
+2026-10-19T20:15:39.1990393Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +23a1338cebaa43185e96be02ba79a30f4fae80f0:refs/remotes/origin/main
+2026-10-19T20:15:41.1913502Z From https://github.com/emil3663/testforge
+2026-10-19T20:15:41.1914631Z  * [new ref]         23a1338cebaa43185e96be02ba79a30f4fae80f0 -> origin/main
+2026-10-19T20:15:41.1920995Z ##[endgroup]
+2026-10-19T20:15:41.1922543Z ##[group]Determining the checkout info
+2026-10-19T20:15:41.1924035Z ##[endgroup]
+2026-10-19T20:15:41.1928473Z [command]/usr/bin/git sparse-checkout disable
+2026-10-19T20:15:41.1992000Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-19T20:15:41.2029290Z ##[group]Checking out the ref
+2026-10-19T20:15:41.2051920Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-19T20:15:41.3748153Z Switched to a new branch 'main'
+2026-10-19T20:15:41.3749158Z branch 'main' set up to track 'origin/main'.
+2026-10-19T20:15:41.3772518Z ##[endgroup]
+2026-10-19T20:15:41.3817303Z [command]/usr/bin/git log -1 --format=%H
+2026-10-19T20:15:41.3842866Z 23a1338cebaa43185e96be02ba79a30f4fae80f0
+2026-10-19T20:15:41.4118609Z ##[group]Run actions/setup-node@v4
+2026-10-19T20:15:41.4119042Z with:
+2026-10-19T20:15:41.4119363Z   node-version: 24
+2026-10-19T20:15:41.4119693Z   cache: npm
+2026-10-19T20:15:41.4120026Z   always-auth: false
+2026-10-19T20:15:41.4120854Z   check-latest: false
+2026-10-19T20:15:41.4123380Z   token: ***
+2026-10-19T20:15:41.4123693Z env:
+2026-10-19T20:15:41.4124017Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:15:41.4124385Z ##[endgroup]
+2026-10-19T20:15:41.5565689Z Found in cache @ /opt/hostedtoolcache/node/24.22.0/x64
+2026-10-19T20:15:41.5569781Z (node:2128) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T20:15:41.5571453Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T20:15:41.5572988Z ##[group]Environment details
+2026-10-19T20:15:41.9273300Z node: v24.22.0
+2026-10-19T20:15:41.9274252Z npm: 11.19.1
+2026-10-19T20:15:41.9274976Z yarn: 1.22.22
+2026-10-19T20:15:41.9276777Z ##[endgroup]
+2026-10-19T20:15:41.9320081Z [command]/opt/hostedtoolcache/node/24.22.0/x64/bin/npm config get cache
+2026-10-19T20:15:42.0412372Z /home/runner/.npm
+2026-10-19T20:15:42.3007764Z Cache hit for: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-19T20:15:42.3149622Z (node:2128) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-19T20:15:43.5412637Z Received 62914560 of 142228688 (44.2%), 59.9 MBs/sec
+2026-10-19T20:15:44.0495046Z Received 142228688 of 142228688 (100.0%), 89.8 MBs/sec
+2026-10-19T20:15:44.0496096Z Cache Size: ~136 MB (142228688 B)
+2026-10-19T20:15:44.0525415Z [command]/usr/bin/tar -xf /home/runner/work/_temp/f42d38f8-54ea-4d1f-8c9a-8bc4762cbcd6/cache.tzst -P -C /home/runner/work/testforge/testforge --use-compress-program unzstd
+2026-10-19T20:15:44.3035367Z Cache restored successfully
+2026-10-19T20:15:44.3092727Z Cache restored from key: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-19T20:15:44.3277278Z ##[group]Run npm ci
+2026-10-19T20:15:44.3277797Z [36;1mnpm ci[0m
+2026-10-19T20:15:44.3404218Z shell: /usr/bin/bash -e {0}
+2026-10-19T20:15:44.3404623Z env:
+2026-10-19T20:15:44.3405052Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:15:44.3405428Z ##[endgroup]
+2026-10-19T20:15:49.5716125Z npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-19T20:16:00.1377426Z 
+2026-10-19T20:16:00.1378505Z added 583 packages, and audited 584 packages in 16s
+2026-10-19T20:16:00.1379173Z 
+2026-10-19T20:16:00.1379432Z 197 packages are looking for funding
+2026-10-19T20:16:00.1380008Z   run `npm fund` for details
+2026-10-19T20:16:00.3964447Z 
+2026-10-19T20:16:00.3965396Z 26 vulnerabilities (1 low, 5 moderate, 18 high, 2 critical)
+2026-10-19T20:16:00.3965782Z 
+2026-10-19T20:16:00.3966398Z To address issues that do not require attention, run:
+2026-10-19T20:16:00.3966867Z   npm audit fix
+2026-10-19T20:16:00.3967118Z 
+2026-10-19T20:16:00.3967444Z To address all issues (including breaking changes), run:
+2026-10-19T20:16:00.3967904Z   npm audit fix --force
+2026-10-19T20:16:00.3968136Z 
+2026-10-19T20:16:00.3968320Z Run `npm audit` for details.
+2026-10-19T20:16:00.3987854Z npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+2026-10-19T20:16:00.3989277Z npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-19T20:16:00.3991065Z npm warn install-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-19T20:16:00.3992039Z npm warn install-scripts
+2026-10-19T20:16:00.3993086Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-19T20:16:00.4691891Z ##[group]Run npx playwright install --with-deps chromium
+2026-10-19T20:16:00.4692453Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-19T20:16:00.4729378Z shell: /usr/bin/bash -e {0}
+2026-10-19T20:16:00.4729764Z env:
+2026-10-19T20:16:00.4730186Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:16:00.4730659Z ##[endgroup]
+2026-10-19T20:16:00.9363172Z Installing dependencies...
+2026-10-19T20:16:00.9450252Z Switching to root user to install dependencies...
+2026-10-19T20:16:01.0512985Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-19T20:16:01.0779930Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-19T20:16:01.0973982Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-19T20:16:01.1037688Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-19T20:16:01.1081959Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-19T20:16:01.1152690Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-19T20:16:01.2941668Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+2026-10-19T20:16:01.3153751Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1704 kB]
+2026-10-19T20:16:01.3798278Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1145 kB]
+2026-10-19T20:16:01.3854213Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-19T20:16:01.3902797Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-19T20:16:05.4663130Z Fetched 6081 kB in 1s (7015 kB/s)
+2026-10-19T20:16:06.5134250Z Reading package lists...
+2026-10-19T20:16:06.5465014Z Reading package lists...
+2026-10-19T20:16:06.7727996Z Building dependency tree...
+2026-10-19T20:16:06.7735754Z Reading state information...
+2026-10-19T20:16:06.9507479Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-19T20:16:06.9508416Z libasound2t64 set to manually installed.
+2026-10-19T20:16:06.9509132Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-19T20:16:06.9509870Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-19T20:16:06.9510765Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-19T20:16:06.9511425Z libatk1.0-0t64 set to manually installed.
+2026-10-19T20:16:06.9512165Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-19T20:16:06.9512869Z libatspi2.0-0t64 set to manually installed.
+2026-10-19T20:16:06.9513430Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-19T20:16:06.9514291Z libcairo2 set to manually installed.
+2026-10-19T20:16:06.9514827Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-19T20:16:06.9515366Z libcups2t64 set to manually installed.
+2026-10-19T20:16:06.9515900Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-19T20:16:06.9516478Z libdbus-1-3 set to manually installed.
+2026-10-19T20:16:06.9517064Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-19T20:16:06.9517607Z libdrm2 set to manually installed.
+2026-10-19T20:16:06.9518186Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-19T20:16:06.9518681Z libgbm1 set to manually installed.
+2026-10-19T20:16:06.9519197Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-19T20:16:06.9519805Z libglib2.0-0t64 set to manually installed.
+2026-10-19T20:16:06.9520316Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-19T20:16:06.9521031Z libnspr4 set to manually installed.
+2026-10-19T20:16:06.9521579Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-19T20:16:06.9522104Z libnss3 set to manually installed.
+2026-10-19T20:16:06.9522911Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-19T20:16:06.9523637Z libpango-1.0-0 set to manually installed.
+2026-10-19T20:16:06.9524837Z libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+2026-10-19T20:16:06.9525613Z libx11-6 set to manually installed.
+2026-10-19T20:16:06.9526542Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-19T20:16:06.9527206Z libxcb1 set to manually installed.
+2026-10-19T20:16:06.9527940Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-19T20:16:06.9528780Z libxcomposite1 set to manually installed.
+2026-10-19T20:16:06.9529558Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-19T20:16:06.9530339Z libxdamage1 set to manually installed.
+2026-10-19T20:16:06.9531329Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-19T20:16:06.9532826Z libxext6 set to manually installed.
+2026-10-19T20:16:06.9533567Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-19T20:16:06.9534385Z libxfixes3 set to manually installed.
+2026-10-19T20:16:06.9535134Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-19T20:16:06.9535873Z libxkbcommon0 set to manually installed.
+2026-10-19T20:16:06.9536705Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-19T20:16:06.9537496Z libxrandr2 set to manually installed.
+2026-10-19T20:16:06.9538350Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-19T20:16:06.9539329Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-19T20:16:06.9540012Z libfontconfig1 set to manually installed.
+2026-10-19T20:16:06.9541060Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+2026-10-19T20:16:06.9541903Z libfreetype6 set to manually installed.
+2026-10-19T20:16:06.9542690Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-19T20:16:06.9543426Z fonts-liberation set to manually installed.
+2026-10-19T20:16:06.9544203Z The following additional packages will be installed:
+2026-10-19T20:16:06.9545010Z   xfonts-encodings xfonts-utils xserver-common
+2026-10-19T20:16:06.9545619Z Recommended packages:
+2026-10-19T20:16:06.9546325Z   fonts-ipafont-mincho fonts-tlwg-loma xfonts-base
+2026-10-19T20:16:06.9751786Z The following NEW packages will be installed:
+2026-10-19T20:16:06.9752630Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-19T20:16:06.9759404Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-19T20:16:06.9760061Z   xfonts-utils
+2026-10-19T20:16:06.9769146Z The following packages will be upgraded:
+2026-10-19T20:16:06.9769823Z   xserver-common xvfb
+2026-10-19T20:16:06.9947113Z 2 upgraded, 9 newly installed, 0 to remove and 36 not upgraded.
+2026-10-19T20:16:06.9948941Z Need to get 22.0 MB of archives.
+2026-10-19T20:16:06.9949752Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-19T20:16:06.9950406Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-19T20:16:07.0856586Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-19T20:16:07.2180897Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-19T20:16:07.3928380Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-19T20:16:07.4567836Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-19T20:16:07.5784483Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-19T20:16:07.7897023Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-19T20:16:07.8634329Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-19T20:16:07.9267700Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-19T20:16:07.9965023Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-19T20:16:08.0641917Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-19T20:16:08.1275339Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-19T20:16:08.4254425Z Fetched 22.0 MB in 1s (19.0 MB/s)
+2026-10-19T20:16:08.4797937Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-19T20:16:08.4967136Z (Reading database ... 
+2026-10-19T20:16:08.4968030Z (Reading database ... 5%
+2026-10-19T20:16:08.4968674Z (Reading database ... 10%
+2026-10-19T20:16:08.4969442Z (Reading database ... 15%
+2026-10-19T20:16:08.4970198Z (Reading database ... 20%
+2026-10-19T20:16:08.4971145Z (Reading database ... 25%
+2026-10-19T20:16:08.4971910Z (Reading database ... 30%
+2026-10-19T20:16:08.4972581Z (Reading database ... 35%
+2026-10-19T20:16:08.4973473Z (Reading database ... 40%
+2026-10-19T20:16:08.4974191Z (Reading database ... 45%
+2026-10-19T20:16:08.4974786Z (Reading database ... 50%
+2026-10-19T20:16:08.5358012Z (Reading database ... 55%
+2026-10-19T20:16:08.9777160Z (Reading database ... 60%
+2026-10-19T20:16:09.2560329Z (Reading database ... 65%
+2026-10-19T20:16:09.4771457Z (Reading database ... 70%
+2026-10-19T20:16:09.8320925Z (Reading database ... 75%
+2026-10-19T20:16:10.3792921Z (Reading database ... 80%
+2026-10-19T20:16:11.1657677Z (Reading database ... 85%
+2026-10-19T20:16:11.9593776Z (Reading database ... 90%
+2026-10-19T20:16:12.9880808Z (Reading database ... 95%
+2026-10-19T20:16:12.9881769Z (Reading database ... 100%
+2026-10-19T20:16:12.9883170Z (Reading database ... 214410 files and directories currently installed.)
+2026-10-19T20:16:12.9931534Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-19T20:16:13.0037626Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-19T20:16:13.2963393Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-19T20:16:13.3110078Z Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-19T20:16:13.3118360Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-19T20:16:13.4178327Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-19T20:16:13.4316559Z Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-19T20:16:13.4326310Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-19T20:16:13.4541615Z Selecting previously unselected package fonts-unifont.
+2026-10-19T20:16:13.4676315Z Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-19T20:16:13.4684410Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-19T20:16:13.6698987Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-19T20:16:13.6835298Z Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-19T20:16:13.6977973Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-19T20:16:14.3014385Z Selecting previously unselected package xfonts-encodings.
+2026-10-19T20:16:14.3147842Z Preparing to unpack .../05-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-19T20:16:14.3158022Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-19T20:16:14.3453685Z Selecting previously unselected package xfonts-utils.
+2026-10-19T20:16:14.3589346Z Preparing to unpack .../06-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-19T20:16:14.3597830Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-19T20:16:14.3968403Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-19T20:16:14.4104144Z Preparing to unpack .../07-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-19T20:16:14.4118817Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-19T20:16:14.4493642Z Selecting previously unselected package xfonts-scalable.
+2026-10-19T20:16:14.4625723Z Preparing to unpack .../08-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-19T20:16:14.4635473Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-19T20:16:14.5012705Z Preparing to unpack .../09-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-19T20:16:14.5033378Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-19T20:16:14.5433482Z Preparing to unpack .../10-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-19T20:16:14.5457527Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-19T20:16:14.6141726Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-19T20:16:14.6263027Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-19T20:16:14.6291952Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-19T20:16:14.6314792Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-19T20:16:14.6334242Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-19T20:16:14.6403159Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-19T20:16:14.6416964Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-19T20:16:14.6436192Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-19T20:16:14.6456009Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-19T20:16:14.6475147Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-19T20:16:14.6515387Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-19T20:16:14.6796462Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-19T20:16:14.7047066Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-19T20:16:14.7120747Z Not building database; man-db/auto-update is not 'true'.
+2026-10-19T20:16:14.7138731Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-19T20:16:16.0398261Z 
+2026-10-19T20:16:16.0399341Z Running kernel seems to be up-to-date.
+2026-10-19T20:16:16.0399814Z 
+2026-10-19T20:16:16.0400312Z No services need to be restarted.
+2026-10-19T20:16:16.0400948Z 
+2026-10-19T20:16:16.0401260Z No containers need to be restarted.
+2026-10-19T20:16:16.0401607Z 
+2026-10-19T20:16:16.0401920Z No user sessions are running outdated binaries.
+2026-10-19T20:16:16.0402409Z 
+2026-10-19T20:16:16.0402897Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-19T20:16:17.0745657Z Downloading Chrome for Testing 147.0.7727.15 (playwright chromium v1217) from https://cdn.playwright.dev/builds/cft/147.0.7727.15/linux64/chrome-linux64.zip
+2026-10-19T20:16:17.8909094Z |                                                                                |   0% of 170.4 MiB
+2026-10-19T20:16:18.0204496Z |■■■■■■■■                                                                        |  10% of 170.4 MiB
+2026-10-19T20:16:18.0901461Z |■■■■■■■■■■■■■■■■                                                                |  20% of 170.4 MiB
+2026-10-19T20:16:18.1603557Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 170.4 MiB
+2026-10-19T20:16:18.2060314Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 170.4 MiB
+2026-10-19T20:16:18.2476809Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 170.4 MiB
+2026-10-19T20:16:18.2869900Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 170.4 MiB
+2026-10-19T20:16:18.3278059Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 170.4 MiB
+2026-10-19T20:16:18.3668741Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 170.4 MiB
+2026-10-19T20:16:18.4098997Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 170.4 MiB
+2026-10-19T20:16:18.4535270Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 170.4 MiB
+2026-10-19T20:16:21.2924933Z Chrome for Testing 147.0.7727.15 (playwright chromium v1217) downloaded to /home/runner/.cache/ms-playwright/chromium-1217
+2026-10-19T20:16:21.2928832Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-19T20:16:22.0807398Z |                                                                                |   0% of 2.3 MiB
+2026-10-19T20:16:22.0998511Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-19T20:16:22.1069190Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-19T20:16:22.1140742Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-19T20:16:22.1157043Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-19T20:16:22.1174973Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-19T20:16:22.1219390Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-19T20:16:22.1235771Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-19T20:16:22.1253336Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-19T20:16:22.1265290Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-19T20:16:22.1271561Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-19T20:16:22.1817799Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-19T20:16:22.1820309Z Downloading Chrome Headless Shell 147.0.7727.15 (playwright chromium-headless-shell v1217) from https://cdn.playwright.dev/builds/cft/147.0.7727.15/linux64/chrome-headless-shell-linux64.zip
+2026-10-19T20:16:22.9825481Z |                                                                                |   0% of 112 MiB
+2026-10-19T20:16:23.1015851Z |■■■■■■■■                                                                        |  10% of 112 MiB
+2026-10-19T20:16:23.1805417Z |■■■■■■■■■■■■■■■■                                                                |  20% of 112 MiB
+2026-10-19T20:16:23.2761568Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 112 MiB
+2026-10-19T20:16:23.3243198Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 112 MiB
+2026-10-19T20:16:23.3917294Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 112 MiB
+2026-10-19T20:16:23.5852691Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 112 MiB
+2026-10-19T20:16:23.7568733Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 112 MiB
+2026-10-19T20:16:23.8713245Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 112 MiB
+2026-10-19T20:16:23.9381852Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 112 MiB
+2026-10-19T20:16:24.0731501Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 112 MiB
+2026-10-19T20:16:26.1261034Z Chrome Headless Shell 147.0.7727.15 (playwright chromium-headless-shell v1217) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1217
+2026-10-19T20:16:26.1483941Z ##[group]Run npm run test:unit 2>&1 | tee unit.log
+2026-10-19T20:16:26.1484554Z [36;1mnpm run test:unit 2>&1 | tee unit.log[0m
+2026-10-19T20:16:26.1521775Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-19T20:16:26.1522345Z env:
+2026-10-19T20:16:26.1522685Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:16:26.1523037Z ##[endgroup]
+2026-10-19T20:16:26.2485097Z 
+2026-10-19T20:16:26.2486274Z > testforge@0.1.0 test:unit
+2026-10-19T20:16:26.2514676Z > node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/persistence.test.ts src/lib/run/jobs.test.ts src/lib/run/selection.test.ts src/app/api/run/route.test.ts src/app/api/runs/route.test.ts src/lib/report/discovered-coverage.test.ts src/lib/report/execution.test.ts src/lib/report/summary.test.ts src/lib/report/empty-areas.test.ts src/lib/run/generation-record.test.ts src/lib/run/diff.test.ts src/app/api/runs/diff/route.test.ts src/app/api/generate/route.test.ts src/app/api/generate/route.local.test.ts src/app/api/generate/route.inspect.test.ts src/lib/generate/ollama.test.ts src/lib/generate/validate.test.ts src/lib/generate/local-rules.test.ts src/app/api/crawl/route.test.ts src/app/api/introspect/route.test.ts src/app/api/save-suite/route.test.ts src/app/_hooks/useRun.test.ts src/app/_hooks/useCrawl.test.ts next.config.test.ts src/lib/generate/mock/actionable-elements/index.test.ts src/lib/introspect/dependency-map.test.ts src/lib/introspect/site-graph.test.ts src/lib/introspect/journeys.test.ts src/app/_lib/derive.test.ts src/lib/run/auth.test.ts src/lib/run/redact.test.ts src/lib/run/setup-doc.test.ts src/lib/generate/mock/dependency-failure-injection.test.ts src/lib/generate/mock/storage-failure-injection.test.ts src/lib/generate/mock/journey-tests.test.ts src/lib/generate/mock/performance-suite.test.ts src/lib/generate/mock/database-round-trip.test.ts src/lib/generate/mock/performance-checks.test.ts src/lib/generate/mock/security-checks.test.ts src/lib/generate/mock/form-field-names.test.ts src/lib/generate/mock/false-failures.test.ts src/lib/generate/mock/cookie-session-checks.test.ts src/lib/generate/mock/seo-findings.test.ts src/lib/generate/mock/test-ids.test.ts src/lib/comprehensive/run-mode.test.ts src/lib/report/comprehensive.test.ts src/lib/report/html-tabs.test.ts src/lib/generate/comprehensive-security.test.ts src/lib/generate/comprehensive-accessibility.test.ts src/lib/generate/comprehensive-scenarios.test.ts src/lib/generate/mock/link-audits/anchor-target.test.ts src/lib/generate/mock/link-audits/link-check-timeouts.test.ts src/lib/generate/mock/link-audits/hidden-links.test.ts src/lib/generate/mock/link-audits/orphan-pages.test.ts src/lib/introspect/routes.test.ts src/lib/generate/page-visits.test.ts src/lib/selection/page-types.test.ts src/lib/selection/page-outline.test.ts src/lib/selection/select.test.ts src/lib/selection/coverage.test.ts src/lib/introspect/controls.test.ts src/lib/generate/mock/link-audits/download-pattern.test.ts src/lib/generate/mock/actionable-elements/form-check.test.ts src/lib/generate/mock/actionable-elements/control-names.test.ts src/lib/generate/mock/cookie-scope.test.ts src/lib/generate/mock/actionable-elements/accessible-names.test.ts src/app/api/generate/route.comprehensive.test.ts scripts/template-unchanged/compare.test.mjs src/lib/generate/benchmark-quality.test.ts src/lib/generate/mock/locators.test.ts src/lib/generate/gap-fill.test.ts src/lib/run/test-gates.test.ts src/lib/generate/standard-gates.test.ts src/lib/generate/standard-conformance.test.ts src/lib/generate/mock/performance-bands.test.ts src/lib/generate/read-only-guard.test.ts src/lib/generate/mock/controls.test.ts src/lib/generate/keyboard-grouping.test.ts src/lib/generate/security-probes.test.ts src/lib/generate/api-fields.test.ts src/lib/generate/mock/layout.test.ts src/lib/generate/mock/spelling.test.ts src/lib/site-suites/site-suites.test.ts src/lib/site-suites/stale.test.ts src/lib/report/coverage-map.test.ts src/lib/generate/mock/link-audits/inventory-tests.test.ts src/lib/introspect/label-names.test.ts src/lib/library/library.test.ts src/lib/library/promoted.test.ts src/lib/gap-writer/gap-writer.test.ts src/lib/gap-writer/hardening.test.ts src/lib/gap-writer/titles.test.ts src/lib/candidates/candidates.test.ts src/lib/candidates/promotion.test.ts
+2026-10-19T20:16:26.2530825Z 
+2026-10-19T20:16:26.8134587Z (node:2922) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/next.config.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:26.8161983Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:26.8219619Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:26.8252077Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.0409892Z (node:2938) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/next.config.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.0450369Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.0520190Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.0555657Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.0589573Z ✔ production CSP drops 'unsafe-eval' from script-src (259.453436ms)
+2026-10-19T20:16:27.0611143Z ✔ dev-mode CSP still includes 'unsafe-eval' (required by HMR) (224.61074ms)
+2026-10-19T20:16:27.0672497Z (node:2890) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/next.config.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.0674759Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.0683484Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.0684909Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.0703437Z ✔ identical outputs pass (2.141028ms)
+2026-10-19T20:16:27.0749748Z ✔ a single changed character in one input is reported with that input's key and its first differing line (0.574318ms)
+2026-10-19T20:16:27.0751445Z ✔ an extra line at the end is a difference too (0.354926ms)
+2026-10-19T20:16:27.0752406Z ✔ the two sides must have run the same inputs (0.598766ms)
+2026-10-19T20:16:27.0753765Z ✔ a missing export stops with its name; a changed mockGenerate signature stops too (0.455892ms)
+2026-10-19T20:16:27.0755412Z ✔ the input list is exactly the 166: 144 without page data, 22 with it, each key unique (1.437535ms)
+2026-10-19T20:16:27.0757027Z ✔ pollCrawlUntilDone: a single transient fetch failure retries with backoff, then completes normally (91.136581ms)
+2026-10-19T20:16:27.0758921Z ✔ pollCrawlUntilDone: exhausting all retries surfaces a failure, with the documented backoff sequence (0.434646ms)
+2026-10-19T20:16:27.0760723Z ✔ pollCrawlUntilDone: a terminal crawlStatus with no result payload stops polling (safety net) (2.943543ms)
+2026-10-19T20:16:27.0762675Z (node:2892) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/_hooks/useCrawl.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.0764236Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.0765500Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.0766514Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.0767998Z ✔ pollRunUntilDone: a single transient fetch failure retries with backoff, then completes normally (46.876145ms)
+2026-10-19T20:16:27.0841159Z ✔ pollRunUntilDone: exhausting all retries surfaces a failure, with the documented backoff sequence (0.431542ms)
+2026-10-19T20:16:27.0843271Z ✔ pollRunUntilDone: a terminal runStatus with no result payload stops polling (safety net) (0.737481ms)
+2026-10-19T20:16:27.0844895Z ✔ pollRunUntilDone: an in-progress runStatus with no result keeps polling (1.153146ms)
+2026-10-19T20:16:27.0846779Z (node:2914) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/_hooks/useRun.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.0848714Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.0850046Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.0851294Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.7093378Z ✔ one flow per line, label: /entry -> /exit (1.850324ms)
+2026-10-19T20:16:27.7095361Z ✔ accepts => and the arrow character, tolerates spacing, and adds a missing leading slash (0.439876ms)
+2026-10-19T20:16:27.7122361Z ✔ a label may contain a comma (lists are split on newlines only) (0.176383ms)
+2026-10-19T20:16:27.7152778Z ✔ a line that is not understood is reported, not silently dropped; blank lines are ignored (0.293272ms)
+2026-10-19T20:16:27.7182561Z ✔ empty input is no flows and no errors (0.210701ms)
+2026-10-19T20:16:27.7192725Z ✔ a parsed flow is unchanged by the server-side normalizeNamedFlows (0.366711ms)
+2026-10-19T20:16:27.7194190Z ✔ nothing typed means no login, and no problem (0.301365ms)
+2026-10-19T20:16:27.7195627Z ✔ what was typed becomes the login block, trimmed, with blank optional fields left out (0.3665ms)
+2026-10-19T20:16:27.7197101Z ✔ the block the UI builds is exactly what the server accepts - the same normalization the API request gets (0.542005ms)
+2026-10-19T20:16:27.7198942Z ✔ a credential pasted where a variable name belongs blocks the run and never becomes part of a request (0.696301ms)
+2026-10-19T20:16:27.7200859Z ✔ an incomplete block is still sent, so the server's named error reaches the user instead of a silent signed-out run (0.155694ms)
+2026-10-19T20:16:27.7202454Z ✔ every field a login block accepts has a UI label, and the section has no field for a credential value (0.208835ms)
+2026-10-19T20:16:27.7204259Z ✔ parseUrlField: one URL behaves as today; a list keeps each page's path and hash route on the first URL's origin; another origin is rejected, naming it (1.894384ms)
+2026-10-19T20:16:27.7206394Z (node:2931) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/_lib/derive.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.7208034Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.7209915Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.7211153Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:27.7618480Z ✔ POST /api/crawl: truncated JSON body returns 400 with a JSON error body, not a 500 (9.763001ms)
+2026-10-19T20:16:27.7669839Z ✔ POST /api/crawl: non-object JSON body (e.g. a bare string) is rejected with 400 (1.461055ms)
+2026-10-19T20:16:27.7672625Z (node:2947) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/crawl/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:27.7682114Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:27.7683789Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:27.7685105Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:29.0315098Z (node:2956) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/generate/route.comprehensive.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:29.0317364Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:29.0318958Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:29.0320265Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:31.1693242Z ✔ generate: a Comprehensive security request returns its own suite, the page scope and the run mode (2174.498702ms)
+2026-10-19T20:16:32.3168381Z ✔ TFP-135: with a local model, a Comprehensive request asks it for that area alone and appends its scenarios in their own block (1180.363405ms)
+2026-10-19T20:16:32.7476966Z ✔ TFP-135, TFP-146: in a passive security run the model's scenarios are at the active gate, so never run - they may send input (435.414804ms)
+2026-10-19T20:16:33.1709358Z ✔ TFP-135: a rejected model suite leaves the template's suite alone, labelled with why (399.641131ms)
+2026-10-19T20:16:33.4040336Z ✔ TFP-135: with no local model configured, the template's suite alone, and the model is not called (252.73984ms)
+2026-10-19T20:16:33.4722436Z ✔ generate: a Standard request - no run mode, or { kind: 'standard' } - is answered exactly as before (66.827003ms)
+2026-10-19T20:16:33.4782763Z ✔ generate and run: an invalid run mode is refused with 400, never run as a different run (2.874279ms)
+2026-10-19T20:16:33.4791427Z ✔ run: a Comprehensive run needs a base URL (0.895907ms)
+2026-10-19T20:16:35.0483975Z (node:2968) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/generate/route.inspect.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:35.0486015Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:35.0487396Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:35.0488138Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:35.0489286Z ✔ no page data: the pages are inspected, the suite is built from them, and the response says so (3382.627871ms)
+2026-10-19T20:16:35.0518808Z ✔ the request's content-rule paths are the ones inspected (1948.848225ms)
+2026-10-19T20:16:35.3333086Z ✔ inspection fails: today's output without page data, plus the reason - generation is never blocked (277.497892ms)
+2026-10-19T20:16:35.3567527Z ✔ autoInspect: false behaves exactly as before TFP-122 (29.19232ms)
+2026-10-19T20:16:35.3653795Z ✔ supplied page data is used as-is and nothing is inspected (6.186061ms)
+2026-10-19T20:16:37.1933097Z ✔ with a local model configured, an inspected database request is no gap: the model is not called (1831.681607ms)
+2026-10-19T20:16:38.9997574Z ✔ a full page URL on the run's site is inspected as its path; one on another origin is rejected with a 400 naming it (1804.051883ms)
+2026-10-19T20:16:38.9999416Z ✔ a protocol-relative or backslash path is rejected with a 400 naming it, before inspection (1.834692ms)
+2026-10-19T20:16:39.0245461Z (node:2976) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/generate/route.local.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0247357Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0248693Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0249829Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0251766Z ✔ Option B: with TESTFORGE_OLLAMA_MODEL unset the response is exactly the template-only one (47.867357ms)
+2026-10-19T20:16:39.0253136Z ✔ Option B: no gap area means no local call - the template suite is returned as is (32.767975ms)
+2026-10-19T20:16:39.0255009Z ✔ Option B: reliability is never sent to the local model, even when the template left it empty (2012.178547ms)
+2026-10-19T20:16:39.0258210Z ✔ GEN-43: an area the template inspected and found nothing to test in is not a gap - no local call (15.085634ms)
+2026-10-19T20:16:39.0259556Z ✔ Option B: a gap is filled - template suite first, then the local tests in a block labelled with the model (262.01739ms)
+2026-10-19T20:16:39.0261032Z ✔ Option B: the local model is asked only for the gap areas, with only their guides (214.108994ms)
+2026-10-19T20:16:39.0262507Z ✔ Phase 37: a single-area gap-fill request is exactly the full-generation request for that area (207.788687ms)
+2026-10-19T20:16:39.0263974Z ✔ Option B: a configured local model fills gaps even when an OpenAI key is set - OpenAI is not called (168.072684ms)
+2026-10-19T20:16:39.0265042Z ✔ Option B: Ollama not running - template kept, ollama_unreachable (112.779087ms)
+2026-10-19T20:16:39.0266068Z ✔ Option B: the local model never created - template kept, ollama_model_missing, raw model not used (15.001222ms)
+2026-10-19T20:16:39.0267713Z ✔ Option B: a hung local model times out on its own budget - template kept, the time gate says so (317.950369ms)
+2026-10-19T20:16:39.0268854Z ✔ Option B: Ollama answering with an error - template kept, ollama_error (32.960818ms)
+2026-10-19T20:16:39.0269951Z ✔ Option B: a completion that is only a fence - template kept, empty_completion (17.39495ms)
+2026-10-19T20:16:39.0271399Z ✔ Option B: an invented API - template kept, invalid_output, with the type error as the gate's evidence (69.02572ms)
+2026-10-19T20:16:39.0273282Z ✔ Option B: a never-awaited web-first assertion - template kept, unawaited_assertion, with the line as evidence (105.020727ms)
+2026-10-19T20:16:39.0274946Z ✔ Phase 37: a Promise handed to a plain matcher - template kept, promise_to_plain_matcher, with the line as evidence (370.028225ms)
+2026-10-19T20:16:39.0276756Z ✔ Phase 37: tests repeating one body under different titles - template kept, duplicate_tests, with the tests as evidence (93.566632ms)
+2026-10-19T20:16:39.0278421Z ✔ Option B: an unawaited synchronous value assertion still checks, so it is not rejected (172.472551ms)
+2026-10-19T20:16:39.0279875Z ✔ Option B: an invented API is still invalid_output even when an assertion is also unawaited (84.242136ms)
+2026-10-19T20:16:39.0283407Z ✔ Option B: code that passes on its own but breaks once appended is dropped - the merged file is checked too (190.597124ms)
+2026-10-19T20:16:39.0284639Z ✔ the OpenAI path never sees the local rules (6.310082ms)
+2026-10-19T20:16:39.0285944Z ✔ POST /api/generate: truncated JSON body returns 400 with a JSON error body, not a 500 (29.687532ms)
+2026-10-19T20:16:39.0287312Z ✔ POST /api/generate: empty body returns 400 with a JSON error body, not a 500 (2.70319ms)
+2026-10-19T20:16:39.0289155Z (node:3123) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/generate/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0291472Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0292691Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0293901Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0295139Z ✔ POST /api/generate: no key leaves the response shape untouched (143.359599ms)
+2026-10-19T20:16:39.0296315Z ✔ POST /api/generate: uses the first candidate present in the live catalog and reports it (52.628853ms)
+2026-10-19T20:16:39.0297787Z ✔ POST /api/generate: with security in the run's areas, the OpenAI suite sits at the active gate, never run (TFP-146) (27.712514ms)
+2026-10-19T20:16:39.0299102Z ✔ POST /api/generate: no candidate in the live catalog falls back to the template (185.069024ms)
+2026-10-19T20:16:39.0300398Z ✔ POST /api/generate: a rejected OpenAI call falls back to the template, not a 500 (98.642816ms)
+2026-10-19T20:16:39.0302274Z ✔ POST /api/generate: a hung OpenAI call times out within the budget and falls back (370.209283ms)
+2026-10-19T20:16:39.0303669Z ✔ POST /api/generate: an empty completion falls back instead of returning 200 with empty code (51.050594ms)
+2026-10-19T20:16:39.0304870Z ✔ POST /api/generate: a completion with no choices falls back (33.721715ms)
+2026-10-19T20:16:39.0306235Z ✔ POST /api/introspect: truncated JSON body returns 400 with a JSON error body, not a 500 (6.203526ms)
+2026-10-19T20:16:39.0307545Z ✔ POST /api/introspect: empty body returns 400 with a JSON error body, not a 500 (1.23428ms)
+2026-10-19T20:16:39.0308967Z ✔ POST /api/introspect: a page URL on another origin returns 400 naming it, before anything is inspected (1.230074ms)
+2026-10-19T20:16:39.0311022Z ✔ a protocol-relative path (//evil.test/x) or a backslash one (/\evil.test/x) resolves to another site: rejected before inspection, naming it; real paths pass (4.390914ms)
+2026-10-19T20:16:39.0313432Z (node:3132) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/introspect/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0315101Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0316365Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0317546Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0319363Z (node:3141) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/run/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0321215Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0322423Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0323601Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0324959Z ✔ GET /api/run: traversal-shaped runId is rejected with 400, never reads the target file (10.142715ms)
+2026-10-19T20:16:39.0326261Z ✔ GET /api/run: absolute-path-shaped runId is rejected with 400 (1.138012ms)
+2026-10-19T20:16:39.0327464Z ✔ GET /api/run: a real but unknown UUID is unaffected by the validator (404, not 400) (2.222918ms)
+2026-10-19T20:16:39.0328633Z ✔ DELETE /api/run: traversal-shaped runId is rejected with 400 (1.415754ms)
+2026-10-19T20:16:39.0329973Z ✔ DELETE /api/run: a real but unknown UUID is unaffected by the validator (404, not 400) (0.955616ms)
+2026-10-19T20:16:39.0331440Z ✔ POST /api/run: truncated JSON body returns 400 with a JSON error body, not a 500 (1.109879ms)
+2026-10-19T20:16:39.0332938Z ✔ GET /api/run?artifactId: during the run's save, waits for it and serves the moved file (TFP-208) (65.442661ms)
+2026-10-19T20:16:39.0334505Z ✔ GET /api/runs/diff: traversal-shaped runId in either slot is rejected with 400 (12.648424ms)
+2026-10-19T20:16:39.0335672Z ✔ GET /api/runs/diff: missing query params rejected with 400 (1.50262ms)
+2026-10-19T20:16:39.0338483Z (node:3271) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/runs/diff/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0340150Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0341501Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0342386Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0343639Z ✔ GET /api/runs/diff: real happy path returns a structured diff through the actual route handler (14.692134ms)
+2026-10-19T20:16:39.0345882Z (node:3289) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/runs/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0347593Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0348776Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0349767Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:39.0351349Z ✔ PATCH /api/runs archive: traversal-shaped runId is rejected with 400, target directory is never deleted (11.827019ms)
+2026-10-19T20:16:39.0352542Z ✔ PATCH /api/runs pinned: traversal-shaped runId is rejected with 400 (1.273113ms)
+2026-10-19T20:16:39.0353738Z ✔ PATCH /api/runs: null-byte-embedded runId is rejected with 400 (1.430709ms)
+2026-10-19T20:16:39.0354925Z ✔ PATCH /api/runs archive: a real but unknown UUID is unaffected by the validator (404, not 400) (4.516848ms)
+2026-10-19T20:16:39.0356244Z ✔ POST /api/save-suite: truncated JSON body returns 400 with a JSON error body, not a 500 (7.522919ms)
+2026-10-19T20:16:39.0357512Z ✔ POST /api/save-suite: empty body returns 400 with a JSON error body, not a 500 (1.49054ms)
+2026-10-19T20:16:39.0359234Z (node:3297) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/app/api/save-suite/route.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:39.0361222Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:39.0362696Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:39.0363883Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:50.8244323Z (node:3310) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/candidates/candidates.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:16:50.8250671Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:16:50.8251718Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:16:50.8252654Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:16:50.9282105Z ✔ first site: a saved gap test is generalised, checked bound back, and pooled with its source (TFP-195) (12505.468743ms)
+2026-10-19T20:17:03.6322194Z ✔ second site, Comprehensive: the candidate runs in its own section, outside the verdict, and gains the run as evidence (TFP-195) (12807.612135ms)
+2026-10-19T20:17:13.9549648Z ✔ second site, Standard: the matching candidate becomes the gap's test after the gates; no gap test is written (TFP-203) (10324.179204ms)
+2026-10-19T20:17:30.9452677Z ✔ another site, Standard: a candidate that fails the gates there is not bound (TFP-203) (16990.640504ms)
+2026-10-19T20:17:40.8015542Z ✔ second site, Standard: the bound candidate's run counts toward its promotion evidence, gaining that site (TFP-203) (9854.184796ms)
+2026-10-19T20:17:50.7889578Z ✔ second site, opted in: no new gap test for the candidate's pattern (TFP-195; TFP-203: the gap already has the candidate as its test) (9988.669635ms)
+2026-10-19T20:17:50.7891726Z ✔ binding: a bare __PAGE__ gets the quoted path, one inside a string the path's text; __LOCATOR__ is an expression (TFP-197) (0.924917ms)
+2026-10-19T20:17:50.8165121Z ✔ one pattern from two sites is one candidate; a rejected one is kept, never bound, never proposed again (TFP-195) (3.197298ms)
+2026-10-19T20:17:50.8785681Z (node:3319) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/candidates/promotion.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:17:50.8787837Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:17:50.8789816Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:17:50.8791337Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:17:50.8792866Z ✔ only a candidate that meets the rule is offered (decision table) (48.957039ms)
+2026-10-19T20:17:50.8794511Z ✔ approved: written as a library entry with its evidence, marked promoted, no longer offered (9.69393ms)
+2026-10-19T20:17:50.8796231Z ✔ rejected: kept with its reason, never offered again, and its pattern never pooled anew (7.694816ms)
+2026-10-19T20:17:50.8797387Z ✔ normalizeRunMode: absent or standard is a Standard run (1.397018ms)
+2026-10-19T20:17:50.8798920Z ✔ normalizeRunMode: a Comprehensive run for security is passive, with the default cap unless one is given (0.875274ms)
+2026-10-19T20:17:50.8800216Z ✔ normalizeRunMode: anything else is refused, never run as a different run (1.043174ms)
+2026-10-19T20:17:50.8801839Z ✔ isLocalDevelopmentHost: localhost, .localhost and loopback only (3.757704ms)
+2026-10-19T20:17:50.8803191Z ✔ workerCountFor: one worker for a Comprehensive run on every host (TFP-133); Standard runs keep theirs (0.259919ms)
+2026-10-19T20:17:50.8805201Z ✔ selectComprehensivePages: inspected pages first, then pages linked from them by their real href, same origin, no form targets, no repeats, up to the cap (0.771901ms)
+2026-10-19T20:17:50.8806973Z ✔ selectComprehensivePages: with no page data the run covers the landing page (0.200182ms)
+2026-10-19T20:17:50.8808935Z (node:3387) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/comprehensive/run-mode.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:17:50.8811121Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:17:50.8812497Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:17:50.8813764Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:18:33.0634672Z (node:3395) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/gap-writer/gap-writer.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:18:33.0636853Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:18:33.0639045Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:18:33.0642765Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:18:33.0644760Z ✔ the site setting: off by default, set and read through its route, anything else refused (164.351503ms)
+2026-10-19T20:18:33.0646316Z ✔ opt-in off: Claude Code is never called and no gap test is written (TFP-194) (3511.469901ms)
+2026-10-19T20:18:33.0648122Z ✔ opt-in on: a test for each uncovered element only, each run and saved; the same site again asks for nothing (TFP-194) (110061.36883ms)
+2026-10-19T20:18:44.7278160Z ✔ a test that fails is revised in the same session and saved once it passes (TFP-194) (11664.476942ms)
+2026-10-19T20:18:57.5411770Z ✔ a test that breaches the read-only gate is rejected, never saved, and not asked for again (TFP-194) (12812.936409ms)
+2026-10-19T20:19:00.9929069Z ✔ the local model chosen with none configured: nothing written, and the report says why (TFP-194) (3429.49932ms)
+2026-10-19T20:19:01.0703465Z (node:3480) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/gap-writer/hardening.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0748801Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0772479Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0773980Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0776610Z ✔ the call: every tool off, from an empty temporary folder removed afterwards; a revision resumes from it (TFP-202) (88.515507ms)
+2026-10-19T20:19:01.0778571Z ﹣ the call through the Windows shell (a .cmd claude): the empty --tools value still arrives (TFP-202) (0.323204ms) # Windows only
+2026-10-19T20:19:01.0780582Z ✔ the page text: an injection string is sent as data between the markers, never as an instruction (TFP-202) (0.579385ms)
+2026-10-19T20:19:01.0782349Z ✔ the code check: each forbidden construct is refused before anything runs (TFP-202) (20.25302ms)
+2026-10-19T20:19:01.0783871Z ✔ the environment: a gap test reads no key, token or TestForge setting (TFP-202) (1356.17088ms)
+2026-10-19T20:19:01.0785627Z ✔ the environment: a test in a main run reads none either; the run's own settings still arrive (TFP-202) (2022.879708ms)
+2026-10-19T20:19:01.0787254Z ✔ runEnv: only the names a run needs, matched without case, then the run's own (TFP-202) (0.444459ms)
+2026-10-19T20:19:01.0789027Z ✔ a name repeated on its page gets a short, stable suffix; a unique one, or one on another page, is unchanged (TFP-197) (18.472645ms)
+2026-10-19T20:19:01.0790773Z ✔ a promoted entry bound to two elements a page names alike gives two titles (TFP-197) (22.777182ms)
+2026-10-19T20:19:01.0792862Z (node:3699) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/gap-writer/titles.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0794697Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0796030Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0797240Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0798469Z ✔ the check is per page, tagged A01:2025 and ASVS 15.3.1, read-only (2296.514673ms)
+2026-10-19T20:19:01.0800581Z (node:3720) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/api-fields.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0803244Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0813160Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0814502Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0816421Z ✔ in a real browser: a stock count the store never shows is a finding; a yes/no flag, and a count the page shows, are not (decision table) (10625.161492ms)
+2026-10-19T20:19:01.0844299Z ✔ testTitles: test(...) calls only, any quote style; not describe, skip or use (2.273525ms)
+2026-10-19T20:19:01.0866329Z ✔ scoreSuite: a clean suite passes both gates, counts its tests and finds no leak or duplicate (1762.436652ms)
+2026-10-19T20:19:01.0868689Z ✔ scoreSuite: an invented API fails the type gate; an unawaited web-first assertion fails the other (266.946537ms)
+2026-10-19T20:19:01.0870155Z ✔ scoreSuite: leaked worked-example data and duplicate titles are caught (149.180337ms)
+2026-10-19T20:19:01.0871872Z ✔ scoreSuite: a file with no test(...) at all has zero tests (81.346939ms)
+2026-10-19T20:19:01.0873373Z ✔ hasCategorySignal: each area's trait is present in a suite that has it and absent in one that doesn't (1.178183ms)
+2026-10-19T20:19:01.0874937Z ✔ hasCategorySignal: an area with no defined trait is null, not a pass (0.230266ms)
+2026-10-19T20:19:01.0876335Z ✔ withBaseUrl: runs a model suite as TestForge does, with the site as the base for relative URLs (81.503143ms)
+2026-10-19T20:19:01.0878672Z (node:4629) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/benchmark-quality.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0881003Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0882769Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0884304Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0885975Z ✔ the suite: axe scan and field-name check per page, the six WCAG A/AA tags, clean under every gate, one worker (2133.51469ms)
+2026-10-19T20:19:01.0888512Z (node:4762) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/comprehensive-accessibility.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0890844Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0892495Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0893918Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0895952Z ✔ in a real browser: violations split by impact under their WCAG criterion, undecided items listed for review, TFP-121 runs on every page (34253.967329ms)
+2026-10-19T20:19:01.0898579Z (node:7669) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/comprehensive-scenarios.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0900773Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0902309Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0903650Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0905472Z ✔ in a real browser: a deliberately failing model test is shown as 'failed: needs review' and leaves the verdict unchanged (17564.565495ms)
+2026-10-19T20:19:01.0907855Z ✔ in a real browser: in a passive security run the model's test is at the active gate, listed as not run with why, even with interactive tests on (TFP-146) (7483.122446ms)
+2026-10-19T20:19:01.0909659Z ✔ without a model, or with its suite rejected, the report says so (0.923749ms)
+2026-10-19T20:19:01.0911299Z ✔ the suite type-checks, passes every model gate, and runs one test at a time by itself (2379.262132ms)
+2026-10-19T20:19:01.0913289Z ✔ the suite sends no input: no typing, clicking, submitting or non-GET request, and direct requests only from the two run-level probes (0.913691ms)
+2026-10-19T20:19:01.0915424Z ✔ every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirements from chapters in a passive run's reach (1.025343ms)
+2026-10-19T20:19:01.0917850Z (node:8470) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/comprehensive-security.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0922583Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0923865Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0924948Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:01.0926303Z ✔ in a real browser: a hardened HTTPS site passes every passive check with no findings (3871.076456ms)
+2026-10-19T20:19:01.0927741Z ✔ in a real browser: every hardening gap on an HTTPS site is a named finding, not a failure (3834.957633ms)
+2026-10-19T20:19:01.0929036Z ✔ in a real browser: each exposure fails, naming the page and the element (11631.47915ms)
+2026-10-19T20:19:01.0930731Z ✔ in a real browser: a page behind a login (401) is not run, with why; its response headers are still read for a version (3603.00913ms)
+2026-10-19T20:19:01.0932314Z ✔ in a real browser: a plain-HTTP password page on a local development host is not an exposure (3746.146837ms)
+2026-10-19T20:19:01.0934477Z ✔ request recording: the passive run sends only GET page loads, one missing-page probe and the known-path probe's GETs, one at a time, even when told to run in parallel (16990.402971ms)
+2026-10-19T20:19:01.0936251Z ✔ request recording: an error page that shows a stack trace and a server path fails the probe, naming both (8613.68147ms)
+2026-10-19T20:19:01.0937516Z ✔ request recording: a redirect through a URL carrying a session token fails, naming the URL (8822.363057ms)
+2026-10-19T20:19:01.0938706Z ✔ findGapAreas: in-scope areas with zero template tests, reliability never included (1.380442ms)
+2026-10-19T20:19:01.0940228Z ✔ mergeLocalSuite: template kept whole; every @playwright/test import form dropped; one gap area gets its own block (1520.004734ms)
+2026-10-19T20:19:01.0941669Z ✔ mergeLocalSuite: several gap areas are not forced under one area block (0.440389ms)
+2026-10-19T20:19:01.0942876Z ✔ localModelSuiteTitle: the prefix the run report recognises (0.110479ms)
+2026-10-19T20:19:01.0944213Z ✔ findGapAreas: an area the template inspected and found nothing to test in is not a gap (0.14825ms)
+2026-10-19T20:19:01.0945674Z ✔ mergeLocalSuite: the whole local block skips unless interactive tests are on, with a stated reason (48.818743ms)
+2026-10-19T20:19:01.0947921Z (node:9680) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/gap-fill.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:01.0949588Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:01.0955054Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:01.0956350Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:08.2393672Z ✔ the Standard accessibility suite carries both checks for every inspected page, tagged with their WCAG criterion (1946.849256ms)
+2026-10-19T20:19:08.2397294Z (node:9801) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/keyboard-grouping.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:08.2399507Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:08.2401184Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:08.2402791Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:08.2404947Z ✔ in a real browser: on the fixture, positive tabindex, a Tab order against the reading order and loose checkboxes each fail, named; the clean pages pass (decision table) (56477.630482ms)
+2026-10-19T20:19:08.3054095Z ✔ local rules [accessibility]: the worked example compiles against the installed Playwright (1733.144866ms)
+2026-10-19T20:19:08.3056426Z ✔ local rules [accessibility]: the worked example awaits every assertion (TFP-108) (35.75505ms)
+2026-10-19T20:19:08.3058252Z ✔ local rules [accessibility]: the worked example only uses placeholder URLs (TFP-109) (0.360779ms)
+2026-10-19T20:19:08.3060019Z ✔ local rules [reliability]: the worked example compiles against the installed Playwright (73.833866ms)
+2026-10-19T20:19:08.3062012Z ✔ local rules [reliability]: the worked example awaits every assertion (TFP-108) (40.781239ms)
+2026-10-19T20:19:08.3064114Z ✔ local rules [reliability]: the worked example only uses placeholder URLs (TFP-109) (0.164372ms)
+2026-10-19T20:19:08.3065849Z ✔ local rules [performance/load]: the worked example compiles against the installed Playwright (46.49858ms)
+2026-10-19T20:19:08.3067518Z ✔ local rules [performance/load]: the worked example awaits every assertion (TFP-108) (26.504154ms)
+2026-10-19T20:19:08.3069166Z ✔ local rules [performance/load]: the worked example only uses placeholder URLs (TFP-109) (0.284652ms)
+2026-10-19T20:19:08.3070935Z ✔ local rules [security]: the worked example compiles against the installed Playwright (46.358257ms)
+2026-10-19T20:19:08.3072714Z ✔ local rules [security]: the worked example awaits every assertion (TFP-108) (41.34396ms)
+2026-10-19T20:19:08.3074235Z ✔ local rules [security]: the worked example only uses placeholder URLs (TFP-109) (0.174592ms)
+2026-10-19T20:19:08.3075827Z ✔ local rules [seo/content]: the worked example compiles against the installed Playwright (35.892255ms)
+2026-10-19T20:19:08.3077369Z ✔ local rules [seo/content]: the worked example awaits every assertion (TFP-108) (26.84747ms)
+2026-10-19T20:19:08.3078939Z ✔ local rules [seo/content]: the worked example only uses placeholder URLs (TFP-109) (0.17042ms)
+2026-10-19T20:19:08.3080697Z ✔ local rules [database]: the worked example compiles against the installed Playwright (37.076355ms)
+2026-10-19T20:19:08.3082375Z ✔ local rules [database]: the worked example awaits every assertion (TFP-108) (38.144165ms)
+2026-10-19T20:19:08.3084055Z ✔ local rules [database]: the worked example only uses placeholder URLs (TFP-109) (0.110674ms)
+2026-10-19T20:19:08.3085559Z ✔ local rules: no guide or shared rule mentions localhost (0.319091ms)
+2026-10-19T20:19:08.3087068Z ✔ localRulesFor: always the shared rules, plus only the guides in scope (0.191807ms)
+2026-10-19T20:19:08.3088728Z ✔ localRulesFor: several areas come out in BEST_PRACTICE_OPTIONS order, whatever order they are passed in (0.122054ms)
+2026-10-19T20:19:08.3090599Z ✔ local rules: the shared block requires await on every expect (TFP-108) (0.109515ms)
+2026-10-19T20:19:08.3092054Z ✔ local rules: the shared block says placeholders are never copied (Phase 33) (0.07256ms)
+2026-10-19T20:19:08.3093482Z ✔ local rules: every matcher named as a page matcher really works on page (97.186137ms)
+2026-10-19T20:19:08.3094887Z ✔ local rules: the page-vs-locator mistake the model made is really an error (55.544865ms)
+2026-10-19T20:19:08.3096431Z ✔ local rules [accessibility]: every recommended matcher exists (252.587127ms)
+2026-10-19T20:19:08.3097939Z ✔ local rules [accessibility]: every forbidden matcher really does not exist (165.701857ms)
+2026-10-19T20:19:08.3099472Z ✔ local rules [reliability]: every example test simulates a failure before loading the page (0.414286ms)
+2026-10-19T20:19:08.3102039Z ✔ local rules [reliability]: the rules say the example's failures are generic, not placeholders (0.187146ms)
+2026-10-19T20:19:08.3103509Z ✔ local rules [reliability]: every example test blocks something different (0.291459ms)
+2026-10-19T20:19:08.3105204Z ✔ local rules: the shared block forbids passing a promise to expect (Phase 33) (0.104113ms)
+2026-10-19T20:19:08.3106711Z ✔ local rules [reliability]: the example never asserts a specific fallback message (0.353813ms)
+2026-10-19T20:19:08.3108202Z ✔ local rules [performance/load]: every example test measures time against a budget (0.377989ms)
+2026-10-19T20:19:08.3109938Z ✔ local rules [seo/content]: the example checks title, meta description and heading structure (0.148602ms)
+2026-10-19T20:19:08.3112099Z ✔ local rules [database]: the example checks a unique value survives a reload (0.146306ms)
+2026-10-19T20:19:08.3113869Z ✔ local rules [database]: the rules say not to fake persistence on a page with no saving form (0.097451ms)
+2026-10-19T20:19:08.3115534Z ✔ local rules [security]: an https: assertion only ever runs behind a positive plain-HTTP skip (TFP-113) (0.28246ms)
+2026-10-19T20:19:08.3117055Z ✔ local rules [database]: the unique value is copy-safe data, not a placeholder (0.190667ms)
+2026-10-19T20:19:08.3118577Z ✔ local rules [security]: the example covers invalid input and script injection too (0.165128ms)
+2026-10-19T20:19:08.3120900Z (node:12665) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/local-rules.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:08.3122987Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:08.3124408Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:08.3126113Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:50.7081764Z ✔ the generated checks type-check, no link check uses getByText or .first(), and positions count only links of the same visibility (1887.678194ms)
+2026-10-19T20:19:50.7083739Z (node:12913) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/actionable-elements/accessible-names.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:19:50.7084972Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:19:50.7085840Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:19:50.7086557Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:19:50.7087954Z ✔ in a real browser: a span-wrapped menu link passes; same-text links each test their own link; unnamed links fail by name (48359.916009ms)
+2026-10-19T20:19:56.3314533Z ✔ in a real browser: a hidden copy in the menu does not shift the footer link's check onto it (5619.758267ms)
+2026-10-19T20:21:12.8640367Z ✔ in a real browser: an image link named only by an alt="" or alt=" " image's title fails, citing HTML-AAM 4.1.10; a titled link and an alt-named image pass (76537.901396ms)
+2026-10-19T20:21:12.9072674Z (node:12997) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/actionable-elements/control-names.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:12.9075036Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:12.9076370Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:12.9077573Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:12.9079893Z ✔ in a real browser: a span-wrapped button passes; same-text buttons each test their own; an unnamed icon button fails, named; an unnamed <form> is Not run; a named one is checked (51075.967003ms)
+2026-10-19T20:21:12.9082971Z (node:13486) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/actionable-elements/form-check.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:12.9084997Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:12.9086265Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:12.9087461Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:12.9091038Z ✔ in a real browser: on /forms, the multi-field form and the lone-<select> form each find their own <form> and its recorded fields; a missing field fails, named (8674.371327ms)
+2026-10-19T20:21:12.9093659Z ✔ a profile from before TFP-160 (no form record): the check falls back to the nth <form> and 'at least one control' (0.392346ms)
+2026-10-19T20:21:12.9095881Z ✔ actionable-elements split: output for the frozen fixture matches the verified pre-split golden output byte-for-byte (4.761457ms)
+2026-10-19T20:21:12.9098355Z (node:14089) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/actionable-elements/index.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:12.9100969Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:12.9102435Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:12.9103887Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.8227986Z ✔ which pages get which check, from what inspection recorded (decision table) (2.107671ms)
+2026-10-19T20:21:14.8253719Z (node:14097) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/controls.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.8275637Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.8301988Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.8331970Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.8334350Z ✔ in a real browser: on the fixture's /store, each broken control fails its own check, named, and the clean store passes all five (decision table) (115387.59608ms)
+2026-10-19T20:21:14.9183392Z ✔ the Standard cookie check is the passive check, built by the same function, and type-checks (TFP-147) (1784.480857ms)
+2026-10-19T20:21:14.9200027Z (node:14841) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/cookie-scope.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9212760Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9214546Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9215951Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9217950Z ✔ in a real browser: on a page with a session cookie and two that are not, none with HttpOnly, both checks name the same one (4136.995748ms)
+2026-10-19T20:21:14.9220113Z ✔ in a real browser: with no session-named cookie the Standard check names no cookie, and records the header findings (2078.072456ms)
+2026-10-19T20:21:14.9222183Z ✔ SESSION_COOKIE_NAME: framework session names and session-ish words, not analytics cookies (1.115993ms)
+2026-10-19T20:21:14.9224119Z ✔ the generated test type-checks and awaits its web-first assertions (1175.014606ms)
+2026-10-19T20:21:14.9226318Z (node:15513) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/cookie-session-checks.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9228535Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9229965Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9231446Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9233752Z ✔ in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, records one shared with the host's subdomains as a finding, skips when there is none (1171.675316ms)
+2026-10-19T20:21:14.9235834Z ✔ findPersistenceForms: picks the notes form and leaves the sign-in form out (1.168457ms)
+2026-10-19T20:21:14.9237608Z ✔ findPersistenceForms: search boxes, email-only signups and hidden fields are not persistence forms (0.835881ms)
+2026-10-19T20:21:14.9239434Z ✔ findPersistenceForms: a textarea counts, fields belong to the form they follow, and at most 3 forms are used (0.317691ms)
+2026-10-19T20:21:14.9241460Z ✔ database suite: one round trip per form - fill a unique value, save, reload, check it is still shown (2.11549ms)
+2026-10-19T20:21:14.9243346Z ✔ database suite: the generated code compiles against real Playwright types and awaits every web-first assertion (1220.535244ms)
+2026-10-19T20:21:14.9245488Z ✔ database suite: skipped unless the run enables interactive tests - even when only a keyword like 'save' triggered it (Decision 5) (4.813137ms)
+2026-10-19T20:21:14.9247345Z ✔ database suite: no inspection data or no suitable form is reported as a note, not silently empty (0.329707ms)
+2026-10-19T20:21:14.9248914Z ✔ database suite: not generated when database is neither selected nor triggered (0.794498ms)
+2026-10-19T20:21:14.9251510Z (node:15917) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/database-round-trip.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9253594Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9255117Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9256647Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9258328Z ✔ fieldLocator: ids with '.', ':', a leading digit, quotes or a backslash select exactly that field in a real browser (444.714424ms)
+2026-10-19T20:21:14.9259981Z ✔ cookie is not a routable dependency kind; every other kind, including redirect, is (1.059812ms)
+2026-10-19T20:21:14.9261850Z ✔ one test is generated per routable dependency, including redirect; none for cookies (0.480126ms)
+2026-10-19T20:21:14.9264093Z ✔ the generated test title exactly matches buildDependencyFailureTitle's output (0.281443ms)
+2026-10-19T20:21:14.9265656Z ✔ routes by host + pathname, not the full sampleUrl (which may carry a per-request query string) (1.390519ms)
+2026-10-19T20:21:14.9267240Z ✔ asserts graceful degradation generically: body visible, no uncaught page errors, no 5xx (0.184725ms)
+2026-10-19T20:21:14.9268894Z ✔ a form-action dependency with a known raw action attribute actually submits the form once blocked (0.33721ms)
+2026-10-19T20:21:14.9270542Z ✔ a form-action dependency with no known raw action attribute is still generated, without a submit step (0.187562ms)
+2026-10-19T20:21:14.9272049Z ✔ a non-form dependency never gets a submit step, even if rawValue happens to be set (0.193254ms)
+2026-10-19T20:21:14.9274082Z (node:16003) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/dependency-failure-injection.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9276454Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9277690Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9278887Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9280735Z ✔ findSignInPath: the first inspected page with a password field or a Log in / Sign in control (1.120759ms)
+2026-10-19T20:21:14.9282322Z ✔ the sign-in test visits the inspected sign-in page, and / without page data (1672.010173ms)
+2026-10-19T20:21:14.9284293Z (node:16011) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/false-failures.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9286200Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9287669Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9288794Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9290197Z ✔ in a real browser: an image link whose anchor has no box is found and seen; truly hidden links are not (291.55851ms)
+2026-10-19T20:21:14.9292281Z ✔ findFormFieldPages: pages with a fillable field; buttons, hidden and submit inputs don't count (1.56309ms)
+2026-10-19T20:21:14.9293853Z ✔ generated tests type-check against @playwright/test and await every assertion (1240.076159ms)
+2026-10-19T20:21:14.9296070Z (node:16155) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/form-field-names.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9298015Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9299705Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9301147Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:21:14.9302797Z ✔ in a real browser: an unlabelled field fails and is named; a placeholder-only one is a finding; labelled ones pass (828.468433ms)
+2026-10-19T20:21:14.9304645Z ✔ in a real browser: every input type is named correctly, labelled or not, whatever its snapshot line shows (709.546637ms)
+2026-10-19T20:21:14.9306271Z ✔ no selection generates no journey test - never every candidate (1.743053ms)
+2026-10-19T20:21:14.9307770Z ✔ exactly the selected journeys get a test, and an id the profile doesn't offer gets none (0.623845ms)
+2026-10-19T20:21:14.9309223Z ✔ the test is skipped unless interactive tests are enabled for the run (0.16779ms)
+2026-10-19T20:21:14.9310646Z ✔ each hop is asserted in order, using the real element from the graph (0.142473ms)
+2026-10-19T20:21:14.9312475Z ✔ a form-submit final hop asserts the submit reached its endpoint without failing, not that the browser ended on it (0.144774ms)
+2026-10-19T20:21:14.9314247Z ✔ a named flow with an unverified exit asserts the app actually reaches it after submitting (0.184182ms)
+2026-10-19T20:21:14.9315850Z ✔ an exit the graph itself reaches is not asserted twice; an automatic journey has no exit assertion (0.237659ms)
+2026-10-19T20:21:14.9317516Z ✔ a formaction submit control is located by its own attribute and submits its enclosing form (0.216895ms)
+2026-10-19T20:21:14.9319022Z ✔ quotes and backslashes in a label or raw value can't break out of the generated test (458.437522ms)
+2026-10-19T20:21:14.9320942Z ✔ mockGenerate emits the helpers and journey tests inside the functional suite only when functional is generated (3.424936ms)
+2026-10-19T20:21:14.9324049Z (node:16373) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/journey-tests.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:21:14.9326356Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:21:14.9327851Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:21:14.9329034Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:22:08.2952907Z ✔ three checks per inspected page and one across them, in the usability area; none without page data beyond / (1360.777179ms)
+2026-10-19T20:22:08.2954739Z (node:16386) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/layout.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:22:08.2956188Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:22:08.2957305Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:22:08.2958241Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:22:08.2959688Z ✔ in a real browser: each layout defect on the fixture's gallery is reported by its own check, named, and the clean gallery is clean (decision table) (109106.151338ms)
+2026-10-19T20:22:08.3352615Z ✔ the generated anchor test type-checks and never builds a CSS selector from an href (1880.804951ms)
+2026-10-19T20:22:08.3354200Z (node:18523) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/anchor-target.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:22:08.3355372Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:22:08.3356219Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:22:08.3356979Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:22:08.3358255Z ✔ in a real browser: href="#" is a named finding, not a crash; real, #top and encoded targets pass; a missing target fails by name (4769.322855ms)
+2026-10-19T20:22:08.3359344Z ✔ both download checks emit \.(pdf...): a link ending getpdf, with no dot, is not a download (2.90152ms)
+2026-10-19T20:22:08.3361208Z (node:18611) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/download-pattern.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:22:08.3362448Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:22:08.3363274Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:22:08.3363960Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:44.7167929Z (node:18619) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/hidden-links.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:23:44.7170243Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:23:44.7171937Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:23:44.7173139Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:44.7175399Z ✔ in a real browser: on the fixture's menus, link health ignores the menu, the keyboard check opens it, and the responsive check opens the collapsed nav (decision table) (147763.770379ms)
+2026-10-19T20:23:47.1720713Z ✔ in a real browser: a hidden link with no control that reveals it passes health, with the finding that none was found (decision table) (2755.887258ms)
+2026-10-19T20:23:47.2146690Z (node:18982) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/inventory-tests.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:23:47.2148188Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:23:47.2149043Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:23:47.2149831Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:47.2151511Z ✔ in a real browser: one test per distinct link, the repeated one once; the working link passes and the broken one fails in link health, with no load twice (TFP-205) (14075.70219ms)
+2026-10-19T20:23:47.2153082Z ✔ in a real browser: a link no other check loads is loaded by its own test - a broken one fails with its status, an external one gets no request, one over the cap is named (TFP-205) (4569.809557ms)
+2026-10-19T20:23:47.2154578Z ✔ offline, on TFP-197's crawls of both Toolshop copies: generation leaves no link on the in-context gap list (TFP-205), the cards' by their group's test (TFP-208) (620.10032ms)
+2026-10-19T20:23:47.2156500Z ✔ in a real browser: a listing's cards, other ones on every load, get one test that passes by position; broken card targets still fail link health; no cards fails; two broken cards fail once, naming both products (TFP-208) (18769.163571ms)
+2026-10-19T20:23:47.2157983Z ✔ card groups: three or more links to one address but an id; fewer, or ones that differ in more, are links of their own (TFP-208) (0.678758ms)
+2026-10-19T20:23:47.2158886Z ✔ both generated checks type-check and bound their own waits (1228.576082ms)
+2026-10-19T20:23:47.2160209Z (node:20517) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/link-check-timeouts.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:23:47.2161635Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:23:47.2162729Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:23:47.2163513Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:47.2164478Z ✔ in a real browser: a skip link parked off-screen is named as not hovered; the check passes in seconds, not 30 s (3887.111494ms)
+2026-10-19T20:23:47.2165913Z ✔ in a real browser: a stalled dependency is the check's own 5 s timeout, named with its reason; a repeat of it is not requested again (6562.245109ms)
+2026-10-19T20:23:47.2167800Z (node:20772) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/link-audits/orphan-pages.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:23:47.2169025Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:23:47.2170149Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:23:47.2171223Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:47.2172339Z ✔ in a real browser: on the fixture, the orphan check follows the decision table (start lost, another lost, unlinked, all linked) (49233.990278ms)
+2026-10-19T20:23:47.2173679Z ✔ a profile without requestedPaths (saved before TFP-161) gets today's check, unchanged (0.811412ms)
+2026-10-19T20:23:47.2174813Z ✔ plain values produce exactly the same locator as before (0.974283ms)
+2026-10-19T20:23:47.2176091Z (node:20853) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/locators.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:23:47.2177162Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:23:47.2178243Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:23:47.2179004Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:23:47.2179904Z ✔ awkward ids, classes and hrefs compile and select exactly the right element in a real browser (2352.68477ms)
+2026-10-19T20:24:20.4534821Z (node:20929) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/performance-bands.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:20.4572308Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:20.4577237Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:20.4578576Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:20.4591294Z {"clean":[["TFPL-001: landing page finishes loading within 5 s","Passed",[],null],["TFPL-002: largest contentful paint stays under 4 s","Passed",[],null],["TFPL-003: page weight stays under 5 MB","Passed",[],null],["TFPL-004: no same-origin request fails while the page loads","Passed",[],null],["TFPL-005: cumulative layout shift during load stays under 0.25","Passed",[],null],["TFPL-006: total blocking time during load (recorded, not judged)","Passed",[],["TBT 0 ms on / (0 long task(s) after the first contentful paint, up to 1.5 s after load): recorded, not judged - web.dev calls TBT a proxy for INP, not a substitute, and gives it no band. Measured once, in a lab (this run, from this machine), not from real visits."]]],"lcp3":["Passed",["LCP 3.04 s on /: Core Web Vitals \"needs improvement\" (over 2.5 s, up to 4.0 s). Largest element: img. Measured once, in a lab (this run, from this machine), not from real visits."]],"lcp5":["Failed","Error: LCP 5.08 s, budget 4.0 s: Core Web Vitals \"poor\". Largest element: img. Measured once, in a lab (this run, from this machine), not from real visits. expect(received).toBeLessThanOrEqual(expected) Expected: <= 4000 Received: 5076"],"cls15":["Passed",["CLS 0.142 on /: Core Web Vitals \"needs improvement\" (over 0.1, up to 0.25). Shifted first: main, nav. Measured once, in a lab (this run, from this machine), not from real visits."]],"cls30":["Failed","Error: CLS 0.284 on /, budget 0.25: Core Web Vitals \"poor\": content moves while the page loads. Shifted first: main, nav. Measured once, in a lab (this run, from this machine), not from real visits. expect(received).toBeLessThanOrEqual(expected) Expected: <= 0.25 Received: 0.2843177083333333"]}
+2026-10-19T20:24:20.4601249Z ✔ in a real browser: LCP and CLS fall in Core Web Vitals' bands - a finding for needs improvement, a failure for poor; TBT is recorded, not judged; every finding and failure says it is a lab measurement (123808.697524ms)
+2026-10-19T20:24:29.0245899Z ✔ in a real browser: TBT counts a long task after the first contentful paint (a 300 ms busy loop gives about 250 ms), still with no pass or fail (8568.045746ms)
+2026-10-19T20:24:29.0498699Z ✔ performance checks: the budgets are Decision 2's loose ones (0.940991ms)
+2026-10-19T20:24:29.0501416Z ✔ performance checks: six checks (TFP-149 added CLS and TBT), the generated suite compiles and awaits every web-first assertion (1296.909218ms)
+2026-10-19T20:24:29.0503451Z ✔ performance checks: navigation waits for the load event before reading its timing (0.325915ms)
+2026-10-19T20:24:29.0505252Z ✔ performance checks: each failure message states the measurement, the budget, and the culprit (0.309894ms)
+2026-10-19T20:24:29.0507156Z ✔ performance checks: page weight uses browser-reported sizes, not Resource Timing (0 bytes cross-origin) (0.150802ms)
+2026-10-19T20:24:29.0508729Z ✔ performance checks: a request the page cancelled itself is not a failure (0.122075ms)
+2026-10-19T20:24:29.0510226Z ✔ performance checks: no LCP at all is recorded as a finding, not a failure (0.10703ms)
+2026-10-19T20:24:29.0512887Z ✔ performance checks: LCP and CLS at and either side of each band's lines (boundary value analysis; 'poor' is over the line, as web.dev says) (360.789442ms)
+2026-10-19T20:24:29.0515038Z ✔ performance checks: includeNavigation false drops only the navigation budget; path is used by every check (0.371718ms)
+2026-10-19T20:24:29.0517441Z (node:22760) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/performance-checks.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0519547Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0521174Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0522446Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0524212Z ✔ TFP-114: "performance" with performance/load selected produces a performance test on a generic target (2.799317ms)
+2026-10-19T20:24:29.0525992Z ✔ TFP-114: "performance" alone (keyword-triggered) produces a performance test on a generic target (2.863477ms)
+2026-10-19T20:24:29.0527718Z ✔ TFP-114: "performance" on DemoQA still produces exactly one performance suite, not two (0.642027ms)
+2026-10-19T20:24:29.0529457Z ✔ TFP-114: "load time" with performance/load selected produces a performance test on a generic target (0.269833ms)
+2026-10-19T20:24:29.0531237Z ✔ TFP-114: "load time" alone (keyword-triggered) produces a performance test on a generic target (1.819157ms)
+2026-10-19T20:24:29.0532928Z ✔ TFP-114: "load time" on DemoQA still produces exactly one performance suite, not two (0.240103ms)
+2026-10-19T20:24:29.0534558Z ✔ TFP-114: "speed" with performance/load selected produces a performance test on a generic target (0.224807ms)
+2026-10-19T20:24:29.0536416Z ✔ TFP-114: "speed" alone (keyword-triggered) produces a performance test on a generic target (0.670517ms)
+2026-10-19T20:24:29.0537955Z ✔ TFP-114: "speed" on DemoQA still produces exactly one performance suite, not two (0.446628ms)
+2026-10-19T20:24:29.0540077Z ✔ TFP-114: "response time" with performance/load selected produces a performance test on a generic target (0.368816ms)
+2026-10-19T20:24:29.0544764Z ✔ TFP-114: "response time" alone (keyword-triggered) produces a performance test on a generic target (1.032824ms)
+2026-10-19T20:24:29.0560127Z ✔ TFP-114: "response time" on DemoQA still produces exactly one performance suite, not two (0.225217ms)
+2026-10-19T20:24:29.0589981Z ✔ TFP-114: performance selected without a trigger word - one suite on either target (0.313083ms)
+2026-10-19T20:24:29.0591869Z ✔ TFP-114: performance is not added when it is neither selected nor triggered (0.66212ms)
+2026-10-19T20:24:29.0594270Z (node:22847) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/performance-suite.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0596421Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0598181Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0599390Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0601600Z ✔ security suite on an http:// target: the shared passive checks on every inspected page, one missing-page probe, and a payload test per form with a free-text field (4.604609ms)
+2026-10-19T20:24:29.0603381Z ✔ security suite on an https:// target keeps the HTTPS check exactly as before (0.442163ms)
+2026-10-19T20:24:29.0604848Z ✔ security suite: the generated code compiles and awaits every web-first assertion (1971.204657ms)
+2026-10-19T20:24:29.0606512Z ✔ security suite: missing headers, cookie flags and software versions are findings, never failures (3.773363ms)
+2026-10-19T20:24:29.0608364Z ✔ security suite: payload tests never type into passwords, and are at the active gate, so never run (Phase 38 Decision 6) (1.800825ms)
+2026-10-19T20:24:29.0610244Z ✔ security payload: survives being written into generated code intact (0.768285ms)
+2026-10-19T20:24:29.0611528Z ✔ findPayloadForms: text-like visible fields only, at most 3 forms (0.384667ms)
+2026-10-19T20:24:29.0612753Z ✔ security suite: no inspection data or no form is said in a note (0.298097ms)
+2026-10-19T20:24:29.0614248Z ✔ payload goes only into free-text fields; email, url and tel get valid dummy values (so validation can't block the submit) (298.620255ms)
+2026-10-19T20:24:29.0615851Z ✔ payload test skips, with the reason, when validation would block the submit or no request is sent (0.970576ms)
+2026-10-19T20:24:29.0617999Z (node:22855) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/security-checks.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0619631Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0621265Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0622402Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0623744Z ✔ the SEO suite type-checks and awaits every web-first assertion (1644.16051ms)
+2026-10-19T20:24:29.0625179Z ✔ the optional items say so in their titles; the baseline ones name what is missing and where (0.352648ms)
+2026-10-19T20:24:29.0627286Z (node:22908) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/seo-findings.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0629107Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0637655Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0639190Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0641353Z ✔ in a real browser: missing structured data and manifest are findings and pass; the baseline items fail (10950.073131ms)
+2026-10-19T20:24:29.0643195Z ✔ in a real browser: a site with everything passes every SEO test with no findings; a linked manifest that 404s fails (1062.272045ms)
+2026-10-19T20:24:29.0644797Z ✔ one spelling check per inspected page in the SEO/content area, and the suite type-checks (1359.701483ms)
+2026-10-19T20:24:29.0646815Z (node:23763) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/spelling.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0648489Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0649825Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0651097Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0652906Z ✔ in a real browser: a misspelt heading and a placeholder that isn't its label's word are findings; names, credits and another language are not checked (decision table) (12902.99149ms)
+2026-10-19T20:24:29.0654735Z ✔ a target that doesn't touch storage at all generates no storage-failure test (0.945748ms)
+2026-10-19T20:24:29.0656193Z ✔ a page with no storageUsage field at all (older/malformed data) generates no test, not a crash (0.178134ms)
+2026-10-19T20:24:29.0657698Z ✔ one test per detected (page, storage kind) - not one per page, not one blanket test (0.228001ms)
+2026-10-19T20:24:29.0659132Z ✔ the generated test title exactly matches buildStorageFailureTitle's output (0.192838ms)
+2026-10-19T20:24:29.0660800Z ✔ localStorage/sessionStorage are broken via a getter override, indexedDB via wrapping .open (0.143191ms)
+2026-10-19T20:24:29.0662699Z ✔ asserts graceful degradation generically: body visible, no uncaught page errors, no 5xx (1.304885ms)
+2026-10-19T20:24:29.0665040Z (node:24597) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/storage-failure-injection.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0669715Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0671310Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0680777Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0682186Z ✔ every test in a generated file has its own ID, numbered on across same-area suites (9.90271ms)
+2026-10-19T20:24:29.0684204Z (node:24614) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/mock/test-ids.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0686159Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0687491Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0688503Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:24:29.0689631Z ✔ resolveOllamaModel: an untagged name matches its :latest entry (1.481317ms)
+2026-10-19T20:24:29.0691140Z ✔ resolveOllamaModel: a tagged name matches only that exact tag (0.227857ms)
+2026-10-19T20:24:29.0692271Z ✔ resolveOllamaModel: no prefix or pattern matching (0.131905ms)
+2026-10-19T20:24:29.0693341Z ✔ stripCodeFence: removes a language-tagged fence (0.253255ms)
+2026-10-19T20:24:29.0694510Z ✔ stripCodeFence: removes a bare fence and surrounding whitespace (0.221835ms)
+2026-10-19T20:24:29.0695542Z ✔ stripCodeFence: handles CRLF line endings (0.161701ms)
+2026-10-19T20:24:29.0696780Z ✔ stripCodeFence: an unclosed fence (truncated output) still loses its opening line (0.113365ms)
+2026-10-19T20:24:29.0698292Z ✔ stripCodeFence: unfenced code is returned unchanged (0.247393ms)
+2026-10-19T20:24:29.0699509Z ✔ stripCodeFence: a fence in the middle of the code is left alone (0.349264ms)
+2026-10-19T20:24:29.0703053Z (node:24622) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/ollama.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:24:29.0705036Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:24:29.0706323Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:24:29.0707630Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:25:05.9764166Z ✔ every page.goto in a suite goes through the helper, added once after test.use; other code is untouched (1327.808433ms)
+2026-10-19T20:25:05.9783134Z (node:24645) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/page-visits.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:25:05.9815508Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:25:05.9818902Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:25:05.9820091Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:25:06.0036228Z ✔ in a real browser: on a page that draws its form after a slow request, the form and name checks see the drawn page and pass (87714.661357ms)
+2026-10-19T20:26:42.6186251Z ✔ in a real browser: a hash route that draws late (/spa#/contact) is read after it draws: its form check finds the form (96398.386397ms)
+2026-10-19T20:26:42.6188069Z ✔ model and OpenAI page visits go through tfGoto: no raw page.goto outside the helper's own body, the helper once, and each suite type-checks (246.395546ms)
+2026-10-19T20:26:42.6739649Z ✔ the guard's code type-checks (1250.323486ms)
+2026-10-19T20:26:42.6741519Z (node:25340) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/read-only-guard.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:26:42.6743296Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:26:42.6744523Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:26:42.6745479Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:26:42.6746497Z ✔ in a real browser: the guard lets a GET-only sort through and aborts, and names, a POST and a form submission (decision table) (10673.247931ms)
+2026-10-19T20:26:42.6747711Z ✔ in a real browser: a page's beacons are aborted and noted, not a breach, whether a link is followed or the page stays (TFP-199) (3619.736518ms)
+2026-10-19T20:26:42.6749041Z ✔ the probe's list: 19 paths - version control, .env, backups and dumps, and three log files in three folders - named with its count in the test's title (1442.704912ms)
+2026-10-19T20:26:42.6751136Z (node:25928) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/security-probes.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:26:42.6752325Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:26:42.6753117Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:26:42.6753990Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:26:42.6755574Z ✔ in a real browser: the probe finds a log on the site's own API and not a catch-all page; integer ids are a finding (decision table) (16170.015547ms)
+2026-10-19T20:27:43.5875651Z (node:26655) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/standard-conformance.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:27:43.5878004Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:27:43.5879518Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:27:43.5880766Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:27:43.5962615Z ✔ in a real browser: on the fixture, a Standard security run and a Comprehensive one report the same for every page, for the clean site and each passive defect; the Standard run sends one missing-page probe (200060.502594ms)
+2026-10-19T20:30:26.8533746Z ✔ in a real browser: on the fixture, the Standard run's axe scan and the Comprehensive one report the same for every page, for the clean site and each WCAG defect (TFP-148) (163263.513532ms)
+2026-10-19T20:30:26.8536167Z ✔ the Standard report lists the scan's undecided items for manual review, by page, and a Comprehensive report does not repeat them there (TFP-148) (2.329334ms)
+2026-10-19T20:30:41.7317323Z (node:26815) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/standard-gates.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7319112Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7320190Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7321383Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7323145Z ✔ in a real browser, interactive unset: the Standard run sends only GETs; interactive and active tests are Not run with their reasons, counted per gate (180313.661057ms)
+2026-10-19T20:30:41.7325568Z ✔ in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and submit forms; the active test is still Not run, naming the ownership confirmation (191420.467428ms)
+2026-10-19T20:30:41.7592741Z ✔ findTypeErrors: rejects the matcher the local model invented (1310.371691ms)
+2026-10-19T20:30:41.7594279Z ✔ findTypeErrors: accepts the same suite using real matchers (46.226342ms)
+2026-10-19T20:30:41.7595458Z ✔ findTypeErrors: rejects a syntax error (31.261839ms)
+2026-10-19T20:30:41.7596525Z ✔ findTypeErrors: rejects an import that is not installed (41.410448ms)
+2026-10-19T20:30:41.7597883Z ✔ findTypeErrors: is lenient about style - implicit any is not an error (31.775415ms)
+2026-10-19T20:30:41.7599449Z ✔ findTypeErrors: the template generator's own suites pass, for every coverage area (1161.705376ms)
+2026-10-19T20:30:41.7601214Z ✔ findUnawaitedAssertions: finds the unawaited page assertion from the Phase 31 security sample (38.589031ms)
+2026-10-19T20:30:41.7602967Z ✔ findUnawaitedAssertions: a synchronous value matcher is reported, but not as a silent no-op (39.992929ms)
+2026-10-19T20:30:41.7604401Z ✔ findUnawaitedAssertions: sees through .not, expect.soft and parentheses (35.711566ms)
+2026-10-19T20:30:41.7605823Z ✔ findUnawaitedAssertions: awaited and returned assertions are clean (20.844981ms)
+2026-10-19T20:30:41.7607518Z ✔ findPromisesToPlainMatchers: rejects reliability-3 from the 2026-09-30 C8 run, every isDisabled() line (94.375896ms)
+2026-10-19T20:30:41.7608972Z ✔ findPromisesToPlainMatchers: sees .not, expect.soft, toBeTruthy and an unawaited plain matcher (29.450966ms)
+2026-10-19T20:30:41.7610997Z ✔ findPromisesToPlainMatchers: web-first matchers, resolves/rejects, awaited values and expect.poll are clean (36.116032ms)
+2026-10-19T20:30:41.7612949Z ✔ findDuplicateTests: rejects reliability-2 from the 2026-09-30 C8 run - three titles, one body (31.145337ms)
+2026-10-19T20:30:41.7614688Z ✔ findDuplicateTests: whitespace and comments don't make a body different; titles don't matter (0.560983ms)
+2026-10-19T20:30:41.7616737Z ✔ findDuplicateTests: the same body under different setup is not a duplicate; different bodies are clean (31.18825ms)
+2026-10-19T20:30:41.7618548Z ✔ findDuplicateTests: the full-request reliability suites from the diagnostic, with three different failures, are clean (3.227665ms)
+2026-10-19T20:30:41.7620244Z ✔ findPromisesToPlainMatchers: the template generator's own suites are clean, for every coverage area (326.642308ms)
+2026-10-19T20:30:41.7622150Z (node:33304) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/generate/validate.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7623639Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7624827Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7625917Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7627570Z (node:33402) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/controls.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7629301Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7631084Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7632120Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7633400Z ✔ in a real browser: each input type gets the role ARIA in HTML gives it (equivalence partitioning) (225.744013ms)
+2026-10-19T20:30:41.7635198Z ✔ in a real browser: on /controls, the search field is checked by role, the unnamed icon button fails its name check, and each same-text button tests itself (47095.304187ms)
+2026-10-19T20:30:41.7636719Z ✔ a same-origin script is not recorded as a dependency (1.177525ms)
+2026-10-19T20:30:41.7637667Z ✔ a third-party script is recorded with its host and kind (0.280857ms)
+2026-10-19T20:30:41.7638654Z ✔ a form action host is recorded regardless of same-origin status (0.180926ms)
+2026-10-19T20:30:41.7639590Z ✔ an iframe src is recorded regardless of same-origin status (0.19473ms)
+2026-10-19T20:30:41.7641001Z ✔ a stylesheet or image embedded link is not a recorded dependency kind (1.956007ms)
+2026-10-19T20:30:41.7642326Z ✔ a same-origin fetch is tagged sameOrigin: true, not misclassified as third-party (0.59216ms)
+2026-10-19T20:30:41.7643887Z ✔ the same (host, kind) observed on multiple pages dedupes to one row with an accurate occurrence count and path list (1.134224ms)
+2026-10-19T20:30:41.7645494Z ✔ distinctly-named cookies on the same host are separate rows, not collapsed to one (0.306269ms)
+2026-10-19T20:30:41.7647710Z (node:35889) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/dependency-map.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7649501Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7650962Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7652044Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7653413Z ✔ a path ending in a form submit is a candidate, naming each step's real element; a path ending in a link is not (3.238744ms)
+2026-10-19T20:30:41.7654717Z ✔ automatic candidates rank shortest first and ranks are 1-based and contiguous (0.438542ms)
+2026-10-19T20:30:41.7656091Z ✔ a form that posts back to its own page is a 1-hop journey; a cycle back to an earlier page is not walked (0.360999ms)
+2026-10-19T20:30:41.7657602Z ✔ a named flow whose exit is beyond the graph matches as far as the form submit and carries the exit as declared (0.273205ms)
+2026-10-19T20:30:41.7659256Z ✔ a named flow outranks an automatic candidate over the same pages, which is then surfaced once (12.218426ms)
+2026-10-19T20:30:41.7660987Z ✔ a named flow that matches an automatic journey's exact pages replaces it, keeping the named rank (0.473339ms)
+2026-10-19T20:30:41.7662449Z ✔ a journey of exactly the hop limit is surfaced; one hop over is excluded, not truncated (0.527696ms)
+2026-10-19T20:30:41.7663904Z ✔ a named flow whose exit is reachable only past the hop limit is excluded with a warning, with no shorter fallback (0.775334ms)
+2026-10-19T20:30:41.7665009Z ✔ a named flow with an unknown or uninspected entry is excluded with a warning (0.388046ms)
+2026-10-19T20:30:41.7665796Z ✔ no more than the journey cap is surfaced, and the surplus is reported (0.652057ms)
+2026-10-19T20:30:41.7666597Z ✔ named flows are never displaced by the cap (0.510742ms)
+2026-10-19T20:30:41.7667408Z ✔ normalizeNamedFlows trims, normalizes paths, and drops incomplete entries (0.498094ms)
+2026-10-19T20:30:41.7668363Z ✔ journeys survive normalizeContentProfile; a journey whose steps don't match the graph is dropped (2.03472ms)
+2026-10-19T20:30:41.7669411Z ✔ selectJourneys returns exactly the selected journeys in rank order, drops unknown ids, and empty selects nothing (0.330981ms)
+2026-10-19T20:30:41.7670730Z ✔ normalizeContentRules carries selectedJourneyIds exactly, defaulting to none (0.384674ms)
+2026-10-19T20:30:41.7672078Z (node:35905) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/journeys.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7673181Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7674020Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7674717Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7676110Z (node:35928) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/label-names.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7677343Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7678172Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7679037Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7680179Z ✔ a control inside its label is named as the browser names it, and its check finds it (TFP-200) (6884.410643ms)
+2026-10-19T20:30:41.7682052Z ✔ Decision 1 and 2: a fragment starting with / or !/ is a route, named as the address bar shows it; anything else is an in-page anchor (1.129261ms)
+2026-10-19T20:30:41.7684018Z (node:36510) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/routes.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7685680Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7687068Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7687958Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7689361Z ✔ in a real browser: the crawl finds every linked route of the fixture's hash-routed app as its own page (6184.587816ms)
+2026-10-19T20:30:41.7691154Z ✔ in a real browser: routes are internal links, anchors stay anchors; a linked missing route fails link health, naming it; #top and #details pass the anchor check (81802.295489ms)
+2026-10-19T20:30:41.7692342Z ✔ an internal link is an edge naming the element that produces it (14.230645ms)
+2026-10-19T20:30:41.7693472Z ✔ a form action and a formaction button are form-submit edges (0.483217ms)
+2026-10-19T20:30:41.7694328Z ✔ onclick/data-href navigation is an action edge; resource loads are not edges (0.328646ms)
+2026-10-19T20:30:41.7695349Z ✔ external, anchor, mailto, download and inert links are not edges (0.198035ms)
+2026-10-19T20:30:41.7696224Z ✔ a same-origin edge whose linkType says internal but whose host differs is dropped (0.227447ms)
+2026-10-19T20:30:41.7697064Z ✔ a link self-edge is dropped; a form-submit self-edge is kept (0.24275ms)
+2026-10-19T20:30:41.7697964Z ✔ the same element repeated on one page is one edge; a differently-labeled link to the same page is another (0.272754ms)
+2026-10-19T20:30:41.7698992Z ✔ query and hash never make a distinct page; a target only known from a link is an uninspected node (0.261652ms)
+2026-10-19T20:30:41.7699909Z ✔ the graph survives normalizeContentProfile, and an edge to an unknown node is dropped (1.189426ms)
+2026-10-19T20:30:41.7701379Z (node:40928) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/introspect/site-graph.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7702530Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7703361Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7704118Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7704993Z ✔ every entry records its pattern, technique, gate, where it runs and the bugs it caught (2.481492ms)
+2026-10-19T20:30:41.7706278Z ✔ an entry applies where inspection found its pattern, and only there (decision table) (0.512663ms)
+2026-10-19T20:30:41.7707594Z ✔ the generator writes a check on exactly the pages its entry binds to (page, site, two-page site) (247.190744ms)
+2026-10-19T20:30:41.7709279Z (node:40959) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/library/library.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7711820Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7712916Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7714060Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7715748Z (node:41046) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/library/promoted.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7717394Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7718553Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7719649Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7721255Z ✔ an element's pattern: a test on each page with it, bound, in the functional describe, the element covered (TFP-204) (688.830585ms)
+2026-10-19T20:30:41.7722474Z ✔ a repeated link: one test, on the first page it is on (TFP-204) (161.462367ms)
+2026-10-19T20:30:41.7723551Z ✔ nothing promoted, no page with the pattern, or refused by the code check: the code as it came (TFP-204) (31.339265ms)
+2026-10-19T20:30:41.7724682Z ✔ through the routes: a promoted entry is generated on Standard functional and runs inside the verdict (TFP-204) (13207.671206ms)
+2026-10-19T20:30:41.7725904Z ✔ the suite: one describe per covered page under the area's title, every test tagged with its page, clean under every gate (2464.731021ms)
+2026-10-19T20:30:41.7727131Z ✔ the report: per-page counts, failures and findings grouped by category naming page and test, ASVS chapters tested only from tags that ran (1.872974ms)
+2026-10-19T20:30:41.7728200Z ✔ the report: a clean run never reads as a clean bill of health; accessibility has no ASVS table (0.349227ms)
+2026-10-19T20:30:41.7729617Z (node:41955) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/comprehensive.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7730976Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7731826Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7732510Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7733577Z ✔ in a real browser: a generated Comprehensive run's report shows the area only, each page's result, the page left out, and ends with what it did not test (15996.869919ms)
+2026-10-19T20:30:41.7734669Z ✔ a Standard report has no comprehensive section and keeps the tabbed layout (0.734725ms)
+2026-10-19T20:30:41.7735847Z (node:43097) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/coverage-map.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7736950Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7737768Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7738451Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7739362Z ✔ every element check maps to the element it checks, and a form is matched by its record (TFP-192) (16814.700269ms)
+2026-10-19T20:30:41.7740365Z ✔ an element no test touches is listed by name in its page type's row, and so is a flow with no journey test (TFP-192) (337.662015ms)
+2026-10-19T20:30:41.7741491Z ✔ the index selects the tests for one changed element: a run of just those (TFP-192) (170.758368ms)
+2026-10-19T20:30:41.7742649Z ✔ a link checked only by a site-wide request is reachability-covered and on the gap list (TFP-201); its own check covers it in context (TFP-205) (221.246719ms)
+2026-10-19T20:30:41.7743808Z ✔ a link on every page, checked on one of them, is one item covered in context (TFP-201) (222.886714ms)
+2026-10-19T20:30:41.7744512Z ✔ no page data or no suite source: no map (0.358145ms)
+2026-10-19T20:30:41.7745399Z ✔ Group 2: more discovered elements than tests still shows <100% coverage even when every written test passes (3.245239ms)
+2026-10-19T20:30:41.7746448Z ✔ Group 3: not-selected, excluded-by-generator (link + cap), and generator-gap are each exactly one reason (1.057561ms)
+2026-10-19T20:30:41.7747450Z ✔ Group 3: an unselected practice area buckets all of its discovered elements as not-selected (0.248795ms)
+2026-10-19T20:30:41.7748424Z ✔ Group 2: accessibility coverage matches by its own title shape, independent of functional (0.366871ms)
+2026-10-19T20:30:41.7749306Z ✔ areas without discovered-element data keep the prior test-based rollup unchanged (0.258393ms)
+2026-10-19T20:30:41.7750603Z ✔ TFP-085: reliability folds into the same discovered-coverage denominator as functional/accessibility (0.390136ms)
+2026-10-19T20:30:41.7751635Z ✔ TFP-085: a cookie-kind dependency is excluded-by-generator, not a false generator-gap (0.246773ms)
+2026-10-19T20:30:41.7752713Z ✔ Decision 4 (revised): a redirect-kind dependency is tested by default like any other routable dependency, not excluded (0.320898ms)
+2026-10-19T20:30:41.7753837Z ✔ TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests (0.454125ms)
+2026-10-19T20:30:41.7754794Z ✔ TFP-086: a page with no detected storage usage contributes nothing to the reliability row (0.348871ms)
+2026-10-19T20:30:41.7755915Z ✔ TFP-091: a journey generated into the suite and executed counts as covered; one not generated is listed as not-selected and not counted (0.450093ms)
+2026-10-19T20:30:41.7757191Z ✔ TFP-091: a generated journey that was skipped (interactive tests not enabled) stays uncovered with its own reason, never generator-gap or covered (0.281329ms)
+2026-10-19T20:30:41.7758550Z ✔ TFP-091: a generated journey with no execution record is a generator-gap; without the functional area it is not-selected (0.25778ms)
+2026-10-19T20:30:41.7759490Z ✔ TFP-091: the TFxx-000 id prefix on a real run's titles is stripped before matching (0.129357ms)
+2026-10-19T20:30:41.7760695Z ✔ Group 2: an element's check is matched to its discovered element when the executed title carries the TFxx id prefix a real run has (0.581681ms)
+2026-10-19T20:30:41.7762111Z (node:43669) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/discovered-coverage.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7763210Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7764082Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7764787Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7765616Z ✔ templateNotesFor: reads the template's own note for an area back out of the suite that ran (1.533018ms)
+2026-10-19T20:30:41.7766724Z ✔ computeEmptyAreas: areas with a test are left out; empty ones say why, template side first (0.492103ms)
+2026-10-19T20:30:41.7767720Z ✔ computeEmptyAreas: the local-model outcome from generation is named - timeout, rejection, asked-but-empty (0.248106ms)
+2026-10-19T20:30:41.7768777Z ✔ computeEmptyAreas: an area with no block at all in the suite still says the template wrote nothing (0.136884ms)
+2026-10-19T20:30:41.7769713Z ✔ buildReport carries the generation record and the empty areas, and the HTML export shows both (4.387482ms)
+2026-10-19T20:30:41.7770980Z ✔ Phase 37: a promise_to_plain_matcher rejection is saved with the run, named in the empty area, and shown in the report (4.279345ms)
+2026-10-19T20:30:41.7772015Z ✔ TFP-122: the HTML export says the page data was gathered automatically, or why it could not be (1.777924ms)
+2026-10-19T20:30:41.7773069Z ✔ buildReport without a generation record: no generation section, and older callers still work (0.355077ms)
+2026-10-19T20:30:41.7774282Z (node:43677) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/empty-areas.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7775362Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7776188Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7776935Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7777679Z ✔ deriveArea: the template generator's suite names map exactly as before (1.492532ms)
+2026-10-19T20:30:41.7778484Z ✔ deriveArea: describe blocks named after an area key or label map to that area (0.229746ms)
+2026-10-19T20:30:41.7779425Z ✔ deriveArea: only whole titles match - a describe that merely mentions an area stays Functional (0.131282ms)
+2026-10-19T20:30:41.7780358Z ✔ flattenSuites: a test that skipped itself reports its own reason, not an interrupted run (2.236249ms)
+2026-10-19T20:30:41.7781398Z ✔ flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording (1.020906ms)
+2026-10-19T20:30:41.7782544Z ✔ flattenSuites: finding annotations are kept on the record and appended to the remark, and the test still passes (1.339077ms)
+2026-10-19T20:30:41.7783470Z ✔ flattenSuites: a test with no findings has an empty list and an unchanged remark (0.292005ms)
+2026-10-19T20:30:41.7784492Z ✔ flattenSuites: tests inside Option B's 'Local model (...)' block are labelled local model, filed under their area (0.391818ms)
+2026-10-19T20:30:41.7785752Z (node:43700) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/execution.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7787221Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7788023Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7788730Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7789853Z (node:43713) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/html-tabs.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7791049Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7791881Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7792560Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7793542Z ✔ in a real browser: every tab of an exported Standard report shows its own panel and hides the others, and no script shows as text (656.129736ms)
+2026-10-19T20:30:41.7794728Z ✔ a clean run with interactive tests off reads Ready for release, with the not-run tests named beside it (386.317236ms)
+2026-10-19T20:30:41.7795456Z ✔ different reasons are each counted (0.251666ms)
+2026-10-19T20:30:41.7796357Z ✔ an unexplained skip or interruption still means Ready with caution and counts as failed in the ratio (173.852497ms)
+2026-10-19T20:30:41.7797151Z ✔ a failure still means Not ready, whatever was not run (20.338766ms)
+2026-10-19T20:30:41.7797937Z ✔ GEN-43: a run where every test was not run gives no recommendation, not Ready for release (0.321655ms)
+2026-10-19T20:30:41.7798899Z ✔ RPT-14: an all-interrupted run gives no recommendation - Blocked tests did not run either (0.861495ms)
+2026-10-19T20:30:41.7799695Z ✔ RPT-14: a mix of run and Blocked tests still reads Ready with caution (0.196972ms)
+2026-10-19T20:30:41.7800577Z ✔ RPT-14: noTestRan counts passed, flaky and failed only (0.23667ms)
+2026-10-19T20:30:41.7801470Z ✔ RPT-14: the HTML export's recommendation banner is neutral when no test ran, not green or orange (3.535428ms)
+2026-10-19T20:30:41.7802726Z (node:43805) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/report/summary.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7803810Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7804648Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7805375Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7806010Z ✔ no login block means no login (1.115235ms)
+2026-10-19T20:30:41.7806777Z ✔ a complete config is resolved against the base URL and normalized (1.007805ms)
+2026-10-19T20:30:41.7807514Z ✔ inline credentials are never accepted, whatever they are called (0.689836ms)
+2026-10-19T20:30:41.7808415Z ✔ a credential reference must be an environment variable NAME, so a pasted value is refused (0.228813ms)
+2026-10-19T20:30:41.7809330Z ✔ a credential pasted where a name belongs is refused, so it is never looked up or echoed back (0.502413ms)
+2026-10-19T20:30:41.7810026Z ✔ every field a login needs is required (0.276256ms)
+2026-10-19T20:30:41.7811086Z ✔ a config with no signed-in signal is refused, since a failed login could not be told from a successful one (0.23733ms)
+2026-10-19T20:30:41.7811974Z ✔ the login page must be on the site under test - credentials are typed into it (0.206637ms)
+2026-10-19T20:30:41.7812655Z ✔ a login that is not an object is refused (0.234193ms)
+2026-10-19T20:30:41.7813541Z ✔ credential values are read from the environment at run time, and a missing or empty one is a named error (0.963415ms)
+2026-10-19T20:30:41.7814451Z ✔ a missing-credential error names the variable and never a value (0.204968ms)
+2026-10-19T20:30:41.7815660Z (node:43878) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/auth.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7816707Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7817528Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7818281Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7819128Z ✔ stale per-run login state is swept, but a run still in progress keeps its own (11.272334ms)
+2026-10-19T20:30:41.7820241Z (node:43891) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/diff.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7821426Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7822233Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7823013Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7823898Z ✔ Group 4: two runs with a deliberately dropped test - specific test names, not just a percentage (22.763068ms)
+2026-10-19T20:30:41.7824710Z ✔ Group 4: runs with different baseUrl values cannot be diffed (6.277474ms)
+2026-10-19T20:30:41.7825419Z ✔ Group 4: a missing runId is reported by which side was missing (4.745928ms)
+2026-10-19T20:30:41.7826240Z ✔ normalizeGenerationRecord: a real /api/generate record is kept as is (9.585368ms)
+2026-10-19T20:30:41.7826945Z ✔ normalizeGenerationRecord: nothing usable means null (0.373728ms)
+2026-10-19T20:30:41.7827762Z ✔ normalizeGenerationRecord: unknown fields and malformed gates are dropped (0.952911ms)
+2026-10-19T20:30:41.7828548Z ✔ normalizeGenerationRecord: long strings and long lists are capped (20.842708ms)
+2026-10-19T20:30:41.7829463Z ✔ normalizeGenerationRecord: an automatic inspection record is kept, and capped (0.716389ms)
+2026-10-19T20:30:41.7830561Z ✔ describePageInspection: one sentence saying where the page data came from, or why there is none (0.256718ms)
+2026-10-19T20:30:41.7831582Z ✔ describeSiteSuite: what the run reused, generated, regenerated and retired, and the edits to check (0.621757ms)
+2026-10-19T20:30:41.7832588Z ✔ normalizeGenerationRecord: a site suite record is kept as is; a malformed one is cleaned or dropped (0.695129ms)
+2026-10-19T20:30:41.7833437Z ✔ the site suite's recheck: kept, described, and cleaned when malformed (8.73426ms)
+2026-10-19T20:30:41.7834365Z ✔ the site suite's gap tests: kept as recorded, cleaned when malformed, dropped with no writer (0.731753ms)
+2026-10-19T20:30:41.7835319Z ✔ the site suite's bound candidates: kept as recorded, cleaned when malformed, and said in the report (0.808421ms)
+2026-10-19T20:30:41.7836635Z (node:43912) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/generation-record.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7837765Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7838593Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7839349Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7840410Z (node:43933) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/jobs.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7841666Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7842453Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7843144Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7844114Z ✔ corrupted JSON report: job reaches a terminal status with a result, not 'running' forever (13.194488ms)
+2026-10-19T20:30:41.7845092Z ✔ missing JSON report (baseline): same terminal 'failed' path as a corrupted one (2.335494ms)
+2026-10-19T20:30:41.7846369Z ✔ corrupted JSON report while cancelled: terminal status is 'cancelled', not 'running' (2.8255ms)
+2026-10-19T20:30:41.7847814Z ✔ a suite that declares no test has nothing to run: status 'empty', its report kept, the area's reason in the output (21.382012ms)
+2026-10-19T20:30:41.7849024Z ✔ a suite that declares tests yet ran none is still a failed run (4.530592ms)
+2026-10-19T20:30:41.7849761Z ✔ an empty suite with any other error is still a failed run (2.913927ms)
+2026-10-19T20:30:41.7850864Z ✔ a Comprehensive run's report carries its area section, and its saved record names the run mode (8.468462ms)
+2026-10-19T20:30:41.7851927Z ✔ a Standard run's report and saved record carry nothing new (3.543267ms)
+2026-10-19T20:30:41.7853085Z ✔ the per-gate Not run count uses the run's interactive setting (TFP-146) (6.05581ms)
+2026-10-19T20:30:41.7854638Z ✔ a Comprehensive run whose only failure is a local-model test is saved as passed, the failure shown as needing review (4.075894ms)
+2026-10-19T20:30:41.7856365Z ✔ a finished run's report carries its page types: found, covered, skipped and the override, as the client sent them (2.6573ms)
+2026-10-19T20:30:41.7858442Z (node:43954) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/persistence.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7860246Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7861770Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7862900Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7864503Z ✔ round-trip: read back with no reference to the originating job models a restart (29.72301ms)
+2026-10-19T20:30:41.7865973Z ✔ lastAccessedAt: null after persisting, set on first access, unchanged on a second (13.618227ms)
+2026-10-19T20:30:41.7867501Z ✔ evidence move: files land under evidence/, relative structure preserved, original path is gone (5.609255ms)
+2026-10-19T20:30:41.7868987Z ✔ evidence move failure: falls back to the original path instead of losing the record (2.717385ms)
+2026-10-19T20:30:41.7870670Z ✔ pin overrides sweep: a pinned, superseded, no-longer-failing run is never auto-archived (6.122625ms)
+2026-10-19T20:30:41.7872173Z ✔ archive: keeps run.json and suite.spec.ts, deletes only evidence/, sets retention to archived (4.230672ms)
+2026-10-19T20:30:41.7873723Z ✔ still-open-defect exemption: a run is swept once its failure is fixed elsewhere, not before (12.533534ms)
+2026-10-19T20:30:41.7874908Z ✔ listRunRecords includes persisted runs (2.782664ms)
+2026-10-19T20:30:41.7876038Z ✔ isValidRunId: accepts real randomUUID() output, in either case (0.644845ms)
+2026-10-19T20:30:41.7877475Z ✔ isValidRunId: rejects path-traversal-shaped and otherwise malformed input (TFP-066) (0.268145ms)
+2026-10-19T20:30:41.7879072Z ✔ sweep: a newer run that never ran the failing test must not make the older run sweep-eligible (11.645135ms)
+2026-10-19T20:30:41.7880872Z ✔ sweep (decision table): only a passing re-test of the same title, in the same suite, clears an older failing run (64.148992ms)
+2026-10-19T20:30:41.7882469Z ✔ record writes are atomic: a write that fails leaves the previous run.json whole, not truncated (6.980026ms)
+2026-10-19T20:30:41.7884264Z ✔ persistRunJob: an artifact in a sibling directory whose name starts with the artifact root's isn't treated as under it (3.204461ms)
+2026-10-19T20:30:41.7885893Z ✔ a secret is redacted in every form it can be captured in: raw, JSON-escaped, and percent-encoded (2.617706ms)
+2026-10-19T20:30:41.7887493Z ✔ a value too short to redact meaningfully is left alone, and nothing else is disturbed (0.222781ms)
+2026-10-19T20:30:41.7888969Z ✔ a secret containing another is replaced whole, not left half-redacted (0.200404ms)
+2026-10-19T20:30:41.7890232Z ✔ secretsFromStorageState collects cookie and web-storage values, never names (1.01452ms)
+2026-10-19T20:30:41.7892129Z ✔ redactDeep scrubs nested strings and drops any storageState key outright, even one whose values were never registered (0.434143ms)
+2026-10-19T20:30:41.7894225Z (node:44025) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/redact.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7896026Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7897315Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7898349Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7899870Z ✔ a trace zip is rewritten with every text entry scrubbed, entries kept, and binary entries untouched (30.433919ms)
+2026-10-19T20:30:41.7901241Z ✔ a zip with nothing to scrub is returned unchanged (1.464617ms)
+2026-10-19T20:30:41.7902785Z ✔ scrubArtifactDirectory scrubs text in place, rewrites zips, removes what it cannot scrub, and fails closed on a corrupt zip (8.547048ms)
+2026-10-19T20:30:41.7904314Z ✔ with nothing to redact, scrubArtifactDirectory touches nothing (0.726351ms)
+2026-10-19T20:30:41.7905572Z ✔ a suite with the tfGoto helper is counted exactly: its .test(url) is not a test (4.00668ms)
+2026-10-19T20:30:41.7906980Z ✔ declarations count; property accesses, describes, skips and longer names don't (0.255264ms)
+2026-10-19T20:30:41.7908799Z (node:44037) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/selection.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7911038Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7912283Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7913469Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7914479Z ✔ the doc names all four exemption categories (1.117863ms)
+2026-10-19T20:30:41.7915825Z ✔ the doc documents every field a login block accepts, and no field that does not exist (0.872595ms)
+2026-10-19T20:30:41.7917333Z ✔ the doc tells you what each field is called in the app, and the app's section really carries those labels (0.640241ms)
+2026-10-19T20:30:41.7918604Z ✔ the section has no field that takes a credential value (0.231939ms)
+2026-10-19T20:30:41.7919894Z ✔ the doc's JSON example is a login block TestForge accepts, using every field (0.496714ms)
+2026-10-19T20:30:41.7921356Z ✔ the doc's example environment variable names satisfy the name rule it states (0.266ms)
+2026-10-19T20:30:41.7923006Z ✔ every error message the doc quotes still exists in the code, so a reworded error fails here (0.233304ms)
+2026-10-19T20:30:41.7924200Z ✔ the doc's claims about parallelism match the executor (0.201021ms)
+2026-10-19T20:30:41.7925545Z ✔ the doc never suggests putting a credential value in the config, and no example contains one (0.30326ms)
+2026-10-19T20:30:41.7926814Z ✔ the README and .env.example point at the doc (0.502094ms)
+2026-10-19T20:30:41.7928485Z (node:44051) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/setup-doc.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7930198Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7931441Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7932226Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7933247Z ✔ withDefaultGate: a test with no details gets read-only; a declared one, and an escaped quote in the title, are kept (1.028481ms)
+2026-10-19T20:30:41.7934325Z ✔ the template: on the 166 fixed inputs every test declares exactly one gate, and its skip matches it (59.721729ms)
+2026-10-19T20:30:41.7935332Z ✔ the template with every journey selected: journeys are interactive, with the interactive skip (2180.821516ms)
+2026-10-19T20:30:41.7936374Z ✔ Comprehensive: every passive security check and accessibility check is read-only, beside its page annotation (743.415171ms)
+2026-10-19T20:30:41.7937909Z ✔ model-written blocks: the describe declares the gate once - interactive for gap-fill, OpenAI and Comprehensive accessibility, active for Comprehensive security and for OpenAI when security is in scope (561.053925ms)
+2026-10-19T20:30:41.7939119Z ✔ gateOpenAiSuite: a multi-line import stays at the top, outside the describe (45.611199ms)
+2026-10-19T20:30:41.7940193Z ✔ the report: each record carries its declared gate, and the summary counts only tests whose gate was closed for the run (4.308232ms)
+2026-10-19T20:30:41.7941375Z ✔ the report: a run whose tests declare no gate (before TFP-146) shows no per-gate counts (0.342453ms)
+2026-10-19T20:30:41.7942588Z (node:44079) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/run/test-gates.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7943687Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7944477Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7945242Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7946229Z ✔ chosen by type, Standard: covered and skipped types, each with pattern, page count, label and the full URL as the address bar shows it (3.494581ms)
+2026-10-19T20:30:41.7947530Z ✔ chosen by type, Comprehensive: every type covered, more pages of the big types, and all of them in the covered list (0.497255ms)
+2026-10-19T20:30:41.7948872Z ✔ chosen by hand: an override, recorded - a type added, a page left out, and each skipped type says whether the type selection would have covered it (1.023105ms)
+2026-10-19T20:30:41.7949936Z ✔ the record survives /api/run's normalizer whole; junk is dropped and nothing grows past its cap (5.730809ms)
+2026-10-19T20:30:41.7951255Z ✔ both HTML exports end with the page types, the covered list and the skipped list; without a crawl there is no such section (8.264527ms)
+2026-10-19T20:30:41.7952358Z ✔ TFP-173's review: only http(s) URLs on the run's origin survive the normalizer, and the export never contains the rest (0.966081ms)
+2026-10-19T20:30:41.7953548Z ✔ a list from the URL field: pages chosen by the user, run as listed; with a crawl its types are named, without one each page stands alone (0.699837ms)
+2026-10-19T20:30:41.7954893Z ✔ the round trip: a report's covered list pasted into the URL field runs exactly those pages, and the generated suite covers the same pages (11.454394ms)
+2026-10-19T20:30:41.7956220Z (node:44290) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/selection/coverage.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7957333Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7958099Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7958865Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7959900Z ✔ the signature is landmarks, forms (count and every field's type) and cards; the form signature is the forms alone; counts never decide (1.079423ms)
+2026-10-19T20:30:41.7961083Z ✔ split an address type only by form signature: different forms split it; cards or landmarks don't (2.699826ms)
+2026-10-19T20:30:41.7962159Z ✔ merge only sibling address types under one immediate parent with equal full signatures; never top-level pages or home (3.582432ms)
+2026-10-19T20:30:41.7963275Z ✔ a segment directly before an :id is a collection, not a slug: /en/product/:id beside /en/category/:id (0.363355ms)
+2026-10-19T20:30:41.7964005Z ✔ a label never changes a type's pages (0.416169ms)
+2026-10-19T20:30:41.7965103Z (node:44314) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/selection/page-outline.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7966219Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7967003Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7967774Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7968568Z ✔ in a real browser: the crawl of the fixture's /types shop finds the revised types (8231.508261ms)
+2026-10-19T20:30:41.7969402Z ✔ identifiers become :id - digits, ULIDs, UUIDs, long hex - and words don't (2.489036ms)
+2026-10-19T20:30:41.7970335Z ✔ siblings under a shared parent become :slug; top-level pages and a lone child stay literal (0.572794ms)
+2026-10-19T20:30:41.7971341Z ✔ hash routes group by their route, as TFP-165 names them; the start route is its own type (0.341328ms)
+2026-10-19T20:30:41.7972104Z ✔ addresses differing only by query string are one type (0.215497ms)
+2026-10-19T20:30:41.7973342Z (node:44471) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/selection/page-types.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7974455Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7975384Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7976088Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7977052Z ✔ the committed Toolshop crawls: path-routed and hash-routed give the same patterns, apart from the sites' own pages (7.26819ms)
+2026-10-19T20:30:41.7978245Z ✔ in a real browser: the crawl's pages group by address into the fixture hash-routed app's 6 patterns, and the crawl records its types (6220.958153ms)
+2026-10-19T20:30:41.7979302Z ✔ always covered: home, every type with a form, and the largest type - whatever the ordered rules say (5.368802ms)
+2026-10-19T20:30:41.7980520Z ✔ the ordered rules, one at a time: pages, then forms, then interactive elements, then crawl order - each type names the rule that placed it (1.010165ms)
+2026-10-19T20:30:41.7981702Z ✔ the representative page has the most interactive elements; ties go to crawl order; no outline counts as 0 (0.435966ms)
+2026-10-19T20:30:41.7982946Z ✔ Standard: one page per type up to the hard cap of 8; over it, content types go first, then the lowest ranked, each skip naming its rule (0.823216ms)
+2026-10-19T20:30:41.7984236Z ✔ the cap is hard: always-covered types alone over it - home is still covered, first; the others are ordered by the rules and the rest skipped, named (0.594086ms)
+2026-10-19T20:30:41.7985501Z ✔ Comprehensive: every type before a second page of any type; then one more page per type per round, in rank order, up to the budget (0.479275ms)
+2026-10-19T20:30:41.7986812Z (node:44680) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/selection/select.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:30:41.7987912Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:30:41.7988696Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:30:41.7989441Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:30:41.7990627Z ✔ the committed crawls: both Toolshops cover 8 of their 9 types and skip one content type; the-internet covers its 8 always-covered types (15.607221ms)
+2026-10-19T20:30:41.7991849Z ✔ a run inspects the selected pages: Standard's or Comprehensive's by type after a crawl, every page without types; no 5-page cap (23.565019ms)
+2026-10-19T20:31:06.1668831Z (node:44692) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/site-suites/site-suites.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:31:06.1670331Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:31:06.1671642Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:31:06.1672680Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:31:06.1674320Z ✔ an unchanged site: the second run reuses every test and generates none (TFP-190) (32540.868157ms)
+2026-10-19T20:31:38.4871454Z ✔ one page's structure changes: only its page type's tests are regenerated, and a hand-edited one is kept and flagged (TFP-190) (32305.01411ms)
+2026-10-19T20:32:09.2627455Z ✔ a page is removed: its tests, and the other pages' tests of it, are retired (TFP-190) (30726.992296ms)
+2026-10-19T20:32:09.2629054Z ✔ nothing is written inside the repo (TFP-190) (12.248107ms)
+2026-10-19T20:32:09.2629866Z ✔ the data folder: TESTFORGE_DATA_DIR, else where the platform keeps app data (equivalence partitioning) (0.258304ms)
+2026-10-19T20:32:09.2644664Z ✔ withGuardHelper: a call another describe's copy can't reach gets a top-level one; a call beside its describe's copy, a top-level copy, or no call, nothing added (3.014486ms)
+2026-10-19T20:33:01.3658518Z (node:44736) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/testforge/testforge/src/lib/site-suites/stale.test.ts is not specified and it doesn't parse as CommonJS.
+2026-10-19T20:33:01.3660135Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+2026-10-19T20:33:01.3661311Z To eliminate this warning, add "type": "module" to /home/runner/work/testforge/testforge/package.json.
+2026-10-19T20:33:01.3662179Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-19T20:33:01.3663680Z ✔ a reused test fails on a page whose structure changed: its type is regenerated and re-run, and only the re-run counts (TFP-191) (81083.746401ms)
+2026-10-19T20:33:01.3665009Z ✔ a reused test fails on a page whose structure did not change: the failure stands (TFP-191) (65162.35486ms)
+2026-10-19T20:33:42.5189107Z ✔ a test this generation wrote fails on a changed page: it isn't read again, and the failure stands (TFP-191) (41092.224578ms)
+2026-10-19T20:33:42.5685265Z ℹ tests 575
+2026-10-19T20:33:42.5685616Z ℹ suites 0
+2026-10-19T20:33:42.5685894Z ℹ pass 574
+2026-10-19T20:33:42.5686124Z ℹ fail 0
+2026-10-19T20:33:42.5686362Z ℹ cancelled 0
+2026-10-19T20:33:42.5686624Z ℹ skipped 1
+2026-10-19T20:33:42.5687147Z ℹ todo 0
+2026-10-19T20:33:42.5687449Z ℹ duration_ms 1036283.895434
+2026-10-19T20:33:42.5904534Z ##[group]Run actions/upload-artifact@v4
+2026-10-19T20:33:42.5904848Z with:
+2026-10-19T20:33:42.5905080Z   name: unit-log-2-1
+2026-10-19T20:33:42.5905364Z   path: unit.log
+2026-10-19T20:33:42.5905596Z   if-no-files-found: warn
+2026-10-19T20:33:42.5905843Z   retention-days: 30
+2026-10-19T20:33:42.5906073Z   compression-level: 6
+2026-10-19T20:33:42.5906309Z   overwrite: false
+2026-10-19T20:33:42.5906539Z   include-hidden-files: false
+2026-10-19T20:33:42.5906787Z env:
+2026-10-19T20:33:42.5906991Z   TEMPLATE_BASELINE: 980346f
+2026-10-19T20:33:42.5907242Z ##[endgroup]
+2026-10-19T20:33:42.7683020Z (node:47637) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T20:33:42.7683889Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T20:33:42.7727156Z With the provided path, there will be 1 file uploaded
+2026-10-19T20:33:42.7733363Z Artifact name is valid!
+2026-10-19T20:33:42.7734706Z Root directory input is valid!
+2026-10-19T20:33:43.1371382Z Beginning upload of artifact content to blob storage
+2026-10-19T20:33:43.1589922Z (node:47637) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-19T20:33:43.4670984Z Uploaded bytes 26472
+2026-10-19T20:33:43.5364864Z Finished uploading artifact content to blob storage!
+2026-10-19T20:33:43.5366497Z SHA256 digest of uploaded artifact zip is af13a33772f423bdb928de911fedb9b967c9db8b13608edf6e7cf2270f9e48b5
+2026-10-19T20:33:43.5367655Z Finalizing artifact upload
+2026-10-19T20:33:43.8066249Z Artifact unit-log-2-1.zip successfully finalized. Artifact ID 12219722412
+2026-10-19T20:33:43.8067049Z Artifact unit-log-2-1 has been successfully uploaded! Final size is 26472 bytes. Artifact ID is 12219722412
+2026-10-19T20:33:43.8073825Z Artifact download URL: https://github.com/emil3663/testforge/actions/runs/39317809076/artifacts/12219722412
+2026-10-19T20:33:43.8300224Z Post job cleanup.
+2026-10-19T20:33:43.9567627Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e, not saving cache.
+2026-10-19T20:33:43.9583495Z (node:47650) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-19T20:33:43.9584535Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-19T20:33:43.9714279Z Post job cleanup.
+2026-10-19T20:33:44.0741788Z [command]/usr/bin/git version
+2026-10-19T20:33:44.0788786Z git version 2.55.0
+2026-10-19T20:33:44.0838452Z Temporarily overriding HOME='/home/runner/work/_temp/6a1e0ba0-703f-4092-81fb-adda39339f17' before making global git config changes
+2026-10-19T20:33:44.0840407Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-19T20:33:44.0848714Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-19T20:33:44.0896742Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-19T20:33:44.0941803Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-19T20:33:44.1259581Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-19T20:33:44.1296219Z http.https://github.com/.extraheader
+2026-10-19T20:33:44.1311203Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-19T20:33:44.1355269Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-19T20:33:44.1606024Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-19T20:33:44.1643135Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-19T20:33:44.2024628Z Cleaning up orphan processes
+2026-10-19T20:33:44.2317441Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

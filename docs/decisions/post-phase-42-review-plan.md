@@ -237,6 +237,15 @@ logs and times in `benchmarks/2026-10-19-tfp210/`.
 - **For Emil:** the unit suite takes 1.5 to 1.7 times as long on the
   runner. It is still well inside the job's 45 min. D23's flake passed in
   this run. The first scheduled run is 2026-10-20 at 02:00 UTC.
+- **Fix, `23a1338` (2026-10-19, Cowork's verification):** the unit step ran
+  under `shell: /usr/bin/bash -e {0}` with no pipefail, so
+  `npm run test:unit | tee` took `tee`'s exit code and couldn't fail.
+  `shell: bash` on that step. Re-dispatched once (run 39317809076); the step
+  header reads
+  `shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}`. `unit` green:
+  575 tests, 574 passed, 0 failed, 1 skipped (Windows only); suite 1,036 s,
+  job 1,089 s. `template-unchanged` green: 166 of 166 against `980346f`, job
+  31 s. Logs in `benchmarks/2026-10-19-tfp210/23a1338/`.
 
 ## R3 — Claims audit (Cowork)
 
