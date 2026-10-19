@@ -748,6 +748,36 @@ on the local Toolshop copies (Phase 41 Decision 7).
   between loads. TFP-205 has no rule for content that changes between
   loads. TFP-208 decides whether card links are skipped or found by
   something stable, as a ruling for Emil.
+- **Ruling (TFP-208, 2026-10-16; confirmed by Emil 2026-10-19, with a condition below): skip.** Links inside
+  a listing's repeated cards get no test each. A card group is 3 or more
+  links on a page whose targets share an address but a last segment that
+  is an identifier (Phase 40's `isIdSegment`). The page gets one test,
+  `cards linking to <pattern> on <page>`: such cards are there, and each
+  card there at run time, by position, is visible, named and has a valid
+  `href` of the pattern. Targets load as for one link (the inspected
+  cards' by link health). The coverage map counts each card covered by its
+  group's test. `21933f7`, GEN-98.
+  - **Rejected: find each card by something stable.** It keeps a test per
+    card, each checking the same thing, and costs run time with-bugs
+    doesn't have.
+  - **The answer key:** no listed bug varies the listing. Both versions page
+    a category with `paginate(9)` and no `ORDER BY`, so the order is
+    unspecified. But asked ten times in a row on a freshly seeded database,
+    each copy's API returned the same 9 (`benchmarks/2026-10-16-tfp208/logs/window-*.log`).
+    What moved R1's window between its inspection and its run is not
+    reproduced; the ruling doesn't depend on it, since it holds for any
+    listing whose cards move.
+  - **Measured on with-bugs (one worker, R1's driver):** the 5 false
+    failures are gone and no failure is new; 18 link tests and 3 card tests
+    instead of R1's 38 link tests; Standard 1,306 s (R1 1,535 s), 494 s
+    under the 1,800 s limit. Clean: `benchmarks/2026-10-16-tfp208/outcome.md`.
+  - **Confirmed by Emil (2026-10-19), on one condition:** a failing card is
+    named by its product, not only by its slot. `02ed0ef`, GEN-99: every
+    card is checked before the test fails, and it fails once, listing each
+    failing card with its position and what it showed at run time (name, a
+    price if shown, `href`), e.g. `card 4 of 9 on /category/hand-tools
+    ("ECO Sledgehammer", $17.75, #/product/10)`. A passing test's output is
+    unchanged. `check:template-unchanged` against `980346f`: 166 of 166.
 
 ### TFP-206 — Code check: allow `response.request().method()`
 

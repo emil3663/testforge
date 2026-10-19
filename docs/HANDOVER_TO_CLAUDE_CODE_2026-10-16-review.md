@@ -27,6 +27,11 @@ the phase records.
     7 missed. Gate B's 33 also needed Comprehensive security.
   - Standard on one worker: with-bugs 1,535 s, clean 1,131 s.
 - **R3 is done,** its doc fixes committed (`e0ce8f6` to `60c1fc4`).
+- **TFP-208 is built, waiting for verification** (`decbfad` to `139f8df`,
+  then `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`). Standard on
+  with-bugs is now 1,306 s on one worker, 494 s under the limit. Its
+  card-group ruling is confirmed by Emil (2026-10-19), with the condition
+  that a failing card names its product (`02ed0ef`).
 - **Phase 39 is amended and locked** (2026-10-16): fewer page visits first,
   then workers, measurement before anything is built. It comes after
   TFP-208 and TFP-210, ahead of the rest of the review. Until its TFP-211 has measured, add no new Standard
@@ -34,9 +39,7 @@ the phase records.
 
 ## Commit first
 
-Commit the order change as one `docs(decisions)` commit and push:
-`post-phase-42-review-plan.md`, `product-roadmap.md`,
-`phase-39-run-concurrency-decision-record.md` and this handover.
+Done: the order change is `980346f`.
 
 ## Next, in order (Emil, 2026-10-16)
 

@@ -27,6 +27,10 @@ Progress (2026-10-16):
 - R3's findings are done and its doc fixes are made
   (`post-phase-42-review-findings.md`). TFP-210 is written there.
 - R5's Phase 39 amendment is locked.
+- **TFP-208 built (2026-10-16), waiting for verification:** `decbfad` to
+  `139f8df`, `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`. Its
+  card-group ruling is confirmed by Emil (2026-10-19), on the condition
+  `02ed0ef` meets (Phase 42 record).
 - **Order for Code (Emil, 2026-10-16):**
   1. **TFP-208**;
   2. **TFP-210**;
@@ -154,6 +158,38 @@ TFP-207 accepted (`bfd900a..6d8f7e4`), with three corrections made to its
 - **Time:** about 40 min of unit runs, 8 min regression, about 1.5 h for
   the two Toolshop copies.
 - **Stop for verification.**
+
+### TFP-208 result (built 2026-10-16, not yet verified)
+
+Commits `decbfad`, `60aac09`, `21933f7`, `4c0aca0`, `139f8df`, then
+`02ed0ef` (2026-10-19, Emil's condition); runs in
+`benchmarks/2026-10-16-tfp208/` (recorded in `a5a3e71`), `outcome.md` for
+every number.
+- **Unit flakes:** both of R1's causes found and fixed; a third
+  (`hardening.test.ts`, a test ending before its run was saved) found and
+  fixed. Three full unit runs on `4c0aca0`: 574/574 each. On `139f8df`:
+  575/575 three times.
+- **Regression web server:** builds first, `webServer` only starts. Three
+  attempts on `4c0aca0` all started in time; attempt 3 found an app defect
+  (an artifact asked for while its run was saved: 404), fixed in `139f8df`.
+  On `139f8df`: 57/57 three times.
+- **The 5 link failures:** gone, by one test per listing's cards (ruling for
+  Emil). The answer key shows no planted bug; the listing's moving window
+  isn't reproduced from the API.
+- **Standard, both copies:** failure sets R1's but the 5; score 30 found;
+  with-bugs 1,306 s (R1 1,535 s), clean 1,031 s (1,131 s).
+- **Raised for Emil:** the app's own runs walk the shared `.playwright-runs`
+  too (the race the unit tests had).
+- **The ruling, confirmed (Emil, 2026-10-19), on one condition:** a failing
+  card names its product. `02ed0ef`: each failing card is listed with its
+  position, name, price if shown and `href`, and the test fails once naming
+  them all (GEN-99). Its checks: `check:template-unchanged` against
+  `980346f`, 166 of 166. Regression 57/57. Unit 574/575: the one failure was
+  `performance-bands.test.ts:69` (the 3 s LCP fixture measured over 4 s, in
+  a run that took 1,035 s against 659 to 731 s before, on a loaded machine).
+  It passed alone afterwards (2 of 2). It is one of the three TFP-208 closed
+  as passing, so it is a timing flake under load, not yet ticketed. For
+  Emil.
 
 ## R3 — Claims audit (Cowork)
 
