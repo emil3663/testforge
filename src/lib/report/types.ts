@@ -281,6 +281,8 @@ export interface RunReport {
     notTested: NotTestedElement[];
     /** Phase 42 (TFP-192): absent when the run had no page data or no suite source. */
     coverageMap?: CoverageMap;
+    /** Phase 39 (TFP-211): where the run's time went; absent on runs from before it, or when the timing reporter wrote nothing. */
+    runTiming?: import("@/lib/run/timing").RunTiming;
     // Phase 34 (TFP-119): how the suite was generated - the gap-fill outcome
     // and every gate's verdict - as recorded at generation (Decision 8). Null
     // when the run was started without one (template-only, or older runs).

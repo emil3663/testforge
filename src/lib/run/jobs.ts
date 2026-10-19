@@ -10,6 +10,7 @@ import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
 import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
 import { countDeclaredTests, estimateTestCount } from "@/lib/run/selection";
+import { readRunTiming } from "@/lib/run/timing";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type RunLifecycleStatus = "queued" | "running" | "passed" | "failed" | "cancelled" | "empty";
@@ -78,6 +79,9 @@ export interface RunJob {
     testFile: string;
     jsonReportFile: string;
     reporterFile: string;
+    // TFP-211: the timing reporter and what it writes; optional so jobs built before it (and in tests) have none.
+    timingReporterFile?: string;
+    timingFile?: string;
     artifactDir: string;
     baseUrl?: string;
     description: string;
@@ -213,6 +217,8 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     }
     const output = redactor.redact(job.outputChunks.join("").trim());
     const duration = job.finishedAt - job.createdAt;
+    // TFP-211: where the run's time went, from the timing reporter, outside the generated suite.
+    const runTiming = job.timingFile ? await readRunTiming(job.timingFile, job.baseUrl, job.contentProfile) : null;
 
     if (parsedReport) {
         const executionRecords = flattenSuites(parsedReport.suites ?? []);
@@ -274,6 +280,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
                     unlink(job.testFile).catch(() => { }),
                     unlink(job.jsonReportFile).catch(() => { }),
                     unlink(job.reporterFile).catch(() => { }),
+                    ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
                 ]);
                 return;
             }
@@ -313,6 +320,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
                 unlink(job.testFile).catch(() => { }),
                 unlink(job.jsonReportFile).catch(() => { }),
                 unlink(job.reporterFile).catch(() => { }),
+                ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
             ]);
             return;
         }
@@ -340,6 +348,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             },
             report: {
                 ...aggregatedReport,
+                ...(runTiming ? { runTiming } : {}),
                 defects: {
                     ...aggregatedReport.defects,
                     issues: aggregatedReport.defects.issues.map((defect) => ({
@@ -387,5 +396,6 @@ async function finalizeRunJobUnredacted(job: RunJob) {
         unlink(job.testFile).catch(() => { }),
         unlink(job.jsonReportFile).catch(() => { }),
         unlink(job.reporterFile).catch(() => { }),
+        ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
     ]);
 }

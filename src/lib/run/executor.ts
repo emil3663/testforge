@@ -13,6 +13,7 @@ import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
+import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
 import { comprehensiveLabel, isComprehensive, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
@@ -126,10 +127,14 @@ export async function startRunJob(
     const testFile = join(runsDir, `test-${runId}.spec.ts`);
     const jsonReportFile = join(runsDir, `report-${runId}.json`);
     const reporterFile = join(runsDir, `progress-reporter-${runId}.cjs`);
+    // TFP-211: a second reporter records where the time goes, so the generated suite stays as it is.
+    const timingReporterFile = join(runsDir, `timing-reporter-${runId}.cjs`);
+    const timingFile = join(runsDir, `timing-${runId}.json`);
     const artifactDir = join(runsDir, `artifacts-${runId}`);
 
     await writeFile(testFile, code, "utf8");
     await writeFile(reporterFile, buildProgressReporterSource(), "utf8");
+    await writeFile(timingReporterFile, buildTimingReporterSource(), "utf8");
     await mkdir(artifactDir, { recursive: true });
 
     const testPath = relative(process.cwd(), testFile).replace(/\\/g, "/");
@@ -154,6 +159,8 @@ export async function startRunJob(
         testFile,
         jsonReportFile,
         reporterFile,
+        timingReporterFile,
+        timingFile,
         artifactDir,
         baseUrl,
         description,
@@ -177,6 +184,7 @@ export async function startRunJob(
         // (journeys) run only when this run explicitly asked.
         [INTERACTIVE_ENV_VAR]: enableInteractive ? "1" : "0",
         PLAYWRIGHT_JSON_OUTPUT_FILE: jsonReportFile,
+        [TIMING_FILE_ENV_VAR]: timingFile,
         FORCE_COLOR: "0",
         HOME:
             process.env.HOME ??
@@ -192,7 +200,7 @@ export async function startRunJob(
             playwrightCli,
             "test",
             testPath,
-            `--reporter=${reporterFile},json`,
+            `--reporter=${reporterFile},${timingReporterFile},json`,
             "--timeout=30000",
             `--output=${artifactDir.replace(/\\/g, "/")}`,
             `--workers=${workerCount}`,
