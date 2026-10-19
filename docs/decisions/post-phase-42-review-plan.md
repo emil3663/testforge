@@ -14,7 +14,7 @@ below; planning steps happen in Cowork first.
 | R1 | Baseline: the full regression | Code | TFP-207 |
 | R2 | Flakes, from R1's evidence | Code | TFP-208 (written after R1) |
 | R3 | Claims audit: every phase's claims against code and measurements | Cowork, with Emil | tickets it finds |
-| R4 | Small security items | Code | TFP-206, TFP-209 |
+| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217 |
 | R5 | Three decisions: the Docker sandbox, app screens, scenario gaps | Cowork, with Emil | a decision record each |
 | R6 | The skills relook | Cowork, with Emil | skill proposals |
 
@@ -31,8 +31,9 @@ Progress (2026-10-16):
   `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`. Its card-group
   ruling is confirmed by Emil (2026-10-19), on the condition `02ed0ef` meets
   (Phase 42 record). Next for Code: TFP-210.
-- **TFP-210 built (2026-10-19), waiting for verification:** `4eff1dc`,
-  `benchmarks/2026-10-19-tfp210/`. Both nightly jobs were green once on GitHub.
+- **TFP-210 verified (Cowork, 2026-10-19):** `4eff1dc`, `23a1338`;
+  `benchmarks/2026-10-19-tfp210/`. Both nightly jobs were green once on
+  GitHub, the unit step under pipefail.
 - **Order for Code (Emil, 2026-10-16):**
   1. **TFP-208**;
   2. **TFP-210**;
@@ -215,7 +216,7 @@ every number.
   `deferred-work-register.md`, a known flake. TFP-210's nightly run will
   show its rate.
 
-### TFP-210 result (built 2026-10-19, not yet verified)
+### TFP-210 result (built 2026-10-19, verified 2026-10-19)
 
 Ticket: `post-phase-42-review-findings.md`, "Tickets". Commit `4eff1dc`;
 logs and times in `benchmarks/2026-10-19-tfp210/`.
@@ -268,6 +269,137 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     and nothing else new; a test of `runEnv` shows it.
   - Done: targeted tests, unit and regression suites pass; no Claude Code
     call.
+
+### TFP-216 — CI on Node 24: the app's workflows and the actions
+
+- **Priority:** P2 · **Labels:** `ci`, `maintenance`
+- **Problem it solves:** two separate Node 20 problems in CI. Found
+  verifying TFP-210 (2026-10-19).
+  - **The app runs on Node 20 in three workflows.** `pr-validation.yml`,
+    `regression-test.yml` and `self-test.yml` set `node-version: 20`.
+    - Node 20 reached end of life on 2026-04-30.
+    - The nightly workflow and local runs use Node 24.
+    - So CI tests the app on a runtime that neither development nor the
+      nightly run uses.
+  - **The actions target a deprecated runtime.** Every workflow's job log
+    warns: "Node.js 20 is deprecated. The following actions target Node.js
+    20 but are being forced to run on Node.js 24: actions/checkout@v4,
+    actions/setup-node@v4, actions/upload-artifact@v4".
+    - The forcing works today.
+    - Once GitHub removes Node 20 from its runners, these actions stop
+      running.
+- **Scope:**
+  - `node-version: 24` in all four workflows.
+  - One source for the version, so the workflows and local runs can't
+    drift apart:
+    - an `.nvmrc` (or `engines` in `package.json`, named in the commit);
+    - each `setup-node` step reading it (`node-version-file`).
+  - Each action raised to its current major that runs on Node 24, every
+    action the workflows use. Each version is taken from that action's own
+    release notes, named in the commit.
+  - Not in scope: any change to what a workflow runs or when.
+- **Acceptance criteria:**
+  - Each of the four workflows runs green once on GitHub, dispatched by
+    hand or on its normal trigger.
+  - No job log carries the Node 20 deprecation warning.
+  - Each job log's `setup-node` step shows Node 24.
+  - Logs and times recorded as TFP-210's were.
+- **Dependencies:** TFP-210 verified. It fits with R4, after Phase 39 or
+  between its gates.
+
+### TFP-217 — The nightly run emails its summary
+
+- **Priority:** P2 · **Labels:** `ci`, `enhancement`
+- **Problem it solves:** the nightly result (TFP-210) is visible only on
+  GitHub.
+  - GitHub's own emails go out only on failure, and only to the account
+    owner.
+  - A passing night says nothing, so a quiet inbox can't be told apart from
+    a workflow that never ran.
+  - Emil wants a quick view of every run, with a link to the run itself.
+- **Built in two parts** (Emil, 2026-10-19). The Gmail setup is postponed:
+  Google blocks the security change away from his usual location.
+  - **Part A, buildable now:**
+    - the `notify` job;
+    - the summary builder and its unit test;
+    - the summary written to the run's own page (`$GITHUB_STEP_SUMMARY`),
+      so each run shows it at the top on GitHub.
+
+    No secret is needed. Until Part B, GitHub's own failure emails cover a
+    red night (see Dependencies).
+  - **Part B, after Emil's setup:** the send step, using the same summary.
+    - Google has blocked the security change on the testforgeapp account
+      for 7 days (from 2026-10-19), so the setup can be done from about
+      2026-10-26.
+- **Scope:**
+  - **A `notify` job** in `.github/workflows/nightly.yml`.
+    - It has `needs: [unit, template-unchanged]` and `if: always()`, so it
+      runs whether the jobs passed, failed or were cancelled.
+    - It sends nothing until both jobs have finished.
+  - **Sender:** `testforgeapp@gmail.com`, through Gmail's SMTP server
+    (`smtp.gmail.com`, port 465, TLS).
+    - It authenticates with a Gmail app password, kept as the repository
+      secret `TESTFORGE_SMTP_PASSWORD`.
+    - Setup for Emil, done before the ticket is built: 2-step verification
+      on the account, the app password, the secret.
+    - The password never appears in code, in the log, or in the email.
+  - **Recipient:** the repository variable `CI_REPORT_TO`, set to
+    `testforgeapp+ci@gmail.com`.
+    - It changes without a commit.
+    - CI tests TestForge itself, not a site, so the tag is `ci`, not a
+      site's name.
+  - **Subject:** `TestForge nightly: PASS` or `FAIL`, then the short commit
+    and the date, e.g. `TestForge nightly: FAIL · 4eff1dc · 2026-10-20`.
+    - FAIL when either job didn't succeed, including a cancelled job.
+  - **Body (plain text):**
+    - **the link to the run:**
+      `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+    - **the run's details:** the trigger (schedule or manual dispatch), the
+      commit, the template base used;
+    - **`unit`:** the job's result, and the counts from node:test's summary
+      (tests, pass, fail, skipped, `duration_ms`), passed on as job
+      outputs;
+    - **failing tests:** the name of each, at most 20, then "and N more";
+    - **`template-unchanged`:** the job's result and the check's line
+      (`<base> -> <head>: N inputs, N identical, N different`);
+    - **when the counts can't be read** (a job cancelled or failed before
+      its summary), the body says so in place of the numbers. It never
+      leaves them out silently.
+  - **The send mechanism:** one of these, named in the commit with the
+    reason:
+    - a mail action pinned to a full commit SHA;
+    - a small script under `scripts/` using a pinned `nodemailer`
+      devDependency.
+
+    Rejected: an action referenced by a movable tag, which runs whatever
+    that tag points to next, with the SMTP secret in reach.
+  - **A failed send** fails the `notify` job, with the reason. A missing
+    email then shows on GitHub as a failed send, not as silence.
+  - **Not in scope:**
+    - the other workflows;
+    - an HTML email;
+    - the per-site report email after a site run (register D25).
+- **Acceptance criteria:**
+  - A unit test of the summary builder covers a passing run, a run with
+    failing tests (names capped at 20), and a cancelled job with no counts.
+    It checks the subject, the counts, the template line and the run link.
+  - One manual dispatch delivers the email to `testforgeapp+ci@gmail.com`,
+    and its link opens that run.
+    - The received subject and body are recorded under `benchmarks/`, as
+      TFP-210's logs were.
+  - That run's log shows no part of the secret (GitHub masks it; the log is
+    checked).
+  - A `TEST_PLAN.md` case (TST-05) for the workflow, in the same commit as
+    the workflow change.
+- **Dependencies:**
+  - TFP-210 verified, with its `shell: bash` fix: the email reports the job
+    results, so they must be able to fail.
+  - Part B only: Emil's setup above.
+  - It fits with R4, after Phase 39 or between its gates.
+  - **Until Part B:** GitHub emails a failed scheduled run to the account
+    that last changed the workflow's schedule. It sends only on failure.
+    - Setting on github.com: Settings, Notifications, Actions: "Only
+      notify for failed workflows".
 
 ## R5 — Three decisions (Cowork first)
 
