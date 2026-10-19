@@ -371,8 +371,8 @@ npx playwright test --project=chromium
 
 - The PR validation workflow runs lint, build, and the smoke suite with Allure on every pull request, and uploads a smoke Allure artifact.
 - The self-test workflow runs the same checks on every push to `main` and keeps the latest 5 smoke-report artifacts.
-- The regression workflow can be triggered manually from GitHub Actions and keeps the latest 5 regression-report artifacts.
-- The unit suite and `check:template-unchanged` don't run in CI yet; they run locally before each change is accepted. TFP-210 adds them as a nightly and manual job.
+- The regression workflow can be triggered manually from GitHub Actions and keeps the latest 5 regression-report artifacts. It builds once, before Playwright starts the server.
+- The nightly workflow runs the unit suite and `check:template-unchanged` (against the recorded template baseline) every night at 02:00 UTC and on manual dispatch, not on every push. The unit log is kept as an artifact for 30 days.
 
 ---
 

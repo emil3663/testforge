@@ -31,9 +31,8 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run build
-        run: npm run build
-
+      # TFP-208 (60aac09): the script builds first (build:self-test) and Playwright's webServer only starts,
+      # so its 120 s covers the start alone. A separate `npm run build` here would build twice.
       - name: Run TestForge regression suite with Allure
         run: npm run test:regression:allure
 

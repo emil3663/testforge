@@ -1,0 +1,86 @@
+name: Nightly
+
+# TFP-210: the unit suite and the template check, too slow for every push (about 12 min of units
+# locally), so nightly and on manual dispatch.
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      template-base:
+        description: "Base ref for check:template-unchanged (default: the recorded template baseline)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+env:
+  # The template baseline: the last commit whose template output was checked and accepted. A change that
+  # alters the output on purpose updates it here, in its own commit, as TFP-205's baseline was (63de663).
+  TEMPLATE_BASELINE: 980346f
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # --experimental-strip-types needs Node 22.6 or later; the suites run on 24 locally.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The real-browser unit tests skip without Chromium (TST-01); here none may skip for that.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run the unit suite
+        run: npm run test:unit 2>&1 | tee unit.log
+
+      - name: Upload the unit log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-log-${{ github.run_number }}-${{ github.run_attempt }}
+          path: unit.log
+          if-no-files-found: warn
+          retention-days: 30
+
+  template-unchanged:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # The check extracts the base ref with git archive, so it needs the history.
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check the template output is unchanged against the baseline
+        env:
+          BASE: ${{ inputs.template-base || env.TEMPLATE_BASELINE }}
+        run: npm run check:template-unchanged -- "$BASE" HEAD
