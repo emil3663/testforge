@@ -48,7 +48,9 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      # shell: bash gives `bash -eo pipefail`; the default (`bash -e`) takes tee's exit code, so the step couldn't fail.
       - name: Run the unit suite
+        shell: bash
         run: npm run test:unit 2>&1 | tee unit.log
 
       - name: Upload the unit log
