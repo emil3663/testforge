@@ -205,6 +205,13 @@ see Dependencies and order).
     request cap are both removed and the run goes all out. It is limited
     only by the machine.
   - The report records that the caps were lifted, and why (Decision 11).
+  - **Amended 2026-10-19 (Emil; Phase 43 Decision 14):** "once that
+    confirmation is saved with the run" now reads "once the site has a
+    valid confirmation covering the host". Phase 43 saves it with the site:
+    confirmed once, until it expires or is withdrawn.
+    - Nothing else in this decision changes.
+    - TFP-157 still tests the row with a stub. Phase 43's TFP-220 replaces
+      the stub.
 - **"Limited only by the machine"** means half the machine's CPU cores,
   Playwright's own default, and at least 1.
 - **Until Decision 8 is built,** no remote host can carry the confirmation,

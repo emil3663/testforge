@@ -403,6 +403,39 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
    where the work has a repeatable procedure worth capturing.
 
+### After Phase 39: the triaged build order (Emil, 2026-10-19)
+`deferred-work-register.md` has the full order and what each step waits
+on:
+1. D8;
+2. the SEO Standard set;
+3. the APG patterns, with INP;
+4. the rest of accessibility and security Standard;
+5. failure triage;
+6. authenticated and active security;
+7. Comprehensive negative tests;
+8. Comprehensive SEO;
+9. all-areas runs;
+10. load testing.
+
+### Phase 43 — Ownership confirmation, once per site, and the active gate (locked 2026-10-19, not started)
+A tester confirms once per site, by API, that they own the site or have
+written permission:
+- exact hosts;
+- a contact email, kept locally and never in reports;
+- an expiry of 90 days by default, at most 1 year;
+- an active tick and a load-testing tick.
+
+A valid confirmation does three things:
+- it lifts Phase 39's caps;
+- with a run's `TESTFORGE_ACTIVE` switch on, it opens the active gate, so
+  the script-payload test runs again;
+- it stores the tick the load-testing run (D24) needs.
+
+When it doesn't cover a run, the run still runs and its active tests are
+Not run, with the reason. Tickets TFP-218 to TFP-221.
+
+See `phase-43-ownership-confirmation-decision-record.md`.
+
 ---
 
 ## Sequencing note

@@ -139,6 +139,14 @@ Standards used (as of 2026-09-30):
 - Active testing of a site without permission is unauthorised security
   testing, which is illegal in most countries, including South Africa.
 - Not built in this phase: no active check exists yet.
+- **Amended 2026-10-19 (Emil; Phase 43, Decision 14):**
+  - The confirmation is saved with the site, not the run, and named in each
+    run's report. A tester confirms once per site
+    (`phase-43-ownership-confirmation-decision-record.md`).
+  - "A run whose target domain doesn't match what was typed does not start"
+    becomes: the run goes ahead, and its active tests are Not run with the
+    reason (Phase 43 Decision 8).
+  - The text above is kept as it was decided.
 
 ## Acceptance Criteria
 
