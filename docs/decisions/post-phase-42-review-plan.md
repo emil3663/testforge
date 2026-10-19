@@ -27,10 +27,10 @@ Progress (2026-10-16):
 - R3's findings are done and its doc fixes are made
   (`post-phase-42-review-findings.md`). TFP-210 is written there.
 - R5's Phase 39 amendment is locked.
-- **TFP-208 built (2026-10-16), waiting for verification:** `decbfad` to
-  `139f8df`, `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`. Its
-  card-group ruling is confirmed by Emil (2026-10-19), on the condition
-  `02ed0ef` meets (Phase 42 record).
+- **TFP-208 verified (Cowork, 2026-10-19):** `decbfad` to `139f8df`,
+  `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`. Its card-group
+  ruling is confirmed by Emil (2026-10-19), on the condition `02ed0ef` meets
+  (Phase 42 record). Next for Code: TFP-210.
 - **Order for Code (Emil, 2026-10-16):**
   1. **TFP-208**;
   2. **TFP-210**;
@@ -159,7 +159,7 @@ TFP-207 accepted (`bfd900a..6d8f7e4`), with three corrections made to its
   the two Toolshop copies.
 - **Stop for verification.**
 
-### TFP-208 result (built 2026-10-16, not yet verified)
+### TFP-208 result (built 2026-10-16, verified 2026-10-19)
 
 Commits `decbfad`, `60aac09`, `21933f7`, `4c0aca0`, `139f8df`, then
 `02ed0ef` (2026-10-19, Emil's condition); runs in
@@ -190,6 +190,28 @@ every number.
   It passed alone afterwards (2 of 2). It is one of the three TFP-208 closed
   as passing, so it is a timing flake under load, not yet ticketed. For
   Emil.
+
+**Verified (Cowork, 2026-10-19):** accepted.
+- **Re-read from the committed files:**
+  - all twelve unit and regression logs: 574/574 ×3 and 575/575 ×3; 57, 57
+    and 56 on `4c0aca0`, then 57 ×3;
+  - the failure sets against R1, counted as a multiset: with-bugs 0 new and
+    the 5 hand-tools links gone; clean 0 and 0;
+  - the run times, 1,306 s and 1,031 s;
+  - the evidence by bug: the same checks as R1, with bug 4, the random
+    alignment, showing 4 items instead of 2;
+  - `02ed0ef`'s generated test, and a TEST_PLAN case with every code change
+    (`60aac09` is configuration only).
+- **Two notes:**
+  - `02ed0ef`'s own check runs (unit, regression, template) are recorded in
+    its commit body only, not as logs under `benchmarks/`. Accepted for a
+    change this small.
+  - Each card's visibility check inside `try` still waits out its own
+    timeout when it fails, so the speed reason given for rejecting
+    `expect.soft` applies to both. One list is the real gain.
+- **`performance-bands.test.ts:69`:** recorded as D23 in
+  `deferred-work-register.md`, a known flake. TFP-210's nightly run will
+  show its rate.
 
 ## R3 — Claims audit (Cowork)
 

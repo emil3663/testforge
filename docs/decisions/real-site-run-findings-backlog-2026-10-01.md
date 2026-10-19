@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-10-01
-**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151 and TFP-159 to TFP-161 done and verified; TFP-162 to TFP-164 open (2026-10-06)
+**Status:** TFP-141/142/144 done and verified; TFP-143 closed; TFP-145 done (`0504f92`, `4d35b28`) and verified; TFP-152 done (`34622b0`, `b15714b`) and verified; TFP-151 and TFP-159 to TFP-161 done and verified; TFP-162 (`cefa24d`), TFP-163 (`be688d3`, `f4ed183`) and TFP-164 (`837de4f`) done and verified 2026-10-07. Every ticket here is closed (header updated 2026-10-19).
 
 ## Context
 
@@ -524,7 +524,8 @@ TFP-140 was the last issued ticket.
 8. TFP-159, TFP-160 and TFP-161, after Phase 38 Gate B, in any order.
    **Done (`6852538`, `91222c5`, `f4bb043`), with TFP-151 (`bf9cc36`),
    verified 2026-10-06.**
-9. TFP-162, TFP-163 and TFP-164, raised while building them.
+9. TFP-162, TFP-163 and TFP-164, raised while building them. **Done
+   (`cefa24d`; `be688d3`, `f4ed183`; `837de4f`), verified 2026-10-07.**
 
 ## Suggested Milestone Gate
 - **Done, `837de4f`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
