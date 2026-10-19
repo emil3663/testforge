@@ -16,6 +16,7 @@
  *   other cards than inspection saw -> one test for the cards, by position, passes; no test per card
  *   cards whose targets are broken  -> link health fails naming them, as for any link
  *   no cards                        -> the cards' test fails, naming the pattern and the page
+ *   two cards broken at run time    -> the cards' test fails once, naming both: position, product name, price, href
  * Offline, on TFP-197's crawls: the pages each copy's crawl selected for Standard, with the links inspection
  * recorded on those pages (Gate B's committed inspection, TFP-188: TFP-197 kept no inspection of its own),
  * leave no link on the coverage map's in-context gap list.
@@ -58,6 +59,8 @@ const otherRequests: string[] = [];
 // TFP-208: /cards shows 4 of 12 items, a different window on every load, as the Toolshop's unordered category pages do.
 let cardLoads = 0;
 let noCards = false;
+// The 2nd and 4th card of the window link to no item: what a card broken at run time looks like to the cards' test.
+let brokenCards = false;
 const card = (href: string, id: number, name = "Item") => `<a class="card" href="${href}${id}"><h5>${name} ${id}</h5><span>$${id}.00</span></a>`;
 const cardWindow = () => (noCards ? [] : [0, 1, 2, 3].map((offset) => ((cardLoads * 3 + offset) % 12) + 1));
 const listen = (server: Server) => new Promise<string>((resolve) => server.listen(0, "127.0.0.1", () => resolve(`http://127.0.0.1:${(server.address() as AddressInfo).port}`)));
@@ -75,7 +78,7 @@ before(async () => {
         if (request.url === "/ok") return response.writeHead(200, { "content-type": "text/html" }).end(html(`<h1>OK</h1>${shared}<p><a href="/">Back home</a></p>`));
         if (request.url === "/cards") {
             cardLoads++;
-            return response.writeHead(200, { "content-type": "text/html" }).end(html(`<h1>Items</h1><p><a href="/ok">Working</a></p>${cardWindow().map((id) => card("/item/", id)).join("")}`));
+            return response.writeHead(200, { "content-type": "text/html" }).end(html(`<h1>Items</h1><p><a href="/ok">Working</a></p>${cardWindow().map((id, index) => (brokenCards && index % 2 === 1 ? card("/item/", id).replace(`/item/${id}"`, `/item/"`) : card("/item/", id))).join("")}`));
         }
         if (request.url === "/broken-cards") return response.writeHead(200, { "content-type": "text/html" }).end(html(`<h1>Old items</h1>${[1, 2, 3].map((id) => card("/gone/", id, "Old item")).join("")}`));
         if (/^\/item\/\d+$/.test(request.url ?? "")) return response.writeHead(200, { "content-type": "text/html" }).end(html(`<h1>Item</h1>`));
@@ -185,7 +188,7 @@ test("offline, on TFP-197's crawls of both Toolshop copies: generation leaves no
     }
 });
 
-test("in a real browser: a listing's cards, other ones on every load, get one test that passes by position; broken card targets still fail link health; no cards fails (TFP-208)", { skip: needsChromium }, async () => {
+test("in a real browser: a listing's cards, other ones on every load, get one test that passes by position; broken card targets still fail link health; no cards fails; two broken cards fail once, naming both products (TFP-208)", { skip: needsChromium }, async () => {
     noCards = false;
     const inspected = normalizeContentProfile({ scannedAt: new Date().toISOString(), baseUrl: origin, ...(await inspectPages(origin, ["/cards", "/broken-cards"])) }) as ContentProfile;
     const seenCards = (inspected.pages.find((page) => page.path === "/cards")?.linkDetails ?? []).filter((link) => link.url.includes("/item/")).map((link) => link.text);
@@ -219,6 +222,20 @@ test("in a real browser: a listing's cards, other ones on every load, get one te
         assert.match(gone.rawMessage, /a card linking to \/item\/:id is on \/cards/);
     } finally {
         noCards = false;
+    }
+
+    // Two cards broken at run time: the test fails once, and names both products, not only their slots.
+    brokenCards = true;
+    try {
+        const broken = one(await runSpec(code, "broken-cards", "cards linking to /item"), /cards linking to \/item\/:id on \/cards/);
+        assert.equal(broken.status, "Failed");
+        assert.match(broken.rawMessage, /2 of 4 cards on \/cards failed/);
+        const named = [...broken.rawMessage.matchAll(/card (\d) of 4 on \/cards \("Item (\d+)", \$(\d+)\.00, \/item\/\): does not link to \/item\/:id/g)];
+        assert.deepEqual([...new Set(named.map((match) => match[1]))], ["2", "4"], broken.rawMessage);
+        assert.equal(new Set(named.map((match) => match[2])).size, 2, "two products, by name");
+        assert.ok(named.every((match) => match[2] === match[3]), "each with its own price");
+    } finally {
+        brokenCards = false;
     }
 });
 

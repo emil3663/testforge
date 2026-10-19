@@ -35,7 +35,7 @@ import { isRouteLink, isStartRoute } from "./routes";
  *   with no request from this test (link health's own request to it is
  *   unchanged).
  *
- * TFP-208 (ruling for Emil to confirm; R1, TFP-207): links inside a
+ * TFP-208 (ruling confirmed by Emil 2026-10-19; R1, TFP-207): links inside a
  * listing's repeated cards get no test each. A listing can change between
  * loads: the Toolshop pages a category's products with no order (the API's
  * paginate(9) has no ORDER BY, in both versions), so with-bugs'
@@ -49,7 +49,10 @@ import { isRouteLink, isStartRoute } from "./routes";
  * href of that pattern. Its targets are loaded as a single link's would be:
  * the inspected cards' by link health, which is unchanged. Rejected: finding
  * each card by its target's pattern instead of its name, which keeps one test
- * per card checking the same thing.
+ * per card checking the same thing. Emil's condition: a failure names the
+ * product, not only the slot. Each failing card is named by its position and
+ * what it showed at run time (its name, a price if it shows one, its href),
+ * and every card is checked before the test fails once listing them all.
  */
 
 export const CARD_GROUP_MIN = 3;
@@ -167,21 +170,32 @@ export function buildLinkInventoryTests(
                         `    const cards = ${cardGroupLocator(group)};`,
                         `    await expect(cards.first(), 'a card linking to ${pattern} is on ${path}').toBeAttached();`,
                         `    const count = await cards.count();`,
+                        `    // Every card is checked, and the test fails once naming each card that failed, so one broken product doesn't hide another.`,
+                        `    const problems: string[] = [];`,
                         `    for (let index = 0; index < count; index++) {`,
                         `      const card = cards.nth(index);`,
-                        `      const label = 'card ' + (index + 1) + ' of ' + count + ' on ${path}';`,
+                        `      const href = (await card.getAttribute('href')) ?? '';`,
+                        `      // What the card showed at run time, so a failure names the product, not only its position.`,
+                        `      const shown = await card.evaluate((element) => {`,
+                        `        const text = (element as HTMLElement).innerText ?? element.textContent ?? '';`,
+                        `        const heading = element.querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]')?.textContent ?? '';`,
+                        `        const name = (heading.trim() || text.split('\\n').map((line) => line.trim()).find(Boolean) || element.getAttribute('aria-label') || element.getAttribute('title') || '').replace(/\\s+/g, ' ');`,
+                        `        const price = /[$\\u20ac\\u00a3\\u00a5] ?\\d[\\d.,]*/.exec(text) ?? /\\d[\\d.,]* ?[$\\u20ac\\u00a3\\u00a5]/.exec(text);`,
+                        `        return { name, price: price?.[0] ?? '' };`,
+                        `      });`,
+                        `      const label = 'card ' + (index + 1) + ' of ' + count + ' on ${path} (' + [shown.name ? JSON.stringify(shown.name) : '', shown.price, href || 'no href'].filter(Boolean).join(', ') + ')';`,
                     ];
                     if (group.visible) {
                         lines.push(
-                            `      await expect(card.or(card.locator('*')).filter({ visible: true }).first(), label + ' is visible').toBeVisible();`,
-                            `      await expect(card, label + ' has a name').toHaveAccessibleName(/\\S/);`
+                            `      try { await expect(card.or(card.locator('*')).filter({ visible: true }).first()).toBeVisible(); } catch { problems.push(label + ': not visible'); }`,
+                            `      try { await expect(card).toHaveAccessibleName(/\\S/); } catch { problems.push(label + ': has no name'); }`
                         );
                     }
                     lines.push(
-                        `      const href = (await card.getAttribute('href')) ?? '';`,
-                        `      expect(href, label + ' links to ${pattern}').toMatch(new RegExp('^${escapeForSingleQuotedString(escapeRegExp(group.hrefPrefix))}[^/?#]+$'));`,
-                        `      expect(() => new URL(href, page.url()), label + ' has a valid href: ' + href).not.toThrow();`,
+                        `      if (!new RegExp('^${escapeForSingleQuotedString(escapeRegExp(group.hrefPrefix))}[^/?#]+$').test(href)) problems.push(label + ': does not link to ${pattern}');`,
+                        `      else try { new URL(href, page.url()); } catch { problems.push(label + ': has an invalid href'); }`,
                         `    }`,
+                        `    expect(problems, problems.length + ' of ' + count + ' cards on ${path} failed:\\n' + problems.join('\\n')).toEqual([]);`,
                         `    const href = (await cards.first().getAttribute('href')) ?? '';`,
                         ...targetLines(group.first, pageHasRouteCheck, `the first card to ${pattern}`, "    ")
                     );
