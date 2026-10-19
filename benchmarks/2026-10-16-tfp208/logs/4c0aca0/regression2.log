@@ -1,0 +1,106 @@
+
+> testforge@0.1.0 test:regression
+> npm run build:self-test && dotenv -e .env.development -o -- playwright test -c playwright.regression.config.ts
+
+
+> testforge@0.1.0 build:self-test
+> dotenv -e .env.development -- next build
+
+▲ Next.js 16.2.3 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.0s
+  Running TypeScript ...
+  Finished TypeScript in 11.8s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/12) ...
+  Generating static pages using 11 workers (3/12) 
+  Generating static pages using 11 workers (6/12) 
+  Generating static pages using 11 workers (9/12) 
+✓ Generating static pages using 11 workers (12/12) in 670ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/candidates
+├ ƒ /api/crawl
+├ ƒ /api/generate
+├ ƒ /api/health
+├ ƒ /api/introspect
+├ ƒ /api/run
+├ ƒ /api/runs
+├ ƒ /api/runs/diff
+├ ƒ /api/save-suite
+├ ƒ /api/site-settings
+├ ○ /manifest.webmanifest
+├ ○ /robots.txt
+└ ○ /sitemap.xml
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+Running 57 tests using 1 worker
+
+[1A[2K[1/57] tests\regression\testforge.auth.spec.ts:90:9 › Config-driven login (TFP-092) › with a login configured, every test in the run starts signed in - and the same tests fail without it
+[1A[2K[2/57] tests\regression\testforge.auth.spec.ts:111:9 › Config-driven login (TFP-092) › the per-run login state is gone once the run ends
+[1A[2K[3/57] tests\regression\testforge.auth.spec.ts:120:9 › Config-driven login (TFP-092) › a wrong credential is a named run-level error, and no run starts
+[1A[2K[4/57] tests\regression\testforge.auth.spec.ts:132:9 › Config-driven login (TFP-092) › a bad selector is a named run-level error that names the selector
+[1A[2K[5/57] tests\regression\testforge.auth.spec.ts:141:9 › Config-driven login (TFP-092) › a credential environment variable that is not set is a named error
+[1A[2K[6/57] tests\regression\testforge.auth.spec.ts:150:9 › Config-driven login (TFP-092) › an invalid login config is rejected before anything runs; inline credentials are never accepted
+[1A[2K[7/57] tests\regression\testforge.auth.spec.ts:164:9 › Config-driven login (TFP-092) › a credential pasted where a variable name belongs is refused before it is looked up, and never echoed back
+[1A[2K[8/57] tests\regression\testforge.auth.spec.ts:211:9 › Nothing leaks from an authenticated run (TFP-094) › a run that deliberately tries to leak its credentials and session hands back none of them
+[1A[2K[9/57] tests\regression\testforge.auth.spec.ts:322:9 › Credentials are referenced by name, never inlined (TFP-093) › the literal credentials appear in no generated code, persisted run config, or API response
+[1A[2K[10/57] tests\regression\testforge.journeys.spec.ts:133:9 › Journey tests (TFP-091) › journey tests are skipped by default and reported as not covered, with their own reason
+[1A[2K[11/57] tests\regression\testforge.journeys.spec.ts:149:9 › Journey tests (TFP-091) › with interactive tests enabled a real journey walks every step and a named flow's exit is verified for real
+[1A[2K[12/57] tests\regression\testforge.journeys.spec.ts:167:9 › Journey tests (TFP-091) › the run option appears only for a suite with journey tests, and its state reaches /api/run
+[1A[2K[13/57] tests\regression\testforge.journeys.spec.ts:198:9 › Named-flow entry (TFP-096) › a named flow entered in the UI produces the same ranked candidates as the same flow sent to the API, and shows on the review screen
+[1A[2K[14/57] tests\regression\testforge.journeys.spec.ts:240:9 › Named-flow entry (TFP-096) › a line that is not a flow is reported, not silently ignored
+[1A[2K[15/57] tests\regression\testforge.journeys.spec.ts:255:9 › Coverage matching against a real run › a real run's passing element checks are matched to their discovered elements
+[1A[2K[16/57] tests\regression\testforge.journeys.spec.ts:298:9 › Candidate journey review (TFP-090) › lists real candidates unselected, and 'Generate selected' carries exactly the selection into run config
+[1A[2K[17/57] tests\regression\testforge.journeys.spec.ts:346:9 › Candidate journey review (TFP-090) › changing the selection after generating blocks running until regenerated
+[1A[2K[18/57] tests\regression\testforge.login-ui.spec.ts:106:9 › Login config in the UI (TFP-097) › a login entered in the UI authenticates a real run exactly as the equivalent /api/run request body does
+[1A[2K[19/57] tests\regression\testforge.login-ui.spec.ts:142:9 › Login config in the UI (TFP-097) › with nothing typed the run carries no login, and is signed out
+[1A[2K[20/57] tests\regression\testforge.login-ui.spec.ts:162:9 › Login config in the UI (TFP-097) › a credential typed where a variable name belongs blocks the run and is never sent
+[1A[2K[21/57] tests\regression\testforge.login-ui.spec.ts:185:9 › Login config in the UI (TFP-097) › an incomplete login is not run signed out: the server's named error reaches the user and no run starts
+[1A[2K[22/57] tests\regression\testforge.login-ui.spec.ts:194:9 › Login config in the UI (TFP-097) › the section has no field that takes a password, and says so
+[1A[2K[23/57] tests\regression\testforge.page-types.spec.ts:52:9 › Page types in the run report (TFP-173) › a crawl selects one page per type up to 8; the report names the types found, covered and skipped, and ends with the covered and skipped lists; pasted back, the list runs the same pages (TFP-174)
+[1A[2K[24/57] tests\regression\testforge.page-types.spec.ts:100:9 › Page types in the run report (TFP-173) › a list with a page on another origin is rejected before the run, naming it (TFP-174)
+[1A[2K[25/57] tests\regression\testforge.page-types.spec.ts:108:9 › Page types in the run report (TFP-173) › pages chosen by hand are recorded as an override, and 'Select by page type' returns to the type selection
+[1A[2K[26/57] tests\regression\testforge.sections.spec.ts:49:9 › TestForge regression coverage › reports health and observability metadata
+[1A[2K[27/57] tests\regression\testforge.sections.spec.ts:78:9 › TestForge regression coverage › executes generate, run, crawl, introspect, and save-suite without an external backend configured
+[1A[2K[28/57] tests\regression\testforge.sections.spec.ts:155:9 › TestForge regression coverage › introspect reports isVisible on every discovered actionable element
+[1A[2K[29/57] tests\regression\testforge.sections.spec.ts:182:9 › TestForge regression coverage › introspect reports ARIA state and toggle-group membership on actionable elements
+[1A[2K[30/57] tests\regression\testforge.sections.spec.ts:226:9 › TestForge regression coverage › introspect reports dragDropTargets as a well-shaped array
+[1A[2K[31/57] tests\regression\testforge.sections.spec.ts:260:9 › TestForge regression coverage › formats defect backlog and usability findings in plain language
+[1A[2K[32/57] tests\regression\testforge.sections.spec.ts:323:9 › TestForge regression coverage › captures session evidence artifacts for failed generated runs
+[1A[2K[33/57] tests\regression\testforge.sections.spec.ts:375:9 › TestForge regression coverage › links defects, usability findings, and captured artifacts to the same failed test
+[1A[2K[34/57] tests\regression\testforge.sections.spec.ts:457:9 › TestForge regression coverage › groups SEO checks by page when multiple pages are under test
+[1A[2K[35/57] tests\regression\testforge.sections.spec.ts:511:9 › TestForge regression coverage › summarizes SEO findings in plain language instead of raw matcher errors
+[1A[2K[36/57] tests\regression\testforge.sections.spec.ts:560:9 › TestForge regression coverage › lists the specific broken links in observed outcomes for broken-link failures
+[1A[2K[37/57] tests\regression\testforge.sections.spec.ts:606:9 › TestForge regression coverage › a suite that declares no test ends as empty, keeping its report, and says there was nothing to run
+[1A[2K[38/57] tests\regression\testforge.sections.spec.ts:647:9 › TestForge regression coverage › preserves planned, interrupted, and not-run test states when a run is stopped
+[1A[2K[39/57] tests\regression\testforge.sections.spec.ts:729:9 › TestForge regression coverage › runs only the selected failed test titles when includeTestTitles is provided
+[1A[2K[40/57] tests\regression\testforge.sections.spec.ts:788:9 › TestForge regression coverage › covers SEO metadata and crawler-facing files
+[1A[2K[41/57] tests\regression\testforge.sections.spec.ts:813:9 › TestForge regression coverage › covers the creation inputs, generation mode, and inferred best-practice state
+[1A[2K[42/57] tests\regression\testforge.sections.spec.ts:835:9 › TestForge regression coverage › covers the discovered site pages section, crawl lifecycle, and page selection controls
+[1A[2K[43/57] tests\regression\testforge.sections.spec.ts:863:9 › TestForge regression coverage › covers the content rules section and content-aware generation state
+[1A[2K[44/57] tests\regression\testforge.sections.spec.ts:886:9 › TestForge regression coverage › covers the generated suite section actions for editing and saving
+[1A[2K[45/57] tests\regression\testforge.sections.spec.ts:906:9 › TestForge regression coverage › does not generate SEO coverage when Functional is explicitly selected
+[1A[2K[46/57] tests\regression\testforge.sections.spec.ts:932:9 › TestForge regression coverage › does not assert unconditional visibility for an element hidden at introspection time
+[1A[2K[47/57] tests\regression\testforge.sections.spec.ts:994:9 › TestForge regression coverage › generates a toggle-group ARIA assertion for a detected selection group
+[1A[2K[48/57] tests\regression\testforge.sections.spec.ts:1058:9 › TestForge regression coverage › generates per-element accessible-name and role checks, skipping hidden elements
+[1A[2K[49/57] tests\regression\testforge.sections.spec.ts:1142:9 › TestForge regression coverage › checks real discovered elements across viewports and adds a touch smoke test
+[1A[2K[50/57] tests\regression\testforge.sections.spec.ts:1194:9 › TestForge regression coverage › replaces the usability interactive-count check with content-specific assertions
+[1A[2K[51/57] tests\regression\testforge.sections.spec.ts:1265:9 › TestForge regression coverage › generates a negative-assertion test for a detected action pair, and only for it
+[1A[2K[52/57] tests\regression\testforge.sections.spec.ts:1323:9 › TestForge regression coverage › generates valid- and invalid-content drag-and-drop tests for a detected drop target
+[1A[2K[53/57] tests\regression\testforge.sections.spec.ts:1384:9 › TestForge regression coverage › does not generate content-profile SEO checks when Functional is explicitly selected
+[1A[2K[54/57] tests\regression\testforge.sections.spec.ts:1428:9 › TestForge regression coverage › requires regeneration before running when selected best-practice areas change
+[1A[2K[55/57] tests\regression\testforge.sections.spec.ts:1442:9 › TestForge regression coverage › covers the report tabs, HTML export, and page-scoped SEO drilldown after running a generated suite
+[1A[2K[56/57] tests\regression\testforge.sections.spec.ts:1495:9 › TestForge regression coverage › opens a fallback report page for runs without structured report data
+[1A[2K[57/57] tests\regression\testforge.sections.spec.ts:1529:9 › TestForge regression coverage › reruns the selected failed test from the execution report
+[1A[2K  57 passed (6.3m)
+exit=0

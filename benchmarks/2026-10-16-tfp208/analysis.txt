@@ -1,0 +1,23 @@
+== with-bugs: 483 tests {"Passed":379,"Failed":84,"Not run":20}, run 1306 s, commit 4c0aca0; R1 500 tests {"Passed":391,"Failed":89,"Not run":20}, run 1535 s
+link tests: 18 ran, 0 failed, 31 s (R1: 38, 5 failed, 102 s)
+card tests: 3 ran, 0 failed, 5 s
+  card test | Passed | cards linking to #/product/:id on /#/: each on the page, named, with a valid href
+  card test | Passed | cards linking to #/product/:id on /#/product/6: each on the page, named, with a valid href
+  card test | Passed | cards linking to #/product/:id on /#/category/hand-tools: each on the page, named, with a valid href
+coverage map: 107 of 138 in context, 0 reached only; in-context gaps: 31 elements, 0 links
+failures: 84 (R1 89); new against R1: 0; R1's, not failing now: 5
+  - /#/category/hand-tools | link "ECO Sledgehammer ABCDE$17.75" on /#/category/hand-tools: on the page, named, with a valid href | Error: "ECO Sledgehammer ABCDE$17.75" is on /#/category/hand-tools expect(locator).toBeAttached() failed Locator: getByRole('link', { name: 'ECO Sledgehammer ABCDE$17.75', exact: true }).first().or(lo
+  - /#/category/hand-tools | link "ECO Claw Hammer with Fiberglass Handle ABCDE$20.14" on /#/category/hand-tools: on the page, named, with a valid href | Error: "ECO Claw Hammer with Fiberglass Handle ABCDE$20.14" is on /#/category/hand-tools expect(locator).toBeAttached() failed Locator: getByRole('link', { name: 'ECO Claw Hammer with Fiberglass Handl
+  - /#/category/hand-tools | link "ECO Court Hammer ABCDE$18.63" on /#/category/hand-tools: on the page, named, with a valid href | Error: "ECO Court Hammer ABCDE$18.63" is on /#/category/hand-tools expect(locator).toBeAttached() failed Locator: getByRole('link', { name: 'ECO Court Hammer ABCDE$18.63', exact: true }).first().or(lo
+  - /#/category/hand-tools | link "Wood Saw ABCDE$12.18" on /#/category/hand-tools: on the page, named, with a valid href | Error: "Wood Saw ABCDE$12.18" is on /#/category/hand-tools expect(locator).toBeAttached() failed Locator: getByRole('link', { name: 'Wood Saw ABCDE$12.18', exact: true }).first().or(locator('a[href="#
+  - /#/category/hand-tools | link "ECO Adjustable Wrench ABCDE$20.33" on /#/category/hand-tools: on the page, named, with a valid href | Error: "ECO Adjustable Wrench ABCDE$20.33" is on /#/category/hand-tools expect(locator).toBeAttached() failed Locator: getByRole('link', { name: 'ECO Adjustable Wrench ABCDE$20.33', exact: true }).fir
+
+== clean: 472 tests {"Passed":408,"Failed":46,"Not run":18}, run 1031 s, commit 4c0aca0; R1 489 tests {"Passed":425,"Failed":46,"Not run":18}, run 1131 s
+link tests: 17 ran, 0 failed, 28 s (R1: 37, 0 failed, 65 s)
+card tests: 3 ran, 0 failed, 5 s
+  card test | Passed | cards linking to /product/:id on /: each on the page, named, with a valid href
+  card test | Passed | cards linking to /product/:id on /product/:id: each on the page, named, with a valid href
+  card test | Passed | cards linking to /product/:id on /category/hand-tools: each on the page, named, with a valid href
+coverage map: 144 of 149 in context, 0 reached only; in-context gaps: 5 elements, 0 links
+failures: 46 (R1 46); new against R1: 0; R1's, not failing now: 0
+

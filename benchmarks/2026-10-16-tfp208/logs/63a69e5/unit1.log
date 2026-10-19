@@ -1,0 +1,971 @@
+
+> testforge@0.1.0 test:unit
+> node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/persistence.test.ts src/lib/run/jobs.test.ts src/lib/run/selection.test.ts src/app/api/run/route.test.ts src/app/api/runs/route.test.ts src/lib/report/discovered-coverage.test.ts src/lib/report/execution.test.ts src/lib/report/summary.test.ts src/lib/report/empty-areas.test.ts src/lib/run/generation-record.test.ts src/lib/run/diff.test.ts src/app/api/runs/diff/route.test.ts src/app/api/generate/route.test.ts src/app/api/generate/route.local.test.ts src/app/api/generate/route.inspect.test.ts src/lib/generate/ollama.test.ts src/lib/generate/validate.test.ts src/lib/generate/local-rules.test.ts src/app/api/crawl/route.test.ts src/app/api/introspect/route.test.ts src/app/api/save-suite/route.test.ts src/app/_hooks/useRun.test.ts src/app/_hooks/useCrawl.test.ts next.config.test.ts src/lib/generate/mock/actionable-elements/index.test.ts src/lib/introspect/dependency-map.test.ts src/lib/introspect/site-graph.test.ts src/lib/introspect/journeys.test.ts src/app/_lib/derive.test.ts src/lib/run/auth.test.ts src/lib/run/redact.test.ts src/lib/run/setup-doc.test.ts src/lib/generate/mock/dependency-failure-injection.test.ts src/lib/generate/mock/storage-failure-injection.test.ts src/lib/generate/mock/journey-tests.test.ts src/lib/generate/mock/performance-suite.test.ts src/lib/generate/mock/database-round-trip.test.ts src/lib/generate/mock/performance-checks.test.ts src/lib/generate/mock/security-checks.test.ts src/lib/generate/mock/form-field-names.test.ts src/lib/generate/mock/false-failures.test.ts src/lib/generate/mock/cookie-session-checks.test.ts src/lib/generate/mock/seo-findings.test.ts src/lib/generate/mock/test-ids.test.ts src/lib/comprehensive/run-mode.test.ts src/lib/report/comprehensive.test.ts src/lib/report/html-tabs.test.ts src/lib/generate/comprehensive-security.test.ts src/lib/generate/comprehensive-accessibility.test.ts src/lib/generate/comprehensive-scenarios.test.ts src/lib/generate/mock/link-audits/anchor-target.test.ts src/lib/generate/mock/link-audits/link-check-timeouts.test.ts src/lib/generate/mock/link-audits/hidden-links.test.ts src/lib/generate/mock/link-audits/orphan-pages.test.ts src/lib/introspect/routes.test.ts src/lib/generate/page-visits.test.ts src/lib/selection/page-types.test.ts src/lib/selection/page-outline.test.ts src/lib/selection/select.test.ts src/lib/selection/coverage.test.ts src/lib/introspect/controls.test.ts src/lib/generate/mock/link-audits/download-pattern.test.ts src/lib/generate/mock/actionable-elements/form-check.test.ts src/lib/generate/mock/actionable-elements/control-names.test.ts src/lib/generate/mock/cookie-scope.test.ts src/lib/generate/mock/actionable-elements/accessible-names.test.ts src/app/api/generate/route.comprehensive.test.ts scripts/template-unchanged/compare.test.mjs src/lib/generate/benchmark-quality.test.ts src/lib/generate/mock/locators.test.ts src/lib/generate/gap-fill.test.ts src/lib/run/test-gates.test.ts src/lib/generate/standard-gates.test.ts src/lib/generate/standard-conformance.test.ts src/lib/generate/mock/performance-bands.test.ts src/lib/generate/read-only-guard.test.ts src/lib/generate/mock/controls.test.ts src/lib/generate/keyboard-grouping.test.ts src/lib/generate/security-probes.test.ts src/lib/generate/api-fields.test.ts src/lib/generate/mock/layout.test.ts src/lib/generate/mock/spelling.test.ts src/lib/site-suites/site-suites.test.ts src/lib/site-suites/stale.test.ts src/lib/report/coverage-map.test.ts src/lib/generate/mock/link-audits/inventory-tests.test.ts src/lib/introspect/label-names.test.ts src/lib/library/library.test.ts src/lib/library/promoted.test.ts src/lib/gap-writer/gap-writer.test.ts src/lib/gap-writer/hardening.test.ts src/lib/gap-writer/titles.test.ts src/lib/candidates/candidates.test.ts src/lib/candidates/promotion.test.ts
+
+(node:45372) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/next.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38400) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/next.config.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ production CSP drops 'unsafe-eval' from script-src (869.0792ms)
+✔ dev-mode CSP still includes 'unsafe-eval' (required by HMR) (787.6821ms)
+(node:37680) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/next.config.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ identical outputs pass (2.715ms)
+✔ a single changed character in one input is reported with that input's key and its first differing line (0.8509ms)
+✔ an extra line at the end is a difference too (0.331ms)
+✔ the two sides must have run the same inputs (0.6582ms)
+✔ a missing export stops with its name; a changed mockGenerate signature stops too (0.7528ms)
+✔ the input list is exactly the 166: 144 without page data, 22 with it, each key unique (1.0274ms)
+✔ pollCrawlUntilDone: a single transient fetch failure retries with backoff, then completes normally (49.7622ms)
+✔ pollCrawlUntilDone: exhausting all retries surfaces a failure, with the documented backoff sequence (2.3903ms)
+✔ pollCrawlUntilDone: a terminal crawlStatus with no result payload stops polling (safety net) (0.8757ms)
+(node:35456) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/_hooks/useCrawl.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ pollRunUntilDone: a single transient fetch failure retries with backoff, then completes normally (65.4216ms)
+✔ pollRunUntilDone: exhausting all retries surfaces a failure, with the documented backoff sequence (0.704ms)
+✔ pollRunUntilDone: a terminal runStatus with no result payload stops polling (safety net) (1.2941ms)
+✔ pollRunUntilDone: an in-progress runStatus with no result keeps polling (1.8217ms)
+(node:3120) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/_hooks/useRun.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ one flow per line, label: /entry -> /exit (3.7312ms)
+✔ accepts => and the arrow character, tolerates spacing, and adds a missing leading slash (0.9907ms)
+✔ a label may contain a comma (lists are split on newlines only) (0.3699ms)
+✔ a line that is not understood is reported, not silently dropped; blank lines are ignored (0.3834ms)
+✔ empty input is no flows and no errors (0.295ms)
+✔ a parsed flow is unchanged by the server-side normalizeNamedFlows (0.9666ms)
+✔ nothing typed means no login, and no problem (0.5324ms)
+✔ what was typed becomes the login block, trimmed, with blank optional fields left out (0.4887ms)
+✔ the block the UI builds is exactly what the server accepts - the same normalization the API request gets (1.464ms)
+✔ a credential pasted where a variable name belongs blocks the run and never becomes part of a request (1.1774ms)
+✔ an incomplete block is still sent, so the server's named error reaches the user instead of a silent signed-out run (0.4217ms)
+✔ every field a login block accepts has a UI label, and the section has no field for a credential value (0.4754ms)
+✔ parseUrlField: one URL behaves as today; a list keeps each page's path and hash route on the first URL's origin; another origin is rejected, naming it (14.6825ms)
+(node:38068) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/_lib/derive.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ POST /api/crawl: truncated JSON body returns 400 with a JSON error body, not a 500 (11.1281ms)
+✔ POST /api/crawl: non-object JSON body (e.g. a bare string) is rejected with 400 (3.3072ms)
+(node:30152) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/crawl/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37540) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/generate/route.comprehensive.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ generate: a Comprehensive security request returns its own suite, the page scope and the run mode (6198.7284ms)
+✔ TFP-135: with a local model, a Comprehensive request asks it for that area alone and appends its scenarios in their own block (5456.2052ms)
+✔ TFP-135, TFP-146: in a passive security run the model's scenarios are at the active gate, so never run - they may send input (4219.5743ms)
+✔ TFP-135: a rejected model suite leaves the template's suite alone, labelled with why (1177.1709ms)
+✔ TFP-135: with no local model configured, the template's suite alone, and the model is not called (1780.7236ms)
+✔ generate: a Standard request - no run mode, or { kind: 'standard' } - is answered exactly as before (3558.4124ms)
+✔ generate and run: an invalid run mode is refused with 400, never run as a different run (38.5622ms)
+✔ run: a Comprehensive run needs a base URL (4.3985ms)
+(node:30976) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/generate/route.inspect.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ no page data: the pages are inspected, the suite is built from them, and the response says so (2630.3844ms)
+✔ the request's content-rule paths are the ones inspected (2636.6092ms)
+✔ inspection fails: today's output without page data, plus the reason - generation is never blocked (3027.527ms)
+✔ autoInspect: false behaves exactly as before TFP-122 (163.6688ms)
+✔ supplied page data is used as-is and nothing is inspected (314.8709ms)
+✔ with a local model configured, an inspected database request is no gap: the model is not called (2622.4105ms)
+✔ a full page URL on the run's site is inspected as its path; one on another origin is rejected with a 400 naming it (10316.9328ms)
+✔ a protocol-relative or backslash path is rejected with a 400 naming it, before inspection (8.1585ms)
+(node:42992) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/generate/route.local.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ Option B: with TESTFORGE_OLLAMA_MODEL unset the response is exactly the template-only one (152.1856ms)
+✔ Option B: no gap area means no local call - the template suite is returned as is (335.2751ms)
+✔ Option B: reliability is never sent to the local model, even when the template left it empty (5926.4331ms)
+✔ GEN-43: an area the template inspected and found nothing to test in is not a gap - no local call (139.6682ms)
+✔ Option B: a gap is filled - template suite first, then the local tests in a block labelled with the model (2753.1199ms)
+✔ Option B: the local model is asked only for the gap areas, with only their guides (1374.094ms)
+✔ Phase 37: a single-area gap-fill request is exactly the full-generation request for that area (1324.7382ms)
+✔ Option B: a configured local model fills gaps even when an OpenAI key is set - OpenAI is not called (1155.4504ms)
+✔ Option B: Ollama not running - template kept, ollama_unreachable (754.3018ms)
+✔ Option B: the local model never created - template kept, ollama_model_missing, raw model not used (779.1421ms)
+✔ Option B: a hung local model times out on its own budget - template kept, the time gate says so (738.9158ms)
+✔ Option B: Ollama answering with an error - template kept, ollama_error (365.0341ms)
+✔ Option B: a completion that is only a fence - template kept, empty_completion (260.46ms)
+✔ Option B: an invented API - template kept, invalid_output, with the type error as the gate's evidence (518.6567ms)
+✔ Option B: a never-awaited web-first assertion - template kept, unawaited_assertion, with the line as evidence (611.466ms)
+✔ Phase 37: a Promise handed to a plain matcher - template kept, promise_to_plain_matcher, with the line as evidence (764.4371ms)
+✔ Phase 37: tests repeating one body under different titles - template kept, duplicate_tests, with the tests as evidence (1323.0111ms)
+✔ Option B: an unawaited synchronous value assertion still checks, so it is not rejected (2981.9655ms)
+✔ Option B: an invented API is still invalid_output even when an assertion is also unawaited (355.4371ms)
+✔ Option B: code that passes on its own but breaks once appended is dropped - the merged file is checked too (2100.0255ms)
+✔ the OpenAI path never sees the local rules (22.6026ms)
+✔ POST /api/generate: truncated JSON body returns 400 with a JSON error body, not a 500 (24.9234ms)
+✔ POST /api/generate: empty body returns 400 with a JSON error body, not a 500 (3.1539ms)
+(node:30224) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/generate/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ POST /api/generate: no key leaves the response shape untouched (216.7977ms)
+✔ POST /api/generate: uses the first candidate present in the live catalog and reports it (113.2748ms)
+✔ POST /api/generate: with security in the run's areas, the OpenAI suite sits at the active gate, never run (TFP-146) (66.6727ms)
+✔ POST /api/generate: no candidate in the live catalog falls back to the template (607.5833ms)
+✔ POST /api/generate: a rejected OpenAI call falls back to the template, not a 500 (1380.5158ms)
+✔ POST /api/generate: a hung OpenAI call times out within the budget and falls back (1818.2725ms)
+✔ POST /api/generate: an empty completion falls back instead of returning 200 with empty code (656.8488ms)
+✔ POST /api/generate: a completion with no choices falls back (314.0896ms)
+✔ POST /api/introspect: truncated JSON body returns 400 with a JSON error body, not a 500 (22.9073ms)
+✔ POST /api/introspect: empty body returns 400 with a JSON error body, not a 500 (6.8926ms)
+✔ POST /api/introspect: a page URL on another origin returns 400 naming it, before anything is inspected (3.3761ms)
+✔ a protocol-relative path (//evil.test/x) or a backslash one (/\evil.test/x) resolves to another site: rejected before inspection, naming it; real paths pass (21.5229ms)
+(node:30436) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/introspect/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44428) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/run/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ GET /api/run: traversal-shaped runId is rejected with 400, never reads the target file (64.9394ms)
+✔ GET /api/run: absolute-path-shaped runId is rejected with 400 (3.761ms)
+✔ GET /api/run: a real but unknown UUID is unaffected by the validator (404, not 400) (10.7843ms)
+✔ DELETE /api/run: traversal-shaped runId is rejected with 400 (7.7451ms)
+✔ DELETE /api/run: a real but unknown UUID is unaffected by the validator (404, not 400) (1.8079ms)
+✔ POST /api/run: truncated JSON body returns 400 with a JSON error body, not a 500 (27.2449ms)
+✔ GET /api/run?artifactId: during the run's save, waits for it and serves the moved file (TFP-208) (114.7486ms)
+(node:39188) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/runs/diff/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ GET /api/runs/diff: traversal-shaped runId in either slot is rejected with 400 (18.9895ms)
+✔ GET /api/runs/diff: missing query params rejected with 400 (1.9174ms)
+✔ GET /api/runs/diff: real happy path returns a structured diff through the actual route handler (98.6428ms)
+(node:23016) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/runs/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ PATCH /api/runs archive: traversal-shaped runId is rejected with 400, target directory is never deleted (54.2443ms)
+✔ PATCH /api/runs pinned: traversal-shaped runId is rejected with 400 (2.601ms)
+✔ PATCH /api/runs: null-byte-embedded runId is rejected with 400 (4.0947ms)
+✔ PATCH /api/runs archive: a real but unknown UUID is unaffected by the validator (404, not 400) (6.1236ms)
+✔ POST /api/save-suite: truncated JSON body returns 400 with a JSON error body, not a 500 (18.5959ms)
+✔ POST /api/save-suite: empty body returns 400 with a JSON error body, not a 500 (4.6834ms)
+(node:27668) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/save-suite/route.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26724) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/candidates/candidates.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ first site: a saved gap test is generalised, checked bound back, and pooled with its source (TFP-195) (52852.7922ms)
+✔ second site, Comprehensive: the candidate runs in its own section, outside the verdict, and gains the run as evidence (TFP-195) (33072.0483ms)
+✔ second site, Standard: the matching candidate becomes the gap's test after the gates; no gap test is written (TFP-203) (26973.354ms)
+✔ another site, Standard: a candidate that fails the gates there is not bound (TFP-203) (37493.3297ms)
+✔ second site, Standard: the bound candidate's run counts toward its promotion evidence, gaining that site (TFP-203) (20019.2099ms)
+✔ second site, opted in: no new gap test for the candidate's pattern (TFP-195; TFP-203: the gap already has the candidate as its test) (16794.9735ms)
+✔ binding: a bare __PAGE__ gets the quoted path, one inside a string the path's text; __LOCATOR__ is an expression (TFP-197) (2.2409ms)
+✔ one pattern from two sites is one candidate; a rejected one is kept, never bound, never proposed again (TFP-195) (59.7401ms)
+(node:42376) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/candidates/promotion.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ only a candidate that meets the rule is offered (decision table) (274.1583ms)
+✔ approved: written as a library entry with its evidence, marked promoted, no longer offered (234.7419ms)
+✔ rejected: kept with its reason, never offered again, and its pattern never pooled anew (103.2988ms)
+✔ normalizeRunMode: absent or standard is a Standard run (2.0398ms)
+✔ normalizeRunMode: a Comprehensive run for security is passive, with the default cap unless one is given (1.0468ms)
+✔ normalizeRunMode: anything else is refused, never run as a different run (1.2182ms)
+✔ isLocalDevelopmentHost: localhost, .localhost and loopback only (2.363ms)
+✔ workerCountFor: one worker for a Comprehensive run on every host (TFP-133); Standard runs keep theirs (0.396ms)
+✔ selectComprehensivePages: inspected pages first, then pages linked from them by their real href, same origin, no form targets, no repeats, up to the cap (0.7691ms)
+✔ selectComprehensivePages: with no page data the run covers the landing page (0.2521ms)
+(node:45076) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/comprehensive/run-mode.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8312) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/gap-writer/gap-writer.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the site setting: off by default, set and read through its route, anything else refused (401.1288ms)
+✔ opt-in off: Claude Code is never called and no gap test is written (TFP-194) (5176.0671ms)
+✔ opt-in on: a test for each uncovered element only, each run and saved; the same site again asks for nothing (TFP-194) (310257.168ms)
+✔ a test that fails is revised in the same session and saved once it passes (TFP-194) (25530.334ms)
+✔ a test that breaches the read-only gate is rejected, never saved, and not asked for again (TFP-194) (24678.2918ms)
+✔ the local model chosen with none configured: nothing written, and the report says why (TFP-194) (4580.2618ms)
+(node:38148) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/gap-writer/hardening.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the call: every tool off, from an empty temporary folder removed afterwards; a revision resumes from it (TFP-202) (377.6293ms)
+(node:38148) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ the call through the Windows shell (a .cmd claude): the empty --tools value still arrives (TFP-202) (615.1108ms)
+✔ the page text: an injection string is sent as data between the markers, never as an instruction (TFP-202) (3.1422ms)
+✔ the code check: each forbidden construct is refused before anything runs (TFP-202) (89.0176ms)
+✔ the environment: a gap test reads no key, token or TestForge setting (TFP-202) (15489.3008ms)
+✔ the environment: a test in a main run reads none either; the run's own settings still arrive (TFP-202) (15371.1403ms)
+✔ runEnv: only the names a run needs, matched without case, then the run's own (TFP-202) (1.7531ms)
+✔ a name repeated on its page gets a short, stable suffix; a unique one, or one on another page, is unchanged (TFP-197) (26.1787ms)
+✔ a promoted entry bound to two elements a page names alike gives two titles (TFP-197) (34.6648ms)
+(node:44160) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/gap-writer/titles.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the check is per page, tagged A01:2025 and ASVS 15.3.1, read-only (5463.0824ms)
+(node:13252) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/api-fields.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a stock count the store never shows is a finding; a yes/no flag, and a count the page shows, are not (decision table) (45214.4349ms)
+✔ testTitles: test(...) calls only, any quote style; not describe, skip or use (4.5417ms)
+✔ scoreSuite: a clean suite passes both gates, counts its tests and finds no leak or duplicate (4984.6225ms)
+✔ scoreSuite: an invented API fails the type gate; an unawaited web-first assertion fails the other (861.849ms)
+✔ scoreSuite: leaked worked-example data and duplicate titles are caught (435.4703ms)
+✔ scoreSuite: a file with no test(...) at all has zero tests (352.8935ms)
+✔ hasCategorySignal: each area's trait is present in a suite that has it and absent in one that doesn't (1.4494ms)
+✔ hasCategorySignal: an area with no defined trait is null, not a pass (0.339ms)
+✔ withBaseUrl: runs a model suite as TestForge does, with the site as the base for relative URLs (270.1925ms)
+(node:35044) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/benchmark-quality.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the suite: axe scan and field-name check per page, the six WCAG A/AA tags, clean under every gate, one worker (7038.7021ms)
+(node:43236) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/comprehensive-accessibility.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: violations split by impact under their WCAG criterion, undecided items listed for review, TFP-121 runs on every page (138712.8199ms)
+(node:35544) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/comprehensive-scenarios.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a deliberately failing model test is shown as 'failed: needs review' and leaves the verdict unchanged (55849.7844ms)
+✔ in a real browser: in a passive security run the model's test is at the active gate, listed as not run with why, even with interactive tests on (TFP-146) (31056.7591ms)
+✔ without a model, or with its suite rejected, the report says so (2.1643ms)
+✔ the suite type-checks, passes every model gate, and runs one test at a time by itself (8818.8783ms)
+✔ the suite sends no input: no typing, clicking, submitting or non-GET request, and direct requests only from the two run-level probes (1.8674ms)
+✔ every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirements from chapters in a passive run's reach (1.8822ms)
+(node:44956) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/comprehensive-security.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a hardened HTTPS site passes every passive check with no findings (14249.5682ms)
+✔ in a real browser: every hardening gap on an HTTPS site is a named finding, not a failure (7192.7559ms)
+✔ in a real browser: each exposure fails, naming the page and the element (17958.2216ms)
+✔ in a real browser: a page behind a login (401) is not run, with why; its response headers are still read for a version (7408.6035ms)
+✔ in a real browser: a plain-HTTP password page on a local development host is not an exposure (5315.551ms)
+✔ request recording: the passive run sends only GET page loads, one missing-page probe and the known-path probe's GETs, one at a time, even when told to run in parallel (33983.8306ms)
+✔ request recording: an error page that shows a stack trace and a server path fails the probe, naming both (33822.8482ms)
+✔ request recording: a redirect through a URL carrying a session token fails, naming the URL (20500.9284ms)
+✔ findGapAreas: in-scope areas with zero template tests, reliability never included (3.3803ms)
+✔ mergeLocalSuite: template kept whole; every @playwright/test import form dropped; one gap area gets its own block (7646.1452ms)
+✔ mergeLocalSuite: several gap areas are not forced under one area block (0.7972ms)
+✔ localModelSuiteTitle: the prefix the run report recognises (0.291ms)
+✔ findGapAreas: an area the template inspected and found nothing to test in is not a gap (0.398ms)
+✔ mergeLocalSuite: the whole local block skips unless interactive tests are on, with a stated reason (312.8975ms)
+(node:39324) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/gap-fill.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the Standard accessibility suite carries both checks for every inspected page, tagged with their WCAG criterion (9058.5527ms)
+(node:16780) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/keyboard-grouping.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on the fixture, positive tabindex, a Tab order against the reading order and loose checkboxes each fail, named; the clean pages pass (decision table) (87383.0786ms)
+✔ local rules [accessibility]: the worked example compiles against the installed Playwright (7756.9073ms)
+✔ local rules [accessibility]: the worked example awaits every assertion (TFP-108) (384.301ms)
+✔ local rules [accessibility]: the worked example only uses placeholder URLs (TFP-109) (0.9682ms)
+✔ local rules [reliability]: the worked example compiles against the installed Playwright (684.5633ms)
+✔ local rules [reliability]: the worked example awaits every assertion (TFP-108) (278.2412ms)
+✔ local rules [reliability]: the worked example only uses placeholder URLs (TFP-109) (0.3371ms)
+✔ local rules [performance/load]: the worked example compiles against the installed Playwright (371.0839ms)
+✔ local rules [performance/load]: the worked example awaits every assertion (TFP-108) (222.4094ms)
+✔ local rules [performance/load]: the worked example only uses placeholder URLs (TFP-109) (0.4554ms)
+✔ local rules [security]: the worked example compiles against the installed Playwright (324.1889ms)
+✔ local rules [security]: the worked example awaits every assertion (TFP-108) (253.1368ms)
+✔ local rules [security]: the worked example only uses placeholder URLs (TFP-109) (0.5531ms)
+✔ local rules [seo/content]: the worked example compiles against the installed Playwright (433.986ms)
+✔ local rules [seo/content]: the worked example awaits every assertion (TFP-108) (747.6683ms)
+✔ local rules [seo/content]: the worked example only uses placeholder URLs (TFP-109) (0.9201ms)
+✔ local rules [database]: the worked example compiles against the installed Playwright (1026.5207ms)
+✔ local rules [database]: the worked example awaits every assertion (TFP-108) (538.1803ms)
+✔ local rules [database]: the worked example only uses placeholder URLs (TFP-109) (0.2902ms)
+✔ local rules: no guide or shared rule mentions localhost (0.8466ms)
+✔ localRulesFor: always the shared rules, plus only the guides in scope (0.7197ms)
+✔ localRulesFor: several areas come out in BEST_PRACTICE_OPTIONS order, whatever order they are passed in (0.2924ms)
+✔ local rules: the shared block requires await on every expect (TFP-108) (0.3444ms)
+✔ local rules: the shared block says placeholders are never copied (Phase 33) (0.2159ms)
+✔ local rules: every matcher named as a page matcher really works on page (778.6988ms)
+✔ local rules: the page-vs-locator mistake the model made is really an error (309.7511ms)
+✔ local rules [accessibility]: every recommended matcher exists (1793.3956ms)
+✔ local rules [accessibility]: every forbidden matcher really does not exist (1224.5375ms)
+✔ local rules [reliability]: every example test simulates a failure before loading the page (1.0067ms)
+✔ local rules [reliability]: the rules say the example's failures are generic, not placeholders (0.4535ms)
+✔ local rules [reliability]: every example test blocks something different (0.4064ms)
+✔ local rules: the shared block forbids passing a promise to expect (Phase 33) (0.1408ms)
+✔ local rules [reliability]: the example never asserts a specific fallback message (0.7125ms)
+✔ local rules [performance/load]: every example test measures time against a budget (0.5805ms)
+✔ local rules [seo/content]: the example checks title, meta description and heading structure (0.2041ms)
+✔ local rules [database]: the example checks a unique value survives a reload (0.1646ms)
+✔ local rules [database]: the rules say not to fake persistence on a page with no saving form (0.1072ms)
+✔ local rules [security]: an https: assertion only ever runs behind a positive plain-HTTP skip (TFP-113) (0.7195ms)
+✔ local rules [database]: the unique value is copy-safe data, not a placeholder (0.4576ms)
+✔ local rules [security]: the example covers invalid input and script injection too (0.1723ms)
+(node:33332) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/local-rules.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the generated checks type-check, no link check uses getByText or .first(), and positions count only links of the same visibility (10172.6526ms)
+(node:33904) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/actionable-elements/accessible-names.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a span-wrapped menu link passes; same-text links each test their own link; unnamed links fail by name (40719.5485ms)
+✔ in a real browser: a hidden copy in the menu does not shift the footer link's check onto it (28785.6184ms)
+✔ in a real browser: an image link named only by an alt="" or alt=" " image's title fails, citing HTML-AAM 4.1.10; a titled link and an alt-named image pass (102274.4523ms)
+(node:24848) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/actionable-elements/control-names.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a span-wrapped button passes; same-text buttons each test their own; an unnamed icon button fails, named; an unnamed <form> is Not run; a named one is checked (83238.4436ms)
+(node:46632) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/actionable-elements/form-check.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on /forms, the multi-field form and the lone-<select> form each find their own <form> and its recorded fields; a missing field fails, named (48022.1226ms)
+✔ a profile from before TFP-160 (no form record): the check falls back to the nth <form> and 'at least one control' (0.9431ms)
+✔ actionable-elements split: output for the frozen fixture matches the verified pre-split golden output byte-for-byte (18.2236ms)
+(node:11360) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/actionable-elements/index.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ which pages get which check, from what inspection recorded (decision table) (30.6979ms)
+(node:46608) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/controls.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on the fixture's /store, each broken control fails its own check, named, and the clean store passes all five (decision table) (286813.2254ms)
+✔ the Standard cookie check is the passive check, built by the same function, and type-checks (TFP-147) (5828.3729ms)
+(node:41308) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/cookie-scope.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on a page with a session cookie and two that are not, none with HttpOnly, both checks name the same one (40999.7554ms)
+✔ in a real browser: with no session-named cookie the Standard check names no cookie, and records the header findings (11853.414ms)
+✔ SESSION_COOKIE_NAME: framework session names and session-ish words, not analytics cookies (3.5985ms)
+✔ the generated test type-checks and awaits its web-first assertions (7714.0923ms)
+(node:15680) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/cookie-session-checks.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: passes a browser-session cookie scoped to the site, fails a 400-day or parent-domain one, records one shared with the host's subdomains as a finding, skips when there is none (28836.4632ms)
+✔ findPersistenceForms: picks the notes form and leaves the sign-in form out (4.4815ms)
+✔ findPersistenceForms: search boxes, email-only signups and hidden fields are not persistence forms (6.3564ms)
+✔ findPersistenceForms: a textarea counts, fields belong to the form they follow, and at most 3 forms are used (3.8438ms)
+✔ database suite: one round trip per form - fill a unique value, save, reload, check it is still shown (7.1659ms)
+✔ database suite: the generated code compiles against real Playwright types and awaits every web-first assertion (8626.9643ms)
+✔ database suite: skipped unless the run enables interactive tests - even when only a keyword like 'save' triggered it (Decision 5) (10.2506ms)
+✔ database suite: no inspection data or no suitable form is reported as a note, not silently empty (1.4675ms)
+✔ database suite: not generated when database is neither selected nor triggered (1.924ms)
+(node:17824) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/database-round-trip.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ fieldLocator: ids with '.', ':', a leading digit, quotes or a backslash select exactly that field in a real browser (7089.8698ms)
+✔ cookie is not a routable dependency kind; every other kind, including redirect, is (1.6847ms)
+✔ one test is generated per routable dependency, including redirect; none for cookies (0.93ms)
+✔ the generated test title exactly matches buildDependencyFailureTitle's output (0.506ms)
+✔ routes by host + pathname, not the full sampleUrl (which may carry a per-request query string) (0.2607ms)
+✔ asserts graceful degradation generically: body visible, no uncaught page errors, no 5xx (1.7428ms)
+✔ a form-action dependency with a known raw action attribute actually submits the form once blocked (0.7281ms)
+✔ a form-action dependency with no known raw action attribute is still generated, without a submit step (0.5935ms)
+✔ a non-form dependency never gets a submit step, even if rawValue happens to be set (0.373ms)
+(node:41084) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/dependency-failure-injection.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ findSignInPath: the first inspected page with a password field or a Log in / Sign in control (14.6268ms)
+✔ the sign-in test visits the inspected sign-in page, and / without page data (8496.4413ms)
+(node:30484) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/false-failures.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: an image link whose anchor has no box is found and seen; truly hidden links are not (1226.156ms)
+✔ findFormFieldPages: pages with a fillable field; buttons, hidden and submit inputs don't count (3.7952ms)
+✔ generated tests type-check against @playwright/test and await every assertion (8485.4943ms)
+(node:40300) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/form-field-names.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: an unlabelled field fails and is named; a placeholder-only one is a finding; labelled ones pass (4916.2585ms)
+✔ in a real browser: every input type is named correctly, labelled or not, whatever its snapshot line shows (3514.3525ms)
+✔ no selection generates no journey test - never every candidate (2.7554ms)
+✔ exactly the selected journeys get a test, and an id the profile doesn't offer gets none (1.5261ms)
+✔ the test is skipped unless interactive tests are enabled for the run (1.0139ms)
+✔ each hop is asserted in order, using the real element from the graph (5.0482ms)
+✔ a form-submit final hop asserts the submit reached its endpoint without failing, not that the browser ended on it (0.8373ms)
+✔ a named flow with an unverified exit asserts the app actually reaches it after submitting (0.66ms)
+✔ an exit the graph itself reaches is not asserted twice; an automatic journey has no exit assertion (0.5532ms)
+✔ a formaction submit control is located by its own attribute and submits its enclosing form (0.533ms)
+✔ quotes and backslashes in a label or raw value can't break out of the generated test (3941.7862ms)
+✔ mockGenerate emits the helpers and journey tests inside the functional suite only when functional is generated (5.9962ms)
+(node:26192) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/journey-tests.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ three checks per inspected page and one across them, in the usability area; none without page data beyond / (8680.4632ms)
+(node:41980) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/layout.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: each layout defect on the fixture's gallery is reported by its own check, named, and the clean gallery is clean (decision table) (190316.5082ms)
+✔ the generated anchor test type-checks and never builds a CSS selector from an href (6965.6914ms)
+(node:46568) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/anchor-target.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: href="#" is a named finding, not a crash; real, #top and encoded targets pass; a missing target fails by name (18915.2426ms)
+✔ both download checks emit \.(pdf...): a link ending getpdf, with no dot, is not a download (6.3606ms)
+(node:25032) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/download-pattern.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43488) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/hidden-links.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on the fixture's menus, link health ignores the menu, the keyboard check opens it, and the responsive check opens the collapsed nav (decision table) (238929.1602ms)
+✔ in a real browser: a hidden link with no control that reveals it passes health, with the finding that none was found (decision table) (16585.6241ms)
+(node:3668) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/inventory-tests.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: one test per distinct link, the repeated one once; the working link passes and the broken one fails in link health, with no load twice (TFP-205) (34259.7412ms)
+✔ in a real browser: a link no other check loads is loaded by its own test - a broken one fails with its status, an external one gets no request, one over the cap is named (TFP-205) (25952.2549ms)
+✔ offline, on TFP-197's crawls of both Toolshop copies: generation leaves no link on the in-context gap list (TFP-205), the cards' by their group's test (TFP-208) (1692.3532ms)
+✔ in a real browser: a listing's cards, other ones on every load, get one test that passes by position; broken card targets still fail link health; no cards fails (TFP-208) (39094.2753ms)
+✔ card groups: three or more links to one address but an id; fewer, or ones that differ in more, are links of their own (TFP-208) (2.4524ms)
+✔ both generated checks type-check and bound their own waits (5621.3048ms)
+(node:28624) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/link-check-timeouts.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a skip link parked off-screen is named as not hovered; the check passes in seconds, not 30 s (9558.7253ms)
+✔ in a real browser: a stalled dependency is the check's own 5 s timeout, named with its reason; a repeat of it is not requested again (12195.5106ms)
+(node:17256) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/link-audits/orphan-pages.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on the fixture, the orphan check follows the decision table (start lost, another lost, unlinked, all linked) (113445.28ms)
+✔ a profile without requestedPaths (saved before TFP-161) gets today's check, unchanged (1.4819ms)
+✔ plain values produce exactly the same locator as before (1.654ms)
+(node:44864) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/locators.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ awkward ids, classes and hrefs compile and select exactly the right element in a real browser (6087.7418ms)
+(node:46964) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/performance-bands.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"clean":[["TFPL-001: landing page finishes loading within 5 s","Passed",[],null],["TFPL-002: largest contentful paint stays under 4 s","Passed",[],null],["TFPL-003: page weight stays under 5 MB","Passed",[],null],["TFPL-004: no same-origin request fails while the page loads","Passed",[],null],["TFPL-005: cumulative layout shift during load stays under 0.25","Passed",[],null],["TFPL-006: total blocking time during load (recorded, not judged)","Passed",[],["TBT 0 ms on / (0 long task(s) after the first contentful paint, up to 1.5 s after load): recorded, not judged - web.dev calls TBT a proxy for INP, not a substitute, and gives it no band. Measured once, in a lab (this run, from this machine), not from real visits."]]],"lcp3":["Passed",["LCP 3.06 s on /: Core Web Vitals \"needs improvement\" (over 2.5 s, up to 4.0 s). Largest element: img. Measured once, in a lab (this run, from this machine), not from real visits."]],"lcp5":["Failed","Error: LCP 5.08 s, budget 4.0 s: Core Web Vitals \"poor\". Largest element: img. Measured once, in a lab (this run, from this machine), not from real visits. expect(received).toBeLessThanOrEqual(expected) Expected: <= 4000 Received: 5076"],"cls15":["Passed",["CLS 0.142 on /: Core Web Vitals \"needs improvement\" (over 0.1, up to 0.25). Shifted first: main, nav. Measured once, in a lab (this run, from this machine), not from real visits."]],"cls30":["Failed","Error: CLS 0.285 on /, budget 0.25: Core Web Vitals \"poor\": content moves while the page loads. Shifted first: main, nav. Measured once, in a lab (this run, from this machine), not from real visits. expect(received).toBeLessThanOrEqual(expected) Expected: <= 0.25 Received: 0.28454264322916667"]}
+✔ in a real browser: LCP and CLS fall in Core Web Vitals' bands - a finding for needs improvement, a failure for poor; TBT is recorded, not judged; every finding and failure says it is a lab measurement (236505.1362ms)
+✔ in a real browser: TBT counts a long task after the first contentful paint (a 300 ms busy loop gives about 250 ms), still with no pass or fail (9876.756ms)
+✔ performance checks: the budgets are Decision 2's loose ones (3.1556ms)
+✔ performance checks: six checks (TFP-149 added CLS and TBT), the generated suite compiles and awaits every web-first assertion (5322.6573ms)
+✔ performance checks: navigation waits for the load event before reading its timing (0.7893ms)
+✔ performance checks: each failure message states the measurement, the budget, and the culprit (0.6236ms)
+✔ performance checks: page weight uses browser-reported sizes, not Resource Timing (0 bytes cross-origin) (1.2009ms)
+✔ performance checks: a request the page cancelled itself is not a failure (0.4474ms)
+✔ performance checks: no LCP at all is recorded as a finding, not a failure (0.858ms)
+✔ performance checks: LCP and CLS at and either side of each band's lines (boundary value analysis; 'poor' is over the line, as web.dev says) (950.2603ms)
+✔ performance checks: includeNavigation false drops only the navigation budget; path is used by every check (0.5247ms)
+(node:29172) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/performance-checks.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ TFP-114: "performance" with performance/load selected produces a performance test on a generic target (7.7064ms)
+✔ TFP-114: "performance" alone (keyword-triggered) produces a performance test on a generic target (13.741ms)
+✔ TFP-114: "performance" on DemoQA still produces exactly one performance suite, not two (3.8074ms)
+✔ TFP-114: "load time" with performance/load selected produces a performance test on a generic target (1.2725ms)
+✔ TFP-114: "load time" alone (keyword-triggered) produces a performance test on a generic target (7.2786ms)
+✔ TFP-114: "load time" on DemoQA still produces exactly one performance suite, not two (1.5563ms)
+✔ TFP-114: "speed" with performance/load selected produces a performance test on a generic target (11.032ms)
+✔ TFP-114: "speed" alone (keyword-triggered) produces a performance test on a generic target (15.1623ms)
+✔ TFP-114: "speed" on DemoQA still produces exactly one performance suite, not two (33.6422ms)
+✔ TFP-114: "response time" with performance/load selected produces a performance test on a generic target (0.8584ms)
+✔ TFP-114: "response time" alone (keyword-triggered) produces a performance test on a generic target (7.805ms)
+✔ TFP-114: "response time" on DemoQA still produces exactly one performance suite, not two (2.098ms)
+✔ TFP-114: performance selected without a trigger word - one suite on either target (1.6149ms)
+✔ TFP-114: performance is not added when it is neither selected nor triggered (5.2069ms)
+(node:20096) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/performance-suite.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ security suite on an http:// target: the shared passive checks on every inspected page, one missing-page probe, and a payload test per form with a free-text field (11.3439ms)
+✔ security suite on an https:// target keeps the HTTPS check exactly as before (2.1425ms)
+✔ security suite: the generated code compiles and awaits every web-first assertion (6520.1448ms)
+✔ security suite: missing headers, cookie flags and software versions are findings, never failures (1.2576ms)
+✔ security suite: payload tests never type into passwords, and are at the active gate, so never run (Phase 38 Decision 6) (0.8467ms)
+✔ security payload: survives being written into generated code intact (0.9713ms)
+✔ findPayloadForms: text-like visible fields only, at most 3 forms (0.4299ms)
+✔ security suite: no inspection data or no form is said in a note (0.3987ms)
+✔ payload goes only into free-text fields; email, url and tel get valid dummy values (so validation can't block the submit) (368.7954ms)
+✔ payload test skips, with the reason, when validation would block the submit or no request is sent (1.784ms)
+(node:16216) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/security-checks.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the SEO suite type-checks and awaits every web-first assertion (3820.3544ms)
+✔ the optional items say so in their titles; the baseline ones name what is missing and where (0.499ms)
+(node:31772) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/seo-findings.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: missing structured data and manifest are findings and pass; the baseline items fail (12920.4756ms)
+✔ in a real browser: a site with everything passes every SEO test with no findings; a linked manifest that 404s fails (6048.5493ms)
+✔ one spelling check per inspected page in the SEO/content area, and the suite type-checks (3070.1424ms)
+(node:36292) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/spelling.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a misspelt heading and a placeholder that isn't its label's word are findings; names, credits and another language are not checked (decision table) (41928.938ms)
+✔ a target that doesn't touch storage at all generates no storage-failure test (3.3569ms)
+✔ a page with no storageUsage field at all (older/malformed data) generates no test, not a crash (1.5304ms)
+✔ one test per detected (page, storage kind) - not one per page, not one blanket test (4.8194ms)
+✔ the generated test title exactly matches buildStorageFailureTitle's output (1.9803ms)
+✔ localStorage/sessionStorage are broken via a getter override, indexedDB via wrapping .open (1.0096ms)
+✔ asserts graceful degradation generically: body visible, no uncaught page errors, no 5xx (4.9662ms)
+(node:27224) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/storage-failure-injection.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ every test in a generated file has its own ID, numbered on across same-area suites (11.3382ms)
+(node:40112) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/test-ids.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ resolveOllamaModel: an untagged name matches its :latest entry (1.7103ms)
+✔ resolveOllamaModel: a tagged name matches only that exact tag (0.4302ms)
+✔ resolveOllamaModel: no prefix or pattern matching (0.241ms)
+✔ stripCodeFence: removes a language-tagged fence (0.3493ms)
+✔ stripCodeFence: removes a bare fence and surrounding whitespace (0.3564ms)
+✔ stripCodeFence: handles CRLF line endings (1.8717ms)
+✔ stripCodeFence: an unclosed fence (truncated output) still loses its opening line (0.3941ms)
+✔ stripCodeFence: unfenced code is returned unchanged (0.2556ms)
+✔ stripCodeFence: a fence in the middle of the code is left alone (0.3493ms)
+(node:2644) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/ollama.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ every page.goto in a suite goes through the helper, added once after test.use; other code is untouched (4521.5125ms)
+(node:7732) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/page-visits.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on a page that draws its form after a slow request, the form and name checks see the drawn page and pass (106641.8021ms)
+✔ in a real browser: a hash route that draws late (/spa#/contact) is read after it draws: its form check finds the form (92375.157ms)
+✔ model and OpenAI page visits go through tfGoto: no raw page.goto outside the helper's own body, the helper once, and each suite type-checks (396.876ms)
+✔ the guard's code type-checks (3942.0459ms)
+(node:34188) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/read-only-guard.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: the guard lets a GET-only sort through and aborts, and names, a POST and a form submission (decision table) (56262.8321ms)
+✔ in a real browser: a page's beacons are aborted and noted, not a breach, whether a link is followed or the page stays (TFP-199) (12587.5029ms)
+✔ the probe's list: 19 paths - version control, .env, backups and dumps, and three log files in three folders - named with its count in the test's title (6312.5088ms)
+(node:45420) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/security-probes.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: the probe finds a log on the site's own API and not a catch-all page; integer ids are a finding (decision table) (113436.0064ms)
+(node:32728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/standard-conformance.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: on the fixture, a Standard security run and a Comprehensive one report the same for every page, for the clean site and each passive defect; the Standard run sends one missing-page probe (340959.0845ms)
+✔ in a real browser: on the fixture, the Standard run's axe scan and the Comprehensive one report the same for every page, for the clean site and each WCAG defect (TFP-148) (158392.6709ms)
+✔ the Standard report lists the scan's undecided items for manual review, by page, and a Comprehensive report does not repeat them there (TFP-148) (2.0962ms)
+(node:46656) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/standard-gates.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser, interactive unset: the Standard run sends only GETs; interactive and active tests are Not run with their reasons, counted per gate (226598.8209ms)
+✔ in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and submit forms; the active test is still Not run, naming the ownership confirmation (189228.4279ms)
+✔ findTypeErrors: rejects the matcher the local model invented (3300.066ms)
+✔ findTypeErrors: accepts the same suite using real matchers (1039.5271ms)
+✔ findTypeErrors: rejects a syntax error (658.2847ms)
+✔ findTypeErrors: rejects an import that is not installed (230.7931ms)
+✔ findTypeErrors: is lenient about style - implicit any is not an error (194.5934ms)
+✔ findTypeErrors: the template generator's own suites pass, for every coverage area (5082.4316ms)
+✔ findUnawaitedAssertions: finds the unawaited page assertion from the Phase 31 security sample (168.8383ms)
+✔ findUnawaitedAssertions: a synchronous value matcher is reported, but not as a silent no-op (149.8962ms)
+✔ findUnawaitedAssertions: sees through .not, expect.soft and parentheses (212.7084ms)
+✔ findUnawaitedAssertions: awaited and returned assertions are clean (235.018ms)
+✔ findPromisesToPlainMatchers: rejects reliability-3 from the 2026-09-30 C8 run, every isDisabled() line (601.191ms)
+✔ findPromisesToPlainMatchers: sees .not, expect.soft, toBeTruthy and an unawaited plain matcher (139.3426ms)
+✔ findPromisesToPlainMatchers: web-first matchers, resolves/rejects, awaited values and expect.poll are clean (127.7484ms)
+✔ findDuplicateTests: rejects reliability-2 from the 2026-09-30 C8 run - three titles, one body (238.6758ms)
+✔ findDuplicateTests: whitespace and comments don't make a body different; titles don't matter (1.5508ms)
+✔ findDuplicateTests: the same body under different setup is not a duplicate; different bodies are clean (275.7935ms)
+✔ findDuplicateTests: the full-request reliability suites from the diagnostic, with three different failures, are clean (18.5222ms)
+✔ findPromisesToPlainMatchers: the template generator's own suites are clean, for every coverage area (1906.7042ms)
+(node:46728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/validate.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38984) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/controls.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: each input type gets the role ARIA in HTML gives it (equivalence partitioning) (1021.5243ms)
+✔ in a real browser: on /controls, the search field is checked by role, the unnamed icon button fails its name check, and each same-text button tests itself (101489.5694ms)
+✔ a same-origin script is not recorded as a dependency (1.8715ms)
+✔ a third-party script is recorded with its host and kind (1.4167ms)
+✔ a form action host is recorded regardless of same-origin status (1.0952ms)
+✔ an iframe src is recorded regardless of same-origin status (1.0234ms)
+✔ a stylesheet or image embedded link is not a recorded dependency kind (0.5245ms)
+✔ a same-origin fetch is tagged sameOrigin: true, not misclassified as third-party (1.5436ms)
+✔ the same (host, kind) observed on multiple pages dedupes to one row with an accurate occurrence count and path list (9.6292ms)
+✔ distinctly-named cookies on the same host are separate rows, not collapsed to one (0.8563ms)
+(node:43788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/dependency-map.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a path ending in a form submit is a candidate, naming each step's real element; a path ending in a link is not (3.2467ms)
+✔ automatic candidates rank shortest first and ranks are 1-based and contiguous (0.7213ms)
+✔ a form that posts back to its own page is a 1-hop journey; a cycle back to an earlier page is not walked (0.4666ms)
+✔ a named flow whose exit is beyond the graph matches as far as the form submit and carries the exit as declared (0.2659ms)
+✔ a named flow outranks an automatic candidate over the same pages, which is then surfaced once (12.4845ms)
+✔ a named flow that matches an automatic journey's exact pages replaces it, keeping the named rank (0.39ms)
+✔ a journey of exactly the hop limit is surfaced; one hop over is excluded, not truncated (0.4589ms)
+✔ a named flow whose exit is reachable only past the hop limit is excluded with a warning, with no shorter fallback (0.9863ms)
+✔ a named flow with an unknown or uninspected entry is excluded with a warning (0.5412ms)
+✔ no more than the journey cap is surfaced, and the surplus is reported (0.6787ms)
+✔ named flows are never displaced by the cap (0.6919ms)
+✔ normalizeNamedFlows trims, normalizes paths, and drops incomplete entries (0.9208ms)
+✔ journeys survive normalizeContentProfile; a journey whose steps don't match the graph is dropped (1.4342ms)
+✔ selectJourneys returns exactly the selected journeys in rank order, drops unknown ids, and empty selects nothing (0.6088ms)
+✔ normalizeContentRules carries selectedJourneyIds exactly, defaulting to none (1.0927ms)
+(node:44256) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/journeys.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:36156) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/label-names.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a control inside its label is named as the browser names it, and its check finds it (TFP-200) (15391.2304ms)
+✔ Decision 1 and 2: a fragment starting with / or !/ is a route, named as the address bar shows it; anything else is an in-page anchor (2.5427ms)
+(node:45516) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/routes.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: the crawl finds every linked route of the fixture's hash-routed app as its own page (6540.9114ms)
+✔ in a real browser: routes are internal links, anchors stay anchors; a linked missing route fails link health, naming it; #top and #details pass the anchor check (136951.7332ms)
+✔ an internal link is an edge naming the element that produces it (15.3071ms)
+✔ a form action and a formaction button are form-submit edges (0.7342ms)
+✔ onclick/data-href navigation is an action edge; resource loads are not edges (0.7204ms)
+✔ external, anchor, mailto, download and inert links are not edges (0.3902ms)
+✔ a same-origin edge whose linkType says internal but whose host differs is dropped (0.2841ms)
+✔ a link self-edge is dropped; a form-submit self-edge is kept (0.4191ms)
+✔ the same element repeated on one page is one edge; a differently-labeled link to the same page is another (0.5765ms)
+✔ query and hash never make a distinct page; a target only known from a link is an uninspected node (0.379ms)
+✔ the graph survives normalizeContentProfile, and an edge to an unknown node is dropped (1.3691ms)
+(node:22952) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/introspect/site-graph.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ every entry records its pattern, technique, gate, where it runs and the bugs it caught (2.3979ms)
+✔ an entry applies where inspection found its pattern, and only there (decision table) (0.4215ms)
+✔ the generator writes a check on exactly the pages its entry binds to (page, site, two-page site) (248.3342ms)
+(node:46552) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/library/library.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43220) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/library/promoted.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ an element's pattern: a test on each page with it, bound, in the functional describe, the element covered (TFP-204) (911.3606ms)
+✔ a repeated link: one test, on the first page it is on (TFP-204) (170.1958ms)
+✔ nothing promoted, no page with the pattern, or refused by the code check: the code as it came (TFP-204) (39.411ms)
+✔ through the routes: a promoted entry is generated on Standard functional and runs inside the verdict (TFP-204) (17762.7857ms)
+✔ the suite: one describe per covered page under the area's title, every test tagged with its page, clean under every gate (3818.1678ms)
+✔ the report: per-page counts, failures and findings grouped by category naming page and test, ASVS chapters tested only from tags that ran (2.6681ms)
+✔ the report: a clean run never reads as a clean bill of health; accessibility has no ASVS table (0.4412ms)
+(node:21788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/comprehensive.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: a generated Comprehensive run's report shows the area only, each page's result, the page left out, and ends with what it did not test (24453.0824ms)
+✔ a Standard report has no comprehensive section and keeps the tabbed layout (1.3445ms)
+(node:37780) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/coverage-map.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ every element check maps to the element it checks, and a form is matched by its record (TFP-192) (22294.0549ms)
+✔ an element no test touches is listed by name in its page type's row, and so is a flow with no journey test (TFP-192) (665.3977ms)
+✔ the index selects the tests for one changed element: a run of just those (TFP-192) (384.0672ms)
+✔ a link checked only by a site-wide request is reachability-covered and on the gap list (TFP-201); its own check covers it in context (TFP-205) (415.7773ms)
+✔ a link on every page, checked on one of them, is one item covered in context (TFP-201) (787.7951ms)
+✔ no page data or no suite source: no map (0.5735ms)
+✔ Group 2: more discovered elements than tests still shows <100% coverage even when every written test passes (7.6145ms)
+✔ Group 3: not-selected, excluded-by-generator (link + cap), and generator-gap are each exactly one reason (1.3308ms)
+✔ Group 3: an unselected practice area buckets all of its discovered elements as not-selected (0.5374ms)
+✔ Group 2: accessibility coverage matches by its own title shape, independent of functional (0.5099ms)
+✔ areas without discovered-element data keep the prior test-based rollup unchanged (0.4246ms)
+✔ TFP-085: reliability folds into the same discovered-coverage denominator as functional/accessibility (0.699ms)
+✔ TFP-085: a cookie-kind dependency is excluded-by-generator, not a false generator-gap (0.4019ms)
+✔ Decision 4 (revised): a redirect-kind dependency is tested by default like any other routable dependency, not excluded (0.3581ms)
+✔ TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests (5.2518ms)
+✔ TFP-086: a page with no detected storage usage contributes nothing to the reliability row (0.7149ms)
+✔ TFP-091: a journey generated into the suite and executed counts as covered; one not generated is listed as not-selected and not counted (2.4978ms)
+✔ TFP-091: a generated journey that was skipped (interactive tests not enabled) stays uncovered with its own reason, never generator-gap or covered (1.0089ms)
+✔ TFP-091: a generated journey with no execution record is a generator-gap; without the functional area it is not-selected (1.6427ms)
+✔ TFP-091: the TFxx-000 id prefix on a real run's titles is stripped before matching (0.4709ms)
+✔ Group 2: an element's check is matched to its discovered element when the executed title carries the TFxx id prefix a real run has (2.5315ms)
+(node:13640) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/discovered-coverage.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ templateNotesFor: reads the template's own note for an area back out of the suite that ran (2.929ms)
+✔ computeEmptyAreas: areas with a test are left out; empty ones say why, template side first (0.9384ms)
+✔ computeEmptyAreas: the local-model outcome from generation is named - timeout, rejection, asked-but-empty (0.57ms)
+✔ computeEmptyAreas: an area with no block at all in the suite still says the template wrote nothing (0.287ms)
+✔ buildReport carries the generation record and the empty areas, and the HTML export shows both (7.1652ms)
+✔ Phase 37: a promise_to_plain_matcher rejection is saved with the run, named in the empty area, and shown in the report (13.8786ms)
+✔ TFP-122: the HTML export says the page data was gathered automatically, or why it could not be (2.9683ms)
+✔ buildReport without a generation record: no generation section, and older callers still work (0.8864ms)
+(node:45960) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/empty-areas.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ deriveArea: the template generator's suite names map exactly as before (4.7508ms)
+✔ deriveArea: describe blocks named after an area key or label map to that area (0.5424ms)
+✔ deriveArea: only whole titles match - a describe that merely mentions an area stays Functional (0.3978ms)
+✔ flattenSuites: a test that skipped itself reports its own reason, not an interrupted run (5.6878ms)
+✔ flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording (4.4907ms)
+✔ flattenSuites: finding annotations are kept on the record and appended to the remark, and the test still passes (21.8582ms)
+✔ flattenSuites: a test with no findings has an empty list and an unchanged remark (2.0348ms)
+✔ flattenSuites: tests inside Option B's 'Local model (...)' block are labelled local model, filed under their area (8.0601ms)
+(node:19556) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9160) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/html-tabs.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: every tab of an exported Standard report shows its own panel and hides the others, and no script shows as text (1049.768ms)
+✔ a clean run with interactive tests off reads Ready for release, with the not-run tests named beside it (484.6276ms)
+✔ different reasons are each counted (0.3744ms)
+✔ an unexplained skip or interruption still means Ready with caution and counts as failed in the ratio (339.5668ms)
+✔ a failure still means Not ready, whatever was not run (70.9917ms)
+✔ GEN-43: a run where every test was not run gives no recommendation, not Ready for release (0.4902ms)
+✔ RPT-14: an all-interrupted run gives no recommendation - Blocked tests did not run either (0.9913ms)
+✔ RPT-14: a mix of run and Blocked tests still reads Ready with caution (0.3035ms)
+✔ RPT-14: noTestRan counts passed, flaky and failed only (0.2967ms)
+✔ RPT-14: the HTML export's recommendation banner is neutral when no test ran, not green or orange (5.6609ms)
+(node:26724) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/summary.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ no login block means no login (1.6012ms)
+✔ a complete config is resolved against the base URL and normalized (1.2047ms)
+✔ inline credentials are never accepted, whatever they are called (0.6195ms)
+✔ a credential reference must be an environment variable NAME, so a pasted value is refused (0.2242ms)
+✔ a credential pasted where a name belongs is refused, so it is never looked up or echoed back (0.4984ms)
+✔ every field a login needs is required (0.3658ms)
+✔ a config with no signed-in signal is refused, since a failed login could not be told from a successful one (0.3043ms)
+✔ the login page must be on the site under test - credentials are typed into it (0.1762ms)
+✔ a login that is not an object is refused (0.2051ms)
+✔ credential values are read from the environment at run time, and a missing or empty one is a named error (0.9731ms)
+✔ a missing-credential error names the variable and never a value (0.3758ms)
+(node:22136) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/auth.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ stale per-run login state is swept, but a run still in progress keeps its own (9.1721ms)
+(node:27328) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/diff.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ Group 4: two runs with a deliberately dropped test - specific test names, not just a percentage (70.8248ms)
+✔ Group 4: runs with different baseUrl values cannot be diffed (31.8409ms)
+✔ Group 4: a missing runId is reported by which side was missing (19.9111ms)
+✔ normalizeGenerationRecord: a real /api/generate record is kept as is (14.4588ms)
+✔ normalizeGenerationRecord: nothing usable means null (0.9559ms)
+✔ normalizeGenerationRecord: unknown fields and malformed gates are dropped (1.3421ms)
+✔ normalizeGenerationRecord: long strings and long lists are capped (17.7242ms)
+✔ normalizeGenerationRecord: an automatic inspection record is kept, and capped (1.1222ms)
+✔ describePageInspection: one sentence saying where the page data came from, or why there is none (0.4477ms)
+✔ describeSiteSuite: what the run reused, generated, regenerated and retired, and the edits to check (6.3284ms)
+✔ normalizeGenerationRecord: a site suite record is kept as is; a malformed one is cleaned or dropped (1.2228ms)
+✔ the site suite's recheck: kept, described, and cleaned when malformed (1.2123ms)
+✔ the site suite's gap tests: kept as recorded, cleaned when malformed, dropped with no writer (0.9469ms)
+✔ the site suite's bound candidates: kept as recorded, cleaned when malformed, and said in the report (0.9587ms)
+(node:21480) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/generation-record.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:40372) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/jobs.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ corrupted JSON report: job reaches a terminal status with a result, not 'running' forever (51.6044ms)
+✔ missing JSON report (baseline): same terminal 'failed' path as a corrupted one (10.0612ms)
+✔ corrupted JSON report while cancelled: terminal status is 'cancelled', not 'running' (30.8271ms)
+✔ a suite that declares no test has nothing to run: status 'empty', its report kept, the area's reason in the output (51.2447ms)
+✔ a suite that declares tests yet ran none is still a failed run (29.8307ms)
+✔ an empty suite with any other error is still a failed run (14.3057ms)
+✔ a Comprehensive run's report carries its area section, and its saved record names the run mode (150.3509ms)
+✔ a Standard run's report and saved record carry nothing new (123.4162ms)
+✔ the per-gate Not run count uses the run's interactive setting (TFP-146) (165.1521ms)
+✔ a Comprehensive run whose only failure is a local-model test is saved as passed, the failure shown as needing review (135.0963ms)
+✔ a finished run's report carries its page types: found, covered, skipped and the override, as the client sent them (134.0554ms)
+(node:40188) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/persistence.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ round-trip: read back with no reference to the originating job models a restart (25.9284ms)
+✔ lastAccessedAt: null after persisting, set on first access, unchanged on a second (58.2929ms)
+✔ evidence move: files land under evidence/, relative structure preserved, original path is gone (28.2858ms)
+✔ evidence move failure: falls back to the original path instead of losing the record (13.7278ms)
+✔ pin overrides sweep: a pinned, superseded, no-longer-failing run is never auto-archived (36.521ms)
+✔ archive: keeps run.json and suite.spec.ts, deletes only evidence/, sets retention to archived (40.1581ms)
+✔ still-open-defect exemption: a run is swept once its failure is fixed elsewhere, not before (137.061ms)
+✔ listRunRecords includes persisted runs (50.9284ms)
+✔ isValidRunId: accepts real randomUUID() output, in either case (0.758ms)
+✔ isValidRunId: rejects path-traversal-shaped and otherwise malformed input (TFP-066) (0.4036ms)
+✔ sweep: a newer run that never ran the failing test must not make the older run sweep-eligible (114.694ms)
+✔ sweep (decision table): only a passing re-test of the same title, in the same suite, clears an older failing run (446.1428ms)
+✔ record writes are atomic: a write that fails leaves the previous run.json whole, not truncated (35.6093ms)
+✔ persistRunJob: an artifact in a sibling directory whose name starts with the artifact root's isn't treated as under it (15.1901ms)
+✔ a secret is redacted in every form it can be captured in: raw, JSON-escaped, and percent-encoded (3.666ms)
+✔ a value too short to redact meaningfully is left alone, and nothing else is disturbed (0.3808ms)
+✔ a secret containing another is replaced whole, not left half-redacted (0.3963ms)
+✔ secretsFromStorageState collects cookie and web-storage values, never names (1.232ms)
+✔ redactDeep scrubs nested strings and drops any storageState key outright, even one whose values were never registered (0.6096ms)
+(node:20092) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/redact.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a trace zip is rewritten with every text entry scrubbed, entries kept, and binary entries untouched (71.4279ms)
+✔ a zip with nothing to scrub is returned unchanged (3.8462ms)
+✔ scrubArtifactDirectory scrubs text in place, rewrites zips, removes what it cannot scrub, and fails closed on a corrupt zip (48.1732ms)
+✔ with nothing to redact, scrubArtifactDirectory touches nothing (4.0254ms)
+✔ a suite with the tfGoto helper is counted exactly: its .test(url) is not a test (4.813ms)
+✔ declarations count; property accesses, describes, skips and longer names don't (0.5266ms)
+(node:29728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/selection.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the doc names all four exemption categories (3.7713ms)
+✔ the doc documents every field a login block accepts, and no field that does not exist (1.8732ms)
+✔ the doc tells you what each field is called in the app, and the app's section really carries those labels (2.6505ms)
+✔ the section has no field that takes a credential value (1.0821ms)
+✔ the doc's JSON example is a login block TestForge accepts, using every field (2.5503ms)
+✔ the doc's example environment variable names satisfy the name rule it states (4.5722ms)
+✔ every error message the doc quotes still exists in the code, so a reworded error fails here (0.4829ms)
+✔ the doc's claims about parallelism match the executor (0.8919ms)
+✔ the doc never suggests putting a credential value in the config, and no example contains one (0.706ms)
+✔ the README and .env.example point at the doc (9.8495ms)
+(node:46768) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/setup-doc.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ withDefaultGate: a test with no details gets read-only; a declared one, and an escaped quote in the title, are kept (3.3501ms)
+✔ the template: on the 166 fixed inputs every test declares exactly one gate, and its skip matches it (183.4441ms)
+✔ the template with every journey selected: journeys are interactive, with the interactive skip (5142.1351ms)
+✔ Comprehensive: every passive security check and accessibility check is read-only, beside its page annotation (1535.1433ms)
+✔ model-written blocks: the describe declares the gate once - interactive for gap-fill, OpenAI and Comprehensive accessibility, active for Comprehensive security and for OpenAI when security is in scope (2191.5285ms)
+✔ gateOpenAiSuite: a multi-line import stays at the top, outside the describe (98.8323ms)
+✔ the report: each record carries its declared gate, and the summary counts only tests whose gate was closed for the run (2.6246ms)
+✔ the report: a run whose tests declare no gate (before TFP-146) shows no per-gate counts (0.2449ms)
+(node:45096) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/run/test-gates.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ chosen by type, Standard: covered and skipped types, each with pattern, page count, label and the full URL as the address bar shows it (3.8458ms)
+✔ chosen by type, Comprehensive: every type covered, more pages of the big types, and all of them in the covered list (0.8747ms)
+✔ chosen by hand: an override, recorded - a type added, a page left out, and each skipped type says whether the type selection would have covered it (3.5748ms)
+✔ the record survives /api/run's normalizer whole; junk is dropped and nothing grows past its cap (9.254ms)
+✔ both HTML exports end with the page types, the covered list and the skipped list; without a crawl there is no such section (12.9409ms)
+✔ TFP-173's review: only http(s) URLs on the run's origin survive the normalizer, and the export never contains the rest (1.3226ms)
+✔ a list from the URL field: pages chosen by the user, run as listed; with a crawl its types are named, without one each page stands alone (1.2623ms)
+✔ the round trip: a report's covered list pasted into the URL field runs exactly those pages, and the generated suite covers the same pages (68.6249ms)
+(node:43704) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/selection/coverage.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the signature is landmarks, forms (count and every field's type) and cards; the form signature is the forms alone; counts never decide (1.682ms)
+✔ split an address type only by form signature: different forms split it; cards or landmarks don't (4.6311ms)
+✔ merge only sibling address types under one immediate parent with equal full signatures; never top-level pages or home (5.0049ms)
+✔ a segment directly before an :id is a collection, not a slug: /en/product/:id beside /en/category/:id (1.371ms)
+✔ a label never changes a type's pages (1.4097ms)
+(node:30516) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/selection/page-outline.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ in a real browser: the crawl of the fixture's /types shop finds the revised types (9865.3811ms)
+✔ identifiers become :id - digits, ULIDs, UUIDs, long hex - and words don't (3.5168ms)
+✔ siblings under a shared parent become :slug; top-level pages and a lone child stay literal (0.6974ms)
+✔ hash routes group by their route, as TFP-165 names them; the start route is its own type (0.5356ms)
+✔ addresses differing only by query string are one type (0.2614ms)
+(node:36600) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/selection/page-types.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the committed Toolshop crawls: path-routed and hash-routed give the same patterns, apart from the sites' own pages (19.6032ms)
+✔ in a real browser: the crawl's pages group by address into the fixture hash-routed app's 6 patterns, and the crawl records its types (7021.2994ms)
+✔ always covered: home, every type with a form, and the largest type - whatever the ordered rules say (3.0755ms)
+✔ the ordered rules, one at a time: pages, then forms, then interactive elements, then crawl order - each type names the rule that placed it (1.0283ms)
+✔ the representative page has the most interactive elements; ties go to crawl order; no outline counts as 0 (0.4395ms)
+✔ Standard: one page per type up to the hard cap of 8; over it, content types go first, then the lowest ranked, each skip naming its rule (0.6864ms)
+✔ the cap is hard: always-covered types alone over it - home is still covered, first; the others are ordered by the rules and the rest skipped, named (9.5884ms)
+✔ Comprehensive: every type before a second page of any type; then one more page per type per round, in rank order, up to the budget (0.8836ms)
+(node:41432) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/selection/select.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ the committed crawls: both Toolshops cover 8 of their 9 types and skip one content type; the-internet covers its 8 always-covered types (26.9206ms)
+✔ a run inspects the selected pages: Standard's or Comprehensive's by type after a crawl, every page without types; no 5-page cap (68.0441ms)
+(node:40660) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/site-suites/site-suites.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ an unchanged site: the second run reuses every test and generates none (TFP-190) (35161.4297ms)
+✔ one page's structure changes: only its page type's tests are regenerated, and a hand-edited one is kept and flagged (TFP-190) (35098.7991ms)
+✔ a page is removed: its tests, and the other pages' tests of it, are retired (TFP-190) (33571.7688ms)
+✔ nothing is written inside the repo (TFP-190) (34.289ms)
+✔ the data folder: TESTFORGE_DATA_DIR, else where the platform keeps app data (equivalence partitioning) (0.2945ms)
+✔ withGuardHelper: a call another describe's copy can't reach gets a top-level one; a call beside its describe's copy, a top-level copy, or no call, nothing added (2.233ms)
+(node:40736) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/site-suites/stale.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ a reused test fails on a page whose structure changed: its type is regenerated and re-run, and only the re-run counts (TFP-191) (88266.7226ms)
+✔ a reused test fails on a page whose structure did not change: the failure stands (TFP-191) (69347.0819ms)
+✔ a test this generation wrote fails on a changed page: it isn't read again, and the failure stands (TFP-191) (44101.7832ms)
+ℹ tests 575
+ℹ suites 0
+ℹ pass 575
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 730353.0653
+exit=0

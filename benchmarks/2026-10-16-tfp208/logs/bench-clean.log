@@ -1,0 +1,17 @@
+clean: 04:08:38 crawl (4c0aca0)
+(node:21720) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/crawl/route.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean: completed, 49 pages, 9 types in 55 s
+  standard (8): / /product/01M517BHZ971MNBVBSYMSTA8FT /category/hand-tools /auth/register /contact /auth/login /auth/forgot-password /rentals
+  skipped: /privacy
+  comprehensive (20): / /product/01M517BHZ971MNBVBSYMSTA8FT /product/01M517BHZAVRA4JJ1NXJK8KJYT /product/01M517BHZBBG6X0TPPKXRPW8MR /product/01M517BHZCWC72D3M69W3XA7ZZ /product/01M517BHZE0WZ9QY87T3T4TXQA /product/01M517BHZF2553Y7QHQMGZ81NR /product/01M517BHZGZKGHEWQJ3FR5PQ6C /product/01M517BJ0QPXER9J5TPTND9X52 /product/01M517BJ0RP4VF1T575ZW18H7H /category/hand-tools /category/other /category/power-tools /category/special-tools /auth/register /contact /auth/login /auth/forgot-password /rentals /privacy
+clean: 04:09:34 standard
+(node:33604) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/benchmarks/2026-10-07-tfp175-selection/run-tfp175.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean-standard: standard on http://localhost:4200; generate 18 s, run 1031 s; 472 tests {"Passed":408,"Failed":46,"Not run":18}
+clean: 04:27:05 done
+exit=0
