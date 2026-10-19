@@ -31,6 +31,8 @@ Progress (2026-10-16):
   `02ed0ef`; `benchmarks/2026-10-16-tfp208/outcome.md`. Its card-group
   ruling is confirmed by Emil (2026-10-19), on the condition `02ed0ef` meets
   (Phase 42 record). Next for Code: TFP-210.
+- **TFP-210 built (2026-10-19), waiting for verification:** `4eff1dc`,
+  `benchmarks/2026-10-19-tfp210/`. Both nightly jobs were green once on GitHub.
 - **Order for Code (Emil, 2026-10-16):**
   1. **TFP-208**;
   2. **TFP-210**;
@@ -212,6 +214,29 @@ every number.
 - **`performance-bands.test.ts:69`:** recorded as D23 in
   `deferred-work-register.md`, a known flake. TFP-210's nightly run will
   show its rate.
+
+### TFP-210 result (built 2026-10-19, not yet verified)
+
+Ticket: `post-phase-42-review-findings.md`, "Tickets". Commit `4eff1dc`;
+logs and times in `benchmarks/2026-10-19-tfp210/`.
+- **`.github/workflows/nightly.yml`:** jobs `unit` and `template-unchanged`,
+  at 02:00 UTC and on manual dispatch, never on push. Node 24, because both
+  commands use `--experimental-strip-types`.
+- **Template base:** the recorded baseline, `TEMPLATE_BASELINE` (`980346f`),
+  in the workflow, or a base named at dispatch. A deliberate change of
+  template output updates the baseline in its own commit. Rejected: the
+  commit from 24 hours before, which goes red for one night and then green
+  again with nothing recorded.
+- **Regression workflow:** the separate `npm run build` is gone, so it
+  builds once, as `60aac09` set up: build first, `webServer` only starts.
+- **Green once on GitHub (dispatched by hand, `4eff1dc`):**
+  - `unit`: 575 tests, 574 passed, 0 failed, 1 skipped (Windows only, with
+    its reason). Suite 1,123 s, job 1,181 s; 659 to 731 s locally.
+  - `template-unchanged`: 166 of 166 identical against `980346f`, job 22 s.
+  - Regression: 57 passed, job 403 s.
+- **For Emil:** the unit suite takes 1.5 to 1.7 times as long on the
+  runner. It is still well inside the job's 45 min. D23's flake passed in
+  this run. The first scheduled run is 2026-10-20 at 02:00 UTC.
 
 ## R3 — Claims audit (Cowork)
 
