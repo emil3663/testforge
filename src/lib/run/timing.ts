@@ -17,6 +17,7 @@ import { deriveArea } from "@/lib/report/execution";
 import type { ContentProfile, LinkDetail } from "@/lib/generate/mock/types";
 import { isRouteLink } from "@/lib/generate/mock/link-audits/routes";
 import { readFile } from "fs/promises";
+import { parseTestUnits } from "@/lib/site-suites/units";
 
 /** Set on the run's Playwright process: where the timing reporter writes. Unset, it writes nothing. */
 export const TIMING_FILE_ENV_VAR = "TESTFORGE_TIMING_FILE";
@@ -131,11 +132,24 @@ export interface RunTiming {
         /** Time in the failing tests' steps that failed: assertions and calls waiting out their timeouts. */
         failedStepMs: number;
     };
-    /** Page loads by the page loaded and the area of the test that loaded it. */
+    /**
+     * Page loads by the page loaded and the area of the test that loaded it. A load is named as Playwright names
+     * it, except the linked-routes check's, named from its route list ("(missing-route probe)" for the probe).
+     * Playwright names any other load of an absolute address by its path alone, so on a hash-routed site such a
+     * load can show as "/".
+     */
     visits: { page: string; area: string; count: number }[];
+    /** How many loads were named from the suite's route lists rather than Playwright's step names. */
+    namedFromSuite: number;
     overlap: {
-        /** Each check's distinct targets: loaded, requested or (navigation links) named by inspection. */
-        checks: { check: LinkCheck; targets: number }[];
+        /**
+         * Each check's tests, loads, requests and time, and its distinct targets: link health's from its link list
+         * and the linked-routes check's from its route list (the routes it loaded, in order), both in the suite's
+         * source; a link test's and a navigation-link test's from inspection, by its link's name on its page.
+         * Playwright names an absolute address by its path alone (no origin, no fragment), so the step names
+         * can't tell a hash route or an external link apart; the suite's own lists can.
+         */
+        checks: { check: LinkCheck; tests: number; loads: number; requests: number; ms: number; targets: number }[];
         pairs: { checks: [LinkCheck, LinkCheck]; shared: number }[];
         /** Targets two or more of the checks reach. */
         sharedTargets: { target: string; checks: LinkCheck[] }[];
@@ -167,19 +181,27 @@ export function targetOf(target: string, baseUrl: string | undefined) {
     }
 }
 
-/** The link a navigation-link test clicks, by its title, on its page: "Home", or "Untitled link to <url>". */
-function navigationTarget(test: TimingTest, profile: ContentProfile | null): string | null {
-    const name = test.title.replace(TEST_ID, "").replace(/^navigation link health: /, "");
+/**
+ * The link a test is about, by its title, on its page, from inspection: a navigation-link test's
+ * ("navigation link health: Home", or "Untitled link to <url>") or a link test's (`link "Home" on /`, or
+ * `link "Home" to /x on /`).
+ */
+function namedTarget(test: TimingTest, profile: ContentProfile | null): string | null {
+    const plain = test.title.replace(TEST_ID, "");
+    const linkTest = /^link "(.*)"(?: to (\S+))? on \S+: /.exec(plain);
+    const name = linkTest ? linkTest[1] : plain.replace(/^navigation link health: /, "");
     const page = profile?.pages.find((candidate) => candidate.path === test.page) ?? null;
     const untitled = /^Untitled link to (.+)$/.exec(name);
     const links = page?.linkDetails ?? profile?.pages.flatMap((candidate) => candidate.linkDetails ?? []) ?? [];
-    const link = untitled ? links.find((candidate) => candidate.url === untitled[1]) : links.find((candidate) => candidate.text === name);
+    const link = untitled
+        ? links.find((candidate) => candidate.url === untitled[1])
+        : links.find((candidate) => (candidate.text || candidate.url) === name && (!linkTest?.[2] || candidate.rawHref === linkTest[2] || candidate.url === linkTest[2]));
     return link ? link.url : untitled ? untitled[1] : null;
 }
 
 const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
 
-export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; profile?: ContentProfile | null } = {}): RunTiming {
+export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; profile?: ContentProfile | null; suiteCode?: string | null } = {}): RunTiming {
     // A retried test counts once: its last attempt, as the report does.
     const latest = new Map<string, TimingTest>();
     for (const test of raw.tests) {
@@ -193,11 +215,41 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
     const settles = of("settle");
     const failingTests = tests.filter((test) => test.status === "failed" || test.status === "timedOut");
 
+    // The suite's own lists: link health's links and the linked-routes check's routes, by test title as Playwright
+    // gives it (with its TFxx-NNN id, which tells apart one check's tests on different pages).
+    const sources = new Map((options.suiteCode ? parseTestUnits(options.suiteCode) : []).map((unit) => [unit.id ? `${unit.id}: ${unit.title}` : unit.title, unit.source]));
+    const listIn = (test: TimingTest, name: string): Array<Record<string, string>> | null => {
+        const match = new RegExp(`const ${name} = (\\[.*?\\]);\\n`, "s").exec(sources.get(test.title) ?? "");
+        try {
+            return match ? (JSON.parse(match[1]) as Array<Record<string, string>>) : null;
+        } catch {
+            return null;
+        }
+    };
+
+    // TFP-165's missing-route probe loads once per worker process, before its first linked route; Playwright starts
+    // a fresh worker after a failed test. The tests are in the order they ran (one worker).
+    const loadNames = new Map<TimingTest, string[]>();
+    let probed = false;
+    let namedFromSuite = 0;
+    for (const test of tests) {
+        const loads = test.steps.filter((step) => step.kind === "goto").map((step) => targetOf(step.target, options.baseUrl));
+        const routes = checkOf(test.title) === "linked routes" ? listIn(test, "routes") : null;
+        if (routes) {
+            const names = [...(probed ? [] : ["(missing-route probe)"]), ...routes.map((route) => targetOf(route.url, options.baseUrl))];
+            probed = true;
+            namedFromSuite += Math.min(loads.length, names.length);
+            loadNames.set(test, loads.map((load, index) => names[index] ?? load));
+        } else {
+            loadNames.set(test, loads);
+        }
+        if (test.status === "failed" || test.status === "timedOut") probed = false;
+    }
+
     const visitCounts = new Map<string, { page: string; area: string; count: number }>();
     for (const test of tests) {
         const area = deriveArea(test.titlePath).key;
-        for (const step of test.steps.filter((candidate) => candidate.kind === "goto")) {
-            const page = targetOf(step.target, options.baseUrl);
+        for (const page of loadNames.get(test) ?? []) {
             const key = `${page}\u0000${area}`;
             const entry = visitCounts.get(key) ?? { page, area, count: 0 };
             entry.count++;
@@ -206,21 +258,36 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
     }
 
     const targets = new Map<LinkCheck, Set<string>>();
+    const effort = new Map<LinkCheck, { tests: number; loads: number; requests: number; ms: number }>();
     for (const test of tests) {
         const check = checkOf(test.title);
         if (!check) continue;
         const own = test.page ? targetOf(test.page, options.baseUrl) : null;
-        const reached = test.steps
-            .filter((step) => step.kind === "goto" || step.kind === "request")
-            .map((step) => targetOf(step.target, options.baseUrl))
-            .filter((target) => target !== own && !target.includes("testforge-missing"));
-        if (check === "navigation links") {
-            const named = navigationTarget(test, options.profile ?? null);
-            if (named) reached.push(targetOf(named, options.baseUrl));
+        const loads = loadNames.get(test) ?? [];
+        let reached: string[];
+        if (check === "link health") {
+            const links = listIn(test, "links");
+            // As the test does: internal, external and download links, less hash routes when it leaves them to the routes check.
+            const skipsRoutes = (sources.get(test.title) ?? "").includes("TFP-165: a hash route");
+            reached = links
+                ? links.filter((link) => ["internal", "external", "download"].includes(link.linkType) && !(skipsRoutes && /^#!?\//.test(link.rawHref ?? ""))).map((link) => targetOf(link.url, options.baseUrl))
+                : test.steps.filter((step) => step.kind === "request").map((step) => targetOf(step.target, options.baseUrl));
+        } else if (check === "linked routes") {
+            reached = loads.filter((load) => load !== "(missing-route probe)");
+        } else {
+            // A link test loads its target only when no other check does (TFP-205); a navigation-link test clicks it.
+            const named = check === "navigation links" || loads.filter((load) => load !== own).length > 0 ? namedTarget(test, options.profile ?? null) : null;
+            reached = named ? [targetOf(named, options.baseUrl)] : [];
         }
         const set = targets.get(check) ?? new Set<string>();
-        for (const target of reached) set.add(target);
+        for (const target of reached) if (target !== own && !target.includes("testforge-missing")) set.add(target);
         targets.set(check, set);
+        const spent = effort.get(check) ?? { tests: 0, loads: 0, requests: 0, ms: 0 };
+        spent.tests++;
+        spent.loads += loads.length;
+        spent.requests += test.steps.filter((step) => step.kind === "request").length;
+        spent.ms += test.duration;
+        effort.set(check, spent);
     }
     const checks = [...targets.keys()];
     const pairs: RunTiming["overlap"]["pairs"] = [];
@@ -254,8 +321,9 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
             failedStepMs: sum(failingTests.flatMap((test) => test.steps.filter((step) => step.failed && step.kind !== "settle").map((step) => step.duration))),
         },
         visits: [...visitCounts.values()].sort((left, right) => left.page.localeCompare(right.page) || left.area.localeCompare(right.area)),
+        namedFromSuite,
         overlap: {
-            checks: checks.map((check) => ({ check, targets: targets.get(check)!.size })),
+            checks: checks.map((check) => ({ check, ...effort.get(check)!, targets: targets.get(check)!.size })),
             pairs,
             sharedTargets,
         },
@@ -304,13 +372,13 @@ export function countControlKinds(profile: ContentProfile | null, paths?: string
 }
 
 /** The run record's timing: the reporter's file summarized, with the inspected pages' controls. Null when the file is missing or unreadable. */
-export async function readRunTiming(file: string, baseUrl: string | undefined, profile: ContentProfile | null): Promise<RunTiming | null> {
+export async function readRunTiming(file: string, baseUrl: string | undefined, profile: ContentProfile | null, suiteCode: string | null = null): Promise<RunTiming | null> {
     const text = await readFile(file, "utf8").catch(() => "");
     if (!text) return null;
     try {
         const raw = JSON.parse(text) as RawTiming;
         if (raw.version !== 1 || !Array.isArray(raw.tests)) return null;
-        return { ...summarizeTiming(raw, { baseUrl, profile }), ...(profile ? { controls: countControlKinds(profile) } : {}) };
+        return { ...summarizeTiming(raw, { baseUrl, profile, suiteCode }), ...(profile ? { controls: countControlKinds(profile) } : {}) };
     } catch {
         return null;
     }

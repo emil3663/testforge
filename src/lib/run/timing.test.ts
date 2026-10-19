@@ -134,11 +134,13 @@ test("in a real browser: loads, settle waits (one capped), requests and the fail
     ]);
     // Link health requests /a and /b; the link test loads /a (its own page, /, left out); the navigation-link
     // test clicks B, named by inspection: /b.
-    assert.deepEqual(timing.overlap.checks, [
-        { check: "link health", targets: 2 },
-        { check: "link tests", targets: 1 },
-        { check: "navigation links", targets: 1 },
+    assert.deepEqual(timing.overlap.checks.map(({ check, tests, loads, requests, targets }) => ({ check, tests, loads, requests, targets })), [
+        { check: "link health", tests: 1, loads: 0, requests: 2, targets: 2 },
+        { check: "link tests", tests: 1, loads: 2, requests: 0, targets: 1 },
+        { check: "navigation links", tests: 1, loads: 1, requests: 0, targets: 1 },
     ]);
+    assert.ok(timing.overlap.checks.every((check) => check.ms > 0));
+    assert.equal(timing.namedFromSuite, 0, "no routes check, so every load is named as Playwright names it");
     assert.deepEqual(timing.overlap.pairs, [
         { checks: ["link health", "link tests"], shared: 1 },
         { checks: ["link health", "navigation links"], shared: 1 },
@@ -193,6 +195,67 @@ test("a retried test counts once, by its last attempt; targets on the site's ori
     assert.equal(targetOf("http://site.test/#/contact", "http://site.test"), "/#/contact");
     assert.equal(targetOf("/product/1?x=1", "http://site.test/"), "/product/1?x=1");
     assert.equal(targetOf("https://other.test/a", "http://site.test"), "https://other.test/a");
+});
+
+test("the suite's own lists name what step names can't: a routes check's loads by its route list, the probe once per worker; link health's targets by its links (TFP-211)", () => {
+    // Playwright names an absolute address by its path alone: every route load below is "/".
+    const routes = [{ url: "http://site.test/#/contact", route: "/#/contact" }, { url: "http://site.test/#/about", route: "/#/about" }];
+    const links = [
+        { url: "http://site.test/#/contact", rawHref: "#/contact", linkType: "internal" },
+        { url: "http://site.test/files/a.pdf", rawHref: "/files/a.pdf", linkType: "download" },
+        { url: "https://other.test/", rawHref: "https://other.test/", linkType: "external" },
+        { url: "http://site.test/#top", rawHref: "#top", linkType: "anchor" },
+    ];
+    const suiteCode = `import { test, expect } from '@playwright/test';
+test.describe('Functional Coverage', () => {
+  test('TFFU-001: link health: internal, external, and download links do not return broken responses', async ({ request }) => {
+        const links = ${JSON.stringify(links)};
+        for (const link of links) {
+            // TFP-165: a hash route (#/contact) is checked by what the app draws there, below; the server answers every route the same.
+            if (/^#!?\\//.test(link.rawHref)) {
+                continue;
+            }
+        }
+  });
+  test('TFFU-002: link health: linked routes draw a page, not the app\\'s "not found" view', async ({ page }) => {
+        const routes = ${JSON.stringify(routes)};
+  });
+  test('TFFU-003: link health: linked routes draw a page, not the app\\'s "not found" view', async ({ page }) => {
+        const routes = ${JSON.stringify(routes)};
+  });
+  test('TFFU-004: link health: linked routes draw a page, not the app\\'s "not found" view', async ({ page }) => {
+        const routes = ${JSON.stringify(routes)};
+  });
+});
+`;
+    const titlePath = (title: string) => ["", "chromium", "s.spec.ts", "Functional Coverage", title];
+    const routeTest = (id: string, status: "passed" | "failed", loads: number) => {
+        const title = `${id}: link health: linked routes draw a page, not the app's "not found" view`;
+        return { titlePath: titlePath(title), title, page: null, status, duration: 100, retry: 0, steps: Array.from({ length: loads }, () => ({ kind: "goto" as const, target: "/", duration: 10, failed: false })) };
+    };
+    const healthTitle = "TFFU-001: link health: internal, external, and download links do not return broken responses";
+    const raw = { version: 1 as const, tests: [
+        { titlePath: titlePath(healthTitle), title: healthTitle, page: null, status: "passed" as const, duration: 50, retry: 0, steps: [{ kind: "request" as const, target: "/files/a.pdf", duration: 5, failed: false }, { kind: "request" as const, target: "/", duration: 5, failed: false }] },
+        // A fresh worker: the probe, then both routes. The same worker: both routes, no probe. It fails, so the next
+        // test has a fresh worker again: the probe, then the one route its 14 s left time for.
+        routeTest("TFFU-002", "passed", 3),
+        routeTest("TFFU-003", "failed", 2),
+        routeTest("TFFU-004", "passed", 2),
+    ] };
+    const timing = summarizeTiming(raw, { baseUrl: "http://site.test", suiteCode });
+    assert.equal(timing.namedFromSuite, 7);
+    assert.deepEqual(timing.visits, [
+        { page: "(missing-route probe)", area: "functional", count: 2 },
+        { page: "/#/about", area: "functional", count: 2 },
+        { page: "/#/contact", area: "functional", count: 3 },
+    ]);
+    const targets = (check: string) => timing.overlap.checks.find((entry) => entry.check === check);
+    // The hash route is left to the routes check, and an anchor isn't requested; the external link keeps its origin.
+    assert.equal(targets("link health")?.targets, 2);
+    assert.equal(targets("linked routes")?.targets, 2);
+    assert.deepEqual(timing.overlap.pairs, [{ checks: ["link health", "linked routes"], shared: 0 }]);
+    // Without the suite, the step names are all there is: three routes checks' loads are all "/".
+    assert.deepEqual(summarizeTiming(raw, { baseUrl: "http://site.test" }).visits, [{ page: "/", area: "functional", count: 7 }]);
 });
 
 test("controls by Decision 3's kinds: in place by role or aria state, hash routes in-app, other same-origin paths apart, the rest unclear (TFP-211)", () => {

@@ -218,7 +218,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     const output = redactor.redact(job.outputChunks.join("").trim());
     const duration = job.finishedAt - job.createdAt;
     // TFP-211: where the run's time went, from the timing reporter, outside the generated suite.
-    const runTiming = job.timingFile ? await readRunTiming(job.timingFile, job.baseUrl, job.contentProfile) : null;
+    const runTiming = job.timingFile ? await readRunTiming(job.timingFile, job.baseUrl, job.contentProfile, suiteCode) : null;
 
     if (parsedReport) {
         const executionRecords = flattenSuites(parsedReport.suites ?? []);
