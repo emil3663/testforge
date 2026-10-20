@@ -18,9 +18,8 @@ sign-off on Comprehensive testing removing the caps with no separate ask
 (now Decision 10) and the recommended values. The 2026-10-16 amendment
 (Decisions 1 to 7, the changes to Decisions 8, 11, 12 and 13, and TFP-211
 to TFP-215) was locked by Emil on 2026-10-16, with the narrower re-run in
-Decision 4. The keep-or-revert targets are still to be set: TFP-211
-measures, and Emil locks them here before TFP-212 starts. Nothing is
-started. **Phase 39 is next after TFP-208 and TFP-210** (Emil, 2026-10-16;
+Decision 4. **Gate A passed 2026-10-20:** TFP-211 is verified, and Emil
+locked the targets (see "Gate A — targets locked" below). **Phase 39 is next after TFP-208 and TFP-210** (Emil, 2026-10-16;
 see Dependencies and order).
 
 ## Context
@@ -427,6 +426,15 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
 
 ### TFP-215 — Tune the settle wait and read-only timeouts (added 2026-10-16)
 
+**Narrowed at Gate A (Emil, 2026-10-20): the read-only assertion timeouts
+only.**
+- **The settle cap stays at 5 s.** TFP-211 found at most 4 visits a run
+  reached it (17 s at most), so a change can't reach the 5% bar.
+- **Link health's 14 s stays too.** It costs 7 to 8 s a run. The routes it
+  leaves unchecked (R1) are a coverage question, not a speed one.
+- **What remains:** the failed steps' 5 s waits, 137 s on with-bugs (9%).
+- The text below is kept as it was decided.
+
 - **Phase:** 39 · **Priority:** P2 · **Labels:** `run`, `measurement`
 - **Problem it solves:**
   - visits that wait the full 5 s;
@@ -499,9 +507,44 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
 - **Dependencies:** TFP-156, TFP-157. ~~The local Toolshop copy needs Docker
   on Emil's machine.~~ In place since TFP-179.
 
+### TFP-240 — The clean copy's sort check, unstable since TFP-211 (added at Gate A, 2026-10-20)
+
+- **Phase:** 39 · **Priority:** P1 · **Labels:** `flaky`, `generate`
+- **Problem it solves:** "sort options order the items" fails on clean's `/`
+  in all three of TFP-211's runs, and on `/category/hand-tools` in run 2
+  only.
+  - In the failure, "Drawer Tool Cabinet" 89.55 came before "Tool
+    Cabinet" 86.71, sorting by price low to high.
+  - It passed at TFP-208.
+  - Sorting is not one of clean's known bugs.
+  - Decision 7's proof compares failure sets test by test, so an unstable
+    check makes Gate B unreadable.
+- **Scope:**
+  - **Find the cause.** For example: the check reads the list before the
+    sorted page has drawn, the clean copy seeds new data on every start,
+    or the sort is by a value other than the shown price. Prove it with
+    the check's own trace or a recorded run.
+  - **Fix the check.** It waits for the sorted state by a signal (the
+    list's order, the request's response), not a delay. A real sort bug
+    must still fail it.
+- **Acceptance criteria:**
+  - **Fixture cases:**
+    - a list that draws its sorted state late passes;
+    - a list sorted wrongly still fails.
+  - **Stable on both copies:** Standard on both local copies, three runs
+    each, in one session.
+    - The sort check gives the same result in every run.
+    - On clean it passes, unless the cause is shown to be a real defect in
+      the clean copy, which is then recorded as a new answer-key finding.
+  - **Template:** `check:template-unchanged`, with any change described and
+    accepted deliberately.
+  - **Test plan:** a `TEST_PLAN.md` case, in the same commit as the code.
+- **Dependencies:** none. **Before TFP-212** (Emil, 2026-10-20).
+
 ## Recommended Execution Order
 
-1. TFP-211, then Emil locks the targets.
+1. TFP-211, then Emil locks the targets. **Done 2026-10-20.**
+1a. TFP-240, the sort check, before TFP-212.
 2. TFP-212 and TFP-213, together.
 3. TFP-215, then TFP-214 (after Emil's look at the control counts).
 4. TFP-155.
@@ -513,6 +556,49 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
 ### Gate A — Measured and targeted (added)
 - TFP-211 landed and independently verified.
 - The targets are locked in this record by Emil.
+- **Passed 2026-10-20.** TFP-211 was verified by Cowork (`684dc0a`,
+  `160606e`, `afa8d4f`, `768d509`, `dce7c69`; report
+  `phase-39-tfp211-measurement-report.md`). The targets are locked below.
+
+### Gate A — targets locked (Emil, 2026-10-20)
+
+**How every target is judged:**
+- **Before against after, in one session.** The before side and the after
+  side are measured in one session, interleaved, three runs each, and
+  their medians compared.
+- **Never against this report's numbers.** The same code drifted 14 to 19%
+  between sessions (TFP-211).
+- **The setup:** one worker, the local Toolshop copies, the suites
+  generated once per side.
+
+**A quiet machine (Emil, 2026-10-20).** For every Phase 39 before-and-after
+session:
+- Emil's Plane stack and Ollama are stopped;
+- browsers are closed, apart from the run's;
+- nothing else heavy runs;
+- the machine's state is recorded at the start, as TFP-211 did.
+
+**The targets:**
+1. **Gate B** (TFP-212, TFP-213, TFP-215 together):
+   - Standard at least **20% faster** on each copy;
+   - Comprehensive security and accessibility each at least **30% faster**
+     on each copy;
+   - with Decision 7's proof: the failure sets are TFP-211's, test by test,
+     apart from differences explained one by one, with the sort check
+     settled by TFP-240. The Toolshop score is unchanged.
+   - Not met: the change is reverted, and the result recorded either way.
+2. **TFP-215:** each value it changes saves at least **5%** of the Standard
+   median on with-bugs, or it is reverted. 5% is the spread within a
+   session.
+3. **Gate C** (TFP-214), measured against Gate B's code: at least a further
+   **10%** on Standard, each copy.
+4. **Decision 13:** the **40%** bar stays. Measured on Comprehensive, every
+   area, on the local Toolshop, after Gates B and C, medians of three each
+   side.
+
+**Recorded, not work:** Playwright restarts the worker after each failed
+test, about 1.6 s each. That is 136 s of with-bugs' Standard run, and none
+of Decisions 2 to 6 touch it.
 
 ### Gate B — Fewer visits (added)
 - TFP-212, TFP-213 and TFP-215 landed and independently verified.
