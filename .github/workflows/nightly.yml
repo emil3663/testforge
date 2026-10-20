@@ -23,7 +23,7 @@ concurrency:
 env:
   # The template baseline: the last commit whose template output was checked and accepted. A change that
   # alters the output on purpose updates it here, in its own commit, as TFP-205's baseline was (63de663).
-  TEMPLATE_BASELINE: 980346f
+  TEMPLATE_BASELINE: 961f0d8
 
 jobs:
   unit:
