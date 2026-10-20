@@ -14,9 +14,9 @@ below; planning steps happen in Cowork first.
 | R1 | Baseline: the full regression | Code | TFP-207 |
 | R2 | Flakes, from R1's evidence | Code | TFP-208 (written after R1) |
 | R3 | Claims audit: every phase's claims against code and measurements | Cowork, with Emil | tickets it finds |
-| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217 |
+| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222 |
 | R5 | Three decisions: the Docker sandbox, app screens, scenario gaps | Cowork, with Emil | a decision record each |
-| R6 | The skills relook | Cowork, with Emil | skill proposals |
+| R6 | The skills relook | Cowork, with Emil | skill proposals; TFP-236 to TFP-239 |
 
 R1 comes first so every later step works from today's numbers. R3 needs
 R1's numbers. R4 can run alongside R3. R5 builds nothing until a decision
@@ -182,7 +182,8 @@ every number.
 - **Standard, both copies:** failure sets R1's but the 5; score 30 found;
   with-bugs 1,306 s (R1 1,535 s), clean 1,031 s (1,131 s).
 - **Raised for Emil:** the app's own runs walk the shared `.playwright-runs`
-  too (the race the unit tests had).
+  too (the race the unit tests had). Decided 2026-10-19: its own ticket, TFP-222 (R4),
+  before Phase 39's TFP-155.
 - **The ruling, confirmed (Emil, 2026-10-19), on one condition:** a failing
   card names its product. `02ed0ef`: each failing card is listed with its
   position, name, price if shown and `href`, and the test fails once naming
@@ -401,7 +402,70 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     - Setting on github.com: Settings, Notifications, Actions: "Only
       notify for failed workflows".
 
+### TFP-222 — Each app run in a folder of its own
+
+- **Priority:** P2 · **Labels:** `flaky`, `run`
+- **Decided:** Emil, 2026-10-19, as its own ticket in R4. It was raised by
+  TFP-208 (`benchmarks/2026-10-16-tfp208/outcome.md`, "Raised, not
+  fixed").
+- **Problem it solves:** TFP-208 found the unit tests' start-up race and
+  fixed it there (`decbfad`, TST-02). The app's own runs still share it.
+  - These all use the repo config, whose `testDir` is the shared
+    `.playwright-runs`:
+    - the executor;
+    - `gap-run.ts`;
+    - `stale-recheck.ts`.
+  - At start-up, Playwright walks that whole folder. A folder another run
+    removes mid-walk fails the run with `ENOENT ... scandir`, and the run
+    executes nothing.
+  - The executor also creates and removes per-run sign-in folders there.
+  - Two runs at once in the app can hit it: a run while a gap run or a
+    stale re-check is going.
+- **Scope:**
+  - **One folder per run:** every app run, gap run and stale re-check gets
+    its own folder under `.playwright-runs/`, with a config whose
+    `testDir` is that folder. This is TST-02's pattern, through the same
+    helper or one shared with it.
+  - **What moves into it:** the run's spec, reporters, report, timing file
+    and sign-in folder.
+  - **Saved runs are unchanged.** Persistence, artifacts and diffing read
+    what they read today.
+  - **The stale-folder cleanup** removes a whole run folder after its run,
+    keeping TST-02's rule: a folder Windows still holds is retried and left,
+    never failing a run.
+  - **Not in scope:** Phase 39's split into units (TFP-155). It builds on
+    these folders.
+- **Acceptance criteria:**
+  - **The race, reproduced:** a test starts two app runs at once while a
+    third run's folder is removed mid-start. Both runs execute their tests.
+    The case fails on the code before this ticket.
+  - **Persistence unchanged:** a saved run's record and artifacts are the
+    same as before (the regression suite passes in full).
+  - **Unit suite:** passes.
+  - **Template check:** every fixed input identical against the recorded
+    baseline (166 when this was written; the count follows the check's
+    input set). Only how runs
+    are laid out changes, not the generated tests.
+  - **Run time unaffected:** one Standard run on local with-bugs falls
+    within TFP-211's measured spread. That keeps Phase 39's comparisons
+    valid.
+  - **Test plan:** a `TEST_PLAN.md` case, in the same commit as the code.
+- **Dependencies and order:**
+  - **Before TFP-155,** so Phase 39's unit split lands inside per-run
+    folders.
+  - It fits while Gate A waits for Emil's targets, with the rest of R4.
+
 ## R5 — Three decisions (Cowork first)
+
+**Done 2026-10-20 (Emil):** all three are locked. Their build order is in
+`deferred-work-register.md`.
+- **Scenario gaps:** `phase-44-scenario-gaps-decision-record.md`, tickets
+  TFP-223 to TFP-227. It also answers D6.
+- **The Docker sandbox:** `phase-45-docker-sandbox-decision-record.md`,
+  tickets TFP-228 to TFP-231.
+- **App screens:** `phase-46-app-screens-decision-record.md`, tickets
+  TFP-232 to TFP-235. It covers the site lookup, the confirmation form,
+  promotion and the active switch.
 
 Each gets a decision record locked with Emil before any code:
 1. **The Docker sandbox** for gap and candidate tests: what runs inside it,
@@ -416,6 +480,20 @@ Each gets a decision record locked with Emil before any code:
 Done when each record is locked; its tickets then join the backlog.
 
 ## R6 — The skills relook (Cowork)
+
+**Done 2026-10-20 (Emil):** `r6-skills-relook-2026-10-20.md`.
+- **Verdicts:**
+  - 7 skills kept;
+  - 2 updated (`write-playwright-test`, and `crawl-and-classify-pages`,
+    which settles D12);
+  - 4 of Martin's proposals adopted (`sre-testing`, `sre-agents`,
+    `sre-overload`, `sre-release`);
+  - 12 left proposed, with a note to Martin.
+- **D20:** no new run-time rules; the skills are proven by known-answer
+  cases.
+- **`docs/CLAUDE_SKILLS.md`:** resynced.
+- **Tickets:** TFP-236 to TFP-239, built with R4 (after Phase 39 or between
+  its gates).
 
 `docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills and the Cowork skills
 read against what Phases 38 to 42 and the review changed. Done when each

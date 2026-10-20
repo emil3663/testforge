@@ -32,6 +32,10 @@ Status: Emil's goal, kept for planning. Nothing is decided or built.
 2. **A local copy where one exists.** That gives repeatable runs, no load on
    someone's public site, and data TestForge may change. Toolshop's
    `scripts/toolshop-local/` is the pattern.
+   - **Its code lives in WSL's Linux filesystem, not a Windows folder
+     mounted into Docker** (Emil, 2026-10-19). File access across the
+     Windows mount is what makes Toolshop's starts take minutes. See
+     `deferred-work-register.md`, D26.
 3. **The gates.**
    - Practice sites use their published demo accounts.
    - Register only where the site invites it.

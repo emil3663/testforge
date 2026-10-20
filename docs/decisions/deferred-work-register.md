@@ -15,32 +15,129 @@ waits on.
 Each item below gets its own decision record, locked with Emil before Code
 builds it. Phase numbers are given as each record is written.
 
-**Build order after Phase 39.** Phase 39 runs as locked. R4's TFP-206 and
-TFP-209 come after it, or fit between its gates.
-1. **D8:** the ownership confirmation, saved once per site. It opens the
-   active gate, and the script-payload test runs again. Its record is
-   locked as **Phase 43** (2026-10-19), with tickets TFP-218 to TFP-221.
-2. **D1:** the SEO Standard set.
-3. **D2:** functional checks for the 30 APG patterns, with **D9** (INP,
-   banded findings only).
-4. **D3:** the rest of the accessibility and security Standard sets.
-5. **D19:** the failure-triage gate.
-6. **D10:** authenticated and active security (GitHub issue #3).
-7. **D7:** Comprehensive's negative tests by ISTQB technique, with scenario
-   #8.
-8. **D4:** Comprehensive SEO, then the highest-risk areas from run history.
-9. **D5:** all-areas Comprehensive runs, scheduling, per-area jobs.
-10. **D24:** the opt-in load-testing run, split out of D8. It needs D8's
-    load-testing tick. It is last for now (Emil, 2026-10-19) and moves up
-    if it's needed sooner.
+**Build order after Phase 39** (updated 2026-10-20, with R5's three
+records placed). Phase 39 runs as locked. R4 comes after it, or fits
+between its gates: TFP-206, TFP-209, TFP-216, TFP-217 Part A and TFP-222,
+with TFP-222 before Phase 39's TFP-155.
+
+1. **D26: the local copies move into WSL.**
+   - Testsmith's checkout moves into WSL's Linux filesystem, so starts
+     stop crossing the Windows mount.
+   - The workarounds are re-checked.
+   - The README's start timings are corrected.
+   - Failure sets and score are proven unchanged, and the run times
+     become the new baseline.
+2. **Phase 43 (D8): the ownership confirmation, once per site.**
+   - Saved with the site: exact hosts, contact email, 90-day expiry,
+     active and load ticks.
+   - It lifts Phase 39's caps.
+   - With a run's `TESTFORGE_ACTIVE` switch on, it opens the active gate
+     and the script-payload test runs again.
+   - Uncovered runs still run, with their active tests Not run.
+   - Tickets TFP-218 to TFP-221.
+3. **Phase 46: the app screens.**
+   - A site lookup by URL, with exact match only, no list of sites and the
+     email masked.
+   - The confirmation form.
+   - The candidate promotion screen: approve, then Claude Code commits.
+   - The active switch in the run form.
+   - Tickets TFP-232 to TFP-235.
+4. **D1: the SEO Standard set.** The draft set from the coverage proposal,
+   brought into the repo and written once on Phase 39's shared visit.
+5. **D2 with D9: the 30 WAI-ARIA APG patterns.**
+   - Functional checks for each pattern, shipped in batches if its record
+     says so.
+   - INP timed on those interactions and Phase 41's, as banded findings
+     only.
+6. **D3: the rest of accessibility and security Standard.**
+   - The passive checks need nothing more.
+   - The attack-shaped ones sit behind Phase 43's active gate.
+7. **D19: the failure-triage gate.**
+   - Each failure judged as a real defect, test bug, environment, or
+     inconclusive, with a confidence score and a threshold below which a
+     person decides.
+   - Calibrated on the labelled failures.
+8. **D27: TestForge measured against QA My App.**
+   - A comparison benchmark on the local Toolshop copies, run once
+     Standard is complete (after D3 and D19).
+   - Scored with TFP-154's rule against the answer key.
+   - Every TestForge miss is tagged "planned in Dx" or "not planned".
+     Only the unplanned ones become work, and they can reorder the
+     Comprehensive and scenario steps that follow.
+9. **D28: a security sweep of TestForge's model-code paths.**
+   - Zone by zone, each finding proven by a failing test.
+   - Covers the gap writer, candidates and bound candidates,
+     TFP-202's code check and stripped environment.
+   - Done before Phase 45 builds the sandbox.
+10. **Phase 45: the Docker sandbox.**
+   - Every model-written test runs in a container: gap tests, candidates
+     and scenario tests.
+   - Read-only mounts, no secrets, a non-root user.
+   - Network only to the run's target hosts.
+   - No Docker means they don't run.
+   - At most 60 s per run.
+   - Tickets TFP-228 to TFP-231.
+11. **Phase 44: scenario gaps, slice 1.**
+   - Double submit, back-and-resubmit, and retry after a timeout.
+   - Built from a vetted harness, with Claude Code's judgement.
+   - Each scenario type is proven able to fail on a planted-defect
+     fixture.
+   - Outside the verdict until measured (D6).
+   - Interactive gate, plus the confirmation on remote hosts.
+   - Tickets TFP-223 to TFP-227.
+12. **D10: authenticated and active security (GitHub issue #3),** with
+    Phase 44's slice 2 (two tabs on one account, session expiry mid-flow).
+13. **D7: Comprehensive's negative tests.** By ISTQB technique, with a
+    technique-coverage measure, including scenario #8 (valid but unusual
+    data).
+14. **D4: Comprehensive SEO, then the highest-risk areas** from run
+    history.
+15. **D5: all-areas Comprehensive runs, scheduling, per-area jobs.**
+16. **D24: the opt-in load-testing run.** Designed with the ISTQB
+    Performance Testing syllabus, and needs Phase 43's load tick. Last for
+    now (Emil, 2026-10-19); moves up if needed sooner.
+
+**Not placed yet:** D25, a summary email after a site run. Its record is
+still to write.
 
 **Alongside, in Cowork:**
-- R5's three decision records. The scenario-gaps record carries D6 as a
-  measurement.
-- R6 takes D12 and D20.
+- R5 is done: Phases 44, 45 and 46 locked 2026-10-20.
+- R6 is done (2026-10-20): `r6-skills-relook-2026-10-20.md`, tickets
+  TFP-236 to TFP-239, built with R4. D12 and D20 are settled there.
 
-**Added after the triage:** D25, a summary email after a site run (below).
-It isn't placed in the order yet.
+**Standing rule (Emil, 2026-10-19):** any site TestForge hosts locally
+under Docker keeps its code in WSL's Linux filesystem, not in a Windows
+folder mounted into Docker. See D26.
+
+**While the Standard sets are built (D1, D2 with D9, D3): test the section,
+not the whole app** (Emil, 2026-10-20).
+- **Each set's verification runs only its own section,** a Standard run
+  limited to that area, on the fixture and both local Toolshop copies.
+  It is not a full Standard run.
+- **What still guards everything else:**
+  - the unit suite;
+  - `check:template-unchanged`, which shows every other section's output
+    is unchanged;
+  - the nightly run.
+- **If a set changes shared code** (the shared visit, the report, the
+  selection), the template check shows which other sections' output moved.
+  Those sections are run too, and nothing more.
+- **Full Standard evidence comes once, after D3.** Either a single full run
+  on both copies, or D27's TestForge side, which is a full Standard run on
+  both copies anyway. The choice is made when D3 closes.
+- **Run time:** each set's run-time cost is measured from its section run and
+  added to the margin (below). The full run confirms the total.
+
+**The same rule for the Comprehensive work (Emil, 2026-10-20).** It covers
+Phase 44, D10, D7 and D4.
+- **Each item is verified with a Comprehensive run of its own area only,**
+  on the fixture and both local Toolshop copies. Comprehensive already runs
+  one area at a time (Phase 35 Decision 7).
+- **The same guards apply:**
+  - the unit suite, the template check and the nightly run;
+  - any other area whose output moved is run too.
+- **Full Comprehensive evidence comes once, with D5.** D5 builds all-areas
+  runs, and its first all-areas run on both copies is that evidence.
 
 **Every new Standard set (D1, D2 with D9, D3):** Phase 39's rule still
 holds. Each record states the set's run-time cost against the margin
@@ -70,7 +167,7 @@ Statuses:
 | D3 | The rest of the accessibility and security Standard sets | Phase 38, deferred | Include | **Planned** | 4 | D2. The passive parts need nothing more. Attack-shaped checks sit at the active gate, which D8 opens |
 | D4 | Comprehensive SEO, then the highest-risk areas from run history | Phase 35, deferred | Include. Triage: after D7 | **Planned** | 8 | D7; reuses D1's checks. The highest-risk areas are chosen from run history at that point |
 | D5 | All-areas Comprehensive runs, scheduling, per-area jobs | Phase 35, deferred | Include | **Planned** | 9 | D4; Phase 39 Gate D (workers) |
-| D6 | Model-written tests counting toward the verdict | Phase 35 Decision 5, deferred | "Depends on what these model-written tests find" | **Planned as a measurement** inside R5's scenario-gaps record (triage 2026-10-19). Whether they count is decided from its results | Cowork (R5) | R5's scenario-gaps record; Phase 42's candidate gates are the closest rule today |
+| D6 | Model-written tests counting toward the verdict | Phase 35 Decision 5, deferred | "Depends on what these model-written tests find". Decided 2026-10-20: outside the verdict until measured, per scenario type | **Decided** in Phase 44 Decision 6: a scenario type joins the verdict when every planted defect of its type is found on the fixture and there's no unlabelled failure on clean fixture, clean Toolshop or 3 real sites, with Emil's approval | 9 (with Phase 44) | Phase 44's measurement |
 | D7 | Comprehensive's negative tests, by ISTQB technique, with a technique-coverage measure | Phase 38, deferred | No problems. Triage: before D4 | **Planned** | 7 | D10. Includes scenario #8 (`scenario-gap-candidates-2026-10-19.md`) |
 | D8 | The ownership confirmation and the active gate, with the script-payload test. The load-testing run is split out to D24 | Phase 35 Decision 8; Phase 38 | A tester confirms once, not repeatedly. Triage: see "D8, confirming once" below | **Planned** | 1 | Phase 39 and R4. **Locked** as Phase 43 (`phase-43-ownership-confirmation-decision-record.md`, Emil 2026-10-19; TFP-218 to TFP-221). It unblocks D3's active parts, D10, D24 and Phase 39's ownership row |
 | D9 | INP measured through real interactions | Phase 38, deferred | Needs explaining (below). Triage: with D2, banded findings only | **Planned**, with D2 | 3 | D2; Phase 41's GET-only interactions |
@@ -81,6 +178,9 @@ Statuses:
 
 | # | Item | Source | Emil (2026-10-19) | Status | Order | Waits on |
 | --- | --- | --- | --- | --- | --- | --- |
+| D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Planned** | Straight after Phase 39, before Phase 43 | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
+| D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
+| D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
 | D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for TestForge's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
 
 ## Phases or items not wrapped up
@@ -88,7 +188,7 @@ Statuses:
 | # | Item | Source | Emil (2026-10-19) | Status |
 | --- | --- | --- | --- | --- |
 | D11 | Phase 28, OpenAI path: Gate A open, no live completion ever succeeded | Phase 28 | Park | **Parked** (2026-10-19). Revisit if a funded key is used |
-| D12 | Phase 29, the crawl skill's drift from `dom-snapshot.ts`, and its live verification | Phase 29 (draft); Phase 22 | Needs to be addressed; discuss | **R6** (confirmed 2026-10-19; options below) |
+| D12 | Phase 29, the crawl skill's drift from `dom-snapshot.ts`, and its live verification | Phase 29 (draft); Phase 22 | Needs to be addressed; discuss | **Decided** in R6 (2026-10-20): the skill describes the method and points to the code for the rules (`r6-skills-relook-2026-10-20.md`); TFP-237 |
 | D13 | Reliability's element-mapping (local model) | Phase 33, open | Needs explaining (below) | **Parked** with the local-model path (2026-10-19) |
 | D14 | The database test's skip on pages that save nothing (local model) | Phase 33, open | Needs explaining (below) | **Parked** with the local-model path (2026-10-19) |
 | D15 | Template-versus-local-model comparison | Phases 31–33, deferred | Check it | **Closed:** measured in Phase 34 (TFP-120, `phase-34-option-b-measurement-report.md`) and confirmed by Emil 2026-09-28. With page data the model was never called (0 gaps on both targets; 15 of 17 cases identical to the template's suite) |
@@ -96,7 +196,7 @@ Statuses:
 | D17 | Reliability gap-filling (local model) | Phase 34, deferred | Needs explaining (below) | **Parked** with the local-model path (2026-10-19) |
 | D18 | A UI control for gap-filling | Phase 34, deferred | Needs explaining (below) | **Closed:** decided against in Phase 34 Decision 9 (confirmed by Emil 2026-09-28). Revisit only if a site shows gaps with page data |
 | D19 | The failure-triage gate (real defect, test bug, environment, or inconclusive) | Phase 34, deferred (Martin's review) | Needs explaining (below) | **Planned** (2026-10-19), order 5: after D3, before D10. It is calibrated on Toolshop's labelled failures (TFP-178), R1's 5 false link failures, and the new Standard sets' failures, so it is in place before Comprehensive and the practice sites multiply the failures |
-| D20 | Skills used as rules at run time, and proving the skills | Phase 36, deferred | Needs explaining (below) | **R6** (confirmed 2026-10-19) |
+| D20 | Skills used as rules at run time, and proving the skills | Phase 36, deferred | Needs explaining (below) | **Decided** in R6 (2026-10-20): no new run-time rules; each plugin skill proven by known-answer cases through its real invocation (TFP-239) |
 | D21 | TFP-169, the occasional connection reset in a security test | Known-bug backlog | Can we force it? | Open. TFP-208 (verified) didn't see it in its 6 runs, nor R1 in its 3; `3b44370`'s diagnostics stay. TFP-210's nightly run watches it alongside D23. Forcing it (below) is a ticket if it recurs |
 | D23 | `performance-bands.test.ts:69`, a timing test, failed once in TFP-208's check run on `02ed0ef` (the fixture page built for an LCP of about 3 s measured over 4 s, with the machine loaded); passed alone 2 of 2, and in the 6 full runs before | TFP-208's verification (2026-10-19) | — | Open: known flake. TFP-210's nightly run will show its rate; a ticket if it recurs |
 | D22 | The real-site backlog's stale header (TFP-162 to 164 shown open) | Real-site backlog | Update it | **Closed** 2026-10-19: header and order list updated (`cefa24d`, `be688d3`, `f4ed183`, `837de4f`, verified 2026-10-07) |
@@ -238,6 +338,107 @@ the tester's machine.
   - **Notice of change:** an email to the confirmer whenever a confirmation
     is created or withdrawn. Nobody can then confirm in someone else's name
     without them hearing of it.
+
+**D26, moving the local copies into WSL.**
+
+*Why.* Testsmith's checkout sits in a Windows folder
+(`..\practice-software-testing`) mounted into Docker. Every file operation
+crosses from Windows into Docker's Linux. The slow steps on each start are:
+- Testsmith's `composer` service, with `composer install` and then
+  `chown -R www-data /var/www` over all of `vendor/`;
+- Angular's `npm install`.
+
+with-bugs waits for composer to finish (bug 80's log folder; see
+`scripts/toolshop-local/README.md`). One start took 10.5 minutes, and
+TFP-211's took about 6. A first install took 20 to 25 minutes. Docker
+recommends keeping bind-mounted code in the WSL filesystem on Windows.
+
+*What the item covers:*
+- **The checkout:** a WSL distribution (e.g. Ubuntu), with Testsmith
+  cloned there at the pinned commit (`5a6ccc26`).
+- **The scripts:** `start-toolshop.ps1` and `stop-toolshop.ps1` point at
+  it, through a `\\wsl$\...` path or by calling `wsl docker compose`. A
+  start is still one command from PowerShell.
+- **The workarounds,** each re-checked and kept or removed with its reason:
+  - `COMPOSER_PROCESS_TIMEOUT=0`;
+  - the stderr log in `compose.local.yml`;
+  - the bug-80 wait and `chown`. Composer's `chown` to uid 82 doesn't
+    depend on Windows, so this one probably stays.
+- **The proof that only speed changed:** on both copies, Standard's
+  failure sets are the same as Phase 39's final runs, test by test. The
+  score and every answer-key bug found are unchanged, bug 80 included.
+- **Timings:** start times measured and recorded, first install and later
+  starts. Run times are re-taken as the new baseline for Phase 43.
+- **The README's start timings corrected.** "Later starts: about a minute"
+  predates the bug-80 wait (2026-10-13); with-bugs now takes 3 to 10
+  minutes. Corrected with the move, with the new numbers.
+
+*The rule from now on* applies to every site TestForge hosts locally under
+Docker, such as the-internet's local copy (Phase 39, TFP-158) and the
+practice sites (`practice-site-targets-2026-10-19.md`). Its code lives in
+WSL's Linux filesystem from the start.
+
+**D27, the comparison benchmark.**
+
+*Why:* TestForge's goal is to find every issue on a site. A comparable tool
+run on the same target, with the same answer key, shows what TestForge
+misses and what it finds that the other doesn't. That is measured, not
+claimed.
+
+*Not inside TestForge:* outside tools are yardsticks only. A third-party
+plugin in a run would bring someone else's judgement into the verdict, an
+update cycle Emil doesn't control, and licensing questions. Most of these
+plugins also work from source code, while TestForge tests from the outside.
+
+*When (Emil, 2026-10-20):* once Standard is complete, after D3 and D19. Run
+at step 2 it would mostly point at Standard sets not yet written. Run at the
+very end it could no longer change the order.
+
+*What it covers:*
+- **The tool:** "QA My App" on local with-bugs and clean. It reads the
+  source, which the local copies have, and drives the pages in a browser.
+- **The score:** with TFP-154's rule against
+  `benchmarks/2026-10-06-toolshop-known-bugs/answer-key.md`. Every
+  difference between the two tools is listed, bug by bug.
+- **Each TestForge miss is tagged** against this register: "planned in Dx
+  (or Phase N)" or "not planned". Only the unplanned misses become tickets or
+  register items. They can reorder the Comprehensive and scenario steps that
+  follow (Phase 44, D10, D7, D4).
+- **What else is recorded:** each tool's false failures on clean, its run
+  time, and its cost.
+- **Where it runs:** local copies only, never a hosted site (Phase 43's
+  rule).
+- **Before installing:** read its permissions. Its access is marked
+  "privileged": its own agents and hooks run on Emil's machine, and it can
+  file defects to GitHub, which is turned off for the benchmark.
+- **The output:** a short report under `benchmarks/`, with what TestForge
+  should take from it, ticketed or added here.
+- **Later:** "E2E Test Generator" against `write-playwright-test`, and "A11y
+  Enforcer" against D3's accessibility set, the same way, if D27 proves
+  useful.
+
+**D28, the security sweep of the model-code paths.**
+
+*Why:* model-written tests turn text read from a site into code that runs on
+Emil's machine (Phase 42, batch 2 ruling 5). TFP-202 hardened that path. A
+review that proves each finding with a failing test checks the hardening
+before Phase 45 contains it and Phase 44 puts it to real use.
+
+*What it covers:*
+- **The zones:**
+  - `src/lib/gap-writer/` (the writer's call, `code-check.ts`, `gap-run.ts`);
+  - `src/lib/candidates/` (binding and applying);
+  - `src/lib/run/child-env.ts`;
+  - the paths that read model output back into reports.
+- **Each finding:**
+  - verified on the cited lines;
+  - reproduced by a failing test;
+  - recorded in a short register of what was reviewed and what was found.
+- **The tool:** the "Verified Security Sweep" plugin, after reading its
+  permissions, or the same procedure by hand. Code runs it; nothing is
+  fixed in the sweep itself.
+- **The output:** fixes become tickets before or inside Phase 45, and
+  anything that changes the sandbox's design goes to Emil first.
 
 **D12, for the R6 discussion.** The `crawl-and-classify-pages` skill is a
 written copy of how `dom-snapshot.ts` classified a page on 2026-09-24:

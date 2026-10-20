@@ -403,19 +403,25 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
    where the work has a repeatable procedure worth capturing.
 
-### After Phase 39: the triaged build order (Emil, 2026-10-19)
-`deferred-work-register.md` has the full order and what each step waits
-on:
-1. D8;
-2. the SEO Standard set;
-3. the APG patterns, with INP;
-4. the rest of accessibility and security Standard;
-5. failure triage;
-6. authenticated and active security;
-7. Comprehensive negative tests;
-8. Comprehensive SEO;
-9. all-areas runs;
-10. load testing.
+### After Phase 39: the triaged build order (Emil, 2026-10-19; updated 2026-10-20)
+`deferred-work-register.md` has each step described, with what it waits on:
+1. D26, the local copies into WSL;
+2. Phase 43;
+3. Phase 46;
+4. the SEO Standard set;
+5. the APG patterns, with INP;
+6. the rest of accessibility and security Standard;
+7. failure triage;
+8. D27, TestForge measured against an outside QA tool on local Toolshop,
+   once Standard is complete;
+9. D28, a security sweep of the model-code paths;
+10. Phase 45;
+11. Phase 44;
+12. authenticated and active security;
+13. Comprehensive negative tests;
+14. Comprehensive SEO;
+15. all-areas runs;
+16. load testing.
 
 ### Phase 43 — Ownership confirmation, once per site, and the active gate (locked 2026-10-19, not started)
 A tester confirms once per site, by API, that they own the site or have
@@ -435,6 +441,44 @@ When it doesn't cover a run, the run still runs and its active tests are
 Not run, with the reason. Tickets TFP-218 to TFP-221.
 
 See `phase-43-ownership-confirmation-decision-record.md`.
+
+### Phase 44 — Scenario gaps, slice 1 (locked 2026-10-20, not started)
+The gap writer's new purpose: behaviour and edge cases nothing exercises.
+- **Slice 1:** double submit, back-and-resubmit, and retry after a timeout.
+- **How the tests are built:** TestForge's vetted harness does the
+  mechanics, and Claude Code judges which scenarios apply where and what
+  must hold.
+- **Proof:** each scenario type must fail on a planted-defect fixture
+  first.
+- **Verdict:** outside it until measured, per type (D6).
+- **Gates:** interactive, plus the confirmation on remote hosts.
+- Tickets TFP-223 to TFP-227.
+
+See `phase-44-scenario-gaps-decision-record.md`.
+
+### Phase 45 — The Docker sandbox for model-written tests (locked 2026-10-20, not started)
+Gap tests, candidates and scenario tests run in a container:
+- the image pinned to the repo's Playwright version;
+- read-only mounts, no secrets, a non-root user;
+- network only to the run's target hosts;
+- results read back as data;
+- no Docker, no model-written tests;
+- at most 60 s per run.
+
+Tickets TFP-228 to TFP-231.
+
+See `phase-45-docker-sandbox-decision-record.md`.
+
+### Phase 46 — App screens (locked 2026-10-20, not started)
+- **A site lookup by URL:** exact match only, no list of sites, the email
+  masked.
+- **The confirmation form:** hosts typed by hand.
+- **Candidate promotion:** approve, then Claude Code commits.
+- **Phase 43's active switch** in the run form.
+
+Tickets TFP-232 to TFP-235.
+
+See `phase-46-app-screens-decision-record.md`.
 
 ---
 
