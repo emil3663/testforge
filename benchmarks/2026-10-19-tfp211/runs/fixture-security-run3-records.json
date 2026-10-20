@@ -1,0 +1,155 @@
+{
+  "label": "fixture",
+  "site": "http://localhost:4410",
+  "kind": "security",
+  "run": 3,
+  "commit": "160606e",
+  "startedAt": "2026-10-19T21:39:31.579Z",
+  "runSeconds": 22,
+  "tests": 20,
+  "byStatus": {
+    "Passed": 20
+  },
+  "records": [
+    {
+      "title": "TFSC-001: / sends its security headers and session cookies",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-002: / names no software version in its response headers",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-003: / keeps passwords off plain HTTP",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-004: / puts no password or session token in a URL",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-005: / uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-006: / fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-007: /login sends its security headers and session cookies",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-008: /login names no software version in its response headers",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-009: /login keeps passwords off plain HTTP",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-010: /login puts no password or session token in a URL",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-011: /login uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-012: /login fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-013: /notes sends its security headers and session cookies",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-014: /notes names no software version in its response headers",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-015: /notes keeps passwords off plain HTTP",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-016: /notes puts no password or session token in a URL",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-017: /notes uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-018: /notes fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-019: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-020: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API",
+      "page": "(known-path probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    }
+  ]
+}

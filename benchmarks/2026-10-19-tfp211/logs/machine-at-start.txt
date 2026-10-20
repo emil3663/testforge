@@ -1,0 +1,20 @@
+
+chrome                70
+com.docker.backend     2
+Docker Desktop         3
+msedge                 7
+node                   1
+ollama                 1
+vmmem                  1
+vmmemWSL               1
+
+
+
+
+
+FreeGB  : 14,6
+TotalGB : 39,7
+
+
+
+

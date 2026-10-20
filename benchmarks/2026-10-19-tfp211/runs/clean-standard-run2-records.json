@@ -1,0 +1,3321 @@
+{
+  "label": "clean",
+  "site": "http://localhost:4200",
+  "kind": "standard",
+  "run": 2,
+  "commit": "160606e",
+  "startedAt": "2026-10-20T00:09:51.563Z",
+  "runSeconds": 1252,
+  "tests": 472,
+  "byStatus": {
+    "Passed": 406,
+    "Failed": 48,
+    "Not run": 18
+  },
+  "records": [
+    {
+      "title": "TFFU-001: loads the target page and shows visible content",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-002: shows at least one interactive element related to the scenario",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-003: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-004: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-005: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-006: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-007: form element check: Filters [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-008: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-009: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [select]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-010: form element check: SearchX Search [Search] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-011: form element check: Search [Search] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-012: form element check: X [Search] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-013: form element check: Search [Search] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-014: form element check: 01M5B8BVW5S9C0M3SBDF27Z1EJ [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-015: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JJ [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-016: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JK [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-017: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JM [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-018: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JN [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-019: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JP [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-020: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JQ [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-021: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JR [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-022: form element check: 01M5B8BVW5S9C0M3SBDF27Z1EK [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-023: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JS [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-024: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JT [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-025: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JV [Categories] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-026: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-027: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-028: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-029: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-030: action element check: Decrease quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-031: form element check: 1 [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-032: action element check: Increase quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-033: action element check: Add to cart [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-034: action element check: Add to favourites [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-035: action element check: Compare [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-036: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-037: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-038: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-039: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-040: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-041: form element check: Filters [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-042: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-043: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [Sort] [select]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-044: form element check: 01M5B8BVW5S9C0M3SBDF27Z1EJ [By category:] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-045: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JJ [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-046: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JK [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-047: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JM [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-048: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JN [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-049: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JP [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-050: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JQ [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-051: form element check: 01M5B8BVWBRSGGDFAFW1NMJ6JR [Hand Tools] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-052: form element check: 01M5B8BV4RRRXET7CNFYAYJS7F [By brand:] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-053: form element check: 01M5B8BV4RRRXET7CNFYAYJS7G [By brand:] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-054: form element check: on [Eco-Friendly Products] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-055: action element check: Compare [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-056: action element check: Compare [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-057: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-058: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-059: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-060: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-061: form element check: First nameLast nameDate of Birth *CountryYour country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe Choose your country and enter the postal code and house number. Street, city and state will be filled in automatically. Postal codeHouse numberStreetCityStatePhoneEmail addressPassword Your password must: Be at least 8 characters long Contain both uppercase and lowercase letters Include at least one number Have at least one special symbol (e.g., @, #, $, etc.) Password strength: WeakModerateStrongVery StrongExcellentRegister [Customer registration] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-062: form element check: First name * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-063: form element check: Your last name * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-064: form element check: YYYY-MM-DD [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-065: form element check: Your country *AlbaniaÅland IslandsAlgeriaAmerican SamoaAndorraAngolaAnguillaAntarcticaAntigua and BarbudaArgentinaArmeniaArubaAustraliaAustriaAzerbaijanBahamas (the)BahrainBangladeshBarbadosBelarusBelgiumBelizeBeninBermudaBhutanBolivia (Plurinational State of)Bonaire, Sint Eustatius and SabaBosnia and HerzegovinaBotswanaBouvet IslandBrazilBritish Indian Ocean Territory (the)Brunei DarussalamBulgariaBurkina FasoBurundiCabo VerdeCambodiaCameroonCanadaCayman Islands (the)Central African Republic (the)ChadChileChinaChristmas IslandCocos (Keeling) Islands (the)ColombiaComoros (the)Congo (the Democratic Republic of the)Congo (the)Cook Islands (the)Costa RicaCroatiaCubaCuraçaoCyprusCzechiaCôte d'IvoireDenmarkDjiboutiDominicaDominican Republic (the)EcuadorEgyptEl SalvadorEquatorial GuineaEritreaEstoniaEswatiniEthiopiaFalkland Islands (the) [Malvinas]Faroe Islands (the)FijiFinlandFranceFrench GuianaFrench PolynesiaFrench Southern Territories (the)GabonGambia (the)GeorgiaGermanyGhanaGibraltarGreeceGreenlandGrenadaGuadeloupeGuamGuatemalaGuernseyGuineaGuinea-BissauGuyanaHaitiHeard Island and McDonald IslandsHoly See (the)HondurasHong KongHungaryIcelandIndiaIndonesiaIran (Islamic Republic of)IraqIrelandIsle of ManIsraelItalyJamaicaJapanJerseyJordanKazakhstanKenyaKiribatiKorea (the Democratic People's Republic of)Korea (the Republic of)KuwaitKyrgyzstanLao People's Democratic Republic (the)LatviaLebanonLesothoLiberiaLibyaLiechtensteinLithuaniaLuxembourgMacaoMadagascarMalawiMalaysiaMaldivesMaliMaltaMarshall Islands (the)MartiniqueMauritaniaMauritiusMayotteMexicoMicronesia (Federated States of)Moldova (the Republic of)MonacoMongoliaMontenegroMontserratMoroccoMozambiqueMyanmarNamibiaNauruNepalNetherlands (the)New CaledoniaNew ZealandNicaraguaNiger (the)NigeriaNiueNorfolk IslandNorthern Mariana Islands (the)NorwayOmanPakistanPalauPalestine, State ofPanamaPapua New GuineaParaguayPeruPhilippines (the)PitcairnPolandPortugalPuerto RicoQatarRepublic of North MacedoniaRomaniaRussian Federation (the)RwandaRéunionSaint BarthélemySaint Helena, Ascension and Tristan da CunhaSaint Kitts and NevisSaint LuciaSaint Martin (French part)Saint Pierre and MiquelonSaint Vincent and the GrenadinesSamoaSan MarinoSao Tome and PrincipeSaudi ArabiaSenegalSerbiaSeychellesSierra LeoneSingaporeSint Maarten (Dutch part)SlovakiaSloveniaSolomon IslandsSomaliaSouth AfricaSouth Georgia and the South Sandwich IslandsSouth SudanSpainSri LankaSudan (the)SurinameSvalbard and Jan MayenSwedenSwitzerlandSyrian Arab RepublicTaiwan (Province of China)TajikistanTanzania, United Republic ofThailandTimor-LesteTogoTokelauTongaTrinidad and TobagoTunisiaTurkeyTurkmenistanTurks and Caicos Islands (the)TuvaluUgandaUkraineUnited Arab Emirates (the)United Kingdom of Great Britain and Northern Ireland (the)United States Minor Outlying Islands (the)United States of America (the)UruguayUzbekistanVanuatuVenezuela (Bolivarian Republic of)Viet NamVirgin Islands (British)Virgin Islands (U.S.)Wallis and FutunaWestern SaharaYemenZambiaZimbabwe [Customer registration] [select]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-066: form element check: Your Postcode * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-067: form element check: e.g. 42 * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-068: form element check: Your Street * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-069: form element check: Your City * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-070: form element check: Your State * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-071: form element check: Your phone * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-072: form element check: Your email * [Customer registration] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-073: form element check: Your password [Password] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-074: action element check: Untitled button [Password] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-075: form element check: Register [Customer registration] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-076: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-077: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-078: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-079: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-080: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-081: form element check: First nameLast nameEmail addressSubjectSelect a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my orderMessage * AttachmentOnly files with the txt extension are allowed, and files must be 0kb. [Contact] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-082: form element check: Your first name * [Contact] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-083: form element check: Your last name * [Contact] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-084: form element check: Your email * [Contact] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-085: form element check: Select a subject *Customer serviceWebmasterReturnPaymentsWarrantyStatus of my order [Contact] [select]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-086: form element check: Message * [Message *] [textarea]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-087: form element check: Attachment [Attachment] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-088: form element check: Send [Contact] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-089: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-090: action element check: Show live shop activity [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-091: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-092: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-093: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-094: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-095: form element check: Email address *Password * [Login] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-096: form element check: Your email [Login] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-097: form element check: Your password [Password *] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-098: action element check: Untitled button [Password *] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-099: form element check: Login [Login] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-100: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-101: action element check: Show live shop activity [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-102: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-103: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-104: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-105: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-106: form element check: Email address * [Forgot Password] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-107: form element check: Your email [Forgot Password] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-108: action element check: Set New Password [Forgot Password] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-109: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-110: action element check: Show live shop activity [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-111: action element check: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-112: navigation element check: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-113: navigation element check: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-114: navigation element check: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-115: navigation element check: Open chat [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-116: action element check: Show live shop activity [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-117: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-118: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-119: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-120: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-121: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Combination Pliers ABCDE$14.15', exact: true }).first().or(getByRole('link', { name: 'Combination Pliers ABCDE$14.15', exact: true }).first().locator('*')).filter({ visible: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisible\" with timeout 5000ms - waiting for getByRole('link', { name: 'Combination Pliers ABCDE$14.15', exact: true }).first().or(getByRole('link', { name: 'Combination Pliers ABCDE$14.15', exact: true }).first().locator('*')).filter({ visible: ",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-122: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-123: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-124: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-125: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-126: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-127: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-128: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-129: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-130: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-131: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-132: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-133: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Hammer More information', exact: true }).first().or(getByRole('link', { name: 'Hammer More information', exact: true }).first().locator('*')).filter({ visible: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisible\" with timeout 5000ms - waiting for getByRole('link', { name: 'Hammer More information', exact: true }).first().or(getByRole('link', { name: 'Hammer More information', exact: true }).first().locator('*')).filter({ visible: true }).first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-134: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-135: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-136: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-137: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-138: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-139: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-140: anchor links point to existing in-page targets",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-141: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-142: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-143: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-144: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-145: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-146: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(locator).toBeVisible() failed Locator: getByRole('link', { name: 'Claw Hammer with Shock Reduction Grip ABCDE$13.41', exact: true }).first().or(getByRole('link', { name: 'Claw Hammer with Shock Reduction Grip ABCDE$13.41', exact: true }).first().locator('*')).filter({ visible: true }).first() Expected: visible Timeout: 5000ms Error: element(s) not found Call log: - Expect \"toBeVisible\" with timeout 5000ms - waiting for getByRole('link', { name: 'Claw Hammer with Shock Reduction Grip ABCDE$13.41', exact: true }).first().or(getByRole('link', { name: 'Claw Hammer with Shock Reductio",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-147: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-148: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-149: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-150: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-151: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-152: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-153: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-154: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-155: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-156: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-157: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-158: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-159: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-160: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-161: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-162: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-163: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-164: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-165: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-166: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-167: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-168: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-169: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-170: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-171: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-172: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-173: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-174: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-175: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-176: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-177: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-178: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-179: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-180: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-181: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-182: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-183: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-184: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-185: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-186: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-187: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-188: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-189: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-190: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-191: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-192: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-193: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-194: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-195: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-196: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-197: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-198: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-199: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-200: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-201: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-202: navigation link health: Untitled link to http://localhost:4200/",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-203: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-204: navigation link health: Hand Tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-205: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-206: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-207: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-208: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-209: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-210: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-211: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-212: HTTPS/SSL: secure links remain on HTTPS when marked as secure",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-213: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-214: sort options order the items on /",
+      "page": "/",
+      "status": "Failed",
+      "message": "Error: sorting by \"Name (Z - A)\" on / puts \"Adjustable Wrench\" before \"Angled Spanner\"; sorting by \"Price (High - Low)\" on / puts \"Angled Spanner\" (14.14) before \"Belt Sander\" (73.59); sorting by \"Price (Low - High)\" on / puts \"Adjustable Wrench\" (20.33) before \"Angled Spanner\" (14.14) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"sorting by \\\"Name (Z - A)\\\" on / puts \\\"Adjustable Wrench\\\" before \\\"Angled Spanner\\\"\", + \"sorting by \\\"Price (High - Low)\\\" on / puts \\\"Angled Spanner\\\" (14.14) before \\\"Belt Sander\\\" (73.59)\", + \"sorting b",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-215: filters send and respect the chosen values on /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-216: option lists show no error text on /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-217: quantity steppers change the value by one on /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-218: sort options order the items on /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: sorting by \"Price (High - Low)\" on /category/hand-tools puts \"Wood Saw\" (12.18) before \"Wood Carving Chisels\" (45.23) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"sorting by \\\"Price (High - Low)\\\" on /category/hand-tools puts \\\"Wood Saw\\\" (12.18) before \\\"Wood Carving Chisels\\\" (45.23)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-219: filters send and respect the chosen values on /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-220: option lists show no error text on /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-221: option lists show no error text on /auth/register",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-222: option lists show no error text on /contact",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-223: navigation links land where their text says, from /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-224: link \"Documentation\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-225: link \"http://localhost:4200/\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-226: link \"Home\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-227: link \"Hand Tools\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-228: link \"Power Tools\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-229: link \"Other\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-230: link \"Special Tools\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-231: link \"Rentals\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-232: link \"Contact\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-233: link \"Sign in\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-234: cards linking to /product/:id on /: each on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-235: link \"Privacy Policy\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-236: link \"Barn Images\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-237: link \"Unsplash\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-238: link \"iMattSmart\" on /product/01M5B8BW4J367TMA87J1A9RWJM: on the page, named, with a valid href",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-239: link \"Unsplash\" to https://unsplash.com/photos/jaLaLQdkBOE on /product/01M5B8BW4J367TMA87J1A9RWJM: on the page, named, with a valid href",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-240: cards linking to /product/:id on /product/01M5B8BW4J367TMA87J1A9RWJM: each on the page, named, with a valid href",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-241: link \"More information\" on /product/01M5B8BW4J367TMA87J1A9RWJM: on the page, named, with a valid href",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-242: cards linking to /product/:id on /category/hand-tools: each on the page, named, with a valid href",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-243: link \"Register your account\" on /auth/login: on the page, named, with a valid href",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFFU-244: link \"Forgot your Password?\" on /auth/login: on the page, named, with a valid href",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-001: keeps navigation and guidance visible for a first-time user",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-002: usability: Search [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-003: usability: 01M5B8BVW5S9C0M3SBDF27Z1EJ [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-004: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JJ [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-005: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JK [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-006: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JM [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-007: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JN [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-008: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JP [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-009: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JQ [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-010: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JR [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-011: usability: 01M5B8BVW5S9C0M3SBDF27Z1EK [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-012: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JS [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-013: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JT [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-014: usability: 01M5B8BVWBRSGGDFAFW1NMJ6JV [input] uses non-generic guidance text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-015: usability: primary actions are reachable without scrolling at desktop viewport",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-016: / keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-017: / has no overlapping controls",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-018: / shows every image it loads",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-019: /product/01M5B8BW4J367TMA87J1A9RWJM keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-020: /product/01M5B8BW4J367TMA87J1A9RWJM has no overlapping controls",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-021: /product/01M5B8BW4J367TMA87J1A9RWJM shows every image it loads",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-022: /category/hand-tools keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-023: /category/hand-tools has no overlapping controls",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-024: /category/hand-tools shows every image it loads",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-025: /auth/register keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-026: /auth/register has no overlapping controls",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-027: /auth/register shows every image it loads",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-028: /contact keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-029: /contact has no overlapping controls",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-030: /contact shows every image it loads",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-031: /auth/login keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-032: /auth/login has no overlapping controls",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-033: /auth/login shows every image it loads",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-034: /auth/forgot-password keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /auth/forgot-password"
+    },
+    {
+      "title": "TFUS-035: /auth/forgot-password has no overlapping controls",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-036: /auth/forgot-password shows every image it loads",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-037: /rentals keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-038: /rentals has no overlapping controls",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-039: /rentals shows every image it loads",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFUS-040: the same components look the same on every inspected page (recorded as findings)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRM-001: keeps the core journey visible across common viewport sizes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRM-002: responds to a touch tap at mobile viewport",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-002: accessible name and role: Documentation [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-003: accessible name and role: Testing Guide [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-004: accessible name and role: Untitled link to http://localhost:4200/ [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-005: accessible name and role: Toggle navigation [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-006: accessible name and role: Home [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-007: accessible name and role: Categories [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-008: accessible name and role: Hand Tools [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-009: accessible name and role: Power Tools [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-010: accessible name and role: Other [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-011: accessible name and role: Special Tools [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-012: accessible name and role: Rentals [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-013: accessible name and role: Contact [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-014: accessible name and role: Sign in [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-015: accessible name and role: EN [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-016: accessible name and role: DE [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-017: accessible name and role: EL [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-018: accessible name and role: EN [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-019: accessible name and role: ES [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-020: accessible name and role: FR [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-021: accessible name and role: NL [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-022: accessible name and role: TR [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-023: accessible name and role: Filters [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-024: accessible name and role: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [form]",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) is a <form> with no accessible name, so it has no role (HTML-AAM): there is no name to check"
+    },
+    {
+      "title": "TFAC-025: accessible name and role: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (A - E)CO₂ Rating (E - A) [select]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-026: accessible name and role: SearchX Search [form]",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "SearchX Search is a <form> with no accessible name, so it has no role (HTML-AAM): there is no name to check"
+    },
+    {
+      "title": "TFAC-027: accessible name and role: Search [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-028: accessible name and role: X [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-029: accessible name and role: Search [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-030: accessible name and role: 01M5B8BVW5S9C0M3SBDF27Z1EJ [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-031: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JJ [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-032: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JK [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-033: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JM [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-034: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JN [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-035: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JP [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-036: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JQ [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-037: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JR [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-038: accessible name and role: 01M5B8BVW5S9C0M3SBDF27Z1EK [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-039: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JS [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-040: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JT [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-041: accessible name and role: 01M5B8BVWBRSGGDFAFW1NMJ6JV [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-043: every form field has an accessible name: /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-044: every form field has an accessible name: /category/hand-tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-045: every form field has an accessible name: /auth/register",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /contact",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-047: every form field has an accessible name: /auth/login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-048: every form field has an accessible name: /auth/forgot-password",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-049: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(2) > ul,.checkbox:nth-child(3) > ul,.checkbox:nth-child(4) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(2) > ul,.checkbox:nth-child(3) > ul,.checkbox:nth-child(4) > ul\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-050: /product/01M5B8BW4J367TMA87J1A9RWJM passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5B8BW4J367TMA87J1A9RWJM: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-051: /category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /category/hand-tools: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-052: /auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/register",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /auth/register: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary; WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - #passwordHelp > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary\", + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - #pa",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-053: /contact passes the WCAG 2.2 A and AA scan",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-054: /auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/login",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /auth/login: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-055: /auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-056: /rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-057: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /"
+    },
+    {
+      "title": "TFAC-058: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-059: /product/01M5B8BW4J367TMA87J1A9RWJM is tabbed through in reading order",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5B8BW4J367TMA87J1A9RWJM"
+    },
+    {
+      "title": "TFAC-060: /product/01M5B8BW4J367TMA87J1A9RWJM groups its checkboxes and radio buttons",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5B8BW4J367TMA87J1A9RWJM"
+    },
+    {
+      "title": "TFAC-061: /category/hand-tools is tabbed through in reading order",
+      "page": "/category/hand-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/hand-tools"
+    },
+    {
+      "title": "TFAC-062: /category/hand-tools groups its checkboxes and radio buttons",
+      "page": "/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: 8 checkboxes sharing the name \"category_id\" (\"Hand Tools\", \"Hammer\", \"Hand Saw\", \"Wrench\" and 4 more) are not in a fieldset with a legend or a named group on /category/hand-tools; 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/hand-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"8 checkboxes sharing the name \\\"category_id\\\" (\\\"Hand Tools\\\", \\\"Hammer\\\", \\\"Hand Saw\\\", \\\"Wrench\\\" and 4 more) are not in a fieldset with a lege",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-063: /auth/register is tabbed through in reading order",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-064: /auth/register groups its checkboxes and radio buttons",
+      "page": "/auth/register",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/register"
+    },
+    {
+      "title": "TFAC-065: /contact is tabbed through in reading order",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-066: /contact groups its checkboxes and radio buttons",
+      "page": "/contact",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /contact"
+    },
+    {
+      "title": "TFAC-067: /auth/login is tabbed through in reading order",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-068: /auth/login groups its checkboxes and radio buttons",
+      "page": "/auth/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/login"
+    },
+    {
+      "title": "TFAC-069: /auth/forgot-password is tabbed through in reading order",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-070: /auth/forgot-password groups its checkboxes and radio buttons",
+      "page": "/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/forgot-password"
+    },
+    {
+      "title": "TFAC-071: /rentals is tabbed through in reading order",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /rentals"
+    },
+    {
+      "title": "TFAC-072: /rentals groups its checkboxes and radio buttons",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /rentals"
+    },
+    {
+      "title": "TFSE-001: exposes core SEO and content signals on the landing page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-002: / spells its interface text correctly (recorded as findings)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-003: /product/01M5B8BW4J367TMA87J1A9RWJM spells its interface text correctly (recorded as findings)",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-004: /category/hand-tools spells its interface text correctly (recorded as findings)",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-005: /auth/register spells its interface text correctly (recorded as findings)",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-006: /contact spells its interface text correctly (recorded as findings)",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-007: /auth/login spells its interface text correctly (recorded as findings)",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-008: /auth/forgot-password spells its interface text correctly (recorded as findings)",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-009: /rentals spells its interface text correctly (recorded as findings)",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-001: landing page finishes loading within 5 s",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-002: largest contentful paint stays under 4 s",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-003: page weight stays under 5 MB",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: page weight 5.7 MB over 79 requests, budget 5 MB: clearly bloated. Largest: 1013 KB http://localhost:4200/@fs/app/.angular/cache/20.0.4/Toolshop/vite/deps/@fortawesome_free-solid-svg-icons.js?v=425b16d9; 940 KB http://localhost:4200/@fs/app/.angular/cache/20.0.4/Toolshop/vite/deps/chunk-QURCENYN.js?v=425b16d9; 466 KB http://localhost:4200/main.js; 455 KB http://localhost:4200/products.module-ZMSH6RAK.js; 337 KB http://localhost:4200/scripts.js. Measured once, in a lab (this run, from this machine), not from real visits. expect(received).toBeLessThan(expected) Expected: < 5242880 Receive",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-004: no same-origin request fails while the page loads",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-005: cumulative layout shift during load stays under 0.25",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFPL-006: total blocking time during load (recorded, not judged)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-001: / sends its security headers and session cookies",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-002: / names no software version in its response headers",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-003: / keeps passwords off plain HTTP",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-004: / puts no password or session token in a URL",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-005: /product/01M5B8BW4J367TMA87J1A9RWJM sends its security headers and session cookies",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-006: /product/01M5B8BW4J367TMA87J1A9RWJM names no software version in its response headers",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-007: /product/01M5B8BW4J367TMA87J1A9RWJM keeps passwords off plain HTTP",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-008: /product/01M5B8BW4J367TMA87J1A9RWJM puts no password or session token in a URL",
+      "page": "/product/01M5B8BW4J367TMA87J1A9RWJM",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-009: /category/hand-tools sends its security headers and session cookies",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-010: /category/hand-tools names no software version in its response headers",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-011: /category/hand-tools keeps passwords off plain HTTP",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-012: /category/hand-tools puts no password or session token in a URL",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-013: /auth/register sends its security headers and session cookies",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-014: /auth/register names no software version in its response headers",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-015: /auth/register keeps passwords off plain HTTP",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-016: /auth/register puts no password or session token in a URL",
+      "page": "/auth/register",
+      "status": "Failed",
+      "message": "Error: secrets in URLs: a form on /auth/register would send its password field in the URL (method GET, to http://localhost:4200/auth/register) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"a form on /auth/register would send its password field in the URL (method GET, to http://localhost:4200/auth/register)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-017: /contact sends its security headers and session cookies",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-018: /contact names no software version in its response headers",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-019: /contact keeps passwords off plain HTTP",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-020: /contact puts no password or session token in a URL",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-021: /auth/login sends its security headers and session cookies",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-022: /auth/login names no software version in its response headers",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-023: /auth/login keeps passwords off plain HTTP",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-024: /auth/login puts no password or session token in a URL",
+      "page": "/auth/login",
+      "status": "Failed",
+      "message": "Error: secrets in URLs: a form on /auth/login would send its password field in the URL (method GET, to http://localhost:4200/auth/login) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"a form on /auth/login would send its password field in the URL (method GET, to http://localhost:4200/auth/login)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-025: /auth/forgot-password sends its security headers and session cookies",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-026: /auth/forgot-password names no software version in its response headers",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-027: /auth/forgot-password keeps passwords off plain HTTP",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-028: /auth/forgot-password puts no password or session token in a URL",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-029: /rentals sends its security headers and session cookies",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-030: /rentals names no software version in its response headers",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-031: /rentals keeps passwords off plain HTTP",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-032: /rentals puts no password or session token in a URL",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-033: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSC-034: script-shaped input is not executed: Search on /",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "attack-shaped input: needs the ownership confirmation, not built yet"
+    },
+    {
+      "title": "TFSC-035: script-shaped input is not executed: First name, Last name, Date of Birth *, Postal code, House number, Street, City, State, Phone, Email address on /auth/register",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "attack-shaped input: needs the ownership confirmation, not built yet"
+    },
+    {
+      "title": "TFSC-036: script-shaped input is not executed: First name, Last name, Message * on /contact",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "attack-shaped input: needs the ownership confirmation, not built yet"
+    },
+    {
+      "title": "TFRL-001: dependency failure injection: localhost:8091 [xhr-fetch]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-002: dependency failure injection: localhost:4200 [xhr-fetch]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-003: storage failure injection: localStorage on /",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-004: storage failure injection: sessionStorage on /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-005: storage failure injection: localStorage on /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-006: storage failure injection: sessionStorage on /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-007: storage failure injection: localStorage on /category/hand-tools",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-008: storage failure injection: sessionStorage on /category/hand-tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-009: storage failure injection: localStorage on /auth/register",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-010: storage failure injection: sessionStorage on /auth/register",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-011: storage failure injection: localStorage on /contact",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-012: storage failure injection: sessionStorage on /contact",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-013: storage failure injection: localStorage on /auth/login",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-014: storage failure injection: sessionStorage on /auth/login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-015: storage failure injection: localStorage on /auth/forgot-password",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-016: storage failure injection: sessionStorage on /auth/forgot-password",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-017: storage failure injection: localStorage on /rentals",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no uncaught page errors after localStorage was mocked to fail: storage entry point mocked to fail (TestForge TFP-086) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"storage entry point mocked to fail (TestForge TFP-086)\", + ]",
+      "skipReason": ""
+    },
+    {
+      "title": "TFRL-018: storage failure injection: sessionStorage on /rentals",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFCS-001: session cookies set by the site expire and stay scoped to it",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no session cookie on the landing page (0 cookie(s) set by the site, none named like a session), so there is nothing to check"
+    },
+    {
+      "title": "TFDB-001: persistence round trip: First name on /contact",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run"
+    },
+    {
+      "title": "TFSE-010: keeps page title stable for /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-011: keeps meta description stable for /",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on / expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on / with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-012: keeps heading structure stable for /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-013: keeps canonical metadata stable for /",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on / with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-014: exposes structured data for / (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-015: keeps page title stable for /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-016: keeps meta description stable for /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /product/01M5B8BW4J367TMA87J1A9RWJM expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /product/01M5B8BW4J367TMA87J1A9RWJM with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-017: keeps heading structure stable for /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-018: keeps canonical metadata stable for /product/01M5B8BW4J367TMA87J1A9RWJM",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /product/01M5B8BW4J367TMA87J1A9RWJM expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /product/01M5B8BW4J367TMA87J1A9RWJM with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-019: exposes structured data for /product/01M5B8BW4J367TMA87J1A9RWJM (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-020: keeps page title stable for /category/hand-tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-021: keeps meta description stable for /category/hand-tools",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /category/hand-tools expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /category/hand-tools with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-022: keeps heading structure stable for /category/hand-tools",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-023: keeps canonical metadata stable for /category/hand-tools",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /category/hand-tools expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /category/hand-tools with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-024: exposes structured data for /category/hand-tools (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-025: keeps page title stable for /auth/register",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-026: keeps meta description stable for /auth/register",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /auth/register expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /auth/register with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-027: keeps heading structure stable for /auth/register",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-028: keeps canonical metadata stable for /auth/register",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /auth/register expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /auth/register with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-029: exposes structured data for /auth/register (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-030: keeps page title stable for /contact",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-031: keeps meta description stable for /contact",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /contact expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /contact with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-032: keeps heading structure stable for /contact",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-033: keeps canonical metadata stable for /contact",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /contact expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /contact with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-034: exposes structured data for /contact (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-035: keeps page title stable for /auth/login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-036: keeps meta description stable for /auth/login",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /auth/login expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /auth/login with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-037: keeps heading structure stable for /auth/login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-038: keeps canonical metadata stable for /auth/login",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /auth/login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /auth/login with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-039: exposes structured data for /auth/login (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-040: keeps page title stable for /auth/forgot-password",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-041: keeps meta description stable for /auth/forgot-password",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /auth/forgot-password expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /auth/forgot-password with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-042: keeps heading structure stable for /auth/forgot-password",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-043: keeps canonical metadata stable for /auth/forgot-password",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /auth/forgot-password expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /auth/forgot-password with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-044: exposes structured data for /auth/forgot-password (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-045: keeps page title stable for /rentals",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-046: keeps meta description stable for /rentals",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no meta description on /rentals expect(locator).toHaveAttribute(expected) failed Locator: locator('meta[name=\"description\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no meta description on /rentals with timeout 5000ms - waiting for locator('meta[name=\"description\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-047: keeps heading structure stable for /rentals",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-048: keeps canonical metadata stable for /rentals",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /rentals expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 5000ms Error: element(s) not found Call log: - no canonical link on /rentals with timeout 5000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-049: exposes structured data for /rentals (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-050: publishes robots.txt with a sitemap reference",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-051: publishes sitemap.xml with at least one URL",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404",
+      "skipReason": ""
+    },
+    {
+      "title": "TFSE-052: publishes manifest metadata for installable clients (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    }
+  ]
+}

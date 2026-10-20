@@ -1,0 +1,17 @@
+(node:31620) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/index.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean: 01:42:04 standard suite written
+clean: 01:42:04 security suite written
+clean: 01:42:04 accessibility suite written
+clean: 02:01:56 standard run 1: 1192 s, 472 tests {"Passed":407,"Failed":47,"Not run":18}; loads 474 (139 s), settle 538 s (2 capped), failing 47 (216 s)
+clean: 02:05:46 security run 1: 229 s, 122 tests {"Passed":120,"Failed":2}; loads 121 (38 s), settle 131 s (0 capped), failing 2 (4 s)
+clean: 02:09:51 accessibility run 1: 245 s, 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80 (24 s), settle 90 s (0 capped), failing 19 (75 s)
+clean: 02:30:43 standard run 2: 1252 s, 472 tests {"Passed":406,"Failed":48,"Not run":18}; loads 474 (147 s), settle 557 s (0 capped), failing 48 (229 s)
+clean: 02:34:27 security run 2: 223 s, 122 tests {"Passed":120,"Failed":2}; loads 121 (36 s), settle 124 s (0 capped), failing 2 (4 s)
+clean: 02:39:10 accessibility run 2: 283 s, 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80 (29 s), settle 101 s (0 capped), failing 19 (86 s)
+clean: 02:59:41 standard run 3: 1231 s, 472 tests {"Passed":407,"Failed":47,"Not run":18}; loads 474 (147 s), settle 550 s (0 capped), failing 47 (222 s)
+clean: 03:03:34 security run 3: 233 s, 122 tests {"Passed":120,"Failed":2}; loads 121 (39 s), settle 133 s (0 capped), failing 2 (4 s)
+clean: 03:07:22 accessibility run 3: 228 s, 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80 (24 s), settle 84 s (0 capped), failing 19 (70 s)
+exit=0

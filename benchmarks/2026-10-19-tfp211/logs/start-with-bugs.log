@@ -1,0 +1,63 @@
+Testsmith's repository at 5a6ccc26 (pinned 5a6ccc26)
+time="2026-10-19T23:40:11+02:00" level=warning msg="C:\\Users\\MSI workstation\\source\\repos\\practice-software-testing\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+Starting sprint5-with-bugs (the first start builds images and installs the app: several minutes)
+time="2026-10-19T23:40:12+02:00" level=warning msg="C:\\Users\\MSI workstation\\source\\repos\\practice-software-testing\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Network pst_default Creating 
+ Network pst_default Created 
+ Container pst-angular-ui-1 Creating 
+ Container pst-mariadb-1 Creating 
+ Container pst-laravel-api-1 Creating 
+ Container pst-angular-ui-1 Created 
+ Container pst-laravel-api-1 Created 
+ Container pst-composer-1 Creating 
+ Container pst-web-1 Creating 
+ Container pst-mariadb-1 Created 
+ Container pst-web-1 Created 
+ Container pst-composer-1 Created 
+ Container pst-laravel-api-1 Starting 
+ Container pst-angular-ui-1 Starting 
+ Container pst-mariadb-1 Starting 
+ Container pst-angular-ui-1 Started 
+ Container pst-mariadb-1 Started 
+ Container pst-laravel-api-1 Started 
+ Container pst-composer-1 Starting 
+ Container pst-web-1 Starting 
+ Container pst-web-1 Started 
+ Container pst-composer-1 Started 
+time="2026-10-19T23:54:35+02:00" level=warning msg="C:\\Users\\MSI workstation\\source\\repos\\practice-software-testing\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+Seeding the database for sprint5-with-bugs
+time="2026-10-19T23:54:51+02:00" level=warning msg="C:\\Users\\MSI workstation\\source\\repos\\practice-software-testing\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+
+Warning: Module "FFI" is already loaded in Unknown on line 0
+
+   INFO  Preparing database.  
+
+  Creating migration table ...................................... 70.48ms DONE
+
+   INFO  Running migrations.  
+
+  2022_01_03_00000_create_brands_table ......................... 224.07ms DONE
+  2022_01_03_00001_create_categories_table ..................... 155.67ms DONE
+  2022_01_03_00002_create_product_images_table .................. 25.24ms DONE
+  2022_01_03_102447_create_products_table ...................... 283.54ms DONE
+  2022_01_03_111016_create_users_table .......................... 62.86ms DONE
+  2022_01_03_111025_create_invoices_table ....................... 82.32ms DONE
+  2022_01_03_111235_create_invoice_items_table ................. 152.74ms DONE
+  2022_01_03_113043_create_contact_requests_table ............... 27.02ms DONE
+  2022_01_03_113043_create_favorites_table ..................... 238.09ms DONE
+  2022_01_04_114043_create_contact_request_replies_table ....... 156.22ms DONE
+  2022_04_12_102512_create_jobs_table ........................... 92.88ms DONE
+  2026_04_10_000000_add_product_filter_indexes ................. 131.73ms DONE
+  2026_04_10_000001_add_missing_fk_indexes ..................... 350.09ms DONE
+  2026_04_10_000002_add_fulltext_search_indexes ................ 631.36ms DONE
+
+
+   INFO  Seeding database.  
+
+Toolshop database seeded!
+Bug 80: http://localhost:8091/logs/laravel.log answers 200; its newest line is 2026-10-19 21:55:06Z
+
+sprint5-with-bugs is running:
+  app  http://localhost:4200
+  API  http://localhost:8091  (documentation: http://localhost:8091/api/documentation)
+exit=0

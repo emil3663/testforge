@@ -1,0 +1,100 @@
+{
+  "label": "fixture",
+  "site": "http://localhost:4410",
+  "kind": "accessibility",
+  "run": 2,
+  "commit": "160606e",
+  "startedAt": "2026-10-19T21:36:17.527Z",
+  "runSeconds": 16,
+  "tests": 12,
+  "byStatus": {
+    "Passed": 7,
+    "Not run": 5
+  },
+  "records": [
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /"
+    },
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /"
+    },
+    {
+      "title": "TFAC-005: /login passes the WCAG 2.2 A and AA scan",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /login",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-007: /login is tabbed through in reading order",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-008: /login groups its checkboxes and radio buttons",
+      "page": "/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /login"
+    },
+    {
+      "title": "TFAC-009: /notes passes the WCAG 2.2 A and AA scan",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /notes",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": ""
+    },
+    {
+      "title": "TFAC-011: /notes is tabbed through in reading order",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /notes"
+    },
+    {
+      "title": "TFAC-012: /notes groups its checkboxes and radio buttons",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /notes"
+    }
+  ]
+}
