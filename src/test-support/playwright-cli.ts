@@ -18,7 +18,10 @@ import type { JsonReport } from "../lib/report/types.ts";
  * So each run here gets a folder of its own, outside .playwright-runs, holding its spec and a
  * config that is the repo's with testDir set to that folder: the walk sees only this run's files,
  * its output (test-results) stays inside it, and creating or removing it never touches another
- * run's walk. Settings are otherwise the repo config's.
+ * run's walk. Settings are otherwise the repo config's. The config names its outputDir (TFP-212): left to the
+ * imported repo config, Playwright put every run's output in the repo root's test-results, and a run clears its
+ * output folder as it starts, so two test files running at once could remove each other's artifacts
+ * ("ENOENT ... mkdir 'test-results\\.playwright-artifacts-2'", control-names.test.ts, 2026-10-20).
  *
  * Removing a run's folder can fail for a while on Windows (EBUSY) as Chromium lets go of a failed test's
  * video and trace, which the old shared test-results never had to wait for. It is retried and then
@@ -52,7 +55,7 @@ export async function runPlaywrightSpec(code: string, name: string, args: string
     const runDir = join(RUNS_DIR, id);
     const jsonFile = join(runDir, "report.json");
     await mkdir(runDir, { recursive: true });
-    await writeFile(join(runDir, "playwright.config.ts"), "import base from '../../playwright.config';\nexport default { ...base, testDir: '.' };\n", "utf8");
+    await writeFile(join(runDir, "playwright.config.ts"), "import base from '../../playwright.config';\nexport default { ...base, testDir: '.', outputDir: './test-results' };\n", "utf8");
     await writeFile(join(runDir, `${name}.spec.ts`), code, "utf8");
     const childEnv: NodeJS.ProcessEnv = { ...process.env, ...env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" };
     for (const [key, value] of Object.entries(env)) if (value === undefined) delete childEnv[key];
