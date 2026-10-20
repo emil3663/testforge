@@ -33,7 +33,8 @@ step() {
 for variant in A B C; do
     tree="../testforge-gate-b-$variant"
     git worktree add --detach "$tree" "${COMMIT[$variant]}" > "$L/worktree-$variant.log" 2>&1 || { echo "worktree $variant failed" >&2; exit 1; }
-    cmd //c mklink /J "$(cd "$tree" && pwd -W)\\node_modules" "$REPO\\node_modules" >> "$L/worktree-$variant.log" 2>&1
+    # A junction to this repo's node_modules (no admin rights), as check:template-unchanged links its own.
+    node -e "require('fs').symlinkSync(require('path').resolve('node_modules'), require('path').resolve('$tree', 'node_modules'), 'junction')" >> "$L/worktree-$variant.log" 2>&1 || { echo "node_modules link $variant failed" >&2; exit 1; }
 done
 for sprint in sprint5-with-bugs sprint5; do
     label=$([ "$sprint" = sprint5 ] && echo clean || echo with-bugs)
@@ -52,7 +53,8 @@ done
 step stop powershell -NoProfile -ExecutionPolicy Bypass -File scripts/toolshop-local/stop-toolshop.ps1
 for variant in A B C; do
     tree="../testforge-gate-b-$variant"
-    cmd //c rmdir "$(cd "$tree" && pwd -W)\\node_modules" >> "$L/worktree-$variant.log" 2>&1
+    # The link alone first, so removing the worktree can never reach through it into this repo's node_modules.
+    node -e "require('fs').unlinkSync(require('path').resolve('$tree', 'node_modules'))" >> "$L/worktree-$variant.log" 2>&1
     git worktree remove --force "$tree" >> "$L/worktree-$variant.log" 2>&1
 done
 echo "all: $(date +%H:%M:%S) done"
