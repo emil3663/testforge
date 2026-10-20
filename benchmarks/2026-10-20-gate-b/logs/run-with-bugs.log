@@ -1,0 +1,26 @@
+(node:36032) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+with-bugs: 09:11:21 A standard run 1: 1352 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 570, settle 601 s, failing 84 (444 s)
+with-bugs: 09:27:06 B standard run 1: 945 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 318, settle 364 s, failing 84 (381 s)
+with-bugs: 09:41:31 C standard run 1: 865 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 316, settle 346 s, failing 84 (321 s)
+with-bugs: 09:45:03 A security run 1: 213 s, 122 tests {"Passed":119,"Failed":3}; loads 121, settle 129 s, failing 3 (9 s)
+with-bugs: 09:46:53 C security run 1: 110 s, 122 tests {"Passed":119,"Failed":3}; loads 61, settle 61 s, failing 3 (6 s)
+with-bugs: 09:50:19 A accessibility run 1: 206 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 83 s, failing 41 (92 s)
+with-bugs: 09:53:42 C accessibility run 1: 203 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 84 s, failing 41 (82 s)
+with-bugs: 10:16:04 A standard run 2: 1342 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 568, settle 598 s, failing 84 (459 s)
+with-bugs: 10:31:14 B standard run 2: 910 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 318, settle 338 s, failing 84 (368 s)
+with-bugs: 10:45:28 C standard run 2: 854 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 319, settle 339 s, failing 84 (316 s)
+with-bugs: 10:48:53 A security run 2: 205 s, 122 tests {"Passed":119,"Failed":3}; loads 121, settle 123 s, failing 3 (8 s)
+with-bugs: 10:50:44 C security run 2: 111 s, 122 tests {"Passed":119,"Failed":3}; loads 61, settle 63 s, failing 3 (4 s)
+with-bugs: 10:54:05 A accessibility run 2: 201 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 81 s, failing 41 (87 s)
+with-bugs: 10:57:28 C accessibility run 2: 204 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 84 s, failing 41 (83 s)
+with-bugs: 11:19:35 A standard run 3: 1326 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 569, settle 589 s, failing 84 (437 s)
+with-bugs: 11:34:54 B standard run 3: 919 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 320, settle 340 s, failing 84 (378 s)
+with-bugs: 11:48:59 C standard run 3: 845 s, 483 tests {"Passed":379,"Failed":84,"Not run":20}; loads 319, settle 332 s, failing 84 (312 s)
+with-bugs: 11:52:14 A security run 3: 196 s, 122 tests {"Passed":119,"Failed":3}; loads 121, settle 116 s, failing 3 (7 s)
+with-bugs: 11:54:08 C security run 3: 113 s, 122 tests {"Passed":119,"Failed":3}; loads 61, settle 61 s, failing 3 (7 s)
+with-bugs: 11:57:34 A accessibility run 3: 206 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 84 s, failing 41 (94 s)
+with-bugs: 12:01:00 C accessibility run 3: 206 s, 80 tests {"Failed":41,"Not run":32,"Passed":7}; loads 80, settle 84 s, failing 41 (88 s)
+exit=0

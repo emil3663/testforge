@@ -1,0 +1,43 @@
+Tue Oct 20 08:27:50 SAST 2026
+--- processes
+
+svchost                93
+Code                   23
+conhost                17
+RuntimeBroker          10
+claude                  9
+msedge                  7
+Docker Desktop          7
+msedgewebview2          6
+NVIDIA Overlay          5
+wslhost                 4
+bash                    4
+nvcontainer             4
+wsl                     4
+dllhost                 3
+WmiPrvSE                3
+powershell              3
+vmwp                    2
+RtkAudUService64        2
+fontdrvhost             2
+PresentMonService       2
+NVDisplay.Container     2
+OpenConsole             2
+WUDFHost                2
+taskhostw               2
+com.docker.backend      2
+
+
+
+--- memory
+free GB 20.5 of 39.7
+--- docker
+testforge-plane-beat-worker-1 Up 6 days
+testforge-plane-worker-1 Up 6 days
+testforge-plane-space-1 Up 6 days (healthy)
+testforge-plane-db-1 Up 6 days (healthy)
+testforge-plane-redis-1 Up 6 days
+testforge-plane-minio-1 Up 6 days
+testforge-plane-web-1 Up 6 days (healthy)
+testforge-plane-api-1 Up 6 days
+--- after stopping Plane (08:28:51)

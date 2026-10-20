@@ -1,0 +1,11 @@
+(node:40604) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+with-bugs: 14:11:24 A standard run 1: 34 s, 8 tests {"Failed":8}; loads 8, settle 8 s, failing 8 (22 s)
+with-bugs: 14:11:56 C standard run 1: 31 s, 8 tests {"Failed":8}; loads 8, settle 9 s, failing 8 (18 s)
+with-bugs: 14:12:28 A standard run 2: 33 s, 8 tests {"Failed":8}; loads 8, settle 8 s, failing 8 (20 s)
+with-bugs: 14:13:00 C standard run 2: 32 s, 8 tests {"Failed":8}; loads 8, settle 9 s, failing 8 (19 s)
+with-bugs: 14:13:31 A standard run 3: 31 s, 8 tests {"Failed":8}; loads 8, settle 7 s, failing 8 (19 s)
+with-bugs: 14:14:03 C standard run 3: 32 s, 8 tests {"Failed":8}; loads 8, settle 10 s, failing 8 (19 s)
+exit=0

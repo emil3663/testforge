@@ -1,0 +1,7 @@
+bug46-start: 13:59:16 start
+bug46-start: 14:10:49 exit=0
+bug46-run: 14:10:49 start
+bug46-run: 14:14:03 exit=0
+bug46-stop: 14:14:03 start
+bug46-stop: 14:14:05 exit=0
+bug46: 14:14:05 done
