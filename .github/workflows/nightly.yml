@@ -32,13 +32,13 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      # --experimental-strip-types needs Node 22.6 or later; the suites run on 24 locally.
+      # --experimental-strip-types needs Node 22.6 or later; .nvmrc (24) is the one version CI and local runs use (TFP-216).
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload the unit log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unit-log-${{ github.run_number }}-${{ github.run_attempt }}
           path: unit.log
@@ -69,14 +69,14 @@ jobs:
     steps:
       # The check extracts the base ref with git archive, so it needs the history.
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies

@@ -164,7 +164,7 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 
 | Tool | Purpose |
 |---|---|
-| **Node.js 20+** | TestForge runs on Next.js |
+| **Node.js 24** (`.nvmrc`) | TestForge runs on Next.js; the unit tests and scripts need 22.6 or later for `--experimental-strip-types`, and CI uses `.nvmrc` |
 | **Docker Desktop** | Runs local test targets: the Toolshop copies (`scripts/toolshop-local/`) and, optionally, Plane |
 | **VS Code** | Code editor — open this repo as a workspace (optional) |
 | **GitHub Copilot** | AI assistant in VS Code (optional, install from the extension marketplace) |
