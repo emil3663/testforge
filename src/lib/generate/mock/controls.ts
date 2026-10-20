@@ -271,18 +271,38 @@ async function tfCheckNavLinks(page: import('@playwright/test').Page, startPath:
     }
     return kept.slice(0, 10);
   });
+  const shown = () => page.evaluate(() => document.body.innerText);
   await page.goto(startPath);
   const start = tfRoute(page.url());
+  const startShown = await shown();
   const links = await mark();
+  let moved = false;
   for (let index = 0; index < links.length; index++) {
     if (index > 0) {
-      await page.goto(startPath);
+      // TFP-214 (Emil's look at the control counts, 2026-10-20): back to the start page by Back, as full navigation,
+      // when the last link moved; loaded again only when Back doesn't reach it.
+      if (moved) {
+        await page.goBack({ timeout: 5000 }).catch(() => null);
+        await tfSettle(page);
+      }
+      if (tfRoute(page.url()) !== start) await page.goto(startPath);
       await mark();
     }
     const link = links[index];
+    const from = page.url();
     await page.locator('[data-tf-link="' + index + '"]').first().click();
     await tfSettle(page);
+    moved = page.url() !== from;
     const route = tfRoute(page.url());
+    // The address and the content: a link that moves the address but leaves the start page's content (a pane that
+    // didn't change) hasn't landed anywhere (Phase 39 Acceptance Criteria 3). A view that draws late is waited for, up
+    // to 5 s, as the sort check waits for its order (TFP-240).
+    let now = await shown();
+    for (const deadline = Date.now() + 5000; route !== start && now === startShown && Date.now() < deadline; now = await shown()) await page.waitForTimeout(100);
+    if (route !== start && now === startShown) {
+      problems.push('"' + link.text + '" on ' + startPath + ' changes the address to ' + route + ' but the page still shows what ' + start + ' showed');
+      continue;
+    }
     const title = await page.title();
     const heading = ((await page.locator('h1, h2, h3').first().textContent({ timeout: 2000 }).catch(() => '')) || '').replace(/\s+/g, ' ').trim();
     const where = route + ' ("' + (heading || title) + '")';

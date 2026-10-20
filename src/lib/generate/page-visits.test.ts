@@ -88,7 +88,10 @@ test("in a real browser: on a page that draws its form after a slow request, the
 
         // Comprehensive suites route their visits too.
         const comprehensive = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as never, { covered: ["/late-form"], notCovered: [], pageCap: 20 });
-        assert.match(comprehensive, /tfGoto\(page, '\/late-form'/);
+        // Since TFP-214 every accessibility check shares its page's visit, which the shared-visit helper loads by tfGoto.
+        assert.match(comprehensive, /tfShared\.visit\('\/late-form'\)/);
+        assert.match(comprehensive, /const response = await tfGoto\(page, path\);/);
+        assert.doesNotMatch(comprehensive, /\bpage\.goto\('\/late-form'/);
         assert.deepEqual(findTypeErrors(comprehensive), []);
     } finally {
         await fixture.close();

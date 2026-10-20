@@ -106,7 +106,9 @@ test("one page's structure changes: only its page type's tests are regenerated, 
     assert.ok(editedUnit, `a saved test titled "${editedTitle}"`);
     assert.equal(editedUnit.type, ACCOUNT);
     const file = join(first.siteSuite.store, "tests", editedUnit.unit);
-    const edit = (await readFile(file, "utf8")).replace("async ({ page }) => {", "async ({ page }) => {\n  // Edited by hand: checked against the support team's list.");
+    // The test takes the shared visit since TFP-214 (`{ tfShared }`), or its own page.
+    const edit = (await readFile(file, "utf8")).replace(/async \(\{ (page|tfShared) \}\) => \{/, (start) => `${start}\n  // Edited by hand: checked against the support team's list.`);
+    assert.notEqual(edit, await readFile(file, "utf8"), "the hand edit applied");
     await writeFile(file, edit, "utf8");
 
     await fixture.control("/__fixture/defect?set=types-contact-phone");

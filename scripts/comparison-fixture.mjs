@@ -64,6 +64,8 @@ export const DEFECTS = {
     "controls-stepper-broken": "the quantity + and - on a /store item do nothing",
     "controls-home-link-wrong": "the nav's Home link goes to /notes",
     "controls-option-errors": "a /store item's gift-wrap list offers an error entry",
+    // TFP-214 (Phase 39 Acceptance Criteria 3): an in-app link whose address changes while its pane stays as it was.
+    "controls-nav-pane-stuck": "/spa's Products link changes the address, but the app never draws the Products view",
     // Phase 41 (TFP-183): keyboard order and grouping.
     "a11y-positive-tabindex": "/store/register's fields carry positive tabindex values (Email first)",
     "a11y-tab-order-jumps": "/store/register's name row is laid out right to left, so Tab goes against the reading order",
@@ -384,7 +386,8 @@ const views = {
 };
 if (!location.hash) location.replace("#/");
 async function draw() {
-  const route = location.hash.replace(/^#!?/, "") || "/";
+  const route = location.hash.replace(/^#!?/, "") || "/";${defect === "controls-nav-pane-stuck" ? `
+  if (route === "/products") return;` : ""}
   // TFP-167: #/contact draws late (1.5 s), so a check that reads it at load sees "Loading...".
   await fetch(route === "/contact" ? "/api/slow" : "/api/status");
   document.getElementById("view").innerHTML = views[route] ?? "<h1>Page not found</h1><p>Nothing lives here.</p>";

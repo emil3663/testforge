@@ -115,3 +115,36 @@ test("in a real browser: on the fixture's /store, each broken control fails its 
         await fixture.close();
     }
 });
+
+test("in a real browser: on the fixture's /spa, the navigation check confirms each in-app link by address and content, fails on a pane that didn't change, and comes back by Back (Phase 39 Acceptance Criteria 3, TFP-214)", { skip: needsChromium }, async () => {
+    const fixture = await startRecordedFixture();
+    try {
+        const inspection = await inspectPages(fixture.origin, ["/spa"]);
+        const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
+        const code = mockGenerate(fixture.origin, "Check the site.", ["functional"], profile as never, normalizeContentRules({ paths: ["/spa"] }), normalizeTestAuditMode("fast"));
+        assert.deepEqual(findTypeErrors(code), []);
+        const title = "navigation links land where their text says, from /spa";
+        const result = async (defect: string) => {
+            await fixture.control(`/__fixture/defect?set=${defect}`);
+            const before = fixture.recorded.length;
+            const found = (await runSuite(code, `spa-${defect}`)).filter((record) => record.title.endsWith(title));
+            assert.equal(found.length, 1, `${defect}: ${found.length}`);
+            return { record: found[0], loads: fixture.recorded.slice(before).filter((request) => request.path === "/spa").length, requests: fixture.recorded.slice(before).map((request) => request.path).join(" ") };
+        };
+        // Clean: each link lands on its view, but "Chainsaws", whose route is missing, lands on "Page not found".
+        // No link loads the app again: the check comes back to /spa by Back. Two loads: the test's visit, and the
+        // check's own start (as before TFP-214, which loaded it again for each link after the first: 6).
+        const clean = await result("none");
+        assert.equal(clean.record.status, "Failed");
+        assert.match(clean.record.rawMessage, /"Chainsaws" on \/spa leads to \/chainsaws \("Page not found"\)/);
+        assert.doesNotMatch(clean.record.rawMessage, /Products|still shows/);
+        assert.equal(clean.loads, 2, `/spa loaded twice for five links: ${clean.requests}`);
+        // Products moves the address, but its view never draws: the page still shows the start's content.
+        const stuck = await result("controls-nav-pane-stuck");
+        assert.match(stuck.record.rawMessage, /"Products" on \/spa changes the address to \/products but the page still shows what \/ showed/);
+        assert.match(stuck.record.rawMessage, /"Chainsaws" on \/spa leads to/);
+        assert.doesNotMatch(stuck.record.rawMessage, /"(Contact|Legacy)" on/);
+    } finally {
+        await fixture.close();
+    }
+});

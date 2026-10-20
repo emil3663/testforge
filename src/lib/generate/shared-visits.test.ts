@@ -117,6 +117,62 @@ test.describe('Functional Coverage', () => {
     await tfGoto(page, '/b');
     await page.evaluate(() => window.scrollTo(0, 500));
   });
+
+  test('TFFU-007: fills a field', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.locator('#q').fill('x');
+  });
+
+  test('TFFU-008: holds its data before the visit', async ({ page }) => {
+    const links = [{ "url": "/b" }];
+    await tfGoto(page, '/a');
+    expect(links.length).toBe(1);
+  });
+
+  test('TFFU-009: loads again', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.reload();
+  });
+
+  test('TFFU-010: opens a route view of its own', async ({ page }) => {
+    await tfGoto(page, '/a');
+    const view = await page.context().newPage();
+    await view.close();
+  });
+
+  test('TFFU-011: sets a cookie', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.context().addCookies([]);
+  });
+
+  test('TFFU-013: opens a menu to reveal a link', async ({ page }) => {
+    await tfGoto(page, '/a');
+    const tfReveal = async (target: ReturnType<typeof page.locator>) => ({ visible: await target.isVisible(), reason: '' });
+    expect((await tfReveal(page.locator('#hidden'))).visible).toBe(false);
+  });
+
+  test('TFFU-012: works the page out first', async ({ page }) => {
+    const url = page.url();
+    await tfGoto(page, '/a');
+    expect(url).toBeTruthy();
+  });
+});
+
+test.describe('Accessibility Coverage', () => {
+  test('TFAC-001: /a passes the WCAG 2.2 A and AA scan', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('TFAC-002: /a is tabbed through in reading order', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.keyboard.press('Tab');
+  });
+
+  test('TFAC-003: /a has a heading', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await expect(page.locator('h1')).toBeVisible();
+  });
 });
 
 test.describe('Security Coverage', () => {
@@ -147,10 +203,21 @@ test.describe('SEO and Content Coverage', () => {
     assert.deepEqual(findTypeErrors(shared), []);
     const units = parseTestUnits(shared);
     const where = (title: string) => units.find((unit) => unit.title === title)!;
-    // The two that only read move into their page's group, inside their area; the rest stay as they were.
-    assert.deepEqual(where("reads its page").describe, ["Page /a", "Functional Coverage"]);
+    // The ones that only read, or change the page in place (TFP-214), move into their page's group, inside their area;
+    // the rest stay as they were.
+    for (const title of ["reads its page", "clicks", "holds its data before the visit", "opens a route view of its own"]) assert.deepEqual(where(title).describe, ["Page /a", "Functional Coverage"], title);
+    assert.deepEqual(where("scrolls").describe, ["Page /b", "Functional Coverage"]);
     assert.deepEqual(where("reads the response on /b").describe, ["Page /b", "Security Coverage"]);
-    for (const title of ["clicks", "listens before loading", "interactive", "another fixture", "scrolls"]) assert.deepEqual(where(title).describe, ["Functional Coverage"], title);
+    for (const title of ["/a passes the WCAG 2.2 A and AA scan", "/a is tabbed through in reading order", "/a has a heading"]) assert.deepEqual(where(title).describe, ["Page /a", "Accessibility Coverage"], title);
+    for (const title of ["listens before loading", "interactive", "another fixture", "fills a field", "loads again", "sets a cookie", "works the page out first", "opens a menu to reveal a link"]) assert.deepEqual(where(title).describe, ["Functional Coverage"], title);
+    // In the page's group: the checks that only read, then the scan, then those that change the page (Gate B ruling).
+    const order = ["reads its page", "holds its data before the visit", "/a has a heading", "/a passes the WCAG 2.2 A and AA scan", "clicks", "opens a route view of its own", "/a is tabbed through in reading order"];
+    const at = order.map((title) => shared.indexOf(`: ${title}'`));
+    assert.deepEqual([...at].sort((a, b) => a - b), at, "reads, scan, changes");
+    // A check that changes the page says so and runs inside rerun(); one that only reads doesn't.
+    assert.match(where("clicks").source, /async \(\{ tfShared \}\) => \{\n\s+await tfShared\.rerun\(async \(\) => \{\n\s+const \{ page \} = await tfShared\.visit\('\/a'\);\n\s+tfShared\.changed\(\);\n\s+await page\.getByRole\('button'\)\.click\(\);\n\s+\}\);\n\s+\}\);/);
+    assert.match(where("holds its data before the visit").source, /const links = \[\{ "url": "\/b" \}\];\n\s+const \{ page \} = await tfShared\.visit\('\/a'\);/);
+    assert.doesNotMatch(where("reads its page").source, /rerun|changed/);
     assert.deepEqual(where("a fresh-page area").describe, ["Performance Coverage"]);
     assert.deepEqual(where("in a describe with a hook").describe, ["SEO and Content Coverage"]);
     // Every test is still found, with its id and its page.
@@ -164,7 +231,18 @@ test.describe('SEO and Content Coverage', () => {
     // Once only.
     assert.equal(shareReadOnlyVisits(shared), shared);
     // A suite with nothing that can share is left as it is.
-    const nothing = suite.replace(/await tfGoto\(page, '\/a'\);\n\s+await expect\(page.locator\('h1'\)\).toHaveText\(tfHelper\(' A '\)\);/, "await tfGoto(page, '/a');\n    await page.reload();").replace("const response = await tfGoto(page, '/b');", "const response = await tfGoto(page, '/b');\n    await page.goBack();");
+    const nothing = suite.slice(0, suite.indexOf("test.describe('Functional Coverage'")) + `test.describe('Functional Coverage', () => {
+  test('TFFU-001: fills a field', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.locator('#q').fill('x');
+  });
+
+  test('TFFU-002: loads again', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await page.reload();
+  });
+});
+`;
     assert.equal(shareReadOnlyVisits(nothing), nothing);
 });
 
@@ -244,8 +322,10 @@ after(async () => {
     await new Promise((resolve) => site?.close(resolve));
 });
 
-test("in a real browser: Decision 4's rules - loaded again after leaving and after a failure, typed text cleared, a failure after a change re-run fresh with both results, one on an untouched page not re-run (state transition)", { skip: needsChromium }, async () => {
+test("in a real browser: Decision 4's rules - brought back after leaving, loaded again after a failure, typed text cleared, a failure on a changed page re-run fresh in the same attempt with both results, one on an untouched page not re-run (state transition)", { skip: needsChromium }, async () => {
     const check = (name: string, path: string, body: string) => `  test('${name}', async ({ tfShared }) => {\n    const { page } = await tfShared.visit('${path}');\n${body}\n  });`;
+    // As the pass writes a check that changes the page (TFP-214).
+    const change = (name: string, path: string, body: string) => `  test('${name}', async ({ tfShared }) => {\n    await tfShared.rerun(async () => {\n      const { page } = await tfShared.visit('${path}');\n      tfShared.changed();\n${body.replace(/^/gm, "  ")}\n    });\n  });`;
     const code = `import { test, expect } from '@playwright/test';
 
 test.use({ baseURL: '${origin}' });
@@ -256,27 +336,27 @@ ${SHARED_VISIT_HELPER}
 
 test.describe('Page /a', () => {
   const test = tfSharedTest;
-  test.describe.configure({ retries: 1 });
 ${[
         check("1 loads", "/a", "    await expect(page.locator('h1')).toHaveText('A');"),
         check("2 shares", "/a", "    await expect(page.locator('h1')).toHaveText('A');"),
-        check("3 leaves the page", "/a", "    await page.locator('#to-b').click();\n    await expect(page).toHaveURL(/\\/b$/);"),
-        check("4 after leaving: loads again", "/a", "    await expect(page.locator('h1')).toHaveText('A');"),
+        change("3 leaves the page", "/a", "    await page.locator('#to-b').click();\n    await expect(page).toHaveURL(/\\/b$/);"),
+        check("4 after leaving: brought back", "/a", "    await expect(page.locator('h1')).toHaveText('A');"),
         check("5 types, and passes", "/a", "    const field = page.locator('#q');\n    tfShared.typed(field);\n    await field.fill('hello');"),
         check("6 finds the typed text cleared", "/a", "    await expect(page.locator('#q')).toHaveValue('');"),
-        check("7 ticks a box and leaves it", "/a", "    tfShared.changed();\n    await page.locator('#c').check();"),
-        check("8 needs the box clear: fails, re-run fresh", "/a", "    await expect(page.locator('#c')).not.toBeChecked({ timeout: 500 });"),
+        change("7 ticks a box and leaves it", "/a", "    await page.locator('#c').check();"),
+        change("8 needs the box clear: fails, re-run fresh", "/a", "    if (await page.locator('#c').isChecked()) test.info().annotations.push({ type: 'finding', description: 'the box was ticked' });\n    await expect(page.locator('#c')).not.toBeChecked({ timeout: 500 });"),
     ].join("\n\n")}
 });
 
 test.describe('Page /c', () => {
   const test = tfSharedTest;
-  test.describe.configure({ retries: 1 });
 ${[
-        check("9 fails on an untouched page", "/c", "    expect(1, 'nine always fails').toBe(2);"),
+        change("9 fails on an untouched page", "/c", "    expect(1, 'nine always fails').toBe(2);"),
         check("10 after the failure: loads", "/c", "    await expect(page.locator('h1')).toHaveText('C');"),
         check("11 types, and fails", "/c", "    const field = page.locator('#n');\n    tfShared.typed(field);\n    await field.fill('typed');\n    expect(1, 'eleven always fails').toBe(2);"),
         check("12 finds the typed text gone", "/c", "    await expect(page.locator('#n')).toHaveValue('');"),
+        change("13 changes the page", "/c", "    await page.locator('#n').focus();"),
+        change("14 fails on the changed page, and again on a fresh one", "/c", "    expect(1, 'fourteen always fails').toBe(2);"),
     ].join("\n\n")}
 });
 `;
@@ -284,29 +364,38 @@ ${[
     const { records, report } = await run(code, "rules");
     const notes = annotations(report);
     const visits = (title: string) => (notes.get(title) ?? []).filter((note) => note.type === "visit").map((note) => note.description);
-    const status = (title: string) => records.find((record) => record.title === title)?.status;
+    const record = (title: string) => records.find((item) => item.title === title)!;
 
     assert.deepEqual(visits("1 loads"), ["loaded /a"]);
     assert.deepEqual(visits("2 shares"), ["shared /a"]);
     assert.deepEqual(visits("3 leaves the page"), ["shared /a"]);
-    assert.deepEqual(visits("4 after leaving: loads again"), ["loaded /a"], "a check that left the page: the next loads it again");
+    assert.deepEqual(visits("4 after leaving: brought back"), ["shared /a (back)"], "a check that left the page: the next brings it back with Back (Decision 3)");
     assert.deepEqual(visits("6 finds the typed text cleared"), ["shared /a"]);
-    assert.equal(status("6 finds the typed text cleared"), "Passed", "typed text cleared when the test that typed passed");
-    // 8 failed on the visit 7 changed: re-run on a fresh page, passed; the fresh result is reported, the first kept.
-    assert.deepEqual(visits("8 needs the box clear: fails, re-run fresh"), ["shared /a", "loaded /a"]);
-    assert.equal(status("8 needs the box clear: fails, re-run fresh"), "Passed");
-    const eight = records.find((record) => record.title === "8 needs the box clear: fails, re-run fresh")!;
-    assert.match(eight.remarks, /Re-run on a fresh page \(Phase 39 Decision 4\): it failed after a check that changed the shared page, then re-run on a fresh page\. The first attempt: .*toBeChecked/);
+    assert.equal(record("6 finds the typed text cleared").status, "Passed", "typed text cleared when the test that typed passed");
+    // 8 failed on the visit 7 changed: run again on a fresh page in the same attempt, and passed. The fresh result is
+    // reported, the first failure kept in the remarks, and what the first attempt found dropped with it.
+    const eight = record("8 needs the box clear: fails, re-run fresh");
+    assert.deepEqual(visits(eight.title), ["shared /a", "loaded /a"]);
+    assert.equal(eight.status, "Passed");
+    assert.match(eight.remarks, /Re-run on a fresh page \(Phase 39 Decision 4\): it failed on a page an earlier check had changed, then re-run on a fresh page\. The first attempt: .*toBeChecked/);
+    assert.ok(!(eight.findings ?? []).some((finding) => /the box was ticked/.test(finding)), JSON.stringify(eight.findings));
     // 9 failed on a page no check had changed: not re-run, its own failure stands.
-    const nine = records.find((record) => record.title === "9 fails on an untouched page")!;
+    const nine = record("9 fails on an untouched page");
     assert.equal(nine.status, "Failed");
     assert.match(nine.rawMessage, /nine always fails/);
-    assert.ok((notes.get("9 fails on an untouched page") ?? []).some((note) => note.type === "shared-visit" && /not re-run/.test(note.description ?? "")));
+    assert.deepEqual(visits(nine.title), ["loaded /c"]);
+    assert.ok(!(notes.get(nine.title) ?? []).some((note) => note.type === "shared-visit-rerun"));
     assert.deepEqual(visits("10 after the failure: loads"), ["loaded /c"], "after a failure, a fresh worker: the page loaded again");
-    assert.equal(status("11 types, and fails"), "Failed");
+    assert.equal(record("11 types, and fails").status, "Failed");
     assert.deepEqual(visits("12 finds the typed text gone"), ["loaded /c"]);
-    assert.equal(status("12 finds the typed text gone"), "Passed", "typed text gone when the test that typed failed");
-    for (const title of ["1 loads", "2 shares", "3 leaves the page", "4 after leaving: loads again", "5 types, and passes", "7 ticks a box and leaves it", "10 after the failure: loads"]) assert.equal(status(title), "Passed", title);
+    assert.equal(record("12 finds the typed text gone").status, "Passed", "typed text gone when the test that typed failed");
+    // 14 failed on the page 13 changed, and again on a fresh page: it fails, with both failures recorded.
+    const fourteen = record("14 fails on the changed page, and again on a fresh one");
+    assert.deepEqual(visits(fourteen.title), ["shared /c", "loaded /c"]);
+    assert.equal(fourteen.status, "Failed");
+    assert.match(fourteen.rawMessage, /fourteen always fails/);
+    assert.match(fourteen.remarks, /Re-run on a fresh page \(Phase 39 Decision 4\): .*The first attempt: .*fourteen always fails/);
+    for (const title of ["1 loads", "2 shares", "3 leaves the page", "4 after leaving: brought back", "5 types, and passes", "7 ticks a box and leaves it", "10 after the failure: loads", "13 changes the page"]) assert.equal(record(title).status, "Passed", title);
 });
 
 test("in a real browser: a shared check's assertion waits 2 s, a check on its own page still 5 s (TFP-215, boundary)", { skip: needsChromium }, async () => {
