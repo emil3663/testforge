@@ -423,6 +423,26 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
 - **Acceptance criteria:** Acceptance Criteria 3's navigation case.
   Decision 7's proof. Measured against the locked target.
 - **Dependencies:** TFP-213; Emil's look at the counts.
+- **Added at Gate B (Emil, 2026-10-20):**
+  - **Accessibility's two page-changing checks share the visit too.**
+    These are "every form field has an accessible name" and "tabbed through
+    in reading order", both Decision 3's "in place" kind.
+  - **The axe scan runs last in each page's shared group,** so a failing
+    scan forces no reload of the checks after it.
+  - **Judged against accessibility's ≥30% target,** now at Gate C (see
+    "Gate B ruling").
+  - **Dependency:** TFP-241.
+- **Emil's look at the control counts (2026-10-20),** from TFP-211's report:
+  - **"Path navigation" links share as full navigation:** the target loads,
+    and the check returns to the shared page by Back.
+    - Inspection can't tell a single-page app's path links from a
+      multi-page site's links. Full navigation with Back is safe on both.
+    - The check confirms both the address and the content, so it can't pass
+      on the previous page's content.
+  - **"Unclear" controls keep their own fresh page,** as Decision 3 says.
+    These are mostly form fields and plain buttons.
+  - **"In place" and "in-app navigation"** share as Decision 3 says.
+  - TFP-214 no longer waits on this look.
 
 ### TFP-215 — Tune the settle wait and read-only timeouts (added 2026-10-16)
 
@@ -541,12 +561,60 @@ only.**
   - **Test plan:** a `TEST_PLAN.md` case, in the same commit as the code.
 - **Dependencies:** none. **Before TFP-212** (Emil, 2026-10-20).
 
+### TFP-241 — Failure evidence for shared checks: a trace per check, and the visit's video (added at Gate B, 2026-10-20)
+
+- **Phase:** 39 · **Priority:** P1 · **Labels:** `run`, `report`
+- **Problem it solves:** since TFP-212, a failing shared check gets only a
+  screenshot of the shared page.
+  - Playwright's per-test trace and video (`retain-on-failure`) belong to
+    its page fixture, which a shared check doesn't use.
+  - Every failure had both before. Failure evidence is one of TestForge's
+    promises (Phase 17; the evidence sweep, TFP-198).
+- **Scope:**
+  - **Trace:** the shared visit records a trace in chunks, one per check
+    (`tracing.startChunk` / `stopChunk`). A chunk is kept only for a check
+    that fails, and attached to that check's result as its trace.
+  - **Video:** the shared visit's video is kept when any of its checks
+    fails, and attached to each failing check, with the time each check
+    started so the right moment can be found.
+  - **Credential scan:** both pass through Phase 20's credential scan, as
+    every capture does.
+  - **Passing checks:** nothing is kept.
+- **Acceptance criteria:**
+  - **Fixture:** a failing shared check has a trace that opens in
+    Playwright's trace viewer and shows only its own steps, plus the
+    visit's video, with its start time. A passing one leaves nothing.
+  - **Report:** the evidence links resolve.
+  - **Cost:** under 5% of the Standard median on with-bugs, measured
+    against Gate B's code (C) in one session, three runs each side.
+    Otherwise the video is dropped and the trace kept, recorded either way.
+  - **Template:** `check:template-unchanged`, with any difference described
+    and the baseline moved in its own commit.
+  - **Test plan:** `TEST_PLAN.md` cases.
+- **Dependencies:** none. **Before TFP-214** (Emil, 2026-10-20).
+
 ## Recommended Execution Order
 
 1. TFP-211, then Emil locks the targets. **Done 2026-10-20.**
 1a. TFP-240, the sort check, before TFP-212.
 2. TFP-212 and TFP-213, together.
 3. TFP-215, then TFP-214 (after Emil's look at the control counts).
+   **Gate B ruled 2026-10-20:** TFP-212, TFP-213 and TFP-215 are kept.
+   **Builds first, then one overnight session (Emil, 2026-10-20).**
+   - **Build in order,** each stopping for verification:
+     1. TFP-241;
+     2. TFP-214 (the control-count look done 2026-10-20);
+     3. TFP-222 (R4; it must land before TFP-155);
+     4. TFP-155;
+     5. TFP-156.
+
+     Building needs no quiet machine, and Emil uses the PC as normal.
+   - **Then one overnight measurement session** (see Gate C below). Emil
+     closes his browsers before bed, and Code stops and restarts Plane's
+     containers.
+   - **No separate measurement sessions** for TFP-241's cost or TFP-222's
+     run time. Both are measured in the overnight session.
+   - **Measurement sessions run overnight from now on,** Gate D's included.
 4. TFP-155.
 5. TFP-156 and TFP-157, in either order.
 6. TFP-158.
@@ -608,6 +676,65 @@ of Decisions 2 to 6 touch it.
 ### Gate C — Split and serial (was Gate A)
 - TFP-214, TFP-155 and TFP-156 landed and independently verified.
 - With one worker, the fixture gives the same results as at Gate B.
+- **Measured in one overnight session (Emil, 2026-10-20).** Five
+  variants, interleaved, three runs each, one worker, a quiet machine:
+  - **A:** `4a85f1f`, before TFP-212;
+  - **C:** `2be975c`, Gate B's code;
+  - **C1:** with TFP-241;
+  - **C2:** with TFP-214;
+  - **F:** the final code, with TFP-222, TFP-155 and TFP-156.
+- **What each comparison judges:**
+
+  | Comparison | Judges | Target |
+  | --- | --- | --- |
+  | C against C1 | TFP-241's cost, with-bugs Standard | under 5%, or the video is dropped |
+  | C1 against C2 | TFP-214, Standard on each copy | at least 10% faster |
+  | A against C2 | accessibility on each copy (moved from Gate B) | at least 30% faster |
+  | C2 against F | TFP-222, TFP-155 and TFP-156 | the same results; no slower beyond the 5% spread |
+
+- **What must also hold:** Decision 7's proof in every comparison, and the
+  with-bugs `/` sort message compared again.
+- **Trimming:** variants that a target doesn't need are left out of a copy
+  or suite, to keep the session to about 5 to 5½ hours. The runner states
+  which.
+
+### Gate B ruling (Emil, 2026-10-20)
+
+**Measured** (`phase-39-gate-b-report.md`; evidence
+`benchmarks/2026-10-20-gate-b/`): before (A, `4a85f1f`) against after (C,
+`2be975c`), in one session on a quiet machine.
+
+| Suite | with-bugs | clean | Target | Result |
+| --- | --- | --- | --- | --- |
+| Standard | 36.4% faster | 50.0% faster | 20% | met |
+| Comprehensive security | 45.9% faster | 46.2% faster | 30% | met |
+| Comprehensive accessibility | 1.0% faster | 8.6% faster | 30% | not met |
+
+- **TFP-215:** 7.1% faster than B, against its 5% bar. Kept.
+- **Decision 7 holds:** the same failures in every run of A and C, and the
+  same evidence for all 37 bugs.
+
+**Ruling:**
+1. **TFP-212, TFP-213 and TFP-215 are kept.** The locked "not met:
+   revert" rule is not applied. Accessibility missed because the target
+   assumed all four of its checks would share a visit. Two of them change
+   the page, and sharing those is TFP-214's job by design. A failing axe
+   scan, which runs first, also forces the next check to reload. The build
+   didn't fail; the target was set ahead of its ticket.
+2. **Accessibility's ≥30% moves to Gate C** (amending Gate A's target 1),
+   with TFP-214's additions above.
+   - It is judged on each copy against the before code (A, `4a85f1f`).
+     Gate C's session runs A again for this comparison, so it stays within
+     one session.
+3. **TFP-241 restores failure evidence for shared checks, before
+   TFP-214.**
+4. **Accepted as recorded, re-checked at Gate C:** the with-bugs sort
+   check's message on `/`. It names "Name (Z - A)" before the change and
+   not after, while the check fails in every run of both, with the same
+   failure set and score. Gate C's report compares that message again. A
+   second unexplained change is measured, not read.
+5. **Accepted:** `4a85f1f`, test-only, each unit run's Playwright output in
+   its own folder, outside the tickets but in its own commit.
 
 ### Gate D — Limits and measurement (was Gate B)
 - TFP-157 and TFP-158 landed and independently verified.
