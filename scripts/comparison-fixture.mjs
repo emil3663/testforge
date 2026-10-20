@@ -55,6 +55,9 @@ export const DEFECTS = {
     "forms-missing-field": "the /forms search form has no Tag field",
     // Phase 41 (TFP-182): controls on /store that don't do their job.
     "controls-sort-reversed": "/store's name sort options ask for the opposite order (A - Z sends name,desc)",
+    // TFP-240: not a defect a check should report - the sorted list arrives late, as the clean local Toolshop's did
+    // under load. The sort check must wait for it, and pass.
+    "controls-sort-late": "/store's products answer a sorted request 1.5 s late, so the sorted list draws late",
     "controls-filter-drops-max": "/store's price range sends only its minimum",
     "controls-stepper-broken": "the quantity + and - on a /store item do nothing",
     "controls-home-link-wrong": "the nav's Home link goes to /notes",
@@ -486,6 +489,7 @@ draw();
         if (key === "name" || key === "price") {
             sorted.sort((a, b) => (key === "name" ? a.name.localeCompare(b.name) : a.price - b.price) * (direction === "desc" ? -1 : 1));
         }
+        if (defect === "controls-sort-late" && key) await new Promise((resolve) => setTimeout(resolve, 1500));
         const stock = defect === "security-api-internal-fields" || defect === "security-api-internal-fields-shown";
         return send(200, JSON.stringify(sorted.map(({ category: _category, ...product }, index) => ({ ...product, in_stock: true, ...(stock ? { stock: 12 + index * 7 } : {}) }))), "application/json");
     }

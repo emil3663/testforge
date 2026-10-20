@@ -112,7 +112,14 @@ async function tfCheckSorts(page: import('@playwright/test').Page, path: string)
     for (const option of sorts) {
       await select.selectOption({ index: option.position });
       await tfSettle(page);
-      const items = await tfReadItems(page);
+      // TFP-240: the sort's own request can start inside selectOption, before tfSettle listens, so tfSettle may
+      // return before its response and the list read here be the previous order's. The list is read until it
+      // shows the order asked for, for up to 5 s; one still out of order then fails, as a wrong sort always did.
+      let items = await tfReadItems(page);
+      for (const until = Date.now() + 5000; items.length >= 2 && tfOrderProblem(items, option.order as TfOrder) && Date.now() < until;) {
+        await page.waitForTimeout(250);
+        items = await tfReadItems(page);
+      }
       if (items.length < 2) continue;
       checked++;
       const problem = tfOrderProblem(items, option.order as TfOrder);

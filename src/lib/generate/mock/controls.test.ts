@@ -6,7 +6,8 @@
  * with each control defect switched on.
  *
  * ISTQB technique: decision table. Conditions: which control is broken
- * (none; the name sort reversed; the price range dropping its maximum; the
+ * (none; the name sort reversed; the sorted list drawing 1.5 s late (TFP-240,
+ * no defect: every check passes); the price range dropping its maximum; the
  * stepper doing nothing; Home leading elsewhere; an error entry in a list).
  * One column each; in every column the broken control's check fails, naming
  * the control, the page and the value at fault, and every other check
@@ -86,6 +87,8 @@ test("in a real browser: on the fixture's /store, each broken control fails its 
         const columns: Array<[string, keyof typeof checks | null, RegExp | null]> = [
             ["none", null, null],
             ["controls-sort-reversed", "sort", /sorting by "Name \(A - Z\)" on \/store puts "Wood Saw" before "Pliers"/],
+            // TFP-240: a sorted list that draws late is no defect: the sort check waits for it.
+            ["controls-sort-late", null, null],
             ["controls-filter-drops-max", "filter", /moving the "Highest price" slider on \/store from 50 to 49 sent GET http:\/\/127\.0\.0\.1:\d+\/api\/store\/products\?between=price%2C1, which does not carry 49/],
             ["controls-stepper-broken", "stepper", /on \/store\/item\/01J8Z3K4QWHAMMER, "\+" beside "Quantity" left it at 1 \(it was 1; expected 2\)/],
             ["controls-home-link-wrong", "links", /"Home" on \/store leads to \/notes \("Notes"\), not the start page/],
