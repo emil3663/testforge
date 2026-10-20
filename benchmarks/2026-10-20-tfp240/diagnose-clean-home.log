@@ -1,0 +1,208 @@
+
+Running 5 tests using 1 worker
+
+---
+300 ms  start   http://localhost:8091/users/me
+300 ms  start   http://localhost:8091/users/me
+301 ms  start   /assets/i18n/en.json
+351 ms  finish  /assets/i18n/en.json
+434 ms  start   http://localhost:8091/products
+434 ms  start   http://localhost:8091/brands
+434 ms  start   http://localhost:8091/categories/tree
+434 ms  start   http://localhost:8091/product-specs/names
+3249 ms  finish  http://localhost:8091/users/me
+3261 ms  finish  http://localhost:8091/brands
+3266 ms  finish  http://localhost:8091/categories/tree
+3292 ms  finish  http://localhost:8091/product-specs/names
+3363 ms  finish  http://localhost:8091/products
+3376 ms  finish  http://localhost:8091/users/me
+3931 ms  page settled
+3980 ms  selectOption "Name (A - Z)"
+4019 ms  start   http://localhost:8091/products
+4023 ms  selectOption returned
+4552 ms  finish  http://localhost:8091/products
+5163 ms  tfSettle returned; read now: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+8189 ms  3 s later: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+8189 ms  selectOption "Name (Z - A)"
+8208 ms  start   http://localhost:8091/products
+8210 ms  selectOption returned
+8562 ms  finish  http://localhost:8091/products
+9214 ms  tfSettle returned; read now: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+12239 ms  3 s later: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+12240 ms  selectOption "Price (High - Low)"
+12258 ms  start   http://localhost:8091/products
+12261 ms  selectOption returned
+12721 ms  finish  http://localhost:8091/products
+13295 ms  tfSettle returned; read now: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+16321 ms  3 s later: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+16322 ms  selectOption "Price (Low - High)"
+16341 ms  start   http://localhost:8091/products
+16345 ms  selectOption returned
+16767 ms  finish  http://localhost:8091/products
+17384 ms  tfSettle returned; read now: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+20419 ms  3 s later: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+
+---
+311 ms  start   http://localhost:8091/users/me
+311 ms  start   http://localhost:8091/users/me
+311 ms  start   /assets/i18n/en.json
+374 ms  finish  /assets/i18n/en.json
+518 ms  start   http://localhost:8091/products
+518 ms  start   http://localhost:8091/brands
+518 ms  start   http://localhost:8091/categories/tree
+518 ms  start   http://localhost:8091/product-specs/names
+619 ms  finish  http://localhost:8091/users/me
+804 ms  finish  http://localhost:8091/products
+848 ms  finish  http://localhost:8091/users/me
+858 ms  finish  http://localhost:8091/brands
+986 ms  finish  http://localhost:8091/categories/tree
+1030 ms  finish  http://localhost:8091/product-specs/names
+1537 ms  page settled
+1586 ms  selectOption "Name (A - Z)"
+1635 ms  start   http://localhost:8091/products
+1639 ms  selectOption returned
+2036 ms  finish  http://localhost:8091/products
+2699 ms  tfSettle returned; read now: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5727 ms  3 s later: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5727 ms  selectOption "Name (Z - A)"
+5748 ms  start   http://localhost:8091/products
+5751 ms  selectOption returned
+6102 ms  finish  http://localhost:8091/products
+6758 ms  tfSettle returned; read now: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9777 ms  3 s later: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9778 ms  selectOption "Price (High - Low)"
+9796 ms  start   http://localhost:8091/products
+9800 ms  selectOption returned
+10258 ms  finish  http://localhost:8091/products
+10826 ms  tfSettle returned; read now: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13844 ms  3 s later: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13845 ms  selectOption "Price (Low - High)"
+13862 ms  start   http://localhost:8091/products
+13865 ms  selectOption returned
+14427 ms  finish  http://localhost:8091/products
+14440 ms  tfSettle returned; read now: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+17463 ms  3 s later: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+
+---
+227 ms  start   http://localhost:8091/users/me
+227 ms  start   http://localhost:8091/users/me
+227 ms  start   /assets/i18n/en.json
+286 ms  finish  /assets/i18n/en.json
+381 ms  start   http://localhost:8091/products
+381 ms  start   http://localhost:8091/brands
+382 ms  start   http://localhost:8091/categories/tree
+383 ms  start   http://localhost:8091/product-specs/names
+472 ms  finish  http://localhost:8091/users/me
+609 ms  finish  http://localhost:8091/products
+659 ms  finish  http://localhost:8091/users/me
+663 ms  finish  http://localhost:8091/brands
+737 ms  finish  http://localhost:8091/product-specs/names
+799 ms  finish  http://localhost:8091/categories/tree
+1311 ms  page settled
+1360 ms  selectOption "Name (A - Z)"
+1397 ms  start   http://localhost:8091/products
+1403 ms  selectOption returned
+1726 ms  finish  http://localhost:8091/products
+2309 ms  tfSettle returned; read now: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5353 ms  3 s later: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5354 ms  selectOption "Name (Z - A)"
+5379 ms  start   http://localhost:8091/products
+5382 ms  selectOption returned
+5863 ms  finish  http://localhost:8091/products
+6505 ms  tfSettle returned; read now: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9521 ms  3 s later: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9522 ms  selectOption "Price (High - Low)"
+9542 ms  start   http://localhost:8091/products
+9544 ms  selectOption returned
+10014 ms  finish  http://localhost:8091/products
+10663 ms  tfSettle returned; read now: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13689 ms  3 s later: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13690 ms  selectOption "Price (Low - High)"
+13706 ms  start   http://localhost:8091/products
+13710 ms  selectOption returned
+14123 ms  finish  http://localhost:8091/products
+14712 ms  tfSettle returned; read now: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+17743 ms  3 s later: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+
+---
+232 ms  start   http://localhost:8091/users/me
+232 ms  start   http://localhost:8091/users/me
+233 ms  start   /assets/i18n/en.json
+289 ms  finish  /assets/i18n/en.json
+392 ms  start   http://localhost:8091/products
+394 ms  start   http://localhost:8091/brands
+394 ms  start   http://localhost:8091/categories/tree
+394 ms  start   http://localhost:8091/product-specs/names
+564 ms  finish  http://localhost:8091/users/me
+588 ms  finish  http://localhost:8091/categories/tree
+674 ms  finish  http://localhost:8091/brands
+724 ms  finish  http://localhost:8091/products
+726 ms  finish  http://localhost:8091/product-specs/names
+826 ms  finish  http://localhost:8091/users/me
+1332 ms  page settled
+1380 ms  selectOption "Name (A - Z)"
+1420 ms  start   http://localhost:8091/products
+1423 ms  selectOption returned
+2003 ms  tfSettle returned; read now: puts "Pliers" before "Bolt Cutters" (Combination Pliers 14.15, Pliers 12.01, Bolt Cutters 48.41)
+4344 ms  finish  http://localhost:8091/products
+5037 ms  3 s later: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5038 ms  selectOption "Name (Z - A)"
+5060 ms  start   http://localhost:8091/products
+5063 ms  selectOption returned
+5616 ms  tfSettle returned; read now: puts "Adjustable Wrench" before "Angled Spanner" (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+8641 ms  3 s later: puts "Adjustable Wrench" before "Angled Spanner" (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+8641 ms  selectOption "Price (High - Low)"
+8657 ms  start   http://localhost:8091/products
+8660 ms  selectOption returned
+9130 ms  finish  http://localhost:8091/products
+9151 ms  finish  http://localhost:8091/products
+9808 ms  tfSettle returned; read now: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+12827 ms  3 s later: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+12827 ms  selectOption "Price (Low - High)"
+12842 ms  start   http://localhost:8091/products
+12845 ms  selectOption returned
+13206 ms  finish  http://localhost:8091/products
+13860 ms  tfSettle returned; read now: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+16876 ms  3 s later: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+
+---
+218 ms  start   http://localhost:8091/users/me
+218 ms  start   http://localhost:8091/users/me
+218 ms  start   /assets/i18n/en.json
+295 ms  finish  /assets/i18n/en.json
+392 ms  start   http://localhost:8091/products
+392 ms  start   http://localhost:8091/brands
+393 ms  start   http://localhost:8091/categories/tree
+393 ms  start   http://localhost:8091/product-specs/names
+498 ms  finish  http://localhost:8091/users/me
+648 ms  finish  http://localhost:8091/products
+671 ms  finish  http://localhost:8091/users/me
+704 ms  finish  http://localhost:8091/brands
+816 ms  finish  http://localhost:8091/product-specs/names
+827 ms  finish  http://localhost:8091/categories/tree
+1338 ms  page settled
+1379 ms  selectOption "Name (A - Z)"
+1422 ms  start   http://localhost:8091/products
+1428 ms  selectOption returned
+1782 ms  finish  http://localhost:8091/products
+2441 ms  tfSettle returned; read now: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5463 ms  3 s later: in order (Adjustable Wrench 20.33, Angled Spanner 14.14, Belt Sander 73.59)
+5463 ms  selectOption "Name (Z - A)"
+5479 ms  start   http://localhost:8091/products
+5483 ms  selectOption returned
+5890 ms  finish  http://localhost:8091/products
+6495 ms  tfSettle returned; read now: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9511 ms  3 s later: in order (Wood Saw 12.18, Wood Carving Chisels 45.23, Washers 3.55)
+9511 ms  selectOption "Price (High - Low)"
+9531 ms  start   http://localhost:8091/products
+9534 ms  selectOption returned
+9928 ms  finish  http://localhost:8091/products
+10564 ms  tfSettle returned; read now: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13581 ms  3 s later: in order (Drawer Tool Cabinet 89.55, Tool Cabinet 86.71, Circular Saw 80.19)
+13581 ms  selectOption "Price (Low - High)"
+13601 ms  start   http://localhost:8091/products
+13605 ms  selectOption returned
+14083 ms  finish  http://localhost:8091/products
+14687 ms  tfSettle returned; read now: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+17712 ms  3 s later: in order (Washers 3.55, Flat-Head Wood Screws 3.95, M4 Nuts 4.65)
+
