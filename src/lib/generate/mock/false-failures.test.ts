@@ -55,9 +55,10 @@ test("the sign-in test visits the inspected sign-in page, and / without page dat
     const rules = normalizeContentRules(undefined);
     const withProfile = mockGenerate("https://site.test", "Check the login page", ["functional"], profile([page("/", [el("link", { text: "Form Authentication" })]), page("/login", [el("input", { inputType: "password" })])]) as never, rules, normalizeTestAuditMode(undefined));
     const signInTest = withProfile.slice(withProfile.indexOf("surfaces a sign-in related control"));
-    assert.match(signInTest, /^surfaces a sign-in related control for the described flow', \{ annotation: \{ type: 'gate', description: 'read-only' \} \}, async \(\{ page \}\) => \{\n    await tfGoto\(page, '\/login'\);/);
+    // Phase 39 (TFP-212): it only reads the page, so it takes the page's shared visit.
+    assert.match(signInTest, /^surfaces a sign-in related control for the described flow', \{ annotation: \{ type: 'gate', description: 'read-only' \} \}, async \(\{ tfShared \}\) => \{\n\s+const \{ page \} = await tfShared\.visit\('\/login'\);/);
     const without = mockGenerate("https://site.test", "Check the login page", ["functional"], null, rules, normalizeTestAuditMode(undefined));
-    assert.match(without.slice(without.indexOf("surfaces a sign-in related control")), /\n    await tfGoto\(page, '\/'\);/);
+    assert.match(without.slice(without.indexOf("surfaces a sign-in related control")), /\n\s+const \{ page \} = await tfShared\.visit\('\/'\);/);
     assert.deepEqual(findTypeErrors(withProfile), []);
 });
 

@@ -52,8 +52,8 @@ function pathsIn(node: ts.Node, describe: string[]): string[] {
         if (ts.isCallExpression(child)) {
             const callee = child.expression;
             const name = ts.isIdentifier(callee) ? callee.text : ts.isPropertyAccessExpression(callee) ? callee.name.text : "";
-            // tfGoto(page, '/x') after TFP-167's routing; page.goto('/x') before it.
-            const target = name === "tfGoto" ? literal(child.arguments[1]) : name === "goto" ? literal(child.arguments[0]) : null;
+            // tfGoto(page, '/x') after TFP-167's routing; page.goto('/x') before it; tfShared.visit('/x') since TFP-212.
+            const target = name === "tfGoto" ? literal(child.arguments[1]) : name === "goto" || name === "visit" ? literal(child.arguments[0]) : null;
             if (target !== null && (target.startsWith("/") || /^https?:\/\//.test(target))) found.add(target);
         }
         // The `page` annotation the shared and Comprehensive checks carry: { type: 'page', description: '/x' }.

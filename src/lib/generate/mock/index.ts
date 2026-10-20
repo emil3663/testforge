@@ -10,6 +10,7 @@ import { SUITE_AREA_CODES } from "./suite";
 import { withDefaultGate } from "@/lib/run/test-gates";
 import type { BestPracticeArea, ContentProfile, ContentRules, GeneratedSuite, TestAuditMode } from "./types";
 import { routePageVisits } from "../page-visits";
+import { shareReadOnlyVisits } from "../shared-visits";
 
 export { BEST_PRACTICE_OPTIONS } from "./types";
 export type {
@@ -99,7 +100,10 @@ export function mockGenerateDetailed(
     selectedPractices: BestPracticeArea[],
     contentProfile: ContentProfile | null,
     contentRules: ContentRules,
-    auditMode: TestAuditMode
+    auditMode: TestAuditMode,
+    // Phase 39 (TFP-212): one shared visit per page for its read-only checks. Off only to prove Decision 7, the
+    // same results shared and one-page-per-test.
+    options: { sharedVisits?: boolean } = {}
 ): TemplateGeneration {
     const parsedBaseUrl = new URL(baseUrl);
     const escapedBaseUrl = escapeForSingleQuotedString(baseUrl);
@@ -155,6 +159,7 @@ ${renderSuites(allSuites)}
 // NOTE: This fallback generator uses URL and keyword heuristics.
 // Add OPENAI_API_KEY in your .env to generate tests tailored more deeply to the scenario.`;
 
-    // TFP-167: every page visit waits for the page to draw.
-    return { code: routePageVisits(code), areas: bestPracticeAreas, testsByArea, notApplicable };
+    // TFP-167: every page visit waits for the page to draw. TFP-212: read-only checks share a visit per page.
+    const routed = routePageVisits(code);
+    return { code: options.sharedVisits === false ? routed : shareReadOnlyVisits(routed), areas: bestPracticeAreas, testsByArea, notApplicable };
 }

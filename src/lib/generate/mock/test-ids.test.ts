@@ -26,7 +26,8 @@ test("every test in a generated file has its own ID, numbered on across same-are
         assert.ok(ids.length > 0, mode);
         assert.deepEqual(ids.filter((id, i) => ids.indexOf(id) !== i), [], `${mode}: duplicate IDs`);
 
-        const seo = ids.filter((id) => id.startsWith("TFSE-"));
+        // In id order: Phase 39 (TFP-212) moves the checks that share a visit into the page's group.
+        const seo = ids.filter((id) => id.startsWith("TFSE-")).sort();
         assert.ok(code.split("test.describe(").length - 1 > new Set(ids.map((id) => id.slice(0, 4))).size, `${mode}: precondition: some area has more than one suite`);
         assert.deepEqual(seo, seo.map((_, i) => `TFSE-${String(i + 1).padStart(3, "0")}`), `${mode}: SEO IDs run 001, 002, ... across both SEO suites`);
     }

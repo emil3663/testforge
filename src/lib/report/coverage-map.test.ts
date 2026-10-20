@@ -157,10 +157,12 @@ test("a link checked only by a site-wide request is reachability-covered and on 
 
 test("a link on every page, checked on one of them, is one item covered in context (TFP-201)", { skip: needsChromium }, () => {
     // Keep the check of /types/product/101's link on the terms page alone; take it off every other page.
-    const checks = parseTestUnits(code).filter((unit) => unit.title === "navigation link health: /types/product/101" && unit.paths.length === 1);
+    // Positions from the suite they are cut from: since Phase 39 (TFP-212) a page's link checks sit among its other
+    // shared checks, so removing them moves what follows.
+    let fewer = withoutLinkChecks(code);
+    const checks = parseTestUnits(fewer).filter((unit) => unit.title === "navigation link health: /types/product/101" && unit.paths.length === 1);
     const kept = checks.find((unit) => unit.paths[0] === "/types/help/terms")!;
     assert.ok(kept && checks.length >= 3, `${checks.length} pages check it`);
-    let fewer = withoutLinkChecks(code);
     for (const unit of [...checks].filter((unit) => unit !== kept).sort((a, b) => b.start - a.start)) fewer = fewer.slice(0, unit.start) + fewer.slice(unit.end);
     const map = buildCoverageMap(profile, fewer)!;
 

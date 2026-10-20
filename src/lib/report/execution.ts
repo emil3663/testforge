@@ -358,8 +358,16 @@ export function flattenSuites(
                 ).at(-1);
                 const skipReason = test.annotations?.find((annotation) => annotation.type === "skip" && annotation.description)?.description ?? null;
                 // Option C: a skip with a stated reason was a choice, not a failure.
-                const status: ExecutionStatus = test.status === "skipped" && skipReason ? "Not run" : mapStatus(test.status);
-                const message = latestResult ? extractMessage(latestResult) : "No result captured.";
+                // Phase 39 (TFP-213, Decision 4): a failure after a check that changed the shared page, re-run on a
+                // fresh page, reports the fresh result; the first is kept in the remarks (shared-visit-rerun).
+                const rerun = test.annotations?.find((annotation) => annotation.type === "shared-visit-rerun")?.description ?? null;
+                const status: ExecutionStatus = test.status === "skipped" && skipReason ? "Not run" : rerun && test.status === "flaky" ? "Passed" : mapStatus(test.status);
+                // TFP-213: a shared check's failure that wasn't re-run (its page was unchanged) reports its first attempt's
+                // message, not the retry's note; a re-run that passed keeps the first attempt's failure in its remarks.
+                const firstResult = [...(test.results ?? [])].sort((left, right) => left.retry - right.retry)[0];
+                const notRerun = test.annotations?.some((annotation) => annotation.type === "shared-visit") ?? false;
+                const message = latestResult ? extractMessage(notRerun && firstResult ? firstResult : latestResult) : "No result captured.";
+                const firstFailure = rerun && firstResult ? extractMessage(firstResult).split("\n")[0] : "";
                 const interactionType = deriveInteractionType(spec.title);
 
                 orderRef.value += 1;
@@ -376,7 +384,7 @@ export function flattenSuites(
                     browser: test.projectName || "chromium",
                     status,
                     duration: latestResult?.duration ?? 0,
-                    remarks: withGenerator(
+                    remarks: (rerun && status === "Passed" ? `Re-run on a fresh page (Phase 39 Decision 4): it ${rerun}. The first attempt: ${firstFailure} ` : "") + withGenerator(
                         withMeasurements(
                             withFindings(
                                 buildExecutionOutcomeSummary(

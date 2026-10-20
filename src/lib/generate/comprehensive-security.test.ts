@@ -26,10 +26,18 @@ const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
+const { SHARED_VISIT_HELPER } = await import("./shared-visits.ts");
+
 const SECURITY = normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode;
 
 function suiteFor(origin: string, pages: string[]) {
     return buildComprehensiveSuite(origin, SECURITY, { covered: pages, notCovered: [], pageCap: 20 });
+}
+
+// The suite with each check on its own page (Phase 39's shared visits off): runPageTests stands in for Playwright
+// and has no fixtures, so it runs each check's own logic; the shared visit is proven in shared-visits.test.ts.
+function checksFor(origin: string, pages: string[]) {
+    return buildComprehensiveSuite(origin, SECURITY, { covered: pages, notCovered: [], pageCap: 20 }, { sharedVisits: false });
 }
 
 // --- the suite as written ----------------------------------------------------
@@ -51,12 +59,16 @@ test("the suite sends no input: no typing, clicking, submitting or non-GET reque
     assert.equal(code.match(/request\.get\(/g)?.length, 2, "the missing-page probe and the known-path probe, once each per run");
     // TFP-167: every page load goes through tfGoto, whose own body holds the only page.goto calls.
     // TFP-184: five per page (the guessable-id check is the fifth), and the known-path probe's start page; TFP-185's API-field check is a sixth.
-    assert.equal(code.match(/tfGoto\(page, /g)?.length, 3 * 6 + 1, "six page loads per page, and the probe's start page");
+    // Phase 39 (TFP-212): the checks that only read take the page's shared visit, the rest still load it themselves.
+    const visits = code.match(/tfShared\.visit\(/g)?.length ?? 0;
+    assert.ok(visits >= 3, `${visits} checks share a visit`);
+    assert.equal((code.replace(SHARED_VISIT_HELPER, "").match(/tfGoto\(page, /g)?.length ?? 0) + visits, 3 * 6 + 1, "six page visits written per page, and the probe's start page");
 });
 
 test("every check carries an OWASP Top 10:2025 category and ASVS 5.0 requirements from chapters in a passive run's reach", () => {
     const code = suiteFor("https://site.test", ["/"]);
-    const tests = [...code.matchAll(/test\('(TFSC-\d{3}: [^']*)', \{ annotation: \[(.*?)\] \}/g)];
+    // In id order: Phase 39 (TFP-212) moves the checks that share a visit into the page's group.
+    const tests = [...code.matchAll(/test\('(TFSC-\d{3}: [^']*)', \{ annotation: \[(.*?)\] \}/g)].sort((a, b) => a[1].localeCompare(b[1]));
     // TFP-184: the guessable-id check per page and the known-path probe join the five; TFP-185: the API-field check per page.
     assert.equal(tests.length, 8);
     const categories = new Set<string>(Object.values(TOP10_2025));
@@ -165,14 +177,14 @@ const HARDENED_HEADERS = {
 };
 
 test("in a real browser: a hardened HTTPS site passes every passive check with no findings", { skip: needsChromium }, async () => {
-    const outcomes = await runPageTests(suiteFor("https://secure.site.test", ["/login"]), {
+    const outcomes = await runPageTests(checksFor("https://secure.site.test", ["/login"]), {
         "https://secure.site.test/login": { headers: HARDENED_HEADERS, body: HTML(`<form method="post" action="/session"><input type="password" name="password"></form><a href="/help?page=2">Help</a>`) },
     });
     assert.deepEqual(outcomes.map((o) => [o.passed, o.findings]), [[true, []], [true, []], [true, []], [true, []], [true, []], [true, []]], JSON.stringify(outcomes, null, 1));
 });
 
 test("in a real browser: every hardening gap on an HTTPS site is a named finding, not a failure", { skip: needsChromium }, async () => {
-    const outcomes = await runPageTests(suiteFor("https://bare.site.test", ["/"]), {
+    const outcomes = await runPageTests(checksFor("https://bare.site.test", ["/"]), {
         "https://bare.site.test/": {
             headers: { server: "Apache/2.4.1", "x-powered-by": "PHP/8.1.2", "x-frame-options": "DENY", "content-security-policy": "default-src 'self'", "strict-transport-security": "max-age=600", "set-cookie": "session=abc; Path=/; Max-Age=34560000" },
             body: HTML(`<img src="http://cdn.site.test/logo.png" alt="logo">`),
@@ -196,19 +208,19 @@ test("in a real browser: every hardening gap on an HTTPS site is a named finding
 });
 
 test("in a real browser: each exposure fails, naming the page and the element", { skip: needsChromium }, async () => {
-    const plain = await runPageTests(suiteFor("http://plain.site.test", ["/login"]), {
+    const plain = await runPageTests(checksFor("http://plain.site.test", ["/login"]), {
         "http://plain.site.test/login": { body: HTML(`<form method="post" action="/session"><input type="password" id="pw"></form>`) },
     });
     assert.equal(plain[2].passed, false);
     assert.match(plain[2].message, /\/login is served over plain HTTP and has a password field \(pw\)/);
 
-    const httpForm = await runPageTests(suiteFor("https://secure.site.test", ["/login"]), {
+    const httpForm = await runPageTests(checksFor("https://secure.site.test", ["/login"]), {
         "https://secure.site.test/login": { headers: HARDENED_HEADERS, body: HTML(`<form method="post" action="http://auth.site.test/session"><input type="password" name="password"></form>`) },
     });
     assert.equal(httpForm[2].passed, false);
     assert.match(httpForm[2].message, /a form on \/login sends a password field to the plain-HTTP address http:\/\/auth\.site\.test\/session/);
 
-    const secrets = await runPageTests(suiteFor("https://secure.site.test", ["/"]), {
+    const secrets = await runPageTests(checksFor("https://secure.site.test", ["/"]), {
         "https://secure.site.test/": { headers: HARDENED_HEADERS, body: HTML(`<a href="/notes?sessionid=abc123">Notes</a><form action="/sign-in"><input type="password" name="password"></form>`) },
     });
     assert.equal(secrets[3].passed, false);
@@ -219,7 +231,7 @@ test("in a real browser: each exposure fails, naming the page and the element", 
 // TFP-136, found on the-internet: /basic_auth answers 401, which is the
 // server working, not an exposure - so not a failure.
 test("in a real browser: a page behind a login (401) is not run, with why; its response headers are still read for a version", { skip: needsChromium }, async () => {
-    const outcomes = await runPageTests(suiteFor("https://secure.site.test", ["/basic_auth"]), {
+    const outcomes = await runPageTests(checksFor("https://secure.site.test", ["/basic_auth"]), {
         "https://secure.site.test/basic_auth": { status: 401, headers: { "www-authenticate": 'Basic realm="x"', server: "nginx/1.2.3" }, body: "Not authorized" },
     });
     const reason = "/basic_auth answered HTTP 401: it is behind a login, and this run does not sign in";
@@ -228,7 +240,7 @@ test("in a real browser: a page behind a login (401) is not run, with why; its r
 });
 
 test("in a real browser: a plain-HTTP password page on a local development host is not an exposure", { skip: needsChromium }, async () => {
-    const outcomes = await runPageTests(suiteFor("http://localhost:3999", ["/login"]), {
+    const outcomes = await runPageTests(checksFor("http://localhost:3999", ["/login"]), {
         "http://localhost:3999/login": { body: HTML(`<form method="post" action="/session"><input type="password" name="password"></form>`) },
     });
     assert.equal(outcomes[2].passed, true, "localhost is a secure context, as browsers define it");
@@ -305,7 +317,9 @@ test("request recording: the passive run sends only GET page loads, one missing-
         assert.equal(known.length, KNOWN_PATHS.length, "one GET per known path");
         const others = recorded.filter((r) => !r.path.startsWith("/testforge-missing-") && !(KNOWN_PATHS as readonly string[]).includes(r.path));
         assert.deepEqual([...new Set(others.map((r) => r.path))].sort(), ["/", "/favicon.ico", "/login", "/notes"].filter((p) => p !== "/favicon.ico" || others.some((r) => r.path === p)).sort(), "only the covered pages (and the browser's own favicon request) are loaded");
-        assert.equal(others.filter((r) => r.path !== "/favicon.ico").length, 3 * 6 + 1, "six loads per page (TFP-185's is the sixth), and the known-path probe's start page");
+        // Phase 39 (TFP-212): the checks that load the page themselves, each a load, and the rest one shared visit per page.
+        const ownLoads = code.replace(SHARED_VISIT_HELPER, "").match(/tfGoto\(page, /g)?.length ?? 0;
+        assert.equal(others.filter((r) => r.path !== "/favicon.ico").length, ownLoads + 3, "each check's own load, one shared visit per page, and the known-path probe's start page");
         assert.equal(maxInFlight(), 1, "never two requests at once");
 
         const results = (json.suites ?? []).length > 0 ? flattenSuites(json.suites) : [];

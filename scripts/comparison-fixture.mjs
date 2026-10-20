@@ -30,6 +30,8 @@ export const DEFECTS = {
     "security-token-in-url": "the home page links to the notes with a session id in the URL",
     "security-stack-trace": "a page that does not exist answers with a stack trace and server file paths",
     "security-version-header": "every response names the server software and its version (X-Powered-By)",
+    // TFP-212: what only the home page's load shows - a redirect through an address that carries a session id.
+    "security-token-in-redirect": "the home page redirects once through /?sessionid=..., so its load carries a session id in a URL",
     "security-weak-session-cookie": "the home page sets a session cookie without HttpOnly that lasts 400 days",
     // TFP-144: one session cookie and two that are not, none with HttpOnly.
     // The Standard and passive-security checks must name the same one: sid.
@@ -296,6 +298,9 @@ const server = createServer(async (req, res) => {
     if (url.pathname === "/unreachable" || (url.pathname === "/" && defect === "hub-down")) {
         req.socket.destroy();
         return;
+    }
+    if (url.pathname === "/" && req.method === "GET" && defect === "security-token-in-redirect" && !url.searchParams.has("sessionid")) {
+        return send(302, "", "text/plain", { location: "/?sessionid=acme-4f9c2a1e7b" });
     }
     if (url.pathname === "/" && req.method === "GET") {
         const cookie =

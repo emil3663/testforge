@@ -57,7 +57,8 @@ function generate(baseUrl: string, contentProfile: ContentProfile | null) {
 }
 
 function titles(code: string) {
-    return (code.match(/test\('TFSC-\d+: [^']+'/g) ?? []).map((t) => t.replace(/^test\('TFSC-\d+: /, "").replace(/'$/, ""));
+    // In id order, the order they were written: Phase 39 (TFP-212) moves the checks that share a visit into the page's group.
+    return (code.match(/test\('TFSC-\d+: [^']+'/g) ?? []).sort().map((t) => t.replace(/^test\('TFSC-\d+: /, "").replace(/'$/, ""));
 }
 
 // Phase 38 (TFP-147): the passive checks shared with Comprehensive, on every

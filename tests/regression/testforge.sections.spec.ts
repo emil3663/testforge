@@ -1120,8 +1120,9 @@ test.describe("TestForge regression coverage", () => {
         // message repeats the element name, so a naive
         // `.split(elementName)[1]` only captures up to that repeat rather
         // than the whole test body.
+        // At any indent: Phase 39 (TFP-212) nests the checks that share a page's visit in its group.
         const testBlocks: string[] = payload.code
-            .split("\n  test(")
+            .split(/\n\s+test\(/)
             .slice(1)
             .map((block: string) => `  test(${block}`);
         // Generated titles are prefixed with a case ID (e.g. "TFAC-002: "),
