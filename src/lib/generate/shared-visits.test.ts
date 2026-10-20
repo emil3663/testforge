@@ -18,7 +18,7 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/shared-visits.test.ts
  */
 import assert from "node:assert";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
@@ -37,6 +37,7 @@ const { flattenSuites } = await import("../report/execution.ts");
 const { findTypeErrors } = await import("./validate.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
 const { buildTimingReporterSource, summarizeTiming, TIMING_FILE_ENV_VAR } = await import("../run/timing.ts");
+const { buildRedactor, readZipEntries, scrubArtifactDirectory } = await import("../run/redact.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
@@ -232,6 +233,7 @@ before(async () => {
         const html = (title: string, body: string) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${title}</title></head><body><main><h1>${title}</h1>${body}</main></body></html>`;
         if (request.url === "/a") return response.writeHead(200, { "content-type": "text/html" }).end(html("A", `<a id="to-b" href="/b">B</a><label>Search <input id="q"></label><label><input type="checkbox" id="c"> Remember</label>`));
         if (request.url === "/b") return response.writeHead(200, { "content-type": "text/html" }).end(html("B", ""));
+        if (request.url === "/e") return response.writeHead(200, { "content-type": "text/html" }).end(html("E", `<p id="first-check">First</p><p>token s3cret-evidence-token</p>`));
         if (request.url === "/c") return response.writeHead(200, { "content-type": "text/html" }).end(html("C", `<label>Name <input id="n"></label>`));
         response.writeHead(404).end();
     });
@@ -343,4 +345,61 @@ test.describe('Functional Coverage', () => {
     assert.ok(shared >= 1900 && shared < 3000, `shared: waited ${shared} ms`);
     assert.ok(own >= 4900, `own page: waited ${own} ms`);
     assert.ok(explicit >= 2900 && explicit < 4000, `its own 3 s: waited ${explicit} ms`);
+});
+
+test("in a real browser: a failing shared check keeps its own trace, the visit's video and where it starts in it; a passing one keeps nothing; the run's credential scan covers them (TFP-241)", { skip: needsChromium }, async () => {
+    const check = (name: string, body: string) => `  test('${name}', async ({ tfShared }) => {\n    const { page } = await tfShared.visit('/e');\n${body}\n  });`;
+    const code = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: '${origin}' });
+
+${PAGE_VISIT_HELPER}
+
+${SHARED_VISIT_HELPER}
+
+test.describe('Page /e', () => {
+  const test = tfSharedTest;
+  const expect = tfSharedExpect;
+  test.afterAll(async () => { await tfEndSharedVisit(tfSharedVisit); tfSharedVisit = null; });
+${[
+        check("1 passes", "    await expect(page.locator('#first-check')).toHaveText('First');"),
+        check("2 fails", "    await expect(page.locator('#second-check-missing')).toBeVisible();"),
+        check("3 after the failure, passes", "    await expect(page.locator('h1')).toHaveText('E');"),
+    ].join("\n\n")}
+});
+`;
+    assert.deepEqual(findTypeErrors(code), []);
+    const output = join(scratch, "evidence-output");
+    const { records, report } = await run(code, "evidence", [`--output=${output.split("\\").join("/")}`]);
+    const record = (title: string) => records.find((entry) => entry.title === title)!;
+    assert.deepEqual(records.map((entry) => `${entry.title}: ${entry.status}`), ["1 passes: Passed", "2 fails: Failed", "3 after the failure, passes: Passed"]);
+    // The failing check: Playwright's trace and screenshot (its capture reaches the shared context), and the visit's
+    // video, each a file the report's evidence links to.
+    const failing = record("2 fails");
+    const kinds = new Set(failing.artifacts.map((artifact) => artifact.artifactType));
+    for (const kind of ["trace", "video", "screenshot"] as const) assert.ok(kinds.has(kind), `${kind} in ${[...kinds].join(", ")}`);
+    assert.equal(failing.artifacts.filter((artifact) => artifact.artifactType === "video").length, 1, "one video");
+    for (const artifact of failing.artifacts) assert.ok(statSync(artifact.filePath).size > 0, `${artifact.artifactType}: ${artifact.filePath} exists`);
+    const notes = annotations(report).get("2 fails") ?? [];
+    assert.ok(notes.some((note) => note.type === "shared-visit-video" && /^this check starts \d+\.\d s into the video of the shared visit$/.test(note.description ?? "")), JSON.stringify(notes));
+    // A passing check keeps nothing.
+    assert.deepEqual(record("1 passes").artifacts, []);
+    assert.deepEqual(record("3 after the failure, passes").artifacts, []);
+    // The trace is the failing check's own: its locator, not the first check's.
+    const trace = failing.artifacts.find((artifact) => artifact.artifactType === "trace")!;
+    const entries = await readZipEntries(readFileSync(trace.filePath));
+    const events = entries.filter((entry) => entry.name.endsWith(".trace")).map((entry) => entry.data.toString("utf8")).join("\n");
+    assert.ok(events.length > 0, entries.map((entry) => entry.name).join(", "));
+    // Its actions, not its snapshots (which hold the whole page): the selectors it acted on are its own, not the first check's.
+    const selectors = events.split(String.fromCharCode(10)).filter(Boolean).map((line) => JSON.parse(line) as { type?: string; params?: { selector?: string } }).filter((event) => event.type === "before" && event.params?.selector).map((event) => event.params!.selector!);
+    assert.ok(selectors.some((selector) => selector.includes("second-check-missing")), `its own step: ${selectors.join(" | ")}`);
+    assert.ok(!selectors.some((selector) => selector.includes("first-check")), `no step of the check before it: ${selectors.join(" | ")}`);
+    // The run's credential scan reaches into it, as into every capture (Phase 20, TFP-094).
+    assert.ok(entries.some((entry) => entry.data.toString("utf8").includes("s3cret-evidence-token")), "the page's text is in the trace's snapshots");
+    await scrubArtifactDirectory(output, buildRedactor(["s3cret-evidence-token"]));
+    const scrubbed = await readZipEntries(readFileSync(trace.filePath));
+    assert.ok(!scrubbed.some((entry) => entry.data.toString("utf8").includes("s3cret-evidence-token")), "scrubbed from the trace");
+    // No video is left behind by the visits no check failed on.
+    const leftover = existsSync(join(output, "tf-shared-videos")) ? readdirSync(join(output, "tf-shared-videos")) : [];
+    assert.deepEqual(leftover, []);
 });

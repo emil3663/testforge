@@ -1,0 +1,3 @@
+2be975c | 1 passes: Passed; evidence: none
+2be975c | 2 fails: Failed; evidence: screenshot (test-failed-1.png), screenshot (screenshot-133e4cd51e98371ef81a940feae23bf85cfb6d8a.png), file (error-context.md), trace (trace.zip)
+2be975c | 3 after the failure, passes: Passed; evidence: none

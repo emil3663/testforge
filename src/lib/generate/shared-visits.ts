@@ -29,8 +29,12 @@
  *   read-only, on a page that has settled. TFP-211 measured no passing assertion over 229 ms in 10,500, and about 27
  *   failing ones a run on with-bugs waiting out the full 5 s. An assertion's own timeout still wins; tests outside the
  *   groups keep 5 s.
- * - **Evidence.** A shared test's failure gets a screenshot of the shared page. The per-test trace and video
- *   (`retain-on-failure`) belong to Playwright's own page, which a shared test doesn't use.
+ * - **Evidence (TFP-241).** Playwright's own `retain-on-failure` capture reaches every context made from its browser in a
+ *   test, the shared one too: a failing shared check gets Playwright's trace (its own steps, one chunk per test) and its
+ *   failure screenshot, as any check does. Playwright's video is its page fixture's alone, so the shared visit records
+ *   its own: a failure ends the visit (Playwright starts a fresh worker), so the failing check finishes the video and
+ *   keeps it, with where in it the check starts. A visit no check failed on loses its video when it ends, at a page change or at its group's end (an afterAll hook: a worker-scoped fixture would put the shared checks in workers of their own). Everything is
+ *   in the run's output, which the run's credential scan covers.
  *
  * The suite's text changes (Decision 7): its results must not. Proven on the fixture by running each suite
  * shared and one-page-per-test (`src/lib/generate/shared-visits.test.ts`).
@@ -61,8 +65,15 @@ export const SHARED_VISIT_HELPER = `// Phase 39 (TFP-212, TFP-213; Decisions 2 a
 // new context, for another page or after a check left the page, and after a failure (a fresh worker). A check that
 // changes the page calls changed(); a failure after one is re-run on a fresh page where its group allows a retry,
 // both results recorded, and one on an untouched page stands. A field a check typed into is cleared when it ends.
-type TfSharedVisit = { path: string; context: import('@playwright/test').BrowserContext; page: import('@playwright/test').Page; response: import('@playwright/test').Response | null; url: string; touched: boolean };
+type TfSharedVisit = { path: string; context: import('@playwright/test').BrowserContext; page: import('@playwright/test').Page; response: import('@playwright/test').Response | null; url: string; touched: boolean; startedAt: number };
 let tfSharedVisit: TfSharedVisit | null = null;
+// TFP-241: a visit ends by closing its context; a visit no check failed on keeps no video.
+async function tfEndSharedVisit(visit: TfSharedVisit | null) {
+  if (!visit) return;
+  const video = visit.page.video();
+  await visit.context.close().catch(() => {});
+  await video?.delete().catch(() => {});
+}
 // TFP-215 (narrowed at Gate A to the read-only assertion timeouts): a shared check reads a page that has settled, so
 // its assertions wait 2 s, not Playwright's 5 s. TFP-211: no passing assertion took over 229 ms (10,500 of them).
 const tfSharedExpect = expect.configure({ timeout: 2000 });
@@ -82,10 +93,13 @@ const tfSharedTest = test.extend<{ tfShared: { visit: (path: string) => Promise<
         throw new Error('not re-run on a fresh page: the first failure stands');
       }
       testInfo.annotations.push({ type: 'shared-visit-rerun', description: 'failed after a check that changed the shared page, then re-run on a fresh page' });
-      await tfSharedVisit?.context.close().catch(() => {});
+      await tfEndSharedVisit(tfSharedVisit);
       tfSharedVisit = null;
     }
     let touchedBefore = false;
+    // TFP-241: when this check started, to find it in the visit's video.
+    const checkStartedAt = Date.now();
+    const videos = join(testInfo.project.outputDir, 'tf-shared-videos');
     const typedFields: import('@playwright/test').Locator[] = [];
     const options = Object.fromEntries(Object.entries({ ...contextOptions, baseURL, storageState, viewport, userAgent, locale, deviceScaleFactor, isMobile, hasTouch, colorScheme, ignoreHTTPSErrors, javaScriptEnabled, extraHTTPHeaders, timezoneId }).filter(([, value]) => value !== undefined));
     await use({
@@ -97,11 +111,13 @@ const tfSharedTest = test.extend<{ tfShared: { visit: (path: string) => Promise<
           testInfo.annotations.push({ type: 'visit', description: 'shared ' + path });
           return { page: current.page, context: current.context, response: current.response };
         }
-        await current?.context.close().catch(() => {});
-        const context = await browser.newContext(options);
+        await tfEndSharedVisit(current);
+        // TFP-241: the visit records its video, kept only if a check fails on it.
+        const context = await browser.newContext({ ...options, recordVideo: { dir: videos } });
+        const startedAt = Date.now();
         const page = await context.newPage();
         const response = await tfGoto(page, path);
-        tfSharedVisit = { path, context, page, response, url: page.url(), touched: false };
+        tfSharedVisit = { path, context, page, response, url: page.url(), touched: false, startedAt };
         touchedBefore = false;
         testInfo.annotations.push({ type: 'visit', description: 'loaded ' + path });
         return { page, context, response };
@@ -112,10 +128,19 @@ const tfSharedTest = test.extend<{ tfShared: { visit: (path: string) => Promise<
     });
     for (const field of typedFields) await field.clear({ timeout: 2000 }).catch(() => {});
     if (testInfo.status !== testInfo.expectedStatus) {
-      const page = tfSharedVisit?.page;
-      if (page && !page.isClosed()) {
-        const path = testInfo.outputPath('shared-visit.png');
-        await page.screenshot({ path }).then(() => testInfo.attach('screenshot', { path, contentType: 'image/png' })).catch(() => {});
+      const visit = tfSharedVisit;
+      const page = visit?.page;
+      if (visit && page && !page.isClosed()) {
+        // A failure ends the visit (Playwright starts a fresh worker), so its video is finished here and kept.
+        const video = page.video();
+        await visit.context.close().catch(() => {});
+        tfSharedVisit = null;
+        if (video) {
+          const path = testInfo.outputPath('video.webm');
+          await video.saveAs(path).then(() => testInfo.attach('video', { path, contentType: 'video/webm' })).catch(() => {});
+          await video.delete().catch(() => {});
+          testInfo.annotations.push({ type: 'shared-visit-video', description: 'this check starts ' + ((checkStartedAt - visit.startedAt) / 1000).toFixed(1) + ' s into the video of the shared visit' });
+        }
       }
     }
   },
@@ -270,7 +295,7 @@ export function shareReadOnlyVisits(code: string): string {
             return [open, body, close].filter(Boolean).join("\n");
         });
         // The group's `test` is tfSharedTest, so its tests read as every other test(...) to the tools that find them.
-        return `test.describe(${quote(`Page ${path}`)}, () => {\n  const test = tfSharedTest;\n  const expect = tfSharedExpect;\n\n${blocks.join("\n\n")}\n});`;
+        return `test.describe(${quote(`Page ${path}`)}, () => {\n  const test = tfSharedTest;\n  const expect = tfSharedExpect;\n  // TFP-241: the visit ends with its group, so a visit no check failed on keeps no video.\n  test.afterAll(async () => { await tfEndSharedVisit(tfSharedVisit); tfSharedVisit = null; });\n\n${blocks.join("\n\n")}\n});`;
     });
 
     let result = code;
