@@ -19,9 +19,13 @@ Two kinds of run:
 - **Comprehensive:** one area in depth, or all of them, trying to break
   fields and flows.
 
-The active gate (data-changing tests) sits behind a typed ownership
-confirmation. Each site's Standard suite is kept and reused, regenerated
-only for page types that changed. A library holds Comprehensive tests
+The active gate (attack-shaped input, such as the script-payload test) stays
+closed: it opens only with a site's ownership confirmation, which isn't
+built yet (Phase 43). Data-changing tests, such as journeys and the database
+round trip, sit at the interactive gate.
+
+Each site's Standard suite is kept and reused, regenerated only for page
+types that changed. A library holds Comprehensive tests
 written against component patterns. A coverage map shows, element by
 element, what no test touches.
 
