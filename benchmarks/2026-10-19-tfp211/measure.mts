@@ -10,7 +10,8 @@
 // <label>-<kind>-run<n>-records.json (each test's status and message, as TFP-175 keeps them),
 // -timing.json (the reporter's raw record) and -summary.json (summarizeTiming, with controls for Standard).
 // Usage (from the repo root, after crawl-and-select.mts wrote <outDir>/<label>-selection.json):
-//   node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types <this> <label> <site> <outDir> <runs>
+//   node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types <this> <label> <site> <outDir> <runs> [<kinds>]
+// <kinds>: a comma-separated subset of standard,security,accessibility (TFP-240 runs Standard alone); all three by default.
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
@@ -27,13 +28,15 @@ const { normalizeRunMode } = await load("src/lib/comprehensive/run-mode.ts");
 const { flattenSuites } = await load("src/lib/report/execution.ts");
 const { buildTimingReporterSource, countControlKinds, summarizeTiming, TIMING_FILE_ENV_VAR } = await load("src/lib/run/timing.ts");
 
-const [label, site, outDir, runsArg] = process.argv.slice(2);
+const [label, site, outDir, runsArg, kindsArg] = process.argv.slice(2);
 const runs = Number(runsArg);
 if (!label || !site || !outDir || !Number.isInteger(runs) || runs < 1) throw new Error("usage: measure.mts <label> <site> <outDir> <runs>");
 const origin = site.replace(/\/$/, "");
 const AREAS = ["functional", "responsive/mobile", "performance/load", "security", "accessibility", "usability", "seo/content", "cookie/session", "database", "reliability"];
-const KINDS = ["standard", "security", "accessibility"] as const;
-type Kind = (typeof KINDS)[number];
+const ALL_KINDS = ["standard", "security", "accessibility"] as const;
+type Kind = (typeof ALL_KINDS)[number];
+const KINDS = kindsArg ? (kindsArg.split(",") as Kind[]) : ALL_KINDS;
+for (const kind of KINDS) if (!(ALL_KINDS as readonly string[]).includes(kind)) throw new Error(`unknown kind: ${kind}`);
 await mkdir(outDir, { recursive: true });
 
 const selection = JSON.parse(await readFile(join(outDir, `${label}-selection.json`), "utf8"));
