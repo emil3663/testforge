@@ -1,0 +1,638 @@
+﻿2026-10-20T01:24:30.0587895Z Current runner version: '2.337.0'
+2026-10-20T01:24:30.0615153Z ##[group]Runner Image Provisioner
+2026-10-20T01:24:30.0616095Z Hosted Compute Agent
+2026-10-20T01:24:30.0616752Z Version: 20261012.601
+2026-10-20T01:24:30.0617402Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-20T01:24:30.0618260Z Build Date: 2026-10-12T17:48:21Z
+2026-10-20T01:24:30.0618967Z Worker ID: {223d0b89-f81c-413b-96ca-5ba9b802810b}
+2026-10-20T01:24:30.0619685Z Region: eastus
+2026-10-20T01:24:30.0620541Z Cloud: Azure
+2026-10-20T01:24:30.0621159Z ##[endgroup]
+2026-10-20T01:24:30.0623140Z ##[group]Operating System
+2026-10-20T01:24:30.0623822Z Ubuntu
+2026-10-20T01:24:30.0624354Z 24.04.5
+2026-10-20T01:24:30.0624968Z LTS
+2026-10-20T01:24:30.0625506Z ##[endgroup]
+2026-10-20T01:24:30.0626172Z ##[group]Runner Image
+2026-10-20T01:24:30.0626801Z Image: ubuntu-24.04
+2026-10-20T01:24:30.0627376Z Version: 20261012.334.1
+2026-10-20T01:24:30.0628762Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-20T01:24:30.0631388Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-20T01:24:30.0632415Z ##[endgroup]
+2026-10-20T01:24:30.0633726Z ##[group]GITHUB_TOKEN Permissions
+2026-10-20T01:24:30.0635971Z Actions: write
+2026-10-20T01:24:30.0636753Z Contents: read
+2026-10-20T01:24:30.0637342Z Metadata: read
+2026-10-20T01:24:30.0637900Z ##[endgroup]
+2026-10-20T01:24:30.0640468Z Secret source: Actions
+2026-10-20T01:24:30.0641457Z Cache mode: write
+2026-10-20T01:24:30.0642725Z Prepare workflow directory
+2026-10-20T01:24:30.0986909Z Prepare all required actions
+2026-10-20T01:24:30.1037491Z Getting action download info
+2026-10-20T01:24:30.3151310Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-20T01:24:30.4264881Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-10-20T01:24:30.6234434Z Download action repository 'actions/upload-artifact@v7' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-20T01:24:30.7929358Z Download action repository 'actions/github-script@v9' (SHA:3a2844b7e9c422d3c10d287c895573f7108da1b3)
+2026-10-20T01:24:31.0345001Z Complete job name: regression-test
+2026-10-20T01:24:31.1278652Z ##[group]Run actions/checkout@v7
+2026-10-20T01:24:31.1279851Z with:
+2026-10-20T01:24:31.1280933Z   repository: emil3663/testforge
+2026-10-20T01:24:31.1289819Z   token: ***
+2026-10-20T01:24:31.1290683Z   ssh-strict: true
+2026-10-20T01:24:31.1291319Z   ssh-user: git
+2026-10-20T01:24:31.1292465Z   persist-credentials: true
+2026-10-20T01:24:31.1293275Z   clean: true
+2026-10-20T01:24:31.1293911Z   sparse-checkout-cone-mode: true
+2026-10-20T01:24:31.1294799Z   fetch-depth: 1
+2026-10-20T01:24:31.1295424Z   fetch-tags: false
+2026-10-20T01:24:31.1296042Z   show-progress: true
+2026-10-20T01:24:31.1296725Z   lfs: false
+2026-10-20T01:24:31.1297313Z   submodules: false
+2026-10-20T01:24:31.1297962Z   set-safe-directory: true
+2026-10-20T01:24:31.1298793Z   allow-unsafe-pr-checkout: false
+2026-10-20T01:24:31.1300231Z ##[endgroup]
+2026-10-20T01:24:31.2380559Z Syncing repository: emil3663/testforge
+2026-10-20T01:24:31.2384278Z ##[group]Getting Git version info
+2026-10-20T01:24:31.2385899Z Working directory is '/home/runner/work/testforge/testforge'
+2026-10-20T01:24:31.2388502Z [command]/usr/bin/git version
+2026-10-20T01:24:31.2479760Z git version 2.55.0
+2026-10-20T01:24:31.2510821Z ##[endgroup]
+2026-10-20T01:24:31.2524315Z Temporarily overriding HOME='/home/runner/work/_temp/ec50a28c-22be-43ee-8955-38dbc72b92c1' before making global git config changes
+2026-10-20T01:24:31.2527654Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T01:24:31.2530861Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-20T01:24:31.2589360Z Deleting the contents of '/home/runner/work/testforge/testforge'
+2026-10-20T01:24:31.2593601Z ##[group]Determining repository object format
+2026-10-20T01:24:31.2596624Z ##[endgroup]
+2026-10-20T01:24:31.2598556Z ##[group]Initializing the repository
+2026-10-20T01:24:31.2601021Z [command]/usr/bin/git init /home/runner/work/testforge/testforge
+2026-10-20T01:24:31.2721735Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-20T01:24:31.2724724Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-20T01:24:31.2727153Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-20T01:24:31.2729029Z hint: call:
+2026-10-20T01:24:31.2730060Z hint:
+2026-10-20T01:24:31.2731789Z hint: 	git config --global init.defaultBranch <name>
+2026-10-20T01:24:31.2733977Z hint:
+2026-10-20T01:24:31.2735697Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-20T01:24:31.2738481Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-20T01:24:31.2741047Z hint:
+2026-10-20T01:24:31.2742123Z hint: 	git branch -m <name>
+2026-10-20T01:24:31.2743560Z hint:
+2026-10-20T01:24:31.2745283Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-20T01:24:31.2748629Z Initialized empty Git repository in /home/runner/work/testforge/testforge/.git/
+2026-10-20T01:24:31.2753803Z [command]/usr/bin/git remote add origin https://github.com/emil3663/testforge
+2026-10-20T01:24:31.2820899Z ##[endgroup]
+2026-10-20T01:24:31.2822275Z ##[group]Disabling automatic garbage collection
+2026-10-20T01:24:31.2823355Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-20T01:24:31.2864602Z ##[endgroup]
+2026-10-20T01:24:31.2866619Z ##[group]Setting up auth
+2026-10-20T01:24:31.2868239Z Removing SSH command configuration
+2026-10-20T01:24:31.2871887Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T01:24:31.2916055Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T01:24:31.3326482Z Removing HTTP extra header
+2026-10-20T01:24:31.3333935Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T01:24:31.3373465Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T01:24:31.3599048Z Removing includeIf entries pointing to credentials config files
+2026-10-20T01:24:31.3603842Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T01:24:31.3649223Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T01:24:31.3896286Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-20T01:24:31.3945453Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/testforge/testforge/.git.path /home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:24:31.3983187Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:24:31.4022793Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:24:31.4061489Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:24:31.4099422Z ##[endgroup]
+2026-10-20T01:24:31.4101535Z ##[group]Fetching the repository
+2026-10-20T01:24:31.4110480Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a064008ba8a15bafc43f20fa1f64d45a0c804b5f:refs/remotes/origin/main
+2026-10-20T01:24:32.9872043Z From https://github.com/emil3663/testforge
+2026-10-20T01:24:32.9873894Z  * [new ref]         a064008ba8a15bafc43f20fa1f64d45a0c804b5f -> origin/main
+2026-10-20T01:24:32.9883536Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-20T01:24:32.9914883Z   origin/main
+2026-10-20T01:24:32.9923818Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-20T01:24:32.9952274Z a064008ba8a15bafc43f20fa1f64d45a0c804b5f
+2026-10-20T01:24:32.9956731Z ##[endgroup]
+2026-10-20T01:24:32.9957872Z ##[group]Determining the checkout info
+2026-10-20T01:24:32.9959028Z ##[endgroup]
+2026-10-20T01:24:32.9962515Z [command]/usr/bin/git sparse-checkout disable
+2026-10-20T01:24:33.0106429Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-20T01:24:33.0109310Z ##[group]Checking out the ref
+2026-10-20T01:24:33.0110473Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-20T01:24:33.2078330Z Switched to a new branch 'main'
+2026-10-20T01:24:33.2083303Z branch 'main' set up to track 'origin/main'.
+2026-10-20T01:24:33.2119610Z ##[endgroup]
+2026-10-20T01:24:33.2176136Z [command]/usr/bin/git log -1 --format=%H
+2026-10-20T01:24:33.2208068Z a064008ba8a15bafc43f20fa1f64d45a0c804b5f
+2026-10-20T01:24:33.2485982Z ##[group]Run actions/setup-node@v7
+2026-10-20T01:24:33.2486325Z with:
+2026-10-20T01:24:33.2486542Z   node-version-file: .nvmrc
+2026-10-20T01:24:33.2486781Z   cache: npm
+2026-10-20T01:24:33.2486987Z   check-latest: false
+2026-10-20T01:24:33.2489645Z   token: ***
+2026-10-20T01:24:33.2489871Z   package-manager-cache: true
+2026-10-20T01:24:33.2490315Z ##[endgroup]
+2026-10-20T01:24:33.3753089Z Node version file is not TOML file
+2026-10-20T01:24:33.3754565Z Resolved .nvmrc as 24
+2026-10-20T01:24:33.3817163Z Found in cache @ /opt/hostedtoolcache/node/24.21.0/x64
+2026-10-20T01:24:33.4606097Z ##[group]Environment details
+2026-10-20T01:24:33.7989277Z node: v24.21.0
+2026-10-20T01:24:33.7989796Z npm: 11.19.0
+2026-10-20T01:24:33.7990375Z yarn: 1.22.22
+2026-10-20T01:24:33.7991204Z ##[endgroup]
+2026-10-20T01:24:33.8009069Z [command]/opt/hostedtoolcache/node/24.21.0/x64/bin/npm config get cache
+2026-10-20T01:24:33.9136983Z /home/runner/.npm
+2026-10-20T01:24:33.9890872Z Cache hit for: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-20T01:24:34.8296223Z Received 142228688 of 142228688 (100.0%), 173.5 MBs/sec
+2026-10-20T01:24:34.8297296Z Cache Size: ~136 MB (142228688 B)
+2026-10-20T01:24:34.8332961Z [command]/usr/bin/tar -xf /home/runner/work/_temp/758889ed-6d93-4902-9634-62b667bb30b0/cache.tzst -P -C /home/runner/work/testforge/testforge --use-compress-program unzstd
+2026-10-20T01:24:35.2179686Z Cache restored successfully
+2026-10-20T01:24:35.2249789Z Cache restored from key: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-20T01:24:35.2462687Z ##[group]Run npm ci
+2026-10-20T01:24:35.2463019Z [36;1mnpm ci[0m
+2026-10-20T01:24:35.2716972Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:24:35.2717331Z ##[endgroup]
+2026-10-20T01:24:42.2759759Z npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-20T01:24:55.1122863Z 
+2026-10-20T01:24:55.1123683Z added 583 packages, and audited 584 packages in 20s
+2026-10-20T01:24:55.1124155Z 
+2026-10-20T01:24:55.1124753Z 197 packages are looking for funding
+2026-10-20T01:24:55.1125825Z   run `npm fund` for details
+2026-10-20T01:24:55.3854723Z 
+2026-10-20T01:24:55.3855983Z 26 vulnerabilities (1 low, 5 moderate, 18 high, 2 critical)
+2026-10-20T01:24:55.3856372Z 
+2026-10-20T01:24:55.3856681Z To address issues that do not require attention, run:
+2026-10-20T01:24:55.3857200Z   npm audit fix
+2026-10-20T01:24:55.3857875Z 
+2026-10-20T01:24:55.3858170Z To address all issues (including breaking changes), run:
+2026-10-20T01:24:55.3858614Z   npm audit fix --force
+2026-10-20T01:24:55.3858834Z 
+2026-10-20T01:24:55.3859142Z Run `npm audit` for details.
+2026-10-20T01:24:55.3867735Z npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+2026-10-20T01:24:55.3868698Z npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-20T01:24:55.3869570Z npm warn install-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-20T01:24:55.3870493Z npm warn install-scripts
+2026-10-20T01:24:55.3871187Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-20T01:24:55.4943972Z ##[group]Run npx playwright install --with-deps chromium
+2026-10-20T01:24:55.4944445Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-20T01:24:55.5018713Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:24:55.5019020Z ##[endgroup]
+2026-10-20T01:24:56.0700710Z Installing dependencies...
+2026-10-20T01:24:56.0793509Z Switching to root user to install dependencies...
+2026-10-20T01:24:56.1601830Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-20T01:24:56.1980667Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-20T01:24:56.1982303Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-20T01:24:56.2031545Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-20T01:24:56.2061109Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-20T01:24:56.2092015Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-20T01:24:56.3343880Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [618 kB]
+2026-10-20T01:24:56.3492093Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [557 kB]
+2026-10-20T01:24:56.3558422Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-20T01:24:56.3921577Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+2026-10-20T01:24:56.3966373Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [308 kB]
+2026-10-20T01:24:56.3991943Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1704 kB]
+2026-10-20T01:24:56.4076723Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-20T01:24:56.4102058Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-20T01:24:56.4188882Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-20T01:24:56.5054023Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1145 kB]
+2026-10-20T01:24:56.5113542Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-20T01:24:56.5133156Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-20T01:24:56.5196627Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-20T01:24:56.5645873Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-20T01:24:56.5725798Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-20T01:24:59.8169722Z Fetched 12.5 MB in 1s (9726 kB/s)
+2026-10-20T01:25:00.8661087Z Reading package lists...
+2026-10-20T01:25:00.8913821Z Reading package lists...
+2026-10-20T01:25:01.1431366Z Building dependency tree...
+2026-10-20T01:25:01.1438872Z Reading state information...
+2026-10-20T01:25:01.4267361Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-20T01:25:01.4268544Z libasound2t64 set to manually installed.
+2026-10-20T01:25:01.4269878Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-20T01:25:01.4271107Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-20T01:25:01.4271961Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-20T01:25:01.4272710Z libatk1.0-0t64 set to manually installed.
+2026-10-20T01:25:01.4273493Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-20T01:25:01.4274379Z libatspi2.0-0t64 set to manually installed.
+2026-10-20T01:25:01.4275336Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-20T01:25:01.4276202Z libcairo2 set to manually installed.
+2026-10-20T01:25:01.4276821Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-20T01:25:01.4277918Z libcups2t64 set to manually installed.
+2026-10-20T01:25:01.4278763Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-20T01:25:01.4279610Z libdbus-1-3 set to manually installed.
+2026-10-20T01:25:01.4280759Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-20T01:25:01.4281504Z libdrm2 set to manually installed.
+2026-10-20T01:25:01.4282454Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-20T01:25:01.4283273Z libgbm1 set to manually installed.
+2026-10-20T01:25:01.4284074Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-20T01:25:01.4285058Z libglib2.0-0t64 set to manually installed.
+2026-10-20T01:25:01.4285821Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-20T01:25:01.4286557Z libnspr4 set to manually installed.
+2026-10-20T01:25:01.4287285Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-20T01:25:01.4287988Z libnss3 set to manually installed.
+2026-10-20T01:25:01.4288781Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-20T01:25:01.4289738Z libpango-1.0-0 set to manually installed.
+2026-10-20T01:25:01.4290757Z libx11-6 is already the newest version (2:1.8.7-1ubuntu0.1).
+2026-10-20T01:25:01.4291484Z libx11-6 set to manually installed.
+2026-10-20T01:25:01.4292146Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-20T01:25:01.4292812Z libxcb1 set to manually installed.
+2026-10-20T01:25:01.4293586Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-20T01:25:01.4294348Z libxcomposite1 set to manually installed.
+2026-10-20T01:25:01.4295283Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-20T01:25:01.4296020Z libxdamage1 set to manually installed.
+2026-10-20T01:25:01.4296738Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-20T01:25:01.4297459Z libxext6 set to manually installed.
+2026-10-20T01:25:01.4298210Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-20T01:25:01.4298962Z libxfixes3 set to manually installed.
+2026-10-20T01:25:01.4299733Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-20T01:25:01.4300877Z libxkbcommon0 set to manually installed.
+2026-10-20T01:25:01.4301681Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-20T01:25:01.4302429Z libxrandr2 set to manually installed.
+2026-10-20T01:25:01.4303383Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-20T01:25:01.4304467Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-20T01:25:01.4305281Z libfontconfig1 set to manually installed.
+2026-10-20T01:25:01.4306150Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.2).
+2026-10-20T01:25:01.4306945Z libfreetype6 set to manually installed.
+2026-10-20T01:25:01.4307711Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-20T01:25:01.4308470Z fonts-liberation set to manually installed.
+2026-10-20T01:25:01.4309213Z The following additional packages will be installed:
+2026-10-20T01:25:01.4309953Z   xfonts-encodings xfonts-utils xserver-common
+2026-10-20T01:25:01.4310867Z Recommended packages:
+2026-10-20T01:25:01.4311395Z   fonts-ipafont-mincho fonts-tlwg-loma xfonts-base
+2026-10-20T01:25:01.4536414Z The following NEW packages will be installed:
+2026-10-20T01:25:01.4537252Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-20T01:25:01.4549827Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-20T01:25:01.4550840Z   xfonts-utils
+2026-10-20T01:25:01.4565960Z The following packages will be upgraded:
+2026-10-20T01:25:01.4566716Z   xserver-common xvfb
+2026-10-20T01:25:01.4789806Z 2 upgraded, 9 newly installed, 0 to remove and 79 not upgraded.
+2026-10-20T01:25:01.4790654Z Need to get 22.0 MB of archives.
+2026-10-20T01:25:01.4791175Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-20T01:25:01.4791743Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-20T01:25:01.5116139Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-20T01:25:01.5505513Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-20T01:25:01.5984702Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-20T01:25:01.6137632Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-20T01:25:01.6535567Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-20T01:25:01.7079426Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-20T01:25:01.7256394Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-20T01:25:01.7407627Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-20T01:25:01.7572645Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-20T01:25:01.7734461Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xserver-common all 2:21.1.12-1ubuntu1.9 [35.0 kB]
+2026-10-20T01:25:01.7881519Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 xvfb amd64 2:21.1.12-1ubuntu1.9 [877 kB]
+2026-10-20T01:25:02.0861873Z Fetched 22.0 MB in 0s (67.5 MB/s)
+2026-10-20T01:25:02.1124806Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-20T01:25:02.1444308Z (Reading database ... 
+2026-10-20T01:25:02.1445127Z (Reading database ... 5%
+2026-10-20T01:25:02.1445950Z (Reading database ... 10%
+2026-10-20T01:25:02.1446465Z (Reading database ... 15%
+2026-10-20T01:25:02.1446992Z (Reading database ... 20%
+2026-10-20T01:25:02.1447599Z (Reading database ... 25%
+2026-10-20T01:25:02.1448208Z (Reading database ... 30%
+2026-10-20T01:25:02.1448781Z (Reading database ... 35%
+2026-10-20T01:25:02.1449264Z (Reading database ... 40%
+2026-10-20T01:25:02.1449763Z (Reading database ... 45%
+2026-10-20T01:25:02.1450513Z (Reading database ... 50%
+2026-10-20T01:25:02.1495036Z (Reading database ... 55%
+2026-10-20T01:25:02.2820371Z (Reading database ... 60%
+2026-10-20T01:25:02.4909294Z (Reading database ... 65%
+2026-10-20T01:25:02.6774421Z (Reading database ... 70%
+2026-10-20T01:25:02.8818479Z (Reading database ... 75%
+2026-10-20T01:25:02.9877799Z (Reading database ... 80%
+2026-10-20T01:25:03.1902781Z (Reading database ... 85%
+2026-10-20T01:25:03.3690264Z (Reading database ... 90%
+2026-10-20T01:25:03.5034513Z (Reading database ... 95%
+2026-10-20T01:25:03.5034958Z (Reading database ... 100%
+2026-10-20T01:25:03.5035540Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-20T01:25:03.5081113Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-20T01:25:03.5179610Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-20T01:25:03.7533028Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-20T01:25:03.7667871Z Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-20T01:25:03.7676352Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-20T01:25:03.8551365Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-20T01:25:03.8682286Z Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-20T01:25:03.8688919Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-20T01:25:03.8934315Z Selecting previously unselected package fonts-unifont.
+2026-10-20T01:25:03.9065010Z Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-20T01:25:03.9073117Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-20T01:25:04.0123272Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-20T01:25:04.0253466Z Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-20T01:25:04.0359641Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-20T01:25:04.5051709Z Selecting previously unselected package xfonts-encodings.
+2026-10-20T01:25:04.5184880Z Preparing to unpack .../05-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-20T01:25:04.5192404Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-20T01:25:04.5493034Z Selecting previously unselected package xfonts-utils.
+2026-10-20T01:25:04.5624183Z Preparing to unpack .../06-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-20T01:25:04.5631300Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-20T01:25:04.6007557Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-20T01:25:04.6140660Z Preparing to unpack .../07-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-20T01:25:04.6148995Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-20T01:25:04.6521836Z Selecting previously unselected package xfonts-scalable.
+2026-10-20T01:25:04.6652493Z Preparing to unpack .../08-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-20T01:25:04.6660498Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-20T01:25:04.7038836Z Preparing to unpack .../09-xserver-common_2%3a21.1.12-1ubuntu1.9_all.deb ...
+2026-10-20T01:25:04.7058043Z Unpacking xserver-common (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-20T01:25:04.7436267Z Preparing to unpack .../10-xvfb_2%3a21.1.12-1ubuntu1.9_amd64.deb ...
+2026-10-20T01:25:04.7456809Z Unpacking xvfb (2:21.1.12-1ubuntu1.9) over (2:21.1.12-1ubuntu1.8) ...
+2026-10-20T01:25:04.8008897Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-20T01:25:04.8125829Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-20T01:25:04.8142889Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-20T01:25:04.8160084Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-20T01:25:04.8177718Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-20T01:25:04.8245899Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-20T01:25:04.8262301Z Setting up xserver-common (2:21.1.12-1ubuntu1.9) ...
+2026-10-20T01:25:04.8281523Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-20T01:25:04.8297960Z Setting up xvfb (2:21.1.12-1ubuntu1.9) ...
+2026-10-20T01:25:04.8315002Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-20T01:25:04.8355653Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-20T01:25:04.8659673Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-20T01:25:04.8943348Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-20T01:25:04.8965888Z Not building database; man-db/auto-update is not 'true'.
+2026-10-20T01:25:04.8979316Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-20T01:25:06.1359021Z 
+2026-10-20T01:25:06.1359773Z Running kernel seems to be up-to-date.
+2026-10-20T01:25:06.1360380Z 
+2026-10-20T01:25:06.1360556Z No services need to be restarted.
+2026-10-20T01:25:06.1360765Z 
+2026-10-20T01:25:06.1361115Z No containers need to be restarted.
+2026-10-20T01:25:06.1361420Z 
+2026-10-20T01:25:06.1361624Z No user sessions are running outdated binaries.
+2026-10-20T01:25:06.1361867Z 
+2026-10-20T01:25:06.1362502Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-20T01:25:07.3843666Z Downloading Chrome for Testing 147.0.7727.15 (playwright chromium v1217) from https://cdn.playwright.dev/builds/cft/147.0.7727.15/linux64/chrome-linux64.zip
+2026-10-20T01:25:08.1594708Z |                                                                                |   0% of 170.4 MiB
+2026-10-20T01:25:08.3051012Z |■■■■■■■■                                                                        |  10% of 170.4 MiB
+2026-10-20T01:25:08.3893669Z |■■■■■■■■■■■■■■■■                                                                |  20% of 170.4 MiB
+2026-10-20T01:25:08.4782578Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 170.4 MiB
+2026-10-20T01:25:08.5526022Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 170.4 MiB
+2026-10-20T01:25:08.6270185Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 170.4 MiB
+2026-10-20T01:25:08.6933034Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 170.4 MiB
+2026-10-20T01:25:08.7560283Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 170.4 MiB
+2026-10-20T01:25:08.8165011Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 170.4 MiB
+2026-10-20T01:25:08.8951670Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 170.4 MiB
+2026-10-20T01:25:08.9591381Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 170.4 MiB
+2026-10-20T01:25:11.7386954Z Chrome for Testing 147.0.7727.15 (playwright chromium v1217) downloaded to /home/runner/.cache/ms-playwright/chromium-1217
+2026-10-20T01:25:11.7392678Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-20T01:25:12.6392544Z |                                                                                |   0% of 2.3 MiB
+2026-10-20T01:25:12.7948090Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-20T01:25:12.8523942Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-20T01:25:12.9039565Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-20T01:25:12.9302008Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-20T01:25:12.9596596Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-20T01:25:13.0046507Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-20T01:25:13.0112562Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-20T01:25:13.0171576Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-20T01:25:13.0525914Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-20T01:25:13.0599885Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-20T01:25:13.1224455Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-20T01:25:13.1227952Z Downloading Chrome Headless Shell 147.0.7727.15 (playwright chromium-headless-shell v1217) from https://cdn.playwright.dev/builds/cft/147.0.7727.15/linux64/chrome-headless-shell-linux64.zip
+2026-10-20T01:25:13.8880409Z |                                                                                |   0% of 112 MiB
+2026-10-20T01:25:14.0354750Z |■■■■■■■■                                                                        |  10% of 112 MiB
+2026-10-20T01:25:14.0966843Z |■■■■■■■■■■■■■■■■                                                                |  20% of 112 MiB
+2026-10-20T01:25:14.1621443Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 112 MiB
+2026-10-20T01:25:14.2225109Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 112 MiB
+2026-10-20T01:25:14.2741420Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 112 MiB
+2026-10-20T01:25:14.3101077Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 112 MiB
+2026-10-20T01:25:14.3592271Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 112 MiB
+2026-10-20T01:25:14.4037529Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 112 MiB
+2026-10-20T01:25:14.4468589Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 112 MiB
+2026-10-20T01:25:14.4892363Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 112 MiB
+2026-10-20T01:25:16.4903578Z Chrome Headless Shell 147.0.7727.15 (playwright chromium-headless-shell v1217) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1217
+2026-10-20T01:25:16.5170696Z ##[group]Run npm run lint
+2026-10-20T01:25:16.5171034Z [36;1mnpm run lint[0m
+2026-10-20T01:25:16.5233987Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:25:16.5234261Z ##[endgroup]
+2026-10-20T01:25:16.6368819Z 
+2026-10-20T01:25:16.6369283Z > testforge@0.1.0 lint
+2026-10-20T01:25:16.6369860Z > eslint
+2026-10-20T01:25:16.6370429Z 
+2026-10-20T01:25:28.6472378Z 
+2026-10-20T01:25:28.6473470Z /home/runner/work/testforge/testforge/scripts/comparison-fixture.mjs
+2026-10-20T01:25:28.6509457Z ##[warning]  490:65  warning  '_category' is defined but never used  @typescript-eslint/no-unused-vars
+2026-10-20T01:25:28.6521358Z 
+2026-10-20T01:25:28.6521993Z ✖ 1 problem (0 errors, 1 warning)
+2026-10-20T01:25:28.6522334Z 
+2026-10-20T01:25:28.9503082Z ##[group]Run npm run test:regression:allure
+2026-10-20T01:25:28.9503637Z [36;1mnpm run test:regression:allure[0m
+2026-10-20T01:25:28.9566611Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:25:28.9566887Z ##[endgroup]
+2026-10-20T01:25:29.0653559Z 
+2026-10-20T01:25:29.0654456Z > testforge@0.1.0 test:regression:allure
+2026-10-20T01:25:29.0656034Z > npm run build:self-test && dotenv -e .env.development -o -- node scripts/run-allure-suite.mjs regression playwright.regression.config.ts
+2026-10-20T01:25:29.0656978Z 
+2026-10-20T01:25:29.1666150Z 
+2026-10-20T01:25:29.1666774Z > testforge@0.1.0 build:self-test
+2026-10-20T01:25:29.1667488Z > dotenv -e .env.development -- next build
+2026-10-20T01:25:29.1667856Z 
+2026-10-20T01:25:29.6250873Z ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+2026-10-20T01:25:29.7007580Z Attention: Next.js now collects completely anonymous telemetry regarding usage.
+2026-10-20T01:25:29.7008855Z This information is used to shape Next.js' roadmap and prioritize features.
+2026-10-20T01:25:29.7010657Z You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+2026-10-20T01:25:29.7011788Z https://nextjs.org/telemetry
+2026-10-20T01:25:29.7012123Z 
+2026-10-20T01:25:29.7267553Z ▲ Next.js 16.2.3 (Turbopack)
+2026-10-20T01:25:29.7268424Z 
+2026-10-20T01:25:29.7653902Z   Creating an optimized production build ...
+2026-10-20T01:25:37.5771711Z Turbopack build encountered 1 warnings:
+2026-10-20T01:25:37.5772142Z ./next.config.ts
+2026-10-20T01:25:37.5772455Z Encountered unexpected file in NFT list
+2026-10-20T01:25:37.5773220Z A file was traced that indicates that the whole project was traced unintentionally. Somewhere in the import trace below, there are:
+2026-10-20T01:25:37.5774007Z - filesystem operations (like path.join, path.resolve or fs.readFile), or
+2026-10-20T01:25:37.5774567Z - very dynamic requires (like require('./' + foo)).
+2026-10-20T01:25:37.5774914Z To resolve this, you can
+2026-10-20T01:25:37.5775193Z - remove them if possible, or
+2026-10-20T01:25:37.5775501Z - only use them in development, or
+2026-10-20T01:25:37.5776079Z - make sure they are statically scoped to some subfolder: path.join(process.cwd(), 'data', bar), or
+2026-10-20T01:25:37.5776780Z - add ignore comments: path.join(/*turbopackIgnore: true*/ process.cwd(), bar)
+2026-10-20T01:25:37.5777101Z 
+2026-10-20T01:25:37.5777191Z Import trace:
+2026-10-20T01:25:37.5777407Z   App Route:
+2026-10-20T01:25:37.5777728Z     ./next.config.ts
+2026-10-20T01:25:37.5778164Z     ./src/lib/gap-writer/writers.ts
+2026-10-20T01:25:37.5778652Z     ./src/app/api/generate/route.ts
+2026-10-20T01:25:37.5778938Z 
+2026-10-20T01:25:37.5778948Z 
+2026-10-20T01:25:37.5851164Z ✓ Compiled successfully in 7.6s
+2026-10-20T01:25:37.5910653Z   Running TypeScript ...
+2026-10-20T01:25:43.9186118Z   Finished TypeScript in 6.3s ...
+2026-10-20T01:25:43.9217397Z   Collecting page data using 3 workers ...
+2026-10-20T01:25:44.9898725Z   Generating static pages using 3 workers (0/12) ...
+2026-10-20T01:25:45.0611256Z   Generating static pages using 3 workers (3/12) 
+2026-10-20T01:25:45.1451207Z   Generating static pages using 3 workers (6/12) 
+2026-10-20T01:25:45.1797804Z   Generating static pages using 3 workers (9/12) 
+2026-10-20T01:25:45.1869757Z ✓ Generating static pages using 3 workers (12/12) in 197ms
+2026-10-20T01:25:45.1920554Z   Finalizing page optimization ...
+2026-10-20T01:25:45.1955653Z 
+2026-10-20T01:25:45.1978528Z Route (app)
+2026-10-20T01:25:45.1979178Z ┌ ○ /
+2026-10-20T01:25:45.1979697Z ├ ○ /_not-found
+2026-10-20T01:25:45.1980523Z ├ ƒ /api/candidates
+2026-10-20T01:25:45.1981163Z ├ ƒ /api/crawl
+2026-10-20T01:25:45.1981708Z ├ ƒ /api/generate
+2026-10-20T01:25:45.1982229Z ├ ƒ /api/health
+2026-10-20T01:25:45.1982775Z ├ ƒ /api/introspect
+2026-10-20T01:25:45.1983302Z ├ ƒ /api/run
+2026-10-20T01:25:45.1983784Z ├ ƒ /api/runs
+2026-10-20T01:25:45.1984314Z ├ ƒ /api/runs/diff
+2026-10-20T01:25:45.1985191Z ├ ƒ /api/save-suite
+2026-10-20T01:25:45.1985790Z ├ ƒ /api/site-settings
+2026-10-20T01:25:45.1986637Z ├ ○ /manifest.webmanifest
+2026-10-20T01:25:45.1987145Z ├ ○ /robots.txt
+2026-10-20T01:25:45.1987464Z └ ○ /sitemap.xml
+2026-10-20T01:25:45.1987638Z 
+2026-10-20T01:25:45.1987645Z 
+2026-10-20T01:25:45.1987941Z ○  (Static)   prerendered as static content
+2026-10-20T01:25:45.1988490Z ƒ  (Dynamic)  server-rendered on demand
+2026-10-20T01:25:45.1988816Z 
+2026-10-20T01:25:48.3249349Z 
+2026-10-20T01:25:48.3250183Z Running 57 tests using 1 worker
+2026-10-20T01:25:48.3250632Z 
+2026-10-20T01:25:48.8877762Z [1A[2K[1/57] tests/regression/testforge.auth.spec.ts:90:9 › Config-driven login (TFP-092) › with a login configured, every test in the run starts signed in - and the same tests fail without it
+2026-10-20T01:26:07.4501971Z [1A[2K[2/57] tests/regression/testforge.auth.spec.ts:111:9 › Config-driven login (TFP-092) › the per-run login state is gone once the run ends
+2026-10-20T01:26:11.7944710Z [1A[2K[3/57] tests/regression/testforge.auth.spec.ts:120:9 › Config-driven login (TFP-092) › a wrong credential is a named run-level error, and no run starts
+2026-10-20T01:26:27.0637250Z [1A[2K[4/57] tests/regression/testforge.auth.spec.ts:132:9 › Config-driven login (TFP-092) › a bad selector is a named run-level error that names the selector
+2026-10-20T01:26:37.2424521Z [1A[2K[5/57] tests/regression/testforge.auth.spec.ts:141:9 › Config-driven login (TFP-092) › a credential environment variable that is not set is a named error
+2026-10-20T01:26:37.2595631Z [1A[2K[6/57] tests/regression/testforge.auth.spec.ts:150:9 › Config-driven login (TFP-092) › an invalid login config is rejected before anything runs; inline credentials are never accepted
+2026-10-20T01:26:37.2891927Z [1A[2K[7/57] tests/regression/testforge.auth.spec.ts:164:9 › Config-driven login (TFP-092) › a credential pasted where a variable name belongs is refused before it is looked up, and never echoed back
+2026-10-20T01:26:37.3272112Z [1A[2K[8/57] tests/regression/testforge.auth.spec.ts:211:9 › Nothing leaks from an authenticated run (TFP-094) › a run that deliberately tries to leak its credentials and session hands back none of them
+2026-10-20T01:26:39.7033897Z [1A[2K[9/57] tests/regression/testforge.auth.spec.ts:322:9 › Credentials are referenced by name, never inlined (TFP-093) › the literal credentials appear in no generated code, persisted run config, or API response
+2026-10-20T01:26:45.8039081Z [1A[2K[10/57] tests/regression/testforge.journeys.spec.ts:133:9 › Journey tests (TFP-091) › journey tests are skipped by default and reported as not covered, with their own reason
+2026-10-20T01:26:53.1742072Z [1A[2K[11/57] tests/regression/testforge.journeys.spec.ts:149:9 › Journey tests (TFP-091) › with interactive tests enabled a real journey walks every step and a named flow's exit is verified for real
+2026-10-20T01:27:18.5774650Z [1A[2K[12/57] tests/regression/testforge.journeys.spec.ts:167:9 › Journey tests (TFP-091) › the run option appears only for a suite with journey tests, and its state reaches /api/run
+2026-10-20T01:27:23.4573066Z [1A[2K[13/57] tests/regression/testforge.journeys.spec.ts:198:9 › Named-flow entry (TFP-096) › a named flow entered in the UI produces the same ranked candidates as the same flow sent to the API, and shows on the review screen
+2026-10-20T01:27:30.5452604Z [1A[2K[14/57] tests/regression/testforge.journeys.spec.ts:240:9 › Named-flow entry (TFP-096) › a line that is not a flow is reported, not silently ignored
+2026-10-20T01:27:30.8581457Z [1A[2K[15/57] tests/regression/testforge.journeys.spec.ts:255:9 › Coverage matching against a real run › a real run's passing element checks are matched to their discovered elements
+2026-10-20T01:27:36.6130500Z [1A[2K[16/57] tests/regression/testforge.journeys.spec.ts:298:9 › Candidate journey review (TFP-090) › lists real candidates unselected, and 'Generate selected' carries exactly the selection into run config
+2026-10-20T01:27:41.2143359Z [1A[2K[17/57] tests/regression/testforge.journeys.spec.ts:346:9 › Candidate journey review (TFP-090) › changing the selection after generating blocks running until regenerated
+2026-10-20T01:27:45.7304210Z [1A[2K[18/57] tests/regression/testforge.login-ui.spec.ts:106:9 › Login config in the UI (TFP-097) › a login entered in the UI authenticates a real run exactly as the equivalent /api/run request body does
+2026-10-20T01:27:53.4689127Z [1A[2K[19/57] tests/regression/testforge.login-ui.spec.ts:142:9 › Login config in the UI (TFP-097) › with nothing typed the run carries no login, and is signed out
+2026-10-20T01:27:56.1240394Z [1A[2K[20/57] tests/regression/testforge.login-ui.spec.ts:162:9 › Login config in the UI (TFP-097) › a credential typed where a variable name belongs blocks the run and is never sent
+2026-10-20T01:27:58.6813730Z [1A[2K[21/57] tests/regression/testforge.login-ui.spec.ts:185:9 › Login config in the UI (TFP-097) › an incomplete login is not run signed out: the server's named error reaches the user and no run starts
+2026-10-20T01:28:01.2571347Z [1A[2K[22/57] tests/regression/testforge.login-ui.spec.ts:194:9 › Login config in the UI (TFP-097) › the section has no field that takes a password, and says so
+2026-10-20T01:28:01.5356015Z [1A[2K[23/57] tests/regression/testforge.page-types.spec.ts:52:9 › Page types in the run report (TFP-173) › a crawl selects one page per type up to 8; the report names the types found, covered and skipped, and ends with the covered and skipped lists; pasted back, the list runs the same pages (TFP-174)
+2026-10-20T01:29:05.1403852Z [1A[2K[24/57] tests/regression/testforge.page-types.spec.ts:100:9 › Page types in the run report (TFP-173) › a list with a page on another origin is rejected before the run, naming it (TFP-174)
+2026-10-20T01:29:05.4378668Z [1A[2K[25/57] tests/regression/testforge.page-types.spec.ts:108:9 › Page types in the run report (TFP-173) › pages chosen by hand are recorded as an override, and 'Select by page type' returns to the type selection
+2026-10-20T01:29:40.0462601Z [1A[2K[26/57] tests/regression/testforge.sections.spec.ts:49:9 › TestForge regression coverage › reports health and observability metadata
+2026-10-20T01:29:40.0794708Z [1A[2K[27/57] tests/regression/testforge.sections.spec.ts:78:9 › TestForge regression coverage › executes generate, run, crawl, introspect, and save-suite without an external backend configured
+2026-10-20T01:29:46.3989652Z [1A[2K[28/57] tests/regression/testforge.sections.spec.ts:155:9 › TestForge regression coverage › introspect reports isVisible on every discovered actionable element
+2026-10-20T01:29:48.1728324Z [1A[2K[29/57] tests/regression/testforge.sections.spec.ts:182:9 › TestForge regression coverage › introspect reports ARIA state and toggle-group membership on actionable elements
+2026-10-20T01:29:50.0039482Z [1A[2K[30/57] tests/regression/testforge.sections.spec.ts:226:9 › TestForge regression coverage › introspect reports dragDropTargets as a well-shaped array
+2026-10-20T01:29:51.7692340Z [1A[2K[31/57] tests/regression/testforge.sections.spec.ts:260:9 › TestForge regression coverage › formats defect backlog and usability findings in plain language
+2026-10-20T01:29:54.0973986Z [1A[2K[32/57] tests/regression/testforge.sections.spec.ts:323:9 › TestForge regression coverage › captures session evidence artifacts for failed generated runs
+2026-10-20T01:29:56.4376856Z [1A[2K[33/57] tests/regression/testforge.sections.spec.ts:375:9 › TestForge regression coverage › links defects, usability findings, and captured artifacts to the same failed test
+2026-10-20T01:29:58.7736063Z [1A[2K[34/57] tests/regression/testforge.sections.spec.ts:457:9 › TestForge regression coverage › groups SEO checks by page when multiple pages are under test
+2026-10-20T01:30:09.7873720Z [1A[2K[35/57] tests/regression/testforge.sections.spec.ts:511:9 › TestForge regression coverage › summarizes SEO findings in plain language instead of raw matcher errors
+2026-10-20T01:30:11.3506904Z [1A[2K[36/57] tests/regression/testforge.sections.spec.ts:560:9 › TestForge regression coverage › lists the specific broken links in observed outcomes for broken-link failures
+2026-10-20T01:30:12.9101043Z [1A[2K[37/57] tests/regression/testforge.sections.spec.ts:606:9 › TestForge regression coverage › a suite that declares no test ends as empty, keeping its report, and says there was nothing to run
+2026-10-20T01:30:13.9582388Z [1A[2K[38/57] tests/regression/testforge.sections.spec.ts:647:9 › TestForge regression coverage › preserves planned, interrupted, and not-run test states when a run is stopped
+2026-10-20T01:30:15.5521768Z [1A[2K[39/57] tests/regression/testforge.sections.spec.ts:729:9 › TestForge regression coverage › runs only the selected failed test titles when includeTestTitles is provided
+2026-10-20T01:30:17.1082367Z [1A[2K[40/57] tests/regression/testforge.sections.spec.ts:788:9 › TestForge regression coverage › covers SEO metadata and crawler-facing files
+2026-10-20T01:30:17.3627304Z [1A[2K[41/57] tests/regression/testforge.sections.spec.ts:813:9 › TestForge regression coverage › covers the creation inputs, generation mode, and inferred best-practice state
+2026-10-20T01:30:17.7803927Z [1A[2K[42/57] tests/regression/testforge.sections.spec.ts:835:9 › TestForge regression coverage › covers the discovered site pages section, crawl lifecycle, and page selection controls
+2026-10-20T01:30:20.0882435Z [1A[2K[43/57] tests/regression/testforge.sections.spec.ts:863:9 › TestForge regression coverage › covers the content rules section and content-aware generation state
+2026-10-20T01:30:25.5062335Z [1A[2K[44/57] tests/regression/testforge.sections.spec.ts:886:9 › TestForge regression coverage › covers the generated suite section actions for editing and saving
+2026-10-20T01:30:30.1006187Z [1A[2K[45/57] tests/regression/testforge.sections.spec.ts:906:9 › TestForge regression coverage › does not generate SEO coverage when Functional is explicitly selected
+2026-10-20T01:30:31.9367238Z [1A[2K[46/57] tests/regression/testforge.sections.spec.ts:932:9 › TestForge regression coverage › does not assert unconditional visibility for an element hidden at introspection time
+2026-10-20T01:30:32.0002502Z [1A[2K[47/57] tests/regression/testforge.sections.spec.ts:994:9 › TestForge regression coverage › generates a toggle-group ARIA assertion for a detected selection group
+2026-10-20T01:30:32.0364438Z [1A[2K[48/57] tests/regression/testforge.sections.spec.ts:1058:9 › TestForge regression coverage › generates per-element accessible-name and role checks, skipping hidden elements
+2026-10-20T01:30:32.0697169Z [1A[2K[49/57] tests/regression/testforge.sections.spec.ts:1142:9 › TestForge regression coverage › checks real discovered elements across viewports and adds a touch smoke test
+2026-10-20T01:30:32.0913121Z [1A[2K[50/57] tests/regression/testforge.sections.spec.ts:1194:9 › TestForge regression coverage › replaces the usability interactive-count check with content-specific assertions
+2026-10-20T01:30:32.1201043Z [1A[2K[51/57] tests/regression/testforge.sections.spec.ts:1265:9 › TestForge regression coverage › generates a negative-assertion test for a detected action pair, and only for it
+2026-10-20T01:30:32.1579412Z [1A[2K[52/57] tests/regression/testforge.sections.spec.ts:1323:9 › TestForge regression coverage › generates valid- and invalid-content drag-and-drop tests for a detected drop target
+2026-10-20T01:30:32.1938392Z [1A[2K[53/57] tests/regression/testforge.sections.spec.ts:1384:9 › TestForge regression coverage › does not generate content-profile SEO checks when Functional is explicitly selected
+2026-10-20T01:30:32.2278828Z [1A[2K[54/57] tests/regression/testforge.sections.spec.ts:1428:9 › TestForge regression coverage › requires regeneration before running when selected best-practice areas change
+2026-10-20T01:30:34.5414310Z [1A[2K[55/57] tests/regression/testforge.sections.spec.ts:1442:9 › TestForge regression coverage › covers the report tabs, HTML export, and page-scoped SEO drilldown after running a generated suite
+2026-10-20T01:31:32.4697997Z [1A[2K[56/57] tests/regression/testforge.sections.spec.ts:1495:9 › TestForge regression coverage › opens a fallback report page for runs without structured report data
+2026-10-20T01:31:36.6615568Z [1A[2K[57/57] tests/regression/testforge.sections.spec.ts:1529:9 › TestForge regression coverage › reruns the selected failed test from the execution report
+2026-10-20T01:31:47.1708105Z [1A[2K  57 passed (6.0m)
+2026-10-20T01:31:47.8041112Z ##[group]Run actions/upload-artifact@v7
+2026-10-20T01:31:47.8041423Z with:
+2026-10-20T01:31:47.8041633Z   name: allure-regression-2-1
+2026-10-20T01:31:47.8042032Z   path: artifacts/allure-report/regression
+artifacts/allure-results/regression
+
+2026-10-20T01:31:47.8042453Z   if-no-files-found: warn
+2026-10-20T01:31:47.8042687Z   retention-days: 30
+2026-10-20T01:31:47.8042906Z   compression-level: 6
+2026-10-20T01:31:47.8043124Z   overwrite: false
+2026-10-20T01:31:47.8043334Z   include-hidden-files: false
+2026-10-20T01:31:47.8043567Z   archive: true
+2026-10-20T01:31:47.8043764Z ##[endgroup]
+2026-10-20T01:31:47.9786803Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-20T01:31:47.9791633Z The least common ancestor is /home/runner/work/testforge/testforge/artifacts. This will be the root directory of the artifact
+2026-10-20T01:31:47.9857707Z With the provided path, there will be 60 files uploaded
+2026-10-20T01:31:47.9871633Z Artifact name is valid!
+2026-10-20T01:31:47.9872313Z Root directory input is valid!
+2026-10-20T01:31:48.1856987Z Uploading artifact: allure-regression-2-1.zip
+2026-10-20T01:31:48.1922526Z Beginning upload of artifact content to blob storage
+2026-10-20T01:31:48.5987336Z Uploaded bytes 1587162
+2026-10-20T01:31:48.6146981Z Finished uploading artifact content to blob storage!
+2026-10-20T01:31:48.6148483Z SHA256 digest of uploaded artifact is a5cd1f69b3da86f98aa388b680af28ab4e09e19392dfad4693a04afd76ece26e
+2026-10-20T01:31:48.6149544Z Finalizing artifact upload
+2026-10-20T01:31:48.8745282Z Artifact allure-regression-2-1 successfully finalized. Artifact ID 12233893194
+2026-10-20T01:31:48.8746327Z Artifact allure-regression-2-1 has been successfully uploaded! Final size is 1587162 bytes. Artifact ID is 12233893194
+2026-10-20T01:31:48.8749478Z Artifact download URL: https://github.com/emil3663/testforge/actions/runs/39353251006/artifacts/12233893194
+2026-10-20T01:31:48.8926346Z ##[group]Run actions/github-script@v9
+2026-10-20T01:31:48.8926656Z with:
+2026-10-20T01:31:48.8929009Z   script: const prefix = process.env.ARTIFACT_PREFIX;
+const { owner, repo } = context.repo;
+const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
+  owner,
+  repo,
+  per_page: 100,
+});
+
+const matchingArtifacts = artifacts
+  .filter((artifact) => !artifact.expired && artifact.name.startsWith(prefix))
+  .sort((left, right) => new Date(right.created_at) - new Date(left.created_at));
+
+core.info(`Found ${matchingArtifacts.length} regression report artifacts.`);
+
+for (const artifact of matchingArtifacts.slice(5)) {
+  core.info(`Deleting ${artifact.name} (${artifact.id}).`);
+  await github.rest.actions.deleteArtifact({
+    owner,
+    repo,
+    artifact_id: artifact.id,
+  });
+}
+2026-10-20T01:31:48.8934229Z   github-token: ***
+2026-10-20T01:31:48.8934475Z   debug: false
+2026-10-20T01:31:48.8934705Z   user-agent: actions/github-script
+2026-10-20T01:31:48.8935019Z   result-encoding: json
+2026-10-20T01:31:48.8935273Z   retries: 0
+2026-10-20T01:31:48.8935523Z   retry-exempt-status-codes: 400,401,403,404,422
+2026-10-20T01:31:48.8935821Z env:
+2026-10-20T01:31:48.8936029Z   ARTIFACT_PREFIX: allure-regression-
+2026-10-20T01:31:48.8936303Z ##[endgroup]
+2026-10-20T01:31:49.2001545Z Found 2 regression report artifacts.
+2026-10-20T01:31:49.2403552Z Post job cleanup.
+2026-10-20T01:31:49.3539842Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e, not saving cache.
+2026-10-20T01:31:49.3666740Z Post job cleanup.
+2026-10-20T01:31:49.4657754Z [command]/usr/bin/git version
+2026-10-20T01:31:49.4726005Z git version 2.55.0
+2026-10-20T01:31:49.4780982Z Temporarily overriding HOME='/home/runner/work/_temp/d1ba4315-3a83-4f98-8c48-89227b0ace2c' before making global git config changes
+2026-10-20T01:31:49.4783633Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T01:31:49.4788512Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-20T01:31:49.4839871Z Removing SSH command configuration
+2026-10-20T01:31:49.4849959Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T01:31:49.4912943Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T01:31:49.5281757Z Removing HTTP extra header
+2026-10-20T01:31:49.5282972Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T01:31:49.5304962Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T01:31:49.5571305Z Removing includeIf entries pointing to credentials config files
+2026-10-20T01:31:49.5577862Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T01:31:49.5612708Z includeif.gitdir:/home/runner/work/testforge/testforge/.git.path
+2026-10-20T01:31:49.5614025Z includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path
+2026-10-20T01:31:49.5615495Z includeif.gitdir:/github/workspace/.git.path
+2026-10-20T01:31:49.5616625Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T01:31:49.5623260Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/testforge/testforge/.git.path
+2026-10-20T01:31:49.5655760Z /home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:31:49.5667758Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/testforge/testforge/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-cda902b1\-8e80\-4d4d\-9b6c\-60fa9792fc9b\.config
+2026-10-20T01:31:49.5712439Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path
+2026-10-20T01:31:49.5741273Z /home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:31:49.5753199Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-cda902b1\-8e80\-4d4d\-9b6c\-60fa9792fc9b\.config
+2026-10-20T01:31:49.5795002Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-20T01:31:49.5823071Z /github/runner_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:31:49.5832265Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-cda902b1\-8e80\-4d4d\-9b6c\-60fa9792fc9b\.config
+2026-10-20T01:31:49.5871140Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T01:31:49.5898883Z /github/runner_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config
+2026-10-20T01:31:49.5908427Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-cda902b1\-8e80\-4d4d\-9b6c\-60fa9792fc9b\.config
+2026-10-20T01:31:49.5951544Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T01:31:49.6195271Z Removing credentials config '/home/runner/work/_temp/git-credentials-cda902b1-8e80-4d4d-9b6c-60fa9792fc9b.config'
+2026-10-20T01:31:49.6343071Z Cleaning up orphan processes

@@ -1,0 +1,225 @@
+﻿2026-10-20T01:24:32.1524326Z Current runner version: '2.337.0'
+2026-10-20T01:24:32.1550706Z ##[group]Runner Image Provisioner
+2026-10-20T01:24:32.1551735Z Hosted Compute Agent
+2026-10-20T01:24:32.1552357Z Version: 20261015.610
+2026-10-20T01:24:32.1553010Z Commit: 267fdb4e8bbec4ab5ea31367f3a00d5c480c7656
+2026-10-20T01:24:32.1554133Z Build Date: 2026-10-14T17:06:54Z
+2026-10-20T01:24:32.1554902Z Worker ID: {25db6dcb-25fc-42d5-ad24-374db35fd614}
+2026-10-20T01:24:32.1555685Z Region: eastus
+2026-10-20T01:24:32.1556267Z Cloud: Azure
+2026-10-20T01:24:32.1556855Z ##[endgroup]
+2026-10-20T01:24:32.1558432Z ##[group]Operating System
+2026-10-20T01:24:32.1559116Z Ubuntu
+2026-10-20T01:24:32.1559702Z 24.04.5
+2026-10-20T01:24:32.1560241Z LTS
+2026-10-20T01:24:32.1560772Z ##[endgroup]
+2026-10-20T01:24:32.1561394Z ##[group]Runner Image
+2026-10-20T01:24:32.1562057Z Image: ubuntu-24.04
+2026-10-20T01:24:32.1562639Z Version: 20261018.339.1
+2026-10-20T01:24:32.1564658Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-20T01:24:32.1567438Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261018.339
+2026-10-20T01:24:32.1568567Z ##[endgroup]
+2026-10-20T01:24:32.1569777Z ##[group]GITHUB_TOKEN Permissions
+2026-10-20T01:24:32.1572029Z Contents: read
+2026-10-20T01:24:32.1573140Z Metadata: read
+2026-10-20T01:24:32.1574136Z ##[endgroup]
+2026-10-20T01:24:32.1577710Z Secret source: Actions
+2026-10-20T01:24:32.1579378Z Cache mode: write
+2026-10-20T01:24:32.1580700Z Prepare workflow directory
+2026-10-20T01:24:32.2156633Z Prepare all required actions
+2026-10-20T01:24:32.2226917Z Getting action download info
+2026-10-20T01:24:32.4178365Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-20T01:24:32.5342090Z Download action repository 'actions/setup-node@v7' (SHA:949feb2413d6458794dcd2491c4babbbce0c15c1)
+2026-10-20T01:24:32.7187279Z Complete job name: template-unchanged
+2026-10-20T01:24:32.8091252Z ##[group]Run actions/checkout@v7
+2026-10-20T01:24:32.8092169Z with:
+2026-10-20T01:24:32.8092599Z   fetch-depth: 0
+2026-10-20T01:24:32.8093067Z   repository: emil3663/testforge
+2026-10-20T01:24:32.8097293Z   token: ***
+2026-10-20T01:24:32.8097744Z   ssh-strict: true
+2026-10-20T01:24:32.8098195Z   ssh-user: git
+2026-10-20T01:24:32.8098665Z   persist-credentials: true
+2026-10-20T01:24:32.8099156Z   clean: true
+2026-10-20T01:24:32.8099617Z   sparse-checkout-cone-mode: true
+2026-10-20T01:24:32.8100146Z   fetch-tags: false
+2026-10-20T01:24:32.8100600Z   show-progress: true
+2026-10-20T01:24:32.8101051Z   lfs: false
+2026-10-20T01:24:32.8101467Z   submodules: false
+2026-10-20T01:24:32.8101920Z   set-safe-directory: true
+2026-10-20T01:24:32.8102435Z   allow-unsafe-pr-checkout: false
+2026-10-20T01:24:32.8103219Z env:
+2026-10-20T01:24:32.8103654Z   TEMPLATE_BASELINE: 980346f
+2026-10-20T01:24:32.8104348Z ##[endgroup]
+2026-10-20T01:24:32.9158929Z Syncing repository: emil3663/testforge
+2026-10-20T01:24:32.9161831Z ##[group]Getting Git version info
+2026-10-20T01:24:32.9162635Z Working directory is '/home/runner/work/testforge/testforge'
+2026-10-20T01:24:32.9164732Z [command]/usr/bin/git version
+2026-10-20T01:24:32.9247979Z git version 2.55.0
+2026-10-20T01:24:32.9276657Z ##[endgroup]
+2026-10-20T01:24:32.9289709Z Temporarily overriding HOME='/home/runner/work/_temp/62eba65d-ef6d-4fcc-83b9-2485c4e8db75' before making global git config changes
+2026-10-20T01:24:32.9297531Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T01:24:32.9299153Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-20T01:24:32.9351310Z Deleting the contents of '/home/runner/work/testforge/testforge'
+2026-10-20T01:24:32.9354954Z ##[group]Determining repository object format
+2026-10-20T01:24:32.9356644Z ##[endgroup]
+2026-10-20T01:24:32.9357398Z ##[group]Initializing the repository
+2026-10-20T01:24:32.9362555Z [command]/usr/bin/git init /home/runner/work/testforge/testforge
+2026-10-20T01:24:32.9462134Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-20T01:24:32.9467515Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-20T01:24:32.9469490Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-20T01:24:32.9470689Z hint: call:
+2026-10-20T01:24:32.9471249Z hint:
+2026-10-20T01:24:32.9471947Z hint: 	git config --global init.defaultBranch <name>
+2026-10-20T01:24:32.9472808Z hint:
+2026-10-20T01:24:32.9473605Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-20T01:24:32.9475970Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-20T01:24:32.9477119Z hint:
+2026-10-20T01:24:32.9477685Z hint: 	git branch -m <name>
+2026-10-20T01:24:32.9478242Z hint:
+2026-10-20T01:24:32.9478937Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-20T01:24:32.9480498Z Initialized empty Git repository in /home/runner/work/testforge/testforge/.git/
+2026-10-20T01:24:32.9482538Z [command]/usr/bin/git remote add origin https://github.com/emil3663/testforge
+2026-10-20T01:24:32.9533068Z ##[endgroup]
+2026-10-20T01:24:32.9534234Z ##[group]Disabling automatic garbage collection
+2026-10-20T01:24:32.9537941Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-20T01:24:32.9575894Z ##[endgroup]
+2026-10-20T01:24:32.9577595Z ##[group]Setting up auth
+2026-10-20T01:24:32.9578693Z Removing SSH command configuration
+2026-10-20T01:24:32.9584353Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T01:24:32.9627898Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T01:24:33.0034724Z Removing HTTP extra header
+2026-10-20T01:24:33.0042446Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T01:24:33.0089750Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T01:24:33.0362419Z Removing includeIf entries pointing to credentials config files
+2026-10-20T01:24:33.0368398Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T01:24:33.0415870Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T01:24:33.0672189Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-20T01:24:33.0723369Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/testforge/testforge/.git.path /home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:24:33.0768074Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:24:33.0840521Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:24:33.0885391Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:24:33.0926337Z ##[endgroup]
+2026-10-20T01:24:33.0927549Z ##[group]Fetching the repository
+2026-10-20T01:24:33.0932534Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-20T01:24:34.8306073Z From https://github.com/emil3663/testforge
+2026-10-20T01:24:34.8309372Z  * [new branch]      docs/claude-skills-catalog -> origin/docs/claude-skills-catalog
+2026-10-20T01:24:34.8312576Z  * [new branch]      feat/napi            -> origin/feat/napi
+2026-10-20T01:24:34.8315093Z  * [new branch]      main                 -> origin/main
+2026-10-20T01:24:34.8317575Z  * [new branch]      phase-16-local-first -> origin/phase-16-local-first
+2026-10-20T01:24:34.8320656Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-20T01:24:34.8358728Z   origin/main
+2026-10-20T01:24:34.8367545Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-20T01:24:34.8405077Z a064008ba8a15bafc43f20fa1f64d45a0c804b5f
+2026-10-20T01:24:34.8412248Z ##[endgroup]
+2026-10-20T01:24:34.8415004Z ##[group]Determining the checkout info
+2026-10-20T01:24:34.8417444Z ##[endgroup]
+2026-10-20T01:24:34.8418448Z [command]/usr/bin/git sparse-checkout disable
+2026-10-20T01:24:34.8505947Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-20T01:24:34.8552257Z ##[group]Checking out the ref
+2026-10-20T01:24:34.8555852Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-20T01:24:35.0730293Z Switched to a new branch 'main'
+2026-10-20T01:24:35.0734010Z branch 'main' set up to track 'origin/main'.
+2026-10-20T01:24:35.0778965Z ##[endgroup]
+2026-10-20T01:24:35.0842355Z [command]/usr/bin/git log -1 --format=%H
+2026-10-20T01:24:35.0881862Z a064008ba8a15bafc43f20fa1f64d45a0c804b5f
+2026-10-20T01:24:35.1153961Z ##[group]Run actions/setup-node@v7
+2026-10-20T01:24:35.1154402Z with:
+2026-10-20T01:24:35.1154661Z   node-version-file: .nvmrc
+2026-10-20T01:24:35.1154944Z   cache: npm
+2026-10-20T01:24:35.1155194Z   check-latest: false
+2026-10-20T01:24:35.1157929Z   token: ***
+2026-10-20T01:24:35.1158209Z   package-manager-cache: true
+2026-10-20T01:24:35.1158498Z env:
+2026-10-20T01:24:35.1158749Z   TEMPLATE_BASELINE: 980346f
+2026-10-20T01:24:35.1159044Z ##[endgroup]
+2026-10-20T01:24:35.2441537Z Node version file is not TOML file
+2026-10-20T01:24:35.2442832Z Resolved .nvmrc as 24
+2026-10-20T01:24:36.8976969Z Found in cache @ /opt/hostedtoolcache/node/24.22.0/x64
+2026-10-20T01:24:36.8979390Z ##[group]Environment details
+2026-10-20T01:24:40.6072850Z node: v24.22.0
+2026-10-20T01:24:40.6073284Z npm: 11.19.1
+2026-10-20T01:24:40.6073517Z yarn: 1.22.22
+2026-10-20T01:24:40.6093244Z ##[endgroup]
+2026-10-20T01:24:40.6094404Z [command]/opt/hostedtoolcache/node/24.22.0/x64/bin/npm config get cache
+2026-10-20T01:24:41.2507300Z /home/runner/.npm
+2026-10-20T01:24:41.3451741Z Cache hit for: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-20T01:24:42.1197616Z Received 142228688 of 142228688 (100.0%), 187.9 MBs/sec
+2026-10-20T01:24:42.1198430Z Cache Size: ~136 MB (142228688 B)
+2026-10-20T01:24:42.1309123Z [command]/usr/bin/tar -xf /home/runner/work/_temp/318cb53a-1e0a-4127-ac24-d04aa7903e9e/cache.tzst -P -C /home/runner/work/testforge/testforge --use-compress-program unzstd
+2026-10-20T01:24:42.5581429Z Cache restored successfully
+2026-10-20T01:24:42.5649989Z Cache restored from key: node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e
+2026-10-20T01:24:42.5899284Z ##[group]Run npm ci
+2026-10-20T01:24:42.5899661Z [36;1mnpm ci[0m
+2026-10-20T01:24:42.6103409Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:24:42.6103960Z env:
+2026-10-20T01:24:42.6104227Z   TEMPLATE_BASELINE: 980346f
+2026-10-20T01:24:42.6104544Z ##[endgroup]
+2026-10-20T01:24:49.3934213Z npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-20T01:25:02.2043403Z 
+2026-10-20T01:25:02.2044577Z added 583 packages, and audited 584 packages in 20s
+2026-10-20T01:25:02.2045110Z 
+2026-10-20T01:25:02.2045781Z 197 packages are looking for funding
+2026-10-20T01:25:02.2046653Z   run `npm fund` for details
+2026-10-20T01:25:02.4879995Z 
+2026-10-20T01:25:02.4881944Z 26 vulnerabilities (1 low, 5 moderate, 18 high, 2 critical)
+2026-10-20T01:25:02.4882622Z 
+2026-10-20T01:25:02.4883256Z To address issues that do not require attention, run:
+2026-10-20T01:25:02.4884333Z   npm audit fix
+2026-10-20T01:25:02.4884567Z 
+2026-10-20T01:25:02.4884900Z To address all issues (including breaking changes), run:
+2026-10-20T01:25:02.4885408Z   npm audit fix --force
+2026-10-20T01:25:02.4885653Z 
+2026-10-20T01:25:02.4885848Z Run `npm audit` for details.
+2026-10-20T01:25:02.4893107Z npm warn install-scripts 2 packages have install scripts not yet covered by allowScripts:
+2026-10-20T01:25:02.4894746Z npm warn install-scripts   sharp@0.34.5 (install: node install/check.js || npm run build)
+2026-10-20T01:25:02.4896215Z npm warn install-scripts   unrs-resolver@1.11.1 (postinstall: napi-postinstall unrs-resolver 1.11.1 check)
+2026-10-20T01:25:02.4897257Z npm warn install-scripts
+2026-10-20T01:25:02.4898424Z npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+2026-10-20T01:25:02.6119654Z ##[group]Run npm run check:template-unchanged -- "$BASE" HEAD
+2026-10-20T01:25:02.6120168Z [36;1mnpm run check:template-unchanged -- "$BASE" HEAD[0m
+2026-10-20T01:25:02.6177339Z shell: /usr/bin/bash -e {0}
+2026-10-20T01:25:02.6177606Z env:
+2026-10-20T01:25:02.6177816Z   TEMPLATE_BASELINE: 980346f
+2026-10-20T01:25:02.6178066Z   BASE: 980346f
+2026-10-20T01:25:02.6178272Z ##[endgroup]
+2026-10-20T01:25:02.7379733Z 
+2026-10-20T01:25:02.7380730Z > testforge@0.1.0 check:template-unchanged
+2026-10-20T01:25:02.7381710Z > node scripts/check-template-unchanged.mjs 980346f HEAD
+2026-10-20T01:25:02.7382210Z 
+2026-10-20T01:25:03.7273059Z template-unchanged: 980346f -> a064008: 166 inputs, 166 identical, 0 different
+2026-10-20T01:25:03.7274820Z outputs kept in /home/runner/work/testforge/testforge/comparisons/template-unchanged/980346f-a064008
+2026-10-20T01:25:03.7531593Z Post job cleanup.
+2026-10-20T01:25:03.8718016Z Cache hit occurred on the primary key node-cache-Linux-x64-npm-dc73a72b2a852e857dfa3e426ac3949b40bc52744d4c9e1457578480b8da282e, not saving cache.
+2026-10-20T01:25:03.8879407Z Post job cleanup.
+2026-10-20T01:25:03.9751768Z [command]/usr/bin/git version
+2026-10-20T01:25:03.9802343Z git version 2.55.0
+2026-10-20T01:25:03.9846035Z Temporarily overriding HOME='/home/runner/work/_temp/23658569-f431-4ed9-a5f5-70336e957836' before making global git config changes
+2026-10-20T01:25:03.9847659Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T01:25:03.9861646Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/testforge/testforge
+2026-10-20T01:25:03.9899851Z Removing SSH command configuration
+2026-10-20T01:25:03.9906984Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T01:25:03.9949573Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T01:25:04.0225372Z Removing HTTP extra header
+2026-10-20T01:25:04.0231946Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T01:25:04.0274327Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T01:25:04.0601044Z Removing includeIf entries pointing to credentials config files
+2026-10-20T01:25:04.0612375Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T01:25:04.0660707Z includeif.gitdir:/home/runner/work/testforge/testforge/.git.path
+2026-10-20T01:25:04.0670390Z includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path
+2026-10-20T01:25:04.0672887Z includeif.gitdir:/github/workspace/.git.path
+2026-10-20T01:25:04.0674183Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T01:25:04.0676939Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/testforge/testforge/.git.path
+2026-10-20T01:25:04.0718201Z /home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:25:04.0736540Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/testforge/testforge/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-14c41815\-851f\-4621\-bd85\-73f314888f18\.config
+2026-10-20T01:25:04.0831259Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path
+2026-10-20T01:25:04.0860808Z /home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:25:04.0877030Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/testforge/testforge/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-14c41815\-851f\-4621\-bd85\-73f314888f18\.config
+2026-10-20T01:25:04.0940114Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-20T01:25:04.0983909Z /github/runner_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:25:04.0993523Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-14c41815\-851f\-4621\-bd85\-73f314888f18\.config
+2026-10-20T01:25:04.1048193Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T01:25:04.1089266Z /github/runner_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config
+2026-10-20T01:25:04.1100135Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-14c41815\-851f\-4621\-bd85\-73f314888f18\.config
+2026-10-20T01:25:04.1156334Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T01:25:04.1431869Z Removing credentials config '/home/runner/work/_temp/git-credentials-14c41815-851f-4621-bd85-73f314888f18.config'
+2026-10-20T01:25:04.1640832Z Cleaning up orphan processes
