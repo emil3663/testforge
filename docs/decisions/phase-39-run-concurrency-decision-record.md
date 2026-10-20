@@ -563,6 +563,19 @@ only.**
 
 ### TFP-241 — Failure evidence for shared checks: a trace per check, and the visit's video (added at Gate B, 2026-10-20)
 
+**Corrected 2026-10-20, when built (`3b1210c`).** The problem below
+overstates the loss. Measured on Gate B's code (`2be975c`), a failing
+shared check still had:
+- Playwright's trace, which covers every context a test creates, a chunk
+  per test;
+- Playwright's failure screenshot;
+- `error-context.md`.
+
+Only the video was missing. So TFP-241 adds the shared visit's video, kept
+for a failing check with where in it the check starts, and deleted when no
+check fails. It adds no trace of its own (that clashed with Playwright's).
+The text below is kept as written.
+
 - **Phase:** 39 · **Priority:** P1 · **Labels:** `run`, `report`
 - **Problem it solves:** since TFP-212, a failing shared check gets only a
   screenshot of the shared page.
@@ -727,7 +740,8 @@ of Decisions 2 to 6 touch it.
      Gate C's session runs A again for this comparison, so it stays within
      one session.
 3. **TFP-241 restores failure evidence for shared checks, before
-   TFP-214.**
+   TFP-214.** (Corrected when built: only the video had been lost. See
+   TFP-241.)
 4. **Accepted as recorded, re-checked at Gate C:** the with-bugs sort
    check's message on `/`. It names "Name (Z - A)" before the change and
    not after, while the check fails in every run of both, with the same

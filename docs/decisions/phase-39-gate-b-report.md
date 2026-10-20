@@ -98,6 +98,9 @@ For Emil: Gate B's decision, below.
 
 ## What else changed (for Emil)
 
+- **Corrected 2026-10-20 (TFP-241, measured on `2be975c`):** a failing shared check kept Playwright's trace, its
+  failure screenshot and `error-context.md`. Only the video was missing. The line below reasoned instead of
+  measuring, and is kept as written.
 - **Evidence of a shared check's failure is a screenshot of the shared page.** Playwright's own per-test trace and video
   (`retain-on-failure`) belong to its page fixture, which a shared check doesn't use.
 - **TFP-213's rules are built and proven on a fixture (GEN-102):**
