@@ -1,0 +1,430 @@
+{
+  "label": "clean",
+  "kind": "standard",
+  "run": 2,
+  "runMs": 1003225,
+  "tests": 472,
+  "testMs": 938741,
+  "pageLoads": {
+    "count": 474,
+    "ms": 122096
+  },
+  "blankLoads": {
+    "count": 0,
+    "ms": 0
+  },
+  "settle": {
+    "count": 496,
+    "ms": 509468,
+    "capped": 0,
+    "cappedMs": 0
+  },
+  "requests": {
+    "count": 185,
+    "ms": 17542
+  },
+  "failing": {
+    "tests": 46,
+    "ms": 170433,
+    "failedStepMs": 95410
+  },
+  "visits": [
+    {
+      "page": "/",
+      "area": "accessibility",
+      "count": 45
+    },
+    {
+      "page": "/",
+      "area": "cookie/session",
+      "count": 1
+    },
+    {
+      "page": "/",
+      "area": "functional",
+      "count": 56
+    },
+    {
+      "page": "/",
+      "area": "performance/load",
+      "count": 6
+    },
+    {
+      "page": "/",
+      "area": "reliability",
+      "count": 4
+    },
+    {
+      "page": "/",
+      "area": "responsive/mobile",
+      "count": 4
+    },
+    {
+      "page": "/",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/",
+      "area": "seo/content",
+      "count": 8
+    },
+    {
+      "page": "/",
+      "area": "usability",
+      "count": 19
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "functional",
+      "count": 21
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/auth/forgot-password",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/auth/login",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/auth/login",
+      "area": "functional",
+      "count": 25
+    },
+    {
+      "page": "/auth/login",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/auth/login",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/auth/login",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/auth/login",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/auth/register",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/auth/register",
+      "area": "functional",
+      "count": 33
+    },
+    {
+      "page": "/auth/register",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/auth/register",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/auth/register",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/auth/register",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "functional",
+      "count": 35
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/category/hand-tools",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/contact",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/contact",
+      "area": "functional",
+      "count": 27
+    },
+    {
+      "page": "/contact",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/contact",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/contact",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/contact",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "functional",
+      "count": 29
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/rentals",
+      "area": "accessibility",
+      "count": 3
+    },
+    {
+      "page": "/rentals",
+      "area": "functional",
+      "count": 18
+    },
+    {
+      "page": "/rentals",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/rentals",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/rentals",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/rentals",
+      "area": "usability",
+      "count": 4
+    }
+  ],
+  "namedFromSuite": 0,
+  "overlap": {
+    "checks": [
+      {
+        "check": "navigation links",
+        "tests": 24,
+        "loads": 24,
+        "requests": 24,
+        "ms": 41572,
+        "targets": 2
+      },
+      {
+        "check": "link health",
+        "tests": 8,
+        "loads": 0,
+        "requests": 132,
+        "ms": 6819,
+        "targets": 30
+      },
+      {
+        "check": "link tests",
+        "tests": 21,
+        "loads": 21,
+        "requests": 0,
+        "ms": 33896,
+        "targets": 0
+      }
+    ],
+    "pairs": [
+      {
+        "checks": [
+          "navigation links",
+          "link health"
+        ],
+        "shared": 2
+      },
+      {
+        "checks": [
+          "navigation links",
+          "link tests"
+        ],
+        "shared": 0
+      },
+      {
+        "checks": [
+          "link health",
+          "link tests"
+        ],
+        "shared": 0
+      }
+    ],
+    "sharedTargets": [
+      {
+        "target": "/",
+        "checks": [
+          "navigation links",
+          "link health"
+        ]
+      },
+      {
+        "target": "/category/hand-tools",
+        "checks": [
+          "navigation links",
+          "link health"
+        ]
+      }
+    ]
+  },
+  "controls": [
+    {
+      "page": "/",
+      "counts": {
+        "in place": 16,
+        "in-app navigation": 0,
+        "path navigation": 19,
+        "unclear": 10
+      }
+    },
+    {
+      "page": "/product/01M5BGXY627SN7SJ0JWNH137Q8",
+      "counts": {
+        "in place": 4,
+        "in-app navigation": 0,
+        "path navigation": 16,
+        "unclear": 13
+      }
+    },
+    {
+      "page": "/category/hand-tools",
+      "counts": {
+        "in place": 17,
+        "in-app navigation": 0,
+        "path navigation": 19,
+        "unclear": 6
+      }
+    },
+    {
+      "page": "/auth/register",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 0,
+        "path navigation": 10,
+        "unclear": 20
+      }
+    },
+    {
+      "page": "/contact",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 0,
+        "path navigation": 10,
+        "unclear": 14
+      }
+    },
+    {
+      "page": "/auth/login",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 0,
+        "path navigation": 12,
+        "unclear": 11
+      }
+    },
+    {
+      "page": "/auth/forgot-password",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 0,
+        "path navigation": 10,
+        "unclear": 9
+      }
+    },
+    {
+      "page": "/rentals",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 0,
+        "path navigation": 10,
+        "unclear": 6
+      }
+    }
+  ]
+}

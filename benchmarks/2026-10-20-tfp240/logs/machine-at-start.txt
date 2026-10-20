@@ -1,0 +1,8 @@
+
+chrome    64
+msedge     7
+node       1
+ollama     1
+
+
+

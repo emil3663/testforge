@@ -1,0 +1,9 @@
+(node:2288) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/generate/mock/index.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean: 04:09:07 standard suite written
+clean: 04:26:21 standard run 1: 1034 s, 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 474 (135 s), settle 513 s (3 capped), failing 46 (176 s)
+clean: 04:43:05 standard run 2: 1003 s, 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 474 (122 s), settle 509 s (0 capped), failing 46 (170 s)
+clean: 04:59:58 standard run 3: 1014 s, 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 474 (124 s), settle 518 s (1 capped), failing 46 (177 s)
+exit=0

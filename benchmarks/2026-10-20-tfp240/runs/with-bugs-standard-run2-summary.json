@@ -1,0 +1,473 @@
+{
+  "label": "with-bugs",
+  "kind": "standard",
+  "run": 2,
+  "runMs": 1536095,
+  "tests": 483,
+  "testMs": 1385109,
+  "pageLoads": {
+    "count": 567,
+    "ms": 210144
+  },
+  "blankLoads": {
+    "count": 357,
+    "ms": 6412
+  },
+  "settle": {
+    "count": 587,
+    "ms": 608460,
+    "capped": 5,
+    "cappedMs": 25060
+  },
+  "requests": {
+    "count": 71,
+    "ms": 16294
+  },
+  "failing": {
+    "tests": 84,
+    "ms": 495382,
+    "failedStepMs": 137043
+  },
+  "visits": [
+    {
+      "page": "/",
+      "area": "accessibility",
+      "count": 41
+    },
+    {
+      "page": "/",
+      "area": "cookie/session",
+      "count": 1
+    },
+    {
+      "page": "/",
+      "area": "functional",
+      "count": 133
+    },
+    {
+      "page": "/",
+      "area": "performance/load",
+      "count": 6
+    },
+    {
+      "page": "/",
+      "area": "responsive/mobile",
+      "count": 4
+    },
+    {
+      "page": "/",
+      "area": "seo/content",
+      "count": 2
+    },
+    {
+      "page": "/",
+      "area": "usability",
+      "count": 23
+    },
+    {
+      "page": "/#/",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/",
+      "area": "functional",
+      "count": 22
+    },
+    {
+      "page": "/#/",
+      "area": "reliability",
+      "count": 3
+    },
+    {
+      "page": "/#/",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "functional",
+      "count": 19
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "functional",
+      "count": 23
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/auth/login",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "functional",
+      "count": 31
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/auth/register",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "functional",
+      "count": 36
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "accessibility",
+      "count": 3
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "functional",
+      "count": 16
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/chainsaws",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/contact",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/contact",
+      "area": "functional",
+      "count": 24
+    },
+    {
+      "page": "/#/contact",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/contact",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/contact",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/contact",
+      "area": "usability",
+      "count": 4
+    },
+    {
+      "page": "/#/product/6",
+      "area": "accessibility",
+      "count": 4
+    },
+    {
+      "page": "/#/product/6",
+      "area": "functional",
+      "count": 26
+    },
+    {
+      "page": "/#/product/6",
+      "area": "reliability",
+      "count": 2
+    },
+    {
+      "page": "/#/product/6",
+      "area": "security",
+      "count": 4
+    },
+    {
+      "page": "/#/product/6",
+      "area": "seo/content",
+      "count": 6
+    },
+    {
+      "page": "/#/product/6",
+      "area": "usability",
+      "count": 4
+    }
+  ],
+  "namedFromSuite": 0,
+  "overlap": {
+    "checks": [
+      {
+        "check": "navigation links",
+        "tests": 24,
+        "loads": 48,
+        "requests": 8,
+        "ms": 109934,
+        "targets": 3
+      },
+      {
+        "check": "link health",
+        "tests": 8,
+        "loads": 0,
+        "requests": 34,
+        "ms": 5994,
+        "targets": 6
+      },
+      {
+        "check": "linked routes",
+        "tests": 8,
+        "loads": 67,
+        "requests": 0,
+        "ms": 115590,
+        "targets": 1
+      },
+      {
+        "check": "link tests",
+        "tests": 22,
+        "loads": 22,
+        "requests": 0,
+        "ms": 46227,
+        "targets": 0
+      }
+    ],
+    "pairs": [
+      {
+        "checks": [
+          "navigation links",
+          "link health"
+        ],
+        "shared": 1
+      },
+      {
+        "checks": [
+          "navigation links",
+          "linked routes"
+        ],
+        "shared": 1
+      },
+      {
+        "checks": [
+          "navigation links",
+          "link tests"
+        ],
+        "shared": 0
+      },
+      {
+        "checks": [
+          "link health",
+          "linked routes"
+        ],
+        "shared": 1
+      },
+      {
+        "checks": [
+          "link health",
+          "link tests"
+        ],
+        "shared": 0
+      },
+      {
+        "checks": [
+          "linked routes",
+          "link tests"
+        ],
+        "shared": 0
+      }
+    ],
+    "sharedTargets": [
+      {
+        "target": "/",
+        "checks": [
+          "navigation links",
+          "link health",
+          "linked routes"
+        ]
+      }
+    ]
+  },
+  "controls": [
+    {
+      "page": "/#/",
+      "counts": {
+        "in place": 24,
+        "in-app navigation": 17,
+        "path navigation": 1,
+        "unclear": 9
+      }
+    },
+    {
+      "page": "/#/product/6",
+      "counts": {
+        "in place": 3,
+        "in-app navigation": 14,
+        "path navigation": 1,
+        "unclear": 12
+      }
+    },
+    {
+      "page": "/#/category/hand-tools",
+      "counts": {
+        "in place": 19,
+        "in-app navigation": 17,
+        "path navigation": 1,
+        "unclear": 6
+      }
+    },
+    {
+      "page": "/#/auth/register",
+      "counts": {
+        "in place": 2,
+        "in-app navigation": 8,
+        "path navigation": 1,
+        "unclear": 19
+      }
+    },
+    {
+      "page": "/#/contact",
+      "counts": {
+        "in place": 2,
+        "in-app navigation": 8,
+        "path navigation": 1,
+        "unclear": 13
+      }
+    },
+    {
+      "page": "/#/auth/login",
+      "counts": {
+        "in place": 2,
+        "in-app navigation": 10,
+        "path navigation": 1,
+        "unclear": 10
+      }
+    },
+    {
+      "page": "/#/auth/forgot-password",
+      "counts": {
+        "in place": 2,
+        "in-app navigation": 8,
+        "path navigation": 1,
+        "unclear": 8
+      }
+    },
+    {
+      "page": "/#/chainsaws",
+      "counts": {
+        "in place": 2,
+        "in-app navigation": 8,
+        "path navigation": 1,
+        "unclear": 5
+      }
+    }
+  ]
+}
