@@ -30,7 +30,7 @@ await mkdir(playwrightRuns, { recursive: true });
 const reporter = join(playwrightRuns, `gate-b-timing-reporter-${process.pid}.cjs`);
 await writeFile(reporter, buildTimingReporterSource(), "utf8");
 
-type Rec = { title: string; status: string; rawMessage: string; page?: string; findings?: string[]; skipReason?: string };
+type Rec = { title: string; status: string; rawMessage: string; page?: string; findings?: string[]; issues?: Array<{ kind: string; category: string; detail: string }>; skipReason?: string };
 async function runOnce(variant: string, kind: string, run: number) {
     const dir = join(runsDir, variant);
     const name = `gate-b-${variant}-${label}-${kind}-${run}-${process.pid}`;
@@ -55,7 +55,7 @@ async function runOnce(variant: string, kind: string, run: number) {
     const out = (suffix: string) => join(dir, `${label}-${kind}-run${run}-${suffix}.json`);
     await writeFile(out("records"), JSON.stringify({
         label, variant, site: origin, kind, run, commit: process.env.MEASURE_COMMIT ?? "?", startedAt: new Date(started).toISOString(), runSeconds: Math.round(runMs / 1000), tests: records.length, byStatus,
-        records: records.map((record) => ({ title: record.title, page: record.page ?? null, status: record.status, message: record.status === "Failed" || record.status === "Blocked" ? (record.rawMessage ?? "").replace(/\s+/g, " ").slice(0, 600) : "", skipReason: record.skipReason ?? "", findings: record.findings ?? [] })),
+        records: records.map((record) => ({ title: record.title, page: record.page ?? null, status: record.status, message: record.status === "Failed" || record.status === "Blocked" ? (record.rawMessage ?? "").replace(/\s+/g, " ").slice(0, 600) : "", skipReason: record.skipReason ?? "", findings: record.findings ?? [], issues: (record.issues ?? []).map((issue) => `${issue.kind} ${issue.category} ${issue.detail}`) })),
     }, null, 2), "utf8");
     await writeFile(out("timing"), JSON.stringify(raw), "utf8");
     for (const file of [specFile, jsonFile, timingFile]) await rm(file, { force: true });
