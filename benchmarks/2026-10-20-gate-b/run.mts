@@ -4,7 +4,8 @@
 // Each run is TFP-211's: the executor's Playwright call (read-only gate, --timeout=30000, --workers=1, Chromium)
 // with the timing reporter beside the JSON one. The suites are generate.mts's, from the session's one inspection.
 // Writes <runsDir>/<variant>/<label>-<kind>-run<n>-records.json and -timing.json.
-// Usage (from the repo root): node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types <this> <label> <site> <runsDir> <plan> <rounds>
+// Usage (from the repo root): node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types <this> <label> <site> <runsDir> <plan> <rounds> [<grep>]
+//   <grep>: only the tests whose titles match (Playwright's --grep), as bug 46's axe-scan check runs them.
 //   <plan>: "A:standard,security,accessibility;B:standard;C:standard,security,accessibility"
 import { spawn } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
@@ -16,7 +17,7 @@ const load = (path: string) => import(pathToFileURL(join(root, path)).href);
 const { flattenSuites } = await load("src/lib/report/execution.ts");
 const { buildTimingReporterSource, summarizeTiming, TIMING_FILE_ENV_VAR } = await load("src/lib/run/timing.ts");
 
-const [label, site, runsDir, planArg, roundsArg] = process.argv.slice(2);
+const [label, site, runsDir, planArg, roundsArg, grep] = process.argv.slice(2);
 const origin = site.replace(/\/$/, "");
 const rounds = Number(roundsArg);
 const plan = planArg.split(";").map((part) => {
@@ -42,7 +43,7 @@ async function runOnce(variant: string, kind: string, run: number) {
     delete env.TESTFORGE_STORAGE_STATE;
     const started = Date.now();
     await new Promise<void>((resolve, reject) => {
-        const child = spawn(process.execPath, [join(root, "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, `--reporter=json,${reporter.replace(/\\/g, "/")}`, "--timeout=30000", "--workers=1", "--project=chromium", `--output=.playwright-runs/${name}-artifacts`], { cwd: root, env, stdio: "ignore", windowsHide: true });
+        const child = spawn(process.execPath, [join(root, "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, `--reporter=json,${reporter.replace(/\\/g, "/")}`, "--timeout=30000", "--workers=1", "--project=chromium", `--output=.playwright-runs/${name}-artifacts`, ...(grep ? [`--grep=${grep}`] : [])], { cwd: root, env, stdio: "ignore", windowsHide: true });
         child.on("error", reject);
         child.on("close", () => resolve());
     });
