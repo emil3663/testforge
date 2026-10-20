@@ -306,3 +306,41 @@ ${[
     assert.equal(status("12 finds the typed text gone"), "Passed", "typed text gone when the test that typed failed");
     for (const title of ["1 loads", "2 shares", "3 leaves the page", "4 after leaving: loads again", "5 types, and passes", "7 ticks a box and leaves it", "10 after the failure: loads"]) assert.equal(status(title), "Passed", title);
 });
+
+test("in a real browser: a shared check's assertion waits 2 s, a check on its own page still 5 s (TFP-215, boundary)", { skip: needsChromium }, async () => {
+    const suite = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: '${origin}' });
+
+${PAGE_VISIT_HELPER}
+
+test.describe('Functional Coverage', () => {
+  test('TFFU-001: shared: a missing element', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await expect(page.locator('#missing')).toBeVisible();
+  });
+
+  test('TFFU-002: its own page: a missing element', async ({ page, browser }) => {
+    await tfGoto(page, '/a');
+    expect(browser.version()).toBeTruthy();
+    await expect(page.locator('#missing')).toBeVisible();
+  });
+
+  test('TFFU-003: shared: its own timeout wins', async ({ page }) => {
+    await tfGoto(page, '/a');
+    await expect(page.locator('#late')).toBeVisible({ timeout: 3000 });
+  });
+});
+`;
+    const code = shareReadOnlyVisits(suite);
+    assert.match(code, /test\.describe\('Page \/a', \(\) => \{\n {2}const test = tfSharedTest;\n {2}const expect = tfSharedExpect;/);
+    const { records, timing } = await run(code, "timeouts");
+    assert.ok(records.every((record) => record.status === "Failed"), records.map((record) => `${record.title} ${record.status}`).join(" | "));
+    const waited = (title: string) => timing.tests.find((entry) => entry.title === title)!.steps.filter((step) => step.kind === "expect" && step.failed).reduce((total, step) => total + step.duration, 0);
+    const shared = waited("TFFU-001: shared: a missing element");
+    const own = waited("TFFU-002: its own page: a missing element");
+    const explicit = waited("TFFU-003: shared: its own timeout wins");
+    assert.ok(shared >= 1900 && shared < 3000, `shared: waited ${shared} ms`);
+    assert.ok(own >= 4900, `own page: waited ${own} ms`);
+    assert.ok(explicit >= 2900 && explicit < 4000, `its own 3 s: waited ${explicit} ms`);
+});

@@ -25,6 +25,10 @@
  *   allows a retry, both results recorded (`shared-visit-rerun`), and one on an untouched page stands without a
  *   re-run (`shared-visit`). The template shares no test that changes the page yet (Decision 3 is TFP-214's), so
  *   it configures no retries; the rule is there, and proven, for when it does.
+ * - **Assertions (TFP-215).** In a page's group, `expect` waits 2 s, not Playwright's 5 s: every check there is
+ *   read-only, on a page that has settled. TFP-211 measured no passing assertion over 229 ms in 10,500, and about 27
+ *   failing ones a run on with-bugs waiting out the full 5 s. An assertion's own timeout still wins; tests outside the
+ *   groups keep 5 s.
  * - **Evidence.** A shared test's failure gets a screenshot of the shared page. The per-test trace and video
  *   (`retain-on-failure`) belong to Playwright's own page, which a shared test doesn't use.
  *
@@ -59,6 +63,9 @@ export const SHARED_VISIT_HELPER = `// Phase 39 (TFP-212, TFP-213; Decisions 2 a
 // both results recorded, and one on an untouched page stands. A field a check typed into is cleared when it ends.
 type TfSharedVisit = { path: string; context: import('@playwright/test').BrowserContext; page: import('@playwright/test').Page; response: import('@playwright/test').Response | null; url: string; touched: boolean };
 let tfSharedVisit: TfSharedVisit | null = null;
+// TFP-215 (narrowed at Gate A to the read-only assertion timeouts): a shared check reads a page that has settled, so
+// its assertions wait 2 s, not Playwright's 5 s. TFP-211: no passing assertion took over 229 ms (10,500 of them).
+const tfSharedExpect = expect.configure({ timeout: 2000 });
 const tfSharedTest = test.extend<{ tfShared: { visit: (path: string) => Promise<{ page: import('@playwright/test').Page; context: import('@playwright/test').BrowserContext; response: import('@playwright/test').Response | null }>; changed: () => void; typed: (field: import('@playwright/test').Locator) => void } }>({
   tfShared: async ({ browser, baseURL, storageState, viewport, userAgent, locale, deviceScaleFactor, isMobile, hasTouch, colorScheme, ignoreHTTPSErrors, javaScriptEnabled, extraHTTPHeaders, timezoneId, contextOptions }, use, testInfo) => {
     const { mkdirSync, readFileSync, writeFileSync } = await import('node:fs');
@@ -263,7 +270,7 @@ export function shareReadOnlyVisits(code: string): string {
             return [open, body, close].filter(Boolean).join("\n");
         });
         // The group's `test` is tfSharedTest, so its tests read as every other test(...) to the tools that find them.
-        return `test.describe(${quote(`Page ${path}`)}, () => {\n  const test = tfSharedTest;\n\n${blocks.join("\n\n")}\n});`;
+        return `test.describe(${quote(`Page ${path}`)}, () => {\n  const test = tfSharedTest;\n  const expect = tfSharedExpect;\n\n${blocks.join("\n\n")}\n});`;
     });
 
     let result = code;
