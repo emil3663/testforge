@@ -210,15 +210,15 @@ test.describe('SEO and Content Coverage', () => {
     assert.deepEqual(where("reads the response on /b").describe, ["Page /b", "Security Coverage"]);
     for (const title of ["/a passes the WCAG 2.2 A and AA scan", "/a is tabbed through in reading order", "/a has a heading"]) assert.deepEqual(where(title).describe, ["Page /a", "Accessibility Coverage"], title);
     for (const title of ["listens before loading", "interactive", "another fixture", "fills a field", "loads again", "sets a cookie", "works the page out first", "opens a menu to reveal a link"]) assert.deepEqual(where(title).describe, ["Functional Coverage"], title);
-    // In the page's group: the checks that only read, then the scan, then those that change the page (Gate B ruling).
-    const order = ["reads its page", "holds its data before the visit", "/a has a heading", "/a passes the WCAG 2.2 A and AA scan", "clicks", "opens a route view of its own", "/a is tabbed through in reading order"];
+    // In the page's group, by default (Gate C ruling, Emil 2026-10-21): the checks that only read, then those that change the page, then the scan.
+    const order = ["reads its page", "holds its data before the visit", "/a has a heading", "clicks", "opens a route view of its own", "/a is tabbed through in reading order", "/a passes the WCAG 2.2 A and AA scan"];
     const at = order.map((title) => shared.indexOf(`: ${title}'`));
-    assert.deepEqual([...at].sort((a, b) => a - b), at, "reads, scan, changes");
-    // The switch (Emil, 2026-10-21): reads, changes, then the scan, not re-run; it type-checks; the default is the built order.
-    const last = shareReadOnlyVisits(suite, { axeOrder: "last" });
-    const lastAt = [...order.filter((title) => !/WCAG/.test(title)), order[3]].map((title) => last.indexOf(`: ${title}'`));
-    assert.deepEqual([[...lastAt].sort((a, b) => a - b), findTypeErrors(last), shareReadOnlyVisits(suite, { axeOrder: "before-changes" }) === shared], [lastAt, [], true]);
-    const scanLast = parseTestUnits(last).find((unit) => unit.title === order[3])!;
+    assert.deepEqual([...at].sort((a, b) => a - b), at, "reads, changes, scan");
+    // The switch's other order (Gate B's built order): reads, the scan, then the changes; it type-checks; the default is "last".
+    const before = shareReadOnlyVisits(suite, { axeOrder: "before-changes" });
+    const beforeAt = [...order.slice(0, 3), order[6], ...order.slice(3, 6)].map((title) => before.indexOf(`: ${title}'`));
+    assert.deepEqual([[...beforeAt].sort((a, b) => a - b), findTypeErrors(before), shareReadOnlyVisits(suite, { axeOrder: "last" }) === shared], [beforeAt, [], true]);
+    const scanLast = parseTestUnits(shared).find((unit) => unit.title === order[6])!;
     assert.deepEqual([scanLast.describe, /rerun|changed/.test(scanLast.source)], [["Page /a", "Accessibility Coverage"], false]);
     // A check that changes the page says so and runs inside rerun(); one that only reads doesn't.
     assert.match(where("clicks").source, /async \(\{ tfShared \}\) => \{\n\s+await tfShared\.rerun\(async \(\) => \{\n\s+const \{ page \} = await tfShared\.visit\('\/a'\);\n\s+tfShared\.changed\(\);\n\s+await page\.getByRole\('button'\)\.click\(\);\n\s+\}\);\n\s+\}\);/);

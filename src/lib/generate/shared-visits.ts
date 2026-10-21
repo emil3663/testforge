@@ -9,7 +9,7 @@
  *   and `request`, and that afterwards doesn't load again, route, listen, add scripts or styles, set up its context,
  *   use a form field or a guarded control, or write storage. Since TFP-214 a test that changes the page in place
  *   (clicks, hovers, presses keys, scrolls, changes the DOM, opens a route view, goes back) shares too: it calls
- *   `tfShared.changed()` and runs inside `tfShared.rerun()`, after its page's reads and the axe scan. Decision 5's
+ *   `tfShared.changed()` and runs inside `tfShared.rerun()`, after its page's reads and before the axe scan. Decision 5's
  *   fresh-page list keeps its own page whatever the test does: performance, responsive, cookie and session, the
  *   interactive and active gates, and the gap-writer and candidate tests.
  *   A test inside a describe that holds anything but tests, describes and declarations (a hook, `test.use`, a
@@ -85,16 +85,17 @@ const CHANGES_THE_PAGE = new RegExp(
 const holdsData = (statement: ts.Statement, file: ts.SourceFile) =>
     ts.isVariableStatement(statement) && !/\b(page|context|request|await|tfGoto)\b|=>|\bfunction\b/.test(statement.getText(file));
 
-// Gate B (Emil, 2026-10-20): in a page's group the checks that only read run first, then the axe scan, then the
-// checks that change the page, so the scan reads a page no check has touched.
+// In a page's group the checks that only read run first, then the checks that change the page, then the axe scan
+// (Gate C ruling, Emil 2026-10-21; at Gate B the scan ran before the changing checks).
 const AXE_SCAN = /passes the WCAG 2\.2 A and AA scan/;
 
 /**
  * Where the axe scan runs in a page's group (Emil, 2026-10-21: a switch, both orders run at Gate C).
- * - `before-changes` (the default): after the checks that only read, before those that change the page.
- * - `last`: after the checks that change the page. A failing scan then costs no reload, but it reads a page they
- *   altered and put back; it is not re-run (it changes nothing itself). It becomes the default only with identical
- *   axe findings on both copies and a faster run.
+ * - `last` (the default since the Gate C ruling): after the checks that change the page. A failing scan then costs no
+ *   reload; it reads a page they altered and put back, and is not re-run (it changes nothing itself). Measured at
+ *   Gate C: the scans' findings identical to `before-changes`' in every run on both Toolshop copies, and accessibility
+ *   15.6% (with-bugs) and 21.1% (clean) faster.
+ * - `before-changes`: after the checks that only read, before those that change the page (TFP-214's built order).
  */
 export type AxeOrder = "before-changes" | "last";
 export type ShareOptions = { axeOrder?: AxeOrder };
@@ -306,7 +307,7 @@ export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): s
         if (conflicting) declaration.frame.pinned = true;
     }
 
-    const shared = tests.map((entry) => ({ entry, plan: sharing(entry, file, options.axeOrder ?? "before-changes") })).filter((item): item is { entry: TestEntry; plan: NonNullable<ReturnType<typeof sharing>> } => item.plan !== null);
+    const shared = tests.map((entry) => ({ entry, plan: sharing(entry, file, options.axeOrder ?? "last") })).filter((item): item is { entry: TestEntry; plan: NonNullable<ReturnType<typeof sharing>> } => item.plan !== null);
     if (shared.length === 0) return code;
 
     // What leaves its place: the shared tests, and the declarations of the describes they leave. A describe left empty
@@ -340,7 +341,8 @@ export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): s
     };
 
     // The groups: one per page, in the order pages first appear; inside, the tests' own describes, in order: the
-    // checks that only read, then the axe scan, then the checks that change the page (TFP-214).
+    // checks that only read, then the checks that change the page (TFP-214), then the axe scan (the Gate C ruling;
+    // before it with `axeOrder: "before-changes"`).
     const pages = new Map<string, Map<string, { titles: string[]; texts: string[] }>>();
     for (const item of shared) if (!pages.has(item.plan.path)) pages.set(item.plan.path, new Map());
     const ordered = shared.map((item, index) => ({ item, index })).sort((a, b) => a.item.plan.rank - b.item.plan.rank || a.index - b.index).map(({ item }) => item);
