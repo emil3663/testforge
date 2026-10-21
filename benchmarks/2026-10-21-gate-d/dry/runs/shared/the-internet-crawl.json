@@ -1,0 +1,6194 @@
+{
+  "crawlId": "f8b70f98-9b6b-4458-be76-d259d7f18fc0",
+  "crawlStatus": "completed",
+  "duration": 70974,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 102,
+    "queuedUrls": 0,
+    "discoveredPages": 100,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/infinite_scroll/29",
+    "lastCompletedTitle": "/infinite_scroll/29"
+  },
+  "result": {
+    "crawledAt": "2026-10-21T13:49:37.159Z",
+    "baseUrl": "http://localhost:7080",
+    "pageCount": 100,
+    "pages": [
+      {
+        "path": "/",
+        "url": "http://localhost:7080/",
+        "title": "The Internet",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1",
+            "h2"
+          ],
+          "interactive": 54
+        }
+      },
+      {
+        "path": "/about",
+        "url": "http://localhost:7080/about",
+        "title": "",
+        "discoveredFrom": "/disappearing_elements",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/abtest",
+        "url": "http://localhost:7080/abtest",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/add_remove_elements",
+        "url": "http://localhost:7080/add_remove_elements",
+        "title": "",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/basic_auth",
+        "url": "http://localhost:7080/basic_auth",
+        "title": "",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/broken_images",
+        "url": "http://localhost:7080/broken_images",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/canvas",
+        "url": "http://localhost:7080/canvas",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/challenging_dom",
+        "url": "http://localhost:7080/challenging_dom",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 26
+        }
+      },
+      {
+        "path": "/checkboxes",
+        "url": "http://localhost:7080/checkboxes",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "checkbox"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/contact-us",
+        "url": "http://localhost:7080/contact-us",
+        "title": "",
+        "discoveredFrom": "/disappearing_elements",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/context_menu",
+        "url": "http://localhost:7080/context_menu",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/digest_auth",
+        "url": "http://localhost:7080/digest_auth",
+        "title": "",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/disappearing_elements",
+        "url": "http://localhost:7080/disappearing_elements",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 8
+        }
+      },
+      {
+        "path": "/download",
+        "url": "http://localhost:7080/download",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 8
+        }
+      },
+      {
+        "path": "/download_secure",
+        "url": "http://localhost:7080/download_secure",
+        "title": "",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/drag_and_drop",
+        "url": "http://localhost:7080/drag_and_drop",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "banner"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/dropdown",
+        "url": "http://localhost:7080/dropdown",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/dynamic_content",
+        "url": "http://localhost:7080/dynamic_content",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/dynamic_controls",
+        "url": "http://localhost:7080/dynamic_controls",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "checkbox"
+            ],
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h4",
+            "h4",
+            "h4"
+          ],
+          "interactive": 7
+        }
+      },
+      {
+        "path": "/dynamic_loading",
+        "url": "http://localhost:7080/dynamic_loading",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/dynamic_loading/1",
+        "url": "http://localhost:7080/dynamic_loading/1",
+        "title": "The Internet",
+        "discoveredFrom": "/dynamic_loading",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4",
+            "h4"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/dynamic_loading/2",
+        "url": "http://localhost:7080/dynamic_loading/2",
+        "title": "The Internet",
+        "discoveredFrom": "/dynamic_loading",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/entry_ad",
+        "url": "http://localhost:7080/entry_ad",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/exit_intent",
+        "url": "http://localhost:7080/exit_intent",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/floating_menu",
+        "url": "http://localhost:7080/floating_menu",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 7
+        }
+      },
+      {
+        "path": "/forgot_password",
+        "url": "http://localhost:7080/forgot_password",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/frames",
+        "url": "http://localhost:7080/frames",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/gallery",
+        "url": "http://localhost:7080/gallery",
+        "title": "",
+        "discoveredFrom": "/disappearing_elements",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/geolocation",
+        "url": "http://localhost:7080/geolocation",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/horizontal_slider",
+        "url": "http://localhost:7080/horizontal_slider",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/hovers",
+        "url": "http://localhost:7080/hovers",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": true,
+          "headings": [
+            "h3",
+            "h5",
+            "h5",
+            "h5"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/iframe",
+        "url": "http://localhost:7080/iframe",
+        "title": "The Internet",
+        "discoveredFrom": "/frames",
+        "outline": {
+          "landmarks": [
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 22
+        }
+      },
+      {
+        "path": "/infinite_scroll",
+        "url": "http://localhost:7080/infinite_scroll",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/infinite_scroll/10",
+        "url": "http://localhost:7080/infinite_scroll/10",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/9",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/11",
+        "url": "http://localhost:7080/infinite_scroll/11",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/10",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/12",
+        "url": "http://localhost:7080/infinite_scroll/12",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/11",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/13",
+        "url": "http://localhost:7080/infinite_scroll/13",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/12",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/14",
+        "url": "http://localhost:7080/infinite_scroll/14",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/13",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/15",
+        "url": "http://localhost:7080/infinite_scroll/15",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/14",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/16",
+        "url": "http://localhost:7080/infinite_scroll/16",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/15",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/17",
+        "url": "http://localhost:7080/infinite_scroll/17",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/16",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/18",
+        "url": "http://localhost:7080/infinite_scroll/18",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/17",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/19",
+        "url": "http://localhost:7080/infinite_scroll/19",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/18",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/20",
+        "url": "http://localhost:7080/infinite_scroll/20",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/19",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/21",
+        "url": "http://localhost:7080/infinite_scroll/21",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/20",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/22",
+        "url": "http://localhost:7080/infinite_scroll/22",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/21",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/23",
+        "url": "http://localhost:7080/infinite_scroll/23",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/22",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/24",
+        "url": "http://localhost:7080/infinite_scroll/24",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/23",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/25",
+        "url": "http://localhost:7080/infinite_scroll/25",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/24",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/26",
+        "url": "http://localhost:7080/infinite_scroll/26",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/25",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/27",
+        "url": "http://localhost:7080/infinite_scroll/27",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/26",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/28",
+        "url": "http://localhost:7080/infinite_scroll/28",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/27",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/29",
+        "url": "http://localhost:7080/infinite_scroll/29",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/28",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/3",
+        "url": "http://localhost:7080/infinite_scroll/3",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/4",
+        "url": "http://localhost:7080/infinite_scroll/4",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/3",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/5",
+        "url": "http://localhost:7080/infinite_scroll/5",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/4",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/6",
+        "url": "http://localhost:7080/infinite_scroll/6",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/5",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/7",
+        "url": "http://localhost:7080/infinite_scroll/7",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/6",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/8",
+        "url": "http://localhost:7080/infinite_scroll/8",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/7",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/infinite_scroll/9",
+        "url": "http://localhost:7080/infinite_scroll/9",
+        "title": "",
+        "discoveredFrom": "/infinite_scroll/8",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 1
+        }
+      },
+      {
+        "path": "/inputs",
+        "url": "http://localhost:7080/inputs",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/javascript_alerts",
+        "url": "http://localhost:7080/javascript_alerts",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/javascript_error",
+        "url": "http://localhost:7080/javascript_error",
+        "title": "Page with JavaScript errors on load",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/jqueryui",
+        "url": "http://localhost:7080/jqueryui",
+        "title": "The Internet",
+        "discoveredFrom": "/jqueryui/menu",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/jqueryui/menu",
+        "url": "http://localhost:7080/jqueryui/menu",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 12
+        }
+      },
+      {
+        "path": "/key_presses",
+        "url": "http://localhost:7080/key_presses",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/large",
+        "url": "http://localhost:7080/large",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4",
+            "h4",
+            "h4"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/large_form",
+        "url": "http://localhost:7080/large_form",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "checkbox",
+              "color",
+              "date",
+              "email",
+              "number",
+              "password",
+              "radio",
+              "range",
+              "select",
+              "text",
+              "textarea"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 24
+        }
+      },
+      {
+        "path": "/login",
+        "url": "http://localhost:7080/login",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "password",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/multiple_dropdown",
+        "url": "http://localhost:7080/multiple_dropdown",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/nested_frames",
+        "url": "http://localhost:7080/nested_frames",
+        "title": "",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/notification_message_rendered",
+        "url": "http://localhost:7080/notification_message_rendered",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/portfolio",
+        "url": "http://localhost:7080/portfolio",
+        "title": "",
+        "discoveredFrom": "/disappearing_elements",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/radio_buttons",
+        "url": "http://localhost:7080/radio_buttons",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "radio"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 9
+        }
+      },
+      {
+        "path": "/readonly",
+        "url": "http://localhost:7080/readonly",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "checkbox",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 7
+        }
+      },
+      {
+        "path": "/redirector",
+        "url": "http://localhost:7080/redirector",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/shadowdom",
+        "url": "http://localhost:7080/shadowdom",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/shifting_content",
+        "url": "http://localhost:7080/shifting_content",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/shifting_content/image",
+        "url": "http://localhost:7080/shifting_content/image",
+        "title": "The Internet",
+        "discoveredFrom": "/shifting_content",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 7
+        }
+      },
+      {
+        "path": "/shifting_content/list",
+        "url": "http://localhost:7080/shifting_content/list",
+        "title": "The Internet",
+        "discoveredFrom": "/shifting_content",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/shifting_content/menu",
+        "url": "http://localhost:7080/shifting_content/menu",
+        "title": "The Internet",
+        "discoveredFrom": "/shifting_content",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 11
+        }
+      },
+      {
+        "path": "/slow",
+        "url": "http://localhost:7080/slow",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/status_codes",
+        "url": "http://localhost:7080/status_codes",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 8
+        }
+      },
+      {
+        "path": "/status_codes/200",
+        "url": "http://localhost:7080/status_codes/200",
+        "title": "The Internet",
+        "discoveredFrom": "/status_codes",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/status_codes/301",
+        "url": "http://localhost:7080/status_codes/301",
+        "title": "The Internet",
+        "discoveredFrom": "/status_codes",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/status_codes/404",
+        "url": "http://localhost:7080/status_codes/404",
+        "title": "The Internet",
+        "discoveredFrom": "/status_codes",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/status_codes/500",
+        "url": "http://localhost:7080/status_codes/500",
+        "title": "The Internet",
+        "discoveredFrom": "/status_codes",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/subdirectories",
+        "url": "http://localhost:7080/subdirectories",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/subdirectories/one",
+        "url": "http://localhost:7080/subdirectories/one",
+        "title": "The Internet",
+        "discoveredFrom": "/subdirectories",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/subdirectories/two",
+        "url": "http://localhost:7080/subdirectories/two",
+        "title": "The Internet",
+        "discoveredFrom": "/subdirectories",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 5
+        }
+      },
+      {
+        "path": "/tables",
+        "url": "http://localhost:7080/tables",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3",
+            "h4",
+            "h4"
+          ],
+          "interactive": 19
+        }
+      },
+      {
+        "path": "/tinymce",
+        "url": "http://localhost:7080/tinymce",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 22
+        }
+      },
+      {
+        "path": "/two_factor",
+        "url": "http://localhost:7080/two_factor",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "password",
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h2",
+            "h4"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/typos",
+        "url": "http://localhost:7080/typos",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 3
+        }
+      },
+      {
+        "path": "/upload",
+        "url": "http://localhost:7080/upload",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [
+            [
+              "file"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/users/1",
+        "url": "http://localhost:7080/users/1",
+        "title": "",
+        "discoveredFrom": "/hovers",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/users/2",
+        "url": "http://localhost:7080/users/2",
+        "title": "",
+        "discoveredFrom": "/hovers",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/users/3",
+        "url": "http://localhost:7080/users/3",
+        "title": "",
+        "discoveredFrom": "/hovers",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 0
+        }
+      },
+      {
+        "path": "/windows",
+        "url": "http://localhost:7080/windows",
+        "title": "The Internet",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/windows/new",
+        "url": "http://localhost:7080/windows/new",
+        "title": "New Window",
+        "discoveredFrom": "/windows",
+        "outline": {
+          "landmarks": [],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h3"
+          ],
+          "interactive": 0
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/",
+        "patterns": [
+          "/"
+        ],
+        "pages": [
+          "/"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "home"
+      },
+      {
+        "pattern": "/abtest",
+        "patterns": [
+          "/abtest"
+        ],
+        "pages": [
+          "/abtest"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/add_remove_elements",
+        "patterns": [
+          "/add_remove_elements"
+        ],
+        "pages": [
+          "/add_remove_elements"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/basic_auth",
+        "patterns": [
+          "/basic_auth"
+        ],
+        "pages": [
+          "/basic_auth"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/broken_images",
+        "patterns": [
+          "/broken_images"
+        ],
+        "pages": [
+          "/broken_images"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/canvas",
+        "patterns": [
+          "/canvas"
+        ],
+        "pages": [
+          "/canvas"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/challenging_dom",
+        "patterns": [
+          "/challenging_dom"
+        ],
+        "pages": [
+          "/challenging_dom"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/checkboxes",
+        "patterns": [
+          "/checkboxes"
+        ],
+        "pages": [
+          "/checkboxes"
+        ],
+        "signature": "landmarks:|forms:1[checkbox]|cards:no",
+        "formSignature": "forms:1[checkbox]",
+        "label": "form"
+      },
+      {
+        "pattern": "/context_menu",
+        "patterns": [
+          "/context_menu"
+        ],
+        "pages": [
+          "/context_menu"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/digest_auth",
+        "patterns": [
+          "/digest_auth"
+        ],
+        "pages": [
+          "/digest_auth"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/disappearing_elements",
+        "patterns": [
+          "/disappearing_elements"
+        ],
+        "pages": [
+          "/disappearing_elements"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/drag_and_drop",
+        "patterns": [
+          "/drag_and_drop"
+        ],
+        "pages": [
+          "/drag_and_drop"
+        ],
+        "signature": "landmarks:banner|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/dropdown",
+        "patterns": [
+          "/dropdown"
+        ],
+        "pages": [
+          "/dropdown"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/dynamic_content",
+        "patterns": [
+          "/dynamic_content"
+        ],
+        "pages": [
+          "/dynamic_content"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/dynamic_controls",
+        "patterns": [
+          "/dynamic_controls"
+        ],
+        "pages": [
+          "/dynamic_controls"
+        ],
+        "signature": "landmarks:|forms:2[checkbox][text]|cards:no",
+        "formSignature": "forms:2[checkbox][text]",
+        "label": "form"
+      },
+      {
+        "pattern": "/dynamic_loading",
+        "patterns": [
+          "/dynamic_loading"
+        ],
+        "pages": [
+          "/dynamic_loading"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/entry_ad",
+        "patterns": [
+          "/entry_ad"
+        ],
+        "pages": [
+          "/entry_ad"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/exit_intent",
+        "patterns": [
+          "/exit_intent"
+        ],
+        "pages": [
+          "/exit_intent"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/download",
+        "patterns": [
+          "/download"
+        ],
+        "pages": [
+          "/download"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/upload",
+        "patterns": [
+          "/upload"
+        ],
+        "pages": [
+          "/upload"
+        ],
+        "signature": "landmarks:|forms:1[file]|cards:no",
+        "formSignature": "forms:1[file]",
+        "label": "form"
+      },
+      {
+        "pattern": "/floating_menu",
+        "patterns": [
+          "/floating_menu"
+        ],
+        "pages": [
+          "/floating_menu"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/forgot_password",
+        "patterns": [
+          "/forgot_password"
+        ],
+        "pages": [
+          "/forgot_password"
+        ],
+        "signature": "landmarks:|forms:1[text]|cards:no",
+        "formSignature": "forms:1[text]",
+        "label": "form"
+      },
+      {
+        "pattern": "/login",
+        "patterns": [
+          "/login"
+        ],
+        "pages": [
+          "/login"
+        ],
+        "signature": "landmarks:|forms:1[password,text]|cards:no",
+        "formSignature": "forms:1[password,text]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/frames",
+        "patterns": [
+          "/frames"
+        ],
+        "pages": [
+          "/frames"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/geolocation",
+        "patterns": [
+          "/geolocation"
+        ],
+        "pages": [
+          "/geolocation"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/horizontal_slider",
+        "patterns": [
+          "/horizontal_slider"
+        ],
+        "pages": [
+          "/horizontal_slider"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/hovers",
+        "patterns": [
+          "/hovers"
+        ],
+        "pages": [
+          "/hovers"
+        ],
+        "signature": "landmarks:|forms:0|cards:yes",
+        "formSignature": "forms:0",
+        "label": "listing"
+      },
+      {
+        "pattern": "/infinite_scroll",
+        "patterns": [
+          "/infinite_scroll"
+        ],
+        "pages": [
+          "/infinite_scroll"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/inputs",
+        "patterns": [
+          "/inputs"
+        ],
+        "pages": [
+          "/inputs"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/jqueryui/menu",
+        "patterns": [
+          "/jqueryui/menu"
+        ],
+        "pages": [
+          "/jqueryui/menu"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/javascript_alerts",
+        "patterns": [
+          "/javascript_alerts"
+        ],
+        "pages": [
+          "/javascript_alerts"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/javascript_error",
+        "patterns": [
+          "/javascript_error"
+        ],
+        "pages": [
+          "/javascript_error"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/key_presses",
+        "patterns": [
+          "/key_presses"
+        ],
+        "pages": [
+          "/key_presses"
+        ],
+        "signature": "landmarks:|forms:1[text]|cards:no",
+        "formSignature": "forms:1[text]",
+        "label": "form"
+      },
+      {
+        "pattern": "/large",
+        "patterns": [
+          "/large"
+        ],
+        "pages": [
+          "/large"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/large_form",
+        "patterns": [
+          "/large_form"
+        ],
+        "pages": [
+          "/large_form"
+        ],
+        "signature": "landmarks:|forms:1[checkbox,color,date,email,number,password,radio,range,select,text,textarea]|cards:no",
+        "formSignature": "forms:1[checkbox,color,date,email,number,password,radio,range,select,text,textarea]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/multiple_dropdown",
+        "patterns": [
+          "/multiple_dropdown"
+        ],
+        "pages": [
+          "/multiple_dropdown"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/windows",
+        "patterns": [
+          "/windows"
+        ],
+        "pages": [
+          "/windows"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/nested_frames",
+        "patterns": [
+          "/nested_frames"
+        ],
+        "pages": [
+          "/nested_frames"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/notification_message_rendered",
+        "patterns": [
+          "/notification_message_rendered"
+        ],
+        "pages": [
+          "/notification_message_rendered"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/radio_buttons",
+        "patterns": [
+          "/radio_buttons"
+        ],
+        "pages": [
+          "/radio_buttons"
+        ],
+        "signature": "landmarks:|forms:1[radio]|cards:no",
+        "formSignature": "forms:1[radio]",
+        "label": "form"
+      },
+      {
+        "pattern": "/readonly",
+        "patterns": [
+          "/readonly"
+        ],
+        "pages": [
+          "/readonly"
+        ],
+        "signature": "landmarks:|forms:1[checkbox,text]|cards:no",
+        "formSignature": "forms:1[checkbox,text]",
+        "label": "form"
+      },
+      {
+        "pattern": "/redirector",
+        "patterns": [
+          "/redirector"
+        ],
+        "pages": [
+          "/redirector"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/download_secure",
+        "patterns": [
+          "/download_secure"
+        ],
+        "pages": [
+          "/download_secure"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/shadowdom",
+        "patterns": [
+          "/shadowdom"
+        ],
+        "pages": [
+          "/shadowdom"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/shifting_content",
+        "patterns": [
+          "/shifting_content"
+        ],
+        "pages": [
+          "/shifting_content"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/slow",
+        "patterns": [
+          "/slow"
+        ],
+        "pages": [
+          "/slow"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/tables",
+        "patterns": [
+          "/tables"
+        ],
+        "pages": [
+          "/tables"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/status_codes",
+        "patterns": [
+          "/status_codes"
+        ],
+        "pages": [
+          "/status_codes"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/subdirectories",
+        "patterns": [
+          "/subdirectories"
+        ],
+        "pages": [
+          "/subdirectories"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/two_factor",
+        "patterns": [
+          "/two_factor"
+        ],
+        "pages": [
+          "/two_factor"
+        ],
+        "signature": "landmarks:|forms:1[password,text]|cards:no",
+        "formSignature": "forms:1[password,text]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/typos",
+        "patterns": [
+          "/typos"
+        ],
+        "pages": [
+          "/typos"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/tinymce",
+        "patterns": [
+          "/tinymce"
+        ],
+        "pages": [
+          "/tinymce"
+        ],
+        "signature": "landmarks:navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/about",
+        "patterns": [
+          "/about"
+        ],
+        "pages": [
+          "/about"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/contact-us",
+        "patterns": [
+          "/contact-us"
+        ],
+        "pages": [
+          "/contact-us"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/portfolio",
+        "patterns": [
+          "/portfolio"
+        ],
+        "pages": [
+          "/portfolio"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/gallery",
+        "patterns": [
+          "/gallery"
+        ],
+        "pages": [
+          "/gallery"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/dynamic_loading/:id",
+        "patterns": [
+          "/dynamic_loading/:id"
+        ],
+        "pages": [
+          "/dynamic_loading/1",
+          "/dynamic_loading/2"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "detail"
+      },
+      {
+        "pattern": "/iframe",
+        "patterns": [
+          "/iframe"
+        ],
+        "pages": [
+          "/iframe"
+        ],
+        "signature": "landmarks:navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/users/:id",
+        "patterns": [
+          "/users/:id"
+        ],
+        "pages": [
+          "/users/1",
+          "/users/2",
+          "/users/3"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "detail"
+      },
+      {
+        "pattern": "/infinite_scroll/:id",
+        "patterns": [
+          "/infinite_scroll/:id"
+        ],
+        "pages": [
+          "/infinite_scroll/3",
+          "/infinite_scroll/4",
+          "/infinite_scroll/5",
+          "/infinite_scroll/6",
+          "/infinite_scroll/7",
+          "/infinite_scroll/8",
+          "/infinite_scroll/9",
+          "/infinite_scroll/10",
+          "/infinite_scroll/11",
+          "/infinite_scroll/12",
+          "/infinite_scroll/13",
+          "/infinite_scroll/14",
+          "/infinite_scroll/15",
+          "/infinite_scroll/16",
+          "/infinite_scroll/17",
+          "/infinite_scroll/18",
+          "/infinite_scroll/19",
+          "/infinite_scroll/20",
+          "/infinite_scroll/21",
+          "/infinite_scroll/22",
+          "/infinite_scroll/23",
+          "/infinite_scroll/24",
+          "/infinite_scroll/25",
+          "/infinite_scroll/26",
+          "/infinite_scroll/27",
+          "/infinite_scroll/28",
+          "/infinite_scroll/29"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "detail"
+      },
+      {
+        "pattern": "/jqueryui",
+        "patterns": [
+          "/jqueryui"
+        ],
+        "pages": [
+          "/jqueryui"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/windows/new",
+        "patterns": [
+          "/windows/new"
+        ],
+        "pages": [
+          "/windows/new"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/shifting_content/:slug",
+        "patterns": [
+          "/shifting_content/:slug"
+        ],
+        "pages": [
+          "/shifting_content/menu",
+          "/shifting_content/image",
+          "/shifting_content/list"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      },
+      {
+        "pattern": "/status_codes/:id",
+        "patterns": [
+          "/status_codes/:id"
+        ],
+        "pages": [
+          "/status_codes/200",
+          "/status_codes/301",
+          "/status_codes/404",
+          "/status_codes/500"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "detail"
+      },
+      {
+        "pattern": "/subdirectories/:slug",
+        "patterns": [
+          "/subdirectories/:slug"
+        ],
+        "pages": [
+          "/subdirectories/one",
+          "/subdirectories/two"
+        ],
+        "signature": "landmarks:|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "content"
+      }
+    ],
+    "rankedTypes": [
+      {
+        "pattern": "/",
+        "label": "home",
+        "pages": [
+          "/"
+        ],
+        "pagesByInteractive": [
+          "/"
+        ],
+        "representative": "/",
+        "forms": 0,
+        "interactive": 54,
+        "alwaysCovered": [
+          "home"
+        ],
+        "rank": 1,
+        "placedBy": "first",
+        "placement": "always covered (home); home is always ranked first"
+      },
+      {
+        "pattern": "/infinite_scroll/:id",
+        "label": "detail",
+        "pages": [
+          "/infinite_scroll/3",
+          "/infinite_scroll/4",
+          "/infinite_scroll/5",
+          "/infinite_scroll/6",
+          "/infinite_scroll/7",
+          "/infinite_scroll/8",
+          "/infinite_scroll/9",
+          "/infinite_scroll/10",
+          "/infinite_scroll/11",
+          "/infinite_scroll/12",
+          "/infinite_scroll/13",
+          "/infinite_scroll/14",
+          "/infinite_scroll/15",
+          "/infinite_scroll/16",
+          "/infinite_scroll/17",
+          "/infinite_scroll/18",
+          "/infinite_scroll/19",
+          "/infinite_scroll/20",
+          "/infinite_scroll/21",
+          "/infinite_scroll/22",
+          "/infinite_scroll/23",
+          "/infinite_scroll/24",
+          "/infinite_scroll/25",
+          "/infinite_scroll/26",
+          "/infinite_scroll/27",
+          "/infinite_scroll/28",
+          "/infinite_scroll/29"
+        ],
+        "pagesByInteractive": [
+          "/infinite_scroll/3",
+          "/infinite_scroll/4",
+          "/infinite_scroll/5",
+          "/infinite_scroll/6",
+          "/infinite_scroll/7",
+          "/infinite_scroll/8",
+          "/infinite_scroll/9",
+          "/infinite_scroll/10",
+          "/infinite_scroll/11",
+          "/infinite_scroll/12",
+          "/infinite_scroll/13",
+          "/infinite_scroll/14",
+          "/infinite_scroll/15",
+          "/infinite_scroll/16",
+          "/infinite_scroll/17",
+          "/infinite_scroll/18",
+          "/infinite_scroll/19",
+          "/infinite_scroll/20",
+          "/infinite_scroll/21",
+          "/infinite_scroll/22",
+          "/infinite_scroll/23",
+          "/infinite_scroll/24",
+          "/infinite_scroll/25",
+          "/infinite_scroll/26",
+          "/infinite_scroll/27",
+          "/infinite_scroll/28",
+          "/infinite_scroll/29"
+        ],
+        "representative": "/infinite_scroll/3",
+        "forms": 0,
+        "interactive": 1,
+        "alwaysCovered": [
+          "largest"
+        ],
+        "rank": 2,
+        "placedBy": "home first",
+        "placement": "always covered (largest); after home, which is always ranked first"
+      },
+      {
+        "pattern": "/dynamic_controls",
+        "label": "form",
+        "pages": [
+          "/dynamic_controls"
+        ],
+        "pagesByInteractive": [
+          "/dynamic_controls"
+        ],
+        "representative": "/dynamic_controls",
+        "forms": 2,
+        "interactive": 7,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 3,
+        "placedBy": "pages",
+        "placement": "always covered (form); after /infinite_scroll/:id by pages (1 page against 27 pages)"
+      },
+      {
+        "pattern": "/large_form",
+        "label": "sign-in",
+        "pages": [
+          "/large_form"
+        ],
+        "pagesByInteractive": [
+          "/large_form"
+        ],
+        "representative": "/large_form",
+        "forms": 1,
+        "interactive": 24,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 4,
+        "placedBy": "forms",
+        "placement": "always covered (form); after /dynamic_controls by forms (1 form against 2 forms)"
+      },
+      {
+        "pattern": "/radio_buttons",
+        "label": "form",
+        "pages": [
+          "/radio_buttons"
+        ],
+        "pagesByInteractive": [
+          "/radio_buttons"
+        ],
+        "representative": "/radio_buttons",
+        "forms": 1,
+        "interactive": 9,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 5,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /large_form by interactive elements (9 interactive elements against 24 interactive elements)"
+      },
+      {
+        "pattern": "/readonly",
+        "label": "form",
+        "pages": [
+          "/readonly"
+        ],
+        "pagesByInteractive": [
+          "/readonly"
+        ],
+        "representative": "/readonly",
+        "forms": 1,
+        "interactive": 7,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 6,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /radio_buttons by interactive elements (7 interactive elements against 9 interactive elements)"
+      },
+      {
+        "pattern": "/upload",
+        "label": "form",
+        "pages": [
+          "/upload"
+        ],
+        "pagesByInteractive": [
+          "/upload"
+        ],
+        "representative": "/upload",
+        "forms": 1,
+        "interactive": 6,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 7,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /readonly by interactive elements (6 interactive elements against 7 interactive elements)"
+      },
+      {
+        "pattern": "/login",
+        "label": "sign-in",
+        "pages": [
+          "/login"
+        ],
+        "pagesByInteractive": [
+          "/login"
+        ],
+        "representative": "/login",
+        "forms": 1,
+        "interactive": 6,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 8,
+        "placedBy": "crawl order",
+        "placement": "always covered (form); after /upload by crawl order (crawled 23rd against crawled 20th)"
+      },
+      {
+        "pattern": "/two_factor",
+        "label": "sign-in",
+        "pages": [
+          "/two_factor"
+        ],
+        "pagesByInteractive": [
+          "/two_factor"
+        ],
+        "representative": "/two_factor",
+        "forms": 1,
+        "interactive": 6,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 9,
+        "placedBy": "crawl order",
+        "placement": "always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)"
+      },
+      {
+        "pattern": "/checkboxes",
+        "label": "form",
+        "pages": [
+          "/checkboxes"
+        ],
+        "pagesByInteractive": [
+          "/checkboxes"
+        ],
+        "representative": "/checkboxes",
+        "forms": 1,
+        "interactive": 5,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 10,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)"
+      },
+      {
+        "pattern": "/forgot_password",
+        "label": "form",
+        "pages": [
+          "/forgot_password"
+        ],
+        "pagesByInteractive": [
+          "/forgot_password"
+        ],
+        "representative": "/forgot_password",
+        "forms": 1,
+        "interactive": 5,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 11,
+        "placedBy": "crawl order",
+        "placement": "always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)"
+      },
+      {
+        "pattern": "/key_presses",
+        "label": "form",
+        "pages": [
+          "/key_presses"
+        ],
+        "pagesByInteractive": [
+          "/key_presses"
+        ],
+        "representative": "/key_presses",
+        "forms": 1,
+        "interactive": 4,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 12,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)"
+      },
+      {
+        "pattern": "/status_codes/:id",
+        "label": "detail",
+        "pages": [
+          "/status_codes/200",
+          "/status_codes/301",
+          "/status_codes/404",
+          "/status_codes/500"
+        ],
+        "pagesByInteractive": [
+          "/status_codes/200",
+          "/status_codes/301",
+          "/status_codes/404",
+          "/status_codes/500"
+        ],
+        "representative": "/status_codes/200",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 13,
+        "placedBy": "always covered",
+        "placement": "after the always-covered types"
+      },
+      {
+        "pattern": "/users/:id",
+        "label": "detail",
+        "pages": [
+          "/users/1",
+          "/users/2",
+          "/users/3"
+        ],
+        "pagesByInteractive": [
+          "/users/1",
+          "/users/2",
+          "/users/3"
+        ],
+        "representative": "/users/1",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 14,
+        "placedBy": "pages",
+        "placement": "after /status_codes/:id by pages (3 pages against 4 pages)"
+      },
+      {
+        "pattern": "/dynamic_loading/:id",
+        "label": "detail",
+        "pages": [
+          "/dynamic_loading/1",
+          "/dynamic_loading/2"
+        ],
+        "pagesByInteractive": [
+          "/dynamic_loading/1",
+          "/dynamic_loading/2"
+        ],
+        "representative": "/dynamic_loading/1",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 15,
+        "placedBy": "pages",
+        "placement": "after /users/:id by pages (2 pages against 3 pages)"
+      },
+      {
+        "pattern": "/hovers",
+        "label": "listing",
+        "pages": [
+          "/hovers"
+        ],
+        "pagesByInteractive": [
+          "/hovers"
+        ],
+        "representative": "/hovers",
+        "forms": 0,
+        "interactive": 6,
+        "alwaysCovered": null,
+        "rank": 16,
+        "placedBy": "pages",
+        "placement": "after /dynamic_loading/:id by pages (1 page against 2 pages)"
+      },
+      {
+        "pattern": "/shifting_content/:slug",
+        "label": "content",
+        "pages": [
+          "/shifting_content/menu",
+          "/shifting_content/image",
+          "/shifting_content/list"
+        ],
+        "pagesByInteractive": [
+          "/shifting_content/menu",
+          "/shifting_content/image",
+          "/shifting_content/list"
+        ],
+        "representative": "/shifting_content/menu",
+        "forms": 0,
+        "interactive": 11,
+        "alwaysCovered": null,
+        "rank": 17,
+        "placedBy": "content type",
+        "placement": "after every other type: content types are dropped first"
+      },
+      {
+        "pattern": "/subdirectories/:slug",
+        "label": "content",
+        "pages": [
+          "/subdirectories/one",
+          "/subdirectories/two"
+        ],
+        "pagesByInteractive": [
+          "/subdirectories/one",
+          "/subdirectories/two"
+        ],
+        "representative": "/subdirectories/one",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 18,
+        "placedBy": "pages",
+        "placement": "after /shifting_content/:slug by pages (2 pages against 3 pages)"
+      },
+      {
+        "pattern": "/challenging_dom",
+        "label": "content",
+        "pages": [
+          "/challenging_dom"
+        ],
+        "pagesByInteractive": [
+          "/challenging_dom"
+        ],
+        "representative": "/challenging_dom",
+        "forms": 0,
+        "interactive": 26,
+        "alwaysCovered": null,
+        "rank": 19,
+        "placedBy": "pages",
+        "placement": "after /subdirectories/:slug by pages (1 page against 2 pages)"
+      },
+      {
+        "pattern": "/tinymce",
+        "label": "content",
+        "pages": [
+          "/tinymce"
+        ],
+        "pagesByInteractive": [
+          "/tinymce"
+        ],
+        "representative": "/tinymce",
+        "forms": 0,
+        "interactive": 22,
+        "alwaysCovered": null,
+        "rank": 20,
+        "placedBy": "interactive elements",
+        "placement": "after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)"
+      },
+      {
+        "pattern": "/iframe",
+        "label": "content",
+        "pages": [
+          "/iframe"
+        ],
+        "pagesByInteractive": [
+          "/iframe"
+        ],
+        "representative": "/iframe",
+        "forms": 0,
+        "interactive": 22,
+        "alwaysCovered": null,
+        "rank": 21,
+        "placedBy": "crawl order",
+        "placement": "after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+      },
+      {
+        "pattern": "/tables",
+        "label": "content",
+        "pages": [
+          "/tables"
+        ],
+        "pagesByInteractive": [
+          "/tables"
+        ],
+        "representative": "/tables",
+        "forms": 0,
+        "interactive": 19,
+        "alwaysCovered": null,
+        "rank": 22,
+        "placedBy": "interactive elements",
+        "placement": "after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+      },
+      {
+        "pattern": "/jqueryui/menu",
+        "label": "content",
+        "pages": [
+          "/jqueryui/menu"
+        ],
+        "pagesByInteractive": [
+          "/jqueryui/menu"
+        ],
+        "representative": "/jqueryui/menu",
+        "forms": 0,
+        "interactive": 12,
+        "alwaysCovered": null,
+        "rank": 23,
+        "placedBy": "interactive elements",
+        "placement": "after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+      },
+      {
+        "pattern": "/disappearing_elements",
+        "label": "content",
+        "pages": [
+          "/disappearing_elements"
+        ],
+        "pagesByInteractive": [
+          "/disappearing_elements"
+        ],
+        "representative": "/disappearing_elements",
+        "forms": 0,
+        "interactive": 8,
+        "alwaysCovered": null,
+        "rank": 24,
+        "placedBy": "interactive elements",
+        "placement": "after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+      },
+      {
+        "pattern": "/download",
+        "label": "content",
+        "pages": [
+          "/download"
+        ],
+        "pagesByInteractive": [
+          "/download"
+        ],
+        "representative": "/download",
+        "forms": 0,
+        "interactive": 8,
+        "alwaysCovered": null,
+        "rank": 25,
+        "placedBy": "crawl order",
+        "placement": "after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+      },
+      {
+        "pattern": "/status_codes",
+        "label": "content",
+        "pages": [
+          "/status_codes"
+        ],
+        "pagesByInteractive": [
+          "/status_codes"
+        ],
+        "representative": "/status_codes",
+        "forms": 0,
+        "interactive": 8,
+        "alwaysCovered": null,
+        "rank": 26,
+        "placedBy": "crawl order",
+        "placement": "after /download by crawl order (crawled 48th against crawled 19th)"
+      },
+      {
+        "pattern": "/floating_menu",
+        "label": "content",
+        "pages": [
+          "/floating_menu"
+        ],
+        "pagesByInteractive": [
+          "/floating_menu"
+        ],
+        "representative": "/floating_menu",
+        "forms": 0,
+        "interactive": 7,
+        "alwaysCovered": null,
+        "rank": 27,
+        "placedBy": "interactive elements",
+        "placement": "after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+      },
+      {
+        "pattern": "/javascript_alerts",
+        "label": "content",
+        "pages": [
+          "/javascript_alerts"
+        ],
+        "pagesByInteractive": [
+          "/javascript_alerts"
+        ],
+        "representative": "/javascript_alerts",
+        "forms": 0,
+        "interactive": 6,
+        "alwaysCovered": null,
+        "rank": 28,
+        "placedBy": "interactive elements",
+        "placement": "after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+      },
+      {
+        "pattern": "/shifting_content",
+        "label": "content",
+        "pages": [
+          "/shifting_content"
+        ],
+        "pagesByInteractive": [
+          "/shifting_content"
+        ],
+        "representative": "/shifting_content",
+        "forms": 0,
+        "interactive": 6,
+        "alwaysCovered": null,
+        "rank": 29,
+        "placedBy": "crawl order",
+        "placement": "after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+      },
+      {
+        "pattern": "/dynamic_loading",
+        "label": "content",
+        "pages": [
+          "/dynamic_loading"
+        ],
+        "pagesByInteractive": [
+          "/dynamic_loading"
+        ],
+        "representative": "/dynamic_loading",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 30,
+        "placedBy": "interactive elements",
+        "placement": "after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+      },
+      {
+        "pattern": "/frames",
+        "label": "content",
+        "pages": [
+          "/frames"
+        ],
+        "pagesByInteractive": [
+          "/frames"
+        ],
+        "representative": "/frames",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 31,
+        "placedBy": "crawl order",
+        "placement": "after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+      },
+      {
+        "pattern": "/notification_message_rendered",
+        "label": "content",
+        "pages": [
+          "/notification_message_rendered"
+        ],
+        "pagesByInteractive": [
+          "/notification_message_rendered"
+        ],
+        "representative": "/notification_message_rendered",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 32,
+        "placedBy": "crawl order",
+        "placement": "after /frames by crawl order (crawled 39th against crawled 24th)"
+      },
+      {
+        "pattern": "/subdirectories",
+        "label": "content",
+        "pages": [
+          "/subdirectories"
+        ],
+        "pagesByInteractive": [
+          "/subdirectories"
+        ],
+        "representative": "/subdirectories",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 33,
+        "placedBy": "crawl order",
+        "placement": "after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+      },
+      {
+        "pattern": "/jqueryui",
+        "label": "content",
+        "pages": [
+          "/jqueryui"
+        ],
+        "pagesByInteractive": [
+          "/jqueryui"
+        ],
+        "representative": "/jqueryui",
+        "forms": 0,
+        "interactive": 5,
+        "alwaysCovered": null,
+        "rank": 34,
+        "placedBy": "crawl order",
+        "placement": "after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+      },
+      {
+        "pattern": "/dropdown",
+        "label": "content",
+        "pages": [
+          "/dropdown"
+        ],
+        "pagesByInteractive": [
+          "/dropdown"
+        ],
+        "representative": "/dropdown",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 35,
+        "placedBy": "interactive elements",
+        "placement": "after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+      },
+      {
+        "pattern": "/dynamic_content",
+        "label": "content",
+        "pages": [
+          "/dynamic_content"
+        ],
+        "pagesByInteractive": [
+          "/dynamic_content"
+        ],
+        "representative": "/dynamic_content",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 36,
+        "placedBy": "crawl order",
+        "placement": "after /dropdown by crawl order (crawled 14th against crawled 13th)"
+      },
+      {
+        "pattern": "/entry_ad",
+        "label": "content",
+        "pages": [
+          "/entry_ad"
+        ],
+        "pagesByInteractive": [
+          "/entry_ad"
+        ],
+        "representative": "/entry_ad",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 37,
+        "placedBy": "crawl order",
+        "placement": "after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+      },
+      {
+        "pattern": "/geolocation",
+        "label": "content",
+        "pages": [
+          "/geolocation"
+        ],
+        "pagesByInteractive": [
+          "/geolocation"
+        ],
+        "representative": "/geolocation",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 38,
+        "placedBy": "crawl order",
+        "placement": "after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+      },
+      {
+        "pattern": "/horizontal_slider",
+        "label": "content",
+        "pages": [
+          "/horizontal_slider"
+        ],
+        "pagesByInteractive": [
+          "/horizontal_slider"
+        ],
+        "representative": "/horizontal_slider",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 39,
+        "placedBy": "crawl order",
+        "placement": "after /geolocation by crawl order (crawled 26th against crawled 25th)"
+      },
+      {
+        "pattern": "/infinite_scroll",
+        "label": "content",
+        "pages": [
+          "/infinite_scroll"
+        ],
+        "pagesByInteractive": [
+          "/infinite_scroll"
+        ],
+        "representative": "/infinite_scroll",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 40,
+        "placedBy": "crawl order",
+        "placement": "after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+      },
+      {
+        "pattern": "/inputs",
+        "label": "content",
+        "pages": [
+          "/inputs"
+        ],
+        "pagesByInteractive": [
+          "/inputs"
+        ],
+        "representative": "/inputs",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 41,
+        "placedBy": "crawl order",
+        "placement": "after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+      },
+      {
+        "pattern": "/multiple_dropdown",
+        "label": "content",
+        "pages": [
+          "/multiple_dropdown"
+        ],
+        "pagesByInteractive": [
+          "/multiple_dropdown"
+        ],
+        "representative": "/multiple_dropdown",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 42,
+        "placedBy": "crawl order",
+        "placement": "after /inputs by crawl order (crawled 36th against crawled 29th)"
+      },
+      {
+        "pattern": "/windows",
+        "label": "content",
+        "pages": [
+          "/windows"
+        ],
+        "pagesByInteractive": [
+          "/windows"
+        ],
+        "representative": "/windows",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 43,
+        "placedBy": "crawl order",
+        "placement": "after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+      },
+      {
+        "pattern": "/redirector",
+        "label": "content",
+        "pages": [
+          "/redirector"
+        ],
+        "pagesByInteractive": [
+          "/redirector"
+        ],
+        "representative": "/redirector",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": null,
+        "rank": 44,
+        "placedBy": "crawl order",
+        "placement": "after /windows by crawl order (crawled 42nd against crawled 37th)"
+      },
+      {
+        "pattern": "/abtest",
+        "label": "content",
+        "pages": [
+          "/abtest"
+        ],
+        "pagesByInteractive": [
+          "/abtest"
+        ],
+        "representative": "/abtest",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 45,
+        "placedBy": "interactive elements",
+        "placement": "after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+      },
+      {
+        "pattern": "/broken_images",
+        "label": "content",
+        "pages": [
+          "/broken_images"
+        ],
+        "pagesByInteractive": [
+          "/broken_images"
+        ],
+        "representative": "/broken_images",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 46,
+        "placedBy": "crawl order",
+        "placement": "after /abtest by crawl order (crawled 5th against crawled 2nd)"
+      },
+      {
+        "pattern": "/canvas",
+        "label": "content",
+        "pages": [
+          "/canvas"
+        ],
+        "pagesByInteractive": [
+          "/canvas"
+        ],
+        "representative": "/canvas",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 47,
+        "placedBy": "crawl order",
+        "placement": "after /broken_images by crawl order (crawled 6th against crawled 5th)"
+      },
+      {
+        "pattern": "/context_menu",
+        "label": "content",
+        "pages": [
+          "/context_menu"
+        ],
+        "pagesByInteractive": [
+          "/context_menu"
+        ],
+        "representative": "/context_menu",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 48,
+        "placedBy": "crawl order",
+        "placement": "after /canvas by crawl order (crawled 9th against crawled 6th)"
+      },
+      {
+        "pattern": "/drag_and_drop",
+        "label": "content",
+        "pages": [
+          "/drag_and_drop"
+        ],
+        "pagesByInteractive": [
+          "/drag_and_drop"
+        ],
+        "representative": "/drag_and_drop",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 49,
+        "placedBy": "crawl order",
+        "placement": "after /context_menu by crawl order (crawled 12th against crawled 9th)"
+      },
+      {
+        "pattern": "/exit_intent",
+        "label": "content",
+        "pages": [
+          "/exit_intent"
+        ],
+        "pagesByInteractive": [
+          "/exit_intent"
+        ],
+        "representative": "/exit_intent",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 50,
+        "placedBy": "crawl order",
+        "placement": "after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+      },
+      {
+        "pattern": "/large",
+        "label": "content",
+        "pages": [
+          "/large"
+        ],
+        "pagesByInteractive": [
+          "/large"
+        ],
+        "representative": "/large",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 51,
+        "placedBy": "crawl order",
+        "placement": "after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+      },
+      {
+        "pattern": "/shadowdom",
+        "label": "content",
+        "pages": [
+          "/shadowdom"
+        ],
+        "pagesByInteractive": [
+          "/shadowdom"
+        ],
+        "representative": "/shadowdom",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 52,
+        "placedBy": "crawl order",
+        "placement": "after /large by crawl order (crawled 44th against crawled 34th)"
+      },
+      {
+        "pattern": "/slow",
+        "label": "content",
+        "pages": [
+          "/slow"
+        ],
+        "pagesByInteractive": [
+          "/slow"
+        ],
+        "representative": "/slow",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 53,
+        "placedBy": "crawl order",
+        "placement": "after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+      },
+      {
+        "pattern": "/typos",
+        "label": "content",
+        "pages": [
+          "/typos"
+        ],
+        "pagesByInteractive": [
+          "/typos"
+        ],
+        "representative": "/typos",
+        "forms": 0,
+        "interactive": 3,
+        "alwaysCovered": null,
+        "rank": 54,
+        "placedBy": "crawl order",
+        "placement": "after /slow by crawl order (crawled 51st against crawled 46th)"
+      },
+      {
+        "pattern": "/add_remove_elements",
+        "label": "content",
+        "pages": [
+          "/add_remove_elements"
+        ],
+        "pagesByInteractive": [
+          "/add_remove_elements"
+        ],
+        "representative": "/add_remove_elements",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 55,
+        "placedBy": "interactive elements",
+        "placement": "after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+      },
+      {
+        "pattern": "/basic_auth",
+        "label": "content",
+        "pages": [
+          "/basic_auth"
+        ],
+        "pagesByInteractive": [
+          "/basic_auth"
+        ],
+        "representative": "/basic_auth",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 56,
+        "placedBy": "crawl order",
+        "placement": "after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+      },
+      {
+        "pattern": "/digest_auth",
+        "label": "content",
+        "pages": [
+          "/digest_auth"
+        ],
+        "pagesByInteractive": [
+          "/digest_auth"
+        ],
+        "representative": "/digest_auth",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 57,
+        "placedBy": "crawl order",
+        "placement": "after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+      },
+      {
+        "pattern": "/javascript_error",
+        "label": "content",
+        "pages": [
+          "/javascript_error"
+        ],
+        "pagesByInteractive": [
+          "/javascript_error"
+        ],
+        "representative": "/javascript_error",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 58,
+        "placedBy": "crawl order",
+        "placement": "after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+      },
+      {
+        "pattern": "/nested_frames",
+        "label": "content",
+        "pages": [
+          "/nested_frames"
+        ],
+        "pagesByInteractive": [
+          "/nested_frames"
+        ],
+        "representative": "/nested_frames",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 59,
+        "placedBy": "crawl order",
+        "placement": "after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+      },
+      {
+        "pattern": "/download_secure",
+        "label": "content",
+        "pages": [
+          "/download_secure"
+        ],
+        "pagesByInteractive": [
+          "/download_secure"
+        ],
+        "representative": "/download_secure",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 60,
+        "placedBy": "crawl order",
+        "placement": "after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+      },
+      {
+        "pattern": "/about",
+        "label": "content",
+        "pages": [
+          "/about"
+        ],
+        "pagesByInteractive": [
+          "/about"
+        ],
+        "representative": "/about",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 61,
+        "placedBy": "crawl order",
+        "placement": "after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+      },
+      {
+        "pattern": "/contact-us",
+        "label": "content",
+        "pages": [
+          "/contact-us"
+        ],
+        "pagesByInteractive": [
+          "/contact-us"
+        ],
+        "representative": "/contact-us",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 62,
+        "placedBy": "crawl order",
+        "placement": "after /about by crawl order (crawled 54th against crawled 53rd)"
+      },
+      {
+        "pattern": "/portfolio",
+        "label": "content",
+        "pages": [
+          "/portfolio"
+        ],
+        "pagesByInteractive": [
+          "/portfolio"
+        ],
+        "representative": "/portfolio",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 63,
+        "placedBy": "crawl order",
+        "placement": "after /contact-us by crawl order (crawled 55th against crawled 54th)"
+      },
+      {
+        "pattern": "/gallery",
+        "label": "content",
+        "pages": [
+          "/gallery"
+        ],
+        "pagesByInteractive": [
+          "/gallery"
+        ],
+        "representative": "/gallery",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 64,
+        "placedBy": "crawl order",
+        "placement": "after /portfolio by crawl order (crawled 56th against crawled 55th)"
+      },
+      {
+        "pattern": "/windows/new",
+        "label": "content",
+        "pages": [
+          "/windows/new"
+        ],
+        "pagesByInteractive": [
+          "/windows/new"
+        ],
+        "representative": "/windows/new",
+        "forms": 0,
+        "interactive": 0,
+        "alwaysCovered": null,
+        "rank": 65,
+        "placedBy": "crawl order",
+        "placement": "after /gallery by crawl order (crawled 62nd against crawled 56th)"
+      }
+    ],
+    "pageSelection": {
+      "standard": {
+        "cap": 8,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 0,
+            "interactive": 54,
+            "alwaysCovered": [
+              "home"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/infinite_scroll/:id",
+            "label": "detail",
+            "pages": [
+              "/infinite_scroll/3",
+              "/infinite_scroll/4",
+              "/infinite_scroll/5",
+              "/infinite_scroll/6",
+              "/infinite_scroll/7",
+              "/infinite_scroll/8",
+              "/infinite_scroll/9",
+              "/infinite_scroll/10",
+              "/infinite_scroll/11",
+              "/infinite_scroll/12",
+              "/infinite_scroll/13",
+              "/infinite_scroll/14",
+              "/infinite_scroll/15",
+              "/infinite_scroll/16",
+              "/infinite_scroll/17",
+              "/infinite_scroll/18",
+              "/infinite_scroll/19",
+              "/infinite_scroll/20",
+              "/infinite_scroll/21",
+              "/infinite_scroll/22",
+              "/infinite_scroll/23",
+              "/infinite_scroll/24",
+              "/infinite_scroll/25",
+              "/infinite_scroll/26",
+              "/infinite_scroll/27",
+              "/infinite_scroll/28",
+              "/infinite_scroll/29"
+            ],
+            "pagesByInteractive": [
+              "/infinite_scroll/3",
+              "/infinite_scroll/4",
+              "/infinite_scroll/5",
+              "/infinite_scroll/6",
+              "/infinite_scroll/7",
+              "/infinite_scroll/8",
+              "/infinite_scroll/9",
+              "/infinite_scroll/10",
+              "/infinite_scroll/11",
+              "/infinite_scroll/12",
+              "/infinite_scroll/13",
+              "/infinite_scroll/14",
+              "/infinite_scroll/15",
+              "/infinite_scroll/16",
+              "/infinite_scroll/17",
+              "/infinite_scroll/18",
+              "/infinite_scroll/19",
+              "/infinite_scroll/20",
+              "/infinite_scroll/21",
+              "/infinite_scroll/22",
+              "/infinite_scroll/23",
+              "/infinite_scroll/24",
+              "/infinite_scroll/25",
+              "/infinite_scroll/26",
+              "/infinite_scroll/27",
+              "/infinite_scroll/28",
+              "/infinite_scroll/29"
+            ],
+            "representative": "/infinite_scroll/3",
+            "forms": 0,
+            "interactive": 1,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/infinite_scroll/3"
+            ]
+          },
+          {
+            "pattern": "/dynamic_controls",
+            "label": "form",
+            "pages": [
+              "/dynamic_controls"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_controls"
+            ],
+            "representative": "/dynamic_controls",
+            "forms": 2,
+            "interactive": 7,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /infinite_scroll/:id by pages (1 page against 27 pages)",
+            "selected": [
+              "/dynamic_controls"
+            ]
+          },
+          {
+            "pattern": "/large_form",
+            "label": "sign-in",
+            "pages": [
+              "/large_form"
+            ],
+            "pagesByInteractive": [
+              "/large_form"
+            ],
+            "representative": "/large_form",
+            "forms": 1,
+            "interactive": 24,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "forms",
+            "placement": "always covered (form); after /dynamic_controls by forms (1 form against 2 forms)",
+            "selected": [
+              "/large_form"
+            ]
+          },
+          {
+            "pattern": "/radio_buttons",
+            "label": "form",
+            "pages": [
+              "/radio_buttons"
+            ],
+            "pagesByInteractive": [
+              "/radio_buttons"
+            ],
+            "representative": "/radio_buttons",
+            "forms": 1,
+            "interactive": 9,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /large_form by interactive elements (9 interactive elements against 24 interactive elements)",
+            "selected": [
+              "/radio_buttons"
+            ]
+          },
+          {
+            "pattern": "/readonly",
+            "label": "form",
+            "pages": [
+              "/readonly"
+            ],
+            "pagesByInteractive": [
+              "/readonly"
+            ],
+            "representative": "/readonly",
+            "forms": 1,
+            "interactive": 7,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /radio_buttons by interactive elements (7 interactive elements against 9 interactive elements)",
+            "selected": [
+              "/readonly"
+            ]
+          },
+          {
+            "pattern": "/upload",
+            "label": "form",
+            "pages": [
+              "/upload"
+            ],
+            "pagesByInteractive": [
+              "/upload"
+            ],
+            "representative": "/upload",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /readonly by interactive elements (6 interactive elements against 7 interactive elements)",
+            "selected": [
+              "/upload"
+            ]
+          },
+          {
+            "pattern": "/login",
+            "label": "sign-in",
+            "pages": [
+              "/login"
+            ],
+            "pagesByInteractive": [
+              "/login"
+            ],
+            "representative": "/login",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 8,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /upload by crawl order (crawled 23rd against crawled 20th)",
+            "selected": [
+              "/login"
+            ]
+          }
+        ],
+        "skipped": [
+          {
+            "pattern": "/two_factor",
+            "label": "sign-in",
+            "pages": [
+              "/two_factor"
+            ],
+            "pagesByInteractive": [
+              "/two_factor"
+            ],
+            "representative": "/two_factor",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)",
+            "reason": "over the cap of 8 types: ranked 9th; always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)"
+          },
+          {
+            "pattern": "/checkboxes",
+            "label": "form",
+            "pages": [
+              "/checkboxes"
+            ],
+            "pagesByInteractive": [
+              "/checkboxes"
+            ],
+            "representative": "/checkboxes",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 10,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 10th; always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)"
+          },
+          {
+            "pattern": "/forgot_password",
+            "label": "form",
+            "pages": [
+              "/forgot_password"
+            ],
+            "pagesByInteractive": [
+              "/forgot_password"
+            ],
+            "representative": "/forgot_password",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 11,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)",
+            "reason": "over the cap of 8 types: ranked 11th; always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)"
+          },
+          {
+            "pattern": "/key_presses",
+            "label": "form",
+            "pages": [
+              "/key_presses"
+            ],
+            "pagesByInteractive": [
+              "/key_presses"
+            ],
+            "representative": "/key_presses",
+            "forms": 1,
+            "interactive": 4,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 12,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 12th; always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)"
+          },
+          {
+            "pattern": "/status_codes/:id",
+            "label": "detail",
+            "pages": [
+              "/status_codes/200",
+              "/status_codes/301",
+              "/status_codes/404",
+              "/status_codes/500"
+            ],
+            "pagesByInteractive": [
+              "/status_codes/200",
+              "/status_codes/301",
+              "/status_codes/404",
+              "/status_codes/500"
+            ],
+            "representative": "/status_codes/200",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 13,
+            "placedBy": "always covered",
+            "placement": "after the always-covered types",
+            "reason": "over the cap of 8 types: ranked 13th; after the always-covered types"
+          },
+          {
+            "pattern": "/users/:id",
+            "label": "detail",
+            "pages": [
+              "/users/1",
+              "/users/2",
+              "/users/3"
+            ],
+            "pagesByInteractive": [
+              "/users/1",
+              "/users/2",
+              "/users/3"
+            ],
+            "representative": "/users/1",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 14,
+            "placedBy": "pages",
+            "placement": "after /status_codes/:id by pages (3 pages against 4 pages)",
+            "reason": "over the cap of 8 types: ranked 14th; after /status_codes/:id by pages (3 pages against 4 pages)"
+          },
+          {
+            "pattern": "/dynamic_loading/:id",
+            "label": "detail",
+            "pages": [
+              "/dynamic_loading/1",
+              "/dynamic_loading/2"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_loading/1",
+              "/dynamic_loading/2"
+            ],
+            "representative": "/dynamic_loading/1",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 15,
+            "placedBy": "pages",
+            "placement": "after /users/:id by pages (2 pages against 3 pages)",
+            "reason": "over the cap of 8 types: ranked 15th; after /users/:id by pages (2 pages against 3 pages)"
+          },
+          {
+            "pattern": "/hovers",
+            "label": "listing",
+            "pages": [
+              "/hovers"
+            ],
+            "pagesByInteractive": [
+              "/hovers"
+            ],
+            "representative": "/hovers",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 16,
+            "placedBy": "pages",
+            "placement": "after /dynamic_loading/:id by pages (1 page against 2 pages)",
+            "reason": "over the cap of 8 types: ranked 16th; after /dynamic_loading/:id by pages (1 page against 2 pages)"
+          },
+          {
+            "pattern": "/shifting_content/:slug",
+            "label": "content",
+            "pages": [
+              "/shifting_content/menu",
+              "/shifting_content/image",
+              "/shifting_content/list"
+            ],
+            "pagesByInteractive": [
+              "/shifting_content/menu",
+              "/shifting_content/image",
+              "/shifting_content/list"
+            ],
+            "representative": "/shifting_content/menu",
+            "forms": 0,
+            "interactive": 11,
+            "alwaysCovered": null,
+            "rank": 17,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "reason": "over the cap of 8 types: ranked 17th; after every other type: content types are dropped first"
+          },
+          {
+            "pattern": "/subdirectories/:slug",
+            "label": "content",
+            "pages": [
+              "/subdirectories/one",
+              "/subdirectories/two"
+            ],
+            "pagesByInteractive": [
+              "/subdirectories/one",
+              "/subdirectories/two"
+            ],
+            "representative": "/subdirectories/one",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 18,
+            "placedBy": "pages",
+            "placement": "after /shifting_content/:slug by pages (2 pages against 3 pages)",
+            "reason": "over the cap of 8 types: ranked 18th; after /shifting_content/:slug by pages (2 pages against 3 pages)"
+          },
+          {
+            "pattern": "/challenging_dom",
+            "label": "content",
+            "pages": [
+              "/challenging_dom"
+            ],
+            "pagesByInteractive": [
+              "/challenging_dom"
+            ],
+            "representative": "/challenging_dom",
+            "forms": 0,
+            "interactive": 26,
+            "alwaysCovered": null,
+            "rank": 19,
+            "placedBy": "pages",
+            "placement": "after /subdirectories/:slug by pages (1 page against 2 pages)",
+            "reason": "over the cap of 8 types: ranked 19th; after /subdirectories/:slug by pages (1 page against 2 pages)"
+          },
+          {
+            "pattern": "/tinymce",
+            "label": "content",
+            "pages": [
+              "/tinymce"
+            ],
+            "pagesByInteractive": [
+              "/tinymce"
+            ],
+            "representative": "/tinymce",
+            "forms": 0,
+            "interactive": 22,
+            "alwaysCovered": null,
+            "rank": 20,
+            "placedBy": "interactive elements",
+            "placement": "after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 20th; after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)"
+          },
+          {
+            "pattern": "/iframe",
+            "label": "content",
+            "pages": [
+              "/iframe"
+            ],
+            "pagesByInteractive": [
+              "/iframe"
+            ],
+            "representative": "/iframe",
+            "forms": 0,
+            "interactive": 22,
+            "alwaysCovered": null,
+            "rank": 21,
+            "placedBy": "crawl order",
+            "placement": "after /tinymce by crawl order (crawled 58th against crawled 52nd)",
+            "reason": "over the cap of 8 types: ranked 21st; after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+          },
+          {
+            "pattern": "/tables",
+            "label": "content",
+            "pages": [
+              "/tables"
+            ],
+            "pagesByInteractive": [
+              "/tables"
+            ],
+            "representative": "/tables",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 22,
+            "placedBy": "interactive elements",
+            "placement": "after /iframe by interactive elements (19 interactive elements against 22 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 22nd; after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+          },
+          {
+            "pattern": "/jqueryui/menu",
+            "label": "content",
+            "pages": [
+              "/jqueryui/menu"
+            ],
+            "pagesByInteractive": [
+              "/jqueryui/menu"
+            ],
+            "representative": "/jqueryui/menu",
+            "forms": 0,
+            "interactive": 12,
+            "alwaysCovered": null,
+            "rank": 23,
+            "placedBy": "interactive elements",
+            "placement": "after /tables by interactive elements (12 interactive elements against 19 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 23rd; after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+          },
+          {
+            "pattern": "/disappearing_elements",
+            "label": "content",
+            "pages": [
+              "/disappearing_elements"
+            ],
+            "pagesByInteractive": [
+              "/disappearing_elements"
+            ],
+            "representative": "/disappearing_elements",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 24,
+            "placedBy": "interactive elements",
+            "placement": "after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 24th; after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+          },
+          {
+            "pattern": "/download",
+            "label": "content",
+            "pages": [
+              "/download"
+            ],
+            "pagesByInteractive": [
+              "/download"
+            ],
+            "representative": "/download",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 25,
+            "placedBy": "crawl order",
+            "placement": "after /disappearing_elements by crawl order (crawled 19th against crawled 11th)",
+            "reason": "over the cap of 8 types: ranked 25th; after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+          },
+          {
+            "pattern": "/status_codes",
+            "label": "content",
+            "pages": [
+              "/status_codes"
+            ],
+            "pagesByInteractive": [
+              "/status_codes"
+            ],
+            "representative": "/status_codes",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 26,
+            "placedBy": "crawl order",
+            "placement": "after /download by crawl order (crawled 48th against crawled 19th)",
+            "reason": "over the cap of 8 types: ranked 26th; after /download by crawl order (crawled 48th against crawled 19th)"
+          },
+          {
+            "pattern": "/floating_menu",
+            "label": "content",
+            "pages": [
+              "/floating_menu"
+            ],
+            "pagesByInteractive": [
+              "/floating_menu"
+            ],
+            "representative": "/floating_menu",
+            "forms": 0,
+            "interactive": 7,
+            "alwaysCovered": null,
+            "rank": 27,
+            "placedBy": "interactive elements",
+            "placement": "after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 27th; after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+          },
+          {
+            "pattern": "/javascript_alerts",
+            "label": "content",
+            "pages": [
+              "/javascript_alerts"
+            ],
+            "pagesByInteractive": [
+              "/javascript_alerts"
+            ],
+            "representative": "/javascript_alerts",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 28,
+            "placedBy": "interactive elements",
+            "placement": "after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 28th; after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+          },
+          {
+            "pattern": "/shifting_content",
+            "label": "content",
+            "pages": [
+              "/shifting_content"
+            ],
+            "pagesByInteractive": [
+              "/shifting_content"
+            ],
+            "representative": "/shifting_content",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 29,
+            "placedBy": "crawl order",
+            "placement": "after /javascript_alerts by crawl order (crawled 45th against crawled 31st)",
+            "reason": "over the cap of 8 types: ranked 29th; after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+          },
+          {
+            "pattern": "/dynamic_loading",
+            "label": "content",
+            "pages": [
+              "/dynamic_loading"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_loading"
+            ],
+            "representative": "/dynamic_loading",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 30,
+            "placedBy": "interactive elements",
+            "placement": "after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 30th; after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+          },
+          {
+            "pattern": "/frames",
+            "label": "content",
+            "pages": [
+              "/frames"
+            ],
+            "pagesByInteractive": [
+              "/frames"
+            ],
+            "representative": "/frames",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 31,
+            "placedBy": "crawl order",
+            "placement": "after /dynamic_loading by crawl order (crawled 24th against crawled 16th)",
+            "reason": "over the cap of 8 types: ranked 31st; after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+          },
+          {
+            "pattern": "/notification_message_rendered",
+            "label": "content",
+            "pages": [
+              "/notification_message_rendered"
+            ],
+            "pagesByInteractive": [
+              "/notification_message_rendered"
+            ],
+            "representative": "/notification_message_rendered",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 32,
+            "placedBy": "crawl order",
+            "placement": "after /frames by crawl order (crawled 39th against crawled 24th)",
+            "reason": "over the cap of 8 types: ranked 32nd; after /frames by crawl order (crawled 39th against crawled 24th)"
+          },
+          {
+            "pattern": "/subdirectories",
+            "label": "content",
+            "pages": [
+              "/subdirectories"
+            ],
+            "pagesByInteractive": [
+              "/subdirectories"
+            ],
+            "representative": "/subdirectories",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 33,
+            "placedBy": "crawl order",
+            "placement": "after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)",
+            "reason": "over the cap of 8 types: ranked 33rd; after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+          },
+          {
+            "pattern": "/jqueryui",
+            "label": "content",
+            "pages": [
+              "/jqueryui"
+            ],
+            "pagesByInteractive": [
+              "/jqueryui"
+            ],
+            "representative": "/jqueryui",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 34,
+            "placedBy": "crawl order",
+            "placement": "after /subdirectories by crawl order (crawled 61st against crawled 49th)",
+            "reason": "over the cap of 8 types: ranked 34th; after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+          },
+          {
+            "pattern": "/dropdown",
+            "label": "content",
+            "pages": [
+              "/dropdown"
+            ],
+            "pagesByInteractive": [
+              "/dropdown"
+            ],
+            "representative": "/dropdown",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 35,
+            "placedBy": "interactive elements",
+            "placement": "after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 35th; after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+          },
+          {
+            "pattern": "/dynamic_content",
+            "label": "content",
+            "pages": [
+              "/dynamic_content"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_content"
+            ],
+            "representative": "/dynamic_content",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 36,
+            "placedBy": "crawl order",
+            "placement": "after /dropdown by crawl order (crawled 14th against crawled 13th)",
+            "reason": "over the cap of 8 types: ranked 36th; after /dropdown by crawl order (crawled 14th against crawled 13th)"
+          },
+          {
+            "pattern": "/entry_ad",
+            "label": "content",
+            "pages": [
+              "/entry_ad"
+            ],
+            "pagesByInteractive": [
+              "/entry_ad"
+            ],
+            "representative": "/entry_ad",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 37,
+            "placedBy": "crawl order",
+            "placement": "after /dynamic_content by crawl order (crawled 17th against crawled 14th)",
+            "reason": "over the cap of 8 types: ranked 37th; after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+          },
+          {
+            "pattern": "/geolocation",
+            "label": "content",
+            "pages": [
+              "/geolocation"
+            ],
+            "pagesByInteractive": [
+              "/geolocation"
+            ],
+            "representative": "/geolocation",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 38,
+            "placedBy": "crawl order",
+            "placement": "after /entry_ad by crawl order (crawled 25th against crawled 17th)",
+            "reason": "over the cap of 8 types: ranked 38th; after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+          },
+          {
+            "pattern": "/horizontal_slider",
+            "label": "content",
+            "pages": [
+              "/horizontal_slider"
+            ],
+            "pagesByInteractive": [
+              "/horizontal_slider"
+            ],
+            "representative": "/horizontal_slider",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 39,
+            "placedBy": "crawl order",
+            "placement": "after /geolocation by crawl order (crawled 26th against crawled 25th)",
+            "reason": "over the cap of 8 types: ranked 39th; after /geolocation by crawl order (crawled 26th against crawled 25th)"
+          },
+          {
+            "pattern": "/infinite_scroll",
+            "label": "content",
+            "pages": [
+              "/infinite_scroll"
+            ],
+            "pagesByInteractive": [
+              "/infinite_scroll"
+            ],
+            "representative": "/infinite_scroll",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 40,
+            "placedBy": "crawl order",
+            "placement": "after /horizontal_slider by crawl order (crawled 28th against crawled 26th)",
+            "reason": "over the cap of 8 types: ranked 40th; after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+          },
+          {
+            "pattern": "/inputs",
+            "label": "content",
+            "pages": [
+              "/inputs"
+            ],
+            "pagesByInteractive": [
+              "/inputs"
+            ],
+            "representative": "/inputs",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 41,
+            "placedBy": "crawl order",
+            "placement": "after /infinite_scroll by crawl order (crawled 29th against crawled 28th)",
+            "reason": "over the cap of 8 types: ranked 41st; after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+          },
+          {
+            "pattern": "/multiple_dropdown",
+            "label": "content",
+            "pages": [
+              "/multiple_dropdown"
+            ],
+            "pagesByInteractive": [
+              "/multiple_dropdown"
+            ],
+            "representative": "/multiple_dropdown",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 42,
+            "placedBy": "crawl order",
+            "placement": "after /inputs by crawl order (crawled 36th against crawled 29th)",
+            "reason": "over the cap of 8 types: ranked 42nd; after /inputs by crawl order (crawled 36th against crawled 29th)"
+          },
+          {
+            "pattern": "/windows",
+            "label": "content",
+            "pages": [
+              "/windows"
+            ],
+            "pagesByInteractive": [
+              "/windows"
+            ],
+            "representative": "/windows",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 43,
+            "placedBy": "crawl order",
+            "placement": "after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)",
+            "reason": "over the cap of 8 types: ranked 43rd; after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+          },
+          {
+            "pattern": "/redirector",
+            "label": "content",
+            "pages": [
+              "/redirector"
+            ],
+            "pagesByInteractive": [
+              "/redirector"
+            ],
+            "representative": "/redirector",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 44,
+            "placedBy": "crawl order",
+            "placement": "after /windows by crawl order (crawled 42nd against crawled 37th)",
+            "reason": "over the cap of 8 types: ranked 44th; after /windows by crawl order (crawled 42nd against crawled 37th)"
+          },
+          {
+            "pattern": "/abtest",
+            "label": "content",
+            "pages": [
+              "/abtest"
+            ],
+            "pagesByInteractive": [
+              "/abtest"
+            ],
+            "representative": "/abtest",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 45,
+            "placedBy": "interactive elements",
+            "placement": "after /redirector by interactive elements (3 interactive elements against 4 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 45th; after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+          },
+          {
+            "pattern": "/broken_images",
+            "label": "content",
+            "pages": [
+              "/broken_images"
+            ],
+            "pagesByInteractive": [
+              "/broken_images"
+            ],
+            "representative": "/broken_images",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 46,
+            "placedBy": "crawl order",
+            "placement": "after /abtest by crawl order (crawled 5th against crawled 2nd)",
+            "reason": "over the cap of 8 types: ranked 46th; after /abtest by crawl order (crawled 5th against crawled 2nd)"
+          },
+          {
+            "pattern": "/canvas",
+            "label": "content",
+            "pages": [
+              "/canvas"
+            ],
+            "pagesByInteractive": [
+              "/canvas"
+            ],
+            "representative": "/canvas",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 47,
+            "placedBy": "crawl order",
+            "placement": "after /broken_images by crawl order (crawled 6th against crawled 5th)",
+            "reason": "over the cap of 8 types: ranked 47th; after /broken_images by crawl order (crawled 6th against crawled 5th)"
+          },
+          {
+            "pattern": "/context_menu",
+            "label": "content",
+            "pages": [
+              "/context_menu"
+            ],
+            "pagesByInteractive": [
+              "/context_menu"
+            ],
+            "representative": "/context_menu",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 48,
+            "placedBy": "crawl order",
+            "placement": "after /canvas by crawl order (crawled 9th against crawled 6th)",
+            "reason": "over the cap of 8 types: ranked 48th; after /canvas by crawl order (crawled 9th against crawled 6th)"
+          },
+          {
+            "pattern": "/drag_and_drop",
+            "label": "content",
+            "pages": [
+              "/drag_and_drop"
+            ],
+            "pagesByInteractive": [
+              "/drag_and_drop"
+            ],
+            "representative": "/drag_and_drop",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 49,
+            "placedBy": "crawl order",
+            "placement": "after /context_menu by crawl order (crawled 12th against crawled 9th)",
+            "reason": "over the cap of 8 types: ranked 49th; after /context_menu by crawl order (crawled 12th against crawled 9th)"
+          },
+          {
+            "pattern": "/exit_intent",
+            "label": "content",
+            "pages": [
+              "/exit_intent"
+            ],
+            "pagesByInteractive": [
+              "/exit_intent"
+            ],
+            "representative": "/exit_intent",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 50,
+            "placedBy": "crawl order",
+            "placement": "after /drag_and_drop by crawl order (crawled 18th against crawled 12th)",
+            "reason": "over the cap of 8 types: ranked 50th; after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+          },
+          {
+            "pattern": "/large",
+            "label": "content",
+            "pages": [
+              "/large"
+            ],
+            "pagesByInteractive": [
+              "/large"
+            ],
+            "representative": "/large",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 51,
+            "placedBy": "crawl order",
+            "placement": "after /exit_intent by crawl order (crawled 34th against crawled 18th)",
+            "reason": "over the cap of 8 types: ranked 51st; after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+          },
+          {
+            "pattern": "/shadowdom",
+            "label": "content",
+            "pages": [
+              "/shadowdom"
+            ],
+            "pagesByInteractive": [
+              "/shadowdom"
+            ],
+            "representative": "/shadowdom",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 52,
+            "placedBy": "crawl order",
+            "placement": "after /large by crawl order (crawled 44th against crawled 34th)",
+            "reason": "over the cap of 8 types: ranked 52nd; after /large by crawl order (crawled 44th against crawled 34th)"
+          },
+          {
+            "pattern": "/slow",
+            "label": "content",
+            "pages": [
+              "/slow"
+            ],
+            "pagesByInteractive": [
+              "/slow"
+            ],
+            "representative": "/slow",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 53,
+            "placedBy": "crawl order",
+            "placement": "after /shadowdom by crawl order (crawled 46th against crawled 44th)",
+            "reason": "over the cap of 8 types: ranked 53rd; after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+          },
+          {
+            "pattern": "/typos",
+            "label": "content",
+            "pages": [
+              "/typos"
+            ],
+            "pagesByInteractive": [
+              "/typos"
+            ],
+            "representative": "/typos",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 54,
+            "placedBy": "crawl order",
+            "placement": "after /slow by crawl order (crawled 51st against crawled 46th)",
+            "reason": "over the cap of 8 types: ranked 54th; after /slow by crawl order (crawled 51st against crawled 46th)"
+          },
+          {
+            "pattern": "/add_remove_elements",
+            "label": "content",
+            "pages": [
+              "/add_remove_elements"
+            ],
+            "pagesByInteractive": [
+              "/add_remove_elements"
+            ],
+            "representative": "/add_remove_elements",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 55,
+            "placedBy": "interactive elements",
+            "placement": "after /typos by interactive elements (0 interactive elements against 3 interactive elements)",
+            "reason": "over the cap of 8 types: ranked 55th; after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+          },
+          {
+            "pattern": "/basic_auth",
+            "label": "content",
+            "pages": [
+              "/basic_auth"
+            ],
+            "pagesByInteractive": [
+              "/basic_auth"
+            ],
+            "representative": "/basic_auth",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 56,
+            "placedBy": "crawl order",
+            "placement": "after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)",
+            "reason": "over the cap of 8 types: ranked 56th; after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+          },
+          {
+            "pattern": "/digest_auth",
+            "label": "content",
+            "pages": [
+              "/digest_auth"
+            ],
+            "pagesByInteractive": [
+              "/digest_auth"
+            ],
+            "representative": "/digest_auth",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 57,
+            "placedBy": "crawl order",
+            "placement": "after /basic_auth by crawl order (crawled 10th against crawled 4th)",
+            "reason": "over the cap of 8 types: ranked 57th; after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+          },
+          {
+            "pattern": "/javascript_error",
+            "label": "content",
+            "pages": [
+              "/javascript_error"
+            ],
+            "pagesByInteractive": [
+              "/javascript_error"
+            ],
+            "representative": "/javascript_error",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 58,
+            "placedBy": "crawl order",
+            "placement": "after /digest_auth by crawl order (crawled 32nd against crawled 10th)",
+            "reason": "over the cap of 8 types: ranked 58th; after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+          },
+          {
+            "pattern": "/nested_frames",
+            "label": "content",
+            "pages": [
+              "/nested_frames"
+            ],
+            "pagesByInteractive": [
+              "/nested_frames"
+            ],
+            "representative": "/nested_frames",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 59,
+            "placedBy": "crawl order",
+            "placement": "after /javascript_error by crawl order (crawled 38th against crawled 32nd)",
+            "reason": "over the cap of 8 types: ranked 59th; after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+          },
+          {
+            "pattern": "/download_secure",
+            "label": "content",
+            "pages": [
+              "/download_secure"
+            ],
+            "pagesByInteractive": [
+              "/download_secure"
+            ],
+            "representative": "/download_secure",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 60,
+            "placedBy": "crawl order",
+            "placement": "after /nested_frames by crawl order (crawled 43rd against crawled 38th)",
+            "reason": "over the cap of 8 types: ranked 60th; after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+          },
+          {
+            "pattern": "/about",
+            "label": "content",
+            "pages": [
+              "/about"
+            ],
+            "pagesByInteractive": [
+              "/about"
+            ],
+            "representative": "/about",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 61,
+            "placedBy": "crawl order",
+            "placement": "after /download_secure by crawl order (crawled 53rd against crawled 43rd)",
+            "reason": "over the cap of 8 types: ranked 61st; after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+          },
+          {
+            "pattern": "/contact-us",
+            "label": "content",
+            "pages": [
+              "/contact-us"
+            ],
+            "pagesByInteractive": [
+              "/contact-us"
+            ],
+            "representative": "/contact-us",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 62,
+            "placedBy": "crawl order",
+            "placement": "after /about by crawl order (crawled 54th against crawled 53rd)",
+            "reason": "over the cap of 8 types: ranked 62nd; after /about by crawl order (crawled 54th against crawled 53rd)"
+          },
+          {
+            "pattern": "/portfolio",
+            "label": "content",
+            "pages": [
+              "/portfolio"
+            ],
+            "pagesByInteractive": [
+              "/portfolio"
+            ],
+            "representative": "/portfolio",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 63,
+            "placedBy": "crawl order",
+            "placement": "after /contact-us by crawl order (crawled 55th against crawled 54th)",
+            "reason": "over the cap of 8 types: ranked 63rd; after /contact-us by crawl order (crawled 55th against crawled 54th)"
+          },
+          {
+            "pattern": "/gallery",
+            "label": "content",
+            "pages": [
+              "/gallery"
+            ],
+            "pagesByInteractive": [
+              "/gallery"
+            ],
+            "representative": "/gallery",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 64,
+            "placedBy": "crawl order",
+            "placement": "after /portfolio by crawl order (crawled 56th against crawled 55th)",
+            "reason": "over the cap of 8 types: ranked 64th; after /portfolio by crawl order (crawled 56th against crawled 55th)"
+          },
+          {
+            "pattern": "/windows/new",
+            "label": "content",
+            "pages": [
+              "/windows/new"
+            ],
+            "pagesByInteractive": [
+              "/windows/new"
+            ],
+            "representative": "/windows/new",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 65,
+            "placedBy": "crawl order",
+            "placement": "after /gallery by crawl order (crawled 62nd against crawled 56th)",
+            "reason": "over the cap of 8 types: ranked 65th; after /gallery by crawl order (crawled 62nd against crawled 56th)"
+          }
+        ],
+        "pages": [
+          "/",
+          "/infinite_scroll/3",
+          "/dynamic_controls",
+          "/large_form",
+          "/radio_buttons",
+          "/readonly",
+          "/upload",
+          "/login"
+        ]
+      },
+      "comprehensive": {
+        "cap": 20,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 0,
+            "interactive": 54,
+            "alwaysCovered": [
+              "home"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/infinite_scroll/:id",
+            "label": "detail",
+            "pages": [
+              "/infinite_scroll/3",
+              "/infinite_scroll/4",
+              "/infinite_scroll/5",
+              "/infinite_scroll/6",
+              "/infinite_scroll/7",
+              "/infinite_scroll/8",
+              "/infinite_scroll/9",
+              "/infinite_scroll/10",
+              "/infinite_scroll/11",
+              "/infinite_scroll/12",
+              "/infinite_scroll/13",
+              "/infinite_scroll/14",
+              "/infinite_scroll/15",
+              "/infinite_scroll/16",
+              "/infinite_scroll/17",
+              "/infinite_scroll/18",
+              "/infinite_scroll/19",
+              "/infinite_scroll/20",
+              "/infinite_scroll/21",
+              "/infinite_scroll/22",
+              "/infinite_scroll/23",
+              "/infinite_scroll/24",
+              "/infinite_scroll/25",
+              "/infinite_scroll/26",
+              "/infinite_scroll/27",
+              "/infinite_scroll/28",
+              "/infinite_scroll/29"
+            ],
+            "pagesByInteractive": [
+              "/infinite_scroll/3",
+              "/infinite_scroll/4",
+              "/infinite_scroll/5",
+              "/infinite_scroll/6",
+              "/infinite_scroll/7",
+              "/infinite_scroll/8",
+              "/infinite_scroll/9",
+              "/infinite_scroll/10",
+              "/infinite_scroll/11",
+              "/infinite_scroll/12",
+              "/infinite_scroll/13",
+              "/infinite_scroll/14",
+              "/infinite_scroll/15",
+              "/infinite_scroll/16",
+              "/infinite_scroll/17",
+              "/infinite_scroll/18",
+              "/infinite_scroll/19",
+              "/infinite_scroll/20",
+              "/infinite_scroll/21",
+              "/infinite_scroll/22",
+              "/infinite_scroll/23",
+              "/infinite_scroll/24",
+              "/infinite_scroll/25",
+              "/infinite_scroll/26",
+              "/infinite_scroll/27",
+              "/infinite_scroll/28",
+              "/infinite_scroll/29"
+            ],
+            "representative": "/infinite_scroll/3",
+            "forms": 0,
+            "interactive": 1,
+            "alwaysCovered": [
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (largest); after home, which is always ranked first",
+            "selected": [
+              "/infinite_scroll/3"
+            ]
+          },
+          {
+            "pattern": "/dynamic_controls",
+            "label": "form",
+            "pages": [
+              "/dynamic_controls"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_controls"
+            ],
+            "representative": "/dynamic_controls",
+            "forms": 2,
+            "interactive": 7,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "pages",
+            "placement": "always covered (form); after /infinite_scroll/:id by pages (1 page against 27 pages)",
+            "selected": [
+              "/dynamic_controls"
+            ]
+          },
+          {
+            "pattern": "/large_form",
+            "label": "sign-in",
+            "pages": [
+              "/large_form"
+            ],
+            "pagesByInteractive": [
+              "/large_form"
+            ],
+            "representative": "/large_form",
+            "forms": 1,
+            "interactive": 24,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 4,
+            "placedBy": "forms",
+            "placement": "always covered (form); after /dynamic_controls by forms (1 form against 2 forms)",
+            "selected": [
+              "/large_form"
+            ]
+          },
+          {
+            "pattern": "/radio_buttons",
+            "label": "form",
+            "pages": [
+              "/radio_buttons"
+            ],
+            "pagesByInteractive": [
+              "/radio_buttons"
+            ],
+            "representative": "/radio_buttons",
+            "forms": 1,
+            "interactive": 9,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 5,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /large_form by interactive elements (9 interactive elements against 24 interactive elements)",
+            "selected": [
+              "/radio_buttons"
+            ]
+          },
+          {
+            "pattern": "/readonly",
+            "label": "form",
+            "pages": [
+              "/readonly"
+            ],
+            "pagesByInteractive": [
+              "/readonly"
+            ],
+            "representative": "/readonly",
+            "forms": 1,
+            "interactive": 7,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 6,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /radio_buttons by interactive elements (7 interactive elements against 9 interactive elements)",
+            "selected": [
+              "/readonly"
+            ]
+          },
+          {
+            "pattern": "/upload",
+            "label": "form",
+            "pages": [
+              "/upload"
+            ],
+            "pagesByInteractive": [
+              "/upload"
+            ],
+            "representative": "/upload",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 7,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /readonly by interactive elements (6 interactive elements against 7 interactive elements)",
+            "selected": [
+              "/upload"
+            ]
+          },
+          {
+            "pattern": "/login",
+            "label": "sign-in",
+            "pages": [
+              "/login"
+            ],
+            "pagesByInteractive": [
+              "/login"
+            ],
+            "representative": "/login",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 8,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /upload by crawl order (crawled 23rd against crawled 20th)",
+            "selected": [
+              "/login"
+            ]
+          },
+          {
+            "pattern": "/two_factor",
+            "label": "sign-in",
+            "pages": [
+              "/two_factor"
+            ],
+            "pagesByInteractive": [
+              "/two_factor"
+            ],
+            "representative": "/two_factor",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 9,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)",
+            "selected": [
+              "/two_factor"
+            ]
+          },
+          {
+            "pattern": "/checkboxes",
+            "label": "form",
+            "pages": [
+              "/checkboxes"
+            ],
+            "pagesByInteractive": [
+              "/checkboxes"
+            ],
+            "representative": "/checkboxes",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 10,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)",
+            "selected": [
+              "/checkboxes"
+            ]
+          },
+          {
+            "pattern": "/forgot_password",
+            "label": "form",
+            "pages": [
+              "/forgot_password"
+            ],
+            "pagesByInteractive": [
+              "/forgot_password"
+            ],
+            "representative": "/forgot_password",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 11,
+            "placedBy": "crawl order",
+            "placement": "always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)",
+            "selected": [
+              "/forgot_password"
+            ]
+          },
+          {
+            "pattern": "/key_presses",
+            "label": "form",
+            "pages": [
+              "/key_presses"
+            ],
+            "pagesByInteractive": [
+              "/key_presses"
+            ],
+            "representative": "/key_presses",
+            "forms": 1,
+            "interactive": 4,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 12,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)",
+            "selected": [
+              "/key_presses"
+            ]
+          },
+          {
+            "pattern": "/status_codes/:id",
+            "label": "detail",
+            "pages": [
+              "/status_codes/200",
+              "/status_codes/301",
+              "/status_codes/404",
+              "/status_codes/500"
+            ],
+            "pagesByInteractive": [
+              "/status_codes/200",
+              "/status_codes/301",
+              "/status_codes/404",
+              "/status_codes/500"
+            ],
+            "representative": "/status_codes/200",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 13,
+            "placedBy": "always covered",
+            "placement": "after the always-covered types",
+            "selected": [
+              "/status_codes/200"
+            ]
+          },
+          {
+            "pattern": "/users/:id",
+            "label": "detail",
+            "pages": [
+              "/users/1",
+              "/users/2",
+              "/users/3"
+            ],
+            "pagesByInteractive": [
+              "/users/1",
+              "/users/2",
+              "/users/3"
+            ],
+            "representative": "/users/1",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 14,
+            "placedBy": "pages",
+            "placement": "after /status_codes/:id by pages (3 pages against 4 pages)",
+            "selected": [
+              "/users/1"
+            ]
+          },
+          {
+            "pattern": "/dynamic_loading/:id",
+            "label": "detail",
+            "pages": [
+              "/dynamic_loading/1",
+              "/dynamic_loading/2"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_loading/1",
+              "/dynamic_loading/2"
+            ],
+            "representative": "/dynamic_loading/1",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 15,
+            "placedBy": "pages",
+            "placement": "after /users/:id by pages (2 pages against 3 pages)",
+            "selected": [
+              "/dynamic_loading/1"
+            ]
+          },
+          {
+            "pattern": "/hovers",
+            "label": "listing",
+            "pages": [
+              "/hovers"
+            ],
+            "pagesByInteractive": [
+              "/hovers"
+            ],
+            "representative": "/hovers",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 16,
+            "placedBy": "pages",
+            "placement": "after /dynamic_loading/:id by pages (1 page against 2 pages)",
+            "selected": [
+              "/hovers"
+            ]
+          },
+          {
+            "pattern": "/shifting_content/:slug",
+            "label": "content",
+            "pages": [
+              "/shifting_content/menu",
+              "/shifting_content/image",
+              "/shifting_content/list"
+            ],
+            "pagesByInteractive": [
+              "/shifting_content/menu",
+              "/shifting_content/image",
+              "/shifting_content/list"
+            ],
+            "representative": "/shifting_content/menu",
+            "forms": 0,
+            "interactive": 11,
+            "alwaysCovered": null,
+            "rank": 17,
+            "placedBy": "content type",
+            "placement": "after every other type: content types are dropped first",
+            "selected": [
+              "/shifting_content/menu"
+            ]
+          },
+          {
+            "pattern": "/subdirectories/:slug",
+            "label": "content",
+            "pages": [
+              "/subdirectories/one",
+              "/subdirectories/two"
+            ],
+            "pagesByInteractive": [
+              "/subdirectories/one",
+              "/subdirectories/two"
+            ],
+            "representative": "/subdirectories/one",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 18,
+            "placedBy": "pages",
+            "placement": "after /shifting_content/:slug by pages (2 pages against 3 pages)",
+            "selected": [
+              "/subdirectories/one"
+            ]
+          },
+          {
+            "pattern": "/challenging_dom",
+            "label": "content",
+            "pages": [
+              "/challenging_dom"
+            ],
+            "pagesByInteractive": [
+              "/challenging_dom"
+            ],
+            "representative": "/challenging_dom",
+            "forms": 0,
+            "interactive": 26,
+            "alwaysCovered": null,
+            "rank": 19,
+            "placedBy": "pages",
+            "placement": "after /subdirectories/:slug by pages (1 page against 2 pages)",
+            "selected": [
+              "/challenging_dom"
+            ]
+          },
+          {
+            "pattern": "/tinymce",
+            "label": "content",
+            "pages": [
+              "/tinymce"
+            ],
+            "pagesByInteractive": [
+              "/tinymce"
+            ],
+            "representative": "/tinymce",
+            "forms": 0,
+            "interactive": 22,
+            "alwaysCovered": null,
+            "rank": 20,
+            "placedBy": "interactive elements",
+            "placement": "after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)",
+            "selected": [
+              "/tinymce"
+            ]
+          }
+        ],
+        "skipped": [
+          {
+            "pattern": "/iframe",
+            "label": "content",
+            "pages": [
+              "/iframe"
+            ],
+            "pagesByInteractive": [
+              "/iframe"
+            ],
+            "representative": "/iframe",
+            "forms": 0,
+            "interactive": 22,
+            "alwaysCovered": null,
+            "rank": 21,
+            "placedBy": "crawl order",
+            "placement": "after /tinymce by crawl order (crawled 58th against crawled 52nd)",
+            "reason": "over the cap of 20 pages: ranked 21st; after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+          },
+          {
+            "pattern": "/tables",
+            "label": "content",
+            "pages": [
+              "/tables"
+            ],
+            "pagesByInteractive": [
+              "/tables"
+            ],
+            "representative": "/tables",
+            "forms": 0,
+            "interactive": 19,
+            "alwaysCovered": null,
+            "rank": 22,
+            "placedBy": "interactive elements",
+            "placement": "after /iframe by interactive elements (19 interactive elements against 22 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 22nd; after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+          },
+          {
+            "pattern": "/jqueryui/menu",
+            "label": "content",
+            "pages": [
+              "/jqueryui/menu"
+            ],
+            "pagesByInteractive": [
+              "/jqueryui/menu"
+            ],
+            "representative": "/jqueryui/menu",
+            "forms": 0,
+            "interactive": 12,
+            "alwaysCovered": null,
+            "rank": 23,
+            "placedBy": "interactive elements",
+            "placement": "after /tables by interactive elements (12 interactive elements against 19 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 23rd; after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+          },
+          {
+            "pattern": "/disappearing_elements",
+            "label": "content",
+            "pages": [
+              "/disappearing_elements"
+            ],
+            "pagesByInteractive": [
+              "/disappearing_elements"
+            ],
+            "representative": "/disappearing_elements",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 24,
+            "placedBy": "interactive elements",
+            "placement": "after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 24th; after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+          },
+          {
+            "pattern": "/download",
+            "label": "content",
+            "pages": [
+              "/download"
+            ],
+            "pagesByInteractive": [
+              "/download"
+            ],
+            "representative": "/download",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 25,
+            "placedBy": "crawl order",
+            "placement": "after /disappearing_elements by crawl order (crawled 19th against crawled 11th)",
+            "reason": "over the cap of 20 pages: ranked 25th; after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+          },
+          {
+            "pattern": "/status_codes",
+            "label": "content",
+            "pages": [
+              "/status_codes"
+            ],
+            "pagesByInteractive": [
+              "/status_codes"
+            ],
+            "representative": "/status_codes",
+            "forms": 0,
+            "interactive": 8,
+            "alwaysCovered": null,
+            "rank": 26,
+            "placedBy": "crawl order",
+            "placement": "after /download by crawl order (crawled 48th against crawled 19th)",
+            "reason": "over the cap of 20 pages: ranked 26th; after /download by crawl order (crawled 48th against crawled 19th)"
+          },
+          {
+            "pattern": "/floating_menu",
+            "label": "content",
+            "pages": [
+              "/floating_menu"
+            ],
+            "pagesByInteractive": [
+              "/floating_menu"
+            ],
+            "representative": "/floating_menu",
+            "forms": 0,
+            "interactive": 7,
+            "alwaysCovered": null,
+            "rank": 27,
+            "placedBy": "interactive elements",
+            "placement": "after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 27th; after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+          },
+          {
+            "pattern": "/javascript_alerts",
+            "label": "content",
+            "pages": [
+              "/javascript_alerts"
+            ],
+            "pagesByInteractive": [
+              "/javascript_alerts"
+            ],
+            "representative": "/javascript_alerts",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 28,
+            "placedBy": "interactive elements",
+            "placement": "after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 28th; after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+          },
+          {
+            "pattern": "/shifting_content",
+            "label": "content",
+            "pages": [
+              "/shifting_content"
+            ],
+            "pagesByInteractive": [
+              "/shifting_content"
+            ],
+            "representative": "/shifting_content",
+            "forms": 0,
+            "interactive": 6,
+            "alwaysCovered": null,
+            "rank": 29,
+            "placedBy": "crawl order",
+            "placement": "after /javascript_alerts by crawl order (crawled 45th against crawled 31st)",
+            "reason": "over the cap of 20 pages: ranked 29th; after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+          },
+          {
+            "pattern": "/dynamic_loading",
+            "label": "content",
+            "pages": [
+              "/dynamic_loading"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_loading"
+            ],
+            "representative": "/dynamic_loading",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 30,
+            "placedBy": "interactive elements",
+            "placement": "after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 30th; after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+          },
+          {
+            "pattern": "/frames",
+            "label": "content",
+            "pages": [
+              "/frames"
+            ],
+            "pagesByInteractive": [
+              "/frames"
+            ],
+            "representative": "/frames",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 31,
+            "placedBy": "crawl order",
+            "placement": "after /dynamic_loading by crawl order (crawled 24th against crawled 16th)",
+            "reason": "over the cap of 20 pages: ranked 31st; after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+          },
+          {
+            "pattern": "/notification_message_rendered",
+            "label": "content",
+            "pages": [
+              "/notification_message_rendered"
+            ],
+            "pagesByInteractive": [
+              "/notification_message_rendered"
+            ],
+            "representative": "/notification_message_rendered",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 32,
+            "placedBy": "crawl order",
+            "placement": "after /frames by crawl order (crawled 39th against crawled 24th)",
+            "reason": "over the cap of 20 pages: ranked 32nd; after /frames by crawl order (crawled 39th against crawled 24th)"
+          },
+          {
+            "pattern": "/subdirectories",
+            "label": "content",
+            "pages": [
+              "/subdirectories"
+            ],
+            "pagesByInteractive": [
+              "/subdirectories"
+            ],
+            "representative": "/subdirectories",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 33,
+            "placedBy": "crawl order",
+            "placement": "after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)",
+            "reason": "over the cap of 20 pages: ranked 33rd; after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+          },
+          {
+            "pattern": "/jqueryui",
+            "label": "content",
+            "pages": [
+              "/jqueryui"
+            ],
+            "pagesByInteractive": [
+              "/jqueryui"
+            ],
+            "representative": "/jqueryui",
+            "forms": 0,
+            "interactive": 5,
+            "alwaysCovered": null,
+            "rank": 34,
+            "placedBy": "crawl order",
+            "placement": "after /subdirectories by crawl order (crawled 61st against crawled 49th)",
+            "reason": "over the cap of 20 pages: ranked 34th; after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+          },
+          {
+            "pattern": "/dropdown",
+            "label": "content",
+            "pages": [
+              "/dropdown"
+            ],
+            "pagesByInteractive": [
+              "/dropdown"
+            ],
+            "representative": "/dropdown",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 35,
+            "placedBy": "interactive elements",
+            "placement": "after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 35th; after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+          },
+          {
+            "pattern": "/dynamic_content",
+            "label": "content",
+            "pages": [
+              "/dynamic_content"
+            ],
+            "pagesByInteractive": [
+              "/dynamic_content"
+            ],
+            "representative": "/dynamic_content",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 36,
+            "placedBy": "crawl order",
+            "placement": "after /dropdown by crawl order (crawled 14th against crawled 13th)",
+            "reason": "over the cap of 20 pages: ranked 36th; after /dropdown by crawl order (crawled 14th against crawled 13th)"
+          },
+          {
+            "pattern": "/entry_ad",
+            "label": "content",
+            "pages": [
+              "/entry_ad"
+            ],
+            "pagesByInteractive": [
+              "/entry_ad"
+            ],
+            "representative": "/entry_ad",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 37,
+            "placedBy": "crawl order",
+            "placement": "after /dynamic_content by crawl order (crawled 17th against crawled 14th)",
+            "reason": "over the cap of 20 pages: ranked 37th; after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+          },
+          {
+            "pattern": "/geolocation",
+            "label": "content",
+            "pages": [
+              "/geolocation"
+            ],
+            "pagesByInteractive": [
+              "/geolocation"
+            ],
+            "representative": "/geolocation",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 38,
+            "placedBy": "crawl order",
+            "placement": "after /entry_ad by crawl order (crawled 25th against crawled 17th)",
+            "reason": "over the cap of 20 pages: ranked 38th; after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+          },
+          {
+            "pattern": "/horizontal_slider",
+            "label": "content",
+            "pages": [
+              "/horizontal_slider"
+            ],
+            "pagesByInteractive": [
+              "/horizontal_slider"
+            ],
+            "representative": "/horizontal_slider",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 39,
+            "placedBy": "crawl order",
+            "placement": "after /geolocation by crawl order (crawled 26th against crawled 25th)",
+            "reason": "over the cap of 20 pages: ranked 39th; after /geolocation by crawl order (crawled 26th against crawled 25th)"
+          },
+          {
+            "pattern": "/infinite_scroll",
+            "label": "content",
+            "pages": [
+              "/infinite_scroll"
+            ],
+            "pagesByInteractive": [
+              "/infinite_scroll"
+            ],
+            "representative": "/infinite_scroll",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 40,
+            "placedBy": "crawl order",
+            "placement": "after /horizontal_slider by crawl order (crawled 28th against crawled 26th)",
+            "reason": "over the cap of 20 pages: ranked 40th; after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+          },
+          {
+            "pattern": "/inputs",
+            "label": "content",
+            "pages": [
+              "/inputs"
+            ],
+            "pagesByInteractive": [
+              "/inputs"
+            ],
+            "representative": "/inputs",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 41,
+            "placedBy": "crawl order",
+            "placement": "after /infinite_scroll by crawl order (crawled 29th against crawled 28th)",
+            "reason": "over the cap of 20 pages: ranked 41st; after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+          },
+          {
+            "pattern": "/multiple_dropdown",
+            "label": "content",
+            "pages": [
+              "/multiple_dropdown"
+            ],
+            "pagesByInteractive": [
+              "/multiple_dropdown"
+            ],
+            "representative": "/multiple_dropdown",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 42,
+            "placedBy": "crawl order",
+            "placement": "after /inputs by crawl order (crawled 36th against crawled 29th)",
+            "reason": "over the cap of 20 pages: ranked 42nd; after /inputs by crawl order (crawled 36th against crawled 29th)"
+          },
+          {
+            "pattern": "/windows",
+            "label": "content",
+            "pages": [
+              "/windows"
+            ],
+            "pagesByInteractive": [
+              "/windows"
+            ],
+            "representative": "/windows",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 43,
+            "placedBy": "crawl order",
+            "placement": "after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)",
+            "reason": "over the cap of 20 pages: ranked 43rd; after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+          },
+          {
+            "pattern": "/redirector",
+            "label": "content",
+            "pages": [
+              "/redirector"
+            ],
+            "pagesByInteractive": [
+              "/redirector"
+            ],
+            "representative": "/redirector",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": null,
+            "rank": 44,
+            "placedBy": "crawl order",
+            "placement": "after /windows by crawl order (crawled 42nd against crawled 37th)",
+            "reason": "over the cap of 20 pages: ranked 44th; after /windows by crawl order (crawled 42nd against crawled 37th)"
+          },
+          {
+            "pattern": "/abtest",
+            "label": "content",
+            "pages": [
+              "/abtest"
+            ],
+            "pagesByInteractive": [
+              "/abtest"
+            ],
+            "representative": "/abtest",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 45,
+            "placedBy": "interactive elements",
+            "placement": "after /redirector by interactive elements (3 interactive elements against 4 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 45th; after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+          },
+          {
+            "pattern": "/broken_images",
+            "label": "content",
+            "pages": [
+              "/broken_images"
+            ],
+            "pagesByInteractive": [
+              "/broken_images"
+            ],
+            "representative": "/broken_images",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 46,
+            "placedBy": "crawl order",
+            "placement": "after /abtest by crawl order (crawled 5th against crawled 2nd)",
+            "reason": "over the cap of 20 pages: ranked 46th; after /abtest by crawl order (crawled 5th against crawled 2nd)"
+          },
+          {
+            "pattern": "/canvas",
+            "label": "content",
+            "pages": [
+              "/canvas"
+            ],
+            "pagesByInteractive": [
+              "/canvas"
+            ],
+            "representative": "/canvas",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 47,
+            "placedBy": "crawl order",
+            "placement": "after /broken_images by crawl order (crawled 6th against crawled 5th)",
+            "reason": "over the cap of 20 pages: ranked 47th; after /broken_images by crawl order (crawled 6th against crawled 5th)"
+          },
+          {
+            "pattern": "/context_menu",
+            "label": "content",
+            "pages": [
+              "/context_menu"
+            ],
+            "pagesByInteractive": [
+              "/context_menu"
+            ],
+            "representative": "/context_menu",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 48,
+            "placedBy": "crawl order",
+            "placement": "after /canvas by crawl order (crawled 9th against crawled 6th)",
+            "reason": "over the cap of 20 pages: ranked 48th; after /canvas by crawl order (crawled 9th against crawled 6th)"
+          },
+          {
+            "pattern": "/drag_and_drop",
+            "label": "content",
+            "pages": [
+              "/drag_and_drop"
+            ],
+            "pagesByInteractive": [
+              "/drag_and_drop"
+            ],
+            "representative": "/drag_and_drop",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 49,
+            "placedBy": "crawl order",
+            "placement": "after /context_menu by crawl order (crawled 12th against crawled 9th)",
+            "reason": "over the cap of 20 pages: ranked 49th; after /context_menu by crawl order (crawled 12th against crawled 9th)"
+          },
+          {
+            "pattern": "/exit_intent",
+            "label": "content",
+            "pages": [
+              "/exit_intent"
+            ],
+            "pagesByInteractive": [
+              "/exit_intent"
+            ],
+            "representative": "/exit_intent",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 50,
+            "placedBy": "crawl order",
+            "placement": "after /drag_and_drop by crawl order (crawled 18th against crawled 12th)",
+            "reason": "over the cap of 20 pages: ranked 50th; after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+          },
+          {
+            "pattern": "/large",
+            "label": "content",
+            "pages": [
+              "/large"
+            ],
+            "pagesByInteractive": [
+              "/large"
+            ],
+            "representative": "/large",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 51,
+            "placedBy": "crawl order",
+            "placement": "after /exit_intent by crawl order (crawled 34th against crawled 18th)",
+            "reason": "over the cap of 20 pages: ranked 51st; after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+          },
+          {
+            "pattern": "/shadowdom",
+            "label": "content",
+            "pages": [
+              "/shadowdom"
+            ],
+            "pagesByInteractive": [
+              "/shadowdom"
+            ],
+            "representative": "/shadowdom",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 52,
+            "placedBy": "crawl order",
+            "placement": "after /large by crawl order (crawled 44th against crawled 34th)",
+            "reason": "over the cap of 20 pages: ranked 52nd; after /large by crawl order (crawled 44th against crawled 34th)"
+          },
+          {
+            "pattern": "/slow",
+            "label": "content",
+            "pages": [
+              "/slow"
+            ],
+            "pagesByInteractive": [
+              "/slow"
+            ],
+            "representative": "/slow",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 53,
+            "placedBy": "crawl order",
+            "placement": "after /shadowdom by crawl order (crawled 46th against crawled 44th)",
+            "reason": "over the cap of 20 pages: ranked 53rd; after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+          },
+          {
+            "pattern": "/typos",
+            "label": "content",
+            "pages": [
+              "/typos"
+            ],
+            "pagesByInteractive": [
+              "/typos"
+            ],
+            "representative": "/typos",
+            "forms": 0,
+            "interactive": 3,
+            "alwaysCovered": null,
+            "rank": 54,
+            "placedBy": "crawl order",
+            "placement": "after /slow by crawl order (crawled 51st against crawled 46th)",
+            "reason": "over the cap of 20 pages: ranked 54th; after /slow by crawl order (crawled 51st against crawled 46th)"
+          },
+          {
+            "pattern": "/add_remove_elements",
+            "label": "content",
+            "pages": [
+              "/add_remove_elements"
+            ],
+            "pagesByInteractive": [
+              "/add_remove_elements"
+            ],
+            "representative": "/add_remove_elements",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 55,
+            "placedBy": "interactive elements",
+            "placement": "after /typos by interactive elements (0 interactive elements against 3 interactive elements)",
+            "reason": "over the cap of 20 pages: ranked 55th; after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+          },
+          {
+            "pattern": "/basic_auth",
+            "label": "content",
+            "pages": [
+              "/basic_auth"
+            ],
+            "pagesByInteractive": [
+              "/basic_auth"
+            ],
+            "representative": "/basic_auth",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 56,
+            "placedBy": "crawl order",
+            "placement": "after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)",
+            "reason": "over the cap of 20 pages: ranked 56th; after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+          },
+          {
+            "pattern": "/digest_auth",
+            "label": "content",
+            "pages": [
+              "/digest_auth"
+            ],
+            "pagesByInteractive": [
+              "/digest_auth"
+            ],
+            "representative": "/digest_auth",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 57,
+            "placedBy": "crawl order",
+            "placement": "after /basic_auth by crawl order (crawled 10th against crawled 4th)",
+            "reason": "over the cap of 20 pages: ranked 57th; after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+          },
+          {
+            "pattern": "/javascript_error",
+            "label": "content",
+            "pages": [
+              "/javascript_error"
+            ],
+            "pagesByInteractive": [
+              "/javascript_error"
+            ],
+            "representative": "/javascript_error",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 58,
+            "placedBy": "crawl order",
+            "placement": "after /digest_auth by crawl order (crawled 32nd against crawled 10th)",
+            "reason": "over the cap of 20 pages: ranked 58th; after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+          },
+          {
+            "pattern": "/nested_frames",
+            "label": "content",
+            "pages": [
+              "/nested_frames"
+            ],
+            "pagesByInteractive": [
+              "/nested_frames"
+            ],
+            "representative": "/nested_frames",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 59,
+            "placedBy": "crawl order",
+            "placement": "after /javascript_error by crawl order (crawled 38th against crawled 32nd)",
+            "reason": "over the cap of 20 pages: ranked 59th; after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+          },
+          {
+            "pattern": "/download_secure",
+            "label": "content",
+            "pages": [
+              "/download_secure"
+            ],
+            "pagesByInteractive": [
+              "/download_secure"
+            ],
+            "representative": "/download_secure",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 60,
+            "placedBy": "crawl order",
+            "placement": "after /nested_frames by crawl order (crawled 43rd against crawled 38th)",
+            "reason": "over the cap of 20 pages: ranked 60th; after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+          },
+          {
+            "pattern": "/about",
+            "label": "content",
+            "pages": [
+              "/about"
+            ],
+            "pagesByInteractive": [
+              "/about"
+            ],
+            "representative": "/about",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 61,
+            "placedBy": "crawl order",
+            "placement": "after /download_secure by crawl order (crawled 53rd against crawled 43rd)",
+            "reason": "over the cap of 20 pages: ranked 61st; after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+          },
+          {
+            "pattern": "/contact-us",
+            "label": "content",
+            "pages": [
+              "/contact-us"
+            ],
+            "pagesByInteractive": [
+              "/contact-us"
+            ],
+            "representative": "/contact-us",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 62,
+            "placedBy": "crawl order",
+            "placement": "after /about by crawl order (crawled 54th against crawled 53rd)",
+            "reason": "over the cap of 20 pages: ranked 62nd; after /about by crawl order (crawled 54th against crawled 53rd)"
+          },
+          {
+            "pattern": "/portfolio",
+            "label": "content",
+            "pages": [
+              "/portfolio"
+            ],
+            "pagesByInteractive": [
+              "/portfolio"
+            ],
+            "representative": "/portfolio",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 63,
+            "placedBy": "crawl order",
+            "placement": "after /contact-us by crawl order (crawled 55th against crawled 54th)",
+            "reason": "over the cap of 20 pages: ranked 63rd; after /contact-us by crawl order (crawled 55th against crawled 54th)"
+          },
+          {
+            "pattern": "/gallery",
+            "label": "content",
+            "pages": [
+              "/gallery"
+            ],
+            "pagesByInteractive": [
+              "/gallery"
+            ],
+            "representative": "/gallery",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 64,
+            "placedBy": "crawl order",
+            "placement": "after /portfolio by crawl order (crawled 56th against crawled 55th)",
+            "reason": "over the cap of 20 pages: ranked 64th; after /portfolio by crawl order (crawled 56th against crawled 55th)"
+          },
+          {
+            "pattern": "/windows/new",
+            "label": "content",
+            "pages": [
+              "/windows/new"
+            ],
+            "pagesByInteractive": [
+              "/windows/new"
+            ],
+            "representative": "/windows/new",
+            "forms": 0,
+            "interactive": 0,
+            "alwaysCovered": null,
+            "rank": 65,
+            "placedBy": "crawl order",
+            "placement": "after /gallery by crawl order (crawled 62nd against crawled 56th)",
+            "reason": "over the cap of 20 pages: ranked 65th; after /gallery by crawl order (crawled 62nd against crawled 56th)"
+          }
+        ],
+        "pages": [
+          "/",
+          "/infinite_scroll/3",
+          "/dynamic_controls",
+          "/large_form",
+          "/radio_buttons",
+          "/readonly",
+          "/upload",
+          "/login",
+          "/two_factor",
+          "/checkboxes",
+          "/forgot_password",
+          "/key_presses",
+          "/status_codes/200",
+          "/users/1",
+          "/dynamic_loading/1",
+          "/hovers",
+          "/shifting_content/menu",
+          "/subdirectories/one",
+          "/challenging_dom",
+          "/tinymce"
+        ]
+      }
+    },
+    "warnings": []
+  }
+}

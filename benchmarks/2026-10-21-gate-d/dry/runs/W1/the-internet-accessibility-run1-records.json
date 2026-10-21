@@ -1,0 +1,802 @@
+{
+  "label": "the-internet",
+  "variant": "W1",
+  "site": "http://localhost:7080",
+  "kind": "accessibility",
+  "run": 1,
+  "commit": "a969cbf",
+  "startedAt": "2026-10-21T14:09:28.584Z",
+  "runSeconds": 86,
+  "workers": 1,
+  "workersUsed": 1,
+  "units": 20,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 80,
+  "byStatus": {
+    "Not run": 32,
+    "Passed": 29,
+    "Failed": 19
+  },
+  "requestCap": null,
+  "timeouts": [],
+  "records": [
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h1, h2, a[href$=\"abtest\"], a[href$=\"add_remove_elements/\"], li:nth-child(3) and 51 more"
+      ]
+    },
+    {
+      "title": "TFAC-005: /infinite_scroll/3 passes the WCAG 2.2 A and AA scan",
+      "page": "/infinite_scroll/3",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /infinite_scroll/3: WCAG 2.4.2 document-title (serious): Documents must have <title> element to aid in navigation - html; WCAG 3.1.1 html-has-lang (serious): <html> element must have a lang attribute - html expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 2.4.2 document-title (serious): Documents must have <title> element to aid in navigation - html\", + \"WCAG 3.1.1 html-has-lang (serious): <html> element must have a lang attribute - html\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.4.2 document-title (serious): Documents must have <title> element to aid in navigation - html",
+        "failure WCAG 3.1.1 html-has-lang (serious): <html> element must have a lang attribute - html",
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html"
+      ]
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /infinite_scroll/3",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /infinite_scroll/3 is tabbed through in reading order",
+      "page": "/infinite_scroll/3",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /infinite_scroll/3",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-008: /infinite_scroll/3 groups its checkboxes and radio buttons",
+      "page": "/infinite_scroll/3",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /infinite_scroll/3",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-012: /dynamic_controls groups its checkboxes and radio buttons",
+      "page": "/dynamic_controls",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /dynamic_controls",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /dynamic_controls",
+      "page": "/dynamic_controls",
+      "status": "Failed",
+      "message": "Error: form fields on /dynamic_controls with no accessible name (a screen reader announces them without a label): input[type=\"checkbox\"], input[type=\"text\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"input[type=\\\"checkbox\\\"]\", + \"input[type=\\\"text\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /dynamic_controls is tabbed through in reading order",
+      "page": "/dynamic_controls",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /dynamic_controls",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /dynamic_controls passes the WCAG 2.2 A and AA scan",
+      "page": "/dynamic_controls",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /dynamic_controls: WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\"checkbox\"], input[type=\"text\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\\\"checkbox\\\"], input[type=\\\"text\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\"checkbox\"], input[type=\"text\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h4:nth-child(1), p, .subheader:nth-child(3), #checkbox, .subheader:nth-child(8)"
+      ]
+    },
+    {
+      "title": "TFAC-016: /large_form groups its checkboxes and radio buttons",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /large_form",
+      "page": "/large_form",
+      "status": "Failed",
+      "message": "Error: form fields on /large_form with no accessible name (a screen reader announces them without a label): input[name=\"email\"], input[name=\"password\"], input[name=\"age\"], select[name=\"languages[]\"], input[name=\"contact\"], input[name=\"contact\"], input[name=\"contact\"], input[name=\"interests[]\"], input[name=\"interests[]\"], input[name=\"interests[]\"], input[name=\"color\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 13 - Array [] + Array [ + \"input[name=\\\"email\\\"]\", + \"input[name=\\\"password\\\"]\", + \"input[name=\\\"age\\\"]\", + \"select[name=\\\"languages[]\\\"]\", + \"input[n",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /large_form, which disappears as the user types: input[name=\"nickname\"] (\"Nickname (optional)\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /large_form is tabbed through in reading order",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /large_form passes the WCAG 2.2 A and AA scan",
+      "page": "/large_form",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /large_form: WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\"email\"], input[type=\"password\"], input[type=\"number\"], input[value=\"email\"], input[value=\"phone\"] and 5 more; WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select[name=\"languages[]\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\\\"email\\\"], input[type=\\\"password\\\"], input[type=\\\"number\\\"], input[va",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input[type=\"email\"], input[type=\"password\"], input[type=\"number\"], input[value=\"email\"], input[value=\"phone\"] and 5 more",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select[name=\"languages[]\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, .example > p, fieldset:nth-child(1) > legend, label[for=\"first-name\"], #first-name and 27 more"
+      ]
+    },
+    {
+      "title": "TFAC-020: /radio_buttons groups its checkboxes and radio buttons",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /radio_buttons",
+      "page": "/radio_buttons",
+      "status": "Failed",
+      "message": "Error: form fields on /radio_buttons with no accessible name (a screen reader announces them without a label): input[name=\"sport\"], input[name=\"sport\"], input[name=\"sport\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"input[name=\\\"sport\\\"]\", + \"input[name=\\\"sport\\\"]\", + \"input[name=\\\"sport\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-019: /radio_buttons is tabbed through in reading order",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /radio_buttons passes the WCAG 2.2 A and AA scan",
+      "page": "/radio_buttons",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /radio_buttons: WCAG 4.1.2 label (critical): Form elements must have labels - input[value=\"football\"], input[value=\"tennis\"], input[value=\"hockey\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - input[value=\\\"football\\\"], input[value=\\\"tennis\\\"], input[value=\\\"hockey\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input[value=\"football\"], input[value=\"tennis\"], input[value=\"hockey\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, fieldset:nth-child(1) > legend, label[for=\"red\"], label[for=\"blue\"], label[for=\"green\"] and 3 more"
+      ]
+    },
+    {
+      "title": "TFAC-024: /readonly groups its checkboxes and radio buttons",
+      "page": "/readonly",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /readonly",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-022: every form field has an accessible name: /readonly",
+      "page": "/readonly",
+      "status": "Failed",
+      "message": "Error: form fields on /readonly with no accessible name (a screen reader announces them without a label): #textfield expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"#textfield\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-023: /readonly is tabbed through in reading order",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-021: /readonly passes the WCAG 2.2 A and AA scan",
+      "page": "/readonly",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /readonly: WCAG 4.1.2 label (critical): Form elements must have labels - #textfield expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - #textfield\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - #textfield",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, label[for=\"checkbox\"], #textfield, label[for=\"always-readonly\"], #always-readonly"
+      ]
+    },
+    {
+      "title": "TFAC-028: /upload groups its checkboxes and radio buttons",
+      "page": "/upload",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /upload",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-026: every form field has an accessible name: /upload",
+      "page": "/upload",
+      "status": "Failed",
+      "message": "Error: form fields on /upload with no accessible name (a screen reader announces them without a label): #file-upload expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"#file-upload\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-027: /upload is tabbed through in reading order",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-025: /upload passes the WCAG 2.2 A and AA scan",
+      "page": "/upload",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /upload: WCAG 4.1.2 label (critical): Form elements must have labels - #file-upload expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - #file-upload\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - #file-upload",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p, #file-upload"
+      ]
+    },
+    {
+      "title": "TFAC-032: /login groups its checkboxes and radio buttons",
+      "page": "/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-030: every form field has an accessible name: /login",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-031: /login is tabbed through in reading order",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-029: /login passes the WCAG 2.2 A and AA scan",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h2, h4, em:nth-child(1), em:nth-child(2), label[for=\"username\"] and 3 more"
+      ]
+    },
+    {
+      "title": "TFAC-036: /two_factor groups its checkboxes and radio buttons",
+      "page": "/two_factor",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /two_factor",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-034: every form field has an accessible name: /two_factor",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-035: /two_factor is tabbed through in reading order",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-033: /two_factor passes the WCAG 2.2 A and AA scan",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h2, h4, em:nth-child(1), em:nth-child(2), label[for=\"username\"] and 3 more"
+      ]
+    },
+    {
+      "title": "TFAC-040: /checkboxes groups its checkboxes and radio buttons",
+      "page": "/checkboxes",
+      "status": "Failed",
+      "message": "Error: 2 checkboxes sharing the heading \"Checkboxes\" (\"on\", \"on\") are not in a fieldset with a legend or a named group on /checkboxes expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"2 checkboxes sharing the heading \\\"Checkboxes\\\" (\\\"on\\\", \\\"on\\\") are not in a fieldset with a legend or a named group\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-038: every form field has an accessible name: /checkboxes",
+      "page": "/checkboxes",
+      "status": "Failed",
+      "message": "Error: form fields on /checkboxes with no accessible name (a screen reader announces them without a label): input[type=\"checkbox\"], input[type=\"checkbox\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"input[type=\\\"checkbox\\\"]\", + \"input[type=\\\"checkbox\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-039: /checkboxes is tabbed through in reading order",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-037: /checkboxes passes the WCAG 2.2 A and AA scan",
+      "page": "/checkboxes",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /checkboxes: WCAG 4.1.2 label (critical): Form elements must have labels - input[data-tf-field=\"0\"], input[data-tf-field=\"1\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - input[data-tf-field=\\\"0\\\"], input[data-tf-field=\\\"1\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input[data-tf-field=\"0\"], input[data-tf-field=\"1\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, #checkboxes"
+      ]
+    },
+    {
+      "title": "TFAC-044: /forgot_password groups its checkboxes and radio buttons",
+      "page": "/forgot_password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /forgot_password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /forgot_password",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-043: /forgot_password is tabbed through in reading order",
+      "page": "/forgot_password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /forgot_password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-041: /forgot_password passes the WCAG 2.2 A and AA scan",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h2, label, #email"
+      ]
+    },
+    {
+      "title": "TFAC-048: /key_presses groups its checkboxes and radio buttons",
+      "page": "/key_presses",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /key_presses",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /key_presses",
+      "page": "/key_presses",
+      "status": "Failed",
+      "message": "Error: form fields on /key_presses with no accessible name (a screen reader announces them without a label): #target expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"#target\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-047: /key_presses is tabbed through in reading order",
+      "page": "/key_presses",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /key_presses",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-045: /key_presses passes the WCAG 2.2 A and AA scan",
+      "page": "/key_presses",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /key_presses: WCAG 4.1.2 label (critical): Form elements must have labels - #target expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 label (critical): Form elements must have labels - #target\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - #target",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p:nth-child(2), #target"
+      ]
+    },
+    {
+      "title": "TFAC-052: /status_codes/200 groups its checkboxes and radio buttons",
+      "page": "/status_codes/200",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /status_codes/200",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-050: every form field has an accessible name: /status_codes/200",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-051: /status_codes/200 is tabbed through in reading order",
+      "page": "/status_codes/200",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /status_codes/200",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-049: /status_codes/200 passes the WCAG 2.2 A and AA scan",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p, a[href$=\"status_codes\"]"
+      ]
+    },
+    {
+      "title": "TFAC-056: /users/1 groups its checkboxes and radio buttons",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-054: every form field has an accessible name: /users/1",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-055: /users/1 is tabbed through in reading order",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-053: /users/1 passes the WCAG 2.2 A and AA scan",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-060: /dynamic_loading/1 groups its checkboxes and radio buttons",
+      "page": "/dynamic_loading/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /dynamic_loading/1",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-058: every form field has an accessible name: /dynamic_loading/1",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-059: /dynamic_loading/1 is tabbed through in reading order",
+      "page": "/dynamic_loading/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /dynamic_loading/1",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-057: /dynamic_loading/1 passes the WCAG 2.2 A and AA scan",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, .example > h4"
+      ]
+    },
+    {
+      "title": "TFAC-064: /hovers groups its checkboxes and radio buttons",
+      "page": "/hovers",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /hovers",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-062: every form field has an accessible name: /hovers",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-063: /hovers is tabbed through in reading order",
+      "page": "/hovers",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /hovers",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-061: /hovers passes the WCAG 2.2 A and AA scan",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p"
+      ]
+    },
+    {
+      "title": "TFAC-068: /shifting_content/menu groups its checkboxes and radio buttons",
+      "page": "/shifting_content/menu",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /shifting_content/menu",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-066: every form field has an accessible name: /shifting_content/menu",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-067: /shifting_content/menu is tabbed through in reading order",
+      "page": "/shifting_content/menu",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /shifting_content/menu",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-065: /shifting_content/menu passes the WCAG 2.2 A and AA scan",
+      "page": "/shifting_content/menu",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /shifting_content/menu: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.shift, a[href$=\"elementalselenium.com/\"], a[href$=\"saucelabs.com/\"]; WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.example > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.shift, a[href$=\\\"elementalselenium.com",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .shift, a[href$=\"elementalselenium.com/\"], a[href$=\"saucelabs.com/\"]",
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .example > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p:nth-child(2), p:nth-child(3), p:nth-child(3) > code, p:nth-child(3) > a and 10 more",
+        "manual-review WCAG 1.4.1 link-in-text-block: Links must be distinguishable without relying on color - p:nth-child(3) > a, p:nth-child(4) > a, p:nth-child(5) > a"
+      ]
+    },
+    {
+      "title": "TFAC-072: /subdirectories/one groups its checkboxes and radio buttons",
+      "page": "/subdirectories/one",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /subdirectories/one",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-070: every form field has an accessible name: /subdirectories/one",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-071: /subdirectories/one is tabbed through in reading order",
+      "page": "/subdirectories/one",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /subdirectories/one",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-069: /subdirectories/one passes the WCAG 2.2 A and AA scan",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h1, p:nth-child(2), .example > pre, a[href$=\"subdirectories\"] > pre, a[href$=\"two\"] > pre"
+      ]
+    },
+    {
+      "title": "TFAC-076: /challenging_dom groups its checkboxes and radio buttons",
+      "page": "/challenging_dom",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /challenging_dom",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-074: every form field has an accessible name: /challenging_dom",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-075: /challenging_dom is tabbed through in reading order",
+      "page": "/challenging_dom",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /challenging_dom",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-073: /challenging_dom passes the WCAG 2.2 A and AA scan",
+      "page": "/challenging_dom",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /challenging_dom: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - #bd64d7ad-6e65-4ed1-9e4d-34189c22e6e3 expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - #bd64d7ad-6e65-4ed1-9e4d-34189c22e6e3\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - #bd64d7ad-6e65-4ed1-9e4d-34189c22e6e3",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, p, th:nth-child(1), th:nth-child(2), th:nth-child(3) and 84 more"
+      ]
+    },
+    {
+      "title": "TFAC-080: /tinymce groups its checkboxes and radio buttons",
+      "page": "/tinymce",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /tinymce",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-078: every form field has an accessible name: /tinymce",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-079: /tinymce is tabbed through in reading order",
+      "page": "/tinymce",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /tinymce",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-077: /tinymce passes the WCAG 2.2 A and AA scan",
+      "page": "/tinymce",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /tinymce: WCAG 4.1.2 aria-allowed-attr (critical): Elements must only use supported ARIA attributes -.tox-statusbar__path-item; WCAG 4.1.2 aria-prohibited-attr (serious): Elements must only use permitted ARIA attributes -.tox-statusbar__resize-handle expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 4.1.2 aria-allowed-attr (critical): Elements must only use supported ARIA attributes -.tox-statusbar__path-item\", + \"WCAG 4.1.2 aria-prohibited-attr (serious): Elements must only use permitted",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 aria-allowed-attr (critical): Elements must only use supported ARIA attributes - .tox-statusbar__path-item",
+        "failure WCAG 4.1.2 aria-prohibited-attr (serious): Elements must only use permitted ARIA attributes - .tox-statusbar__resize-handle",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - #mce_0_ifr #tinymce",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - h3, .tox-mbtn.tox-mbtn--select[role=\"menuitem\"]:nth-child(1) > .tox-mbtn__select-label, .tox-mbtn.tox-mbtn--select[role=\"menuitem\"]:nth-child(2) > .tox-mbtn__select-label, .tox-mbtn.tox-mbtn--select[role=\"menuitem\"]:nth-child(3) > .tox-mbtn__select-label, .tox-mbtn.tox-mbtn--select[role=\"menuitem\"]:nth-child(4) > .tox-mbtn__select-label and 2 more"
+      ]
+    }
+  ]
+}

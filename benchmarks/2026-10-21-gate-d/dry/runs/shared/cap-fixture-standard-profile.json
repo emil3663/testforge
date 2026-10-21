@@ -1,0 +1,1278 @@
+{
+  "scannedAt": "2026-10-21T13:47:01.033Z",
+  "baseUrl": "http://172.31.208.1:4472",
+  "pages": [
+    {
+      "path": "/",
+      "url": "http://172.31.208.1:4472/",
+      "title": "Home - Acme Notes",
+      "metaDescription": "Home: keep short notes with Acme Notes.",
+      "headings": [
+        "Acme Notes"
+      ],
+      "buttons": [],
+      "links": [
+        "Home",
+        "Sign in",
+        "Notes",
+        "Go to your notes"
+      ],
+      "actionableElements": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Go to your notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "All systems normal",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        }
+      ],
+      "linkDetails": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "rawHref": "/",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "rawHref": "/login",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": true,
+          "isSecure": false
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "rawHref": "/notes",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        },
+        {
+          "text": "Go to your notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "rawHref": "/notes",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "All systems normal",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        }
+      ],
+      "embeddedLinkDetails": [],
+      "dragDropTargets": [],
+      "visibleTextSnippets": [
+        "Write short notes and find them again later.",
+        "All systems normal",
+        "Go to your notes"
+      ],
+      "storageUsage": {
+        "localStorage": false,
+        "sessionStorage": false,
+        "indexedDB": false
+      },
+      "outline": {
+        "landmarks": [
+          "main",
+          "navigation"
+        ],
+        "forms": [],
+        "cards": false,
+        "headings": [
+          "h1"
+        ],
+        "interactive": 4
+      }
+    },
+    {
+      "path": "/login",
+      "url": "http://172.31.208.1:4472/login",
+      "title": "Sign in - Acme Notes",
+      "metaDescription": "Sign in: keep short notes with Acme Notes.",
+      "headings": [
+        "Sign in"
+      ],
+      "buttons": [
+        "Sign in"
+      ],
+      "links": [
+        "Home",
+        "Sign in",
+        "Notes"
+      ],
+      "actionableElements": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Email Password Sign in",
+          "url": null,
+          "category": "form",
+          "elementType": "form",
+          "containerLabel": "Sign in",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "form",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          },
+          "form": {
+            "action": "/login",
+            "method": "post",
+            "occurrence": 0,
+            "fields": [
+              {
+                "tag": "input",
+                "type": "email",
+                "name": "email",
+                "id": "email"
+              },
+              {
+                "tag": "input",
+                "type": "password",
+                "name": "password",
+                "id": "password"
+              },
+              {
+                "tag": "button",
+                "type": "submit",
+                "name": "",
+                "id": ""
+              }
+            ]
+          }
+        },
+        {
+          "text": "email",
+          "url": null,
+          "category": "form",
+          "elementType": "input",
+          "containerLabel": "Sign in",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "textbox",
+            "name": "Email",
+            "label": "Email",
+            "placeholder": "",
+            "id": "email",
+            "inputType": "email"
+          }
+        },
+        {
+          "text": "password",
+          "url": null,
+          "category": "form",
+          "elementType": "input",
+          "containerLabel": "Email",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "textbox",
+            "name": "Password",
+            "label": "Password",
+            "placeholder": "",
+            "id": "password",
+            "inputType": "password"
+          }
+        },
+        {
+          "text": "Sign in",
+          "url": null,
+          "category": "form",
+          "elementType": "button",
+          "containerLabel": "Password",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "button",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          },
+          "position": 0,
+          "occurrence": 0
+        }
+      ],
+      "linkDetails": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "rawHref": "/",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "rawHref": "/login",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": true,
+          "isSecure": false
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "rawHref": "/notes",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        }
+      ],
+      "embeddedLinkDetails": [
+        {
+          "text": "Email Password Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "kind": "form",
+          "source": "dom",
+          "containerLabel": "Sign in",
+          "sameOrigin": true,
+          "isVisible": true
+        }
+      ],
+      "dragDropTargets": [],
+      "visibleTextSnippets": [
+        "Email",
+        "Password",
+        "Sign in"
+      ],
+      "storageUsage": {
+        "localStorage": false,
+        "sessionStorage": false,
+        "indexedDB": false
+      },
+      "outline": {
+        "landmarks": [
+          "main",
+          "navigation"
+        ],
+        "forms": [
+          [
+            "email",
+            "password"
+          ]
+        ],
+        "cards": false,
+        "headings": [
+          "h1"
+        ],
+        "interactive": 6
+      }
+    },
+    {
+      "path": "/notes",
+      "url": "http://172.31.208.1:4472/notes",
+      "title": "Notes - Acme Notes",
+      "metaDescription": "Notes: keep short notes with Acme Notes.",
+      "headings": [
+        "Notes"
+      ],
+      "buttons": [
+        "Save note"
+      ],
+      "links": [
+        "Home",
+        "Sign in",
+        "Notes"
+      ],
+      "actionableElements": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "category": "navigation",
+          "elementType": "link",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "link",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          }
+        },
+        {
+          "text": "Note Save note",
+          "url": null,
+          "category": "form",
+          "elementType": "form",
+          "containerLabel": "Notes",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "form",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          },
+          "form": {
+            "action": "/notes",
+            "method": "post",
+            "occurrence": 0,
+            "fields": [
+              {
+                "tag": "input",
+                "type": "",
+                "name": "note",
+                "id": "note"
+              },
+              {
+                "tag": "button",
+                "type": "submit",
+                "name": "",
+                "id": ""
+              }
+            ]
+          }
+        },
+        {
+          "text": "note",
+          "url": null,
+          "category": "form",
+          "elementType": "input",
+          "containerLabel": "Notes",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "textbox",
+            "name": "Note",
+            "label": "Note",
+            "placeholder": "",
+            "id": "note",
+            "inputType": "text"
+          }
+        },
+        {
+          "text": "Save note",
+          "url": null,
+          "category": "form",
+          "elementType": "button",
+          "containerLabel": "Note",
+          "expectedStatus": null,
+          "isVisible": true,
+          "ariaPressed": null,
+          "ariaSelected": null,
+          "ariaChecked": null,
+          "ariaExpanded": null,
+          "groupId": null,
+          "locator": {
+            "role": "button",
+            "name": "",
+            "label": "",
+            "placeholder": "",
+            "id": "",
+            "inputType": ""
+          },
+          "position": 0,
+          "occurrence": 0
+        }
+      ],
+      "linkDetails": [
+        {
+          "text": "Home",
+          "url": "http://172.31.208.1:4472/",
+          "rawHref": "/",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        },
+        {
+          "text": "Sign in",
+          "url": "http://172.31.208.1:4472/login",
+          "rawHref": "/login",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": true,
+          "isSecure": false
+        },
+        {
+          "text": "Notes",
+          "url": "http://172.31.208.1:4472/notes",
+          "rawHref": "/notes",
+          "category": "navigation",
+          "linkType": "internal",
+          "containerLabel": "",
+          "expectedStatus": null,
+          "isVisible": true,
+          "target": "",
+          "targetBehavior": "same-window",
+          "titleAttribute": "",
+          "downloadName": "",
+          "requiresAuth": false,
+          "isSecure": false
+        }
+      ],
+      "embeddedLinkDetails": [
+        {
+          "text": "Note Save note",
+          "url": "http://172.31.208.1:4472/notes",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "kind": "form",
+          "source": "dom",
+          "containerLabel": "Notes",
+          "sameOrigin": true,
+          "isVisible": true
+        }
+      ],
+      "dragDropTargets": [],
+      "visibleTextSnippets": [
+        "Note",
+        "Save note"
+      ],
+      "storageUsage": {
+        "localStorage": false,
+        "sessionStorage": false,
+        "indexedDB": false
+      },
+      "outline": {
+        "landmarks": [
+          "main",
+          "navigation"
+        ],
+        "forms": [
+          [
+            "text"
+          ]
+        ],
+        "cards": false,
+        "headings": [
+          "h1"
+        ],
+        "interactive": 5
+      }
+    }
+  ],
+  "warnings": [],
+  "requestedPaths": [
+    "/",
+    "/login",
+    "/notes"
+  ],
+  "failedPages": [],
+  "dependencyMap": [
+    {
+      "host": "172.31.208.1:4472",
+      "kind": "xhr-fetch",
+      "sampleUrl": "http://172.31.208.1:4472/api/status",
+      "sameOrigin": true,
+      "method": "GET",
+      "rawValue": null,
+      "occurrences": 1,
+      "paths": [
+        "/"
+      ]
+    },
+    {
+      "host": "172.31.208.1:4472",
+      "kind": "form-action",
+      "sampleUrl": "http://172.31.208.1:4472/login",
+      "sameOrigin": true,
+      "method": "POST",
+      "rawValue": "/login",
+      "occurrences": 2,
+      "paths": [
+        "/login",
+        "/notes"
+      ]
+    }
+  ],
+  "siteGraph": {
+    "nodes": [
+      {
+        "path": "/",
+        "url": "http://172.31.208.1:4472/",
+        "title": "Home - Acme Notes",
+        "inspected": true
+      },
+      {
+        "path": "/login",
+        "url": "http://172.31.208.1:4472/login",
+        "title": "Sign in - Acme Notes",
+        "inspected": true
+      },
+      {
+        "path": "/notes",
+        "url": "http://172.31.208.1:4472/notes",
+        "title": "Notes - Acme Notes",
+        "inspected": true
+      }
+    ],
+    "edges": [
+      {
+        "from": "/",
+        "to": "/login",
+        "kind": "link",
+        "text": "Sign in",
+        "rawValue": "/login",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/",
+        "to": "/notes",
+        "kind": "link",
+        "text": "Notes",
+        "rawValue": "/notes",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/",
+        "to": "/notes",
+        "kind": "link",
+        "text": "Go to your notes",
+        "rawValue": "/notes",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": "All systems normal"
+      },
+      {
+        "from": "/login",
+        "to": "/",
+        "kind": "link",
+        "text": "Home",
+        "rawValue": "/",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/login",
+        "to": "/notes",
+        "kind": "link",
+        "text": "Notes",
+        "rawValue": "/notes",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/login",
+        "to": "/login",
+        "kind": "form-submit",
+        "text": "Email Password Sign in",
+        "rawValue": "/login",
+        "tagName": "form",
+        "attributeName": "action",
+        "containerLabel": "Sign in"
+      },
+      {
+        "from": "/notes",
+        "to": "/",
+        "kind": "link",
+        "text": "Home",
+        "rawValue": "/",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/notes",
+        "to": "/login",
+        "kind": "link",
+        "text": "Sign in",
+        "rawValue": "/login",
+        "tagName": "a",
+        "attributeName": "href",
+        "containerLabel": ""
+      },
+      {
+        "from": "/notes",
+        "to": "/notes",
+        "kind": "form-submit",
+        "text": "Note Save note",
+        "rawValue": "/notes",
+        "tagName": "form",
+        "attributeName": "action",
+        "containerLabel": "Notes"
+      }
+    ]
+  },
+  "journeys": [
+    {
+      "id": "automatic||/login > /login",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/login",
+        "/login"
+      ],
+      "steps": [
+        {
+          "from": "/login",
+          "to": "/login",
+          "kind": "form-submit",
+          "text": "Email Password Sign in",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Sign in"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 1
+    },
+    {
+      "id": "automatic||/notes > /notes",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/notes",
+        "/notes"
+      ],
+      "steps": [
+        {
+          "from": "/notes",
+          "to": "/notes",
+          "kind": "form-submit",
+          "text": "Note Save note",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Notes"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 2
+    },
+    {
+      "id": "automatic||/ > /login > /login",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/",
+        "/login",
+        "/login"
+      ],
+      "steps": [
+        {
+          "from": "/",
+          "to": "/login",
+          "kind": "link",
+          "text": "Sign in",
+          "rawValue": "/login",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/login",
+          "to": "/login",
+          "kind": "form-submit",
+          "text": "Email Password Sign in",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Sign in"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 3
+    },
+    {
+      "id": "automatic||/ > /notes > /notes",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/",
+        "/notes",
+        "/notes"
+      ],
+      "steps": [
+        {
+          "from": "/",
+          "to": "/notes",
+          "kind": "link",
+          "text": "Notes",
+          "rawValue": "/notes",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/notes",
+          "to": "/notes",
+          "kind": "form-submit",
+          "text": "Note Save note",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Notes"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 4
+    },
+    {
+      "id": "automatic||/login > /notes > /notes",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/login",
+        "/notes",
+        "/notes"
+      ],
+      "steps": [
+        {
+          "from": "/login",
+          "to": "/notes",
+          "kind": "link",
+          "text": "Notes",
+          "rawValue": "/notes",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/notes",
+          "to": "/notes",
+          "kind": "form-submit",
+          "text": "Note Save note",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Notes"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 5
+    },
+    {
+      "id": "automatic||/notes > /login > /login",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/notes",
+        "/login",
+        "/login"
+      ],
+      "steps": [
+        {
+          "from": "/notes",
+          "to": "/login",
+          "kind": "link",
+          "text": "Sign in",
+          "rawValue": "/login",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/login",
+          "to": "/login",
+          "kind": "form-submit",
+          "text": "Email Password Sign in",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Sign in"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 6
+    },
+    {
+      "id": "automatic||/ > /login > /notes > /notes",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/",
+        "/login",
+        "/notes",
+        "/notes"
+      ],
+      "steps": [
+        {
+          "from": "/",
+          "to": "/login",
+          "kind": "link",
+          "text": "Sign in",
+          "rawValue": "/login",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/login",
+          "to": "/notes",
+          "kind": "link",
+          "text": "Notes",
+          "rawValue": "/notes",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/notes",
+          "to": "/notes",
+          "kind": "form-submit",
+          "text": "Note Save note",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Notes"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 7
+    },
+    {
+      "id": "automatic||/ > /notes > /login > /login",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/",
+        "/notes",
+        "/login",
+        "/login"
+      ],
+      "steps": [
+        {
+          "from": "/",
+          "to": "/notes",
+          "kind": "link",
+          "text": "Notes",
+          "rawValue": "/notes",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/notes",
+          "to": "/login",
+          "kind": "link",
+          "text": "Sign in",
+          "rawValue": "/login",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/login",
+          "to": "/login",
+          "kind": "form-submit",
+          "text": "Email Password Sign in",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Sign in"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 8
+    },
+    {
+      "id": "automatic||/login > / > /notes > /notes",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/login",
+        "/",
+        "/notes",
+        "/notes"
+      ],
+      "steps": [
+        {
+          "from": "/login",
+          "to": "/",
+          "kind": "link",
+          "text": "Home",
+          "rawValue": "/",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/",
+          "to": "/notes",
+          "kind": "link",
+          "text": "Notes",
+          "rawValue": "/notes",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/notes",
+          "to": "/notes",
+          "kind": "form-submit",
+          "text": "Note Save note",
+          "rawValue": "/notes",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Notes"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 9
+    },
+    {
+      "id": "automatic||/notes > / > /login > /login",
+      "source": "automatic",
+      "label": null,
+      "path": [
+        "/notes",
+        "/",
+        "/login",
+        "/login"
+      ],
+      "steps": [
+        {
+          "from": "/notes",
+          "to": "/",
+          "kind": "link",
+          "text": "Home",
+          "rawValue": "/",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/",
+          "to": "/login",
+          "kind": "link",
+          "text": "Sign in",
+          "rawValue": "/login",
+          "tagName": "a",
+          "attributeName": "href",
+          "containerLabel": ""
+        },
+        {
+          "from": "/login",
+          "to": "/login",
+          "kind": "form-submit",
+          "text": "Email Password Sign in",
+          "rawValue": "/login",
+          "tagName": "form",
+          "attributeName": "action",
+          "containerLabel": "Sign in"
+        }
+      ],
+      "declaredExitPath": null,
+      "exitInGraph": false,
+      "rank": 10
+    }
+  ]
+}

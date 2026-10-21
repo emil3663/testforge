@@ -1,0 +1,1082 @@
+{
+  "label": "the-internet",
+  "site": "http://localhost:7080",
+  "commit": "a969cbf",
+  "crawledAt": "2026-10-21T13:49:37.159Z",
+  "status": "completed",
+  "seconds": 72,
+  "pages": 100,
+  "warnings": [],
+  "types": [
+    {
+      "rank": 1,
+      "label": "home",
+      "pattern": "/",
+      "pages": 1,
+      "representative": "/",
+      "placement": "always covered (home); home is always ranked first"
+    },
+    {
+      "rank": 2,
+      "label": "detail",
+      "pattern": "/infinite_scroll/:id",
+      "pages": 27,
+      "representative": "/infinite_scroll/3",
+      "placement": "always covered (largest); after home, which is always ranked first"
+    },
+    {
+      "rank": 3,
+      "label": "form",
+      "pattern": "/dynamic_controls",
+      "pages": 1,
+      "representative": "/dynamic_controls",
+      "placement": "always covered (form); after /infinite_scroll/:id by pages (1 page against 27 pages)"
+    },
+    {
+      "rank": 4,
+      "label": "sign-in",
+      "pattern": "/large_form",
+      "pages": 1,
+      "representative": "/large_form",
+      "placement": "always covered (form); after /dynamic_controls by forms (1 form against 2 forms)"
+    },
+    {
+      "rank": 5,
+      "label": "form",
+      "pattern": "/radio_buttons",
+      "pages": 1,
+      "representative": "/radio_buttons",
+      "placement": "always covered (form); after /large_form by interactive elements (9 interactive elements against 24 interactive elements)"
+    },
+    {
+      "rank": 6,
+      "label": "form",
+      "pattern": "/readonly",
+      "pages": 1,
+      "representative": "/readonly",
+      "placement": "always covered (form); after /radio_buttons by interactive elements (7 interactive elements against 9 interactive elements)"
+    },
+    {
+      "rank": 7,
+      "label": "form",
+      "pattern": "/upload",
+      "pages": 1,
+      "representative": "/upload",
+      "placement": "always covered (form); after /readonly by interactive elements (6 interactive elements against 7 interactive elements)"
+    },
+    {
+      "rank": 8,
+      "label": "sign-in",
+      "pattern": "/login",
+      "pages": 1,
+      "representative": "/login",
+      "placement": "always covered (form); after /upload by crawl order (crawled 23rd against crawled 20th)"
+    },
+    {
+      "rank": 9,
+      "label": "sign-in",
+      "pattern": "/two_factor",
+      "pages": 1,
+      "representative": "/two_factor",
+      "placement": "always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)"
+    },
+    {
+      "rank": 10,
+      "label": "form",
+      "pattern": "/checkboxes",
+      "pages": 1,
+      "representative": "/checkboxes",
+      "placement": "always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)"
+    },
+    {
+      "rank": 11,
+      "label": "form",
+      "pattern": "/forgot_password",
+      "pages": 1,
+      "representative": "/forgot_password",
+      "placement": "always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)"
+    },
+    {
+      "rank": 12,
+      "label": "form",
+      "pattern": "/key_presses",
+      "pages": 1,
+      "representative": "/key_presses",
+      "placement": "always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)"
+    },
+    {
+      "rank": 13,
+      "label": "detail",
+      "pattern": "/status_codes/:id",
+      "pages": 4,
+      "representative": "/status_codes/200",
+      "placement": "after the always-covered types"
+    },
+    {
+      "rank": 14,
+      "label": "detail",
+      "pattern": "/users/:id",
+      "pages": 3,
+      "representative": "/users/1",
+      "placement": "after /status_codes/:id by pages (3 pages against 4 pages)"
+    },
+    {
+      "rank": 15,
+      "label": "detail",
+      "pattern": "/dynamic_loading/:id",
+      "pages": 2,
+      "representative": "/dynamic_loading/1",
+      "placement": "after /users/:id by pages (2 pages against 3 pages)"
+    },
+    {
+      "rank": 16,
+      "label": "listing",
+      "pattern": "/hovers",
+      "pages": 1,
+      "representative": "/hovers",
+      "placement": "after /dynamic_loading/:id by pages (1 page against 2 pages)"
+    },
+    {
+      "rank": 17,
+      "label": "content",
+      "pattern": "/shifting_content/:slug",
+      "pages": 3,
+      "representative": "/shifting_content/menu",
+      "placement": "after every other type: content types are dropped first"
+    },
+    {
+      "rank": 18,
+      "label": "content",
+      "pattern": "/subdirectories/:slug",
+      "pages": 2,
+      "representative": "/subdirectories/one",
+      "placement": "after /shifting_content/:slug by pages (2 pages against 3 pages)"
+    },
+    {
+      "rank": 19,
+      "label": "content",
+      "pattern": "/challenging_dom",
+      "pages": 1,
+      "representative": "/challenging_dom",
+      "placement": "after /subdirectories/:slug by pages (1 page against 2 pages)"
+    },
+    {
+      "rank": 20,
+      "label": "content",
+      "pattern": "/tinymce",
+      "pages": 1,
+      "representative": "/tinymce",
+      "placement": "after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)"
+    },
+    {
+      "rank": 21,
+      "label": "content",
+      "pattern": "/iframe",
+      "pages": 1,
+      "representative": "/iframe",
+      "placement": "after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+    },
+    {
+      "rank": 22,
+      "label": "content",
+      "pattern": "/tables",
+      "pages": 1,
+      "representative": "/tables",
+      "placement": "after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+    },
+    {
+      "rank": 23,
+      "label": "content",
+      "pattern": "/jqueryui/menu",
+      "pages": 1,
+      "representative": "/jqueryui/menu",
+      "placement": "after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+    },
+    {
+      "rank": 24,
+      "label": "content",
+      "pattern": "/disappearing_elements",
+      "pages": 1,
+      "representative": "/disappearing_elements",
+      "placement": "after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+    },
+    {
+      "rank": 25,
+      "label": "content",
+      "pattern": "/download",
+      "pages": 1,
+      "representative": "/download",
+      "placement": "after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+    },
+    {
+      "rank": 26,
+      "label": "content",
+      "pattern": "/status_codes",
+      "pages": 1,
+      "representative": "/status_codes",
+      "placement": "after /download by crawl order (crawled 48th against crawled 19th)"
+    },
+    {
+      "rank": 27,
+      "label": "content",
+      "pattern": "/floating_menu",
+      "pages": 1,
+      "representative": "/floating_menu",
+      "placement": "after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+    },
+    {
+      "rank": 28,
+      "label": "content",
+      "pattern": "/javascript_alerts",
+      "pages": 1,
+      "representative": "/javascript_alerts",
+      "placement": "after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+    },
+    {
+      "rank": 29,
+      "label": "content",
+      "pattern": "/shifting_content",
+      "pages": 1,
+      "representative": "/shifting_content",
+      "placement": "after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+    },
+    {
+      "rank": 30,
+      "label": "content",
+      "pattern": "/dynamic_loading",
+      "pages": 1,
+      "representative": "/dynamic_loading",
+      "placement": "after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+    },
+    {
+      "rank": 31,
+      "label": "content",
+      "pattern": "/frames",
+      "pages": 1,
+      "representative": "/frames",
+      "placement": "after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+    },
+    {
+      "rank": 32,
+      "label": "content",
+      "pattern": "/notification_message_rendered",
+      "pages": 1,
+      "representative": "/notification_message_rendered",
+      "placement": "after /frames by crawl order (crawled 39th against crawled 24th)"
+    },
+    {
+      "rank": 33,
+      "label": "content",
+      "pattern": "/subdirectories",
+      "pages": 1,
+      "representative": "/subdirectories",
+      "placement": "after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+    },
+    {
+      "rank": 34,
+      "label": "content",
+      "pattern": "/jqueryui",
+      "pages": 1,
+      "representative": "/jqueryui",
+      "placement": "after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+    },
+    {
+      "rank": 35,
+      "label": "content",
+      "pattern": "/dropdown",
+      "pages": 1,
+      "representative": "/dropdown",
+      "placement": "after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+    },
+    {
+      "rank": 36,
+      "label": "content",
+      "pattern": "/dynamic_content",
+      "pages": 1,
+      "representative": "/dynamic_content",
+      "placement": "after /dropdown by crawl order (crawled 14th against crawled 13th)"
+    },
+    {
+      "rank": 37,
+      "label": "content",
+      "pattern": "/entry_ad",
+      "pages": 1,
+      "representative": "/entry_ad",
+      "placement": "after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+    },
+    {
+      "rank": 38,
+      "label": "content",
+      "pattern": "/geolocation",
+      "pages": 1,
+      "representative": "/geolocation",
+      "placement": "after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+    },
+    {
+      "rank": 39,
+      "label": "content",
+      "pattern": "/horizontal_slider",
+      "pages": 1,
+      "representative": "/horizontal_slider",
+      "placement": "after /geolocation by crawl order (crawled 26th against crawled 25th)"
+    },
+    {
+      "rank": 40,
+      "label": "content",
+      "pattern": "/infinite_scroll",
+      "pages": 1,
+      "representative": "/infinite_scroll",
+      "placement": "after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+    },
+    {
+      "rank": 41,
+      "label": "content",
+      "pattern": "/inputs",
+      "pages": 1,
+      "representative": "/inputs",
+      "placement": "after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+    },
+    {
+      "rank": 42,
+      "label": "content",
+      "pattern": "/multiple_dropdown",
+      "pages": 1,
+      "representative": "/multiple_dropdown",
+      "placement": "after /inputs by crawl order (crawled 36th against crawled 29th)"
+    },
+    {
+      "rank": 43,
+      "label": "content",
+      "pattern": "/windows",
+      "pages": 1,
+      "representative": "/windows",
+      "placement": "after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+    },
+    {
+      "rank": 44,
+      "label": "content",
+      "pattern": "/redirector",
+      "pages": 1,
+      "representative": "/redirector",
+      "placement": "after /windows by crawl order (crawled 42nd against crawled 37th)"
+    },
+    {
+      "rank": 45,
+      "label": "content",
+      "pattern": "/abtest",
+      "pages": 1,
+      "representative": "/abtest",
+      "placement": "after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+    },
+    {
+      "rank": 46,
+      "label": "content",
+      "pattern": "/broken_images",
+      "pages": 1,
+      "representative": "/broken_images",
+      "placement": "after /abtest by crawl order (crawled 5th against crawled 2nd)"
+    },
+    {
+      "rank": 47,
+      "label": "content",
+      "pattern": "/canvas",
+      "pages": 1,
+      "representative": "/canvas",
+      "placement": "after /broken_images by crawl order (crawled 6th against crawled 5th)"
+    },
+    {
+      "rank": 48,
+      "label": "content",
+      "pattern": "/context_menu",
+      "pages": 1,
+      "representative": "/context_menu",
+      "placement": "after /canvas by crawl order (crawled 9th against crawled 6th)"
+    },
+    {
+      "rank": 49,
+      "label": "content",
+      "pattern": "/drag_and_drop",
+      "pages": 1,
+      "representative": "/drag_and_drop",
+      "placement": "after /context_menu by crawl order (crawled 12th against crawled 9th)"
+    },
+    {
+      "rank": 50,
+      "label": "content",
+      "pattern": "/exit_intent",
+      "pages": 1,
+      "representative": "/exit_intent",
+      "placement": "after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+    },
+    {
+      "rank": 51,
+      "label": "content",
+      "pattern": "/large",
+      "pages": 1,
+      "representative": "/large",
+      "placement": "after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+    },
+    {
+      "rank": 52,
+      "label": "content",
+      "pattern": "/shadowdom",
+      "pages": 1,
+      "representative": "/shadowdom",
+      "placement": "after /large by crawl order (crawled 44th against crawled 34th)"
+    },
+    {
+      "rank": 53,
+      "label": "content",
+      "pattern": "/slow",
+      "pages": 1,
+      "representative": "/slow",
+      "placement": "after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+    },
+    {
+      "rank": 54,
+      "label": "content",
+      "pattern": "/typos",
+      "pages": 1,
+      "representative": "/typos",
+      "placement": "after /slow by crawl order (crawled 51st against crawled 46th)"
+    },
+    {
+      "rank": 55,
+      "label": "content",
+      "pattern": "/add_remove_elements",
+      "pages": 1,
+      "representative": "/add_remove_elements",
+      "placement": "after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+    },
+    {
+      "rank": 56,
+      "label": "content",
+      "pattern": "/basic_auth",
+      "pages": 1,
+      "representative": "/basic_auth",
+      "placement": "after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+    },
+    {
+      "rank": 57,
+      "label": "content",
+      "pattern": "/digest_auth",
+      "pages": 1,
+      "representative": "/digest_auth",
+      "placement": "after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+    },
+    {
+      "rank": 58,
+      "label": "content",
+      "pattern": "/javascript_error",
+      "pages": 1,
+      "representative": "/javascript_error",
+      "placement": "after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+    },
+    {
+      "rank": 59,
+      "label": "content",
+      "pattern": "/nested_frames",
+      "pages": 1,
+      "representative": "/nested_frames",
+      "placement": "after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+    },
+    {
+      "rank": 60,
+      "label": "content",
+      "pattern": "/download_secure",
+      "pages": 1,
+      "representative": "/download_secure",
+      "placement": "after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+    },
+    {
+      "rank": 61,
+      "label": "content",
+      "pattern": "/about",
+      "pages": 1,
+      "representative": "/about",
+      "placement": "after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+    },
+    {
+      "rank": 62,
+      "label": "content",
+      "pattern": "/contact-us",
+      "pages": 1,
+      "representative": "/contact-us",
+      "placement": "after /about by crawl order (crawled 54th against crawled 53rd)"
+    },
+    {
+      "rank": 63,
+      "label": "content",
+      "pattern": "/portfolio",
+      "pages": 1,
+      "representative": "/portfolio",
+      "placement": "after /contact-us by crawl order (crawled 55th against crawled 54th)"
+    },
+    {
+      "rank": 64,
+      "label": "content",
+      "pattern": "/gallery",
+      "pages": 1,
+      "representative": "/gallery",
+      "placement": "after /portfolio by crawl order (crawled 56th against crawled 55th)"
+    },
+    {
+      "rank": 65,
+      "label": "content",
+      "pattern": "/windows/new",
+      "pages": 1,
+      "representative": "/windows/new",
+      "placement": "after /gallery by crawl order (crawled 62nd against crawled 56th)"
+    }
+  ],
+  "standard": {
+    "pages": [
+      "/",
+      "/infinite_scroll/3",
+      "/dynamic_controls",
+      "/large_form",
+      "/radio_buttons",
+      "/readonly",
+      "/upload",
+      "/login"
+    ],
+    "skipped": [
+      {
+        "pattern": "/two_factor",
+        "label": "sign-in",
+        "reason": "over the cap of 8 types: ranked 9th; always covered (form); after /login by crawl order (crawled 50th against crawled 23rd)"
+      },
+      {
+        "pattern": "/checkboxes",
+        "label": "form",
+        "reason": "over the cap of 8 types: ranked 10th; always covered (form); after /two_factor by interactive elements (5 interactive elements against 6 interactive elements)"
+      },
+      {
+        "pattern": "/forgot_password",
+        "label": "form",
+        "reason": "over the cap of 8 types: ranked 11th; always covered (form); after /checkboxes by crawl order (crawled 22nd against crawled 8th)"
+      },
+      {
+        "pattern": "/key_presses",
+        "label": "form",
+        "reason": "over the cap of 8 types: ranked 12th; always covered (form); after /forgot_password by interactive elements (4 interactive elements against 5 interactive elements)"
+      },
+      {
+        "pattern": "/status_codes/:id",
+        "label": "detail",
+        "reason": "over the cap of 8 types: ranked 13th; after the always-covered types"
+      },
+      {
+        "pattern": "/users/:id",
+        "label": "detail",
+        "reason": "over the cap of 8 types: ranked 14th; after /status_codes/:id by pages (3 pages against 4 pages)"
+      },
+      {
+        "pattern": "/dynamic_loading/:id",
+        "label": "detail",
+        "reason": "over the cap of 8 types: ranked 15th; after /users/:id by pages (2 pages against 3 pages)"
+      },
+      {
+        "pattern": "/hovers",
+        "label": "listing",
+        "reason": "over the cap of 8 types: ranked 16th; after /dynamic_loading/:id by pages (1 page against 2 pages)"
+      },
+      {
+        "pattern": "/shifting_content/:slug",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 17th; after every other type: content types are dropped first"
+      },
+      {
+        "pattern": "/subdirectories/:slug",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 18th; after /shifting_content/:slug by pages (2 pages against 3 pages)"
+      },
+      {
+        "pattern": "/challenging_dom",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 19th; after /subdirectories/:slug by pages (1 page against 2 pages)"
+      },
+      {
+        "pattern": "/tinymce",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 20th; after /challenging_dom by interactive elements (22 interactive elements against 26 interactive elements)"
+      },
+      {
+        "pattern": "/iframe",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 21st; after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+      },
+      {
+        "pattern": "/tables",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 22nd; after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+      },
+      {
+        "pattern": "/jqueryui/menu",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 23rd; after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+      },
+      {
+        "pattern": "/disappearing_elements",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 24th; after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+      },
+      {
+        "pattern": "/download",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 25th; after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+      },
+      {
+        "pattern": "/status_codes",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 26th; after /download by crawl order (crawled 48th against crawled 19th)"
+      },
+      {
+        "pattern": "/floating_menu",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 27th; after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+      },
+      {
+        "pattern": "/javascript_alerts",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 28th; after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+      },
+      {
+        "pattern": "/shifting_content",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 29th; after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+      },
+      {
+        "pattern": "/dynamic_loading",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 30th; after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+      },
+      {
+        "pattern": "/frames",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 31st; after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+      },
+      {
+        "pattern": "/notification_message_rendered",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 32nd; after /frames by crawl order (crawled 39th against crawled 24th)"
+      },
+      {
+        "pattern": "/subdirectories",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 33rd; after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+      },
+      {
+        "pattern": "/jqueryui",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 34th; after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+      },
+      {
+        "pattern": "/dropdown",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 35th; after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+      },
+      {
+        "pattern": "/dynamic_content",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 36th; after /dropdown by crawl order (crawled 14th against crawled 13th)"
+      },
+      {
+        "pattern": "/entry_ad",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 37th; after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+      },
+      {
+        "pattern": "/geolocation",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 38th; after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+      },
+      {
+        "pattern": "/horizontal_slider",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 39th; after /geolocation by crawl order (crawled 26th against crawled 25th)"
+      },
+      {
+        "pattern": "/infinite_scroll",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 40th; after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+      },
+      {
+        "pattern": "/inputs",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 41st; after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+      },
+      {
+        "pattern": "/multiple_dropdown",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 42nd; after /inputs by crawl order (crawled 36th against crawled 29th)"
+      },
+      {
+        "pattern": "/windows",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 43rd; after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+      },
+      {
+        "pattern": "/redirector",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 44th; after /windows by crawl order (crawled 42nd against crawled 37th)"
+      },
+      {
+        "pattern": "/abtest",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 45th; after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+      },
+      {
+        "pattern": "/broken_images",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 46th; after /abtest by crawl order (crawled 5th against crawled 2nd)"
+      },
+      {
+        "pattern": "/canvas",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 47th; after /broken_images by crawl order (crawled 6th against crawled 5th)"
+      },
+      {
+        "pattern": "/context_menu",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 48th; after /canvas by crawl order (crawled 9th against crawled 6th)"
+      },
+      {
+        "pattern": "/drag_and_drop",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 49th; after /context_menu by crawl order (crawled 12th against crawled 9th)"
+      },
+      {
+        "pattern": "/exit_intent",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 50th; after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+      },
+      {
+        "pattern": "/large",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 51st; after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+      },
+      {
+        "pattern": "/shadowdom",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 52nd; after /large by crawl order (crawled 44th against crawled 34th)"
+      },
+      {
+        "pattern": "/slow",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 53rd; after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+      },
+      {
+        "pattern": "/typos",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 54th; after /slow by crawl order (crawled 51st against crawled 46th)"
+      },
+      {
+        "pattern": "/add_remove_elements",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 55th; after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+      },
+      {
+        "pattern": "/basic_auth",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 56th; after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+      },
+      {
+        "pattern": "/digest_auth",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 57th; after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+      },
+      {
+        "pattern": "/javascript_error",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 58th; after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+      },
+      {
+        "pattern": "/nested_frames",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 59th; after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+      },
+      {
+        "pattern": "/download_secure",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 60th; after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+      },
+      {
+        "pattern": "/about",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 61st; after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+      },
+      {
+        "pattern": "/contact-us",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 62nd; after /about by crawl order (crawled 54th against crawled 53rd)"
+      },
+      {
+        "pattern": "/portfolio",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 63rd; after /contact-us by crawl order (crawled 55th against crawled 54th)"
+      },
+      {
+        "pattern": "/gallery",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 64th; after /portfolio by crawl order (crawled 56th against crawled 55th)"
+      },
+      {
+        "pattern": "/windows/new",
+        "label": "content",
+        "reason": "over the cap of 8 types: ranked 65th; after /gallery by crawl order (crawled 62nd against crawled 56th)"
+      }
+    ]
+  },
+  "comprehensive": {
+    "pages": [
+      "/",
+      "/infinite_scroll/3",
+      "/dynamic_controls",
+      "/large_form",
+      "/radio_buttons",
+      "/readonly",
+      "/upload",
+      "/login",
+      "/two_factor",
+      "/checkboxes",
+      "/forgot_password",
+      "/key_presses",
+      "/status_codes/200",
+      "/users/1",
+      "/dynamic_loading/1",
+      "/hovers",
+      "/shifting_content/menu",
+      "/subdirectories/one",
+      "/challenging_dom",
+      "/tinymce"
+    ],
+    "skipped": [
+      {
+        "pattern": "/iframe",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 21st; after /tinymce by crawl order (crawled 58th against crawled 52nd)"
+      },
+      {
+        "pattern": "/tables",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 22nd; after /iframe by interactive elements (19 interactive elements against 22 interactive elements)"
+      },
+      {
+        "pattern": "/jqueryui/menu",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 23rd; after /tables by interactive elements (12 interactive elements against 19 interactive elements)"
+      },
+      {
+        "pattern": "/disappearing_elements",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 24th; after /jqueryui/menu by interactive elements (8 interactive elements against 12 interactive elements)"
+      },
+      {
+        "pattern": "/download",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 25th; after /disappearing_elements by crawl order (crawled 19th against crawled 11th)"
+      },
+      {
+        "pattern": "/status_codes",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 26th; after /download by crawl order (crawled 48th against crawled 19th)"
+      },
+      {
+        "pattern": "/floating_menu",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 27th; after /status_codes by interactive elements (7 interactive elements against 8 interactive elements)"
+      },
+      {
+        "pattern": "/javascript_alerts",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 28th; after /floating_menu by interactive elements (6 interactive elements against 7 interactive elements)"
+      },
+      {
+        "pattern": "/shifting_content",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 29th; after /javascript_alerts by crawl order (crawled 45th against crawled 31st)"
+      },
+      {
+        "pattern": "/dynamic_loading",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 30th; after /shifting_content by interactive elements (5 interactive elements against 6 interactive elements)"
+      },
+      {
+        "pattern": "/frames",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 31st; after /dynamic_loading by crawl order (crawled 24th against crawled 16th)"
+      },
+      {
+        "pattern": "/notification_message_rendered",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 32nd; after /frames by crawl order (crawled 39th against crawled 24th)"
+      },
+      {
+        "pattern": "/subdirectories",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 33rd; after /notification_message_rendered by crawl order (crawled 49th against crawled 39th)"
+      },
+      {
+        "pattern": "/jqueryui",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 34th; after /subdirectories by crawl order (crawled 61st against crawled 49th)"
+      },
+      {
+        "pattern": "/dropdown",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 35th; after /jqueryui by interactive elements (4 interactive elements against 5 interactive elements)"
+      },
+      {
+        "pattern": "/dynamic_content",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 36th; after /dropdown by crawl order (crawled 14th against crawled 13th)"
+      },
+      {
+        "pattern": "/entry_ad",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 37th; after /dynamic_content by crawl order (crawled 17th against crawled 14th)"
+      },
+      {
+        "pattern": "/geolocation",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 38th; after /entry_ad by crawl order (crawled 25th against crawled 17th)"
+      },
+      {
+        "pattern": "/horizontal_slider",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 39th; after /geolocation by crawl order (crawled 26th against crawled 25th)"
+      },
+      {
+        "pattern": "/infinite_scroll",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 40th; after /horizontal_slider by crawl order (crawled 28th against crawled 26th)"
+      },
+      {
+        "pattern": "/inputs",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 41st; after /infinite_scroll by crawl order (crawled 29th against crawled 28th)"
+      },
+      {
+        "pattern": "/multiple_dropdown",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 42nd; after /inputs by crawl order (crawled 36th against crawled 29th)"
+      },
+      {
+        "pattern": "/windows",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 43rd; after /multiple_dropdown by crawl order (crawled 37th against crawled 36th)"
+      },
+      {
+        "pattern": "/redirector",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 44th; after /windows by crawl order (crawled 42nd against crawled 37th)"
+      },
+      {
+        "pattern": "/abtest",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 45th; after /redirector by interactive elements (3 interactive elements against 4 interactive elements)"
+      },
+      {
+        "pattern": "/broken_images",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 46th; after /abtest by crawl order (crawled 5th against crawled 2nd)"
+      },
+      {
+        "pattern": "/canvas",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 47th; after /broken_images by crawl order (crawled 6th against crawled 5th)"
+      },
+      {
+        "pattern": "/context_menu",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 48th; after /canvas by crawl order (crawled 9th against crawled 6th)"
+      },
+      {
+        "pattern": "/drag_and_drop",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 49th; after /context_menu by crawl order (crawled 12th against crawled 9th)"
+      },
+      {
+        "pattern": "/exit_intent",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 50th; after /drag_and_drop by crawl order (crawled 18th against crawled 12th)"
+      },
+      {
+        "pattern": "/large",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 51st; after /exit_intent by crawl order (crawled 34th against crawled 18th)"
+      },
+      {
+        "pattern": "/shadowdom",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 52nd; after /large by crawl order (crawled 44th against crawled 34th)"
+      },
+      {
+        "pattern": "/slow",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 53rd; after /shadowdom by crawl order (crawled 46th against crawled 44th)"
+      },
+      {
+        "pattern": "/typos",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 54th; after /slow by crawl order (crawled 51st against crawled 46th)"
+      },
+      {
+        "pattern": "/add_remove_elements",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 55th; after /typos by interactive elements (0 interactive elements against 3 interactive elements)"
+      },
+      {
+        "pattern": "/basic_auth",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 56th; after /add_remove_elements by crawl order (crawled 4th against crawled 3rd)"
+      },
+      {
+        "pattern": "/digest_auth",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 57th; after /basic_auth by crawl order (crawled 10th against crawled 4th)"
+      },
+      {
+        "pattern": "/javascript_error",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 58th; after /digest_auth by crawl order (crawled 32nd against crawled 10th)"
+      },
+      {
+        "pattern": "/nested_frames",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 59th; after /javascript_error by crawl order (crawled 38th against crawled 32nd)"
+      },
+      {
+        "pattern": "/download_secure",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 60th; after /nested_frames by crawl order (crawled 43rd against crawled 38th)"
+      },
+      {
+        "pattern": "/about",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 61st; after /download_secure by crawl order (crawled 53rd against crawled 43rd)"
+      },
+      {
+        "pattern": "/contact-us",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 62nd; after /about by crawl order (crawled 54th against crawled 53rd)"
+      },
+      {
+        "pattern": "/portfolio",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 63rd; after /contact-us by crawl order (crawled 55th against crawled 54th)"
+      },
+      {
+        "pattern": "/gallery",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 64th; after /portfolio by crawl order (crawled 56th against crawled 55th)"
+      },
+      {
+        "pattern": "/windows/new",
+        "label": "content",
+        "reason": "over the cap of 20 pages: ranked 65th; after /gallery by crawl order (crawled 62nd against crawled 56th)"
+      }
+    ]
+  }
+}
