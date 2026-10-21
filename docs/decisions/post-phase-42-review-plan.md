@@ -14,7 +14,7 @@ below; planning steps happen in Cowork first.
 | R1 | Baseline: the full regression | Code | TFP-207 |
 | R2 | Flakes, from R1's evidence | Code | TFP-208 (written after R1) |
 | R3 | Claims audit: every phase's claims against code and measurements | Cowork, with Emil | tickets it finds |
-| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222, TFP-242 |
+| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222, TFP-242, TFP-243 |
 | R5 | Three decisions: the Docker sandbox, app screens, scenario gaps | Cowork, with Emil | a decision record each |
 | R6 | The skills relook | Cowork, with Emil | skill proposals; TFP-236 to TFP-239 |
 
@@ -477,6 +477,32 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   - **Test plan:** a `TEST_PLAN.md` case; unit and regression suites pass.
 - **Not in scope:** saved runs in `runs/` (D29, the retention policy).
 - **Dependencies:** none. It fits with R4, between Phase 39's gates.
+
+### TFP-243 — A test's evidence listed twice gets a broken second link
+
+- **Priority:** P2 · **Labels:** `bug`, `report`
+- **Found:** 2026-10-21, checking saved runs' evidence after the
+  `.playwright-runs` clean-up.
+- **Problem it solves:** in 8 runs from 2026-10-20 and 2026-10-21, one
+  test's report lists the same `error-context.md` twice.
+  - Persistence moves the first copy into `runs/<id>/evidence/`.
+  - The second move fails, and that link answers HTTP 400 ("Artifact path
+    is invalid").
+  - The file isn't lost: the first link serves it.
+- **Scope:**
+  - **Find why** the same artifact is listed twice. Likely the shared
+    visit's re-run (TFP-213/214) or TFP-241's attachments.
+  - **Fix it at the source:** list each artifact once.
+  - **Make saving tolerant:** a duplicate artifact path is linked to the
+    one moved copy, not moved twice.
+- **Acceptance criteria:**
+  - **A unit case:** a report with a duplicate artifact saves both links,
+    and both resolve to the same file.
+  - **The source case** no longer duplicates.
+  - **The 8 existing runs:** report whether they can be repaired by
+    re-linking (no deletion), and repair them only on Emil's word.
+  - **Test plan:** a `TEST_PLAN.md` case.
+- **Dependencies:** none. It fits with R4, between gates.
 
 ## R5 — Three decisions (Cowork first)
 

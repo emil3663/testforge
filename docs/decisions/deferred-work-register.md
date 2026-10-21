@@ -53,7 +53,7 @@ with TFP-222 before Phase 39's TFP-155.
      says so.
    - INP timed on those interactions and Phase 41's, as banded findings
      only.
-7. **D3: the rest of accessibility and security Standard.**
+7. **D3: the rest of accessibility and security Standard.** With **D30**, the solo performance pass.
    - The passive checks need nothing more.
    - The attack-shaped ones sit behind Phase 43's active gate.
 8. **D19: the failure-triage gate.**
@@ -186,6 +186,7 @@ Statuses:
 | D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
 | D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
 | D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
+| D30 | A solo performance pass, so real sites without the ownership confirmation still get performance judged | Emil, 2026-10-21, after TFP-157's ruling that timed checks are Not run under the request cap | Wanted | **Planned**, with D3 | 7, with D3 | TFP-157 (Phase 39). What it covers is below |
 | D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for TestForge's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
 
 ## Phases or items not wrapped up
@@ -472,6 +473,27 @@ before Phase 45 contains it and Phase 44 puts it to real use.
 - **Where the record lives:** `runs/` sits in the repo folder (gitignored).
   Phase 42's data folder (`TESTFORGE_DATA_DIR`) is where it belongs for a
   tester's install.
+
+**D30, the solo performance pass.**
+
+*Why (2026-10-21):*
+- TFP-157 (Emil's ruling) makes the timed checks Not run on a capped host:
+  load time, LCP, CLS and TBT, "not judged under the request cap", because
+  the cap slows the loads they measure.
+- So on any real site without Phase 43's confirmation, which is most
+  real-site runs, Standard judges no load timing. Page weight and failed
+  same-origin requests still run, as they don't depend on load speed.
+
+*What it covers:*
+- **A pass of its own:** the timed checks run after the rest of the run.
+- **One visitor's load:** one worker, one page load at a time.
+- **Uncapped for that load only:** the load one real visitor makes, which
+  the cap's purpose (politeness, not the load of an attack) allows.
+- **Measured before use:** on the local Toolshop and the capped hosted
+  practice site. The results must match an uncapped run of the same
+  checks within their bands' spread.
+- **Designed with D3,** the rest of the Standard sets. D24's load-testing
+  record must not overlap it.
 
 **D12, for the R6 discussion.** The `crawl-and-classify-pages` skill is a
 written copy of how `dom-snapshot.ts` classified a page on 2026-09-24:
