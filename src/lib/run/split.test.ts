@@ -14,7 +14,7 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/split.test.ts
  */
 import assert from "node:assert";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
@@ -32,7 +32,7 @@ const { normalizeContentRules, normalizeTestAuditMode } = await import("../gener
 const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts");
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { startRunJob } = await import("./executor.ts");
-const { runJobs } = await import("./jobs.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { machineWorkerLimit } = await import("./host-limits.ts");
 const { flattenSuites } = await import("../report/execution.ts");
 const { inspectPages } = await import("../introspect/inspector.ts");
@@ -213,16 +213,8 @@ test("in a real browser: Comprehensive security and accessibility on the fixture
     }
 });
 
-/** A run finalized: its result set and its record saved. */
-async function finished(id: string, timeoutMs: number) {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline) {
-        const job = runJobs.get(id);
-        if (job?.result && existsSync(join(process.env.TESTFORGE_RUNS_ROOT!, id))) return job;
-        await new Promise((resolve) => setTimeout(resolve, 250));
-    }
-    throw new Error(`run ${id} did not finish in ${timeoutMs} ms`);
-}
+/** A run finalized: its result set and its record saved (run.json written, no .tmp left: waitForSavedRun). */
+const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
 test("in a real browser: the executor runs a Standard suite on the local fixture as units across its workers, with every test's result as one file on one worker gives (Decisions 8 and 12)", { skip: needsChromium }, async () => {
     const fixture = await startRecordedFixture();

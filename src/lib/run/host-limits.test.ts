@@ -18,7 +18,7 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/host-limits.test.ts
  */
 import assert from "node:assert";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { networkInterfaces, tmpdir } from "node:os";
@@ -35,7 +35,7 @@ const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER } = await impo
 const { setOwnershipLookupForTests } = await import("./ownership.ts");
 const { TIMED_CHECK_TITLES } = await import("../generate/mock/performance-checks.ts");
 const { startRunJob } = await import("./executor.ts");
-const { runJobs } = await import("./jobs.ts");
+const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const needsChromium = await chromiumSkipReason();
 after(() => rmSync(scratch, { recursive: true, force: true }));
@@ -180,16 +180,8 @@ test.describe('Performance Coverage', () => {
 `;
 }
 
-/** A run finalized: its result set and its record saved. */
-async function finished(id: string, timeoutMs: number) {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline) {
-        const job = runJobs.get(id);
-        if (job?.result && existsSync(join(process.env.TESTFORGE_RUNS_ROOT!, id))) return job;
-        await new Promise((resolve) => setTimeout(resolve, 250));
-    }
-    throw new Error(`run ${id} did not finish in ${timeoutMs} ms`);
-}
+/** A run finalized: its result set and its record saved (run.json written, no .tmp left: waitForSavedRun). */
+const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
 /** The most requests that arrived within any one second. */
 const busiestSecond = (arrivals: Array<{ at: number }>) => {
