@@ -114,7 +114,8 @@ for (const label of labels.filter((entry) => entry !== "clean")) {
     const lines: string[] = [];
     for (const variant of ["C", "C1", "C2", "F"]) {
         for (const [index, run] of runs(variant, label, "standard").entries()) {
-            const sort = run.records.find((record) => /sort options order the items on \/$/.test(record.title));
+            // The start page: "/" on a path site, "/#/" on the Toolshop's hash routes.
+            const sort = run.records.find((record) => /sort options order the items on \/(#\/)?$/.test(record.title));
             if (sort) lines.push(`- ${variant} run ${index + 1}: ${sort.status}${sort.message ? `: ${sort.message.slice(0, 300)}` : ""}`);
         }
     }

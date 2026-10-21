@@ -1,0 +1,815 @@
+{
+  "label": "clean",
+  "variant": "FL",
+  "site": "http://localhost:4200",
+  "kind": "accessibility",
+  "run": 2,
+  "commit": "0fdbd03",
+  "startedAt": "2026-10-21T07:22:21.008Z",
+  "runSeconds": 127,
+  "units": 20,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 80,
+  "byStatus": {
+    "Passed": 30,
+    "Not run": 31,
+    "Failed": 19
+  },
+  "records": [
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(2) > ul,.checkbox:nth-child(3) > ul,.checkbox:nth-child(4) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(2) > ul,.checkbox:nth-child(3) > ul,.checkbox:nth-child(4) > ul\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(2) > ul, .checkbox:nth-child(3) > ul, .checkbox:nth-child(4) > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container[_ngcontent-ng-c2913155081=\"\"] > span[_ngcontent-ng-c2913155081=\"\"], select, .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(2), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(3) and 42 more"
+      ]
+    },
+    {
+      "title": "TFAC-008: /product/01M5EHR5FRNJAJF91G8BBSHYED groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "page": "/product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /product/01M5EHR5FRNJAJF91G8BBSHYED is tabbed through in reading order",
+      "page": "/product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /product/01M5EHR5FRNJAJF91G8BBSHYED passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FRNJAJF91G8BBSHYED",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FRNJAJF91G8BBSHYED: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-012: /product/01M5EHR5FS8PAPC8WX237PHE65 groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FS8PAPC8WX237PHE65",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FS8PAPC8WX237PHE65",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /product/01M5EHR5FS8PAPC8WX237PHE65",
+      "page": "/product/01M5EHR5FS8PAPC8WX237PHE65",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /product/01M5EHR5FS8PAPC8WX237PHE65 is tabbed through in reading order",
+      "page": "/product/01M5EHR5FS8PAPC8WX237PHE65",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FS8PAPC8WX237PHE65",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /product/01M5EHR5FS8PAPC8WX237PHE65 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FS8PAPC8WX237PHE65",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FS8PAPC8WX237PHE65: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-016: /product/01M5EHR5FT6FEPQ48PRF8BCYXH groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "page": "/product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /product/01M5EHR5FT6FEPQ48PRF8BCYXH is tabbed through in reading order",
+      "page": "/product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /product/01M5EHR5FT6FEPQ48PRF8BCYXH passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FT6FEPQ48PRF8BCYXH",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FT6FEPQ48PRF8BCYXH: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-020: /product/01M5EHR5FV9EGEW4XPBR2V5HM6 groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "page": "/product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-019: /product/01M5EHR5FV9EGEW4XPBR2V5HM6 is tabbed through in reading order",
+      "page": "/product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /product/01M5EHR5FV9EGEW4XPBR2V5HM6 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FV9EGEW4XPBR2V5HM6",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FV9EGEW4XPBR2V5HM6: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-024: /product/01M5EHR5FW2YM6M7TRT6Z7AEC2 groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-022: every form field has an accessible name: /product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "page": "/product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-023: /product/01M5EHR5FW2YM6M7TRT6Z7AEC2 is tabbed through in reading order",
+      "page": "/product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-021: /product/01M5EHR5FW2YM6M7TRT6Z7AEC2 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FW2YM6M7TRT6Z7AEC2",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FW2YM6M7TRT6Z7AEC2: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-028: /product/01M5EHR5FYTHWV00X0WXZKQYDH groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-026: every form field has an accessible name: /product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "page": "/product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-027: /product/01M5EHR5FYTHWV00X0WXZKQYDH is tabbed through in reading order",
+      "page": "/product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-025: /product/01M5EHR5FYTHWV00X0WXZKQYDH passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5FYTHWV00X0WXZKQYDH",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5FYTHWV00X0WXZKQYDH: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-032: /product/01M5EHR5G0MWFZM81262WP890R groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5G0MWFZM81262WP890R",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5G0MWFZM81262WP890R",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-030: every form field has an accessible name: /product/01M5EHR5G0MWFZM81262WP890R",
+      "page": "/product/01M5EHR5G0MWFZM81262WP890R",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-031: /product/01M5EHR5G0MWFZM81262WP890R is tabbed through in reading order",
+      "page": "/product/01M5EHR5G0MWFZM81262WP890R",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5G0MWFZM81262WP890R",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-029: /product/01M5EHR5G0MWFZM81262WP890R passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5G0MWFZM81262WP890R",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5G0MWFZM81262WP890R: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .rating-d and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-036: /product/01M5EHR5JH2QCM35ATSJZFMJ16 groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-034: every form field has an accessible name: /product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "page": "/product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-035: /product/01M5EHR5JH2QCM35ATSJZFMJ16 is tabbed through in reading order",
+      "page": "/product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-033: /product/01M5EHR5JH2QCM35ATSJZFMJ16 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5JH2QCM35ATSJZFMJ16",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5JH2QCM35ATSJZFMJ16: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .co2-letter:nth-child(4) and 1 more"
+      ]
+    },
+    {
+      "title": "TFAC-040: /product/01M5EHR5JK8J49ZAXBYJ0N88S6 groups its checkboxes and radio buttons",
+      "page": "/product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-038: every form field has an accessible name: /product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "page": "/product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-039: /product/01M5EHR5JK8J49ZAXBYJ0N88S6 is tabbed through in reading order",
+      "page": "/product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-037: /product/01M5EHR5JK8J49ZAXBYJ0N88S6 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5EHR5JK8J49ZAXBYJ0N88S6",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /product/01M5EHR5JK8J49ZAXBYJ0N88S6: WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space -.card:nth-child(1) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(2) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(3) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(4) >.card-body > a[href=\"#\"][large=\"\"],.card:nth-child(5) >.card-body > a[href=\"#\"][large=\"\"] and 1 more expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 2.5.8 target-size (se",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - .card:nth-child(1) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(2) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(3) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(4) > .card-body > a[href=\"#\"][large=\"\"], .card:nth-child(5) > .card-body > a[href=\"#\"][large=\"\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - span[aria-label=\"category\"], span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 4.1.2 aria-valid-attr-value: ARIA attributes must conform to valid values - #quantity-input",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3), .co2-letter:nth-child(4) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-044: /category/hand-tools groups its checkboxes and radio buttons",
+      "page": "/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: 8 checkboxes sharing the name \"category_id\" (\"Hand Tools\", \"Hammer\", \"Hand Saw\", \"Wrench\" and 4 more) are not in a fieldset with a legend or a named group on /category/hand-tools; 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/hand-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"8 checkboxes sharing the name \\\"category_id\\\" (\\\"Hand Tools\\\", \\\"Hammer\\\", \\\"Hand Saw\\\", \\\"Wrench\\\" and 4 more) are not in a fieldset with a lege",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-043: /category/hand-tools is tabbed through in reading order",
+      "page": "/category/hand-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/hand-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-041: /category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /category/hand-tools: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(7) > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select, .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(2), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(3) and 43 more"
+      ]
+    },
+    {
+      "title": "TFAC-048: /category/other groups its checkboxes and radio buttons",
+      "page": "/category/other",
+      "status": "Failed",
+      "message": "Error: 6 checkboxes sharing the name \"category_id\" (\"Other\", \"Tool Belts\", \"Storage Solutions\", \"Workbench\" and 2 more) are not in a fieldset with a legend or a named group on /category/other; 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/other expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"6 checkboxes sharing the name \\\"category_id\\\" (\\\"Other\\\", \\\"Tool Belts\\\", \\\"Storage Solutions\\\", \\\"Workbench\\\" and 2 more) are not in a fieldset",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /category/other",
+      "page": "/category/other",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-047: /category/other is tabbed through in reading order",
+      "page": "/category/other",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/other",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-045: /category/other passes the WCAG 2.2 A and AA scan",
+      "page": "/category/other",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /category/other: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(7) > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span[_ngcontent-ng-c2913155081=\"\"], select, .card:nth-child(1) > .card-img-wrapper.position-relative > .eco-badge.end-0[data-test=\"eco-badge\"], .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .rating-b.active.co2-letter and 51 more"
+      ]
+    },
+    {
+      "title": "TFAC-052: /category/power-tools groups its checkboxes and radio buttons",
+      "page": "/category/power-tools",
+      "status": "Failed",
+      "message": "Error: 5 checkboxes sharing the name \"category_id\" (\"Power Tools\", \"Grinder\", \"Sander\", \"Saw\" and 1 more) are not in a fieldset with a legend or a named group on /category/power-tools; 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/power-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"5 checkboxes sharing the name \\\"category_id\\\" (\\\"Power Tools\\\", \\\"Grinder\\\", \\\"Sander\\\", \\\"Saw\\\" and 1 more) are not in a fieldset with a legend o",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-050: every form field has an accessible name: /category/power-tools",
+      "page": "/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-051: /category/power-tools is tabbed through in reading order",
+      "page": "/category/power-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/power-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-049: /category/power-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/power-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /category/power-tools: WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements -.checkbox:nth-child(7) > ul\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(7) > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select, .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(2), .card:nth-child(1) > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(3) and 37 more"
+      ]
+    },
+    {
+      "title": "TFAC-056: /category/special-tools groups its checkboxes and radio buttons",
+      "page": "/category/special-tools",
+      "status": "Failed",
+      "message": "Error: 2 checkboxes sharing the name \"brand_id\" (\"ForgeFlex Tools\", \"MightyCraft Hardware\") are not in a fieldset with a legend or a named group on /category/special-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"2 checkboxes sharing the name \\\"brand_id\\\" (\\\"ForgeFlex Tools\\\", \\\"MightyCraft Hardware\\\") are not in a fieldset with a legend or a named group\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-054: every form field has an accessible name: /category/special-tools",
+      "page": "/category/special-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-055: /category/special-tools is tabbed through in reading order",
+      "page": "/category/special-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/special-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-053: /category/special-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/special-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select"
+      ]
+    },
+    {
+      "title": "TFAC-060: /auth/register groups its checkboxes and radio buttons",
+      "page": "/auth/register",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/register",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-058: every form field has an accessible name: /auth/register",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-059: /auth/register is tabbed through in reading order",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-057: /auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/register",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /auth/register: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary; WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - #passwordHelp > ul expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary\", + \"WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - #pa",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn-outline-secondary",
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - #passwordHelp > ul",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, #country"
+      ]
+    },
+    {
+      "title": "TFAC-064: /contact groups its checkboxes and radio buttons",
+      "page": "/contact",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /contact",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-062: every form field has an accessible name: /contact",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-063: /contact is tabbed through in reading order",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-061: /contact passes the WCAG 2.2 A and AA scan",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, #subject"
+      ]
+    },
+    {
+      "title": "TFAC-068: /auth/login groups its checkboxes and radio buttons",
+      "page": "/auth/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-066: every form field has an accessible name: /auth/login",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-067: /auth/login is tabbed through in reading order",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-065: /auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/login",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /auth/login: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn-outline-secondary\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn-outline-secondary",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-072: /auth/forgot-password groups its checkboxes and radio buttons",
+      "page": "/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/forgot-password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-070: every form field has an accessible name: /auth/forgot-password",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-071: /auth/forgot-password is tabbed through in reading order",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-069: /auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-076: /rentals groups its checkboxes and radio buttons",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-074: every form field has an accessible name: /rentals",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-075: /rentals is tabbed through in reading order",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-073: /rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .order-md-first > .card-body[_ngcontent-ng-c1739684510=\"\"] > p"
+      ]
+    },
+    {
+      "title": "TFAC-080: /privacy groups its checkboxes and radio buttons",
+      "page": "/privacy",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /privacy",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-078: every form field has an accessible name: /privacy",
+      "page": "/privacy",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-079: /privacy is tabbed through in reading order",
+      "page": "/privacy",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /privacy",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-077: /privacy passes the WCAG 2.2 A and AA scan",
+      "page": "/privacy",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    }
+  ]
+}

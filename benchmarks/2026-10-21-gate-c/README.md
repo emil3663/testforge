@@ -1,5 +1,19 @@
 # Phase 39 Gate C: one overnight session
 
+**Run on 2026-10-21, 04:45:18 to 10:00:05 (5 h 14 min 47 s).** The report is
+`docs/decisions/phase-39-gate-c-report.md`; the numbers are in `analysis.md`.
+- **The machine:** only VS Code, Docker and Claude running (Emil). `logs/machine-at-start.txt` still listed Edge (7
+  processes) and WhatsApp (2) at 04:45; Emil ended both, and `logs/machine-after-close.txt` (04:48:26, before any run
+  started) shows them gone.
+- **Plane:** its 8 `testforge-plane-*` containers were stopped at 04:45 (`logs/plane-stopped.txt`) and started again at
+  10:00 (`logs/plane-restarted.txt`).
+- **Steps:** with-bugs start 863 s, crawl 42 s, inspect 20 s, runs 11,707 s; clean start 391 s, crawl 62 s, inspect
+  21 s, runs 5,749 s. Every run reported; none failed to.
+- **The selection** is Gate B's: the same 8 Standard and 20 Comprehensive pages on with-bugs; on clean the same pages,
+  the product page under the new id the clean copy seeds at each start.
+- **Fixed after the session, before the numbers were read:** `analyse.mts` looked for the `/` sort check by a title
+  ending `on /`; the Toolshop's is `on /#/`. The section was missing from the first `analysis.md`, and is there now.
+
 The plan is the record's ("Gate C", `docs/decisions/phase-39-run-concurrency-decision-record.md`): every variant in one
 session, interleaved, three runs each, one worker, on a quiet machine. The numbers go to `analysis.md`.
 

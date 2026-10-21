@@ -1,0 +1,29 @@
+--- after Emil closed msedge and WhatsApp (Wed Oct 21 04:48:26 SAST 2026)
+--- processes
+svchost                99
+Code                   23
+conhost                17
+claude                 9
+bash                   9
+RuntimeBroker          7
+Docker Desktop         7
+msedgewebview2         6
+NVIDIA Overlay         5
+powershell             4
+nvcontainer            4
+wsl                    4
+wslhost                4
+dllhost                3
+WmiPrvSE               3
+fontdrvhost            2
+NVDisplay.Container    2
+taskhostw              2
+PresentMonService      2
+RtkAudUService64       2
+OpenConsole            2
+vmwp                   2
+WUDFHost               2
+com.docker.backend     2
+csrss                  2
+--- memory
+free GB 20,8 of 39,7

@@ -1,0 +1,26 @@
+(node:17196) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean: 08:32:51 C1 standard run 1: 521 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 188, settle 199 s, failing 46 (81 s)
+clean: 08:39:47 C2 standard run 1: 416 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 139 s, failing 46 (69 s)
+clean: 08:46:29 F standard run 1: 401 s, 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 131 s, failing 46 (67 s)
+clean: 08:48:42 C2 accessibility run 1: 133 s, 1 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 46 s, failing 19 (32 s)
+clean: 08:50:51 F accessibility run 1: 128 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 46 s, failing 19 (32 s)
+clean: 08:52:32 FL accessibility run 1: 101 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; loads 24, settle 27 s, failing 19 (28 s)
+clean: 08:55:48 A accessibility run 1: 197 s, 1 unit(s) in 1 pass(es), 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80, settle 85 s, failing 19 (49 s)
+clean: 09:04:21 C1 standard run 2: 512 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 188, settle 196 s, failing 46 (82 s)
+clean: 09:11:13 C2 standard run 2: 412 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 132 s, failing 46 (68 s)
+clean: 09:18:00 F standard run 2: 407 s, 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 137 s, failing 46 (69 s)
+clean: 09:20:06 C2 accessibility run 2: 125 s, 1 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 42 s, failing 19 (33 s)
+clean: 09:22:20 F accessibility run 2: 135 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 43 s, failing 19 (35 s)
+clean: 09:24:28 FL accessibility run 2: 127 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; loads 24, settle 30 s, failing 19 (37 s)
+clean: 09:28:01 A accessibility run 2: 214 s, 1 unit(s) in 1 pass(es), 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80, settle 89 s, failing 19 (56 s)
+clean: 09:36:53 C1 standard run 3: 531 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 188, settle 208 s, failing 46 (81 s)
+clean: 09:43:47 C2 standard run 3: 414 s, 1 unit(s) in 1 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 140 s, failing 46 (68 s)
+clean: 09:50:47 F standard run 3: 420 s, 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; loads 125, settle 145 s, failing 46 (69 s)
+clean: 09:52:55 C2 accessibility run 3: 128 s, 1 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 44 s, failing 19 (33 s)
+clean: 09:55:03 F accessibility run 3: 127 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Failed":19,"Not run":31}; loads 39, settle 45 s, failing 19 (32 s)
+clean: 09:56:43 FL accessibility run 3: 100 s, 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; loads 24, settle 25 s, failing 19 (29 s)
+clean: 09:59:58 A accessibility run 3: 195 s, 1 unit(s) in 1 pass(es), 80 tests {"Failed":19,"Passed":30,"Not run":31}; loads 80, settle 84 s, failing 19 (49 s)
+exit=0

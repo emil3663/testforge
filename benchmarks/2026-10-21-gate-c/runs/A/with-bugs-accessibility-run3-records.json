@@ -1,0 +1,879 @@
+{
+  "label": "with-bugs",
+  "variant": "A",
+  "site": "http://localhost:4200",
+  "kind": "accessibility",
+  "run": 3,
+  "commit": "0fdbd03",
+  "startedAt": "2026-10-21T06:12:42.296Z",
+  "runSeconds": 207,
+  "units": 1,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 80,
+  "byStatus": {
+    "Failed": 41,
+    "Not run": 32,
+    "Passed": 7
+  },
+  "records": [
+    {
+      "title": "TFAC-001: /#/ passes the WCAG 2.2 A and AA scan",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.float-start, a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text -.navbar-brand > img[src$=\"broken.png\"],.img-fluid,.grid-title:nth-child(7) > img[src$=\"broken.png\"], a[data-test=\"product-1\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[data-test=\"product-2\"] >.card-img-wrapper >.card-img-top[loading=\"l",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .float-start, a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - .navbar-brand > img[src$=\"broken.png\"], .img-fluid, .grid-title:nth-child(7) > img[src$=\"broken.png\"], a[data-test=\"product-1\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[data-test=\"product-2\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 6 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - .form-control",
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(13) > ul, .checkbox:nth-child(14) > ul",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container[_ngcontent-ng-c2781432996=\"\"] > span[_ngcontent-ng-c2781432996=\"\"], select, .grid-title:nth-child(7), a[data-test=\"product-1\"] > .card-img-wrapper > .eco-badge.position-absolute.m-2, a[data-test=\"product-1\"] > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1) and 53 more"
+      ]
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /#/",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: form fields on /#/ with no accessible name (a screen reader announces them without a label): select, input[type=\"text\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"select\", + \"input[type=\\\"text\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: /#/ is tabbed through in reading order",
+      "page": "/#/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-004: /#/ groups its checkboxes and radio buttons",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: 10 checkboxes sharing the name \"category_id\" (\"Hammer\", \"Hand Saw\", \"Wrench\", \"Screwdriver\" and 6 more) are not in a fieldset with a legend or a named group on /#/; 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/ expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"10 checkboxes sharing the name \\\"category_id\\\" (\\\"Hammer\\\", \\\"Hand Saw\\\", \\\"Wrench\\\", \\\"Screwdriver\\\" and 6 more) are not in a fieldset with a l",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /#/product/6 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/6: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/7\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/10\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/11\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /#/product/6",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/6 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /#/product/6 is tabbed through in reading order",
+      "page": "/#/product/6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-008: /#/product/6 groups its checkboxes and radio buttons",
+      "page": "/#/product/6",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/6",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /#/product/7 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/7: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/10\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/11\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /#/product/7",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/7 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /#/product/7 is tabbed through in reading order",
+      "page": "/#/product/7",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/7",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-012: /#/product/7 groups its checkboxes and radio buttons",
+      "page": "/#/product/7",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/7",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /#/product/8 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/8: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/10\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/11\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 3 more"
+      ]
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /#/product/8",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/8 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /#/product/8 is tabbed through in reading order",
+      "page": "/#/product/8",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/8",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-016: /#/product/8 groups its checkboxes and radio buttons",
+      "page": "/#/product/8",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/8",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /#/product/9 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/9: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/10\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/11\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /#/product/9",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/9 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-019: /#/product/9 is tabbed through in reading order",
+      "page": "/#/product/9",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/9",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-020: /#/product/9 groups its checkboxes and radio buttons",
+      "page": "/#/product/9",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/9",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-021: /#/product/10 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/10: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/11\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-022: every form field has an accessible name: /#/product/10",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/10 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-023: /#/product/10 is tabbed through in reading order",
+      "page": "/#/product/10",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/10",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-024: /#/product/10 groups its checkboxes and radio buttons",
+      "page": "/#/product/10",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/10",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-025: /#/product/11 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/11: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-026: every form field has an accessible name: /#/product/11",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/11 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-027: /#/product/11 is tabbed through in reading order",
+      "page": "/#/product/11",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/11",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-028: /#/product/11 groups its checkboxes and radio buttons",
+      "page": "/#/product/11",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/11",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-029: /#/product/12 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/12: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/6\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/7\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/8\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/9\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 2 more",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/6\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/7\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/8\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/9\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/10\"] > .card-body > a[large=\"\"][href=\"#\"] and 1 more",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-030: every form field has an accessible name: /#/product/12",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/12 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-031: /#/product/12 is tabbed through in reading order",
+      "page": "/#/product/12",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/12",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-032: /#/product/12 groups its checkboxes and radio buttons",
+      "page": "/#/product/12",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/12",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-033: /#/product/1 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/1: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/2\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/2\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/4\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/3\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/5\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"]",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/2\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/4\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/3\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/5\"] > .card-body > a[large=\"\"][href=\"#\"]",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-034: every form field has an accessible name: /#/product/1",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/1 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-035: /#/product/1 is tabbed through in reading order",
+      "page": "/#/product/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/1",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-036: /#/product/1 groups its checkboxes and radio buttons",
+      "page": "/#/product/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/1",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-037: /#/product/2 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/2: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/1\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/1\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/4\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/3\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/5\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"]",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/1\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/4\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/3\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/5\"] > .card-body > a[large=\"\"][href=\"#\"]",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 2 more"
+      ]
+    },
+    {
+      "title": "TFAC-038: every form field has an accessible name: /#/product/2",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/2 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-039: /#/product/2 is tabbed through in reading order",
+      "page": "/#/product/2",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/2",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-040: /#/product/2 groups its checkboxes and radio buttons",
+      "page": "/#/product/2",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/2",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-041: /#/product/3 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/product/3: WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/1\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[href$=\"#/product/",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - #btn-decrease-quantity, #btn-increase-quantity",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .text-reset, a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(1), a[_ngcontent-ng-c384224261=\"\"][target=\"_blank\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[href$=\"#/product/1\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/2\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/4\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[href$=\"#/product/5\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"]",
+        "failure WCAG 4.1.2 label (critical): Form elements must have labels - input",
+        "failure WCAG 2.5.8 target-size (serious): All touch targets must be 24px large, or leave sufficient space - a[href$=\"#/product/1\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/2\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/4\"] > .card-body > a[large=\"\"][href=\"#\"], a[href$=\"#/product/5\"] > .card-body > a[large=\"\"][href=\"#\"]",
+        "manual-review WCAG 4.1.2 aria-prohibited-attr: Elements must only use permitted ARIA attributes - .text-reset, span[aria-label=\"brand\"], span[aria-label=\"unit-price\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .eco-badge, .co2-letter:nth-child(1), .co2-letter:nth-child(2), .co2-letter:nth-child(3) and 3 more"
+      ]
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /#/product/3",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Error: form fields on /#/product/3 with no accessible name (a screen reader announces them without a label): input[type=\"number\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"input[type=\\\"number\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-043: /#/product/3 is tabbed through in reading order",
+      "page": "/#/product/3",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/product/3",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-044: /#/product/3 groups its checkboxes and radio buttons",
+      "page": "/#/product/3",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/product/3",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-045: /#/category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/category/hand-tools: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds -.float-start, a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[data-test=\"product-1\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[data-test=\"product-2\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[data-test=\"product-3\"] >.card-img-wrapper >.card",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - .float-start, a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[data-test=\"product-1\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[data-test=\"product-2\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[data-test=\"product-3\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[data-test=\"product-4\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 5 more",
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(7) > ul",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container[_ngcontent-ng-c2781432996=\"\"] > span[_ngcontent-ng-c2781432996=\"\"], select, a[data-test=\"product-1\"] > .card-img-wrapper > .eco-badge.position-absolute.m-2, a[data-test=\"product-1\"] > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), a[data-test=\"product-1\"] > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(2) and 52 more"
+      ]
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /#/category/hand-tools",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: form fields on /#/category/hand-tools with no accessible name (a screen reader announces them without a label): select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"select\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-047: /#/category/hand-tools is tabbed through in reading order",
+      "page": "/#/category/hand-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/category/hand-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-048: /#/category/hand-tools groups its checkboxes and radio buttons",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Error: 5 checkboxes sharing the name \"category_id\" (\"Hammer\", \"Hand Saw\", \"Wrench\", \"Screwdriver\" and 1 more) are not in a fieldset with a legend or a named group on /#/category/hand-tools; 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/category/hand-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"5 checkboxes sharing the name \\\"category_id\\\" (\\\"Hammer\\\", \\\"Hand Saw\\\", \\\"Wrench\\\", \\\"Screwdriver\\\" and 1 ",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-049: /#/category/power-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/category/power-tools: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[data-test=\"product-19\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], a[data-test=\"product-20\"] >.card-img-wrapper >.card-img-top[loading=\"lazy\"], img[src$=\"saw02.jpeg\"], a[data-test=\"product-22\"] >.card-img",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"], a[data-test=\"product-19\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], a[data-test=\"product-20\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"], img[src$=\"saw02.jpeg\"], a[data-test=\"product-22\"] > .card-img-wrapper > .card-img-top[loading=\"lazy\"] and 4 more",
+        "failure WCAG 1.3.1 list (serious): <ul> and <ol> must only directly contain <li>, <script> or <template> elements - .checkbox:nth-child(7) > ul",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container[_ngcontent-ng-c2781432996=\"\"] > span[_ngcontent-ng-c2781432996=\"\"], select, a[data-test=\"product-19\"] > .card-img-wrapper > .eco-badge.position-absolute.m-2, a[data-test=\"product-19\"] > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(1), a[data-test=\"product-19\"] > .card-body > .co2-rating-scale[data-test=\"co2-rating-badge\"] > .co2-letter:nth-child(2) and 41 more"
+      ]
+    },
+    {
+      "title": "TFAC-050: every form field has an accessible name: /#/category/power-tools",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Error: form fields on /#/category/power-tools with no accessible name (a screen reader announces them without a label): select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"select\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-051: /#/category/power-tools is tabbed through in reading order",
+      "page": "/#/category/power-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/category/power-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-052: /#/category/power-tools groups its checkboxes and radio buttons",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Error: 4 checkboxes sharing the name \"category_id\" (\"Grinder\", \"Sander\", \"Saw\", \"Drill\") are not in a fieldset with a legend or a named group on /#/category/power-tools; 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/category/power-tools expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"4 checkboxes sharing the name \\\"category_id\\\" (\\\"Grinder\\\", \\\"Sander\\\", \\\"Saw\\\", \\\"Drill\\\") are not in a fieldset with a legen",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-053: /#/category/undefined passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/category/undefined: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img; WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elem",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "failure WCAG 4.1.2 select-name (critical): Select element must have an accessible name - select",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select, .checkbox:nth-child(18) > label"
+      ]
+    },
+    {
+      "title": "TFAC-054: every form field has an accessible name: /#/category/undefined",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Error: form fields on /#/category/undefined with no accessible name (a screen reader announces them without a label): select expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"select\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-055: /#/category/undefined is tabbed through in reading order",
+      "page": "/#/category/undefined",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/category/undefined",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-056: /#/category/undefined groups its checkboxes and radio buttons",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Error: 10 checkboxes sharing the name \"brand_id\" (\"Brand name 1\", \"Brand name 2\", \"Brand name 3\", \"Brand name 4\" and 6 more) are not in a fieldset with a legend or a named group on /#/category/undefined expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"10 checkboxes sharing the name \\\"brand_id\\\" (\\\"Brand name 1\\\", \\\"Brand name 2\\\", \\\"Brand name 3\\\", \\\"Brand name 4\\\" and 6 more) are not in a fieldset with a legend or a named group\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-057: /#/auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/register: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have disce",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, #country",
+        "manual-review WCAG 4.1.2 duplicate-id-aria: IDs used in ARIA and labels must be unique - app-password-input"
+      ]
+    },
+    {
+      "title": "TFAC-058: every form field has an accessible name: /#/auth/register",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /#/auth/register, which disappears as the user types: #password (\"Your password *\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-059: /#/auth/register is tabbed through in reading order",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Error: positive tabindex on /#/auth/register, which overrides the reading order: \"First name\" (1), \"Last name\" (2), \"Address\" (5), \"Postcode\" (6), \"City\" (7), \"Country\" (8), \"State\" (9), \"Phone\" (10), \"E-mail address\" (11); Tab on /#/auth/register goes from \"E-mail address\" back to \"Date of birth\", against the reading order (First name, Last name, Date of birth, Address, Postcode, City, Country, State, Phone, E-mail address, Your password *) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"positive tabindex on /#/auth/register, which ove",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-060: /#/auth/register groups its checkboxes and radio buttons",
+      "page": "/#/auth/register",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/register",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-061: /#/contact passes the WCAG 2.2 A and AA scan",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/contact: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ngcontent-ng-c3842242",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, #subject"
+      ]
+    },
+    {
+      "title": "TFAC-062: every form field has an accessible name: /#/contact",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-063: /#/contact is tabbed through in reading order",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Error: positive tabindex on /#/contact, which overrides the reading order: \"First name\" (1), \"Last name\" (2), \"Email address\" (3), \"Subject\" (4), \"Message\" (5), \"Attachment\" (6), \"submit\" (7) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"positive tabindex on /#/contact, which overrides the reading order: \\\"First name\\\" (1), \\\"Last name\\\" (2), \\\"Email address\\\" (3), \\\"Subject\\\" (4), \\\"Message\\\" (5), \\\"Attachment\\\" (6), \\\"submit\\\" (7)\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-064: /#/contact groups its checkboxes and radio buttons",
+      "page": "/#/contact",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/contact",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-065: /#/auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/login: WCAG 4.1.2 button-name (critical): Buttons must have discernible text -.btn; WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 5 - Array [] + Array [ + \"WCAG 4.1.2 button-name (critical): Buttons must have discerni",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 4.1.2 button-name (critical): Buttons must have discernible text - .btn",
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-066: every form field has an accessible name: /#/auth/login",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /#/auth/login, which disappears as the user types: #email (\"Your E-mail *\")",
+        "form field named only by its placeholder on /#/auth/login, which disappears as the user types: #password (\"Your password *\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-067: /#/auth/login is tabbed through in reading order",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Error: positive tabindex on /#/auth/login, which overrides the reading order: \"Your E-mail *\" (1), \"submit\" (3); Tab on /#/auth/login goes from \"submit\" back to \"Your password *\", against the reading order (Your E-mail *, Your password *, submit) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"positive tabindex on /#/auth/login, which overrides the reading order: \\\"Your E-mail *\\\" (1), \\\"submit\\\" (3)\", + \"Tab on /#/auth/login goes from \\\"submit\\\" back to \\\"Your password *\\\", against the reading order (Your E-mail *, Your password *, sub",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-068: /#/auth/login groups its checkboxes and radio buttons",
+      "page": "/#/auth/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-069: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/auth/forgot-password: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ngconten",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-070: every form field has an accessible name: /#/auth/forgot-password",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "form field named only by its placeholder on /#/auth/forgot-password, which disappears as the user types: #email (\"Your E-mail *\")"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFAC-071: /#/auth/forgot-password is tabbed through in reading order",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-072: /#/auth/forgot-password groups its checkboxes and radio buttons",
+      "page": "/#/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/auth/forgot-password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-073: /#/chainsaws passes the WCAG 2.2 A and AA scan",
+      "page": "/#/chainsaws",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/chainsaws: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ngcontent-ng-c38422",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-074: every form field has an accessible name: /#/chainsaws",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-075: /#/chainsaws is tabbed through in reading order",
+      "page": "/#/chainsaws",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/chainsaws",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-076: /#/chainsaws groups its checkboxes and radio buttons",
+      "page": "/#/chainsaws",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/chainsaws",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-077: /#/rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/#/rentals",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/rentals: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ng",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .order-md-first > .card-body > .card-text"
+      ]
+    },
+    {
+      "title": "TFAC-078: every form field has an accessible name: /#/rentals",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-079: /#/rentals is tabbed through in reading order",
+      "page": "/#/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-080: /#/rentals groups its checkboxes and radio buttons",
+      "page": "/#/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /#/rentals",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

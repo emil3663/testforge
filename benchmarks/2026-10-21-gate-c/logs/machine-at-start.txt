@@ -1,0 +1,68 @@
+--- at start (Wed Oct 21 04:45:19 SAST 2026)
+--- processes
+svchost                94
+Code                   23
+conhost                16
+RuntimeBroker          9
+claude                 9
+Docker Desktop         7
+msedge                 7
+bash                   6
+msedgewebview2         6
+NVIDIA Overlay         5
+nvcontainer            4
+wslhost                4
+wsl                    4
+powershell             3
+WmiPrvSE               3
+dllhost                3
+WhatsApp.Root          2
+vmwp                   2
+fontdrvhost            2
+taskhostw              2
+RtkAudUService64       2
+NVDisplay.Container    2
+csrss                  2
+WUDFHost               2
+com.docker.backend     2
+--- memory
+free GB 20,8 of 39,7
+--- docker
+testforge-plane-beat-worker-1 Up 15 hours
+testforge-plane-worker-1 Up 15 hours
+testforge-plane-space-1 Up 15 hours (healthy)
+testforge-plane-db-1 Up 15 hours (healthy)
+testforge-plane-redis-1 Up 15 hours
+testforge-plane-minio-1 Up 15 hours
+testforge-plane-web-1 Up 15 hours (healthy)
+testforge-plane-api-1 Up 15 hours
+--- after stopping Plane (Wed Oct 21 04:45:22 SAST 2026)
+--- processes
+svchost                94
+Code                   23
+conhost                16
+RuntimeBroker          9
+claude                 9
+Docker Desktop         7
+msedge                 7
+bash                   6
+msedgewebview2         6
+NVIDIA Overlay         5
+nvcontainer            4
+wslhost                4
+wsl                    4
+powershell             3
+WmiPrvSE               3
+dllhost                3
+WhatsApp.Root          2
+vmwp                   2
+fontdrvhost            2
+taskhostw              2
+RtkAudUService64       2
+NVDisplay.Container    2
+csrss                  2
+WUDFHost               2
+com.docker.backend     2
+--- memory
+free GB 20,7 of 39,7
+--- docker
