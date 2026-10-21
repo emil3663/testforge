@@ -10,7 +10,7 @@ import { SUITE_AREA_CODES } from "./suite";
 import { withDefaultGate } from "@/lib/run/test-gates";
 import type { BestPracticeArea, ContentProfile, ContentRules, GeneratedSuite, TestAuditMode } from "./types";
 import { routePageVisits } from "../page-visits";
-import { shareReadOnlyVisits } from "../shared-visits";
+import { shareReadOnlyVisits, type ShareOptions } from "../shared-visits";
 
 export { BEST_PRACTICE_OPTIONS } from "./types";
 export type {
@@ -102,8 +102,8 @@ export function mockGenerateDetailed(
     contentRules: ContentRules,
     auditMode: TestAuditMode,
     // Phase 39 (TFP-212): one shared visit per page for its read-only checks. Off only to prove Decision 7, the
-    // same results shared and one-page-per-test.
-    options: { sharedVisits?: boolean } = {}
+    // same results shared and one-page-per-test. axeOrder: where the axe scan runs in a page's group (TFP-214's switch).
+    options: { sharedVisits?: boolean } & ShareOptions = {}
 ): TemplateGeneration {
     const parsedBaseUrl = new URL(baseUrl);
     const escapedBaseUrl = escapeForSingleQuotedString(baseUrl);
@@ -161,5 +161,5 @@ ${renderSuites(allSuites)}
 
     // TFP-167: every page visit waits for the page to draw. TFP-212: read-only checks share a visit per page.
     const routed = routePageVisits(code);
-    return { code: options.sharedVisits === false ? routed : shareReadOnlyVisits(routed), areas: bestPracticeAreas, testsByArea, notApplicable };
+    return { code: options.sharedVisits === false ? routed : shareReadOnlyVisits(routed, { axeOrder: options.axeOrder }), areas: bestPracticeAreas, testsByArea, notApplicable };
 }

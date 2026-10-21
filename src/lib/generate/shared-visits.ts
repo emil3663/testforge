@@ -86,8 +86,18 @@ const holdsData = (statement: ts.Statement, file: ts.SourceFile) =>
     ts.isVariableStatement(statement) && !/\b(page|context|request|await|tfGoto)\b|=>|\bfunction\b/.test(statement.getText(file));
 
 // Gate B (Emil, 2026-10-20): in a page's group the checks that only read run first, then the axe scan, then the
-// checks that change the page, so a failing scan's fresh worker reloads the page for the changing checks alone.
+// checks that change the page, so the scan reads a page no check has touched.
 const AXE_SCAN = /passes the WCAG 2\.2 A and AA scan/;
+
+/**
+ * Where the axe scan runs in a page's group (Emil, 2026-10-21: a switch, both orders run at Gate C).
+ * - `before-changes` (the default): after the checks that only read, before those that change the page.
+ * - `last`: after the checks that change the page. A failing scan then costs no reload, but it reads a page they
+ *   altered and put back; it is not re-run (it changes nothing itself). It becomes the default only with identical
+ *   axe findings on both copies and a faster run.
+ */
+export type AxeOrder = "before-changes" | "last";
+export type ShareOptions = { axeOrder?: AxeOrder };
 
 export const SHARED_VISIT_HELPER = `// Phase 39 (TFP-212, TFP-213; Decisions 2 and 4): a page's read-only checks, every area's, on one shared visit.
 // The visit (page, context, load response) is kept per worker and handed to each check. It is loaded again, in a
@@ -202,7 +212,7 @@ function declarationNames(statement: ts.Statement): string[] | null {
 }
 
 /** The test's one page, and how it is loaded, when it may share a visit; null when it keeps its own page. */
-function sharing(entry: TestEntry, file: ts.SourceFile) {
+function sharing(entry: TestEntry, file: ts.SourceFile, axeOrder: AxeOrder) {
     if (calleeText(entry.call, file) !== "test") return null;
     if (entry.lineage.some((frame) => frame.pinned || FRESH_DESCRIBES.has(frame.title))) return null;
     const options = entry.call.arguments.length === 3 ? entry.call.arguments[1].getText(file) : "";
@@ -237,7 +247,7 @@ function sharing(entry: TestEntry, file: ts.SourceFile) {
     const after = rest.map((statement) => statement.getText(file)).join("\n");
     if (KEEPS_ITS_OWN_PAGE.test(after)) return null;
     const changes = CHANGES_THE_PAGE.test(after);
-    const rank = changes ? 2 : AXE_SCAN.test(entry.call.arguments[0].getText(file)) ? 1 : 0;
+    const rank = changes ? 2 : AXE_SCAN.test(entry.call.arguments[0].getText(file)) ? (axeOrder === "last" ? 3 : 1) : 0;
     return { path, fn, first, binding, responseName, changes, rank, usesContext: fixtures.includes("context"), usesRequest: fixtures.includes("request") };
 }
 
@@ -252,7 +262,7 @@ function reindent(text: string, indent: string) {
  * Moves the suite's read-only checks onto one shared visit per page (see the top of this file). A suite with no
  * test that can share is returned as it is.
  */
-export function shareReadOnlyVisits(code: string): string {
+export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): string {
     // Once only: a suite already sharing its visits is returned as it is.
     if (code.includes(SHARED_VISIT_HELPER)) return code;
     const file = ts.createSourceFile("suite.spec.ts", code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
@@ -296,7 +306,7 @@ export function shareReadOnlyVisits(code: string): string {
         if (conflicting) declaration.frame.pinned = true;
     }
 
-    const shared = tests.map((entry) => ({ entry, plan: sharing(entry, file) })).filter((item): item is { entry: TestEntry; plan: NonNullable<ReturnType<typeof sharing>> } => item.plan !== null);
+    const shared = tests.map((entry) => ({ entry, plan: sharing(entry, file, options.axeOrder ?? "before-changes") })).filter((item): item is { entry: TestEntry; plan: NonNullable<ReturnType<typeof sharing>> } => item.plan !== null);
     if (shared.length === 0) return code;
 
     // What leaves its place: the shared tests, and the declarations of the describes they leave. A describe left empty

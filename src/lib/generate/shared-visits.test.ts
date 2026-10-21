@@ -214,6 +214,12 @@ test.describe('SEO and Content Coverage', () => {
     const order = ["reads its page", "holds its data before the visit", "/a has a heading", "/a passes the WCAG 2.2 A and AA scan", "clicks", "opens a route view of its own", "/a is tabbed through in reading order"];
     const at = order.map((title) => shared.indexOf(`: ${title}'`));
     assert.deepEqual([...at].sort((a, b) => a - b), at, "reads, scan, changes");
+    // The switch (Emil, 2026-10-21): reads, changes, then the scan, not re-run; it type-checks; the default is the built order.
+    const last = shareReadOnlyVisits(suite, { axeOrder: "last" });
+    const lastAt = [...order.filter((title) => !/WCAG/.test(title)), order[3]].map((title) => last.indexOf(`: ${title}'`));
+    assert.deepEqual([[...lastAt].sort((a, b) => a - b), findTypeErrors(last), shareReadOnlyVisits(suite, { axeOrder: "before-changes" }) === shared], [lastAt, [], true]);
+    const scanLast = parseTestUnits(last).find((unit) => unit.title === order[3])!;
+    assert.deepEqual([scanLast.describe, /rerun|changed/.test(scanLast.source)], [["Page /a", "Accessibility Coverage"], false]);
     // A check that changes the page says so and runs inside rerun(); one that only reads doesn't.
     assert.match(where("clicks").source, /async \(\{ tfShared \}\) => \{\n\s+await tfShared\.rerun\(async \(\) => \{\n\s+const \{ page \} = await tfShared\.visit\('\/a'\);\n\s+tfShared\.changed\(\);\n\s+await page\.getByRole\('button'\)\.click\(\);\n\s+\}\);\n\s+\}\);/);
     assert.match(where("holds its data before the visit").source, /const links = \[\{ "url": "\/b" \}\];\n\s+const \{ page \} = await tfShared\.visit\('\/a'\);/);
