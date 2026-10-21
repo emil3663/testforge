@@ -429,6 +429,17 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
     in reading order", both Decision 3's "in place" kind.
   - **The axe scan runs last in each page's shared group,** so a failing
     scan forces no reload of the checks after it.
+    - **Superseded (Emil, 2026-10-20, during the build):** the order is
+      read-only checks, then the axe scan, then the page-changing checks.
+      The scan reads a page no check has touched.
+    - **Measured at Gate C (Emil, 2026-10-21):** the order becomes a switch,
+      and Gate C's session runs both orders.
+    - **"Scan last" becomes the default only if** its axe findings are
+      identical to the built order's on both copies (Decision 7) and it is
+      faster. Otherwise the built order stays.
+    - **Why it's measured:** with the scan last, a failing scan costs
+      nothing extra, but the scan then reads a page the changing checks
+      have altered and put back.
   - **Judged against accessibility's ≥30% target,** now at Gate C (see
     "Gate B ruling").
   - **Dependency:** TFP-241.
@@ -443,6 +454,16 @@ TFP-210 is the last ticket proposed (`post-phase-42-review-findings.md`).
     These are mostly form fields and plain buttons.
   - **"In place" and "in-app navigation"** share as Decision 3 says.
   - TFP-214 no longer waits on this look.
+
+- **TFP-214 verified (Cowork, 2026-10-21),** `ae4a1ff` and `40ea7ed`.
+  Accepted:
+  - **Menus opened to reveal a link keep their own page.** Shared, they
+    changed another check's finding wording, which no re-run can catch.
+  - **The navigation check's 5 s wait for a late view.**
+  - **A re-run drops the first attempt's findings,** keeping its failure in
+    the remarks (Decision 4's "both recorded").
+  - **The guarded navigation check stays on its own page** until its guard
+    can be installed twice safely.
 
 ### TFP-215 — Tune the settle wait and read-only timeouts (added 2026-10-16)
 
@@ -704,6 +725,7 @@ of Decisions 2 to 6 touch it.
   | C1 against C2 | TFP-214, Standard on each copy | at least 10% faster |
   | A against C2 | accessibility on each copy (moved from Gate B) | at least 30% faster |
   | C2 against F | TFP-222, TFP-155 and TFP-156 | the same results; no slower beyond the 5% spread |
+  | F against F with the axe scan last (accessibility, each copy) | where the axe scan runs (Emil, 2026-10-21) | identical axe findings and faster, or the built order stays |
 
 - **What must also hold:** Decision 7's proof in every comparison, and the
   with-bugs `/` sort message compared again.
