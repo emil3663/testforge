@@ -1,7 +1,7 @@
-import type { GenerationRecord } from "@/lib/report/types";
+import type { GenerationRecord, JsonReport } from "@/lib/report/types";
 import { spawn } from "child_process";
 import { randomUUID } from "crypto";
-import { mkdir, readdir, writeFile } from "fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
@@ -15,6 +15,7 @@ import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
 import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
+import type { RawTiming } from "@/lib/run/timing";
 import { comprehensiveLabel, isComprehensive, isLocalDevelopmentHost, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
 import { splitSuite } from "@/lib/run/split";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
@@ -107,11 +108,10 @@ export async function startRunJob(
     // host runs one test at a time. TFP-155: the suite now runs as units (one file each), so a run really uses its
     // workers; before, its one file ran on one worker whatever it asked for. A host that isn't local keeps one worker
     // until TFP-157's host limits and request cap (Decision 10: "without the cap, a capped host gets one worker, as
-    // today"). A run with interactive tests on keeps one worker too until TFP-156's serial group, so no two of them
-    // (in different units) run at once (Decision 9).
+    // today"). The data-changing tests run in the serial group, on one worker, after the rest (TFP-156, Decision 9).
     const units = splitSuite(code);
     const local = isLocalDevelopmentHost(baseUrl);
-    const workerCount = local && !enableInteractive ? workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode)) : 1;
+    const workerCount = local ? workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode)) : 1;
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
@@ -129,7 +129,8 @@ export async function startRunJob(
     // they were (artifacts-<id>), which persistence reads. Removed when the run is finalized.
     const runFolders = [...runJobs.keys()].map((id) => `run-${id}`);
     await removeStaleRunFolders(runsDir, (name, ageMs) => /^(run|gap|recheck)-/.test(name) && !runFolders.includes(name) && ageMs > STALE_RUN_FOLDER_MS);
-    const { dir: runDir, config: configFile } = await createRunFolder(runsDir, `run-${runId}`);
+    // TFP-156: the serial group runs in a second pass, from a folder of its own the first pass's config leaves out.
+    const { dir: runDir, config: configFile } = await createRunFolder(runsDir, `run-${runId}`, ", testIgnore: ['serial/**']");
 
     // TFP-092: log in once, before any test starts. A failure throws a named
     // RunLoginError and the run never starts - there is no fallback to an
@@ -159,7 +160,11 @@ export async function startRunJob(
     const artifactDir = join(runsDir, `artifacts-${runId}`);
 
     await writeFile(testFile, code, "utf8");
-    for (const unit of units) await writeFile(join(runDir, unit.name), unit.code, "utf8");
+    const parallelUnits = units.filter((unit) => unit.kind !== "serial");
+    const serialUnit = units.find((unit) => unit.kind === "serial") ?? null;
+    for (const unit of parallelUnits) await writeFile(join(runDir, unit.name), unit.code, "utf8");
+    const serialFolder = serialUnit ? await createRunFolder(runDir, "serial") : null;
+    if (serialUnit && serialFolder) await writeFile(join(serialFolder.dir, serialUnit.name), serialUnit.code, "utf8");
     await writeFile(reporterFile, buildProgressReporterSource(), "utf8");
     await writeFile(timingReporterFile, buildTimingReporterSource(), "utf8");
     await mkdir(artifactDir, { recursive: true });
@@ -221,30 +226,50 @@ export async function startRunJob(
         ...(storageStateFile ? { [STORAGE_STATE_ENV_VAR]: storageStateFile } : {}),
     });
 
-    const child = spawn(
+    // TFP-156 (Decision 9): the read-only units first, on the run's workers; then the serial group, on one worker, so its
+    // tests run one at a time and none alongside a read-only test. Two Playwright runs, each with its own report, timing
+    // file and artifact folder (a run clears its output folder as it starts), merged into the run's own after the last.
+    // Not Playwright's project dependencies: a dependent project doesn't run once any test it depends on fails.
+    // A pass the run's selection leaves empty is skipped: Playwright would report "No tests found" as an error.
+    const selects = (unitCodes: string[]) => unitCodes.some((unitCode) => buildRunSelection(unitCode, excludedTestTitles, includedTestTitles).runnableTestCount > 0);
+    const passes = [
+        ...(selects(parallelUnits.map((unit) => unit.code)) || !serialUnit ? [{ config: configFile, workers: workerCount, output: artifactDir, report: jsonReportFile, timing: timingFile }] : []),
+        ...(serialFolder && serialUnit && selects([serialUnit.code]) ? [{ config: serialFolder.config, workers: 1, output: join(artifactDir, "serial"), report: join(runDir, `report-${runId}-serial.json`), timing: join(runDir, `timing-${runId}-serial.json`) }] : []),
+    ];
+    const spawnPass = (pass: (typeof passes)[number]) => spawn(
         process.execPath,
         [
             playwrightCli,
             "test",
             "--config",
-            configFile,
+            pass.config,
             `--reporter=${reporterFile},${timingReporterFile},json`,
             "--timeout=30000",
-            `--output=${artifactDir.replace(/\\/g, "/")}`,
-            `--workers=${workerCount}`,
+            `--output=${pass.output.replace(/\\/g, "/")}`,
+            `--workers=${pass.workers}`,
             ...(runSelection.grepPattern ? [`--grep=${runSelection.grepPattern}`] : []),
             ...(runSelection.grepInvertPattern ? [`--grep-invert=${runSelection.grepInvertPattern}`] : []),
             ...browserProjects.flatMap((project) => [`--project=${project}`]),
         ],
         {
             cwd: process.cwd(),
-            env: childEnv,
+            env: { ...childEnv, PLAYWRIGHT_JSON_OUTPUT_FILE: pass.report, [TIMING_FILE_ENV_VAR]: pass.timing },
             windowsHide: true,
             stdio: ["ignore", "pipe", "pipe"],
         }
     );
+    const attach = (child: ReturnType<typeof spawnPass>) => {
+        child.stdout?.setEncoding("utf8");
+        child.stderr?.setEncoding("utf8");
+        child.stdout?.on("data", (chunk: string) => appendProcessOutput(job, chunk));
+        child.stderr?.on("data", (chunk: string) => appendProcessOutput(job, chunk));
+        child.on("error", (error) => {
+            job.outputChunks.push(`${error.message}\n`);
+        });
+    };
 
-    job.process = child;
+    const first = spawnPass(passes[0]);
+    job.process = first;
     runJobs.set(runId, job);
     job.outputChunks.push(
         `Run budget: up to ${Math.round(runTimeout / 1000)}s for ~${estimatedExecutions} execution(s) across ${browserProjects.length} browser project(s) in ${auditMode} mode.\n`
@@ -255,23 +280,21 @@ export async function startRunJob(
         );
     }
     // TFP-155: how the suite was split, and how many workers take its units.
-    const pageUnits = units.filter((unit) => unit.kind === "page").length;
+    const pageUnits = parallelUnits.filter((unit) => unit.kind === "page").length;
     job.outputChunks.push(
-        `Split into ${units.length} unit file(s) (${pageUnits} page(s), ${units.length - pageUnits} other), run by ${workerCount} worker(s)${!local ? ": one, as this host isn't local" : enableInteractive ? ": one, as interactive tests are on" : ""}.\n`
+        `Split into ${parallelUnits.length} unit file(s) (${pageUnits} page(s), ${parallelUnits.length - pageUnits} other), run by ${workerCount} worker(s)${local ? "" : ": one, as this host isn't local"}.\n`
     );
-
-    child.stdout?.setEncoding("utf8");
-    child.stderr?.setEncoding("utf8");
-    child.stdout?.on("data", (chunk: string) => appendProcessOutput(job, chunk));
-    child.stderr?.on("data", (chunk: string) => appendProcessOutput(job, chunk));
-    child.on("error", (error) => {
-        job.outputChunks.push(`${error.message}\n`);
-    });
+    if (serialUnit) {
+        job.outputChunks.push("The serial group (data-changing and model-written tests) runs after them, one test at a time (Decision 9).\n");
+    }
+    attach(first);
 
     let forceStopTimer: NodeJS.Timeout | null = null;
 
+    // One budget for both passes: the timer stops whichever is running.
     const timeoutId = setTimeout(() => {
-        if (job.status === "running" && child.exitCode === null) {
+        const child = job.process;
+        if (job.status === "running" && child && child.exitCode === null) {
             job.cancellationRequested = true;
             job.outputChunks.push(
                 `Run timed out after ${Math.round(runTimeout / 1000)}s and TestForge requested a graceful stop.\n`
@@ -287,15 +310,25 @@ export async function startRunJob(
         }
     }, runTimeout);
 
-    child.on("close", () => {
+    let passIndex = 0;
+    const onClose = () => {
+        appendProcessOutput(job, "", true);
+        passIndex += 1;
+        if (passIndex < passes.length && !job.cancellationRequested) {
+            const next = spawnPass(passes[passIndex]);
+            job.process = next;
+            attach(next);
+            next.on("close", onClose);
+            return;
+        }
         clearTimeout(timeoutId);
         if (forceStopTimer) {
             clearTimeout(forceStopTimer);
         }
-        appendProcessOutput(job, "", true);
-        // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
-        // first, with this run's login state, so the report has only the re-run's results.
-        void recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout })
+        void mergePasses(passes.map((pass) => pass.report), jsonReportFile, passes.map((pass) => pass.timing), timingFile)
+            // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
+            // first, with this run's login state, so the report has only the re-run's results.
+            .then(() => recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout }))
             .catch((error: unknown) => {
                 job.outputChunks.push(`Site suite: the failing reused tests' pages could not be read again (${error instanceof Error ? error.message : String(error)}); their failures stand.\n`);
             })
@@ -303,7 +336,40 @@ export async function startRunJob(
                 void removeAuthState(authDir);
                 void finalizeRunJob(job);
             });
-    });
+    };
+    first.on("close", onClose);
 
     return buildRunSnapshot(job);
+}
+
+type ReportStats = { startTime?: string; duration?: number; expected?: number; unexpected?: number; flaky?: number; skipped?: number };
+
+/**
+ * TFP-156: the passes' JSON reports and timing files, merged into the run's own, in pass order (the read-only units,
+ * then the serial group). A pass that wrote nothing adds nothing; a single pass that wrote the run's own files is left
+ * as it is.
+ */
+export async function mergePasses(reports: string[], report: string, timings: string[], timing: string) {
+    if (reports.length > 1 || reports[0] !== report) {
+        const found = (await Promise.all(reports.map((file) => readFile(file, "utf8").then((text) => JSON.parse(text) as JsonReport & { stats?: ReportStats }).catch(() => null))))
+            .filter((entry): entry is JsonReport & { stats?: ReportStats } => entry !== null);
+        if (found.length > 0) {
+            const stats = found.map((entry) => entry.stats ?? {});
+            const starts = stats.map((entry) => Date.parse(entry.startTime ?? "")).filter((value) => Number.isFinite(value));
+            const ends = stats.map((entry) => Date.parse(entry.startTime ?? "") + (entry.duration ?? 0)).filter((value) => Number.isFinite(value));
+            const total = (key: "expected" | "unexpected" | "flaky" | "skipped") => stats.reduce((sum, entry) => sum + (entry[key] ?? 0), 0);
+            const span = starts.length > 0 ? { startTime: new Date(Math.min(...starts)).toISOString(), duration: Math.max(...ends) - Math.min(...starts) } : {};
+            await writeFile(report, JSON.stringify({
+                ...found[0],
+                suites: found.flatMap((entry) => entry.suites ?? []),
+                errors: found.flatMap((entry) => entry.errors ?? []),
+                stats: { ...stats[0], ...span, expected: total("expected"), unexpected: total("unexpected"), flaky: total("flaky"), skipped: total("skipped") },
+            }), "utf8");
+        }
+    }
+    if (timings.length > 1 || timings[0] !== timing) {
+        const found = (await Promise.all(timings.map((file) => readFile(file, "utf8").then((text) => JSON.parse(text) as RawTiming).catch(() => null))))
+            .filter((entry): entry is RawTiming => entry !== null);
+        if (found.length > 0) await writeFile(timing, JSON.stringify({ version: 1, tests: found.flatMap((entry) => entry.tests) }), "utf8");
+    }
 }

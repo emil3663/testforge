@@ -24,7 +24,7 @@ const scratch = mkdtempSync(join(tmpdir(), "testforge-split-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
 process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
 
-const { splitSuite } = await import("./split.ts");
+const { splitSuite, SERIAL_UNIT } = await import("./split.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
 const { findTypeErrors } = await import("../generate/validate.ts");
 const { mockGenerate } = await import("../generate/mock/index.ts");
@@ -110,6 +110,61 @@ test('TFGN-002: another top-level test', async ({ page }) => {
     assert.deepEqual(splitSuite(one), [{ name: "001-suite.spec.ts", kind: "describe", code: one }]);
 });
 
+test("the serial group: a data-changing test (by its own or its describe's gate) and a model-written block go to one file of their own, last; a describe holding both kinds is in both, each copy with its own kind's tests and all its other statements (TFP-156, decision table)", () => {
+    const suite = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: 'http://site.test' });
+
+test.describe('Database Coverage', () => {
+  const tfField = (name: string) => name.trim();
+  test.beforeEach(async () => {});
+
+  test('TFDB-001: reads the form', { annotation: { type: 'gate', description: 'read-only' } }, async ({ page }) => {
+    await page.goto('/form');
+    expect(tfField(' a ')).toBe('a');
+  });
+
+  test('TFDB-002: saves and reads back', { annotation: { type: 'gate', description: 'interactive' } }, async ({ page }) => {
+    await page.goto('/form');
+    expect(tfField(' b ')).toBe('b');
+  });
+});
+
+test.describe('Security Coverage', { annotation: { type: 'gate', description: 'active' } }, () => {
+  test('TFSC-001: attack-shaped input', async ({ page }) => {
+    await page.goto('/form');
+  });
+});
+
+test.describe('Gap tests', () => {
+  test('TFGP-001: a model wrote this', async ({ page }) => {
+    await page.goto('/');
+  });
+});
+
+test.describe('Page /', () => {
+  test('TFSE-001: has a title', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveTitle(/./);
+  });
+});
+`;
+    const units = splitSuite(suite);
+    assert.deepEqual(units.map((unit) => [unit.name, unit.kind]), [["001-database-coverage.spec.ts", "describe"], ["002-page.spec.ts", "page"], [SERIAL_UNIT, "serial"]]);
+    const [readOnly, , serial] = units;
+    assert.deepEqual(parseTestUnits(readOnly.code).map((unit) => unit.id), ["TFDB-001"]);
+    assert.deepEqual(parseTestUnits(serial.code).map((unit) => unit.id), ["TFDB-002", "TFSC-001", "TFGP-001"], "in the suite's order");
+    // Both copies of Database Coverage keep its helper and its hook.
+    for (const unit of [readOnly, serial]) {
+        assert.match(unit.code, /const tfField = \(name: string\) => name\.trim\(\);\n  test\.beforeEach/, unit.name);
+        assert.deepEqual(findTypeErrors(unit.code), [], unit.name);
+    }
+    assert.deepEqual(testsOf(units.map((unit) => unit.code)), testsOf([suite]), "every test once, unchanged");
+    // A suite of one unit but a serial group still splits, so the group runs after the rest.
+    const small = suite.slice(0, suite.indexOf("test.describe('Security Coverage'"));
+    assert.deepEqual(splitSuite(small).map((unit) => unit.kind), ["describe", "serial"]);
+});
+
 test("generated suites: every test lands in exactly one unit, unchanged, and every unit type-checks (Standard and both Comprehensive areas)", () => {
     const profile = JSON.parse(readFileSync(join(process.cwd(), "benchmarks/2026-09-29/content-profile.json"), "utf8"));
     const origin = "http://127.0.0.1:4410";
@@ -184,9 +239,43 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         assert.ok(report, job.result?.output);
         assert.deepEqual(outcome(report.execution), outcome(flattenSuites(oneFile.suites ?? [])), "every test, the same area, page, status and findings");
         // The run's record: how many unit files ran tests, and how many workers took them (a local host: 4).
-        const said = `Split into ${units.length} unit file(s) (${paths.length} page(s), ${units.length - paths.length} other), run by 4 worker(s).\n`;
+        // TFP-156: the active security checks are the serial group's, run after the rest.
+        const parallel = units.filter((unit) => unit.kind !== "serial");
+        assert.equal(units.length - parallel.length, 1, "a serial group");
+        const said = `Split into ${parallel.length} unit file(s) (${paths.length} page(s), ${parallel.length - paths.length} other), run by 4 worker(s).\n`;
         assert.ok(job.outputChunks.includes(said), job.outputChunks.join(""));
         assert.equal(report.runTiming?.files, units.length);
+        assert.ok((report.runTiming?.workers ?? 0) > 1, `${report.runTiming?.workers} workers`);
+    } finally {
+        await fixture.close();
+    }
+});
+
+test("in a real browser: with interactive tests on, the serial group runs after the last read-only test ends, one test at a time, as the run's timing record shows (Acceptance Criteria 5, TFP-156)", { skip: needsChromium }, async () => {
+    const fixture = await startRecordedFixture();
+    try {
+        const paths = ["/", "/login", "/notes", "/forms"];
+        const inspection = await inspectPages(fixture.origin, paths);
+        const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
+        const areas = ["functional", "database", "security"];
+        const code = mockGenerate(fixture.origin, "Check the site and save data.", areas as never, profile as never, normalizeContentRules({ paths }), normalizeTestAuditMode("fast"));
+        const serial = parseTestUnits(splitSuite(code).find((unit) => unit.kind === "serial")?.code ?? "");
+        assert.ok(serial.filter((unit) => /persistence round trip/.test(unit.title)).length >= 2, serial.map((unit) => unit.title).join(" | "));
+        const snapshot = await startRunJob(code, areas, "fast", fixture.origin, [], [], "Check the site and save data.", profile as never, true);
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        // The interactive tests ran (interactive on); the active ones stay closed, Not run with their reason.
+        const roundTrips = report.execution.filter((record: ExecutionRecord) => /persistence round trip/.test(record.title));
+        assert.ok(roundTrips.length >= 2 && roundTrips.every((record: ExecutionRecord) => record.status === "Passed" || record.status === "Failed"), roundTrips.map((record: ExecutionRecord) => `${record.title}: ${record.status}`).join(" | "));
+        assert.ok(job.outputChunks.join("").includes("The serial group (data-changing and model-written tests) runs after them, one test at a time (Decision 9).\n"));
+        // The run record: no two serial tests at once, the first after the last read-only test ended; the read-only
+        // units on more than one worker.
+        const group = report.runTiming?.serialGroup;
+        assert.ok(group, "the run record's serial group");
+        assert.equal(group.tests, serial.length);
+        assert.equal(group.overlapping, 0);
+        assert.ok(group.lastReadOnlyEnd !== null && group.firstStart >= group.lastReadOnlyEnd, `serial from ${group.firstStart}, read-only to ${group.lastReadOnlyEnd}`);
         assert.ok((report.runTiming?.workers ?? 0) > 1, `${report.runTiming?.workers} workers`);
     } finally {
         await fixture.close();

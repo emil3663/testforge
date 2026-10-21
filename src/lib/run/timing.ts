@@ -18,6 +18,7 @@ import type { ContentProfile, LinkDetail } from "@/lib/generate/mock/types";
 import { isRouteLink } from "@/lib/generate/mock/link-audits/routes";
 import { readFile } from "fs/promises";
 import { parseTestUnits } from "@/lib/site-suites/units";
+import { SERIAL_UNIT } from "@/lib/run/split";
 
 /** Set on the run's Playwright process: where the timing reporter writes. Unset, it writes nothing. */
 export const TIMING_FILE_ENV_VAR = "TESTFORGE_TIMING_FILE";
@@ -130,6 +131,11 @@ export interface RunTiming {
     /** TFP-155: how many workers and unit files ran tests (absent in a record from before they were kept). */
     workers?: number;
     files?: number;
+    /**
+     * TFP-156 (Decision 9, Acceptance Criteria 5): the serial group's tests, when the run had one. `overlapping` counts
+     * pairs of them that ran at the same time; the first starts at or after the last read-only test ends (ms epoch).
+     */
+    serialGroup?: { tests: number; overlapping: number; firstStart: number; lastReadOnlyEnd: number | null };
     /** The sum of the tests' own durations, in ms. */
     testMs: number;
     pageLoads: { count: number; ms: number };
@@ -318,9 +324,24 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
         // A test skipped before it started has no worker (-1).
         ? { workers: new Set(tests.filter((test) => (test.worker ?? -1) >= 0).map((test) => test.worker)).size, files: new Set(tests.map((test) => test.file)).size }
         : {};
+    // TFP-156: when the serial group ran, and whether any two of its tests (or one and a read-only test) overlapped.
+    const timed = tests.filter((test): test is TimingTest & { startedAt: number } => test.startedAt !== undefined);
+    const serial = timed.filter((test) => test.file === SERIAL_UNIT);
+    const readOnly = timed.filter((test) => test.file !== SERIAL_UNIT && test.status !== "skipped");
+    const serialGroup = serial.length > 0
+        ? {
+            serialGroup: {
+                tests: serial.length,
+                overlapping: serial.flatMap((one, index) => serial.slice(index + 1).filter((other) => one.startedAt < other.startedAt + other.duration && other.startedAt < one.startedAt + one.duration)).length,
+                firstStart: Math.min(...serial.map((test) => test.startedAt)),
+                lastReadOnlyEnd: readOnly.length > 0 ? Math.max(...readOnly.map((test) => test.startedAt + test.duration)) : null,
+            },
+        }
+        : {};
     return {
         tests: tests.length,
         ...spread,
+        ...serialGroup,
         testMs: sum(tests.map((test) => test.duration)),
         pageLoads: { count: of("goto").length, ms: sum(of("goto").map((step) => step.duration)) },
         blankLoads: { count: of("blank").length, ms: sum(of("blank").map((step) => step.duration)) },
