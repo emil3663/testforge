@@ -42,34 +42,38 @@ with TFP-222 before Phase 39's TFP-155.
    - The candidate promotion screen: approve, then Claude Code commits.
    - The active switch in the run form.
    - Tickets TFP-232 to TFP-235.
-4. **D1: the SEO Standard set.** The draft set from the coverage proposal,
+4. **D29: a retention policy for saved runs and their evidence.**
+   - How long saved runs and their videos, traces and screenshots are
+     kept, and a "clear old runs" action on Phase 46's screens.
+   - Its own short decision record with Emil's choices.
+5. **D1: the SEO Standard set.** The draft set from the coverage proposal,
    brought into the repo and written once on Phase 39's shared visit.
-5. **D2 with D9: the 30 WAI-ARIA APG patterns.**
+6. **D2 with D9: the 30 WAI-ARIA APG patterns.**
    - Functional checks for each pattern, shipped in batches if its record
      says so.
    - INP timed on those interactions and Phase 41's, as banded findings
      only.
-6. **D3: the rest of accessibility and security Standard.**
+7. **D3: the rest of accessibility and security Standard.**
    - The passive checks need nothing more.
    - The attack-shaped ones sit behind Phase 43's active gate.
-7. **D19: the failure-triage gate.**
+8. **D19: the failure-triage gate.**
    - Each failure judged as a real defect, test bug, environment, or
      inconclusive, with a confidence score and a threshold below which a
      person decides.
    - Calibrated on the labelled failures.
-8. **D27: TestForge measured against QA My App.**
+9. **D27: TestForge measured against QA My App.**
    - A comparison benchmark on the local Toolshop copies, run once
      Standard is complete (after D3 and D19).
    - Scored with TFP-154's rule against the answer key.
    - Every TestForge miss is tagged "planned in Dx" or "not planned".
      Only the unplanned ones become work, and they can reorder the
      Comprehensive and scenario steps that follow.
-9. **D28: a security sweep of TestForge's model-code paths.**
+10. **D28: a security sweep of TestForge's model-code paths.**
    - Zone by zone, each finding proven by a failing test.
    - Covers the gap writer, candidates and bound candidates,
      TFP-202's code check and stripped environment.
    - Done before Phase 45 builds the sandbox.
-10. **Phase 45: the Docker sandbox.**
+11. **Phase 45: the Docker sandbox.**
    - Every model-written test runs in a container: gap tests, candidates
      and scenario tests.
    - Read-only mounts, no secrets, a non-root user.
@@ -77,7 +81,7 @@ with TFP-222 before Phase 39's TFP-155.
    - No Docker means they don't run.
    - At most 60 s per run.
    - Tickets TFP-228 to TFP-231.
-11. **Phase 44: scenario gaps, slice 1.**
+12. **Phase 44: scenario gaps, slice 1.**
    - Double submit, back-and-resubmit, and retry after a timeout.
    - Built from a vetted harness, with Claude Code's judgement.
    - Each scenario type is proven able to fail on a planted-defect
@@ -85,15 +89,15 @@ with TFP-222 before Phase 39's TFP-155.
    - Outside the verdict until measured (D6).
    - Interactive gate, plus the confirmation on remote hosts.
    - Tickets TFP-223 to TFP-227.
-12. **D10: authenticated and active security (GitHub issue #3),** with
+13. **D10: authenticated and active security (GitHub issue #3),** with
     Phase 44's slice 2 (two tabs on one account, session expiry mid-flow).
-13. **D7: Comprehensive's negative tests.** By ISTQB technique, with a
+14. **D7: Comprehensive's negative tests.** By ISTQB technique, with a
     technique-coverage measure, including scenario #8 (valid but unusual
     data).
-14. **D4: Comprehensive SEO, then the highest-risk areas** from run
+15. **D4: Comprehensive SEO, then the highest-risk areas** from run
     history.
-15. **D5: all-areas Comprehensive runs, scheduling, per-area jobs.**
-16. **D24: the opt-in load-testing run.** Designed with the ISTQB
+16. **D5: all-areas Comprehensive runs, scheduling, per-area jobs.**
+17. **D24: the opt-in load-testing run.** Designed with the ISTQB
     Performance Testing syllabus, and needs Phase 43's load tick. Last for
     now (Emil, 2026-10-19); moves up if needed sooner.
 
@@ -181,6 +185,7 @@ Statuses:
 | D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Planned** | Straight after Phase 39, before Phase 43 | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
 | D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
 | D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
+| D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
 | D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for TestForge's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
 
 ## Phases or items not wrapped up
@@ -439,6 +444,34 @@ before Phase 45 contains it and Phase 44 puts it to real use.
   fixed in the sweep itself.
 - **The output:** fixes become tickets before or inside Phase 45, and
   anything that changes the sandbox's design goes to Emil first.
+
+**D29, retention for saved runs.**
+
+*Why (2026-10-21):*
+- `runs/` holds 1,410 saved runs, 684 MB (652 MiB), kept forever.
+- Half are under 46 KB and three quarters under 144 KB, but a run with
+  failures carries videos and traces: two exceed 100 MB, the largest
+  131 MB.
+- Many are development and benchmark runs nobody reopens.
+- A tester using TestForge daily meets the same growth.
+- (The 278 MB cleared from `.playwright-runs` the same day was a different
+  thing: the evidence folders of runs never saved, none of the 505 a saved
+  run's id, and loose run files from before TFP-222's run folders. Its
+  remaining leak is TFP-242, in R4.)
+
+*What its decision record settles (Emil's choices):*
+- **How long runs are kept:** for example, the last N runs per site, plus
+  runs Emil pins.
+- **Whether heavy evidence ages out sooner than the run:** for example,
+  failure videos deleted after X days, traces and screenshots kept.
+- **What is never removed:** runs a baseline, a benchmark or a candidate's
+  evidence points to.
+- **How it's done:** a "clear old runs" action on Phase 46's site lookup or
+  run list, showing what it would remove before removing it. And whether it
+  also runs automatically.
+- **Where the record lives:** `runs/` sits in the repo folder (gitignored).
+  Phase 42's data folder (`TESTFORGE_DATA_DIR`) is where it belongs for a
+  tester's install.
 
 **D12, for the R6 discussion.** The `crawl-and-classify-pages` skill is a
 written copy of how `dom-snapshot.ts` classified a page on 2026-09-24:

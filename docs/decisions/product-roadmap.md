@@ -408,20 +408,21 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
 1. D26, the local copies into WSL;
 2. Phase 43;
 3. Phase 46;
-4. the SEO Standard set;
-5. the APG patterns, with INP;
-6. the rest of accessibility and security Standard;
-7. failure triage;
-8. D27, TestForge measured against an outside QA tool on local Toolshop,
+4. D29, retention for saved runs and their evidence;
+5. the SEO Standard set;
+6. the APG patterns, with INP;
+7. the rest of accessibility and security Standard;
+8. failure triage;
+9. D27, TestForge measured against an outside QA tool on local Toolshop,
    once Standard is complete;
-9. D28, a security sweep of the model-code paths;
-10. Phase 45;
-11. Phase 44;
-12. authenticated and active security;
-13. Comprehensive negative tests;
-14. Comprehensive SEO;
-15. all-areas runs;
-16. load testing.
+10. D28, a security sweep of the model-code paths;
+11. Phase 45;
+12. Phase 44;
+13. authenticated and active security;
+14. Comprehensive negative tests;
+15. Comprehensive SEO;
+16. all-areas runs;
+17. load testing.
 
 ### Phase 43 — Ownership confirmation, once per site, and the active gate (locked 2026-10-19, not started)
 A tester confirms once per site, by API, that they own the site or have

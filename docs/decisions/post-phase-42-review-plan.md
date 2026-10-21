@@ -14,7 +14,7 @@ below; planning steps happen in Cowork first.
 | R1 | Baseline: the full regression | Code | TFP-207 |
 | R2 | Flakes, from R1's evidence | Code | TFP-208 (written after R1) |
 | R3 | Claims audit: every phase's claims against code and measurements | Cowork, with Emil | tickets it finds |
-| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222 |
+| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222, TFP-242 |
 | R5 | Three decisions: the Docker sandbox, app screens, scenario gaps | Cowork, with Emil | a decision record each |
 | R6 | The skills relook | Cowork, with Emil | skill proposals; TFP-236 to TFP-239 |
 
@@ -454,6 +454,29 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   - **Before TFP-155,** so Phase 39's unit split lands inside per-run
     folders.
   - It fits while Gate A waits for Emil's targets, with the rest of R4.
+
+### TFP-242 — Remove an unsaved run's evidence folder in the sweep
+
+- **Priority:** P3 · **Labels:** `run`, `maintenance`
+- **Decided:** Emil, 2026-10-21, after 278 MB of leftovers were cleared from
+  `.playwright-runs` (505 `artifacts-<id>` folders and about 40 run files,
+  2026-08-28 to 2026-10-16).
+- **Problem it solves:** saving moves a run's evidence into `runs/<id>/`
+  and removes its `artifacts-<id>` folder (TFP-198). But a run that is
+  interrupted before it's saved leaves `artifacts-<id>` behind. TFP-222's
+  sweep removes only `run-`, `gap-` and `recheck-` folders, so the clutter
+  builds up again, slowly.
+- **Scope:**
+  - The start-of-run sweep also removes `artifacts-<id>` folders older than
+    an hour that belong to no active run and that no saved run points to.
+  - The same retry-then-leave rule for folders Windows holds.
+- **Acceptance criteria:**
+  - **Removed:** an aged, orphaned `artifacts-<id>` is removed.
+  - **Kept:** an active run's folder, a young one, and one a saved run
+    points to are each kept.
+  - **Test plan:** a `TEST_PLAN.md` case; unit and regression suites pass.
+- **Not in scope:** saved runs in `runs/` (D29, the retention policy).
+- **Dependencies:** none. It fits with R4, between Phase 39's gates.
 
 ## R5 — Three decisions (Cowork first)
 
