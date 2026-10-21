@@ -1,0 +1,6 @@
+(node:43352) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge-gate-c-C1/src/lib/generate/mock/index.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge-gate-c-C1\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+fixture: standard suite from C:\Users\MSI workstation\source\repos\testforge-gate-c-C1
+exit=0

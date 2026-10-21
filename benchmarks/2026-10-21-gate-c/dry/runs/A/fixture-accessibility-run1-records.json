@@ -1,0 +1,128 @@
+{
+  "label": "fixture",
+  "variant": "A",
+  "site": "http://127.0.0.1:4471",
+  "kind": "accessibility",
+  "run": 1,
+  "commit": "7599789",
+  "startedAt": "2026-10-21T02:29:22.500Z",
+  "runSeconds": 13,
+  "units": 1,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 12,
+  "byStatus": {
+    "Passed": 7,
+    "Not run": 5
+  },
+  "records": [
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /login passes the WCAG 2.2 A and AA scan",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /login",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /login is tabbed through in reading order",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-008: /login groups its checkboxes and radio buttons",
+      "page": "/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /notes passes the WCAG 2.2 A and AA scan",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /notes",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /notes is tabbed through in reading order",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /notes",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-012: /notes groups its checkboxes and radio buttons",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /notes",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+(node:2608) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+fixture: 04:25:07 C standard run 1: 86 s, 1 unit(s) in 1 pass(es), 123 tests {"Passed":104,"Not run":10,"Failed":9}; loads 56, settle 28 s, failing 9 (7 s)
+fixture: 04:26:33 C1 standard run 1: 86 s, 1 unit(s) in 1 pass(es), 123 tests {"Passed":104,"Not run":10,"Failed":9}; loads 56, settle 28 s, failing 9 (7 s)
+fixture: 04:27:48 C2 standard run 1: 75 s, 1 unit(s) in 1 pass(es), 123 tests {"Passed":104,"Not run":10,"Failed":9}; loads 36, settle 18 s, failing 9 (8 s)
+fixture: 04:29:03 F standard run 1: 75 s, 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; loads 36, settle 18 s, failing 9 (7 s)
+fixture: 04:29:09 C2 accessibility run 1: 6 s, 1 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; loads 3, settle 1 s, failing 0 (0 s)
+fixture: 04:29:15 F accessibility run 1: 6 s, 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; loads 3, settle 2 s, failing 0 (0 s)
+fixture: 04:29:22 FL accessibility run 1: 7 s, 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; loads 3, settle 1 s, failing 0 (0 s)
+fixture: 04:29:35 A accessibility run 1: 13 s, 1 unit(s) in 1 pass(es), 12 tests {"Passed":7,"Not run":5}; loads 12, settle 6 s, failing 0 (0 s)
+exit=0

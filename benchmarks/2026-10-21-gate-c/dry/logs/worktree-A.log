@@ -1,0 +1,3 @@
+Preparing worktree (detached HEAD 4a85f1f)
+Updating files:  86% (1401/1622)Updating files:  87% (1412/1622)Updating files:  88% (1428/1622)Updating files:  89% (1444/1622)Updating files:  90% (1460/1622)Updating files:  91% (1477/1622)Updating files:  92% (1493/1622)Updating files:  93% (1509/1622)Updating files:  94% (1525/1622)Updating files:  95% (1541/1622)Updating files:  96% (1558/1622)Updating files:  97% (1574/1622)Updating files:  98% (1590/1622)Updating files:  99% (1606/1622)Updating files: 100% (1622/1622)Updating files: 100% (1622/1622), done.
+HEAD is now at 4a85f1f test: keep each unit run's Playwright output in its own folder
