@@ -1,7 +1,8 @@
 import { spawn } from "node:child_process";
-import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { JsonReport } from "../lib/report/types.ts";
+import { createRunFolder, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "../lib/run/run-folders.ts";
 
 /**
  * TFP-208: runs one generated spec through the Playwright CLI, as the real-browser unit tests do,
@@ -25,7 +26,8 @@ import type { JsonReport } from "../lib/report/types.ts";
  *
  * Removing a run's folder can fail for a while on Windows (EBUSY) as Chromium lets go of a failed test's
  * video and trace, which the old shared test-results never had to wait for. It is retried and then
- * left: a leftover folder never fails a test, and each new run removes ones over an hour old.
+ * left: a leftover folder never fails a test, and each new run removes ones over an hour old. The folders are
+ * src/lib/run/run-folders.ts's, which the app's own runs use too (TFP-222).
  *
  * An env value of undefined removes that variable from the run's environment.
  *
@@ -34,35 +36,19 @@ import type { JsonReport } from "../lib/report/types.ts";
  * (3b44370), with no retry around it.
  */
 const RUNS_DIR = join(process.cwd(), ".playwright-unit-runs");
-const STALE_MS = 60 * 60 * 1000;
-
-async function removeQuietly(dir: string) {
-    await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }).catch(() => undefined);
-}
-
-async function removeStaleRuns() {
-    const now = Date.now();
-    for (const entry of await readdir(RUNS_DIR).catch(() => [] as string[])) {
-        const dir = join(RUNS_DIR, entry);
-        const info = await stat(dir).catch(() => null);
-        if (info && now - info.mtimeMs > STALE_MS) await removeQuietly(dir);
-    }
-}
 
 export async function runPlaywrightSpec(code: string, name: string, args: string[], env: Record<string, string | undefined> = {}): Promise<{ report: JsonReport; raw: string }> {
     const id = `${name}-${process.pid}-${Date.now()}`;
-    await removeStaleRuns();
-    const runDir = join(RUNS_DIR, id);
+    await removeStaleRunFolders(RUNS_DIR, (_name, ageMs) => ageMs > STALE_RUN_FOLDER_MS);
+    const { dir: runDir, config } = await createRunFolder(RUNS_DIR, id, ", outputDir: './test-results'");
     const jsonFile = join(runDir, "report.json");
-    await mkdir(runDir, { recursive: true });
-    await writeFile(join(runDir, "playwright.config.ts"), "import base from '../../playwright.config';\nexport default { ...base, testDir: '.', outputDir: './test-results' };\n", "utf8");
     await writeFile(join(runDir, `${name}.spec.ts`), code, "utf8");
     const childEnv: NodeJS.ProcessEnv = { ...process.env, ...env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" };
     for (const [key, value] of Object.entries(env)) if (value === undefined) delete childEnv[key];
     try {
         let stderr = "";
         const exit = await new Promise<string>((resolve, reject) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", "--config", join(runDir, "playwright.config.ts"), "--reporter=json", "--project=chromium", ...args], {
+            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", "--config", config, "--reporter=json", "--project=chromium", ...args], {
                 cwd: process.cwd(),
                 env: childEnv,
                 stdio: ["ignore", "ignore", "pipe"],
@@ -82,6 +68,6 @@ export async function runPlaywrightSpec(code: string, name: string, args: string
         }
         return { report, raw };
     } finally {
-        await removeQuietly(runDir);
+        await removeRunFolder(runDir);
     }
 }

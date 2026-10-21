@@ -10,6 +10,7 @@ import type { LoginConfig } from "@/lib/run/auth";
 import { persistRunJob } from "@/lib/run/persistence";
 import { buildRedactor, redactDeep, scrubArtifactDirectory } from "@/lib/run/redact";
 import { countDeclaredTests, estimateTestCount } from "@/lib/run/selection";
+import { removeRunFolder } from "@/lib/run/run-folders";
 import { readRunTiming } from "@/lib/run/timing";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
@@ -83,6 +84,8 @@ export interface RunJob {
     timingReporterFile?: string;
     timingFile?: string;
     artifactDir: string;
+    // TFP-222: the run's own folder (spec, reporters, report, timing, login state); removed when it is finalized.
+    runDir?: string;
     baseUrl?: string;
     description: string;
     auditMode: string;
@@ -176,6 +179,17 @@ function sealResult(job: RunJob, redactor: ReturnType<typeof buildRedactor>) {
         job.result = redactDeep(job.result, redactor);
         job.progress = job.result.progress;
     }
+}
+
+// The run's working files, and (TFP-222) its own folder once they are gone.
+async function removeRunFiles(job: RunJob) {
+    await Promise.all([
+        unlink(job.testFile).catch(() => { }),
+        unlink(job.jsonReportFile).catch(() => { }),
+        unlink(job.reporterFile).catch(() => { }),
+        ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
+    ]);
+    if (job.runDir) await removeRunFolder(job.runDir);
 }
 
 async function finalizeRunJobUnredacted(job: RunJob) {
@@ -276,12 +290,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
                 sealResult(job, redactor);
                 await saveRunJob(job);
 
-                await Promise.all([
-                    unlink(job.testFile).catch(() => { }),
-                    unlink(job.jsonReportFile).catch(() => { }),
-                    unlink(job.reporterFile).catch(() => { }),
-                    ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
-                ]);
+                await removeRunFiles(job);
                 return;
             }
             const finalOutput = [
@@ -316,12 +325,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             sealResult(job, redactor);
             await saveRunJob(job);
 
-            await Promise.all([
-                unlink(job.testFile).catch(() => { }),
-                unlink(job.jsonReportFile).catch(() => { }),
-                unlink(job.reporterFile).catch(() => { }),
-                ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
-            ]);
+            await removeRunFiles(job);
             return;
         }
 
@@ -392,10 +396,5 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     sealResult(job, redactor);
     await saveRunJob(job);
 
-    await Promise.all([
-        unlink(job.testFile).catch(() => { }),
-        unlink(job.jsonReportFile).catch(() => { }),
-        unlink(job.reporterFile).catch(() => { }),
-        ...[job.timingReporterFile, job.timingFile].filter((file): file is string => Boolean(file)).map((file) => unlink(file).catch(() => { })),
-    ]);
+    await removeRunFiles(job);
 }

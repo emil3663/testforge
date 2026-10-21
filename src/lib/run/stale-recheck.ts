@@ -1,9 +1,10 @@
 import { spawn } from "child_process";
-import { readFile, rm, writeFile } from "fs/promises";
-import { join, relative } from "path";
+import { readFile, writeFile } from "fs/promises";
+import { join } from "path";
 import { inspectPages } from "@/lib/introspect/inspector";
 import type { JsonReport } from "@/lib/report/types";
 import type { RunJob } from "@/lib/run/jobs";
+import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder } from "@/lib/run/run-folders";
 import { buildRunSelection } from "@/lib/run/selection";
 import { recheckStaleTests, type RerunTests } from "@/lib/site-suites/stale";
 
@@ -30,8 +31,10 @@ export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: Nod
     }
 
     const rerun: RerunTests = async (code, titles) => {
-        const testFile = job.testFile.replace(/\.spec\.ts$/, "-regenerated.spec.ts");
-        const jsonFile = job.jsonReportFile.replace(/\.json$/, "-regenerated.json");
+        // TFP-222: in a folder of its own, whose config's testDir is that folder (TFP-208's race).
+        const { dir, config } = await createRunFolder(PLAYWRIGHT_RUNS_DIR, `recheck-${job.id}-${Date.now()}`);
+        const testFile = join(dir, `test-${job.id}-regenerated.spec.ts`);
+        const jsonFile = join(dir, `report-${job.id}-regenerated.json`);
         await writeFile(testFile, code, "utf8");
         try {
             const selection = buildRunSelection(code, [], titles);
@@ -39,7 +42,8 @@ export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: Nod
                 const child = spawn(process.execPath, [
                     join(process.cwd(), "node_modules", "playwright", "cli.js"),
                     "test",
-                    relative(process.cwd(), testFile).replace(/\\/g, "/"),
+                    "--config",
+                    config,
                     "--reporter=json",
                     "--timeout=30000",
                     // Inside the run's artifact folder, so its evidence is scrubbed and kept with the run's.
@@ -60,8 +64,7 @@ export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: Nod
         } catch {
             return null;
         } finally {
-            await rm(testFile, { force: true });
-            await rm(jsonFile, { force: true });
+            await removeRunFolder(dir);
         }
     };
 

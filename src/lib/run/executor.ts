@@ -1,8 +1,8 @@
 import type { GenerationRecord } from "@/lib/report/types";
 import { spawn } from "child_process";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import { join, relative } from "path";
+import { mkdir, readdir, writeFile } from "fs/promises";
+import { join } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import { buildRunSnapshot, createEmptyProgress, finalizeRunJob, runJobs } from "@/lib/run/jobs";
 import { runEnv } from "@/lib/run/child-env";
@@ -12,6 +12,7 @@ import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
+import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
 import { comprehensiveLabel, isComprehensive, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
@@ -111,25 +112,41 @@ export async function startRunJob(
         auditMode
     );
 
-    const runsDir = join(process.cwd(), ".playwright-runs");
+    const runsDir = PLAYWRIGHT_RUNS_DIR;
     await mkdir(runsDir, { recursive: true });
     const runId = randomUUID();
+
+    // TFP-222: the run in a folder of its own (run-<id>), with a config whose testDir is that folder, so Playwright's
+    // start-up walk sees only this run's files: another run's folder made or removed meanwhile can't fail it. The
+    // folder holds the spec, the reporters, the report, the timing file and the login state; the artifacts stay where
+    // they were (artifacts-<id>), which persistence reads. Removed when the run is finalized.
+    const runFolders = [...runJobs.keys()].map((id) => `run-${id}`);
+    await removeStaleRunFolders(runsDir, (name, ageMs) => /^(run|gap|recheck)-/.test(name) && !runFolders.includes(name) && ageMs > STALE_RUN_FOLDER_MS);
+    const { dir: runDir, config: configFile } = await createRunFolder(runsDir, `run-${runId}`);
 
     // TFP-092: log in once, before any test starts. A failure throws a named
     // RunLoginError and the run never starts - there is no fallback to an
     // unauthenticated run. The state file is per-run, outside the evidence
     // directory, and removed when the run's process closes (or right here if
-    // the run never starts). Any left behind by a crashed run are swept first.
-    await removeStaleAuthDirs(runsDir, runJobs.keys());
-    const authDir = login ? authDirFor(runsDir, runId) : null;
-    const preparedLogin = login ? await prepareRunLogin(login, runsDir, runId) : null;
+    // the run never starts). Any left behind by a crashed run are swept first:
+    // at the top level (before TFP-222) and in every run's folder.
+    const active = [...runJobs.keys()];
+    await removeStaleAuthDirs(runsDir, active);
+    for (const entry of await readdir(runsDir).catch(() => [] as string[])) {
+        if (entry.startsWith("run-")) await removeStaleAuthDirs(join(runsDir, entry), active);
+    }
+    const authDir = login ? authDirFor(runDir, runId) : null;
+    const preparedLogin = login ? await prepareRunLogin(login, runDir, runId).catch(async (error: unknown) => {
+        await removeRunFolder(runDir);
+        throw error;
+    }) : null;
     const storageStateFile = preparedLogin?.stateFile ?? null;
-    const testFile = join(runsDir, `test-${runId}.spec.ts`);
-    const jsonReportFile = join(runsDir, `report-${runId}.json`);
-    const reporterFile = join(runsDir, `progress-reporter-${runId}.cjs`);
+    const testFile = join(runDir, `test-${runId}.spec.ts`);
+    const jsonReportFile = join(runDir, `report-${runId}.json`);
+    const reporterFile = join(runDir, `progress-reporter-${runId}.cjs`);
     // TFP-211: a second reporter records where the time goes, so the generated suite stays as it is.
-    const timingReporterFile = join(runsDir, `timing-reporter-${runId}.cjs`);
-    const timingFile = join(runsDir, `timing-${runId}.json`);
+    const timingReporterFile = join(runDir, `timing-reporter-${runId}.cjs`);
+    const timingFile = join(runDir, `timing-${runId}.json`);
     const artifactDir = join(runsDir, `artifacts-${runId}`);
 
     await writeFile(testFile, code, "utf8");
@@ -137,7 +154,6 @@ export async function startRunJob(
     await writeFile(timingReporterFile, buildTimingReporterSource(), "utf8");
     await mkdir(artifactDir, { recursive: true });
 
-    const testPath = relative(process.cwd(), testFile).replace(/\\/g, "/");
     const playwrightCli = join(
         process.cwd(),
         "node_modules",
@@ -162,6 +178,7 @@ export async function startRunJob(
         timingReporterFile,
         timingFile,
         artifactDir,
+        runDir,
         baseUrl,
         description,
         auditMode,
@@ -199,7 +216,8 @@ export async function startRunJob(
         [
             playwrightCli,
             "test",
-            testPath,
+            "--config",
+            configFile,
             `--reporter=${reporterFile},${timingReporterFile},json`,
             "--timeout=30000",
             `--output=${artifactDir.replace(/\\/g, "/")}`,

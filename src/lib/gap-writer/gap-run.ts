@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { mkdir, readFile, rm, writeFile } from "fs/promises";
+import { readFile, rm, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { escapeForSingleQuotedString } from "@/lib/generate/mock/format";
@@ -7,6 +7,7 @@ import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { flattenSuites } from "@/lib/report/execution";
 import { runEnv } from "@/lib/run/child-env";
+import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder } from "@/lib/run/run-folders";
 import { forbiddenConstruct } from "./code-check";
 import type { JsonReport } from "@/lib/report/types";
 import type { GapTarget } from "./writers";
@@ -84,18 +85,18 @@ export async function runGapTest(baseUrl: string, target: GapTarget, body: strin
 
 /** Runs one spec as given. Only for a spec whose bodies have passed checkGapBody (runGapTest), or a test's own. */
 export async function runGapSpec(spec: string): Promise<GapRunOutcome> {
-    const dir = join(process.cwd(), ".playwright-runs");
-    await mkdir(dir, { recursive: true });
     const name = `gap-test-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    // TFP-222: in a folder of its own, whose config's testDir is that folder, so no other run's folders reach its
+    // start-up walk (TFP-208's race).
+    const { dir, config } = await createRunFolder(PLAYWRIGHT_RUNS_DIR, `gap-${name}`);
     const specFile = join(dir, `${name}.spec.ts`);
     const jsonFile = join(dir, `${name}.json`);
-    // Artifacts outside .playwright-runs, Playwright's testDir: every run scans that folder for test
-    // files, and a folder made and removed there while another run scans it left that run with no tests.
+    // Artifacts outside the run's folder, as before.
     const outputDir = join(tmpdir(), `${name}-artifacts`);
     await writeFile(specFile, spec, "utf8");
     try {
         await new Promise<void>((resolve) => {
-            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", `.playwright-runs/${name}.spec.ts`, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
+            const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", "--config", config, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
                 cwd: process.cwd(),
                 env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" }),
                 stdio: "ignore",
@@ -111,8 +112,7 @@ export async function runGapSpec(spec: string): Promise<GapRunOutcome> {
         const message = (record.rawMessage || record.status).slice(0, 2000);
         return /read-only guard breach/.test(message) ? { verdict: "breach", message } : { verdict: "failed", message };
     } finally {
-        await rm(specFile, { force: true });
-        await rm(jsonFile, { force: true });
+        await removeRunFolder(dir);
         await rm(outputDir, { recursive: true, force: true });
     }
 }
