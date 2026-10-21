@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Server } from "node:http";
@@ -215,10 +216,14 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
         expect(started.status()).toBe(202);
         const { runId } = await started.json();
 
+        // Finished and saved: the result is set before the run is saved, and persistence moves the artifacts into
+        // runs/<id> before it writes run.json (as waitForSavedRun waits in the unit tests). Read at the result alone,
+        // the folder was once caught before its trace had moved in (2026-10-21).
         let snapshot: { result?: { report?: Record<string, unknown>; output: string } } = {};
+        const saved = join(process.cwd(), "runs", runId, "run.json");
         await expect.poll(async () => {
             snapshot = await (await request.get(`/api/run?runId=${runId}`)).json();
-            return Boolean(snapshot.result?.report);
+            return Boolean(snapshot.result?.report) && existsSync(saved) && !existsSync(`${saved}.tmp`);
         }, { timeout: 120_000, intervals: [2_000] }).toBe(true);
 
         // The attempt really happened: the test failed on the assertion that echoes the session.
