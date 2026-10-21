@@ -17,7 +17,7 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/site-suites/stale.test.ts
  */
 import assert from "node:assert";
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
@@ -67,7 +67,7 @@ async function generate() {
 }
 
 /** Runs the suite's tests of one page, as the app does, and waits for the finished run's report. */
-async function runPage(generated: { code: string; siteSuite: SiteSuiteRecord }, path: string): Promise<RunReport> {
+async function runPage(generated: { code: string; siteSuite: SiteSuiteRecord }, path: string, started: (runId: string) => void = () => {}): Promise<RunReport> {
     const titles = parseTestUnits(generated.code).filter((unit) => unit.paths.includes(path)).map((unit) => `${unit.id}: ${unit.title}`);
     assert.ok(titles.length > 0, `tests on ${path}`);
     const response = await runRoute.POST(post("http://localhost/api/run", {
@@ -80,6 +80,7 @@ async function runPage(generated: { code: string; siteSuite: SiteSuiteRecord }, 
     }));
     assert.equal(response.status, 202);
     const { runId } = (await response.json()) as { runId: string };
+    started(runId);
     await waitForSavedRun(runId, 300_000);
     const report = runJobs.get(runId)!.result!.report;
     assert.ok(report, runJobs.get(runId)!.result!.output);
@@ -127,6 +128,43 @@ test("a reused test fails on a page whose structure changed: its type is regener
     assert.equal(report.execution.filter((record) => record.status === "Failed").length, regeneration.failedAgain);
     assert.equal(report.execution.filter((record) => record.status === "Passed").length, regeneration.passed);
     assert.match(describeSiteSuite(report.generation!.siteSuite!), new RegExp(`${ACCOUNT.replace(/[/:]/g, "\\$&")} changed since its tests were saved \\(/types/account/contact: .* -> .*\\), so ${regeneration.failed.length} failing reused tests? .* regenerated from a fresh inspection and re-run: ${regeneration.passed} passed, ${regeneration.failedAgain} failed of ${regeneration.rerun}\\. Only the re-run's results are reported\\.`));
+});
+
+test("a stale re-check runs in a folder of its own under .playwright-runs, its tests execute, and the folder is removed after (TFP-222)", { skip: needsChromium }, async () => {
+    const reused = await reusedSuite();
+    await fixture.control("/__fixture/defect?set=types-contact-subject-list");
+    // Every re-check folder seen while the run goes, with what it held when first seen.
+    const root = join(process.cwd(), ".playwright-runs");
+    const seen = new Map<string, { files: string[]; config: string }>();
+    const watch = setInterval(() => {
+        for (const entry of (() => { try { return readdirSync(root); } catch { return [] as string[]; } })()) {
+            if (!entry.startsWith("recheck-") || seen.get(entry)?.files.some((file) => file.endsWith(".spec.ts"))) continue;
+            try {
+                const files = readdirSync(join(root, entry));
+                seen.set(entry, { files, config: files.includes("playwright.config.ts") ? readFileSync(join(root, entry, "playwright.config.ts"), "utf8") : "" });
+            } catch { /* removed between the two reads */ }
+        }
+    }, 20);
+    let runId = "";
+    let report: RunReport;
+    try {
+        report = await runPage(reused, "/types/account/contact", (id) => { runId = id; });
+    } finally {
+        clearInterval(watch);
+    }
+    const regeneration = report.generation?.siteSuite?.recheck?.regenerations[0];
+    assert.ok(regeneration && regeneration.rerun > 0, "the re-check regenerated and re-ran tests");
+    // Its tests executed: every contact result reported is the re-run's.
+    assert.equal(report.execution.length, regeneration.rerun);
+    assert.ok(regeneration.passed > 0, `${regeneration.passed} passed of ${regeneration.rerun}`);
+    // One folder of its own, named for the run, holding its spec and a config whose testDir is the folder itself.
+    const mine = [...seen].filter(([name]) => name.startsWith(`recheck-${runId}-`));
+    assert.equal(mine.length, 1, [...seen.keys()].join(", ") || "no re-check folder seen");
+    const [[name, held]] = mine;
+    assert.ok(held.files.includes(`test-${runId}-regenerated.spec.ts`), held.files.join(", "));
+    assert.match(held.config, /testDir: '\.'/);
+    // Removed after.
+    assert.equal(existsSync(join(root, name)), false, `${name} removed`);
 });
 
 test("a reused test fails on a page whose structure did not change: the failure stands (TFP-191)", { skip: needsChromium }, async () => {
