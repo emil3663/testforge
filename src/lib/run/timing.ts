@@ -41,6 +41,10 @@ export interface TimingTest {
     duration: number;
     retry: number;
     steps: TimingStep[];
+    /** TFP-155: which worker ran it (Playwright's parallelIndex), from which file, and when it started (ms). */
+    worker?: number;
+    file?: string;
+    startedAt?: number;
 }
 
 export interface RawTiming {
@@ -97,6 +101,10 @@ class TestForgeTimingReporter {
       duration: result.duration,
       retry: result.retry,
       steps: this.steps.get(key) || [],
+      // TFP-155: the worker, the unit's file and the start, so the run shows how its units were spread.
+      worker: result.parallelIndex,
+      file: require('path').basename(test.location.file),
+      startedAt: result.startTime.getTime(),
     });
     this.steps.delete(key);
   }
@@ -119,6 +127,9 @@ export type LinkCheck = "link health" | "linked routes" | "link tests" | "naviga
 
 export interface RunTiming {
     tests: number;
+    /** TFP-155: how many workers and unit files ran tests (absent in a record from before they were kept). */
+    workers?: number;
+    files?: number;
     /** The sum of the tests' own durations, in ms. */
     testMs: number;
     pageLoads: { count: number; ms: number };
@@ -303,8 +314,13 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
         .filter((entry) => entry.checks.length > 1)
         .sort((left, right) => right.checks.length - left.checks.length || left.target.localeCompare(right.target));
 
+    const spread = tests.some((test) => test.worker !== undefined)
+        // A test skipped before it started has no worker (-1).
+        ? { workers: new Set(tests.filter((test) => (test.worker ?? -1) >= 0).map((test) => test.worker)).size, files: new Set(tests.map((test) => test.file)).size }
+        : {};
     return {
         tests: tests.length,
+        ...spread,
         testMs: sum(tests.map((test) => test.duration)),
         pageLoads: { count: of("goto").length, ms: sum(of("goto").map((step) => step.duration)) },
         blankLoads: { count: of("blank").length, ms: sum(of("blank").map((step) => step.duration)) },

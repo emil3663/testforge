@@ -87,7 +87,8 @@ test("in a real browser: two app runs started at once, while another run's folde
         const [first, second] = await Promise.all([startRunJob(suite, ["functional"], "fast", origin), startRunJob(suite, ["functional"], "fast", origin)]);
         ids = [first.runId, second.runId];
         // Each run's own folder, holding its spec and its config (asserted after what the runs executed).
-        const layout = ids.map((id) => [existsSync(join(root, `run-${id}`, `test-${id}.spec.ts`)), existsSync(join(root, `run-${id}`, "playwright.config.ts"))]);
+        // TFP-155: the suite as generated (suite-<id>.ts) beside the unit file Playwright runs (one, for this suite).
+        const layout = ids.map((id) => [existsSync(join(root, `run-${id}`, `suite-${id}.ts`)) && existsSync(join(root, `run-${id}`, "001-suite.spec.ts")), existsSync(join(root, `run-${id}`, "playwright.config.ts"))]);
         // Finalized: each record saved where persistence keeps runs, then its folder removed.
         const jobs = await Promise.all(ids.map((id) => finished(id, root, 180_000)));
         await stopChurn();

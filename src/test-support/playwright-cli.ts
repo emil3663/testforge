@@ -37,12 +37,13 @@ import { createRunFolder, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLD
  */
 const RUNS_DIR = join(process.cwd(), ".playwright-unit-runs");
 
-export async function runPlaywrightSpec(code: string, name: string, args: string[], env: Record<string, string | undefined> = {}): Promise<{ report: JsonReport; raw: string }> {
+/** `code` is one spec, or (TFP-155) a suite's units, each written as its own file. */
+export async function runPlaywrightSpec(code: string | Array<{ name: string; code: string }>, name: string, args: string[], env: Record<string, string | undefined> = {}): Promise<{ report: JsonReport; raw: string }> {
     const id = `${name}-${process.pid}-${Date.now()}`;
     await removeStaleRunFolders(RUNS_DIR, (_name, ageMs) => ageMs > STALE_RUN_FOLDER_MS);
     const { dir: runDir, config } = await createRunFolder(RUNS_DIR, id, ", outputDir: './test-results'");
     const jsonFile = join(runDir, "report.json");
-    await writeFile(join(runDir, `${name}.spec.ts`), code, "utf8");
+    for (const file of typeof code === "string" ? [{ name: `${name}.spec.ts`, code }] : code) await writeFile(join(runDir, file.name), file.code, "utf8");
     const childEnv: NodeJS.ProcessEnv = { ...process.env, ...env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" };
     for (const [key, value] of Object.entries(env)) if (value === undefined) delete childEnv[key];
     try {

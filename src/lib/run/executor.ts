@@ -15,7 +15,8 @@ import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
 import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
-import { comprehensiveLabel, isComprehensive, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
+import { comprehensiveLabel, isComprehensive, isLocalDevelopmentHost, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
+import { splitSuite } from "@/lib/run/split";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type TestAuditMode = "fast" | "deep";
@@ -103,8 +104,14 @@ export async function startRunJob(
     }
 
     // Phase 35 (TFP-132, Decision 2): a Comprehensive run on anyone else's
-    // host runs one test at a time.
-    const workerCount = workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode));
+    // host runs one test at a time. TFP-155: the suite now runs as units (one file each), so a run really uses its
+    // workers; before, its one file ran on one worker whatever it asked for. A host that isn't local keeps one worker
+    // until TFP-157's host limits and request cap (Decision 10: "without the cap, a capped host gets one worker, as
+    // today"). A run with interactive tests on keeps one worker too until TFP-156's serial group, so no two of them
+    // (in different units) run at once (Decision 9).
+    const units = splitSuite(code);
+    const local = isLocalDevelopmentHost(baseUrl);
+    const workerCount = local && !enableInteractive ? workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode)) : 1;
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
@@ -141,7 +148,9 @@ export async function startRunJob(
         throw error;
     }) : null;
     const storageStateFile = preparedLogin?.stateFile ?? null;
-    const testFile = join(runDir, `test-${runId}.spec.ts`);
+    // The whole suite, as generated: what persistence saves and the stale re-check reads. Not a .spec.ts, so Playwright
+    // runs the units beside it, not this.
+    const testFile = join(runDir, `suite-${runId}.ts`);
     const jsonReportFile = join(runDir, `report-${runId}.json`);
     const reporterFile = join(runDir, `progress-reporter-${runId}.cjs`);
     // TFP-211: a second reporter records where the time goes, so the generated suite stays as it is.
@@ -150,6 +159,7 @@ export async function startRunJob(
     const artifactDir = join(runsDir, `artifacts-${runId}`);
 
     await writeFile(testFile, code, "utf8");
+    for (const unit of units) await writeFile(join(runDir, unit.name), unit.code, "utf8");
     await writeFile(reporterFile, buildProgressReporterSource(), "utf8");
     await writeFile(timingReporterFile, buildTimingReporterSource(), "utf8");
     await mkdir(artifactDir, { recursive: true });
@@ -244,6 +254,11 @@ export async function startRunJob(
             `${comprehensiveLabel(runMode)} run with ${workerCount} worker: one test at a time, on every host.\n`
         );
     }
+    // TFP-155: how the suite was split, and how many workers take its units.
+    const pageUnits = units.filter((unit) => unit.kind === "page").length;
+    job.outputChunks.push(
+        `Split into ${units.length} unit file(s) (${pageUnits} page(s), ${units.length - pageUnits} other), run by ${workerCount} worker(s)${!local ? ": one, as this host isn't local" : enableInteractive ? ": one, as interactive tests are on" : ""}.\n`
+    );
 
     child.stdout?.setEncoding("utf8");
     child.stderr?.setEncoding("utf8");
