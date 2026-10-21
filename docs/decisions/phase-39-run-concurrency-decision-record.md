@@ -772,6 +772,35 @@ of Decisions 2 to 6 touch it.
 5. **Accepted:** `4a85f1f`, test-only, each unit run's Playwright output in
    its own folder, outside the tickets but in its own commit.
 
+### Gate C ruling (Emil, 2026-10-21)
+
+**Measured** (`phase-39-gate-c-report.md`; evidence
+`benchmarks/2026-10-21-gate-c/`): one overnight session, 04:45 to 10:00,
+on a quiet machine. Decision 7 holds in every comparison.
+
+| Comparison | with-bugs | clean | Ruling |
+| --- | --- | --- | --- |
+| TFP-241's cost (C against C1) | 2.5% | not run | kept |
+| TFP-214 (C1 against C2), Standard | 14.9% faster | 20.5% faster | met |
+| TFP-222, 155, 156 (C2 against F) | same results, 1.6% faster | same results, 0 to 1.7% faster | met |
+| Axe scan last (F against FL) | identical findings, 15.6% faster | identical findings, 21.1% faster | met |
+| Accessibility (A against the final code, scan last) | 27.1% faster | 49% faster | see below |
+
+**Ruling:**
+1. **The axe scan runs last by default.** It met the rule on both copies:
+   identical findings, and faster. The switch's default changes, and the
+   template baseline moves in its own commit.
+2. **Gate C passes, with the with-bugs accessibility miss recorded.**
+   - with-bugs accessibility is **27.1%** faster against **30%**.
+   - **The cause:** the axe scan fails on all 20 with-bugs pages, and
+     Playwright starts a fresh worker after each failed test. Gate A
+     recorded that as Playwright's own behaviour, outside Phase 39's reach.
+   - Clean beats the target at 49%. Nothing is reverted.
+   - Gate D's workers may close the rest. Its report states it.
+3. **The with-bugs `/` sort message is closed.** Measured: the same code
+   (C) names "Name (Z - A)" in some runs and not in others, so it is the
+   app's state, not the code.
+
 ### Gate D — Limits and measurement (was Gate B)
 - TFP-157 and TFP-158 landed and independently verified.
 - The request cap is shown held by a recording test.
