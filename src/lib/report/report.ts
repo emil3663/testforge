@@ -35,7 +35,9 @@ export function buildReport(
     runMode: RunMode | undefined = undefined,
     workerCount: number | undefined = undefined,
     /** Phase 38: whether the run turned interactive tests on, for the per-gate Not run count. */
-    interactiveEnabled = false
+    interactiveEnabled = false,
+    /** TFP-157 (Decision 11): the host limits' note, for a Comprehensive report's worker line. */
+    hostNote: string | null = null
 ): RunReport {
     const allExecution = flattenSuites(report.suites ?? []);
     // Phase 35 (TFP-135, Decision 5): in a Comprehensive run the local
@@ -85,7 +87,7 @@ export function buildReport(
         // Phase 35 (TFP-132): only on a Comprehensive run, so a Standard
         // report is exactly what it was.
         ...(isComprehensive(runMode)
-            ? { comprehensive: buildComprehensiveReport(allExecution, runMode, contentProfile, baseUrl ?? "", workerCount ?? null, generation) }
+            ? { comprehensive: buildComprehensiveReport(allExecution, runMode, contentProfile, baseUrl ?? "", workerCount ?? null, generation, hostNote) }
             : {}),
         rawOutput: output,
     };

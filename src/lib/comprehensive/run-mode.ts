@@ -67,7 +67,9 @@ export function comprehensiveLabel(mode: ComprehensiveRunMode): string {
 
 /**
  * A host only the person running TestForge can reach: localhost, a
- * `.localhost` name, or a loopback address. Anything else is someone's site.
+ * `.localhost` or `.test` name (reserved for testing, RFC 6761; Phase 39
+ * Decision 10's table), or a loopback address. Anything else is someone's
+ * site.
  */
 export function isLocalDevelopmentHost(baseUrl: string | undefined): boolean {
     if (!baseUrl) return false;
@@ -81,19 +83,9 @@ export function isLocalDevelopmentHost(baseUrl: string | undefined): boolean {
     return (
         hostname === "localhost" ||
         hostname.endsWith(".localhost") ||
+        hostname.endsWith(".test") ||
         hostname === "::1" ||
         hostname === "0.0.0.0" ||
         /^127(\.\d{1,3}){3}$/.test(hostname)
     );
-}
-
-/**
- * Decision 2: a Comprehensive run uses one Playwright worker, so it doesn't
- * load a site like an attack would. Since TFP-133 the generated suite
- * enforces this itself on every host (added at Gate A: the rule must not
- * depend on the caller), so a Comprehensive run is one worker everywhere and
- * says so. Standard runs keep their audit-mode worker count.
- */
-export function workerCountFor(mode: RunMode, _baseUrl: string | undefined, standardWorkers: number): number {
-    return isComprehensive(mode) ? 1 : standardWorkers;
 }

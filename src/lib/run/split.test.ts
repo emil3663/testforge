@@ -33,6 +33,7 @@ const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts")
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { startRunJob } = await import("./executor.ts");
 const { runJobs } = await import("./jobs.ts");
+const { machineWorkerLimit } = await import("./host-limits.ts");
 const { flattenSuites } = await import("../report/execution.ts");
 const { inspectPages } = await import("../introspect/inspector.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
@@ -238,11 +239,12 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         const report = job.result?.report;
         assert.ok(report, job.result?.output);
         assert.deepEqual(outcome(report.execution), outcome(flattenSuites(oneFile.suites ?? [])), "every test, the same area, page, status and findings");
-        // The run's record: how many unit files ran tests, and how many workers took them (a local host: 4).
+        // The run's record: how many unit files ran tests, and how many workers took them (a local host: the machine's
+        // limit since TFP-157, half its cores).
         // TFP-156: the active security checks are the serial group's, run after the rest.
         const parallel = units.filter((unit) => unit.kind !== "serial");
         assert.equal(units.length - parallel.length, 1, "a serial group");
-        const said = `Split into ${parallel.length} unit file(s) (${paths.length} page(s), ${parallel.length - paths.length} other), run by 4 worker(s).\n`;
+        const said = `Split into ${parallel.length} unit file(s) (${paths.length} page(s), ${parallel.length - paths.length} other), run by ${machineWorkerLimit()} worker(s).\n`;
         assert.ok(job.outputChunks.includes(said), job.outputChunks.join(""));
         assert.equal(report.runTiming?.files, units.length);
         assert.ok((report.runTiming?.workers ?? 0) > 1, `${report.runTiming?.workers} workers`);

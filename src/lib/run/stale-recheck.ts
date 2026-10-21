@@ -17,7 +17,8 @@ import { recheckStaleTests, type RerunTests } from "@/lib/site-suites/stale";
  * so everything after - the report, the stored run - sees only the re-run's
  * results. The generation record carries what was found.
  */
-export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: NodeJS.ProcessEnv; workerCount: number; browserProjects: string[]; timeoutMs: number }) {
+/** `prepare`: the run's last word on a spec file before it runs (TFP-157: on a capped host, the request cap's import). */
+export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: NodeJS.ProcessEnv; workerCount: number; browserProjects: string[]; timeoutMs: number; prepare?: (code: string, dir: string) => string }) {
     const siteSuite = job.generation?.siteSuite;
     if (!siteSuite || !job.baseUrl || job.cancellationRequested) return;
     const reportText = await readFile(job.jsonReportFile, "utf8").catch(() => "");
@@ -35,7 +36,7 @@ export async function recheckSiteSuiteAfterRun(job: RunJob, settings: { env: Nod
         const { dir, config } = await createRunFolder(PLAYWRIGHT_RUNS_DIR, `recheck-${job.id}-${Date.now()}`);
         const testFile = join(dir, `test-${job.id}-regenerated.spec.ts`);
         const jsonFile = join(dir, `report-${job.id}-regenerated.json`);
-        await writeFile(testFile, code, "utf8");
+        await writeFile(testFile, settings.prepare ? settings.prepare(code, dir) : code, "utf8");
         try {
             const selection = buildRunSelection(code, [], titles);
             await new Promise<void>((resolve) => {

@@ -8,7 +8,7 @@
 import assert from "node:assert";
 import { test } from "node:test";
 
-const { normalizeRunMode, RunModeError, isLocalDevelopmentHost, workerCountFor, DEFAULT_PAGE_CAP, STANDARD_RUN } = await import("./run-mode.ts");
+const { normalizeRunMode, RunModeError, isLocalDevelopmentHost, DEFAULT_PAGE_CAP, STANDARD_RUN } = await import("./run-mode.ts");
 const { selectComprehensivePages } = await import("./pages.ts");
 
 test("normalizeRunMode: absent or standard is a Standard run", () => {
@@ -40,21 +40,13 @@ test("normalizeRunMode: anything else is refused, never run as a different run",
     }
 });
 
-test("isLocalDevelopmentHost: localhost, .localhost and loopback only", () => {
-    for (const url of ["http://localhost:3000", "http://127.0.0.1:4410", "http://127.8.9.10", "http://app.localhost", "http://[::1]:8080", "http://0.0.0.0:3000"]) {
+test("isLocalDevelopmentHost: localhost, .localhost, .test and loopback only", () => {
+    for (const url of ["http://localhost:3000", "http://127.0.0.1:4410", "http://127.8.9.10", "http://app.localhost", "http://shop.test", "http://[::1]:8080", "http://0.0.0.0:3000"]) {
         assert.equal(isLocalDevelopmentHost(url), true, url);
     }
-    for (const url of ["https://the-internet.herokuapp.com", "http://192.168.1.10", "http://localhost.example.com", "http://10.0.0.1", "not a url", undefined]) {
+    for (const url of ["https://the-internet.herokuapp.com", "http://192.168.1.10", "http://localhost.example.com", "http://test.example.com", "http://example.testing", "http://10.0.0.1", "not a url", undefined]) {
         assert.equal(isLocalDevelopmentHost(url), false, String(url));
     }
-});
-
-test("workerCountFor: one worker for a Comprehensive run on every host (TFP-133); Standard runs keep theirs", () => {
-    const comprehensive = normalizeRunMode({ kind: "comprehensive", area: "security" });
-    assert.equal(workerCountFor(comprehensive, "https://the-internet.herokuapp.com", 4), 1);
-    assert.equal(workerCountFor(comprehensive, "http://127.0.0.1:4410", 4), 1, "the suite enforces one worker locally too, so the count says so");
-    assert.equal(workerCountFor(STANDARD_RUN, "https://the-internet.herokuapp.com", 4), 4);
-    assert.equal(workerCountFor(STANDARD_RUN, "https://the-internet.herokuapp.com", 2), 2);
 });
 
 const page = (path: string) => ({ path, url: `https://site.test${path}`, title: "", metaDescription: "", headings: [], buttons: [], links: [], visibleTextSnippets: [] });

@@ -211,6 +211,17 @@ see Dependencies and order).
     - Nothing else in this decision changes.
     - TFP-157 still tests the row with a stub. Phase 43's TFP-220 replaces
       the stub.
+- **Amended 2026-10-21 (Emil, while TFP-157 was built):**
+  - **What the cap counts:** every request to the site, page loads and the
+    resources they pull in as well as API requests, so the server never
+    sees more than 5 in a second.
+  - **The site:** the run's host and every host under its domain (`www.`,
+    `api.`), so a site's own API is capped with its pages. Third parties
+    aren't counted.
+  - **Timed checks on a capped host** (load time, LCP, CLS, TBT) are Not
+    run, "not judged under the request cap": the cap slows the page loads
+    they measure. This is a result change against Decision 12, approved for
+    the capped row only. Page weight and failed requests still run.
 - **"Limited only by the machine"** means half the machine's CPU cores,
   Playwright's own default, and at least 1.
 - **Until Decision 8 is built,** no remote host can carry the confirmation,

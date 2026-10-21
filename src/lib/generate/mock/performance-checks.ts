@@ -30,6 +30,20 @@ export const CLS_POOR = 0.25;
 export const LAB_NOTE = "Measured once, in a lab (this run, from this machine), not from real visits.";
 
 /**
+ * Phase 39 (TFP-157, Decision 10; Emil, 2026-10-21): the checks whose result depends on how fast a page loads, by
+ * title. On a host capped at 5 requests per second they are Not run, "not judged under the request cap": the cap
+ * slows every page load, so they would measure the cap, not the site. Page weight and failed requests don't depend
+ * on load speed and still run. The first and last also match the local model's example checks (local-rules.ts).
+ */
+export const TIMED_CHECK_TITLES: readonly RegExp[] = [
+    /finishes loading within/,
+    /largest contentful paint stays under/,
+    /cumulative layout shift during load stays under/,
+    /total blocking time during load/,
+    /the page is ready quickly/,
+];
+
+/**
  * The navigation-timing budget. It used to load with
  * `waitUntil: 'domcontentloaded'` and read the navigation entry's
  * `duration`, which stays 0 until the load event has finished - so it

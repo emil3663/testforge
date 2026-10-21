@@ -82,7 +82,7 @@ test("the report: per-page counts, failures and findings grouped by category nam
         { category: UNCATEGORISED, failures: [{ page: "/c", title: "TFSC-004: /c loads", detail: "Blocked: Test timeout of 30000ms exceeded." }], findings: [] },
     ]);
     assert.equal(report.summary.headline, "2 failures on 2 of 3 pages, 1 finding. Read what this run did not test before relying on it.");
-    assert.equal(report.workerNote, "One worker: tests ran one at a time, as the suite itself requires on every host.");
+    assert.equal(report.workerNote, "One worker.");
     assert.deepEqual(report.model, { status: "not-configured", note: MODEL_NOT_CONFIGURED_NOTE, tests: [] });
     assert.deepEqual(report.notTested.statements, [...NOT_TESTED_STATEMENTS.security]);
     assert.equal(report.notTested.pagesNotCovered, "1 known page was beyond the 3-page cap and not covered: /d.");

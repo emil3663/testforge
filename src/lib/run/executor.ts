@@ -16,8 +16,12 @@ import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFo
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
 import type { RawTiming } from "@/lib/run/timing";
-import { comprehensiveLabel, isComprehensive, isLocalDevelopmentHost, STANDARD_RUN, workerCountFor } from "@/lib/comprehensive/run-mode";
+import { STANDARD_RUN } from "@/lib/comprehensive/run-mode";
 import { splitSuite } from "@/lib/run/split";
+import { hostLimitsFor } from "@/lib/run/host-limits";
+import { hasOwnershipConfirmation } from "@/lib/run/ownership";
+import { requestCapEnv, startRequestCap, withRequestCap, writeRequestCapModule } from "@/lib/run/request-cap";
+import type { RequestCap } from "@/lib/run/request-cap";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
 export type TestAuditMode = "fast" | "deep";
@@ -79,10 +83,6 @@ export function calculateRunTimeout(
     return Math.min(Math.max(timeout, timeoutBudget.minTimeout), timeoutBudget.maxTimeout);
 }
 
-export function calculateWorkerCount(auditMode: TestAuditMode) {
-    return auditMode === "deep" ? 2 : 4;
-}
-
 export async function startRunJob(
     code: string,
     selectedPractices: string[],
@@ -104,14 +104,13 @@ export async function startRunJob(
         throw new Error("No remaining tests are available to run.");
     }
 
-    // Phase 35 (TFP-132, Decision 2): a Comprehensive run on anyone else's
-    // host runs one test at a time. TFP-155: the suite now runs as units (one file each), so a run really uses its
-    // workers; before, its one file ran on one worker whatever it asked for. A host that isn't local keeps one worker
-    // until TFP-157's host limits and request cap (Decision 10: "without the cap, a capped host gets one worker, as
-    // today"). The data-changing tests run in the serial group, on one worker, after the rest (TFP-156, Decision 9).
+    // TFP-155: the suite runs as units (one file each), which Playwright hands out to its workers. TFP-157 (Decision
+    // 10): how many workers, and whether they share a request cap, comes from the host, for Standard and Comprehensive
+    // alike (replacing Phase 35 Decision 2's one worker and Standard's fixed 4 or 2). The data-changing tests run in the
+    // serial group, on one worker, after the rest (TFP-156, Decision 9).
     const units = splitSuite(code);
-    const local = isLocalDevelopmentHost(baseUrl);
-    const workerCount = local ? workerCountFor(runMode, baseUrl, calculateWorkerCount(auditMode)) : 1;
+    const hostLimits = hostLimitsFor(baseUrl, { ownershipConfirmed: await hasOwnershipConfirmation(baseUrl) });
+    const workerCount = hostLimits.workers;
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
     const runTimeout = calculateRunTimeout(
         code,
@@ -149,6 +148,11 @@ export async function startRunJob(
         throw error;
     }) : null;
     const storageStateFile = preparedLogin?.stateFile ?? null;
+    // TFP-157: on a capped host, the slot server all the run's workers take their requests' slots from, and the module
+    // the units import in place of @playwright/test to take them. Closed once the run is finalized.
+    const requestCap: RequestCap | null = hostLimits.requestsPerSecond ? await startRequestCap(hostLimits.requestsPerSecond) : null;
+    if (requestCap) await writeRequestCapModule(runDir);
+    const capped = (unitCode: string, unitDir: string) => (requestCap ? withRequestCap(unitCode, unitDir, runDir) : unitCode);
     // The whole suite, as generated: what persistence saves and the stale re-check reads. Not a .spec.ts, so Playwright
     // runs the units beside it, not this.
     const testFile = join(runDir, `suite-${runId}.ts`);
@@ -162,9 +166,9 @@ export async function startRunJob(
     await writeFile(testFile, code, "utf8");
     const parallelUnits = units.filter((unit) => unit.kind !== "serial");
     const serialUnit = units.find((unit) => unit.kind === "serial") ?? null;
-    for (const unit of parallelUnits) await writeFile(join(runDir, unit.name), unit.code, "utf8");
+    for (const unit of parallelUnits) await writeFile(join(runDir, unit.name), capped(unit.code, runDir), "utf8");
     const serialFolder = serialUnit ? await createRunFolder(runDir, "serial") : null;
-    if (serialUnit && serialFolder) await writeFile(join(serialFolder.dir, serialUnit.name), serialUnit.code, "utf8");
+    if (serialUnit && serialFolder) await writeFile(join(serialFolder.dir, serialUnit.name), capped(serialUnit.code, serialFolder.dir), "utf8");
     await writeFile(reporterFile, buildProgressReporterSource(), "utf8");
     await writeFile(timingReporterFile, buildTimingReporterSource(), "utf8");
     await mkdir(artifactDir, { recursive: true });
@@ -204,6 +208,8 @@ export async function startRunJob(
         generation,
         runMode,
         workerCount,
+        hostLimits,
+        requestCap: null,
         redactions: preparedLogin?.secrets ?? [],
         artifactFiles: new Map(),
         result: null,
@@ -224,6 +230,7 @@ export async function startRunJob(
             process.cwd(),
         // Likewise never inherited: only this run's own login state, if any.
         ...(storageStateFile ? { [STORAGE_STATE_ENV_VAR]: storageStateFile } : {}),
+        ...(requestCap && hostLimits.siteDomain !== null ? requestCapEnv(requestCap, hostLimits.siteDomain) : {}),
     });
 
     // TFP-156 (Decision 9): the read-only units first, on the run's workers; then the serial group, on one worker, so its
@@ -274,15 +281,12 @@ export async function startRunJob(
     job.outputChunks.push(
         `Run budget: up to ${Math.round(runTimeout / 1000)}s for ~${estimatedExecutions} execution(s) across ${browserProjects.length} browser project(s) in ${auditMode} mode.\n`
     );
-    if (isComprehensive(runMode)) {
-        job.outputChunks.push(
-            `${comprehensiveLabel(runMode)} run with ${workerCount} worker: one test at a time, on every host.\n`
-        );
-    }
+    // TFP-157 (Decision 11): the worker count, the host's row, and why.
+    job.outputChunks.push(`Host limits: ${hostLimits.note}\n`);
     // TFP-155: how the suite was split, and how many workers take its units.
     const pageUnits = parallelUnits.filter((unit) => unit.kind === "page").length;
     job.outputChunks.push(
-        `Split into ${parallelUnits.length} unit file(s) (${pageUnits} page(s), ${parallelUnits.length - pageUnits} other), run by ${workerCount} worker(s)${local ? "" : ": one, as this host isn't local"}.\n`
+        `Split into ${parallelUnits.length} unit file(s) (${pageUnits} page(s), ${parallelUnits.length - pageUnits} other), run by ${workerCount} worker(s).\n`
     );
     if (serialUnit) {
         job.outputChunks.push("The serial group (data-changing and model-written tests) runs after them, one test at a time (Decision 9).\n");
@@ -328,11 +332,16 @@ export async function startRunJob(
         void mergePasses(passes.map((pass) => pass.report), jsonReportFile, passes.map((pass) => pass.timing), timingFile)
             // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
             // first, with this run's login state, so the report has only the re-run's results.
-            .then(() => recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout }))
+            .then(() => recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout, prepare: (code, dir) => capped(code, dir) }))
             .catch((error: unknown) => {
                 job.outputChunks.push(`Site suite: the failing reused tests' pages could not be read again (${error instanceof Error ? error.message : String(error)}); their failures stand.\n`);
             })
-            .finally(() => {
+            .finally(async () => {
+                if (requestCap) {
+                    job.requestCap = requestCap.stats();
+                    job.outputChunks.push(`Request cap: ${job.requestCap.requests} request(s) to the site took a slot; ${job.requestCap.waited} of them waited (${Math.round(job.requestCap.waitedMs / 1000)} s in all).\n`);
+                    await requestCap.close();
+                }
                 void removeAuthState(authDir);
                 void finalizeRunJob(job);
             });

@@ -110,9 +110,12 @@ The gates catch failures that are mechanical. Quality is judged by reading.
 - **A healthy real site doesn't turn red because of the template's own
   mistakes** (Phase 36 Decision 1, GEN-50). Every false failure found goes
   into the labelled failure set.
-- **The run stays polite on other people's hosts.** A Comprehensive run uses
-  one worker on any host that isn't a local development host, and covers 20
-  pages by default (Phase 35 Decision 2, RUN-23, RUN-24).
+- **The run stays polite on other people's hosts.** On any host that isn't
+  a local development host and has no ownership confirmation, a run uses at
+  most 3 workers sharing 5 requests per second, counted at the site's
+  server (Phase 39 Decision 10, RUN-42; it replaced Phase 35 Decision 2's
+  one worker). A Comprehensive run covers 20 pages by default (Phase 35
+  Decision 2, RUN-23).
 - **The passive security level sends only page loads**, plus one probe for
   a page that cannot exist. A test that records every request proves this
   (Phase 35 Decision 3, TFP-133).

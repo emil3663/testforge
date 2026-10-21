@@ -107,8 +107,12 @@ export interface RunJob {
     // Phase 35 (TFP-132): Standard, or Comprehensive for one area. Optional
     // so jobs built before it existed (and in tests) read as Standard.
     runMode?: RunMode;
-    // The Playwright worker count the run used (Decision 2's one-worker rule).
+    // The Playwright worker count the run used (Phase 39 Decision 10, by host).
     workerCount?: number;
+    // TFP-157 (Phase 39 Decisions 10 and 11): the host's row, its caps, and whether the ownership confirmation was
+    // present; and, on a capped host, how the request cap went (set once the run's last pass closes).
+    hostLimits?: import("@/lib/run/host-limits").HostLimits;
+    requestCap?: import("@/lib/run/request-cap").RequestCapStats | null;
     // TFP-094: the run's secret values (credentials and session contents),
     // used to scrub everything the run produces. In memory only: never on a
     // snapshot, never persisted, and cleared once the run is finalized.
@@ -251,7 +255,8 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             job.description,
             job.runMode,
             job.workerCount,
-            job.enableInteractive
+            job.enableInteractive,
+            job.hostLimits?.note ?? null
         );
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;
@@ -353,6 +358,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             report: {
                 ...aggregatedReport,
                 ...(runTiming ? { runTiming } : {}),
+                ...(job.hostLimits ? { hostLimits: { ...job.hostLimits, requestCap: job.requestCap ?? null } } : {}),
                 defects: {
                     ...aggregatedReport.defects,
                     issues: aggregatedReport.defects.issues.map((defect) => ({

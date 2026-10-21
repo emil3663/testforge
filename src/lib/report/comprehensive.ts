@@ -89,7 +89,9 @@ export function buildComprehensiveReport(
     contentProfile: ContentProfile | null,
     baseUrl: string,
     workerCount: number | null,
-    generation: GenerationRecord | null = null
+    generation: GenerationRecord | null = null,
+    /** TFP-157 (Decision 11): the host limits' note - the worker count, the host's row and why - when the run has one. */
+    hostNote: string | null = null
 ): ComprehensiveReport {
     // Decision 5: the local model's tests are outside everything below; so are pool candidates (Phase 42, TFP-195).
     const execution = allExecution.filter((record) => record.generator !== "local model" && record.generator !== "candidate");
@@ -152,11 +154,9 @@ export function buildComprehensiveReport(
             ? `${plural(failed, "failure")} on ${pagesWithFailures} of ${plural(pages.length, "page")}, ${plural(findings, "finding")}. Read what this run did not test before relying on it.`
             : `No failures on ${plural(pages.length, "page")}, ${plural(findings, "finding")}. That is not a clean bill of health: read what this run did not test.`;
 
-    const workerNote = workerCount === null
-        ? "Worker count not recorded."
-        : workerCount === 1
-            ? "One worker: tests ran one at a time, as the suite itself requires on every host."
-            : `${plural(workerCount, "worker")}.`;
+    // TFP-157: the worker count comes from the host (Phase 39 Decision 10), no longer one on every host.
+    const workerNote = hostNote
+        ?? (workerCount === null ? "Worker count not recorded." : workerCount === 1 ? "One worker." : `${plural(workerCount, "worker")}.`);
 
     const testedChapters = new Set(
         execution

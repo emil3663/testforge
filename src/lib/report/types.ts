@@ -283,6 +283,12 @@ export interface RunReport {
     coverageMap?: CoverageMap;
     /** Phase 39 (TFP-211): where the run's time went; absent on runs from before it, or when the timing reporter wrote nothing. */
     runTiming?: import("@/lib/run/timing").RunTiming;
+    /**
+     * Phase 39 (TFP-157, Decision 11): the worker count, the host's row in Decision 10, whether the ownership
+     * confirmation was present, and on a capped host how many requests took a slot and how many waited. Absent on runs
+     * from before it.
+     */
+    hostLimits?: import("@/lib/run/host-limits").HostLimits & { requestCap: import("@/lib/run/request-cap").RequestCapStats | null };
     // Phase 34 (TFP-119): how the suite was generated - the gap-fill outcome
     // and every gate's verdict - as recorded at generation (Decision 8). Null
     // when the run was started without one (template-only, or older runs).
