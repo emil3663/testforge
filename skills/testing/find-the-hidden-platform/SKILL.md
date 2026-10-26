@@ -187,7 +187,7 @@ own closing note for the latest status.
 | `register_global_hotkeys=True` path | High — demonstrated startup crash, real | Default-off flag gating real shared state |
 | The three Windows-only TA-211 tests | High — regression invisible off Windows until it reaches one | `skipif` guard |
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run find-the-hidden-platform over this repo — what paths can the suite never fail for?"
 

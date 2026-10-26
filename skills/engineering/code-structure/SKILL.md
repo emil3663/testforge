@@ -143,7 +143,7 @@ to look.
 So when this skill proposes a seam, propose the test with it. A seam nobody
 tests is a boundary that will quietly stop being one.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Use the code-structure skill — where should this go?"
 

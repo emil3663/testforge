@@ -103,7 +103,7 @@ Retrofit:  let the real _start_capture() run, then assert launcher._overlay
            claims happened.
 ```
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run dont-stub-what-you-prove over this test file before I trust it."
 

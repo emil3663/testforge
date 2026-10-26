@@ -106,7 +106,7 @@ there is no Blocked case here because nothing requires hardware or a human,
 but there is also no Stable case, because every assertion routes through a
 live external URL this suite doesn't control.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run honest-coverage over this suite before we call it done."
 

@@ -197,7 +197,7 @@ deleting one written stub and re-running `--check` reports that exact case
 as missing and exits non-zero. Both the create path and the drift-detection
 path were exercised against real data, not assumed from reading the source.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run plan-to-specs against this repo's TEST_PLAN.md and tell me the real
 > coverage number."

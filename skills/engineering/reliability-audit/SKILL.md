@@ -152,7 +152,7 @@ The three-signal table is a starting set, the same size and shape as
 noise, edit this file rather than remembering the exception — same
 discipline, same reasoning.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run a reliability audit over `src/app/_hooks/` — print the findings, don't file them."
 

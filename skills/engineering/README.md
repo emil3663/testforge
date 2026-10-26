@@ -49,6 +49,6 @@ not to forbid the file from growing.
   codebase and one afternoon — treat early findings from either skill with
   the same scepticism the trial applied to them.
 - **Format follows `cah-pwa/skills/`** — *What this skill is for*, *Inputs you
-  need from the user*, *Output format*, *Rules*, *Worked example*, *How Emil
-  invokes this skill* — because that convention is already yours and worth
+  need from the user*, *Output format*, *Rules*, *Worked example*, *How to
+  invoke this skill* — because that convention is already yours and worth
   keeping consistent.

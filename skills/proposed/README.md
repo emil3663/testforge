@@ -9,7 +9,7 @@ This is Martin's version of an exercise Emil has already done. `ROADMAP.md` show
 four SRE chapters already mined — ch. 6, 17, 21-22, and ch. 8 deliberately skipped
 as covered elsewhere. This set worked the same book end to end instead of
 selecting from it. **The overlaps are a second opinion, not a correction; the rest
-is coverage that wasn't there.** Emil decides what, if anything, is worth keeping.
+is coverage that wasn't there.** What, if anything, is worth keeping is an owner decision.
 
 ## Read these first, if you read any
 
@@ -85,7 +85,7 @@ Neither of us has read it. This is from the publisher's listing, not the book.
 - **The format doesn't match the house convention.** These are
   `<name>/SKILL.md` with YAML frontmatter, written for Claude Code's `Skill`
   discovery — not `cah-pwa/skills/`'s *What this skill is for / Inputs / Output
-  format / Rules / Worked example / How Emil invokes this skill*. Anything
+  format / Rules / Worked example / How to invoke this skill*. Anything
   promoted needs rewriting into that shape first. That's a real cost and it's
   deliberate to leave it visible rather than half-convert them.
 - **Related: the frontmatter is why these would be discovered.** The open

@@ -162,7 +162,7 @@ call sites across 2 files, not 3 in 1 file. Full audit output, including
 this correction and the finding it was superseded by, is in
 [`skills/engineering/CALIBRATION.md`](../CALIBRATION.md).
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run a refactor audit over `src/` and file the findings."
 

@@ -113,7 +113,7 @@ Not checked: behavior when the OS itself force-kills the process (not
 reachable through any UI path this fix touches).
 ```
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run regression-safety-net on this fix before I call it done."
 

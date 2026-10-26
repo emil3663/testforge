@@ -168,7 +168,7 @@ out of scope here on purpose, not an oversight. It's already covered by the
 existing `verified-release-pipeline` account skill; duplicating it under a
 different name would just split one concern across two places.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run observability-check on this feature — if it breaks in prod, would we know?"
 

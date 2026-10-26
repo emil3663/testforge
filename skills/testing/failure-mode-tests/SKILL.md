@@ -170,7 +170,7 @@ that specific failure mode has no visible handling today, which
 `write-playwright-test`'s own happy-path-plus-stated-failures output would
 never have surfaced.
 
-## How Emil invokes this skill
+## How to invoke this skill
 
 > "Run failure-mode-tests on this same scenario — what's write-playwright-test not covering?"
 
