@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { copyFile } from "node:fs/promises";
 import { createServer } from "node:http";
+import type { ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
 import { join, relative } from "node:path";
 import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
@@ -11,6 +12,14 @@ import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
  * worker asks for a slot and waits until it's given, and hands it back once the request's response has come (or the
  * request failed).
  *
+ * A slot is the connection that asked for it (Gate D ruling 1, 2026-10-26): the server answers when the slot is free and
+ * keeps the answer open, and the slot is handed back when that connection closes: the worker closing it on purpose, or
+ * the worker's process ending, as Playwright ends one after each failed test. A waiter whose connection closes before
+ * its turn is dropped, and the slot goes to the next one still there. Before, a slot was handed back by a second call,
+ * and a freed slot went to the next waiter in line whether or not it was still there, so a worker that had gone held
+ * it until its 60 s lease ran out. At Gate D that starved capped Standard on the hosted Toolshop: 466 of 484 tests timed
+ * out, 902 slots in 8 hours.
+ *
  * At most `perSecond` slots are held at once, and a slot is held until a second after it's handed back. That keeps any
  * one second at the server to the cap, however long a request takes to leave the browser after its slot: a request
  * arrives before its response, so every request arriving within a second still holds its slot at that second's end.
@@ -18,7 +27,8 @@ import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
  * request reached the server about 250 ms after its slot, so two requests arrived 2 ms apart from slots 250 ms apart,
  * and six within one second.
  *
- * A slot not handed back within LEASE_MS (a worker that died mid-request) is taken back, so a run never stalls on it.
+ * A slot still held after LEASE_MS (a worker that kept its connection open but never handed the slot back) is taken
+ * back, so a run never stalls on it.
  *
  * Decision 11: the run records how many requests took a slot and how many of them waited.
  */
@@ -47,7 +57,7 @@ export interface RequestCapStats {
 }
 
 export interface RequestCap {
-    /** POST `${url}/slot` answers with a slot's id once one is free; POST `${url}/release/<id>` hands it back. */
+    /** POST `${url}/slot` answers (200, headers only) once a slot is free, and holds it until that connection closes. */
     url: string;
     token: string;
     stats(): RequestCapStats;
@@ -57,55 +67,66 @@ export interface RequestCap {
 export async function startRequestCap(perSecond: number): Promise<RequestCap> {
     const token = randomBytes(16).toString("hex");
     const stats: RequestCapStats = { perSecond, requests: 0, waited: 0, waitedMs: 0 };
-    const held = new Map<number, NodeJS.Timeout>();
-    const waiting: Array<() => void> = [];
+    type Waiter = { res: ServerResponse; asked: number };
+    // The slots held, each by its connection's response, with the lease that takes it back.
+    const held = new Map<ServerResponse, NodeJS.Timeout>();
+    const waiting: Waiter[] = [];
     const timers = new Set<NodeJS.Timeout>();
-    let nextId = 1;
     let closed = false;
 
-    const free = (id: number) => {
-        const lease = held.get(id);
+    /** The next waiter whose connection is still open gets the slot; one that has gone is skipped. */
+    const grantNext = () => {
+        while (!closed && held.size < perSecond && waiting.length > 0) {
+            const next = waiting.shift()!;
+            if (next.res.destroyed || next.res.writableEnded) continue;
+            stats.waitedMs += performance.now() - next.asked;
+            grant(next.res);
+        }
+    };
+    /** A slot handed back: free once the hold after it has passed, then given to the next waiter. */
+    const handBack = (res: ServerResponse) => {
+        const lease = held.get(res);
         if (!lease) return;
         clearTimeout(lease);
-        held.delete(id);
-        waiting.shift()?.();
+        if (closed) return;
+        const timer = setTimeout(() => {
+            timers.delete(timer);
+            held.delete(res);
+            grantNext();
+        }, HOLD_AFTER_RESPONSE_MS);
+        timers.add(timer);
     };
-    const take = () => {
-        const id = nextId++;
-        held.set(id, setTimeout(() => free(id), LEASE_MS));
-        return id;
+    const grant = (res: ServerResponse) => {
+        held.set(res, setTimeout(() => {
+            // The lease ran out: the connection is closed, which hands the slot back as any close does.
+            res.destroy();
+        }, LEASE_MS));
+        res.writeHead(200, { "content-type": "text/plain", "cache-control": "no-store" });
+        res.flushHeaders();
     };
     const server = createServer((req, res) => {
-        if (req.method !== "POST" || req.headers[REQUEST_CAP_TOKEN_HEADER] !== token) {
+        if (req.method !== "POST" || req.url !== "/slot" || req.headers[REQUEST_CAP_TOKEN_HEADER] !== token) {
             res.writeHead(404).end();
             return;
         }
-        if (req.url === "/slot") {
-            stats.requests++;
-            if (held.size < perSecond) {
-                res.writeHead(200, { "content-type": "text/plain" }).end(String(take()));
+        stats.requests++;
+        // However the connection ends - the worker handing the slot back, or its process gone - the slot (or the place
+        // in the queue) goes with it.
+        res.on("close", () => {
+            if (held.has(res)) {
+                handBack(res);
                 return;
             }
-            const asked = performance.now();
-            stats.waited++;
-            waiting.push(() => {
-                stats.waitedMs += performance.now() - asked;
-                if (!closed) res.writeHead(200, { "content-type": "text/plain" }).end(String(take()));
-            });
+            const index = waiting.findIndex((waiter) => waiter.res === res);
+            if (index >= 0) waiting.splice(index, 1);
+        });
+        if (held.size < perSecond && waiting.length === 0) {
+            grant(res);
             return;
         }
-        const release = /^\/release\/(\d+)$/.exec(req.url ?? "");
-        if (release) {
-            const id = Number(release[1]);
-            const timer = setTimeout(() => {
-                timers.delete(timer);
-                free(id);
-            }, HOLD_AFTER_RESPONSE_MS);
-            timers.add(timer);
-            res.writeHead(204).end();
-            return;
-        }
-        res.writeHead(404).end();
+        stats.waited++;
+        waiting.push({ res, asked: performance.now() });
+        grantNext();
     });
     await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
     const { port } = server.address() as AddressInfo;

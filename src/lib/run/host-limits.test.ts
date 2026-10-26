@@ -7,7 +7,13 @@
  *   giving the row, the workers and the cap; the machine limit at its boundaries (1, 2, 3 and 12 cores).
  * - Equivalence partitioning, offline: which requests count against the cap (the site's host, a host under its
  *   domain, a third party, a non-HTTP URL), and the domain a host's requests count under.
- * - Boundary value analysis: the slot server never gives two slots less than 1000 / cap ms apart, measured.
+ * - Boundary value analysis: the slot server holds at most 5 slots at once, each until a second after it's handed back,
+ *   measured.
+ * - State transition (Gate D ruling 1): a slot's connection is the slot. A waiter that gives up before its turn takes
+ *   none, and a holder whose process ends hands its slots back; in both, the next live request gets a slot a second
+ *   later, not after the 60 s lease. In a real browser, a test that fails while its page's requests wait for slots,
+ *   which makes Playwright restart the worker, doesn't leave the next test starved (on 54c38eb, that run hit its 140 s
+ *   budget).
  * - Request recording, in a real browser, through the executor: a site bound to this machine's LAN address (a host
  *   Decision 10 doesn't treat as local) records every request it gets. Capped: at most 3 workers, more than one used,
  *   and at most 5 requests in any second at the server, with the waits counted; the timed check is Not run with its
@@ -18,6 +24,7 @@
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/host-limits.test.ts
  */
 import assert from "node:assert";
+import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -89,21 +96,27 @@ test("a capped run's units import the cap's module in place of @playwright/test,
     assert.match(withRequestCap(unit, join(root, "serial"), root), /from '\.\.\/testforge-request-cap'/);
 });
 
+/** A slot as the cap's module takes one: the fetch's open answer, handed back by closing its connection. */
+async function takeSlot(cap: { url: string; token: string }, signal?: AbortSignal) {
+    const connection = new AbortController();
+    signal?.addEventListener("abort", () => connection.abort(), { once: true });
+    const response = await fetch(`${cap.url}/slot`, { method: "POST", headers: { [REQUEST_CAP_TOKEN_HEADER]: cap.token }, signal: connection.signal });
+    return { status: response.status, release: () => connection.abort() };
+}
+
 test("the slot server: at most 5 slots held at once, each held a second after it's handed back; each wait is counted; a wrong token gets none (boundary values)", async () => {
     const cap = await startRequestCap(5);
     try {
-        const headers = (token: string) => ({ method: "POST", headers: { [REQUEST_CAP_TOKEN_HEADER]: token } });
-        assert.equal((await fetch(`${cap.url}/slot`, headers("wrong"))).status, 404);
+        assert.equal((await fetch(`${cap.url}/slot`, { method: "POST", headers: { [REQUEST_CAP_TOKEN_HEADER]: "wrong" } })).status, 404);
         const started = performance.now();
         let firstRelease = Infinity;
         // Eight ask at once; each hands its slot back as soon as it has it.
         const given = await Promise.all(Array.from({ length: 8 }, async () => {
-            const response = await fetch(`${cap.url}/slot`, headers(cap.token));
+            const slot = await takeSlot(cap);
             const at = performance.now() - started;
-            const id = await response.text();
             firstRelease = Math.min(firstRelease, performance.now() - started);
-            assert.equal((await fetch(`${cap.url}/release/${id}`, headers(cap.token))).status, 204);
-            return { status: response.status, at };
+            slot.release();
+            return { status: slot.status, at };
         }));
         assert.ok(given.every((slot) => slot.status === 200));
         const times = given.map((slot) => slot.at).sort((left, right) => left - right);
@@ -113,6 +126,53 @@ test("the slot server: at most 5 slots held at once, each held a second after it
         assert.equal(stats.requests, 8);
         assert.equal(stats.waited, 3, "the three past the cap waited");
     } finally {
+        await cap.close();
+    }
+});
+
+test("the slot server: waiters that give up before their turn take no slot; the next live request gets one a second after the slots are handed back, not after a 60 s lease (Gate D ruling 1, state transition)", async () => {
+    // Measured on 54c38eb (2026-10-26): five abandoned waiters made the next request wait 61,007 ms.
+    const cap = await startRequestCap(5);
+    try {
+        const held = await Promise.all(Array.from({ length: 5 }, () => takeSlot(cap)));
+        const giveUp = Array.from({ length: 5 }, () => new AbortController());
+        const abandoned = giveUp.map((controller) => takeSlot(cap, controller.signal).catch(() => "gave up"));
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        for (const controller of giveUp) controller.abort();
+        assert.deepEqual(await Promise.all(abandoned), Array(5).fill("gave up"));
+        const handedBack = performance.now();
+        for (const slot of held) slot.release();
+        const next = await takeSlot(cap);
+        const waited = performance.now() - handedBack;
+        assert.equal(next.status, 200);
+        assert.ok(waited >= 950 && waited < 3000, `the next request waited ${Math.round(waited)} ms`);
+        next.release();
+    } finally {
+        await cap.close();
+    }
+});
+
+test("the slot server: a worker whose process ends while it holds slots (Playwright restarting it after a failed test) hands them back, a second later (Gate D ruling 1, state transition)", async () => {
+    const cap = await startRequestCap(5);
+    // A separate process takes all five slots and keeps them, as a worker does mid-request; then it is killed.
+    const holder = spawn(process.execPath, ["-e", `
+        const take = () => fetch(${JSON.stringify(`${cap.url}/slot`)}, { method: "POST", headers: { ${JSON.stringify(REQUEST_CAP_TOKEN_HEADER)}: ${JSON.stringify(cap.token)} } });
+        Promise.all([take(), take(), take(), take(), take()]).then(() => { console.log("held"); setInterval(() => {}, 1000); });
+    `], { stdio: ["ignore", "pipe", "inherit"], windowsHide: true });
+    try {
+        await new Promise<void>((resolve, reject) => {
+            holder.stdout.on("data", (chunk: Buffer) => { if (chunk.toString().includes("held")) resolve(); });
+            holder.on("exit", (code) => reject(new Error(`the holder exited (${code}) before holding its slots`)));
+        });
+        const killed = performance.now();
+        holder.kill("SIGKILL");
+        const next = await takeSlot(cap);
+        const waited = performance.now() - killed;
+        assert.equal(next.status, 200);
+        assert.ok(waited >= 950 && waited < 3000, `the next request waited ${Math.round(waited)} ms after the holder was killed`);
+        next.release();
+    } finally {
+        holder.kill("SIGKILL");
         await cap.close();
     }
 });
@@ -135,7 +195,9 @@ async function withRecordingSite(run: (origin: string, arrivals: Array<{ path: s
     const server = createServer((req, res) => {
         const path = (req.url ?? "/").split("?")[0];
         arrivals.push({ path, at: performance.now() });
-        if (path.endsWith(".png")) res.writeHead(200, { "content-type": "image/png" }).end(png);
+        if (path.startsWith("/slow/")) setTimeout(() => res.writeHead(200, { "content-type": "image/png" }).end(png), 300);
+        else if (path === "/heavy") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>heavy</title></head><body><h1>heavy</h1>${Array.from({ length: 30 }, (_, index) => `<img src="/slow/${index}.png" alt="${index}">`).join("")}</body></html>`);
+        else if (path.endsWith(".png")) res.writeHead(200, { "content-type": "image/png" }).end(png);
         else if (path === "/app.js") res.writeHead(200, { "content-type": "text/javascript" }).end("document.documentElement.dataset.ready = '1';");
         else if (path.startsWith("/api/")) res.writeHead(200, { "content-type": "application/json" }).end('{"ok":true}');
         else res.writeHead(200, { "content-type": "text/html" }).end(page(path));
@@ -224,6 +286,44 @@ test("in a real browser: a capped host's run uses at most 3 workers sharing 5 re
         const output = job.outputChunks.join("");
         assert.ok(output.includes(`Host limits: ${limits.note}\n`), output);
         assert.match(output, new RegExp(`Request cap: ${limits.requestCap?.requests} request\\(s\\) to the site took a slot; ${limits.requestCap?.waited} of them waited`));
+    });
+});
+
+test("in a real browser: a test that fails while its page's requests wait for slots doesn't leave the next test waiting out a lease, as Playwright restarts the worker (Gate D ruling 1)", { skip: lanSkip }, async () => {
+    // Gate D (2026-10-22): a freed slot went to a waiter whose worker had gone, and stayed held for the 60 s lease, so
+    // capped Standard on the hosted Toolshop starved (466 of 484 tests timed out). Here each area's first test loads a
+    // page of 30 slow images and fails at once, while most of them still wait for a slot; Playwright then restarts the
+    // worker. The second test must still get its slots in time.
+    await withRecordingSite(async (origin) => {
+        const area = (name: string, index: number) => `test.describe('${name}', () => {
+  test('${name}: fails on purpose while its images wait', async ({ page }) => {
+    await page.goto('${origin}/heavy', { waitUntil: 'commit' });
+    expect(1, 'fails on purpose').toBe(2);
+  });
+  test('${name}: the next page still loads', async ({ page }) => {
+    await page.goto('${origin}/p${index}');
+    await expect(page.locator('h1')).toHaveText('/p${index}');
+  });
+});`;
+        const code = `import { test, expect } from '@playwright/test';\n\n${["One", "Two", "Three", "Four"].map((name, index) => area(name, index + 1)).join("\n\n")}\n`;
+        const started = Date.now();
+        const snapshot = await startRunJob(code, ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const records = report.execution as ExecutionRecord[];
+        const summary = records.map((record) => `${record.title}: ${record.status} ${(record.rawMessage ?? "").slice(0, 80)}`).join(" | ");
+        assert.equal(records.length, 8, summary);
+        for (const record of records.filter((entry) => /fails on purpose/.test(entry.title))) {
+            assert.equal(record.status, "Failed", summary);
+            assert.match(record.rawMessage ?? "", /fails on purpose/, summary);
+        }
+        // Each next test passing inside its 30 s test timeout means none waited out a 60 s lease. On 54c38eb they timed
+        // out and the run was stopped at its 140 s budget. Not a wall-clock bound: in a full unit run, under load, the
+        // same run took 87 s with every result right (2026-10-26).
+        assert.ok(records.filter((entry) => /next page still loads/.test(entry.title)).every((entry) => entry.status === "Passed"), summary);
+        const output = job.outputChunks.join("");
+        assert.ok(!output.includes("Run timed out"), `the run was stopped at its budget after ${Math.round((Date.now() - started) / 1000)} s: ${summary}`);
     });
 });
 

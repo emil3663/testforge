@@ -40,13 +40,27 @@ function counts(url: string): boolean {
 
 const HEADERS = { "x-testforge-cap-token": TOKEN };
 
-/** Waits for a slot when the request counts; returns the call that hands it back (the server holds it a second more). */
-async function slot(url: string): Promise<() => void> {
+/**
+ * Waits for a slot when the request counts; returns the call that hands it back (the server holds it a second more).
+ * The slot is this fetch's open answer: handing it back closes the connection, and so does this process ending, so a
+ * worker Playwright restarts after a failed test never keeps one (Gate D ruling 1). `signal` gives up the place in the
+ * queue: a test's context closing while its requests still wait.
+ */
+async function slot(url: string, signal?: AbortSignal): Promise<() => void> {
     if (!SLOT_URL || !counts(url)) return () => undefined;
-    const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS });
-    if (response.status !== 200) throw new Error(`the request cap's slot server answered HTTP ${response.status}`);
-    const id = await response.text();
-    return () => void fetch(`${SLOT_URL}/release/${id}`, { method: "POST", headers: HEADERS }).catch(() => undefined);
+    const connection = new AbortController();
+    const giveUp = () => connection.abort();
+    signal?.addEventListener("abort", giveUp, { once: true });
+    try {
+        const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
+        if (response.status !== 200) throw new Error(`the request cap's slot server answered HTTP ${response.status}`);
+    } catch (error) {
+        connection.abort();
+        throw error;
+    } finally {
+        signal?.removeEventListener("abort", giveUp);
+    }
+    return () => connection.abort();
 }
 
 const capped = new WeakSet<object>();
@@ -76,10 +90,19 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
     capped.add(context);
     // Registered first, so it runs after any route a test adds (Playwright runs the newest first): a request a test
     // aborts or fulfils never leaves the browser and takes no slot.
-    // The slot goes back once the response has come, or the request failed (null), never before it left.
+    // The slot goes back once the response has come, or the request failed (null), never before it left. A context that
+    // closes gives up the places its requests still hold in the queue; a request whose route can no longer go on (its
+    // context closed while it waited) hands its slot straight back.
+    const closing = new AbortController();
+    context.once("close", () => closing.abort());
     await context.route("**/*", async (route) => {
-        const release = await slot(route.request().url());
-        await route.fallback();
+        const release = await slot(route.request().url(), closing.signal);
+        try {
+            await route.fallback();
+        } catch (error) {
+            release();
+            throw error;
+        }
         void route.request().response().catch(() => null).then(release);
     });
     capRequests(context.request, baseURL);
