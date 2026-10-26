@@ -816,3 +816,61 @@ on a quiet machine. Decision 7 holds in every comparison.
 - TFP-157 and TFP-158 landed and independently verified.
 - The request cap is shown held by a recording test.
 - The keep or revert rule is applied and recorded.
+
+### Gate D ruling (Emil, 2026-10-26)
+
+**Measured** (`benchmarks/2026-10-21-gate-d/analysis.md`, `fe63239`): one
+overnight session, 2026-10-21 17:27 to 2026-10-22 06:07, on `54c38eb`.
+W1 is 1 worker, WN the machine's limit (6), CAP the capped row (3 workers
+sharing 5 requests per second). Medians of three; the capped run once.
+
+| Comparison | Measured | Rule | Result |
+| --- | --- | --- | --- |
+| Decision 12, the fixture: the same results, W1 and WN | the same in Standard, security, accessibility | the same | met |
+| Decision 13, with-bugs: Comprehensive (security + accessibility) | W1 262 s, WN 158 s: 39.7% faster | at least 40% | not met |
+| Decision 13, clean: Comprehensive | W1 211 s, WN 386 s: 82.9% slower | at least 40% | not met |
+| Acceptance Criteria 7, with-bugs and the-internet | the same, every suite | the same | met |
+| Acceptance Criteria 7, clean | differs, every suite | the same | not met |
+| Gate C's accessibility gap, with-bugs | A 215 s, WN 60 s: 72.1% faster | at least 30% | closed |
+| Standard, W1 against WN (recorded) | fixture 74 to 34 s; with-bugs 734 to 365 s; the-internet 316 to 91 s; clean 403 to 519 s | - | recorded |
+| Phase 38's before and after, local the-internet (recorded) | `d90de57` 218 s, `d202315` 242 s, no timeouts | - | recorded |
+| Capped practicesoftwaretesting.com (recorded) | security 698 s, 2.8 per s; accessibility 170 s, 3.7 per s; Standard 29,340 s, 466 of 484 timed out, 902 slots | - | recorded |
+
+- **Clean with 6 workers:** the copy's API answered too slowly (GETs over
+  4 s, content missing at the 2 s waits; 8, 7 and 17 test timeouts in
+  Standard's three runs). W1, run before each WN run, kept its Gate C
+  times.
+- **The capped Standard collapse:** TFP-157's slot server gave a freed
+  slot to a waiter whose connection had gone, and held it for the 60 s
+  lease. Measured afterwards: five abandoned waiters made the next
+  request wait 61,007 ms instead of about 1 s.
+
+**Ruling:**
+1. **TFP-157's leak is fixed first, inside TFP-157.**
+   - A waiter whose connection closes is dropped, and its slot goes to
+     the next live waiter.
+   - A test with abandoned waiters: a worker restart after a failed test
+     must not leave the next request waiting out a lease.
+   - Unit, regression and host-limits tests as before.
+   - Stop for verification.
+2. **Decision 13 stays open; nothing is reverted.**
+   - with-bugs: 39.7% against 40%, within the run-to-run spread.
+   - clean: 6 workers overload the local copy's API, so results change
+     with the worker count (Acceptance Criteria 7). Decision 12 holds
+     that open.
+3. **D26 moves into Phase 39, before the re-measurement.** The Toolshop
+   copies move into WSL's Linux filesystem, as D26 in the register says,
+   with its proof that only speed changed (failure sets, score, bug 80).
+   Stop for verification.
+4. **One overnight session after 1 to 3** re-runs Gate D's Toolshop part
+   (W1 against WN, both copies, Comprehensive and Standard) and the
+   capped hosted practicesoftwaretesting.com run.
+   - If clean still overloads or gives different results with 6 workers,
+     a lower local-host limit (for example 3) is measured in the same
+     session as a further variant.
+5. **The capped run's time budget** is decided on that re-measured number
+   (a longer budget, or a page limit on capped hosts). It is not changed
+   before then.
+6. **TFFU-108** varies between runs on with-bugs, whatever the worker
+   count. Recorded with the varying tests (Decision 7's method), not a
+   defect of Phase 39.
