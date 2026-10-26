@@ -107,6 +107,8 @@ After Phase 39: D26, then Phase 43 (the register's build order).
 - **Worktrees:** the session runner may use temporary worktrees, as at
   Gates B and C, linked with Node, not `mklink`, and removed by the runner.
   Outside a session runner, don't create worktrees.
+- **Worktrees:** as `WORKING_AGREEMENTS.md` allows; the 2026-10-07 hazard
+  came from a linked `node_modules`.
 
 ## Git
 
