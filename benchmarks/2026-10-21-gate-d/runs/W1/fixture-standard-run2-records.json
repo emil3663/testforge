@@ -1,0 +1,1157 @@
+{
+  "label": "fixture",
+  "variant": "W1",
+  "site": "http://127.0.0.1:4471",
+  "kind": "standard",
+  "run": 2,
+  "commit": "54c38eb",
+  "startedAt": "2026-10-21T15:30:30.299Z",
+  "runSeconds": 74,
+  "workers": 1,
+  "workersUsed": 1,
+  "units": 12,
+  "passes": 2,
+  "serialTests": 2,
+  "tests": 123,
+  "byStatus": {
+    "Passed": 104,
+    "Failed": 9,
+    "Not run": 10
+  },
+  "requestCap": null,
+  "timeouts": [],
+  "records": [
+    {
+      "title": "TFFU-014: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-019: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-021: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-025: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-030: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-032: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-036: link health: internal, external, and download links do not return broken responses",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-041: keyboard navigation: links can receive focus and activate with Enter",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-043: orphan page approximation: each scanned page is linked from another scanned page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-044: navigation links land where their text says, from /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-011: the same components look the same on every inspected page (recorded as findings)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "submit (no class) differs across pages in share of its container's width: 0% on /login; 10% on /notes"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFRM-001: keeps the core journey visible across common viewport sizes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFRM-002: responds to a touch tap at mobile viewport",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-001: landing page finishes loading within 5 s",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-002: largest contentful paint stays under 4 s",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-003: page weight stays under 5 MB",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-004: no same-origin request fails while the page loads",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-005: cumulative layout shift during load stays under 0.25",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFPL-006: total blocking time during load (recorded, not judged)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-013: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFRL-001: dependency failure injection: 127.0.0.1:4471 [xhr-fetch]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFRL-002: dependency failure injection: 127.0.0.1:4471 [form-action]",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: page.goto: net::ERR_FAILED at http://127.0.0.1:4471/login Call log: - navigating to \"http://127.0.0.1:4471/login\", waiting until \"domcontentloaded\"",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFCS-001: session cookies set by the site expire and stay scoped to it",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no session cookie on the landing page (0 cookie(s) set by the site, none named like a session), so there is nothing to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-020: publishes robots.txt with a sitemap reference",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no /robots.txt (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-021: publishes sitemap.xml with at least one URL",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no /sitemap.xml (HTTP 404) expect(received).toBeLessThan(expected) Expected: < 400 Received: 404",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-001: loads the target page and shows visible content",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-002: shows at least one interactive element related to the scenario",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-003: actionable element setup for / did not discover any interactive elements",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-011: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-012: navigation link health: Notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-013: navigation link health: Go to your notes [All systems normal]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-015: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-016: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-018: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-020: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-045: link \"Home\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-046: link \"Sign in\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-047: link \"Notes\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-048: link \"Go to your notes\" on /: on the page, named, with a valid href",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-001: keeps navigation and guidance visible for a first-time user",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-002: / keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-003: / has no overlapping controls",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-004: / shows every image it loads",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-001: exposes basic accessible structure for assistive technologies",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-012: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-001: exposes core SEO and content signals on the landing page",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-002: / spells its interface text correctly (recorded as findings)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-005: keeps page title stable for /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-006: keeps meta description stable for /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-007: keeps heading structure stable for /",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-008: keeps canonical metadata stable for /",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on / expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 2000ms Error: element(s) not found Call log: - no canonical link on / with timeout 2000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-009: exposes structured data for / (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no structured data (JSON-LD) on /: search engines get no machine-readable description of the page"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSE-022: publishes manifest metadata for installable clients (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no web-app manifest linked from /: the site cannot be installed as an app"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-001: / sends its security headers and session cookies",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /",
+        "any site can frame /: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /",
+        "no referrer policy on / (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-002: / names no software version in its response headers",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-003: / keeps passwords off plain HTTP",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-004: / puts no password or session token in a URL",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-017: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: accessible name and role: Home [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: accessible name and role: Sign in [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-004: accessible name and role: Notes [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: accessible name and role: Go to your notes [link]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-008: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-004: form element check: Email Password Sign in [Sign in] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-005: form element check: email [Sign in] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-006: form element check: password [Email] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-007: form element check: Sign in [Password] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-022: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-023: navigation link health: Notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-024: navigation link health: Sign in",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-026: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-027: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-029: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-031: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-005: /login keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-006: /login has no overlapping controls",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-007: /login shows every image it loads",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-014: /login groups its checkboxes and radio buttons",
+      "page": "/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-003: /login spells its interface text correctly (recorded as findings)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-010: keeps page title stable for /login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-011: keeps meta description stable for /login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-012: keeps heading structure stable for /login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-013: keeps canonical metadata stable for /login",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /login expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 2000ms Error: element(s) not found Call log: - no canonical link on /login with timeout 2000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-014: exposes structured data for /login (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no structured data (JSON-LD) on /login: search engines get no machine-readable description of the page"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-005: /login sends its security headers and session cookies",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /login",
+        "any site can frame /login: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /login",
+        "no referrer policy on /login (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-006: /login names no software version in its response headers",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-007: /login keeps passwords off plain HTTP",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-008: /login puts no password or session token in a URL",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-028: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /login",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /login is tabbed through in reading order",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /login passes the WCAG 2.2 A and AA scan",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-008: form element check: Note Save note [Notes] [form]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-009: form element check: note [Notes] [input]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-010: form element check: Save note [Note] [button]",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-033: navigation link health: Home",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-034: navigation link health: Notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-035: navigation link health: Sign in",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-037: link types: internal, external, anchor, mailto, and download links are classified correctly",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-038: visual representation: links are distinguishable from surrounding text",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-040: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: expect(received).toBeTruthy() Received: false",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-042: technical security: link protocols are safe and do not expose obvious XSS vectors",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-008: /notes keeps its forms, lists and cards consistent (recorded as findings)",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form, list or set of cards on /notes",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-009: /notes has no overlapping controls",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFUS-010: /notes shows every image it loads",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-016: /notes groups its checkboxes and radio buttons",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /notes",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-004: /notes spells its interface text correctly (recorded as findings)",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-015: keeps page title stable for /notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-016: keeps meta description stable for /notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-017: keeps heading structure stable for /notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-018: keeps canonical metadata stable for /notes",
+      "page": null,
+      "status": "Failed",
+      "message": "Error: no canonical link on /notes expect(locator).toHaveAttribute(expected) failed Locator: locator('link[rel=\"canonical\"]').first() Expected pattern: /.+/ Timeout: 2000ms Error: element(s) not found Call log: - no canonical link on /notes with timeout 2000ms - waiting for locator('link[rel=\"canonical\"]').first()",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSE-019: exposes structured data for /notes (recorded as a finding when missing)",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no structured data (JSON-LD) on /notes: search engines get no machine-readable description of the page"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-009: /notes sends its security headers and session cookies",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /notes",
+        "any site can frame /notes: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /notes",
+        "no referrer policy on /notes (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-010: /notes names no software version in its response headers",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-011: /notes keeps passwords off plain HTTP",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-012: /notes puts no password or session token in a URL",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFFU-039: hover state: links show pointer cursor and preserve tooltip attributes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: every form field has an accessible name: /notes",
+      "page": null,
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /notes is tabbed through in reading order",
+      "page": "/notes",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /notes",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: /notes passes the WCAG 2.2 A and AA scan",
+      "page": "/notes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-014: script-shaped input is not executed: Note on /notes",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "attack-shaped input: needs the ownership confirmation, not built yet",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFDB-001: persistence round trip: Note on /notes",
+      "page": null,
+      "status": "Not run",
+      "message": "",
+      "skipReason": "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

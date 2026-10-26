@@ -1,0 +1,344 @@
+{
+  "crawlId": "4cc64515-0e26-4610-a045-5b31efc2f6da",
+  "crawlStatus": "completed",
+  "duration": 1774,
+  "progress": {
+    "maxPages": 100,
+    "visitedUrls": 3,
+    "queuedUrls": 0,
+    "discoveredPages": 3,
+    "warningsCount": 0,
+    "currentUrl": null,
+    "currentPath": null,
+    "currentTitle": null,
+    "lastCompletedPath": "/notes",
+    "lastCompletedTitle": "Notes - Acme Notes"
+  },
+  "result": {
+    "crawledAt": "2026-10-21T15:28:05.383Z",
+    "baseUrl": "http://127.0.0.1:4471",
+    "pageCount": 3,
+    "pages": [
+      {
+        "path": "/",
+        "url": "http://127.0.0.1:4471/",
+        "title": "Home - Acme Notes",
+        "discoveredFrom": null,
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 4
+        }
+      },
+      {
+        "path": "/login",
+        "url": "http://127.0.0.1:4471/login",
+        "title": "Sign in - Acme Notes",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "email",
+              "password"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 6
+        }
+      },
+      {
+        "path": "/notes",
+        "url": "http://127.0.0.1:4471/notes",
+        "title": "Notes - Acme Notes",
+        "discoveredFrom": "/",
+        "outline": {
+          "landmarks": [
+            "main",
+            "navigation"
+          ],
+          "forms": [
+            [
+              "text"
+            ]
+          ],
+          "cards": false,
+          "headings": [
+            "h1"
+          ],
+          "interactive": 5
+        }
+      }
+    ],
+    "pageTypes": [
+      {
+        "pattern": "/",
+        "patterns": [
+          "/"
+        ],
+        "pages": [
+          "/"
+        ],
+        "signature": "landmarks:main,navigation|forms:0|cards:no",
+        "formSignature": "forms:0",
+        "label": "home"
+      },
+      {
+        "pattern": "/login",
+        "patterns": [
+          "/login"
+        ],
+        "pages": [
+          "/login"
+        ],
+        "signature": "landmarks:main,navigation|forms:1[email,password]|cards:no",
+        "formSignature": "forms:1[email,password]",
+        "label": "sign-in"
+      },
+      {
+        "pattern": "/notes",
+        "patterns": [
+          "/notes"
+        ],
+        "pages": [
+          "/notes"
+        ],
+        "signature": "landmarks:main,navigation|forms:1[text]|cards:no",
+        "formSignature": "forms:1[text]",
+        "label": "form"
+      }
+    ],
+    "rankedTypes": [
+      {
+        "pattern": "/",
+        "label": "home",
+        "pages": [
+          "/"
+        ],
+        "pagesByInteractive": [
+          "/"
+        ],
+        "representative": "/",
+        "forms": 0,
+        "interactive": 4,
+        "alwaysCovered": [
+          "home"
+        ],
+        "rank": 1,
+        "placedBy": "first",
+        "placement": "always covered (home); home is always ranked first"
+      },
+      {
+        "pattern": "/login",
+        "label": "sign-in",
+        "pages": [
+          "/login"
+        ],
+        "pagesByInteractive": [
+          "/login"
+        ],
+        "representative": "/login",
+        "forms": 1,
+        "interactive": 6,
+        "alwaysCovered": [
+          "form",
+          "largest"
+        ],
+        "rank": 2,
+        "placedBy": "home first",
+        "placement": "always covered (form, largest); after home, which is always ranked first"
+      },
+      {
+        "pattern": "/notes",
+        "label": "form",
+        "pages": [
+          "/notes"
+        ],
+        "pagesByInteractive": [
+          "/notes"
+        ],
+        "representative": "/notes",
+        "forms": 1,
+        "interactive": 5,
+        "alwaysCovered": [
+          "form"
+        ],
+        "rank": 3,
+        "placedBy": "interactive elements",
+        "placement": "always covered (form); after /login by interactive elements (5 interactive elements against 6 interactive elements)"
+      }
+    ],
+    "pageSelection": {
+      "standard": {
+        "cap": 8,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": [
+              "home"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/login",
+            "label": "sign-in",
+            "pages": [
+              "/login"
+            ],
+            "pagesByInteractive": [
+              "/login"
+            ],
+            "representative": "/login",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form",
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (form, largest); after home, which is always ranked first",
+            "selected": [
+              "/login"
+            ]
+          },
+          {
+            "pattern": "/notes",
+            "label": "form",
+            "pages": [
+              "/notes"
+            ],
+            "pagesByInteractive": [
+              "/notes"
+            ],
+            "representative": "/notes",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /login by interactive elements (5 interactive elements against 6 interactive elements)",
+            "selected": [
+              "/notes"
+            ]
+          }
+        ],
+        "skipped": [],
+        "pages": [
+          "/",
+          "/login",
+          "/notes"
+        ]
+      },
+      "comprehensive": {
+        "cap": 20,
+        "covered": [
+          {
+            "pattern": "/",
+            "label": "home",
+            "pages": [
+              "/"
+            ],
+            "pagesByInteractive": [
+              "/"
+            ],
+            "representative": "/",
+            "forms": 0,
+            "interactive": 4,
+            "alwaysCovered": [
+              "home"
+            ],
+            "rank": 1,
+            "placedBy": "first",
+            "placement": "always covered (home); home is always ranked first",
+            "selected": [
+              "/"
+            ]
+          },
+          {
+            "pattern": "/login",
+            "label": "sign-in",
+            "pages": [
+              "/login"
+            ],
+            "pagesByInteractive": [
+              "/login"
+            ],
+            "representative": "/login",
+            "forms": 1,
+            "interactive": 6,
+            "alwaysCovered": [
+              "form",
+              "largest"
+            ],
+            "rank": 2,
+            "placedBy": "home first",
+            "placement": "always covered (form, largest); after home, which is always ranked first",
+            "selected": [
+              "/login"
+            ]
+          },
+          {
+            "pattern": "/notes",
+            "label": "form",
+            "pages": [
+              "/notes"
+            ],
+            "pagesByInteractive": [
+              "/notes"
+            ],
+            "representative": "/notes",
+            "forms": 1,
+            "interactive": 5,
+            "alwaysCovered": [
+              "form"
+            ],
+            "rank": 3,
+            "placedBy": "interactive elements",
+            "placement": "always covered (form); after /login by interactive elements (5 interactive elements against 6 interactive elements)",
+            "selected": [
+              "/notes"
+            ]
+          }
+        ],
+        "skipped": [],
+        "pages": [
+          "/",
+          "/login",
+          "/notes"
+        ]
+      }
+    },
+    "warnings": []
+  }
+}

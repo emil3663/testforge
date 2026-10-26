@@ -1,0 +1,8 @@
+testforge-plane-beat-worker-1 Up 2 seconds
+testforge-plane-worker-1 Up 1 second
+testforge-plane-space-1 Up 1 second (health: starting)
+testforge-plane-db-1 Up 1 second (health: starting)
+testforge-plane-redis-1 Up 1 second
+testforge-plane-minio-1 Up Less than a second
+testforge-plane-web-1 Up Less than a second (health: starting)
+testforge-plane-api-1 Up Less than a second

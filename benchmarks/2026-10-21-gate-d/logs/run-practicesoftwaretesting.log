@@ -1,0 +1,8 @@
+(node:22428) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+practicesoftwaretesting: 05:52:45 CAP standard run 1: 29340 s, 3 worker(s) (3 used), 17 unit(s) in 2 pass(es), 484 tests {"Passed":9,"Failed":467,"Not run":8}; timeouts 466; cap: 902 slot(s), 897 waited, 0.0 per s
+practicesoftwaretesting: 06:04:23 CAP security run 1: 698 s, 3 worker(s) (3 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":117,"Failed":5}; timeouts 5; cap: 1953 slot(s), 1762 waited, 2.8 per s
+practicesoftwaretesting: 06:07:14 CAP accessibility run 1: 170 s, 3 worker(s) (3 used), 20 unit(s) in 1 pass(es), 80 tests {"Not run":40,"Passed":40}; timeouts 0; cap: 624 slot(s), 613 waited, 3.7 per s
+exit=0

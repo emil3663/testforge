@@ -1,0 +1,9 @@
+(node:43456) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/crawl/route.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+the-internet: completed, 100 pages, 65 types in 71 s
+  standard (8): / /infinite_scroll/3 /dynamic_controls /large_form /radio_buttons /readonly /upload /login
+  skipped: /two_factor /checkboxes /forgot_password /key_presses /status_codes/:id /users/:id /dynamic_loading/:id /hovers /shifting_content/:slug /subdirectories/:slug /challenging_dom /tinymce /iframe /tables /jqueryui/menu /disappearing_elements /download /status_codes /floating_menu /javascript_alerts /shifting_content /dynamic_loading /frames /notification_message_rendered /subdirectories /jqueryui /dropdown /dynamic_content /entry_ad /geolocation /horizontal_slider /infinite_scroll /inputs /multiple_dropdown /windows /redirector /abtest /broken_images /canvas /context_menu /drag_and_drop /exit_intent /large /shadowdom /slow /typos /add_remove_elements /basic_auth /digest_auth /javascript_error /nested_frames /download_secure /about /contact-us /portfolio /gallery /windows/new
+  comprehensive (20): / /infinite_scroll/3 /dynamic_controls /large_form /radio_buttons /readonly /upload /login /two_factor /checkboxes /forgot_password /key_presses /status_codes/200 /users/1 /dynamic_loading/1 /hovers /shifting_content/menu /subdirectories/one /challenging_dom /tinymce
+exit=0

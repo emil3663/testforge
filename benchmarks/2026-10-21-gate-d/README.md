@@ -1,6 +1,33 @@
 # Phase 39 Gate D: one overnight session (TFP-158)
 
-**Not run yet.** The dry run went end to end (see "Before the session" below). The plan is the record's (`docs/decisions/phase-39-run-concurrency-decision-record.md`, Decision 13,
+**Run on 2026-10-21 17:27:52 to 2026-10-22 06:07:18 (12 h 39 min 26 s).** The numbers are in `analysis.md`.
+- **The machine:** VS Code, Docker Desktop and Claude; Ollama not running; WhatsApp (2 processes) still open at the
+  start (`logs/machine-at-start.txt`), and the 6 `msedgewebview2` processes Gates B and C had.
+- **Plane:** its 8 `testforge-plane-*` containers were stopped at 17:27 (`logs/plane-stopped.txt`) and started again
+  at 06:07 (`logs/plane-restarted.txt`, 8 up).
+- **Steps:** fixture 7 min; with-bugs start 947 s, runs 87 min; clean start 389 s, runs 78 min; the-internet setup
+  1 min 44 s, runs 55 min; practicesoftwaretesting.com setup 1 min 50 s, runs 8 h 23 min (Standard alone 29,340 s,
+  below). Every run reported; none failed to.
+- **Against the rules** (`analysis.md`):
+  - Decision 12 on the fixture: the same results with 1 and 6 workers, every suite.
+  - Decision 13, Comprehensive (security + accessibility), medians of three: with-bugs W1 262 s, WN 158 s, **39.7%**
+    faster against 40%; clean W1 211 s, WN 386 s, **82.9% slower**. Not met on either copy.
+  - Acceptance Criteria 7: with-bugs and the-internet the same with 1 and 6 workers; **clean differs** in every
+    suite. With 6 workers the clean copy's pages and API came too slowly (API GETs over 4 s, content missing at
+    2 s waits, 8, 7 and 17 test timeouts in Standard's three runs); W1, running before each WN run, stayed at its
+    Gate C times, so it is load, not a copy that slowed down. The with-bugs copy, on the same stack, kept up.
+  - Gate C's accessibility gap: A 215 s, WN 60 s, 72.1% faster against 30%: closed.
+  - Phase 38's before and after on the local the-internet: d90de57 218 s, d202315 242 s, no timeouts, all five
+    paths inspected by both.
+- **The hosted capped run** (recorded): security 698 s at 2.8 requests per second, 5 timeouts; accessibility 170 s
+  at 3.7 per second, none; **Standard collapsed**: 29,340 s, 466 of 484 tests timed out, 902 slots in 8 hours
+  (0.03 per second). Measured afterwards: TFP-157's slot server gives a freed slot to a waiter whose connection has
+  already gone, and holds it for the 60 s lease (five abandoned waiters, then the next request waited 61,007 ms
+  instead of about 1 s). A test that times out, or a worker Playwright restarts after a failure, abandons its
+  waiters, so Standard's early failures fed the leak until almost nothing ran. A defect of TFP-157, for Emil.
+  The app's own fast-mode budget (1,800 s) would have stopped this run at 30 min anyway.
+
+The plan is the record's (`docs/decisions/phase-39-run-concurrency-decision-record.md`, Decision 13,
 Gate A target 4, "Gate D"): 1 worker against the machine's limit, interleaved in one session, three runs each, on a
 quiet machine. The numbers go to `analysis.md`.
 

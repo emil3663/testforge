@@ -1,0 +1,803 @@
+{
+  "label": "practicesoftwaretesting",
+  "variant": "CAP",
+  "site": "https://practicesoftwaretesting.com",
+  "kind": "accessibility",
+  "run": 1,
+  "commit": "54c38eb",
+  "startedAt": "2026-10-22T04:04:23.907Z",
+  "runSeconds": 170,
+  "workers": 3,
+  "workersUsed": 3,
+  "units": 20,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 80,
+  "byStatus": {
+    "Not run": 40,
+    "Passed": 40
+  },
+  "requestCap": {
+    "perSecond": 5,
+    "requests": 624,
+    "waited": 613,
+    "waitedMs": 2260141
+  },
+  "timeouts": [],
+  "records": [
+    {
+      "title": "TFAC-004: / groups its checkboxes and radio buttons",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: / is tabbed through in reading order",
+      "page": "/",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-001: / passes the WCAG 2.2 A and AA scan",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, select"
+      ]
+    },
+    {
+      "title": "TFAC-008: /product/01M5FXC1SQZJGRE0Y1X41HXZZ0 groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "page": "/product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /product/01M5FXC1SQZJGRE0Y1X41HXZZ0 is tabbed through in reading order",
+      "page": "/product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /product/01M5FXC1SQZJGRE0Y1X41HXZZ0 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1SQZJGRE0Y1X41HXZZ0",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-012: /product/01M5FXC1SSSJ9BM944J3WYCEYA groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "page": "/product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /product/01M5FXC1SSSJ9BM944J3WYCEYA is tabbed through in reading order",
+      "page": "/product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /product/01M5FXC1SSSJ9BM944J3WYCEYA passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1SSSJ9BM944J3WYCEYA",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-016: /product/01M5FXC1SVQB5WM8GMN1VSBA6A groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "page": "/product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /product/01M5FXC1SVQB5WM8GMN1VSBA6A is tabbed through in reading order",
+      "page": "/product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /product/01M5FXC1SVQB5WM8GMN1VSBA6A passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1SVQB5WM8GMN1VSBA6A",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - span"
+      ]
+    },
+    {
+      "title": "TFAC-020: /product/01M5FXC1SXXSXGGY5E41ZKP7BX groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "page": "/product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-019: /product/01M5FXC1SXXSXGGY5E41ZKP7BX is tabbed through in reading order",
+      "page": "/product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /product/01M5FXC1SXXSXGGY5E41ZKP7BX passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1SXXSXGGY5E41ZKP7BX",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-024: /product/01M5FXC1X9N2BCR0RNBHCQDTJ4 groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-022: every form field has an accessible name: /product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "page": "/product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-023: /product/01M5FXC1X9N2BCR0RNBHCQDTJ4 is tabbed through in reading order",
+      "page": "/product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-021: /product/01M5FXC1X9N2BCR0RNBHCQDTJ4 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1X9N2BCR0RNBHCQDTJ4",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-028: /product/01M5FXC1XA752J29MNYF9SGYXC groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1XA752J29MNYF9SGYXC",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1XA752J29MNYF9SGYXC",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-026: every form field has an accessible name: /product/01M5FXC1XA752J29MNYF9SGYXC",
+      "page": "/product/01M5FXC1XA752J29MNYF9SGYXC",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-027: /product/01M5FXC1XA752J29MNYF9SGYXC is tabbed through in reading order",
+      "page": "/product/01M5FXC1XA752J29MNYF9SGYXC",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1XA752J29MNYF9SGYXC",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-025: /product/01M5FXC1XA752J29MNYF9SGYXC passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1XA752J29MNYF9SGYXC",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-032: /product/01M5FXC1XCWKAYRCGX46B9HD37 groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-030: every form field has an accessible name: /product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "page": "/product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-031: /product/01M5FXC1XCWKAYRCGX46B9HD37 is tabbed through in reading order",
+      "page": "/product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-029: /product/01M5FXC1XCWKAYRCGX46B9HD37 passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1XCWKAYRCGX46B9HD37",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-036: /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-034: every form field has an accessible name: /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "page": "/product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-035: /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D is tabbed through in reading order",
+      "page": "/product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-033: /product/01M5FXC1XEBYVH7Y8WGTTRJZ3D passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1XEBYVH7Y8WGTTRJZ3D",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-040: /product/01M5FXC1SZC0B6EBN4YET6GCMX groups its checkboxes and radio buttons",
+      "page": "/product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-038: every form field has an accessible name: /product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "page": "/product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-039: /product/01M5FXC1SZC0B6EBN4YET6GCMX is tabbed through in reading order",
+      "page": "/product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-037: /product/01M5FXC1SZC0B6EBN4YET6GCMX passes the WCAG 2.2 A and AA scan",
+      "page": "/product/01M5FXC1SZC0B6EBN4YET6GCMX",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-044: /category/hand-tools groups its checkboxes and radio buttons",
+      "page": "/category/hand-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /category/hand-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /category/hand-tools",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-043: /category/hand-tools is tabbed through in reading order",
+      "page": "/category/hand-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/hand-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-041: /category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-048: /category/other groups its checkboxes and radio buttons",
+      "page": "/category/other",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /category/other",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /category/other",
+      "page": "/category/other",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-047: /category/other is tabbed through in reading order",
+      "page": "/category/other",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/other",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-045: /category/other passes the WCAG 2.2 A and AA scan",
+      "page": "/category/other",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-052: /category/power-tools groups its checkboxes and radio buttons",
+      "page": "/category/power-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /category/power-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-050: every form field has an accessible name: /category/power-tools",
+      "page": "/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-051: /category/power-tools is tabbed through in reading order",
+      "page": "/category/power-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/power-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-049: /category/power-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - span"
+      ]
+    },
+    {
+      "title": "TFAC-056: /category/special-tools groups its checkboxes and radio buttons",
+      "page": "/category/special-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /category/special-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-054: every form field has an accessible name: /category/special-tools",
+      "page": "/category/special-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-055: /category/special-tools is tabbed through in reading order",
+      "page": "/category/special-tools",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /category/special-tools",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-053: /category/special-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/category/special-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-060: /auth/register groups its checkboxes and radio buttons",
+      "page": "/auth/register",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/register",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-058: every form field has an accessible name: /auth/register",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-059: /auth/register is tabbed through in reading order",
+      "page": "/auth/register",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /auth/register",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-057: /auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-064: /contact groups its checkboxes and radio buttons",
+      "page": "/contact",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /contact",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-062: every form field has an accessible name: /contact",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-063: /contact is tabbed through in reading order",
+      "page": "/contact",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /contact",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-061: /contact passes the WCAG 2.2 A and AA scan",
+      "page": "/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-068: /auth/login groups its checkboxes and radio buttons",
+      "page": "/auth/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-066: every form field has an accessible name: /auth/login",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-067: /auth/login is tabbed through in reading order",
+      "page": "/auth/login",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /auth/login",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-065: /auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-072: /auth/forgot-password groups its checkboxes and radio buttons",
+      "page": "/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /auth/forgot-password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-070: every form field has an accessible name: /auth/forgot-password",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-071: /auth/forgot-password is tabbed through in reading order",
+      "page": "/auth/forgot-password",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /auth/forgot-password",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-069: /auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-076: /rentals groups its checkboxes and radio buttons",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-074: every form field has an accessible name: /rentals",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-075: /rentals is tabbed through in reading order",
+      "page": "/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-073: /rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 2.4.1 bypass: Page must have means to bypass repeated blocks - html",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-080: /privacy groups its checkboxes and radio buttons",
+      "page": "/privacy",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no checkboxes or radio buttons sharing a name or a heading on /privacy",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-078: every form field has an accessible name: /privacy",
+      "page": "/privacy",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-079: /privacy is tabbed through in reading order",
+      "page": "/privacy",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /privacy",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-077: /privacy passes the WCAG 2.2 A and AA scan",
+      "page": "/privacy",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    }
+  ]
+}

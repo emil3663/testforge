@@ -1,0 +1,1202 @@
+{
+  "label": "the-internet",
+  "variant": "W1",
+  "site": "http://localhost:7080",
+  "kind": "security",
+  "run": 2,
+  "commit": "54c38eb",
+  "startedAt": "2026-10-21T19:19:39.849Z",
+  "runSeconds": 79,
+  "workers": 1,
+  "workersUsed": 1,
+  "units": 21,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 122,
+  "byStatus": {
+    "Passed": 117,
+    "Not run": 5
+  },
+  "requestCap": null,
+  "timeouts": [],
+  "records": [
+    {
+      "title": "TFSC-005: / uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-006: / fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-011: /infinite_scroll/3 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:7080/infinite_scroll/:id on /infinite_scroll/3 uses sequential integer ids (3, 4): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-012: /infinite_scroll/3 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-017: /dynamic_controls uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-018: /dynamic_controls fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-023: /large_form uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-024: /large_form fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-029: /radio_buttons uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-030: /radio_buttons fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-035: /readonly uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-036: /readonly fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-041: /upload uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-042: /upload fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-047: /login uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-048: /login fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-053: /two_factor uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-054: /two_factor fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-059: /checkboxes uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-060: /checkboxes fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-065: /forgot_password uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-066: /forgot_password fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-071: /key_presses uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-072: /key_presses fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-077: /status_codes/200 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-078: /status_codes/200 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-083: /users/1 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-084: /users/1 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-089: /dynamic_loading/1 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-090: /dynamic_loading/1 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-095: /hovers uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:7080/users/:id on /hovers uses sequential integer ids (1, 2, 3): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-096: /hovers fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-101: /shifting_content/menu uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-102: /shifting_content/menu fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-107: /subdirectories/one uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-108: /subdirectories/one fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-113: /challenging_dom uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-114: /challenging_dom fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-119: /tinymce uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-120: /tinymce fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-121: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-122: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API",
+      "page": "(known-path probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-001: / sends its security headers and session cookies",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /",
+        "/ relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on / (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-002: / names no software version in its response headers",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-003: / keeps passwords off plain HTTP",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-004: / puts no password or session token in a URL",
+      "page": "/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-007: /infinite_scroll/3 sends its security headers and session cookies",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /infinite_scroll/3",
+        "/infinite_scroll/3 relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /infinite_scroll/3 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-008: /infinite_scroll/3 names no software version in its response headers",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-009: /infinite_scroll/3 keeps passwords off plain HTTP",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-010: /infinite_scroll/3 puts no password or session token in a URL",
+      "page": "/infinite_scroll/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-013: /dynamic_controls sends its security headers and session cookies",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /dynamic_controls",
+        "/dynamic_controls relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /dynamic_controls (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-014: /dynamic_controls names no software version in its response headers",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-015: /dynamic_controls keeps passwords off plain HTTP",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-016: /dynamic_controls puts no password or session token in a URL",
+      "page": "/dynamic_controls",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-019: /large_form sends its security headers and session cookies",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /large_form",
+        "/large_form relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /large_form (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-020: /large_form names no software version in its response headers",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-021: /large_form keeps passwords off plain HTTP",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-022: /large_form puts no password or session token in a URL",
+      "page": "/large_form",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-025: /radio_buttons sends its security headers and session cookies",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /radio_buttons",
+        "/radio_buttons relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /radio_buttons (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-026: /radio_buttons names no software version in its response headers",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-027: /radio_buttons keeps passwords off plain HTTP",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-028: /radio_buttons puts no password or session token in a URL",
+      "page": "/radio_buttons",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-031: /readonly sends its security headers and session cookies",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /readonly",
+        "/readonly relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /readonly (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-032: /readonly names no software version in its response headers",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-033: /readonly keeps passwords off plain HTTP",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-034: /readonly puts no password or session token in a URL",
+      "page": "/readonly",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-037: /upload sends its security headers and session cookies",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /upload",
+        "/upload relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /upload (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-038: /upload names no software version in its response headers",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-039: /upload keeps passwords off plain HTTP",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-040: /upload puts no password or session token in a URL",
+      "page": "/upload",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-043: /login sends its security headers and session cookies",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /login",
+        "/login relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /login (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-044: /login names no software version in its response headers",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-045: /login keeps passwords off plain HTTP",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-046: /login puts no password or session token in a URL",
+      "page": "/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-049: /two_factor sends its security headers and session cookies",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /two_factor",
+        "/two_factor relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /two_factor (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-050: /two_factor names no software version in its response headers",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-051: /two_factor keeps passwords off plain HTTP",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-052: /two_factor puts no password or session token in a URL",
+      "page": "/two_factor",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-055: /checkboxes sends its security headers and session cookies",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /checkboxes",
+        "/checkboxes relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /checkboxes (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-056: /checkboxes names no software version in its response headers",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-057: /checkboxes keeps passwords off plain HTTP",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-058: /checkboxes puts no password or session token in a URL",
+      "page": "/checkboxes",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-061: /forgot_password sends its security headers and session cookies",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /forgot_password",
+        "/forgot_password relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /forgot_password (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-062: /forgot_password names no software version in its response headers",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-063: /forgot_password keeps passwords off plain HTTP",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-064: /forgot_password puts no password or session token in a URL",
+      "page": "/forgot_password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-067: /key_presses sends its security headers and session cookies",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /key_presses",
+        "/key_presses relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /key_presses (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-068: /key_presses names no software version in its response headers",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-069: /key_presses keeps passwords off plain HTTP",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-070: /key_presses puts no password or session token in a URL",
+      "page": "/key_presses",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-073: /status_codes/200 sends its security headers and session cookies",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /status_codes/200",
+        "/status_codes/200 relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /status_codes/200 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-074: /status_codes/200 names no software version in its response headers",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-075: /status_codes/200 keeps passwords off plain HTTP",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-076: /status_codes/200 puts no password or session token in a URL",
+      "page": "/status_codes/200",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-079: /users/1 sends its security headers and session cookies",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-080: /users/1 names no software version in its response headers",
+      "page": "/users/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-081: /users/1 keeps passwords off plain HTTP",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-082: /users/1 puts no password or session token in a URL",
+      "page": "/users/1",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "/users/1 answered HTTP 404, so there is no page here to check",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-085: /dynamic_loading/1 sends its security headers and session cookies",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /dynamic_loading/1",
+        "/dynamic_loading/1 relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /dynamic_loading/1 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-086: /dynamic_loading/1 names no software version in its response headers",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-087: /dynamic_loading/1 keeps passwords off plain HTTP",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-088: /dynamic_loading/1 puts no password or session token in a URL",
+      "page": "/dynamic_loading/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-091: /hovers sends its security headers and session cookies",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /hovers",
+        "/hovers relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /hovers (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-092: /hovers names no software version in its response headers",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-093: /hovers keeps passwords off plain HTTP",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-094: /hovers puts no password or session token in a URL",
+      "page": "/hovers",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-097: /shifting_content/menu sends its security headers and session cookies",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /shifting_content/menu",
+        "/shifting_content/menu relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /shifting_content/menu (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-098: /shifting_content/menu names no software version in its response headers",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-099: /shifting_content/menu keeps passwords off plain HTTP",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-100: /shifting_content/menu puts no password or session token in a URL",
+      "page": "/shifting_content/menu",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-103: /subdirectories/one sends its security headers and session cookies",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /subdirectories/one",
+        "/subdirectories/one relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /subdirectories/one (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-104: /subdirectories/one names no software version in its response headers",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-105: /subdirectories/one keeps passwords off plain HTTP",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-106: /subdirectories/one puts no password or session token in a URL",
+      "page": "/subdirectories/one",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-109: /challenging_dom sends its security headers and session cookies",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /challenging_dom",
+        "/challenging_dom relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /challenging_dom (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-110: /challenging_dom names no software version in its response headers",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-111: /challenging_dom keeps passwords off plain HTTP",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-112: /challenging_dom puts no password or session token in a URL",
+      "page": "/challenging_dom",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-115: /tinymce sends its security headers and session cookies",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /tinymce",
+        "/tinymce relies on the obsolete X-Frame-Options; its Content-Security-Policy has no frame-ancestors",
+        "no referrer policy on /tinymce (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-116: /tinymce names no software version in its response headers",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-117: /tinymce keeps passwords off plain HTTP",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-118: /tinymce puts no password or session token in a URL",
+      "page": "/tinymce",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}
