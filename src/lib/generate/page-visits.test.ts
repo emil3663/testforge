@@ -1,7 +1,7 @@
 /**
  * TFP-167: every page visit in a generated test waits for the page to draw
- * (network quiet, at most 5 s, never failing the test for the wait),
- * owner decision, 2026-10-06.
+ * (network quiet, at most 5 s, never failing the test for the wait;
+ * owner decision, 2026-10-06).
  *
  * ISTQB technique: equivalence partitioning over when a page's content
  * exists - in the HTML (every fixture page before this one), drawn after a

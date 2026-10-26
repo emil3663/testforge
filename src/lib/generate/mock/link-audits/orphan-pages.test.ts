@@ -1,6 +1,6 @@
 /**
- * TFP-161: the orphan check judges only pages that were loaded (decided by
- * owner decision, 2026-10-06: inspection records what was requested and what failed,
+ * TFP-161: the orphan check judges only pages that were loaded (owner
+ * decision, 2026-10-06: inspection records what was requested and what failed,
  * and the start page is the first path requested). On the-internet (TFP-150
  * re-run, T24) inspection lost "/", which links to every example, and every
  * other page failed as an orphan.

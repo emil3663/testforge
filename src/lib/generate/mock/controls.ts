@@ -242,7 +242,7 @@ function tfRoute(url: string) {
   return route.replace(/\/+$/, '') || '/';
 }
 
-// A text's words, with the synonym table applied (owner decision, 2026-10-12).
+// A text's words, with the synonym table applied (Emil, 2026-10-12).
 function tfWords(text: string) {
   const canonical = text.toLowerCase()
     .replace(/\bsign[\s-]?in\b|\blog[\s-]?in\b|\blog[\s-]?on\b/g, ' login ')
