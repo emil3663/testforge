@@ -3,7 +3,7 @@ import type { ActionableElementDetail } from "../types";
 import { hiddenAtIntrospectionComment } from "./shared";
 
 /**
- * TFP-160 (Emil, 2026-10-06): the form check finds the <form> itself by what
+ * TFP-160 (owner decision, 2026-10-06): the form check finds the <form> itself by what
  * introspection recorded - its action and method as written, and which of
  * the page's forms with those it is - not by text. Text found the wrong
  * element on a real site: a sort <select> matched its own options' joined

@@ -20,7 +20,7 @@ export const RUNTIME_HIDDEN_LINK_LOCATOR = `link.text
                     : page.locator('a[href="' + (link.rawHref || link.url).replace(/"/g, '\\"') + '"]').first()`;
 
 /**
- * TFP-159 (approach decided by Emil, 2026-10-06): reveals what a closed menu
+ * TFP-159 (approach: owner decision, 2026-10-06): reveals what a closed menu
  * or a collapsed navbar hides, in the page, at run time. The control is an
  * element with aria-expanded whose aria-controls (or data-bs-target,
  * data-target, href="#id") names one of the target's ancestors; failing

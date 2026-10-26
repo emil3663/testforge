@@ -14,8 +14,8 @@ import { bindCandidate, loadPool, matchingCandidate, patternOf } from "./pool";
  * gets that candidate, bound to this site's page and locator, in its own
  * describe ("Candidate tests"). Its results count toward nothing (the
  * report's own section, outside the verdict), and each run adds to its
- * evidence (src/lib/run/jobs.ts). Standard never runs candidates (Emil,
- * 2026-10-12): the caller only asks on a Comprehensive run.
+ * evidence (src/lib/run/jobs.ts). Standard never runs candidates (owner
+ * decision, 2026-10-12): the caller only asks on a Comprehensive run.
  *
  * Nothing here leaves the machine, so it doesn't wait for the site's
  * gap-writer opt-in.

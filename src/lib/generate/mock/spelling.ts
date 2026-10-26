@@ -10,7 +10,7 @@ import type { ContentProfile } from "./types";
  * SEO/content area. Body copy is out of scope. Each misspelling is a
  * finding naming the word, the element and the suggested spelling.
  *
- * The dictionaries (decided by Emil, 2026-10-12, after the licence check):
+ * The dictionaries (owner decision, 2026-10-12, after the licence check):
  * `dictionary-en` (en_US) and `dictionary-en-gb` (en_GB-ise), Hunspell files
  * from SCOWL size 60 (SCOWL's permissive notices: THIRD_PARTY_NOTICES.md),
  * read with `nspell` (MIT). They are two spellers - a word is known if
@@ -18,7 +18,7 @@ import type { ContentProfile } from "./types";
  * accepting every word (measured). Accents are stripped before a word is
  * looked up, as SCOWL stores it ("Curaçao" is "Curacao").
  *
- * The rule, calibrated on the local Toolshops (Emil, 2026-10-12), where
+ * The rule, calibrated on the local Toolshops (owner decision, 2026-10-12), where
  * Decision 2's wording reported some 40 words on the clean copy:
  * - words of four or more letters, none with a capital after the first
  *   (acronyms, product codes, camelCase), hyphens joined ("E-mail" is

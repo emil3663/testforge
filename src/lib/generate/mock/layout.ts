@@ -16,7 +16,7 @@ import type { ContentProfile } from "./types";
  *   family and size), the options of one list (font family and size),
  *   repeated cards (their titles' alignment and font; an image hidden while
  *   the other cards show theirs: bug 26). Buttons in one row are not compared
- *   by width (Emil, 2026-10-12: text-sized buttons differ by design; a
+ *   by width (owner decision, 2026-10-12: text-sized buttons differ by design; a
  *   button's width is compared across pages instead). The odd one out is named with the value the others share; with
  *   no majority, every value is named.
  * - **Consistency across pages** (a finding, once per run; equivalence
@@ -35,7 +35,7 @@ import type { ContentProfile } from "./types";
  *   found by the failed-request check).
  * Overlap and an unrendered image are failures (a user can't use or see the
  * thing); a consistency difference is a finding, since some are intended
- * (Emil, 2026-10-07). Bug 4 is random per load: the checks report it when it
+ * (owner decision, 2026-10-07). Bug 4 is random per load: the checks report it when it
  * shows; its absence is not a pass on it (TFP-188's scoring).
  */
 

@@ -7,14 +7,14 @@ import { TOP10_2025 } from "@/lib/comprehensive/standards";
 // Known paths (bug 80; ISTQB: error guessing - the paths misconfigured
 // servers leak): once per run, one GET to each path below, never following
 // a redirect, on the site's origin and on every same-site origin its start
-// page calls (Emil, 2026-10-12: the site's own API; the Toolshop's log is
+// page calls (owner decision, 2026-10-12: the site's own API; the Toolshop's log is
 // on its API host). A path leaks when it answers 200 with something that
 // isn't an HTML document and has the content its name promises - a log's
 // timestamped lines, a .env's assignments, a repository's HEAD - whatever
 // its content type (the Toolshop sends its log as text/html), so a
 // single-page app's catch-all page, which answers 200 to every path, is
 // never mistaken for a leak. A leak is a failure: the file is readable by
-// anyone. The list (Emil, 2026-10-12): version control, .env, backups and
+// anyone. The list (owner decision, 2026-10-12): version control, .env, backups and
 // dumps, and common log files under /logs, /log and /storage/logs -
 // Laravel's among them, which includes the Toolshop's /logs/laravel.log as
 // one case of the pattern.

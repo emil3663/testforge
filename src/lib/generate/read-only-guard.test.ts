@@ -8,7 +8,7 @@
  * submitted by form.submit(), which fires no submit event) and whether the
  * interaction itself then fails. One column each:
  *   GET-only sort                    -> passes; its GET reaches the server
- *   a QUERY (RFC 10008)              -> passes and reaches the server (a safe method, like GET: Emil, 2026-10-12)
+ *   a QUERY (RFC 10008)              -> passes and reaches the server (a safe method, like GET: owner decision, 2026-10-12)
  *   POST control (Add to cart)       -> fails as a guard breach naming POST and the URL; no POST reaches the server
  *   form submitted by its button     -> fails naming the form and its action; nothing is sent
  *   form.submit()                    -> fails naming the form; nothing is sent
@@ -147,7 +147,7 @@ function guardNotes(suites: JsonSuite[]): Map<string, string[]> {
 }
 
 /**
- * TFP-199 (Emil, 2026-10-13; Phase 41 Gate B's T33): a site's own beacons are aborted but noted,
+ * TFP-199 (owner decision, 2026-10-13; Phase 41 Gate B's T33): a site's own beacons are aborted but noted,
  * not counted as a breach. ISTQB technique: equivalence partitioning - non-safe requests split into
  * beacons (Chromium's `ping` type; a named analytics path such as Cloudflare's /cdn-cgi/rum) and
  * everything else. A control that POSTs still fails (the decision table above, run with the same

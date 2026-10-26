@@ -175,7 +175,7 @@ report is a claim; this checklist turns it into evidence.
    status, roadmap, handover.
 8. **State the limits.** Say what couldn't be verified, and where it can
    be. For example, the verifier's VM has Node 22 and no Chromium, so the
-   real-browser tests skip there and run on Emil's machine.
+   real-browser tests skip there and run on the local dev machine, with a real browser.
 9. **Fix defects in the ticket.** Any defect found goes back to the builder
    in that ticket before the gate passes.
 10. **Record the verdict** in the record's status line, the roadmap and the
@@ -200,5 +200,5 @@ skill. For refactors that claim unchanged behaviour, it is
 - **Model failures that need judgement aren't gated** (section 2).
 - **The local model call is never retried.** A single timeout falls back to
   the template.
-- **Live checks need Emil's machine.** Real-browser and live-site checks
+- **Live checks need the local dev machine, with a real browser.** Real-browser and live-site checks
   can't run in the verifier's VM.

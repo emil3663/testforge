@@ -2,7 +2,7 @@
  * Phase 40 Decisions 4, 5 and 6 (TFP-172): rank a site's page types and
  * choose the pages a run inspects, by type instead of crawl order.
  *
- * Decision 4, as revised at Gate A (Emil, 2026-10-07):
+ * Decision 4, as revised at Gate A (owner decision, 2026-10-07):
  * - **Always covered first:** home, every type with a form, and the type
  *   covering the most pages.
  * - **Home is always ranked first** (amended in TFP-172's review): it is the
@@ -29,7 +29,7 @@
 
 import type { PageOutline } from "./page-outline";
 
-/** Decision 5 (Emil, 2026-10-07): Standard covers up to 8 page types. */
+/** Decision 5 (owner decision, 2026-10-07): Standard covers up to 8 page types. */
 export const STANDARD_TYPE_CAP = 8;
 
 export interface TypeToRank {

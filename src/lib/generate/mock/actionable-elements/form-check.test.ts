@@ -1,7 +1,7 @@
 /**
  * TFP-160: the form check finds the <form> itself by its recorded action,
  * method and occurrence, and asserts each recorded field is inside it
- * (decided by Emil, 2026-10-06).
+ * (owner decision, 2026-10-06).
  *
  * ISTQB technique: error guessing, from the two failures recorded on
  * practicesoftwaretesting.com (TFP-150, T21 and T22): a lone <select> in a

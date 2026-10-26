@@ -1,6 +1,6 @@
 /**
  * TFP-159: links in a closed menu or behind a collapsed navbar's toggle are
- * checked as what they are (approach decided by Emil, 2026-10-06).
+ * checked as what they are (approach: owner decision, 2026-10-06).
  *
  * - Link health and link type are independent of the menu: the link's own
  *   address and its presence in the page, not its visibility.

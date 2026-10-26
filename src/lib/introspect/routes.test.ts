@@ -1,6 +1,6 @@
 /**
- * TFP-165: `#/` links are pages on sites that route by hash (decisions
- * approved by Emil, 2026-10-06).
+ * TFP-165: `#/` links are pages on sites that route by hash (owner
+ * decisions, 2026-10-06).
  *
  * ISTQB technique: equivalence partitioning over the fragment - a route
  * (`#/contact`, `#!/legacy`), an in-page anchor (`#top`, `#details`), a

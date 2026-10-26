@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 
 /**
- * TFP-165 (decisions approved by Emil, 2026-10-06): sites that route by hash
+ * TFP-165 (owner decisions, 2026-10-06): sites that route by hash
  * (Angular's and Vue's hash modes, React Router's HashRouter) address pages
  * as `#/contact` or `#!/contact`. Until now the crawl cleared every URL's
  * `#…` part, so each route counted as `/`, and introspection recorded each

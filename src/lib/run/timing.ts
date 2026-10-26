@@ -11,7 +11,7 @@
  * summarizeTiming turns that into Decision 1's numbers for the run record: time in page loads and settle waits,
  * visits that hit the settle cap, time failing tests spend in steps that failed (waiting out their timeouts),
  * page visits per page and area, and the targets the four link checks share. countControlKinds counts each
- * selected page's controls by Decision 3's kinds, from the inspection, as data for Emil's later look.
+ * selected page's controls by Decision 3's kinds, from the inspection, as data for the owner's later look.
  */
 import { deriveArea } from "@/lib/report/execution";
 import type { ContentProfile, LinkDetail } from "@/lib/generate/mock/types";

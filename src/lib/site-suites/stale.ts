@@ -8,7 +8,7 @@ import { templateSuite } from "./template";
 import { parseTestUnits, type TestUnit } from "./units";
 
 /**
- * Phase 42 (TFP-191, Decision 1's stale-test rule; Emil, 2026-10-13): after a
+ * Phase 42 (TFP-191, Decision 1's stale-test rule; owner decision, 2026-10-13): after a
  * run, each failing test that was reused from the site suite, and not edited
  * by hand, has its page read again - with the same inspection that saved the
  * page's signature, so the two compare like for like.

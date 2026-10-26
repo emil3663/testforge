@@ -10,7 +10,7 @@ import { appendToDescribes, withGuardHelper } from "@/lib/site-suites/reuse";
 import { parseTestUnits } from "@/lib/site-suites/units";
 
 /**
- * Phase 42 (TFP-204, batch 2 ruling 3; Emil, 2026-10-14): generation applies
+ * Phase 42 (TFP-204, batch 2 ruling 3; owner decision, 2026-10-14): generation applies
  * the library's promoted entries (src/lib/library/promoted/, written by
  * `npm run library:promote` and committed after review). Without this,
  * promotion changed nothing: an entry was recorded and never run.

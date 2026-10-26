@@ -2,7 +2,7 @@ import { homedir } from "os";
 import { join, resolve } from "path";
 
 /**
- * Phase 42 (TFP-190, Decision 4; folder decided by Emil, 2026-10-13):
+ * Phase 42 (TFP-190, Decision 4; folder: owner decision, 2026-10-13):
  * TestForge's local data folder, outside the repo. Site suites (and, later,
  * the candidate pool) hold one site's selectors, pages and fingerprints, so
  * they never live in the repository or in the repo-relative `runs/`.

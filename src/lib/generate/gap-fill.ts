@@ -44,7 +44,7 @@ export function gapFillSkipReason(model: string) {
 }
 
 /**
- * Phase 38 (TFP-146, decided by Emil 2026-10-05): a suite written by OpenAI
+ * Phase 38 (TFP-146, owner decision, 2026-10-05): a suite written by OpenAI
  * sits at the interactive gate, like the local model's. It used to run in
  * full with interactive tests off, and nothing in it is checked for a submit.
  * When the run's areas include security it sits at the active gate instead,

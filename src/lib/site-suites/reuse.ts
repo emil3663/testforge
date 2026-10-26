@@ -19,7 +19,7 @@ import { parseTestUnits, withId, type TestUnit } from "./units";
  * - A test belongs to the one page type whose pages it visits, or to the
  *   whole site ("site") when it visits none, several types, or a page that
  *   wasn't inspected. Site-wide tests are reused while the site has the same
- *   set of page types (Emil, 2026-10-13).
+ *   set of page types (owner decision, 2026-10-13).
  * - On a run: a test of an unchanged type is reused as saved; a test of a
  *   changed type is regenerated; a test of a new type is generated; a saved
  *   test the generator no longer writes is retired - its type is gone, or

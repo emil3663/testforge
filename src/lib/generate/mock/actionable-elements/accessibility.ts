@@ -49,7 +49,7 @@ import { hiddenAtIntrospectionComment } from "./shared";
  * named link. The visibility rule is introspection's own isVisibleElement.
  *
  * TFP-152: the name follows HTML-AAM 4.1.10, not Playwright's departure
- * from it (decided by Emil, 2026-10-05: the standard decides, not any one
+ * from it (owner decision, 2026-10-05: the standard decides, not any one
  * tool). An <img alt=""> is presentational and has no name; its title is
  * used only when there is no alt attribute. Playwright 1.59.1 falls back to
  * the title, so rizonetech.com's logo link - an alt="" image with a title -
@@ -147,7 +147,7 @@ function formLookup(element: ActionableElementDetail, profileFormIndex: number, 
 }
 
 /**
- * TFP-151 (decided by Emil, 2026-10-06): an element with no role has no
+ * TFP-151 (owner decision, 2026-10-06): an element with no role has no
  * name to check. Under HTML-AAM a <form> has the form role only when it has
  * an accessible name; without aria-label, aria-labelledby or title it is
  * generic. Such a check is Not run, with that reason, not passed.

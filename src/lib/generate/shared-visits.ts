@@ -51,7 +51,7 @@ const SHARED_FIXTURES = new Set(["page", "context", "request"]);
 
 // What keeps a check on a page of its own, whatever else it does (Decisions 3 and 5): it loads a page itself, sets up
 // the page or its context (routes, listeners, scripts, viewport, cookies, permissions), uses a form field or a guarded
-// control, opens a menu to reveal a link (tfReveal), or writes the page's storage. Emil's look at the control counts
+// control, opens a menu to reveal a link (tfReveal), or writes the page's storage. The owner's look at the control counts
 // (2026-10-20): "unclear" controls, mostly form fields and plain buttons, keep a fresh page. A menu is one: what an
 // earlier check left open changes what the reveal reports (the fixture's menus: "no control was found that reveals
 // it" on a shared page against "the 'Categories' menu opened, but it stays hidden" on a fresh one).
@@ -86,11 +86,11 @@ const holdsData = (statement: ts.Statement, file: ts.SourceFile) =>
     ts.isVariableStatement(statement) && !/\b(page|context|request|await|tfGoto)\b|=>|\bfunction\b/.test(statement.getText(file));
 
 // In a page's group the checks that only read run first, then the checks that change the page, then the axe scan
-// (Gate C ruling, Emil 2026-10-21; at Gate B the scan ran before the changing checks).
+// (Gate C ruling, 2026-10-21; at Gate B the scan ran before the changing checks).
 const AXE_SCAN = /passes the WCAG 2\.2 A and AA scan/;
 
 /**
- * Where the axe scan runs in a page's group (Emil, 2026-10-21: a switch, both orders run at Gate C).
+ * Where the axe scan runs in a page's group (owner decision, 2026-10-21: a switch, both orders run at Gate C).
  * - `last` (the default since the Gate C ruling): after the checks that change the page. A failing scan then costs no
  *   reload; it reads a page they altered and put back, and is not re-run (it changes nothing itself). Measured at
  *   Gate C: the scans' findings identical to `before-changes`' in every run on both Toolshop copies, and accessibility

@@ -30,7 +30,7 @@ export const CLS_POOR = 0.25;
 export const LAB_NOTE = "Measured once, in a lab (this run, from this machine), not from real visits.";
 
 /**
- * Phase 39 (TFP-157, Decision 10; Emil, 2026-10-21): the checks whose result depends on how fast a page loads, by
+ * Phase 39 (TFP-157, Decision 10; owner decision, 2026-10-21): the checks whose result depends on how fast a page loads, by
  * title. On a host capped at 5 requests per second they are Not run, "not judged under the request cap": the cap
  * slows every page load, so they would measure the cap, not the site. Page weight and failed requests don't depend
  * on load speed and still run. The first and last also match the local model's example checks (local-rules.ts).

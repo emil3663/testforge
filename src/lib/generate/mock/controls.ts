@@ -25,7 +25,7 @@ import type { ContentProfile } from "./types";
  * - **Link destination** (bug 29; decision table, a "Home" link against any
  *   other): a header or nav link's text matches where it lands - "Home"
  *   reaches the start page; any other link's words meet the destination's
- *   title or first heading, with a small synonym table (Emil, 2026-10-12:
+ *   title or first heading, with a small synonym table (owner decision, 2026-10-12:
  *   sign in = log in = login; sign up = register = create account; cart =
  *   basket = checkout).
  * - **Option lists** (bug 60; error guessing): no option of a select reads
@@ -242,7 +242,7 @@ function tfRoute(url: string) {
   return route.replace(/\/+$/, '') || '/';
 }
 
-// A text's words, with the synonym table applied (Emil, 2026-10-12).
+// A text's words, with the synonym table applied (owner decision, 2026-10-12).
 function tfWords(text: string) {
   const canonical = text.toLowerCase()
     .replace(/\bsign[\s-]?in\b|\blog[\s-]?in\b|\blog[\s-]?on\b/g, ' login ')

@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     const origin = new URL(normalizedBaseUrl.value).origin;
     // Phase 42 (TFP-190, Decision 1): the template's suite, with the site's saved tests reused, regenerated or
-    // retired, and saved again. Standard and Comprehensive (Emil, 2026-10-13); model and OpenAI code is not saved.
+    // retired, and saved again. Standard and Comprehensive (owner decision, 2026-10-13); model and OpenAI code is not saved.
     const withSiteSuite = async (code: string) => {
         const identity = isComprehensive(normalizedRunMode)
             ? { runType: "comprehensive" as const, area: normalizedRunMode.area, practices: [], auditMode: "" }

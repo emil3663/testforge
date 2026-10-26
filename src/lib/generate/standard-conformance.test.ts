@@ -86,7 +86,7 @@ const SECURITY_DEFECTS: Record<string, { page: string; check: string; shows: Reg
     "security-mixed-cookies": { page: "/", check: "/ sends its security headers and session cookies", shows: /session cookie "sid" set on \/ has no HttpOnly/ },
 };
 
-// Phase 41: checks only a Comprehensive security run makes (Decision 5; their placement decided by Emil,
+// Phase 41: checks only a Comprehensive security run makes (Decision 5; their placement an owner decision,
 // 2026-10-12) - TFP-184's guessable ids and TFP-185's API fields per page, and the known-path probe once. The shared checks must agree.
 const COMPREHENSIVE_ONLY = /uses no guessable sequential ids|fetches no internal fields|known paths that leak/;
 const COMPREHENSIVE_ONLY_PER_PAGE = 2;

@@ -16,7 +16,7 @@ export interface OrphanContext {
 }
 
 /**
- * TFP-161 (decided by Emil, 2026-10-06): the orphan check judges only pages
+ * TFP-161 (owner decision, 2026-10-06): the orphan check judges only pages
  * that were loaded. On the-internet (TFP-150 re-run, T24) inspection lost
  * "/", which links to every example, and every other page failed as an
  * orphan. The start page is the first path requested.

@@ -54,7 +54,7 @@ export interface Candidate {
     sources: Array<{ origin: string; page: string; at: string }>;
     /** Every later run it took part in. */
     evidence: CandidateEvidence[];
-    /** TFP-196: "approved" by Emil and waiting for its library commit; "promoted" once it is a library entry. */
+    /** TFP-196: "approved" by the tester and waiting for its library commit; "promoted" once it is a library entry. */
     status: "candidate" | "approved" | "rejected" | "promoted";
     /** Why it was rejected (TFP-196), or the library entry it became. */
     reason?: string;

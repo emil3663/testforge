@@ -83,7 +83,7 @@ const HELPERS: Record<ComprehensiveArea, string> = {
  * permission - so there they are listed and never run. In other areas they
  * may still submit forms, so they run only with interactive tests on.
  *
- * Phase 38 (TFP-146, decided by Emil 2026-10-05): in a security run they sit
+ * Phase 38 (TFP-146, owner decision, 2026-10-05): in a security run they sit
  * at the active gate, closed until the ownership confirmation exists, with
  * that gate's reason; elsewhere at the interactive gate (Decision 3).
  */

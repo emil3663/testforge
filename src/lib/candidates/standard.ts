@@ -11,7 +11,7 @@ import type { GapTarget } from "@/lib/gap-writer/writers";
 import { bindCandidate, loadPool, matchingCandidate, patternOf } from "./pool";
 
 /**
- * Phase 42 (TFP-203, batch 2 ruling 2; Emil, 2026-10-14): on Standard, a
+ * Phase 42 (TFP-203, batch 2 ruling 2; owner decision, 2026-10-14): on Standard, a
  * pool candidate that matches a gap becomes that gap's test, as Decision 8
  * intends ("used instead of writing another"). As TFP-195 built it, such a
  * gap got no test on Standard at all: the writer skipped it because a
@@ -25,7 +25,7 @@ import { bindCandidate, loadPool, matchingCandidate, patternOf } from "./pool";
  * - It passes: it joins the site suite under "Gap tests" as that gap's
  *   test, inside the verdict, and is reused while its page type holds, like
  *   a written one. No writer is asked for the gap. Its runs add to the
- *   candidate's evidence, as Comprehensive runs do (Emil, 2026-10-15: the
+ *   candidate's evidence, as Comprehensive runs do (owner decision, 2026-10-15: the
  *   promotion rule counts distinct sites, so this is cross-site evidence).
  * - It fails: it is not bound, and the gap is recorded as tried, so it isn't
  *   run again while its page type holds.

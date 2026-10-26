@@ -6,7 +6,7 @@ import { approveCandidate, labelRun, offeredCandidates, PromotionError, promotio
  * Phase 42 (TFP-196): the candidate pool and its promotion decisions.
  *
  *   GET  /api/candidates   every candidate with its verdict on the rule, and
- *                          `offered`: the ones meeting it, for Emil's approval
+ *                          `offered`: the ones meeting it, for the tester's approval
  *   POST /api/candidates   { action: "approve", id, by }
  *                          { action: "reject", id, reason }
  *                          { action: "label", id, run, label: "real" | "not a defect", bug? }

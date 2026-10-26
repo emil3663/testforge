@@ -1,12 +1,12 @@
 /**
  * TFP-161: the orphan check judges only pages that were loaded (decided by
- * Emil, 2026-10-06: inspection records what was requested and what failed,
+ * owner decision, 2026-10-06: inspection records what was requested and what failed,
  * and the start page is the first path requested). On the-internet (TFP-150
  * re-run, T24) inspection lost "/", which links to every example, and every
  * other page failed as an orphan.
  *
  * A page that answers with a server error (5xx) counts as not loaded, like a
- * timeout (Emil, 2026-10-06); the fixture's dropped connections reach the
+ * timeout (owner decision, 2026-10-06); the fixture's dropped connections reach the
  * browser as 502s through the recording proxy.
  *
  * ISTQB technique: decision table. Conditions: was the start page loaded;

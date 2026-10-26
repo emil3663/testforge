@@ -274,7 +274,7 @@ export function suiteIdentity(record: Pick<RunRecord, "baseUrl" | "selectedPract
  * scheduler; this runs once per call, triggered by an API call or manual
  * command.
  *
- * TFP-198 (GitHub issue #2; Emil, 2026-10-13): only positive evidence clears
+ * TFP-198 (GitHub issue #2; owner decision, 2026-10-13): only positive evidence clears
  * a failure. A failing title that is absent from the newest run, or skipped,
  * Not run, Blocked, Flaky or failing there, keeps the older run - and its
  * evidence - as it is (Decision 1). Before, "not failing in the newest run"

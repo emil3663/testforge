@@ -113,7 +113,7 @@ export async function inspectPages(baseUrl: string, paths: string[], namedFlows:
                 // TFP-177: and the page is read only once it has been quiet for a second, so links an app draws
                 // after a late request are there (T30).
                 const response = await gotoPage(page, targetUrl, { timeout: 30000, untilQuiet: true });
-                // TFP-161 (Emil, 2026-10-06): a server error is a page that could not be loaded, like a
+                // TFP-161 (owner decision, 2026-10-06): a server error is a page that could not be loaded, like a
                 // timeout - an error page's empty snapshot made every page it links to look orphaned.
                 // A 4xx stays a page: it is the site's real answer.
                 if (response && response.status() >= 500) {

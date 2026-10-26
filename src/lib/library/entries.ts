@@ -213,7 +213,7 @@ export const LIBRARY: readonly LibraryEntry[] = [
         pattern: "any page with images",
         matches: anyPage,
         binding: "page",
-        // Gate B: no present target of its own (26 is the consistency check's); it fails 28 and 30, found by older checks. Kept (Emil).
+        // Gate B: no present target of its own (26 is the consistency check's); it fails 28 and 30, found by older checks. Kept (owner decision).
         technique: "error guessing (an image that loaded but can't be shown)",
         gate: "read-only",
         runsIn: ["Standard usability"],

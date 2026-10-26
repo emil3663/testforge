@@ -3,11 +3,11 @@ import { join, relative } from "path";
 import { loadCandidate, loadPool, saveCandidate, type Candidate } from "./pool";
 
 /**
- * Phase 42 (TFP-196, Decision 8's promotion rule, Emil 2026-10-12): a
+ * Phase 42 (TFP-196, Decision 8's promotion rule, owner decision, 2026-10-12): a
  * candidate is promoted to the library when it has passed the gates on every
  * run, and either caught a real defect (a benchmark bug, or a failure a
  * person labelled real) or run on 3 sites with the pattern with no
- * unlabelled failure, and Emil has approved it.
+ * unlabelled failure, and the tester has approved it.
  *
  * - Only a candidate that meets the rule is offered; approving one below it
  *   is refused.
@@ -51,7 +51,7 @@ export function promotionVerdict(candidate: Candidate): PromotionVerdict {
     return { meetsRule: gatesPassedEveryRun && (realDefect || cleanSites), runs: runs.length, gatesPassedEveryRun, realDefect, sites, unlabelledFailures, reasons };
 }
 
-/** The candidates to offer Emil: in the pool, not decided, and meeting the rule. */
+/** The candidates to offer the tester: in the pool, not decided, and meeting the rule. */
 export async function offeredCandidates(): Promise<Array<{ candidate: Candidate; verdict: PromotionVerdict }>> {
     return (await loadPool())
         .filter((candidate) => candidate.status === "candidate")

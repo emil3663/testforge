@@ -2,7 +2,7 @@
  * Phase 41 (TFP-181, Decision 3, amending Phase 38 Decision 1): the read-only
  * gate also allows interactions whose requests are all GETs and that submit
  * no form - a sort, a filter, a quantity stepper, a link followed - under a
- * request guard. Amended by Emil, 2026-10-12 (found on the clean Toolshop,
+ * request guard. Amended by owner decision, 2026-10-12 (found on the clean Toolshop,
  * which searches with QUERY): "GETs" means the methods HTTP defines as
  * safe - GET, HEAD and QUERY (RFC 10008, a GET with its criteria in the
  * body). While the guard is armed:
@@ -25,7 +25,7 @@
  * loaded, so a request the interaction starts a moment later (a debounced
  * filter) was never waited for.
  *
- * TFP-199 (run-evidence-sweep backlog; Emil, 2026-10-13; Phase 41 Gate B's
+ * TFP-199 (run-evidence-sweep backlog; owner decision, 2026-10-13; Phase 41 Gate B's
  * T33): a site's own beacons are aborted too - nothing leaves the browser -
  * but noted, not counted as a breach. On the hosted Toolshops, Cloudflare's
  * analytics fire as a page navigates (measured: one POST of resource type

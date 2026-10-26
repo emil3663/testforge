@@ -1,6 +1,6 @@
 /**
- * Phase 40 Decisions 2 and 3 (TFP-171), as revised at Gate A (TFP-176, Emil
- * 2026-10-07): each page's outline, and how it refines TFP-170's address
+ * Phase 40 Decisions 2 and 3 (TFP-171), as revised at Gate A (TFP-176, owner
+ * decision, 2026-10-07): each page's outline, and how it refines TFP-170's address
  * types - split only by form signature, merge only sibling address types
  * under one immediate parent with equal full signatures, never top-level
  * pages or home - and the report-only labels.
@@ -32,7 +32,7 @@ test("the signature is landmarks, forms (count and every field's type) and cards
     assert.equal(formSignatureOf(outline()), formSignatureOf(outline({ cards: true, landmarks: ["main"] })), "cards and landmarks aren't in the form signature");
     assert.notEqual(formSignatureOf(outline({ forms: [["email", "password"]] })), formSignatureOf(outline({ forms: [["email"]] })));
     assert.equal(formSignatureOf(outline({ forms: [["email"], ["search"]] })), formSignatureOf(outline({ forms: [["search"], ["email"]] })), "form order doesn't matter");
-    // Every field type counts (Emil, 2026-10-07): the narrow reading can't tell a registration form from a sign-in form.
+    // Every field type counts (owner decision, 2026-10-07): the narrow reading can't tell a registration form from a sign-in form.
     const signIn = outline({ forms: [["email", "password"]] });
     const register = outline({ forms: [["date", "email", "password", "select", "tel", "text"]] });
     assert.notEqual(formSignatureOf(signIn), formSignatureOf(register));
@@ -60,7 +60,7 @@ test("merge only sibling address types under one immediate parent with equal ful
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/p/iphone15promaxblack2023", outline: same }, { path: "/p/galaxy-s24", outline: same }])), ["/p/:id + /p/:slug = /p/iphone15promaxblack2023,/p/galaxy-s24"]);
     // One immediate parent, different signatures: two types.
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/p/iphone15promaxblack2023", outline: same }, { path: "/p/galaxy-s24", outline: outline({ cards: true }) }])), ["/p/:id = /p/iphone15promaxblack2023", "/p/:slug = /p/galaxy-s24"]);
-    // Different immediate parents (/shop/men, /shop/women) never merge, even with equal outlines (Emil, 2026-10-07).
+    // Different immediate parents (/shop/men, /shop/women) never merge, even with equal outlines (owner decision, 2026-10-07).
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/shop/men/shirts", outline: same }, { path: "/shop/women/shoes", outline: same }])), ["/shop/men/shirts = /shop/men/shirts", "/shop/women/shoes = /shop/women/shoes"]);
     // Nor do two collections under a language prefix: /en/product/:id and /en/category/:id, equal outlines.
     assert.deepEqual(shown(groupPagesIntoTypes([{ path: "/en/product/1", outline: same }, { path: "/en/category/2", outline: same }])), ["/en/product/:id = /en/product/1", "/en/category/:id = /en/category/2"]);

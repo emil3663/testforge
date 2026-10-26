@@ -210,7 +210,7 @@ test.describe('SEO and Content Coverage', () => {
     assert.deepEqual(where("reads the response on /b").describe, ["Page /b", "Security Coverage"]);
     for (const title of ["/a passes the WCAG 2.2 A and AA scan", "/a is tabbed through in reading order", "/a has a heading"]) assert.deepEqual(where(title).describe, ["Page /a", "Accessibility Coverage"], title);
     for (const title of ["listens before loading", "interactive", "another fixture", "fills a field", "loads again", "sets a cookie", "works the page out first", "opens a menu to reveal a link"]) assert.deepEqual(where(title).describe, ["Functional Coverage"], title);
-    // In the page's group, by default (Gate C ruling, Emil 2026-10-21): the checks that only read, then those that change the page, then the scan.
+    // In the page's group, by default (Gate C ruling, 2026-10-21): the checks that only read, then those that change the page, then the scan.
     const order = ["reads its page", "holds its data before the visit", "/a has a heading", "clicks", "opens a route view of its own", "/a is tabbed through in reading order", "/a passes the WCAG 2.2 A and AA scan"];
     const at = order.map((title) => shared.indexOf(`: ${title}'`));
     assert.deepEqual([...at].sort((a, b) => a - b), at, "reads, changes, scan");

@@ -356,7 +356,7 @@ npx playwright test --project=chromium
 | `npm run report:open:smoke` | Open the latest local smoke Allure report |
 | `npm run report:open:regression` | Open the latest local regression Allure report |
 | `npm run build:self-test` / `start:self-test` / `serve:self-test` | Build and serve the self-test target on :3001 (the regression suite starts it) |
-| `npm run library:promote` | Promote a candidate test into the library (with Emil's approval) |
+| `npm run library:promote` | Promote a candidate test into the library (with the tester's approval) |
 | `npm run compare:generators` | Compare the template alone with the template plus the local model's gap-fill (setup in `docs/GENERATOR_COMPARISON.md`) |
 | `npm run benchmark:local` | Benchmark local (Ollama) models |
 | `npm run comparison:fixture` | Serve the comparison fixture: a small site with one switchable injected defect per area |

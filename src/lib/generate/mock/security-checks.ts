@@ -10,7 +10,7 @@ import type { ActionableElementDetail, ContentProfile } from "./types";
 // URL is HTTPS", written only for HTTPS targets - on http:// targets it wrote
 // a note and nothing else, so nothing checked input handling at all.
 //
-// Two kinds of result, deliberately different (Emil, 2026-09-28):
+// Two kinds of result, deliberately different (owner decision, 2026-09-28):
 // - an executed script payload FAILS the test: it is an exploitable defect;
 // - a missing security header or cookie flag is recorded as a named FINDING
 //   (a Playwright annotation, shown in the run report) and does not fail the

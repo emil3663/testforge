@@ -9,7 +9,7 @@
  * - `request`: the API requests a test sends (`request.get` and the rest);
  * - an automatic fixture: a timed check (its title in TESTFORGE_NOT_JUDGED_TITLES) is Not run, with the reason
  *   (TESTFORGE_NOT_JUDGED_REASON), as
- *   a page load slowed by the cap measures the cap, not the site (Emil, 2026-10-21).
+ *   a page load slowed by the cap measures the cap, not the site (owner decision, 2026-10-21).
  *
  * Not counted, as Playwright doesn't route them: a redirect's later hops, a service worker's own requests and
  * WebSockets.

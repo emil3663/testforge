@@ -43,7 +43,7 @@ export const REQUEST_CAP_TOKEN_HEADER = "x-testforge-cap-token";
 /** How long a slot stays held after it's handed back. */
 export const HOLD_AFTER_RESPONSE_MS = 1000;
 const LEASE_MS = 60_000;
-/** Decision 10 (Emil, 2026-10-21): a timed check run under the cap measures the cap, not the site. */
+/** Decision 10 (owner decision, 2026-10-21): a timed check run under the cap measures the cap, not the site. */
 export const notJudgedReason = (perSecond: number) =>
     `not judged under the request cap: this host is capped at ${perSecond} requests per second, which slows the page loads a timed check measures (Decision 10)`;
 

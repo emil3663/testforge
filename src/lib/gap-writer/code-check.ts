@@ -4,7 +4,7 @@ import ts from "typescript";
  * Phase 42 (TFP-202, batch 2 ruling 5): what model-written test code may not
  * use. A gap test, a pool candidate or a promoted library entry is a test
  * body a writer produced from text read from a site, and it runs in Node on
- * Emil's machine. TFP-194's check was a regular expression over the text
+ * the local dev machine. TFP-194's check was a regular expression over the text
  * (`require(`, `process.`, `fs.`...): spacing, a line break or a computed
  * name got past it, and it said nothing about the network.
  *

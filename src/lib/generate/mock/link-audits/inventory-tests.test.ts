@@ -1,6 +1,6 @@
 /**
- * Phase 42 (TFP-205; Gate B ruling, Emil 2026-10-15): the template checks every link on the pages it selects.
- * No live Toolshop run and no model call (Emil): fixtures in a real browser, and the committed Toolshop data
+ * Phase 42 (TFP-205; Gate B ruling, 2026-10-15): the template checks every link on the pages it selects.
+ * No live Toolshop run and no model call (owner decision): fixtures in a real browser, and the committed Toolshop data
  * offline.
  *
  * ISTQB technique: decision table. Conditions: where the link leads (same origin and working; same origin and

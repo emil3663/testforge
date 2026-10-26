@@ -21,7 +21,7 @@ export function isStartRoute(link: LinkDetail) {
 }
 
 /**
- * TFP-165 (Decisions 3 and 4, approved by Emil, 2026-10-06). The generated
+ * TFP-165 (Decisions 3 and 4, owner decision, 2026-10-06). The generated
  * helpers: what the app draws for a route - loaded as a fresh document in a
  * page of its own, settled to network idle with a bounded wait, read as text
  * - and, once per run (per worker), what it draws for a route that can't

@@ -1,5 +1,5 @@
 /**
- * TFP-167 (approved by Emil, 2026-10-06): every page visit in a generated
+ * TFP-167 (owner decision, 2026-10-06): every page visit in a generated
  * test waits for the page to draw. A single-page app (Angular, React, Vue)
  * draws its content after the HTML arrives, so a check run at
  * `domcontentloaded` or `load` read a header-and-footer shell: on the

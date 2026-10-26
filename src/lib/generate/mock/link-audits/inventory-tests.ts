@@ -6,7 +6,7 @@ import { buildHiddenLinkLocatorExpression } from "./reveal";
 import { isRouteLink, isStartRoute } from "./routes";
 
 /**
- * Phase 42 (TFP-205; Gate B ruling, Emil 2026-10-15): the template checks
+ * Phase 42 (TFP-205; Gate B ruling, 2026-10-15): the template checks
  * every link on the pages it selects. On the Toolshop copies the coverage
  * map's in-context gap list was links only: the template checked every
  * element in context, and every link only by its URL (link health) or in
@@ -35,7 +35,7 @@ import { isRouteLink, isStartRoute } from "./routes";
  *   with no request from this test (link health's own request to it is
  *   unchanged).
  *
- * TFP-208 (ruling confirmed by Emil 2026-10-19; R1, TFP-207): links inside a
+ * TFP-208 (ruling confirmed by the owner 2026-10-19; R1, TFP-207): links inside a
  * listing's repeated cards get no test each. A listing can change between
  * loads: the Toolshop pages a category's products with no order (the API's
  * paginate(9) has no ORDER BY, in both versions), so with-bugs'
@@ -49,7 +49,7 @@ import { isRouteLink, isStartRoute } from "./routes";
  * href of that pattern. Its targets are loaded as a single link's would be:
  * the inspected cards' by link health, which is unchanged. Rejected: finding
  * each card by its target's pattern instead of its name, which keeps one test
- * per card checking the same thing. Emil's condition: a failure names the
+ * per card checking the same thing. The owner's condition: a failure names the
  * product, not only the slot. Each failing card is named by its position and
  * what it showed at run time (its name, a price if it shows one, its href),
  * and every card is checked before the test fails once listing them all.

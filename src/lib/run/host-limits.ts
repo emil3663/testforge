@@ -26,7 +26,7 @@ export interface HostLimits {
     /** Whether the site carried a valid ownership confirmation covering the host (Decision 11). */
     ownershipConfirmed: boolean;
     /**
-     * Decision 10 (Emil, 2026-10-21): counted on the site's host and every host under its domain (www., api.), so a
+     * Decision 10 (owner decision, 2026-10-21): counted on the site's host and every host under its domain (www., api.), so a
      * site's own API is capped with its pages; third parties are not counted. Null without a cap.
      */
     siteDomain: string | null;

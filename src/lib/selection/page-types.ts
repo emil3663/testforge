@@ -81,7 +81,7 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
         const values = new Map<string, Set<string>>();
         for (const page of withIds) {
             if (page.segments.length <= position) continue;
-            // Gate A revision (Emil, 2026-10-07): a segment directly before an :id names a collection, not a slug.
+            // Gate A revision (owner decision, 2026-10-07): a segment directly before an :id names a collection, not a slug.
             if (page.segments[position + 1] === ":id") continue;
             const masked = page.segments.map((segment, index) => (index === position ? "*" : segment));
             const key = `${page.prefix}|${page.segments.length}|${masked.join("/")}`;
@@ -108,7 +108,7 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
 }
 
 /**
- * Phase 40 Decision 2, as revised at Gate A (Emil, 2026-10-07; TFP-176):
+ * Phase 40 Decision 2, as revised at Gate A (owner decision, 2026-10-07; TFP-176):
  * the address type comes first, and the outline refines it in two narrow
  * ways. The first measurement (TFP-171) merged any types with equal
  * signatures, which put 90 of the-internet's 100 pages into one type with
@@ -121,7 +121,7 @@ export function groupPagesByAddress(pageNames: string[]): PageType[] {
  *   parent - the pattern minus its last segment, prefix kept (`/p/:id` and
  *   `/p/:slug` share `/p`; `/shop/men/shirts` and `/shop/women/shoes` don't)
  *   - and every page of both has one equal full signature. Not the same
- *   first segment (Emil, 2026-10-07): under a language prefix (`/en/...`)
+ *   first segment (owner decision, 2026-10-07): under a language prefix (`/en/...`)
  *   that merges unrelated templates whose outlines match.
  * - Never merge top-level pages (depth 1, home included).
  * A page with no outline has an unknown form signature: it stays apart

@@ -1,5 +1,5 @@
 /**
- * Phase 42 (TFP-191, Decision 1's stale-test rule; Emil, 2026-10-13): a
+ * Phase 42 (TFP-191, Decision 1's stale-test rule; owner decision, 2026-10-13): a
  * reused test that fails has its page read again; a changed page has its
  * type's tests regenerated and re-run, and only the re-run counts. Generated
  * through POST /api/generate and run through POST /api/run, on the

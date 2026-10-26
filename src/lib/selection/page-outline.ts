@@ -3,7 +3,7 @@
  * page the crawl already has open (read-only). Its structural signature
  * refines TFP-170's address types: pages with equal signatures merge, and
  * pages of one address pattern with different signatures split. There is no
- * threshold (Emil, 2026-10-07): signatures are equal or they aren't.
+ * threshold (owner decision, 2026-10-07): signatures are equal or they aren't.
  *
  * The signature is three things:
  * - the set of landmark regions (banner, navigation, main, complementary,

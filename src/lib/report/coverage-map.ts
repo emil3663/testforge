@@ -28,7 +28,7 @@ import type { CoverageMap, CoverageMapEntry, CoverageMapType } from "./types";
  * A whole-page check (the WCAG scan, a heading check) touches the page, not
  * each element on it, so it doesn't make an element covered.
  *
- * TFP-201 (Gate A ruling 1, Emil, 2026-10-14): coverage in two tiers.
+ * TFP-201 (Gate A ruling 1, 2026-10-14): coverage in two tiers.
  * - **In context:** found and checked on its page, as above. This tier is
  *   the gap list, the index, and TFP-194's targets.
  * - **Reachability:** a link whose URL a site-wide check requests (link
