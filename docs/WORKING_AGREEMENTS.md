@@ -1,167 +1,189 @@
 # Working agreements
 
-How work gets tracked and landed, for **both** builds.
+*Rewritten 2026-10-26. The previous version of this file was test-assist's
+working agreement, copied in with the skills work on 2026-09-16; it
+described `TA-NNN` tickets, `TESTASSIST_BACKLOG.md` and a deployed browser
+build, none of which exist here. Its two hard-won lessons live on as the
+`dont-stub-what-you-prove` and `find-the-hidden-platform` skills.*
 
-`CONTRIBUTING.md` covers setting up and running the browser build — start
-there if you are picking up front-end work. This document is the other
-half: where work is written down before it is built, and how a change gets
-from an idea to `main`.
+How work on TestForge is decided, built, checked and recorded. Gates,
+evidence rules and the verification checklist are in
+[`QUALITY_GATES.md`](QUALITY_GATES.md); this document is the process
+around them. Review it when the way of working changes, and at least at
+every phase completion (see [Docs that must stay true](#docs-that-must-stay-true)).
 
-Nothing here replaces `TEST_PLAN.md`, which remains the source for the
-label set and board columns (§6), or `TESTASSIST_BACKLOG.md`, which remains
-the desktop build's design record.
+---
+
+## Decision vocabulary
+
+Documents and code say *what kind* of decision or permission something is,
+not *whose name* is attached to it. A name records who decided; it is not
+the rule. A reader, a new contributor or a coding agent has to be able to
+tell from the words alone whether they may proceed.
+
+| Term | Meaning | What an agent does |
+|---|---|---|
+| **Owner decision** | A choice between valid options that only the project owner makes: scope, product direction, a gate ruling, a trade-off. | Sets out the options, the evidence and a recommendation, then stops. The decision is recorded with its date in a decision record. |
+| **Confirmation required** | An action the agent may prepare but must not perform without an explicit go-ahead in the current session. Approval does not carry over to later actions or sessions. | Prepares the action, says exactly what it will do, waits for a clear yes. |
+| **Independent review** | A review by someone who did not produce the work: a separate verifying session, or an outside reviewer at a stage gate. | Hands over the work and the criteria, not the reasoning that produced it. |
+| **Recorded rationale** | Why a past decision was taken. | Cites it by reference, e.g. *Phase 42 Decision 8 (2026-10-12)*, rather than restating it. |
+
+**Confirmation required, standing list.** These need a go-ahead every time,
+whatever permission mode the session runs in:
+
+- changing machine-level or user-level settings (installing RTK, `rtk init -g`, global git config, anything outside the repo);
+- promoting a candidate test into the library;
+- deleting files, history or run evidence; rewriting git history; force-pushing;
+- starting a long measurement session that locks the machine (these are batched overnight, see the deferred-work register's standing rules);
+- running anything against a live site that isn't a listed practice target (`docs/decisions/practice-site-targets-2026-10-19.md`), and anything attack-shaped against a site without an ownership confirmation;
+- spending money: paid API calls beyond what a ticket budgets, new services.
+
+**In product code and product docs**, the person approving is **the
+tester** (or "the user" in UI copy) — TestForge is meant for other people's
+sites and teams. Code and README text never name a maintainer as the
+approver.
+
+**Where names still belong:**
+
+- *Attribution and credit:* who proposed a skill, who wrote a draft, the
+  plugin's author field, commit authorship.
+- *Frozen evidence:* `benchmarks/` and git history are records of what
+  happened and are never edited to change their wording.
+- *A decision record's own ruling line* may say who ruled; everything that
+  cites it uses the reference.
+
+### Roles
+
+| Role | Who, today | Does |
+|---|---|---|
+| **Owner** | Emil | Makes owner decisions; gives confirmations; rules at gates. |
+| **Reviewer** | Martin | Independent review at stage gates; proposes skills and direction. |
+| **Planning session** | Claude in chat or Cowork | Decision records, backlogs, handovers, reviews, doc updates. Never edits code or commits. |
+| **Implementing session** | Claude Code in VS Code | Builds tickets, runs checks, writes commit messages, commits and pushes. The only git driver on the repo. |
+| **Verifying session** | A fresh session that did not build the work | Runs `QUALITY_GATES.md` §5 with the `agent-report-verification` skill. |
+
+The table is the only place names are mapped to roles. Everywhere else,
+use the role or the vocabulary above.
 
 ---
 
 ## The loop
 
 ```
-issue  ->  branch  ->  PR  ->  merge closes the issue
+owner decision ─► decision record ─► tickets ─► handover ─► build ─► verify ─► gate ruling ─► record
+   (planning)       (planning)       (planning)  (planning)  (implementing) (verifying) (owner)  (planning)
 ```
 
-`CONTRIBUTING.md` already says to work on a branch and open a PR rather
-than pushing to `main`, and says why: `main` **is** the deployed browser
-app, and the live URL is on a CV and in a sent cover letter. This adds the
-two ends of that.
+1. **Decide in a decision record.** A phase is locked by
+   `docs/decisions/phase-NN-*-decision-record.md` before it is built
+   (`phase-decision-record` skill). Its Acceptance criteria must be
+   checkable; if they can't be written, the work isn't understood well
+   enough to start.
+2. **Break it into tickets.** `TFP-NNN`, in the record or a backlog file
+   beside it (`implementation-backlog` skill). Each ticket has a
+   problem it solves, scope, acceptance criteria and explicit dependencies.
+   Before allocating numbers, check the highest `TFP-` in the repo — two
+   sessions can be writing tickets at once.
+3. **Hand over.** One current `docs/HANDOVER_TO_CLAUDE_CODE_<date>-<topic>.md`
+   per workstream. A new handover deletes the one it replaces in the same
+   commit; its history stays in git. The owner points Claude Code at the
+   file; nobody pastes its contents into chat.
+4. **Build.** Claude Code builds one ticket at a time, runs its checks,
+   and shows evidence, not assertions (`QUALITY_GATES.md` §1).
+5. **Verify.** A fresh session checks the report against the ticket before
+   the next ticket starts at a gate, and on the highest-risk ticket of a
+   phase.
+6. **Rule.** At each gate the owner rules on the measured results. The
+   ruling and its table are recorded under the gate in the decision record.
+7. **Record.** The record's status line, `product-roadmap.md`, the
+   deferred-work register and `TEST_PLAN.md` are updated in the same
+   commit as the work they describe.
 
-### It starts as an issue
-
-Not as a branch, and not as a commit. The issue is where the reasoning
-lives; the commit is only where the change lives.
-
-Write it so someone can pick it up **cold** — another contributor, a coding
-agent, or you in three weeks — without asking a question first. That is
-already the standard `TESTASSIST_BACKLOG.md` meets; this just puts it
-somewhere that can be assigned, linked from a commit, and closed by a
-merge.
-
-If you cannot write the Acceptance section, the work is not understood well
-enough to start.
-
-### It ends with a trailer
-
-Every commit message ends with one:
-
-| Trailer | Meaning |
-|---|---|
-| `Closes #N` | this commit completes the issue |
-| `Refs #N` | progress on it, not done |
-
-GitHub closes the issue when the PR merges. That is the mechanism that
-stops what happened to #1 — a report left open while the fix for it was
-designed, built, released and verified, because nothing connected the two.
-
-Commit subjects follow [Conventional Commits](CONVENTIONAL_COMMITS.md).
+**Commits** go to `main` in small, reviewable commits, in Conventional
+Commits form (`conventional-commits` skill): the body carries the why,
+the alternatives rejected and what the change does not do. A commit that
+completes a GitHub issue ends with `Closes #N`; progress on one with
+`Refs #N`. GitHub issues hold outside reports and work that needs
+visibility; `TFP-` tickets in `docs/decisions/` stay the design record, and
+an issue that becomes a ticket carries its `TFP-` number in its title.
 
 ---
 
-## The brief shape
+## Running Claude Code
 
-Every issue body, in this order:
+These follow from the Claude Code team's current guidance (Boris Cherny's
+and Cat Wu's practices, 2026) where they fit how TestForge is built.
 
-```markdown
-## Context
-Why this exists, with the MEASURED evidence that justified it — numbers,
-counts, timings, a reproduction. Not "this feels slow": "this adds 195 ms
-to every launch, measured".
+**Auto mode for ticket implementation.** Auto mode is Claude Code's
+starting permission mode from v2.1.283: a separate classifier reviews
+actions and blocks risky ones instead of prompting for each. A locked
+ticket already has its plan — the decision record — so the implementing
+session goes straight to building; plan mode is for work that isn't
+ticketed yet, or a change that can't be described in a sentence. Auto mode
+does not replace the confirmation-required list above: the classifier
+decides what is *risky*, the list decides what needs the *owner*.
 
-## Change
-What and where. Files and symbols with line references. The shape of the
-fix, and what existing pattern it should mirror.
+**A correction becomes a rule, the same day.** When the owner corrects
+Claude Code on something that would recur, the session proposes a one-line
+addition to `CLAUDE.md` (or to the skill that should have caught it) in its
+next commit. A lesson that lives only in a decision record is invisible to
+the next session. Keep `CLAUDE.md` short: for each line, removing it should
+cause a mistake. Ticket-specific rulings stay in the records.
 
-## Acceptance
-Verifiable statements, not intentions. Exact commands. What must be true
-afterwards — including what must NOT change.
+**Context is the scarce resource.**
+- One handover per fresh session; `/clear` between unrelated tickets.
+- Read the section of a large file the ticket names, not the whole file.
+  `TEST_PLAN.md` (about 300 KB), the deferred-work register and the roadmap
+  are references, not reading lists.
+- Research goes to a subagent so the implementing context stays on the
+  build.
+- RTK compresses shell output (`CLAUDE.md`); evidence stays unfiltered.
 
-## Not in this issue
-Explicit exclusions. Anything deferred and why. Sibling issues it depends
-on or unblocks.
+**Check before reporting.** Before a ticket is reported done, the session
+runs its own checks, then a fresh-context review of the diff against the
+ticket (Claude Code's `/code-review`, or a subagent given the ticket's
+Acceptance section). Gate verification is still a separate session.
 
-## Provenance
-How this was found.
-```
-
-**Context and Acceptance are the two that earn their keep.** Context is
-what lets someone disagree with the premise before code is written.
-Acceptance is what makes "done" a fact rather than an opinion.
-
-`Not in this issue` looks like ceremony and is not: most scope creep is not
-a decision, it is the absence of one.
-
-### On measured evidence
-
-"The capture looks soft on a Mac" is a hunch. This is evidence:
-
-> selection 400x300 logical px, screen ratio 2.0, grabbed pixmap 800x600
-> (480,000 px), composited result 400x300 (120,000 px) — 4x the captured
-> data discarded.
-
-The second can be argued with, tested, and closed. The first cannot. That
-matters more than usual here, because the tool exists to make *other*
-people's defect reports evidence-based; the repo should meet the bar it
-sells.
+**Parallel work in worktrees — only when it's safe.** Independent tickets
+can run in separate git worktrees, one Claude Code session each. Only when:
+- the tickets touch different files (an SEO Standard set and an APG pattern
+  batch, say), and neither changes the template baseline;
+- each worktree has its own `npm install` and its own port;
+- no measurement session is running — parallel builds skew timings, and
+  measurements need a quiet machine.
+Each worktree's work is verified and merged to `main` on its own; the
+loop above applies to each.
 
 ---
 
-## `TA-NNN` and issue numbers
+## Routines
 
-Both records stay, with distinct jobs:
+Recurring checks run on a schedule rather than when someone remembers.
 
-| | `TESTASSIST_BACKLOG.md` | GitHub Issues |
+| Routine | Cadence | What it does | State |
+|---|---|---|---|
+| Unit suite and template check | Nightly 02:00 UTC, plus manual dispatch | `.github/workflows/nightly.yml` | Running |
+| Nightly summary email | After the nightly run | Quick-view summary with a link to results | TFP-217, ticketed |
+| Living-docs check | Weekly | Checks `APPLICATION_OVERVIEW.md`, `README.md` and this file against the code and the roadmap (`repo-claim-audit` skill) and reports what is false or stale | Scheduled task, set up 2026-10-26 |
+| Nightly-failure triage | After a red nightly | Reads the failing job and drafts an issue with the failing test, the first bad commit and a reproduction | Ticketed (see `docs/decisions/workflow-and-ci-backlog-2026-10-26.md`) |
+
+A routine only *reports* or *drafts*. Anything it finds goes through the
+loop like any other work.
+
+---
+
+## Docs that must stay true
+
+| Doc | Says | Update when |
 |---|---|---|
-| Holds | the design record, and the reasoning at the time | the live work queue |
-| Good at | sequencing, phases, dependencies, narrative | assignment, linking, closing, visibility |
-| Audience | whoever is planning | whoever is doing, including outside contributors |
+| `README.md` | How to set up and use TestForge, and its security model | A user-visible behaviour, setting or command changes |
+| `docs/APPLICATION_OVERVIEW.md` | What TestForge is and does now, for a new reader | Every phase completion |
+| `docs/decisions/product-roadmap.md` | Every phase, in order, with its status | Every lock, gate and completion |
+| `docs/decisions/deferred-work-register.md` | Everything deferred, its build order and standing rules | Whenever a record defers or picks up work |
+| `TEST_PLAN.md` | Case-by-case status and known limitations | In the commit that changes the behaviour |
+| `docs/QUALITY_GATES.md` | Gates, evidence and verification | When a gate or check changes |
+| This file | How work is done | When the loop changes; reviewed at each phase completion |
 
-A `TA-NNN` that becomes active work gets an issue, and the issue title
-carries the identifier:
-
-```
-TA-229 — Capture on a HiDPI display discards 3/4 of the pixels it grabbed
-```
-
-so the two read together instead of competing. Work found outside the
-backlog — a bug report, something noticed in passing — starts as an issue
-and only earns a `TA-NNN` if it needs design work first.
-
-The backlog is not being migrated wholesale. Most of its tickets are closed
-or superseded, and bulk-importing them would bury the live ones.
-
----
-
-## Two things already learned here
-
-Both cost real time in this repo, and both are easy to walk into again.
-
-**A test must not stub the thing it is supposed to prove.** TA-227 exists
-because two dispatch tests stubbed the dispatch. A green test that proves
-nothing is worse than no test, because it also removes the suspicion that
-would have led someone to look.
-
-**A `skipif` guard hides a platform; it does not cover it.** The Win32
-hotkey tests are correctly guarded to Windows, which means every other
-platform runs a suite that cannot fail for them. The same is true of any
-path a suite deliberately avoids: `_apply_hotkey_labels()` runs only when
-`register_global_hotkeys=True`, which the suite skips because it claims
-real OS state — so a refactor removed two buttons it referenced, 350 tests
-stayed green, and the app died on startup. Where logic can be exercised
-without the real resource, exercise it that way as well.
-
-**A default-off flag guarding real OS state is a coverage hazard on its
-own, separate from what it guards.** `register_global_hotkeys` defaults to
-`False` for a sound reason — `RegisterHotKey` claims process-wide state
-concurrent tests would fight over — but that same reason means the `True`
-path is exercised by a handful of tests, no more, and whatever those tests
-assume about the machine they run on becomes an assumption the whole path
-inherits silently. TA-230 cost real time three separate ways from this one
-flag before the hazard was named: a coverage gap (dead code only the
-`True` path reaches), a cross-platform blind spot (a `skipif`-guarded test
-rotting unseen off Windows), and a foreign-holder collision (a leftover
-`TestAssist.exe` already holding a hotkey, read as a code regression
-during a release gate until someone diagnosed it under time pressure).
-None of the three announces itself in a green suite — each needed someone
-to go looking. Any other default-off flag guarding a real, shared resource
-(a port, a file lock, a registered protocol handler) is worth the same
-question: what does the suite assume is true about the machine while that
-path is skipped, and does anything check the assumption before trusting
-its result.
+Each of these should carry its last-reviewed date near the top (the
+overview and this file do; TFP-255 and TFP-256 add the rest). The weekly
+living-docs check reports any that is older than the last phase completion.

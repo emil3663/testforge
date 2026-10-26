@@ -1,95 +1,161 @@
 # TestForge — what it actually does
 
-*Living doc, 2026-09-24 — sits alongside `docs/decisions/product-roadmap.md`
-(the phase-by-phase decision ledger, deliberately kept as a static outline
-per its own header) and `TEST_PLAN.md` (case-by-case status). This doc is
-the "what is this, roughly, right now" answer; point new readers here
-first.*
+*Living doc. Last reviewed 2026-10-26, against `main` at `8e93998` (Phase 39
+Gate D ruled). Reviewed at every phase completion
+([`WORKING_AGREEMENTS.md`](WORKING_AGREEMENTS.md)). Point new readers here
+first; `README.md` is the how-to, `docs/decisions/product-roadmap.md` the
+phase-by-phase ledger, `TEST_PLAN.md` the case-by-case status.*
 
 ## In one paragraph
 
-TestForge is an AI-native test automation assistant with a single Next.js
-front end. Point it at a target site, and it crawls and introspects the
-site, generates and runs real Playwright test suites against it, and
-returns a structured report — one that says not just pass/fail, but what
-was actually tested, how, and honestly what wasn't tested and why. It's
-local-only today, not a deployed service (Phase 16 decision; a hosted
-version is deferred, not cancelled).
+TestForge is a test automation assistant for websites. Give it a base URL
+and it crawls the site, groups its pages into page types, inspects one page
+of each type, writes a Playwright TypeScript suite from what it actually
+found, runs it in Chromium, and returns a report that says what was tested,
+how, and — just as prominently — what wasn't tested and why. The suite is
+plain Playwright you can keep and run without TestForge. The core needs no
+AI and no API key. It is a local, single-user tool today: a Next.js app on
+the tester's machine, not a hosted service.
 
-## The core idea: honest coverage
+## The ideas it is built on
 
-The report's coverage number isn't "percentage of generated tests that
-passed." It's built from a discovered-surface model (Phase 17): everything
-crawl and introspect find on the target — every link, form, button,
-outbound dependency — is the denominator, and tested / not-tested-and-why
-is measured against that real surface, not against whatever subset
-happened to get a generated test.
+- **Honest coverage.** The coverage denominator is everything the crawl and
+  inspection found (every link, control, form and outbound dependency), not
+  the tests that happened to be generated. The report's gap list names what
+  no test touched (Phase 17; element-level coverage map, Phase 42).
+- **Deterministic first.** A template generator writes every test from
+  inspection data. The same site gives the same suite; the template's output
+  is checked byte-for-byte against a recorded baseline on fixed inputs
+  (`npm run check:template-unchanged`, nightly).
+- **Evidence over claims.** Every capability is measured against targets
+  with known defects — local Docker copies of the Toolshop practice site
+  (clean and with-bugs) and The Internet — and results are kept under
+  `benchmarks/` (`docs/QUALITY_GATES.md`).
+- **Safe by default.** Tests are read-only unless a run turns on more.
 
-## What it can test
+## What a run does
 
-- **Functional and accessibility surface**, page by page.
-- **Integration points** (Phase 18) — every outbound dependency a page
-  talks to (network calls, third-party scripts, iframes, storage APIs)
-  gets a failure-injection test asserting the page degrades rather than
-  breaks.
-- **Full paths and journeys** (Phase 19) — a walkable site graph built
-  from the same crawl/introspect data, candidate journeys surfaced for
-  review, generated end-to-end tests that walk a selected path.
-  Interactive by nature, so skipped by default, explicitly enabled per
-  run.
-- **The logged-in state of a site** (Phase 20) — a config-driven
-  automation account (login URL + field selectors, supplied once), session
-  cached and reused across a run's generated tests, never persisted to
-  disk. Deliberately config-driven, not auto-discovered.
+1. **Crawl and select.** Pages are grouped into page types by address
+   pattern, split only by form signature; Standard tests one page per type,
+   up to 8 (Phase 40).
+2. **Inspect.** Each selected page is read in a real browser so every check
+   targets real elements: controls, forms, links, landmarks, outbound
+   requests.
+3. **Generate.** The template writes the suite. Optionally, a local model
+   (Ollama) fills areas the template left empty, and, opt-in per site,
+   Claude Code or a local model writes tests for coverage gaps; model-written
+   tests are labelled and kept apart.
+4. **Run.** Chromium only, at one of three gates:
+   - **read-only** (default): nothing that changes data; a request guard
+     blocks non-GET traffic;
+   - **interactive**: forms and flows, when the run switches it on;
+   - **active**: data-changing and attack-shaped tests, only behind an
+     ownership confirmation (Phase 43, locked, not built).
+5. **Report.** Execution, defects, coverage, performance, accessibility,
+   usability and SEO, with an HTML export. Runs persist and two runs of the
+   same site can be diffed test by test.
 
-## How it generates tests
+## Two kinds of run
 
-The deterministic, no-API-key generator is the foundation and the default
-— every capability above works without any AI API key. An OpenAI-backed
-path already exists in the code (`/api/generate` calls `gpt-4o` when
-`OPENAI_API_KEY` is set) but has never run in CI and isn't yet evaluated
-against the deterministic path — that evaluation is Phase 21, not started
-as of this doc (see `docs/decisions/phase-21-ai-assisted-generation-decision-record.md`).
+- **Standard** — the critical working path, not intrusive: functional
+  controls (sorts, filters, steppers, links), every link on the selected
+  pages, layout and overlap, spelling, keyboard order, WCAG 2.2 A/AA via axe,
+  passive security headers and probes, baseline SEO, and Core Web Vitals
+  graded in bands (a miss that isn't poor is an improvement, not a failure).
+- **Comprehensive** — one area in depth, or all areas: negative and
+  edge-case tests that try to break fields and flows. Security and
+  accessibility have Comprehensive sets today; SEO, functional negatives and
+  all-areas runs are in the build order
+  (`docs/decisions/deferred-work-register.md`).
 
-## Architecture, as of 2026-09-24
+Measured: on the local Toolshop copies, with 37 known bugs in reach,
+Standard alone finds 30 (TFP-207, 2026-10-16); Standard plus Comprehensive
+security and accessibility finds 33 (Phase 41 Gate B).
 
-- Next.js UI (`src/app/page.tsx`, 439 lines) as the single front end — no
-  separate backend service; the FastAPI backend and a template-based UI
-  layer were deleted in the Phase 16 restructuring.
-- `/api/generate` (`src/app/api/generate/route.ts`, 72 lines) builds the
-  test suite, with the prompt itself isolated in `src/lib/generate/prompt.ts`
-  (29 lines); `/api/run` (`src/app/api/run/route.ts`, 182 lines) executes
-  it against Chromium via Playwright.
-- Local-only by design: `/api/run` executing arbitrary generated code is an
-  accepted risk under that model, not an oversight.
+## Reuse instead of regeneration (Phase 42)
 
-*(Line counts move — Phase 19/20 both added real UI, so these will drift
-again. Worth a quick `wc -l` before quoting them as current in anything
-long-lived.)*
+- **Site suites.** A site's Standard suite is saved with a structural
+  fingerprint per page type. Later runs reuse unchanged page types,
+  regenerate changed ones, retire removed ones and keep hand-edited tests.
+  A reused test that fails on a changed page is regenerated and re-run
+  before it counts.
+- **Library.** Comprehensive tests written against component patterns,
+  in the repo (`src/lib/library/`), applied to any site with that pattern.
+- **Gap tests and candidates.** Opt-in per site: uncovered elements get a
+  test written (by Claude Code, tools disabled, or a local model). Passing
+  ones join the site suite and become candidates; a candidate that passes
+  every run and catches a real defect or runs clean on 3 sites is offered
+  for promotion to the library, which needs the tester's approval
+  (confirmation required).
+
+Site suites, run history and candidates hold one site's details, so they
+live in TestForge's local data folder (`%LOCALAPPDATA%\TestForge` on
+Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
+
+## Architecture
+
+```
+ Browser UI (src/app/page.tsx)
+      │  fetch
+      ▼
+ Next.js API routes (src/app/api/*)          one Node process, loopback only
+  crawl · introspect · generate · run · runs · runs/diff · candidates
+  site-settings · save-suite · health
+      │
+      ├─ src/lib/introspect, selection   crawl, page types, inspection (Playwright)
+      ├─ src/lib/generate                 template generator, Comprehensive sets
+      ├─ src/lib/gap-writer, candidates,  gap tests, candidate pool, promotion
+      │  library, site-suites
+      ├─ src/lib/run                      job queue, gates, request guard, host limits,
+      │                                   child Playwright runs with a minimal environment
+      ├─ src/lib/report                   coverage, summary, diff, HTML export
+      └─ src/lib/storage                  data folder: runs/, site-suites/, candidates/
+      │
+      ▼
+ Chromium (Playwright) ──► target site          optional: Ollama (local model),
+                                                 Claude Code CLI (gap writer)
+```
+
+- **No database.** Runs are folders (`run.json`, the executed
+  `suite.spec.ts`, `evidence/`), written atomically; one TestForge process
+  per data folder.
+- **Async runs.** `POST /api/run` returns a job (202); the UI polls
+  `GET /api/run`. Concurrency is by worker count with per-host request caps
+  (Phase 39, in progress).
+- **Security model.** `/api/run` executes generated code with the user's
+  privileges. That is accepted under the local-only model (Phase 16) and is
+  why TestForge must never be bound to a non-loopback interface or tunnelled
+  (`README.md`, Security model). Model-written code is restricted to the page
+  and `expect` and runs with no keys in its environment — not a sandbox; the
+  Docker sandbox is Phase 45.
+- **Tests of TestForge itself.** Node unit tests, a Playwright self-test and
+  regression suite against a built instance, Allure reports; CI runs PR
+  validation, regression, self-test and the nightly unit and template
+  checks (`.github/workflows/`).
+
+## Where it's going
+
+In order (`product-roadmap.md`, `deferred-work-register.md`):
+
+- **Now:** Phase 39, run speed — Gates A–D measured; TFP-157's slot-server
+  fix verified and pushed (`66cd0c0`); D26 and Gate D's re-measurement next.
+- **Next:** Phase 43 ownership confirmation; then the remaining Standard
+  sets (SEO, the WAI-ARIA APG patterns, the rest of accessibility and
+  security); Comprehensive negative tests and SEO; all-areas runs; load
+  testing.
+- **Locked, not started:** Phase 44 scenario gaps, Phase 45 Docker sandbox,
+  Phase 46 app screens.
+- **Proposed:** running TestForge as a step in a target's CI pipeline
+  (`docs/decisions/workflow-and-ci-backlog-2026-10-26.md`).
+- **Deferred, not cancelled:** a hosted SaaS version
+  (`saas-prerequisites.md`); the OpenAI path (Phase 28, parked).
 
 ## Relationship to `skills/`
 
-A separate, parallel track, not a replacement of the app above — the
-option to rewrite TestForge into pure Claude Code skills was considered
-and declined (`docs/REIMAGINING.md` / `REIMAGINING-RESPONSE.md`). Instead,
-`skills/` grew alongside the app: 12 skills across `skills/testing/` and
-`skills/engineering/`, generalizing techniques TestForge already uses,
-packaged as a real installable Claude Code plugin
-(`skills/.claude-plugin/plugin.json`). A further `skills/proposed/` holds a
-set of SRE-oriented skills not yet promoted. The two tracks are versioned
-and picked up independently.
-
-## Where to look next
-
-- Phase-by-phase decisions and status: `docs/decisions/` (start with
-  `product-roadmap.md`, then the specific phase's decision record).
-- The skills catalog and status: `skills/ROADMAP.md`, `docs/CLAUDE_SKILLS.md`.
-- Manual test cases and known limitations: `TEST_PLAN.md`.
-
----
-
-*This draft was built from the decision records and git history, not a
-full line-by-line code read — the Architecture section above was
-spot-checked (`wc -l` on the three files named), but treat anything else
-here as a starting point worth a skim against the real code before leaning
-on it hard.*
+A parallel track, not a replacement: `skills/` packages the testing and
+engineering judgment behind TestForge as an installable Claude Code plugin
+(`testforge-skills`, 12 skills under `skills/testing/` and
+`skills/engineering/`), usable without the app. `skills/proposed/` holds
+SRE and DORA skills under review, four of them being adopted (TFP-236).
+Rewriting TestForge as skills only was considered and declined
+(`docs/REIMAGINING.md`, `REIMAGINING-RESPONSE.md`).

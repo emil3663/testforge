@@ -1,6 +1,8 @@
 @AGENTS.md
 
 Quality gates, evidence rules and the verification checklist: `docs/QUALITY_GATES.md`.
+How work is decided, built and recorded, and what *owner decision* and
+*confirmation required* mean: `docs/WORKING_AGREEMENTS.md`.
 
 ## Shell output: use RTK
 
@@ -24,4 +26,17 @@ before it reaches the model, so a session uses fewer tokens.
 - Check it is working with `rtk --version` and `rtk gain`. If `rtk gain`
   fails, the wrong package (crates.io "Rust Type Kit") is installed.
 - Installing RTK or running `rtk init -g` changes this machine's
-  user-level settings, so ask Emil first.
+  user-level settings: confirmation required.
+
+## When you're corrected
+
+When the owner corrects something that would recur, propose a one-line rule
+for this file (or for the skill that should have caught it) in your next
+commit. Keep this file short: every line here should prevent a real
+mistake. Ticket-specific rulings stay in the decision records.
+
+## Before reporting a ticket done
+
+Run the ticket's checks, then review your diff against the ticket's
+Acceptance section in a fresh context (`/code-review`, or a subagent given
+only the diff and the criteria). Report evidence, not conclusions.
