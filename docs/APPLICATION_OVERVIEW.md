@@ -146,8 +146,8 @@ In order (`product-roadmap.md`, `deferred-work-register.md`):
   testing.
 - **Locked, not started:** Phase 44 scenario gaps, Phase 45 Docker sandbox,
   Phase 46 app screens.
-- **Proposed:** running TestForge as a step in a target's CI pipeline
-  (`docs/decisions/workflow-and-ci-backlog-2026-10-26.md`).
+- **Locked, next after Phase 39:** Phase 47, TestForge as a step in a
+  target's CI pipeline (`docs/decisions/phase-47-ci-integration-decision-record.md`).
 - **Deferred, not cancelled:** a hosted SaaS version
   (`saas-prerequisites.md`); the OpenAI path (Phase 28, parked).
 

@@ -25,6 +25,14 @@ structure that existed to support the other answer.
 - No authentication, sandboxing, or multi-tenant isolation is built in this phase.
 - `.env.production`, `.env.staging`, and `DEPLOYMENT_CHECKLIST.md` are removed.
 
+**Amended 2026-10-27 (Emil; Phase 47 Decision 3,
+`phase-47-ci-integration-decision-record.md`):** "local-only" means TestForge
+runs on the tester's own machine *or on their own team's CI runner*, for that
+team alone — never as a shared service. In CI it starts no HTTP server, runs
+only code it generated in that job or the team's own restored site suite, and
+takes credentials only from the pipeline's secrets. Decision 2 (SaaS
+deferred) is unchanged.
+
 2. A deployed SaaS version is explicitly deferred, not cancelled.
 - SaaS is out of scope for Phase 16 and every ticket within it.
 - Authentication, sandboxed execution, and durable run state are recorded as

@@ -31,6 +31,16 @@ with TFP-222 before Phase 39's TFP-155.
      2026-10-27, awaiting verification**
      (`benchmarks/2026-10-27-d26-wsl/`). The run-time baseline comes from
      Gate D's re-measurement.
+**Then, before item 2: Phase 47, TestForge in a target's CI pipeline**
+(added 2026-10-27, Emil: after Phase 39, before Phase 43; numbered here
+without renumbering the items below, which the tables' Order columns cite).
+- Standard, read-only, against an app the CI job starts on `localhost`;
+  deployed URLs capped until Phase 43.
+- The crawl and generate logic moves into `src/lib/pipeline/` first
+  (TFP-263); then the CLI, baselines, a Docker image and a GitHub Action.
+- Tickets TFP-263, TFP-245 to TFP-248; TFP-249 after Phase 43 (D31).
+- Versioning (TFP-257 steps 1–5) comes before its image.
+
 2. **Phase 43 (D8): the ownership confirmation, once per site.**
    - Saved with the site: exact hosts, contact email, 90-day expiry,
      active and load ticks.
@@ -192,6 +202,12 @@ Statuses:
 | D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
 | D30 | A solo performance pass, so real sites without the ownership confirmation still get performance judged | Emil, 2026-10-21, after TFP-157's ruling that timed checks are Not run under the request cap | Wanted | **Planned**, with D3 | 7, with D3 | TFP-157 (Phase 39). What it covers is below |
 | D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for TestForge's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
+
+| D31 | Active and interactive gates against deployed URLs in CI (TFP-249) | Phase 47, deferred (2026-10-27) | Wanted, after Phase 43 | **Planned** | After Phase 43 | Phase 43, TFP-248 |
+| D32 | An npm package for the CI runner | Phase 47 Decision 8 (2026-10-27) | Deferred: the image pins Chromium, npm wouldn't | Open | - | TFP-247 |
+| D33 | Models (gap writer, local model, OpenAI) in CI | Phase 47 Decision 9 (2026-10-27) | Off in CI for now | Open | - | Phase 45's sandbox |
+| D34 | Comprehensive all-areas runs in CI | Phase 47, deferred (2026-10-27) | Wanted, with D5 | **Planned**, with D5 | With D5 | D5, TFP-248 |
+| D35 | Native integrations for other CI systems (GitLab component, Azure DevOps task) and SARIF output for code scanning | Phase 47, deferred (2026-10-27) | Not before someone asks | Open | - | TFP-248 |
 
 ## Phases or items not wrapped up
 

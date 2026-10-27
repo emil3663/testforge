@@ -486,6 +486,19 @@ See `phase-46-app-screens-decision-record.md`.
 
 ---
 
+### Phase 47 — TestForge in a target's CI pipeline (locked 2026-10-27, not started; after Phase 39, before Phase 43)
+
+A command crawls, generates and runs against a target with no UI and no
+server, and ends with an exit code, JUnit and HTML. A second run compares
+with the first, so known failures don't fail the build. First scope:
+Standard at the read-only gate, against an app the CI job starts on
+`localhost`; a deployed URL runs capped until Phase 43. The crawl and
+generate logic first moves out of the API routes into `src/lib/pipeline/`,
+shared by the UI and the CLI. Shipped as a pinned Docker image and a GitHub
+Action. Phase 16 Decision 1 is amended: a team's own CI runner counts as
+local. Record: `phase-47-ci-integration-decision-record.md`; tickets TFP-263,
+TFP-245 to TFP-249.
+
 ## Sequencing note
 
 Phase 16 is followed by a live walkthrough of what it actually produced —

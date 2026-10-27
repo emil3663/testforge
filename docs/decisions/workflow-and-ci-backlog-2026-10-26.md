@@ -74,6 +74,14 @@ another session took any of them.
 
 ## Part 1 — TestForge in a target's CI pipeline (proposed Phase 47)
 
+> **Locked 2026-10-27 as Phase 47** (`phase-47-ci-integration-decision-record.md`).
+> The record's Decisions and Acceptance Criteria govern; TFP-244 is done (the
+> record itself). The tickets below stand with the record's changes: a new
+> P0, TFP-263, moves the crawl and generate logic into `src/lib/pipeline/`
+> first; TFP-245 calls it and opens no server; TFP-246 uses `diffRuns`;
+> TFP-247 publishes to GitHub's container registry. Order: after Phase 39,
+> before Phase 43.
+
 ### Where it stands today
 
 - **TestForge's own CI exists:** PR validation, regression, self-test and

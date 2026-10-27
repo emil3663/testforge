@@ -32,6 +32,14 @@ commit (`git rm`); its history is in git and in the backlog.
 
 ## Do, in order
 
+000. **(Added 2026-10-27, 13:30) Commit Phase 47's lock as one `docs`
+     commit:** `docs/decisions/phase-47-ci-integration-decision-record.md`
+     (new, locked), the dated amendment in the Phase 16 record, D31–D35 and
+     the build-order entry in the deferred-work register, the roadmap's
+     Phase 47 section, the decisions index row, the backlog's Part 1 note
+     and the overview's "Where it's going" line. Don't start TFP-263 until
+     Phase 39 is complete: it changes code every run uses.
+
 00. **(Added 2026-10-27, 05:30) TFP-261 — P0, before anything else here,
     and between Phase 39 tickets if one is mid-way.** The server listens on
     every interface and `/api/run` accepts a cross-site `text/plain` POST
