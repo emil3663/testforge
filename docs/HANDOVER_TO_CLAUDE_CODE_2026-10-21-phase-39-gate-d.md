@@ -7,6 +7,35 @@ git and in the phase records.
 You are a fresh session, started on purpose so the latest versions of
 Emil's account skills are loaded.
 
+## Now (added 2026-10-27, 21:10): the re-measurement ruling
+
+Read **"Re-measurement ruling (Emil, 2026-10-27)"** at the end of the Phase 39
+record. In order:
+
+1. **Push** `e79156f`, `0cd5612` and `b8732a4`, and commit the planning
+   pass's docs (that ruling, D36 in the register, this section) as one
+   `docs` commit.
+2. **Ruling 1, the new limit:** `machineWorkerLimit` (`src/lib/run/host-limits.ts`)
+   becomes half the cores, at least 1, at most 3. Update its unit cases
+   (the 1/2/3/4/7/12-core table), RUN-42 in `TEST_PLAN.md`, and the
+   README's host-limits text. Unit, host-limits and regression tests as
+   before. Stop for verification.
+3. **Ruling 4's experiment**, on the verified limit, on a quiet night:
+   local with-bugs through the LAN address (capped row, as Gate D's capped
+   fixture variant) against W1 uncapped on loopback; Standard, security,
+   accessibility; three rounds. Prepare it by day with a dry run; the
+   owner starts it, or you do, the usual way with your monitor — reading
+   only the log.
+4. **Analyse it and apply the pre-set outcome** in ruling 4 (same results
+   → 60 min budget, cap timeouts reported Not run; different → longer
+   waits on capped hosts by the measured mean slot wait, re-checked once,
+   the rest Not run). Build that as its own ticket, verified. Then Gate D
+   closes, and with D26 verified (2026-10-27, see the record's Progress),
+   Phase 39 completes: that's `0.2.0` in `CHANGELOG.md`.
+
+Then the workflow handover's step 0000 code items (helper lines and
+baseline, version stamp, `v0.1.0` with the owner's confirmation).
+
 ## Read first
 
 - **`docs/decisions/phase-39-run-concurrency-decision-record.md`:**

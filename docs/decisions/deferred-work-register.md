@@ -28,7 +28,7 @@ with TFP-222 before Phase 39's TFP-155.
    - Failure sets and score are proven unchanged, and the run times
      become the new baseline.
    - **Moved into Phase 39** by Gate D's ruling 3 (2026-10-26); **built
-     2026-10-27, awaiting verification**
+     and independently verified 2026-10-27**
      (`benchmarks/2026-10-27-d26-wsl/`). The run-time baseline comes from
      Gate D's re-measurement.
 **Then, before item 2: Phase 47, TestForge in a target's CI pipeline**
@@ -208,6 +208,7 @@ Statuses:
 | D33 | Models (gap writer, local model, OpenAI) in CI | Phase 47 Decision 9 (2026-10-27) | Off in CI for now | Open | - | Phase 45's sandbox |
 | D34 | Comprehensive all-areas runs in CI | Phase 47, deferred (2026-10-27) | Wanted, with D5 | **Planned**, with D5 | With D5 | D5, TFP-248 |
 | D35 | Native integrations for other CI systems (GitLab component, Azure DevOps task) and SARIF output for code scanning | Phase 47, deferred (2026-10-27) | Not before someone asks | Open | - | TFP-248 |
+| D36 | Workers that back off when a site slows down (adaptive concurrency) | Phase 39 re-measurement ruling 1 (2026-10-27) | Deferred: a fixed limit of 3 holds for now | Open | - | Phase 39 complete |
 
 ## Phases or items not wrapped up
 

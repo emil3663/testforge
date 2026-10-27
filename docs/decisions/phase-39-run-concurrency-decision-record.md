@@ -885,7 +885,18 @@ sharing 5 requests per second). Medians of three; the capped run once.
 
 **Progress:**
 - **Ruling 1:** fixed in `66cd0c0`, verified (Cowork), pushed.
-- **Ruling 3, built 2026-10-27, awaiting verification**
+- **Ruling 3, built 2026-10-27; independently verified 2026-10-27
+  (Cowork, read-only, fresh clone at `82421c9`):** `compare.mjs` re-run
+  gives output identical to the committed `comparison.txt` (but for a
+  byte-order mark): 0 test results unlike every Gate D round on all six
+  suites; 0 evidence items changed on bugs steady at Gate D; 0 bug
+  verdicts changed, bug 80 included (1 item, as in all three Gate D
+  rounds). The re-measurement's W1 failures (with-bugs 84/3/41, clean
+  46/2/19, every round) match the D26 run's. The workarounds table and
+  `scripts/toolshop-local/README.md`'s timings are updated. Not checkable
+  from here: the WSL filesystem itself (`logs/environment.txt` is the
+  evidence). The run-time baseline is the re-measurement's W1.
+  Originally: **Ruling 3, built 2026-10-27, awaiting verification**
   (`benchmarks/2026-10-27-d26-wsl/README.md`). Both copies run from
   `~/practice-software-testing` in Ubuntu under WSL.
   - **The proof:** one W1 round of all three suites on each copy, test by
@@ -901,3 +912,67 @@ sharing 5 requests per second). Medians of three; the capped run once.
     without it). The composer reinstall without its timeout is removed.
   - **The times aren't the baseline:** one round, on a machine in use.
     Ruling 4's session takes it.
+
+### Re-measurement ruling (Emil, 2026-10-27)
+
+**Measured** (`benchmarks/2026-10-27-gate-d-rerun/analysis.md`, `b8732a4`):
+one session, 2026-10-27 16:54 to 20:31, on `abc227c`, after D26. Medians of
+three; the capped run once. Recomputed from the per-round times in a
+planning pass (Cowork), and they match.
+
+| | W1 | WN (6) | W3 | Same results as W1 |
+| --- | --- | --- | --- | --- |
+| with-bugs, Comprehensive (security + accessibility) | 217 s | 123 s, 43.3% faster | 124 s, 42.9% faster | WN yes, W3 yes |
+| with-bugs, Standard | 651 s | 311 s | 297 s | WN yes, W3 yes |
+| clean, Comprehensive | 158 s | 367 s, 132.3% slower | 156 s, 1.3% faster | WN no, W3 yes |
+| clean, Standard | 337 s | 342 s | 180 s, 46.6% faster | WN no, W3 yes |
+| fixture, all three suites (W1 against WN) | | | | yes (Decision 12) |
+| capped practicesoftwaretesting.com | Standard 1,369 s (28 timeouts), security 478 s, accessibility 140 s; 33 min in all; mean wait for a slot 2.84 s (Gate D: 954 s) | | | |
+
+- Clean round 2's slow WN and W3 Standard passes: the session's own repo
+  scan overlapped them for 2 min and 28 s, and every clean pass ran beside
+  the same 16 monitor loops (15 left over from Gate D's session). Neither
+  explains the slowdown, and the clean verdict is the same with or without
+  round 2 (146.1% slower without it). Seven background Edge processes ran
+  the whole session; Edge's Startup boost and background apps are now off,
+  and `run-all.sh` warns about both kinds of process (`0cd5612`).
+
+**Ruling:**
+1. **The machine's limit becomes 3 workers at most:** half the machine's
+   cores, at least 1, and no more than 3. It applies to both rows that use
+   it — a local host and a host with the ownership confirmation.
+   - With 6 workers the clean copy's API overloaded and results changed
+     (Decision 12, Acceptance Criteria 7). With 3, results matched 1 worker
+     on every suite of both copies, and with-bugs ran as fast as with 6.
+   - The capped row (3 workers sharing 5 requests per second) is unchanged.
+   - Rejected for now: workers that back off when a site slows down —
+     better in principle, but new design and new measurement. Deferred as
+     D36.
+2. **Decision 13 is met** on with-bugs at the new limit: 42.9% faster
+   against at least 40%, with the same results as 1 worker. On clean,
+   Comprehensive gains 1.3%: the local copy's API is the bottleneck (GETs
+   over 4 s under load), recorded as the target's limit, not TestForge's.
+   Clean's Standard is 46.6% faster.
+3. **TFP-157's leak fix holds** on the hosted site (23 min for Standard,
+   against Gate D's 8 h 9 min collapse).
+4. **Ruling 5 is decided by one last measurement, with its outcome set in
+   advance.** The mean slot wait (2.84 s) is longer than a shared check's
+   2 s assertion wait (TFP-215), so the cap itself may fail tests that
+   would pass uncapped — which would read to a tester as the site's
+   defects.
+   - **The experiment:** local with-bugs reached through the machine's LAN
+     address, so it gets the capped row (as Gate D's capped fixture
+     variant did), against W1 uncapped on loopback; Standard, security and
+     accessibility; three rounds; on the new limit's code; a quiet night.
+   - **If every test gives the same result capped and uncapped** (beyond
+     the tests already known to vary, Decision 7): the capped time budget
+     is 60 minutes, and a test that times out on a capped host is reported
+     **Not run, "needs more requests than the request cap allows in its
+     time"**, not Failed.
+   - **If results differ:** on a capped host, the shared assertion wait
+     and the test timeout are lengthened by the mean slot wait measured in
+     that run, and re-checked once in the same session. Any test that
+     still differs is reported Not run under the request cap, with its
+     reason. The budget is 60 minutes.
+   - **Either way, Phase 39's timing runs end there.** Gate D closes on
+     that session's result, and the phase completes once D26 is verified.
