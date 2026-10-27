@@ -1,3 +1,5 @@
+> **Historical (April 2026).** This describes the consolidation from the FastAPI backend to Next.js. Phase 16 (2026-08-28) deleted the FastAPI backend, the backend-proxy layer and the legacy UI this plan refers to; nothing here describes TestForge today. Kept for history only — see [`README.md`](README.md).
+
 # Phase 2 - API Contract (Canonical)
 
 Goal: lock stable request/response contracts for the Next.js UI workflow while the backend implementation is migrated.

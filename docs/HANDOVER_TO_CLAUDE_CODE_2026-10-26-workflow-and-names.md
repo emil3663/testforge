@@ -32,6 +32,22 @@ commit (`git rm`); its history is in git and in the backlog.
 
 ## Do, in order
 
+00. **(Added 2026-10-27, 05:30) TFP-261 — P0, before anything else here,
+    and between Phase 39 tickets if one is mid-way.** The server listens on
+    every interface and `/api/run` accepts a cross-site `text/plain` POST
+    and runs it (measured; details in the backlog). Fix, test, and push it
+    first. Then commit the new `SECURITY.md` and `CONTRIBUTING.md` (repo
+    root) — SECURITY.md describes the fixed server, so never before the
+    fix. Don't push the backlog's TFP-261 text ahead of the fix either:
+    commit it with the fix.
+0. **(Added 2026-10-27.)** A second planning pass left docs uncommitted:
+   `docs/README.md`, `docs/decisions/README.md` (new index),
+   `docs/consolidation/README.md` and a historical banner on each
+   `docs/consolidation/*.md`, the roadmap header and Phase 39 heading, and
+   backlog updates (TFP-253 revised, TFP-257 expanded, TFP-259 and TFP-260
+   added, TFP-250's status). Commit them as one `docs` commit, apart from
+   any benchmark or code commit.
+
 1. **Commit the planning files** above as one `docs` commit, separate from
    any code. Check the TFP numbers first: if anything above TFP-243 was
    allocated since `8e93998`, renumber the backlog before committing.

@@ -1,3 +1,5 @@
+> **Historical (April 2026).** This describes the consolidation from the FastAPI backend to Next.js. Phase 16 (2026-08-28) deleted the FastAPI backend, the backend-proxy layer and the legacy UI this plan refers to; nothing here describes TestForge today. Kept for history only — see [`README.md`](README.md).
+
 # Phase 9 - Legacy UI Deprecation Toggle
 
 Goal: move toward a single Next.js UI while avoiding abrupt breakage for existing users of the legacy FastAPI page.

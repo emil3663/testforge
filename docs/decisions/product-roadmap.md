@@ -1,16 +1,19 @@
 # TestForge Product Roadmap
 
-**Version:** 1.0
-**Date:** 2026-08-28
-**Status:** Draft — phase outlines only; each phase is locked by its own decision
-record before implementation starts
+**Version:** 1.1
+**Date:** 2026-08-28; header and Phase 39 status refreshed 2026-10-27
+**Status:** Living ledger. Each phase is locked by its own decision record
+before implementation starts; this file carries each phase's outline and
+current status in its heading.
 
-This document is the map across phases. It does not replace
-`docs/decisions/phase-16-local-first-decision-record.md` or
-`docs/decisions/phase-16-implementation-backlog.md`, which remain the locked,
-ticket-level source for the work in progress now. Phases 17–21 below are
-intentionally one paragraph each — they get their own decision record and
-backlog when they are actually picked up, in the same style as Phase 16.
+This document is the map across phases. For every record, report and
+backlog by phase, see the [decisions index](README.md); for what TestForge
+does today, `../APPLICATION_OVERVIEW.md`; for everything deferred and the
+build order after Phase 39, `deferred-work-register.md`.
+
+Phases 22–34 were short and have records but no section here; the index
+lists them. The baseline and scope sections below are kept as they were
+written on 2026-08-28, as the starting point Phase 16 was planned from.
 
 ## Product Vision
 
@@ -26,7 +29,7 @@ most real functionality lives. An AI-assisted generation path and a hosted
 SaaS version are both deliberate, deferred extensions of this same foundation
 — not the foundation itself.
 
-## Current Functionality (Baseline, pre-Phase 16)
+## Current Functionality (Baseline, pre-Phase 16, as written 2026-08-28)
 
 - Next.js UI; crawl, introspect, generate, run and report as five API routes.
 - Deterministic suite generation from crawled/introspected pages plus
@@ -274,7 +277,7 @@ The coverage proposal measured the Standard run against the published standards 
 All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
 
 
-### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16, not started; next after TFP-208 and TFP-210)
+### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16; in progress: Gates A–D measured 2026-10-20 to 2026-10-26, Decision 13 open — see the record's Gate D ruling)
 Amended 2026-10-16 (Emil). R1 (TFP-207) found that almost every test loads its
 page afresh, and that Standard on with-bugs takes 1,535 s of its 1,800 s
 limit. So the phase now cuts page visits before adding workers, in this
