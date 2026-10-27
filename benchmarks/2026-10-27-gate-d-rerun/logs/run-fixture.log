@@ -1,0 +1,23 @@
+(node:9840) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+fixture: 16:55:54 W1 standard run 1: 77 s, 1 worker(s) (1 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 16:56:27 WN standard run 1: 32 s, 6 worker(s) (6 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 16:56:37 W1 security run 1: 10 s, 1 worker(s) (1 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 16:56:44 WN security run 1: 7 s, 6 worker(s) (4 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 16:56:51 W1 accessibility run 1: 6 s, 1 worker(s) (1 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 16:56:54 WN accessibility run 1: 4 s, 6 worker(s) (3 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 16:58:09 W1 standard run 2: 74 s, 1 worker(s) (1 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 16:58:42 WN standard run 2: 33 s, 6 worker(s) (6 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 16:58:52 W1 security run 2: 10 s, 1 worker(s) (1 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 16:58:59 WN security run 2: 7 s, 6 worker(s) (4 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 16:59:04 W1 accessibility run 2: 6 s, 1 worker(s) (1 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 16:59:08 WN accessibility run 2: 4 s, 6 worker(s) (3 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 17:00:22 W1 standard run 3: 74 s, 1 worker(s) (1 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 17:00:56 WN standard run 3: 33 s, 6 worker(s) (6 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 17:01:06 W1 security run 3: 10 s, 1 worker(s) (1 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 17:01:13 WN security run 3: 7 s, 6 worker(s) (4 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 17:01:19 W1 accessibility run 3: 6 s, 1 worker(s) (1 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 17:01:23 WN accessibility run 3: 4 s, 6 worker(s) (3 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+exit=0

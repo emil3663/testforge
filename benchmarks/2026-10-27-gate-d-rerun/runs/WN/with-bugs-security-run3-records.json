@@ -1,0 +1,1284 @@
+{
+  "label": "with-bugs",
+  "variant": "WN",
+  "site": "http://localhost:4200",
+  "kind": "security",
+  "run": 3,
+  "commit": "abc227c",
+  "startedAt": "2026-10-27T16:23:41.188Z",
+  "runSeconds": 66,
+  "workers": 6,
+  "workersUsed": 6,
+  "units": 21,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 122,
+  "byStatus": {
+    "Passed": 119,
+    "Failed": 3
+  },
+  "requestCap": null,
+  "timeouts": [],
+  "records": [
+    {
+      "title": "TFSC-005: /#/ uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/ uses sequential integer ids (1, 2, 3, 4, 5, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-006: /#/ fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products returns \"stock\" (11, 0, ...) on its items, which /#/ never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-011: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/6 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-012: /#/product/6 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/6/related returns \"stock\" (11, ...) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/6 returns \"stock\" (11) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-017: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/7 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-018: /#/product/7 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/7 returns \"stock\" (11) on its items, which /#/product/7 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/7/related returns \"stock\" (11, ...) on its items, which /#/product/7 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-023: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/8 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-024: /#/product/8 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/8 returns \"stock\" (11) on its items, which /#/product/8 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/8/related returns \"stock\" (11, ...) on its items, which /#/product/8 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-029: /#/product/9 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/9 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-030: /#/product/9 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/9 returns \"stock\" (11) on its items, which /#/product/9 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/9/related returns \"stock\" (11, ...) on its items, which /#/product/9 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-035: /#/product/10 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/10 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-036: /#/product/10 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/10 returns \"stock\" (11) on its items, which /#/product/10 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/10/related returns \"stock\" (11, ...) on its items, which /#/product/10 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-041: /#/product/11 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/11 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-042: /#/product/11 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/11 returns \"stock\" (11) on its items, which /#/product/11 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/11/related returns \"stock\" (11, ...) on its items, which /#/product/11 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-047: /#/product/12 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/12 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-048: /#/product/12 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/12 returns \"stock\" (11) on its items, which /#/product/12 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/12/related returns \"stock\" (11, ...) on its items, which /#/product/12 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-053: /#/product/1 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/1 uses sequential integer ids (1, 2, 3, 4, 5): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-054: /#/product/1 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/1 returns \"stock\" (11) on its items, which /#/product/1 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/1/related returns \"stock\" (11, 0, ...) on its items, which /#/product/1 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-059: /#/product/2 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/2 uses sequential integer ids (1, 2, 3, 4, 5): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-060: /#/product/2 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/2/related returns \"stock\" (11, 0, ...) on its items, which /#/product/2 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/2 returns \"stock\" (11) on its items, which /#/product/2 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-065: /#/product/3 uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/product/3 uses sequential integer ids (1, 2, 3, 4, 5): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-066: /#/product/3 fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products/3 returns \"stock\" (11) on its items, which /#/product/3 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)",
+        "GET http://localhost:8091/products/3/related returns \"stock\" (11, 0, ...) on its items, which /#/product/3 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-071: /#/category/hand-tools uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/category/hand-tools uses sequential integer ids (1, 2, 3, 4, 5, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-072: /#/category/hand-tools fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products returns \"stock\" (11, 0, ...) on its items, which /#/category/hand-tools never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-077: /#/category/power-tools uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "http://localhost:4200/#/product/:id on /#/category/power-tools uses sequential integer ids (19, 20, 21, 22, 23, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-078: /#/category/power-tools fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "GET http://localhost:8091/products returns \"stock\" (11, ...) on its items, which /#/category/power-tools never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-083: /#/category/undefined uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-084: /#/category/undefined fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-089: /#/auth/register uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-090: /#/auth/register fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-095: /#/contact uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-096: /#/contact fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-101: /#/auth/login uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-102: /#/auth/login fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-107: /#/auth/forgot-password uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-108: /#/auth/forgot-password fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-113: /#/chainsaws uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-114: /#/chainsaws fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-119: /#/rentals uses no guessable sequential ids in its addresses (recorded as a finding)",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-120: /#/rentals fetches no internal fields it never shows (recorded as a finding)",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-121: a page that cannot exist shows no stack trace or server file path",
+      "page": "(missing-page probe)",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-122: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API",
+      "page": "(known-path probe)",
+      "status": "Failed",
+      "message": "Error: files anyone can read: http://localhost:8091/logs/laravel.log answers 200 with its contents (\"[2026-10-12 20:48:24] local.INFO: Fetching products {&quot;page&quot;:&quot;1&quot;} <br /> [2026-10\") expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"http://localhost:8091/logs/laravel.log answers 200 with its contents (\\\"[2026-10-12 20:48:24] local.INFO: Fetching products {&quot;page&quot;:&quot;1&quot;} <br /> [2026-10\\\")\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-001: /#/ sends its security headers and session cookies",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/",
+        "any site can frame /#/: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/",
+        "no referrer policy on /#/ (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-002: /#/ names no software version in its response headers",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-003: /#/ keeps passwords off plain HTTP",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-004: /#/ puts no password or session token in a URL",
+      "page": "/#/",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-007: /#/product/6 sends its security headers and session cookies",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/6",
+        "any site can frame /#/product/6: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/6",
+        "no referrer policy on /#/product/6 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-008: /#/product/6 names no software version in its response headers",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-009: /#/product/6 keeps passwords off plain HTTP",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-010: /#/product/6 puts no password or session token in a URL",
+      "page": "/#/product/6",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-013: /#/product/7 sends its security headers and session cookies",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/7",
+        "any site can frame /#/product/7: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/7",
+        "no referrer policy on /#/product/7 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-014: /#/product/7 names no software version in its response headers",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-015: /#/product/7 keeps passwords off plain HTTP",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-016: /#/product/7 puts no password or session token in a URL",
+      "page": "/#/product/7",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-019: /#/product/8 sends its security headers and session cookies",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/8",
+        "any site can frame /#/product/8: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/8",
+        "no referrer policy on /#/product/8 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-020: /#/product/8 names no software version in its response headers",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-021: /#/product/8 keeps passwords off plain HTTP",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-022: /#/product/8 puts no password or session token in a URL",
+      "page": "/#/product/8",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-025: /#/product/9 sends its security headers and session cookies",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/9",
+        "any site can frame /#/product/9: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/9",
+        "no referrer policy on /#/product/9 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-026: /#/product/9 names no software version in its response headers",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-027: /#/product/9 keeps passwords off plain HTTP",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-028: /#/product/9 puts no password or session token in a URL",
+      "page": "/#/product/9",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-031: /#/product/10 sends its security headers and session cookies",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/10",
+        "any site can frame /#/product/10: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/10",
+        "no referrer policy on /#/product/10 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-032: /#/product/10 names no software version in its response headers",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-033: /#/product/10 keeps passwords off plain HTTP",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-034: /#/product/10 puts no password or session token in a URL",
+      "page": "/#/product/10",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-037: /#/product/11 sends its security headers and session cookies",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/11",
+        "any site can frame /#/product/11: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/11",
+        "no referrer policy on /#/product/11 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-038: /#/product/11 names no software version in its response headers",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-039: /#/product/11 keeps passwords off plain HTTP",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-040: /#/product/11 puts no password or session token in a URL",
+      "page": "/#/product/11",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-043: /#/product/12 sends its security headers and session cookies",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/12",
+        "any site can frame /#/product/12: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/12",
+        "no referrer policy on /#/product/12 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-044: /#/product/12 names no software version in its response headers",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-045: /#/product/12 keeps passwords off plain HTTP",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-046: /#/product/12 puts no password or session token in a URL",
+      "page": "/#/product/12",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-049: /#/product/1 sends its security headers and session cookies",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/1",
+        "any site can frame /#/product/1: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/1",
+        "no referrer policy on /#/product/1 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-050: /#/product/1 names no software version in its response headers",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-051: /#/product/1 keeps passwords off plain HTTP",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-052: /#/product/1 puts no password or session token in a URL",
+      "page": "/#/product/1",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-055: /#/product/2 sends its security headers and session cookies",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/2",
+        "any site can frame /#/product/2: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/2",
+        "no referrer policy on /#/product/2 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-056: /#/product/2 names no software version in its response headers",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-057: /#/product/2 keeps passwords off plain HTTP",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-058: /#/product/2 puts no password or session token in a URL",
+      "page": "/#/product/2",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-061: /#/product/3 sends its security headers and session cookies",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/product/3",
+        "any site can frame /#/product/3: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/product/3",
+        "no referrer policy on /#/product/3 (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-062: /#/product/3 names no software version in its response headers",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-063: /#/product/3 keeps passwords off plain HTTP",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-064: /#/product/3 puts no password or session token in a URL",
+      "page": "/#/product/3",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-067: /#/category/hand-tools sends its security headers and session cookies",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/category/hand-tools",
+        "any site can frame /#/category/hand-tools: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/category/hand-tools",
+        "no referrer policy on /#/category/hand-tools (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-068: /#/category/hand-tools names no software version in its response headers",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-069: /#/category/hand-tools keeps passwords off plain HTTP",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-070: /#/category/hand-tools puts no password or session token in a URL",
+      "page": "/#/category/hand-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-073: /#/category/power-tools sends its security headers and session cookies",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/category/power-tools",
+        "any site can frame /#/category/power-tools: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/category/power-tools",
+        "no referrer policy on /#/category/power-tools (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-074: /#/category/power-tools names no software version in its response headers",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-075: /#/category/power-tools keeps passwords off plain HTTP",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-076: /#/category/power-tools puts no password or session token in a URL",
+      "page": "/#/category/power-tools",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-079: /#/category/undefined sends its security headers and session cookies",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/category/undefined",
+        "any site can frame /#/category/undefined: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/category/undefined",
+        "no referrer policy on /#/category/undefined (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-080: /#/category/undefined names no software version in its response headers",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-081: /#/category/undefined keeps passwords off plain HTTP",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-082: /#/category/undefined puts no password or session token in a URL",
+      "page": "/#/category/undefined",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-085: /#/auth/register sends its security headers and session cookies",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/register",
+        "any site can frame /#/auth/register: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/register",
+        "no referrer policy on /#/auth/register (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-086: /#/auth/register names no software version in its response headers",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-087: /#/auth/register keeps passwords off plain HTTP",
+      "page": "/#/auth/register",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-088: /#/auth/register puts no password or session token in a URL",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Error: secrets in URLs: a form on /#/auth/register would send its password field in the URL (method GET, to http://localhost:4200/#/auth/register) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"a form on /#/auth/register would send its password field in the URL (method GET, to http://localhost:4200/#/auth/register)\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-091: /#/contact sends its security headers and session cookies",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/contact",
+        "any site can frame /#/contact: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/contact",
+        "no referrer policy on /#/contact (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-092: /#/contact names no software version in its response headers",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-093: /#/contact keeps passwords off plain HTTP",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-094: /#/contact puts no password or session token in a URL",
+      "page": "/#/contact",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-097: /#/auth/login sends its security headers and session cookies",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/login",
+        "any site can frame /#/auth/login: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/login",
+        "no referrer policy on /#/auth/login (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-098: /#/auth/login names no software version in its response headers",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-099: /#/auth/login keeps passwords off plain HTTP",
+      "page": "/#/auth/login",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-100: /#/auth/login puts no password or session token in a URL",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Error: secrets in URLs: a form on /#/auth/login would send its password field in the URL (method GET, to http://localhost:4200/#/auth/login) expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 3 - Array [] + Array [ + \"a form on /#/auth/login would send its password field in the URL (method GET, to http://localhost:4200/#/auth/login)\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-103: /#/auth/forgot-password sends its security headers and session cookies",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/auth/forgot-password",
+        "any site can frame /#/auth/forgot-password: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/auth/forgot-password",
+        "no referrer policy on /#/auth/forgot-password (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-104: /#/auth/forgot-password names no software version in its response headers",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-105: /#/auth/forgot-password keeps passwords off plain HTTP",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-106: /#/auth/forgot-password puts no password or session token in a URL",
+      "page": "/#/auth/forgot-password",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-109: /#/chainsaws sends its security headers and session cookies",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/chainsaws",
+        "any site can frame /#/chainsaws: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/chainsaws",
+        "no referrer policy on /#/chainsaws (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-110: /#/chainsaws names no software version in its response headers",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-111: /#/chainsaws keeps passwords off plain HTTP",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-112: /#/chainsaws puts no password or session token in a URL",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-115: /#/rentals sends its security headers and session cookies",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [
+        "no Content-Security-Policy header on /#/rentals",
+        "any site can frame /#/rentals: no Content-Security-Policy frame-ancestors (or X-Frame-Options)",
+        "no X-Content-Type-Options: nosniff on /#/rentals",
+        "no referrer policy on /#/rentals (no Referrer-Policy header or meta referrer)"
+      ],
+      "issues": []
+    },
+    {
+      "title": "TFSC-116: /#/rentals names no software version in its response headers",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-117: /#/rentals keeps passwords off plain HTTP",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFSC-118: /#/rentals puts no password or session token in a URL",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    }
+  ]
+}

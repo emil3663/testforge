@@ -1,0 +1,82 @@
+Leftover monitor processes, listed 2026-10-27 20:48:05 (local) before being killed.
+
+Source: Get-CimInstance Win32_Process (start time, parent PID, command line)
+plus Get-Process (CPU seconds, working set), both read at 20:48.
+
+Finding: none of these were started on 2026-10-27. All 15 are
+`tail -F <file> | grep --line-buffered ...` pipelines from Monitor
+watches armed on 2026-10-21 (14) and 2026-10-22 (1). Every parent shell
+(bash) has exited, and each tail/grep pair was left orphaned and still running.
+No monitor shell, loop or grep started on 2026-10-27 was still running.
+
+So all 15 loops were running, unchanged, through every pass of the
+2026-10-27 re-measurement (every round, every cell). They were a
+constant background load, not one that varied between passes.
+
+Load: about 1,650 CPU-s per grep and 435 CPU-s per tail, about 31,000
+CPU-s in total over about 6.2 days, so about 0.058 cores (about 6% of one
+core) all the time. Working set was about 147 MB in total (about 5 MB each).
+
+Loop  Started              tail PID (PPID)  grep PID (PPID)  tail CPU-s  grep CPU-s  Followed file
+ 1    2026-10-21 15:44:03  33600 (42388)    12876 (35304)    427.70      1686.34     dry-run-all.out  (-n +1; grep: start$|exit=|done|failed|FAILED|Error)
+ 2    2026-10-21 17:27:54  26392 (42576)     6716 (14592)    439.77      1684.70     run-all.out      (-n +1)
+ 3    2026-10-21 17:58:07  23068 (8228)     46708 (6648)     437.95      1650.03     run-all.out
+ 4    2026-10-21 18:28:19  35560 (22724)    32832 (34244)    442.97      1645.62     run-all.out
+ 5    2026-10-21 18:58:28  14052 (29252)    28980 (39552)    435.56      1661.95     run-all.out
+ 6    2026-10-21 19:28:42  15636 (44088)    38696 (21728)    442.47      1655.34     run-all.out
+ 7    2026-10-21 19:28:57  10868 (36836)    45076 (46064)    437.02      1656.83     run-all.out
+ 8    2026-10-21 19:59:06  38772 (8960)      3324 (41740)    440.11      1641.88     run-all.out
+ 9    2026-10-21 20:29:49  15836 (3100)     10540 (30776)    437.66      1653.56     run-all.out
+10    2026-10-21 20:59:42  36048 (32364)    23484 (5820)     434.70      1642.67     run-all.out
+11    2026-10-21 21:29:57  11432 (45364)    38016 (46024)    438.58      1630.81     run-all.out
+12    2026-10-21 22:00:08  24188 (7104)     33680 (39716)    436.02      1623.06     run-all.out
+13    2026-10-21 22:30:18  16564 (37408)    42664 (33424)    429.09      1621.09     run-all.out
+14    2026-10-21 23:00:27  28704 (4552)     41532 (40768)    431.55      1610.33     run-all.out
+15    2026-10-22 05:25:43  11180 (45808)    24388 (25072)    434.88      1616.02     run-all.out
+
+Loops 2-15 use grep pattern: start$|exit=[1-9]|failed|FAILED|Error|done
+Loops 3-15 use tail -n 0. Parent PIDs 42388 ... 25072: all gone at 20:48.
+
+The roughly 30-minute spacing on 2026-10-21 matches a Monitor being re-armed
+each time it expired, with the previous one's inner pipeline never killed.
+Gate D's session ran 2026-10-21 17:27:52 to 2026-10-22 06:07:18, so loops
+2-15 are Gate D's own monitors, which built up from 1 to 14 during its
+measurement. Loop 1 is from its dry run.
+
+Killed: Stop-Process on all 30 PIDs at 20:48:31. Afterwards there were 0
+tail/grep processes at 20:48:58, and 0 tail/grep/watch processes at 20:52:06
+(3.5 min later). None came back.
+
+
+Today's own monitor loops (2026-10-27), reconstructed from the session's
+transcript (3914865b), whose tool calls and outputs carry timestamps.
+Each Monitor ran `bash .../scratchpad/watch.sh`, a loop that every 10 s
+lists runs/*-records.json, reads run-all.out and sleeps. It reads only
+the run's own folder.
+
+Armed     Main PID  Ended                   How
+16:54:24  44560     18:29:34 killed         TaskStop at 17:17:52 left it running
+17:17:54  27208     18:29:34 killed         expired ~17:47:54, left running
+17:48:00  11064     18:29:34 killed         TaskStop at 17:56:13 left it running
+17:56:17  21300     18:29:34 killed         expired ~18:26:15, left running
+18:26:20  33864     18:56:23 killed         (subshell 23308 of 44560 killed 18:29:46)
+18:56:30  13076     19:26:33 killed
+19:26:35  19108?    19:56:31 killed         3 bash.exe stopped (19108, 20148, 2472); one Monitor
+                                            was armed, the others most likely its pipelines'
+                                            subshells (comm | while, $(...))
+19:56:32  36488     20:26:38 killed
+20:26:40  -         20:31:47 exits on "all: done"; 20:31:55 check: 0 left
+
+Today's loops alive at once:
+  16:54:24-17:17:54  1      17:48:00-17:56:17  3      18:26:20-18:29:34  5
+  17:17:54-17:48:00  2      17:56:17-18:26:20  4      18:29:48-20:31:55  1
+                                                      (0 for <=7 s at 18:56:23 and 19:26:33)
+
+Plus the 15 pipelines from 2026-10-21/22 above, all the time.
+
+The repo scan (not a monitor loop, listed because it overlapped passes):
+19:13:08 one Bash call, `find benchmarks/2026-10-27-gate-d-rerun -newermt
+'-60 seconds'` then `find . -path ./node_modules -prune -o -newermt ...`
+across the whole repo, which outran its 120 s timeout. TaskStop at 19:15:35
+left the repo-wide find.exe (PID 42892, started 19:14:14) running; it was
+killed at 19:15:36. Scan window: 19:13:08 to 19:15:36.

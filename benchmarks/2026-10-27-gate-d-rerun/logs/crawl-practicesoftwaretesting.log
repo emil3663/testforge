@@ -1,0 +1,9 @@
+(node:3292) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/app/api/crawl/route.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+practicesoftwaretesting: completed, 46 pages, 9 types in 79 s
+  standard (8): / /product/01M5Z4WVS7ZSXQRRKS1WKX6WCZ /category/hand-tools /auth/register /contact /auth/login /auth/forgot-password /rentals
+  skipped: /privacy
+  comprehensive (20): / /product/01M5Z4WVS7ZSXQRRKS1WKX6WCZ /product/01M5Z4WVSASPAGTV8V0G4REA0R /product/01M5Z4WVSCV9GZDVXF6Z2CA863 /product/01M5Z4WVSEWX5WA6NE55C4M3MS /product/01M5Z4WVYXJ4QM1HCJXDJ5Z5VR /product/01M5Z4WVZ0CRWXQMHW3Y035ARM /product/01M5Z4WVZ40CSEMHVXS53XATRF /product/01M5Z4WVZK1YBVWNT6BPZ388SX /product/01M5Z4WVSH40GAS09QAFMDJ1Q0 /category/hand-tools /category/other /category/power-tools /category/special-tools /auth/register /contact /auth/login /auth/forgot-password /rentals /privacy
+exit=0

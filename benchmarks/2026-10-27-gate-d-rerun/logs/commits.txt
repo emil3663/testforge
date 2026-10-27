@@ -1,0 +1,4 @@
+W1 WN W3 CAP abc227c (this repo)
+workers WN 6
+W3 1
+rounds 3

@@ -1,0 +1,52 @@
+{
+  "label": "fixture",
+  "site": "http://127.0.0.1:4471",
+  "commit": "abc227c",
+  "crawledAt": "2026-10-27T14:54:28.177Z",
+  "status": "completed",
+  "seconds": 2,
+  "pages": 3,
+  "warnings": [],
+  "types": [
+    {
+      "rank": 1,
+      "label": "home",
+      "pattern": "/",
+      "pages": 1,
+      "representative": "/",
+      "placement": "always covered (home); home is always ranked first"
+    },
+    {
+      "rank": 2,
+      "label": "sign-in",
+      "pattern": "/login",
+      "pages": 1,
+      "representative": "/login",
+      "placement": "always covered (form, largest); after home, which is always ranked first"
+    },
+    {
+      "rank": 3,
+      "label": "form",
+      "pattern": "/notes",
+      "pages": 1,
+      "representative": "/notes",
+      "placement": "always covered (form); after /login by interactive elements (5 interactive elements against 6 interactive elements)"
+    }
+  ],
+  "standard": {
+    "pages": [
+      "/",
+      "/login",
+      "/notes"
+    ],
+    "skipped": []
+  },
+  "comprehensive": {
+    "pages": [
+      "/",
+      "/login",
+      "/notes"
+    ],
+    "skipped": []
+  }
+}
