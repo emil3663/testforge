@@ -17,6 +17,9 @@ services:
   # volume mounted over storage/logs, which start-toolshop.ps1 gives to www-data
   # and then checks the route serves a line written since the start. Testsmith's
   # files are left as they are (their own laravel.log is hidden under the volume).
+  # D26 (2026-10-27): in WSL the API's storage is writable by php-fpm, so the log
+  # could live in the checkout again (Testsmith tracks only storage/logs/.gitignore);
+  # the volume is kept so with-bugs serves its log as every baseline since TFP-188 did.
   laravel-api:
     environment:
       - LOG_CHANNEL=single

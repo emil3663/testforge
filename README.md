@@ -242,7 +242,9 @@ OPENAI_API_KEY=sk-...
 TestForge can test any site you're allowed to test. For a local target,
 everything measured since Phase 38 uses local copies of the Toolshop
 practice site (`practicesoftwaretesting.com`), one version at a time, with
-Docker Desktop running:
+Docker Desktop running. Their code lives in WSL's Linux filesystem, so they
+need Ubuntu under WSL (`wsl --install -d Ubuntu`) with Docker Desktop's WSL
+integration turned on for it (`scripts/toolshop-local/README.md`):
 
 ```powershell
 .\scripts\toolshop-local\start-toolshop.ps1 -Sprint sprint5-with-bugs   # or -Sprint sprint5 for the clean copy

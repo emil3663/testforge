@@ -1,10 +1,11 @@
-# Phase 41 (TFP-179): both versions under Testsmith's docker-compose.yml, on Windows.
-# The API's code is a Windows folder mounted into Docker, where every file and directory
-# PHP creates is owned by uid 82 and can't be chmod-ed or chown-ed, while php-fpm runs as
-# www-data, uid 1000. So Laravel can't write its file cache or its log there, and every
-# request that does answers 500. The cache is kept in memory and the log goes to the
-# container's own output instead. Real environment variables win over Laravel's .env,
-# so Testsmith's files are left as they are.
+# Phase 41 (TFP-179): both versions under Testsmith's docker-compose.yml.
+# Added when the API's code was a Windows folder mounted into Docker, where php-fpm (www-data,
+# uid 1000) couldn't write Laravel's file cache or its log, so every request that did answered
+# 500. The cache is kept in memory and the log goes to the container's own output instead.
+# D26 (2026-10-27): in WSL's Linux filesystem start-toolshop.ps1 gives the API's storage to
+# php-fpm's user, so this is no longer needed to answer; it is kept so the copies run as every
+# measured baseline since Phase 41 did. Real environment variables win over Laravel's .env, so
+# Testsmith's files are left as they are.
 services:
   laravel-api:
     environment:
