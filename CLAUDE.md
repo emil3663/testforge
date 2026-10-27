@@ -28,6 +28,11 @@ before it reaches the model, so a session uses fewer tokens.
 - Installing RTK or running `rtk init -g` changes this machine's
   user-level settings: confirmation required.
 
+## Measurement sessions
+
+- During a measurement session, the monitor only reads the run's log: no repo-wide searches, builds or tests.
+- On this machine, stopping or expiring a Monitor leaves its inner script running: kill it by PID before re-arming, and check for leftovers when a session ends.
+
 ## When you're corrected
 
 When the owner corrects something that would recur, propose a one-line rule
