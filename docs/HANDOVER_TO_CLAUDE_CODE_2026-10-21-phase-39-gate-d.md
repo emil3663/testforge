@@ -20,18 +20,12 @@ record. In order:
    (the 1/2/3/4/7/12-core table), RUN-42 in `TEST_PLAN.md`, and the
    README's host-limits text. Unit, host-limits and regression tests as
    before. Stop for verification.
-3. **Ruling 4's experiment**, on the verified limit, on a quiet night:
-   local with-bugs through the LAN address (capped row, as Gate D's capped
-   fixture variant) against W1 uncapped on loopback; Standard, security,
-   accessibility; three rounds. Prepare it by day with a dry run; the
-   owner starts it, or you do, the usual way with your monitor — reading
-   only the log.
-4. **Analyse it and apply the pre-set outcome** in ruling 4 (same results
-   → 60 min budget, cap timeouts reported Not run; different → longer
-   waits on capped hosts by the measured mean slot wait, re-checked once,
-   the rest Not run). Build that as its own ticket, verified. Then Gate D
-   closes, and with D26 verified (2026-10-27, see the record's Progress),
-   Phase 39 completes: that's `0.2.0` in `CHANGELOG.md`.
+3. **(Replaced 2026-10-28.)** Ruling 4's experiment stopped at its dry run:
+   read "Ruling 4 amended (Emil, 2026-10-28)" at the end of the Phase 39
+   record. Push `96ffcf3` and commit the dry run's output with the ruling.
+4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
+   for verification. No timing session. When both are verified, Gate D
+   closes and Phase 39 completes (`0.2.0`).
 
 Then the workflow handover's step 0000 code items (helper lines and
 baseline, version stamp, `v0.1.0` with the owner's confirmation).

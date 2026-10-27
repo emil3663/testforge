@@ -988,3 +988,82 @@ planning pass (Cowork), and they match.
   low findings are left as they are, ruled: the setup-doc test pins the
   constant and the boundary test proves `machineWorkerLimit` uses it; the
   re-measurement's `run.mts` is frozen evidence and isn't edited.
+
+### Ruling 4 amended (Emil, 2026-10-28): the experiment stops at its dry run
+
+**Measured** (`benchmarks/2026-10-27-ruling-4-capped/`, `96ffcf3`): one dry-run
+round, local with-bugs reached through the LAN address (capped, every
+request counted, the API at `localhost:8091` included) against 1 worker
+uncapped on loopback; the same suites, only the address rewritten.
+
+| Suite | Uncapped | Capped | Failed, uncapped / capped | Capped timeouts |
+| --- | --- | --- | --- | --- |
+| Standard | 618 s | 4,322 s | 84 / 348 | 334 |
+| security | 82 s | 1,401 s | 3 / 108 | 105 |
+| accessibility | 120 s | 932 s | 41 / 76 | 73 |
+
+Mean wait for a slot 6.18 s (the hosted site: 2.84 s). Capped passes
+averaged 5.15 to 5.30 counted requests per second against a cap of 5.
+
+**Ruling:**
+1. **The answer is "different", and the three-round session isn't run.** No
+   number of rounds can turn 348 against 84 into the same results.
+2. **Ruling 4's "different" remedy is replaced.** Lengthening waits by the
+   measured mean slot wait ties TestForge to one site's number (6.18 s here,
+   2.84 s hosted). Instead (TFP-264):
+   - each test on a capped host records how long it waited for slots;
+   - a test that fails or times out on a capped host, having waited for
+     slots longer than its assertion wait, is reported **Not run, "starved
+     by the request cap"**, with the time it waited, never Failed;
+   - a test that fails without that much waiting stays Failed;
+   - the capped run's time budget is 60 minutes (ruling 5).
+3. **The cap is proven, not assumed** (TFP-265). Counted requests above 5
+   per second may be slots handed back by connections that closed before
+   their request left (TFP-157's leak fix), which would be harmless, or
+   real arrivals above the cap, which would break the README's promise.
+   Acceptance Criteria 6's method with a recording site decides it,
+   including tests that end while their requests still wait.
+4. **Phase 39's timing runs are over.** Gate D closes, and Phase 39
+   completes, when TFP-264 and TFP-265 are built and verified with tests on
+   the fixture; that is `0.2.0`.
+- Noted, not acted on: until Phase 43, Standard against a remote site is
+  largely cap-starved. TFP-264 makes that honest in the report; Phase 47's
+  localhost-first scope already avoids it in CI.
+
+### TFP-264 — Cap-starved results reported as Not run (added 2026-10-28)
+
+- **Phase:** 39 · **Priority:** P0 · **Labels:** `run`, `report`
+- **Problem it solves:** on a capped host, a test can fail only because
+  TestForge's own request cap made it wait. The tester reads that as the
+  site's defect (with-bugs: 348 failed capped, 84 uncapped).
+- **Scope:** the request-cap module records each test's total slot wait;
+  the report and saved run carry it; a capped test that failed or timed out
+  after waiting longer than its assertion wait is Not run with the reason
+  "starved by the request cap" and its wait; the run line and report count
+  them; the capped time budget becomes 60 minutes.
+- **Acceptance criteria:**
+  - on the fixture under the cap, a test made to wait past its assertion
+    wait is Not run with the reason and its wait; the same test uncapped
+    passes;
+  - a test that fails for a real defect under the cap, with little waiting,
+    stays Failed;
+  - uncapped runs are unchanged: template output byte-identical
+    (`check:template-unchanged`), unit and regression suites pass in full;
+  - `TEST_PLAN.md` gains the case; RUN-42 notes the change.
+- **Dependencies:** None.
+
+### TFP-265 — Prove the cap at the server (added 2026-10-28)
+
+- **Phase:** 39 · **Priority:** P0 · **Labels:** `run`, `test`
+- **Problem it solves:** capped passes counted 5.15 to 5.30 requests per
+  second against a cap of 5; nothing recorded what reached the server.
+- **Scope:** with Acceptance Criteria 6's recording site, record each
+  arrival's time; include tests that end, and workers that restart, while
+  their requests still wait for slots.
+- **Acceptance criteria:**
+  - no second has more than 5 arrivals at the recording site, across at
+    least three runs; or, if one does, the cause is fixed in this ticket and
+    the check passes after it;
+  - the counted rate's excess over arrivals is explained in the ticket's
+    report (for example, slots handed back unused).
+- **Dependencies:** None.
