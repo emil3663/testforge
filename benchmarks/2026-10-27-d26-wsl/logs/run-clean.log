@@ -1,0 +1,5 @@
+﻿started 2026-10-27 04:05:27 at 41f39ac (suites crawled and generated on this start)
+clean: 04:10:58 W1 standard run 1: 330 s, 1 worker(s) (1 used), 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; timeouts 0
+clean: 04:12:17 W1 security run 1: 79 s, 1 worker(s) (1 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":120,"Failed":2}; timeouts 0
+clean: 04:13:44 W1 accessibility run 1: 87 s, 1 worker(s) (1 used), 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; timeouts 0
+ended 04:13:44

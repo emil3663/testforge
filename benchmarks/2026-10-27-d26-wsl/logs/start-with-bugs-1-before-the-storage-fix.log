@@ -1,0 +1,52 @@
+﻿started 2026-10-27 03:29:48
+Testsmith's repository at 5a6ccc26 (pinned 5a6ccc26), in Ubuntu
+wsl : time="2026-10-27T03:29:49+02:00" level=warning 
+msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be 
+ignored, please remove it to avoid potential confusion"
+At C:\Users\MSI workstation\source\repos\testforge\scripts\toolshop-local\start-toolshop.ps1:54 char:28
++ ... -Toolshop { wsl -d $Distro --cd $PSScriptRoot -e bash ./toolshop.sh @ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (time="2026-10-2...tial confusion":String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Starting sprint5-with-bugs (the first start builds images and installs the app: several minutes)
+wsl : time="2026-10-27T03:29:49+02:00" level=warning 
+msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be 
+ignored, please remove it to avoid potential confusion"
+At C:\Users\MSI workstation\source\repos\testforge\scripts\toolshop-local\start-toolshop.ps1:54 char:28
++ ... -Toolshop { wsl -d $Distro --cd $PSScriptRoot -e bash ./toolshop.sh @ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (time="2026-10-2...tial confusion":String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network pst_default Creating 
+ Network pst_default Created 
+ Container pst-mariadb-1 Creating 
+ Container pst-laravel-api-1 Creating 
+ Container pst-angular-ui-1 Creating 
+ Container pst-mariadb-1 Created 
+ Container pst-angular-ui-1 Created 
+ Container pst-laravel-api-1 Created 
+ Container pst-composer-1 Creating 
+ Container pst-web-1 Creating 
+ Container pst-web-1 Created 
+ Container pst-composer-1 Created 
+ Container pst-angular-ui-1 Starting 
+ Container pst-mariadb-1 Starting 
+ Container pst-laravel-api-1 Starting 
+ Container pst-mariadb-1 Started 
+ Container pst-angular-ui-1 Started 
+ Container pst-laravel-api-1 Started 
+ Container pst-web-1 Starting 
+ Container pst-composer-1 Starting 
+ Container pst-composer-1 Started 
+ Container pst-web-1 Started 
+wsl : time="2026-10-27T03:30:12+02:00" level=warning 
+msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be 
+ignored, please remove it to avoid potential confusion"
+At C:\Users\MSI workstation\source\repos\testforge\scripts\toolshop-local\start-toolshop.ps1:54 char:28
++ ... -Toolshop { wsl -d $Distro --cd $PSScriptRoot -e bash ./toolshop.sh @ ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (time="2026-10-2...tial confusion":String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

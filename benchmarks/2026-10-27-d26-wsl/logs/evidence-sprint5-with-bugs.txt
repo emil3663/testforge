@@ -1,0 +1,27 @@
+﻿=== sprint5-with-bugs, 2026-10-27 04:29:49
+pristine: status lines 1, vendor absent, node_modules absent
+--- compose up, without the start script
+composer started 2026-10-27T02:29:52.613013366Z finished 2026-10-27T02:30:07.291664634Z exit 0
+--- ownership as composer leaves it
+uid=1000(www-data) gid=82(www-data) groups=82(www-data)
+drwxr-xr-x    2 82       82            4096 Oct 27 02:30 /var/www/bootstrap/cache
+drwxr-xr-x    6 82       82            4096 Oct 27 01:27 /var/www/storage
+drwxr-xr-x    2 82       82            4096 Oct 27 02:27 /var/www/storage/framework/views
+--- the API's documentation page before the storage is given to php-fpm's user
+GET /api/documentation -> 500
+GET /api/documentation -> 500
+GET /api/documentation -> 500
+Laravel's last error:
+"message":"The route storage/logs/laravel.log could not be found.
+--- Angular's first install
+angular-ui started 2026-10-27T02:29:52.404562817Z
+2026-10-27T02:30:31.802108823Z added 1065 packages, and audited 1066 packages in 39s
+2026-10-27T02:30:38.228490752Z   ➜  Local:   http://localhost:4200/
+--- start-toolshop.ps1 (a later start)
+Testsmith's repository at 5a6ccc26 (pinned 5a6ccc26), in Ubuntu
+   INFO  Running migrations.  
+Bug 80: http://localhost:8091/logs/laravel.log answers 200; its newest line is 2026-10-27 02:31:15Z
+sprint5-with-bugs is running (started in 39 s):
+result=ok; wall 39 s
+GET /products?page=1 -> 200
+checkout status lines after the start: 1

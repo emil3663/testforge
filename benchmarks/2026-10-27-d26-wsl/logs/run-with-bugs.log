@@ -1,0 +1,17 @@
+﻿started 2026-10-27 03:39:04 at 41f39ac
+node : (node:35704) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of 
+file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't 
+parse as CommonJS.
+At line:1 char:603
++ ... oding utf8; node --import ./scripts/register-node-test-ts-resolver.mj ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:35704) [M...se as CommonJS.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+with-bugs: 03:49:09 W1 standard run 1: 604 s, 1 worker(s) (1 used), 19 unit(s) in 2 pass(es), 483 tests {"Passed":379,"Failed":84,"Not run":20}; timeouts 0
+with-bugs: 03:50:31 W1 security run 1: 82 s, 1 worker(s) (1 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":119,"Failed":3}; timeouts 0
+with-bugs: 03:52:48 W1 accessibility run 1: 137 s, 1 worker(s) (1 used), 20 unit(s) in 1 pass(es), 80 tests {"Failed":41,"Not run":32,"Passed":7}; timeouts 0
+ended 03:52:48

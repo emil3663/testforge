@@ -1,0 +1,29 @@
+﻿taken 2026-10-27 04:29:48
+--- wsl --version
+WSL version: 2.7.13.0
+Kernel version: 6.18.33.2-2
+WSLg version: 1.0.73.2
+MSRDC version: 1.2.7214
+Direct3D version: 1.611.1-81528511
+DXCore version: 10.0.26100.1-240331-1435.ge-release
+Windows version: 10.0.26200.9711
+--- wsl -l -v
+  NAME              STATE           VERSION
+* docker-desktop    Running         2
+  Ubuntu            Running         2
+--- Ubuntu
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+testforge
+12
+Mem:              19           2          13           0           3          17
+--- Docker
+client 29.4.0, server Docker Desktop 4.70.0 (224270) engine 29.4.0
+--- the WSL checkout
+5a6ccc2668405c96de9e205beb441f34be8d9ecc
+status lines: 1
+856M	.
+i/lf    w/lf    attr/                 	_docker/api.docker
+i/lf    w/lf    attr/text=auto eol=lf 	sprint5/API/artisan
+--- the old Windows checkout
+i/lf    w/crlf  attr/                 	_docker/api.docker
+i/lf    w/lf    attr/text=auto eol=lf 	sprint5/API/artisan

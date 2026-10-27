@@ -1,0 +1,81 @@
+﻿Testsmith's repository at 5a6ccc26 (pinned 5a6ccc26), in Ubuntu
+Starting sprint5 (the first start builds images and installs the app: several minutes)
+Seeding the database for sprint5
+
+Warning: Module "FFI" is already loaded in Unknown on line 0
+
+   INFO  Preparing database.  
+
+  Creating migration table ...................................... 30.46ms DONE
+
+   INFO  Running migrations.  
+
+  2021_09_21_060217_create_downloads_table ...................... 19.18ms DONE
+  2022_01_03_00000_create_brands_table .......................... 78.34ms DONE
+  2022_01_03_00001_create_categories_table ..................... 181.66ms DONE
+  2022_01_03_00002_create_product_images_table .................. 24.34ms DONE
+  2022_01_03_102447_create_products_table ...................... 458.68ms DONE
+  2022_01_03_111016_create_users_table ......................... 234.04ms DONE
+  2022_01_03_111025_create_invoices_table ...................... 181.90ms DONE
+  2022_01_03_111235_create_invoice_items_table ................. 124.21ms DONE
+  2022_01_03_113043_create_contact_requests_table ............... 24.51ms DONE
+  2022_01_03_113043_create_favorites_table ..................... 189.97ms DONE
+  2022_01_04_114043_create_contact_request_replies_table ....... 188.82ms DONE
+  2022_04_12_102512_create_jobs_table ........................... 72.17ms DONE
+  2023_09_21_070634_create_failed_jobs_table .................... 84.80ms DONE
+  2023_10_22_084035_create_carts_table .......................... 18.28ms DONE
+  2023_10_22_084104_create_cart_items_table .................... 194.55ms DONE
+  2023_10_29_070654_create_jobs_information_table ............... 20.38ms DONE
+  2023_12_10_175109_payments .................................... 70.57ms DONE
+  2023_12_10_175207_payment_bank_transfer_details ............... 21.23ms DONE
+  2023_12_10_175250_payment_credit_card_details ................. 18.75ms DONE
+  2023_12_10_175302_payment_gift_card_details ................... 16.49ms DONE
+  2023_12_10_175404_payment_bnpl_details ........................ 17.81ms DONE
+  2023_12_10_190159_payment_cash_on_delivery_details ............ 29.75ms DONE
+  2025_04_14_175346_create_cache_table .......................... 51.39ms DONE
+  2025_09_20_045327_alter_numeric_columns_to_bigint ............ 398.45ms DONE
+  2025_10_12_124644_add_eco_discount_to_invoices_table .......... 91.43ms DONE
+  2026_04_08_000000_make_invoice_user_id_nullable ............... 51.68ms DONE
+  2026_04_09_000000_create_product_specs_table ................. 185.74ms DONE
+  2026_04_10_000000_add_product_filter_indexes .................. 79.62ms DONE
+  2026_04_10_000001_add_missing_fk_indexes ..................... 446.79ms DONE
+  2026_04_10_000002_add_fulltext_search_indexes ................ 522.62ms DONE
+  2026_04_24_000000_add_house_number_to_users_table ............ 144.91ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\BrandSeeder ....................................... RUNNING  
+  Database\Seeders\BrandSeeder ..................................... 3 ms DONE  
+
+  Database\Seeders\UserSeeder ........................................ RUNNING  
+  Database\Seeders\UserSeeder .................................... 193 ms DONE  
+
+  Database\Seeders\CategorySeeder .................................... RUNNING  
+  Database\Seeders\CategorySeeder .................................. 8 ms DONE  
+
+  Database\Seeders\ProductImageSeeder ................................ RUNNING  
+  Database\Seeders\ProductImageSeeder .............................. 7 ms DONE  
+
+  Database\Seeders\ProductSeeder ..................................... RUNNING  
+  Database\Seeders\ProductSeeder ................................. 193 ms DONE  
+
+  Database\Seeders\ProductSpecSeeder ................................. RUNNING  
+  Database\Seeders\ProductSpecSeeder ............................. 253 ms DONE  
+
+  Database\Seeders\FavoriteSeeder .................................... RUNNING  
+  Database\Seeders\FavoriteSeeder ................................. 10 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ..................................... RUNNING  
+  Database\Seeders\InvoiceSeeder ................................. 603 ms DONE  
+
+  Database\Seeders\InvoiceItemSeeder ................................. RUNNING  
+  Database\Seeders\InvoiceItemSeeder ........................... 2,575 ms DONE  
+
+  database\seeders\PaymentSeeder ..................................... RUNNING  
+  database\seeders\PaymentSeeder ............................... 1,137 ms DONE  
+
+
+sprint5 is running (started in 51 s):
+  app  http://localhost:4200
+  API  http://localhost:8091  (documentation: http://localhost:8091/api/documentation)

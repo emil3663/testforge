@@ -1,0 +1,50 @@
+﻿with-bugs standard: 483 tests {"Passed":379,"Failed":84,"Not run":20}, 604 s, timeouts 0; Gate D W1 734/714/740 s; different from every Gate D round: 0; varying at Gate D: 0
+with-bugs security: 122 tests {"Passed":119,"Failed":3}, 82 s, timeouts 0; Gate D W1 133/113/108 s; different from every Gate D round: 0; varying at Gate D: 0
+with-bugs accessibility: 80 tests {"Failed":41,"Not run":32,"Passed":7}, 137 s, timeouts 0; Gate D W1 149/149/144 s; different from every Gate D round: 0; varying at Gate D: 0
+clean standard: 472 tests {"Passed":408,"Failed":46,"Not run":18}, 330 s, timeouts 0; Gate D W1 403/399/413 s; different from every Gate D round: 0; varying at Gate D: 0
+clean security: 122 tests {"Passed":120,"Failed":2}, 79 s, timeouts 0; Gate D W1 113/110/113 s; different from every Gate D round: 0; varying at Gate D: 0
+clean accessibility: 80 tests {"Passed":30,"Not run":31,"Failed":19}, 87 s, timeouts 0; Gate D W1 98/97/98 s; different from every Gate D round: 0; varying at Gate D: 0
+
+TFP-188 evidence, per answer-key bug (items: WSL, then Gate D's three rounds):
+  2: 2 | 2 2 2 (varied at Gate D)
+  3: 2 | 2 2 2
+  4: 3 | 5 3 4 (varied at Gate D)
+    new  [standard finding] /#/category/hand-tools | /category/hand-tools keeps its forms, lists and cards consistent (reco || the card titles on /#/category/hand-tools: "Combination Pliers" has text-align left, where the other 6 have right
+    new  [standard finding] /#/category/hand-tools | /category/hand-tools keeps its forms, lists and cards consistent (reco || the card titles on /#/category/hand-tools: "Slip Joint Pliers" has text-align left, where the other 6 have right
+    new  [standard finding] /#/category/hand-tools | /category/hand-tools keeps its forms, lists and cards consistent (reco || the card titles on /#/category/hand-tools: "Hammer" has text-align left, where the other 6 have right
+  19: 1 | 1 1 1
+  22: 0 | 0 0 0
+  23: 0 | 0 0 0
+  26: 2 | 2 2 2
+  27: 1 | 1 1 1
+  28: 9 | 9 9 9
+  29: 1 | 1 1 1
+  30: 3 | 3 3 3
+  31: 9 | 9 9 9
+  33: 2 | 2 2 2
+  34: 1 | 1 1 1
+  40: 1 | 1 1 1
+  42: 1 | 1 1 1
+  45: 1 | 1 1 1
+  46: 9 | 9 9 9
+  49: 0 | 0 0 0
+  53: 2 | 2 2 2
+  54: 2 | 2 2 2
+  58: 1 | 1 1 1
+  59: 2 | 2 2 2
+  60: 2 | 2 2 2
+  62: 1 | 1 1 1
+  63: 1 | 1 1 1
+  66: 1 | 1 1 1
+  67: 1 | 1 1 1
+  75: 9 | 9 9 9
+  80: 1 | 1 1 1
+  82: 9 | 9 9 9
+  85: 9 | 9 9 9
+  87: 4 | 4 4 4
+  91: 9 | 9 9 9
+  92: 9 | 9 9 9
+  93: 2 | 2 2 2
+  94: 2 | 2 2 2
+
+SAME: 0 test result(s) unlike every Gate D round; 0 evidence item(s), on bugs steady at Gate D, in no Gate D round or lost from all three; 0 bug verdict(s) changed
