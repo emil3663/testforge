@@ -4,7 +4,8 @@
  *
  * ISTQB techniques:
  * - Decision table, offline: the host (local, `.test`, remote) against the ownership confirmation (present or not),
- *   giving the row, the workers and the cap; the machine limit at its boundaries (1, 2, 3 and 12 cores).
+ *   giving the row, the workers and the cap; the machine limit at its boundaries (1, 2, 3, 4, 5, 6, 7, 8 and 12
+ *   cores: at least 1, half the cores, at most 3 from 6 cores up).
  * - Equivalence partitioning, offline: which requests count against the cap (the site's host, a host under its
  *   domain, a third party, a non-HTTP URL), and the domain a host's requests count under.
  * - Boundary value analysis: the slot server holds at most 5 slots at once, each until a second after it's handed back,
@@ -49,14 +50,14 @@ after(() => rmSync(scratch, { recursive: true, force: true }));
 
 test("the host table: local and confirmed hosts get the machine's limit and no cap; any other host at most 3 workers and 5 requests per second (decision table)", () => {
     const rows: Array<[string, boolean, string, number, number | null]> = [
-        ["http://127.0.0.1:4410", false, "local", 6, null],
-        ["http://localhost:3000", true, "local", 6, null],
-        ["http://shop.test", false, "local", 6, null],
-        ["http://app.localhost", false, "local", 6, null],
+        ["http://127.0.0.1:4410", false, "local", 3, null],
+        ["http://localhost:3000", true, "local", 3, null],
+        ["http://shop.test", false, "local", 3, null],
+        ["http://app.localhost", false, "local", 3, null],
         ["https://practicesoftwaretesting.com", false, "capped", 3, 5],
-        ["https://practicesoftwaretesting.com", true, "confirmed", 6, null],
+        ["https://practicesoftwaretesting.com", true, "confirmed", 3, null],
         ["http://192.168.1.10:8080", false, "capped", 3, 5],
-        ["http://192.168.1.10:8080", true, "confirmed", 6, null],
+        ["http://192.168.1.10:8080", true, "confirmed", 3, null],
     ];
     for (const [url, ownershipConfirmed, row, workers, cap] of rows) {
         const limits = hostLimitsFor(url, { ownershipConfirmed, cores: 12 });
@@ -65,12 +66,12 @@ test("the host table: local and confirmed hosts get the machine's limit and no c
     const capped = hostLimitsFor("https://www.practicesoftwaretesting.com/#/", { ownershipConfirmed: false, cores: 12 });
     assert.equal(capped.siteDomain, "practicesoftwaretesting.com");
     assert.equal(capped.note, "3 worker(s) at most, sharing a cap of 5 requests per second to practicesoftwaretesting.com: this host is not local and has no ownership confirmation (Decision 10).");
-    assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: true, cores: 12 }).note, "6 worker(s), no request cap: the caps are lifted because the site has a valid ownership confirmation covering this host (Decision 10).");
-    assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores: 12 }).note, "6 worker(s), no request cap: a local development host (Decision 10).");
+    assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: true, cores: 12 }).note, "3 worker(s), no request cap: the caps are lifted because the site has a valid ownership confirmation covering this host (Decision 10).");
+    assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores: 12 }).note, "3 worker(s), no request cap: a local development host (Decision 10).");
 });
 
-test("the machine's limit: half the cores, at least 1; a capped host never more than 3 (boundary values)", () => {
-    for (const [cores, machine, capped] of [[1, 1, 1], [2, 1, 1], [3, 1, 1], [4, 2, 2], [7, 3, 3], [12, 6, 3]]) {
+test("the machine's limit: half the cores, at least 1, at most 3; a capped host never more than 3 (boundary values)", () => {
+    for (const [cores, machine, capped] of [[1, 1, 1], [2, 1, 1], [3, 1, 1], [4, 2, 2], [5, 2, 2], [6, 3, 3], [7, 3, 3], [8, 3, 3], [12, 3, 3]]) {
         assert.equal(machineWorkerLimit(cores), machine, `${cores} cores`);
         assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: false, cores }).workers, capped, `${cores} cores, capped`);
     }

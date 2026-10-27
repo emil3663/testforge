@@ -101,15 +101,18 @@ test("every error message the doc quotes still exists in the code, so a reworded
 });
 
 test("the doc's claims about parallelism match the executor", () => {
-    // TFP-157 (Phase 39 Decision 10): the worker count and request cap come from the host.
+    // TFP-157 (Phase 39 Decision 10): the worker count and request cap come from the host; the machine's limit is at
+    // most 3 since Gate D's re-measurement ruling 1. Compared with the doc's line breaks collapsed, as it is rewrapped.
     const executor = readFileSync(join(root, "src", "lib", "run", "executor.ts"), "utf8");
     const limits = readFileSync(join(root, "src", "lib", "run", "host-limits.ts"), "utf8");
+    const prose = doc.replace(/\s+/g, " ");
 
     assert.match(executor, /const workerCount = hostLimits\.workers;/);
+    assert.match(limits, /MACHINE_MAX_WORKERS = 3;/);
     assert.match(limits, /CAPPED_HOST_MAX_WORKERS = 3;/);
     assert.match(limits, /CAPPED_HOST_REQUESTS_PER_SECOND = 5;/);
     assert.match(limits, /Math\.floor\(cores \/ 2\)/);
-    assert.ok(doc.includes("half the machine's cores") && doc.includes("up to three workers sharing\nat most five requests per second"));
+    assert.ok(prose.includes("half the machine's cores and at most three") && prose.includes("up to three workers sharing at most five requests per second"));
 });
 
 test("the doc never suggests putting a credential value in the config, and no example contains one", () => {

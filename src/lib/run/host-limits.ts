@@ -7,14 +7,17 @@ import { isLocalDevelopmentHost } from "@/lib/comprehensive/run-mode";
  *
  * | Host | Workers | Request cap |
  * | --- | --- | --- |
- * | Local development host | Limited only by the machine | None |
- * | Host with the ownership confirmation | Limited only by the machine | None |
+ * | Local development host | The machine's limit | None |
+ * | Host with the ownership confirmation | The machine's limit | None |
  * | Any other host | At most 3 | 5 requests per second, shared by all workers |
  *
- * "Limited only by the machine" is half the machine's cores, Playwright's own default, and at least 1.
+ * The machine's limit is half the machine's cores (Playwright's own default), at least 1 and at most 3 (Gate D's
+ * re-measurement ruling 1, 2026-10-27: with 6 workers the local clean Toolshop's API overloaded and results changed;
+ * with 3 they matched 1 worker on every suite).
  */
 export type HostRow = "local" | "confirmed" | "capped";
 
+export const MACHINE_MAX_WORKERS = 3;
 export const CAPPED_HOST_MAX_WORKERS = 3;
 export const CAPPED_HOST_REQUESTS_PER_SECOND = 5;
 
@@ -34,9 +37,9 @@ export interface HostLimits {
     note: string;
 }
 
-/** Decision 10's "limited only by the machine": half the cores, at least 1. */
+/** Decision 10's machine limit: half the cores, at least 1, at most 3 (re-measurement ruling 1). */
 export function machineWorkerLimit(cores: number = availableParallelism()): number {
-    return Math.max(1, Math.floor(cores / 2));
+    return Math.min(MACHINE_MAX_WORKERS, Math.max(1, Math.floor(cores / 2)));
 }
 
 export function hostLimitsFor(baseUrl: string | undefined, options: { ownershipConfirmed: boolean; cores?: number }): HostLimits {

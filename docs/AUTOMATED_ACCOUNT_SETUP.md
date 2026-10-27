@@ -65,10 +65,10 @@ allows it.
 ### 2. Rate limiting
 
 **The problem.** A run is not one request. Tests run in parallel (on a local
-host, half the machine's cores; on any other site, up to three workers sharing
-at most five requests per second) and a single run can load many pages, follow
-links, and check responses. Per-account or per-address rate limits will start
-returning "too many requests" partway through, and tests fail on pages that
+host, half the machine's cores and at most three; on any other site, up to
+three workers sharing at most five requests per second) and a single run can
+load many pages, follow links, and check responses. Per-account or
+per-address rate limits will start returning "too many requests" partway through, and tests fail on pages that
 are fine.
 
 **What to set up.** Exempt the account — or the address the runs come from —

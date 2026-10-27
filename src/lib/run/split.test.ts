@@ -232,7 +232,7 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         assert.ok(report, job.result?.output);
         assert.deepEqual(outcome(report.execution), outcome(flattenSuites(oneFile.suites ?? [])), "every test, the same area, page, status and findings");
         // The run's record: how many unit files ran tests, and how many workers took them (a local host: the machine's
-        // limit since TFP-157, half its cores).
+        // limit since TFP-157, half its cores, at most 3).
         // TFP-156: the active security checks are the serial group's, run after the rest.
         const parallel = units.filter((unit) => unit.kind !== "serial");
         assert.equal(units.length - parallel.length, 1, "a serial group");
