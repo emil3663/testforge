@@ -21,6 +21,19 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/hooks/stop-check.sh\"",
+            "timeout": 120,
+            "statusMessage": "TFP-251 stop check: eslint and tsc"
+          }
+        ]
+      }
     ]
   }
 }
