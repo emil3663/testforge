@@ -106,6 +106,10 @@ completes a GitHub issue ends with `Closes #N`; progress on one with
 `Refs #N`. GitHub issues hold outside reports and work that needs
 visibility; `TFP-` tickets in `docs/decisions/` stay the design record, and
 an issue that becomes a ticket carries its `TFP-` number in its title.
+Each known limitation in `TEST_PLAN.md` has an open issue (`known-limitation`),
+closed by the work that changes it; each phase from Phase 39 on has a
+tracking issue (`phase`), opened when its record locks, its gate rulings
+added as comments, closed by the commit that completes the phase (TFP-262).
 
 ---
 

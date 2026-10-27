@@ -18,6 +18,10 @@ open-source project.
   it stands.
 - **Found a security problem?** Don't open an issue. See
   [`SECURITY.md`](SECURITY.md).
+- **What's already known** is in the issues too: each known limitation
+  in `TEST_PLAN.md` has an open issue (label `known-limitation`), and each
+  phase from Phase 39 on has a tracking issue (label `phase`) that links
+  its decision record and gets its gate rulings as comments.
 
 ### A good bug report
 

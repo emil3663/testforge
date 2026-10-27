@@ -54,8 +54,10 @@ another session took any of them.
     says why;
   - the UI's own requests keep working unchanged.
 - **Acceptance criteria:**
-  - the dev server's startup output shows no Network address, and the port
-    isn't reachable on the machine's LAN address;
+  - the dev server's startup output shows no LAN address, and the port
+    isn't reachable on the machine's LAN address (reworded, owner
+    decision 2026-10-27: Next.js still prints a "Network:" line, which
+    names the bound loopback address);
   - regression tests: the 2026-10-27 request (foreign `Origin`,
     `text/plain`) gets 403 and runs nothing (checked with a marker the code
     would have written); a foreign `Host` gets 403; a same-origin JSON
@@ -64,6 +66,9 @@ another session took any of them.
 - **Dependencies:** None. `SECURITY.md` (TFP-254) describes the server as
   it is *after* this ticket, so it is committed with or after this fix,
   never before.
+- **Done 2026-10-27:** `6d1e854` (the fix, RUN-43), then `SECURITY.md`
+  and `CONTRIBUTING.md` (`c284e82`). The startup criterion reworded to
+  "no LAN address" (owner decision, 2026-10-27).
 
 ---
 
@@ -314,6 +319,10 @@ another session took any of them.
   - the existing `SessionStart` lock-file hook is unchanged.
 - **Dependencies:** None. Changing `.claude/settings.json` affects every
   session on the repo: confirmation required.
+- **Done 2026-10-27:** measured 11.8 to 14.2 s for both, so both run;
+  `scripts/hooks/stop-check.sh` (`818936f`, the type-error case shown
+  once), wired in as a project Stop hook (owner decision the same day),
+  the `SessionStart` hook unchanged.
 
 ### TFP-252 - Nightly-failure triage
 
@@ -415,21 +424,33 @@ another session took any of them.
 - **Phase:** None
 - **Priority:** P1
 - **Suggested labels:** `security`, `config`
+- **When (owner decision, 2026-10-27):** after Gate D's re-measurement
+  session, as the Toolshop setup isn't changed before it.
 - **Problem it solves:** `docker-compose.yml` publishes Plane on port 80
-  and MinIO on 9000 and 9090 on every network interface, with credentials
+  and MinIO on 9000 and 9090 on every network interface (measured
+  2026-10-27: `docker ps` shows MinIO on `0.0.0.0:9000` and
+  `0.0.0.0:9090`), and the local Toolshop copies publish 4200 (the app),
+  8091 (the API), 8000 and 3306 (MariaDB, root password `root`) the same
+  way, from Testsmith's own `docker-compose.yml` in WSL; all with credentials
   that are defaults in a public repo (`plane-access-key` /
   `plane-secret-key`, `change-me-before-production`). On a shared network
   anyone who can reach the machine can open the MinIO console with them.
   TestForge itself is loopback-only by rule; its test targets should be too.
 - **Scope:** publish as `127.0.0.1:<port>:<port>` in `docker-compose.yml`
-  and in the Toolshop compose files under WSL (D26); say in
+  and for the Toolshop (D26). Testsmith's file isn't TestForge's to edit
+  (`scripts/toolshop-local/README.md`), so the Toolshop's go in a
+  TestForge override beside `compose.local.yml`, which replaces the
+  `ports` of `angular-ui`, `web` and `mariadb` (compose merges `ports`
+  lists, so the override needs `!override` or a reset, to be checked);
+  then remove the known gap from `SECURITY.md`; say in
   `.env.development` and the README that the values are local placeholders,
   and how to override them. Owner decision first: is Plane still used as a
   target? If not, remove it (compose file, env vars, README sections)
   instead.
 - **Acceptance criteria:**
   - with the stacks up, `netstat` shows the ports bound to `127.0.0.1`
-    only; `http://localhost` still serves Plane;
+    only; `http://localhost` still serves Plane, and `localhost:4200` and
+    `:8091` the Toolshop, with its start script's bug-80 check passing;
   - from another machine on the network, the ports don't answer.
 - **Dependencies:** None.
 
@@ -506,6 +527,13 @@ decisions index, the contribution rules, the version and release notes.
   `CONTRIBUTING.md` describe the same rules.
 - **Dependencies:** None. Creating issues and labels needs GitHub access
   with write permission: confirmation required.
+- **Done 2026-10-27** (owner decision the same day for the labels and the
+  issues): the templates and `config.yml` (`97e3d2f`); 8 labels added
+  (`technical-debt`, `refactor`, `testing`, `investigation`, `skills`,
+  `chore`, `known-limitation`, `phase`; `bug` and `documentation` already
+  existed); #5 to #13, one per known limitation, each linked from its
+  item in `TEST_PLAN.md`; #14, Phase 39's tracking issue; the same rules
+  in `WORKING_AGREEMENTS.md` and `CONTRIBUTING.md`.
 
 ### TFP-255 - Decisions index, roadmap header, and historical docs marked
 
