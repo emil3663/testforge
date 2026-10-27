@@ -1,0 +1,71 @@
+name: Bug report
+description: A bug, a wrong result, or a report that says something it shouldn't.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Found a security problem? Don't open an issue:** see `SECURITY.md` and report it privately.
+        Remove credentials and private site details before you attach anything. TestForge redacts credentials in its own outputs, but check.
+  - type: input
+    id: commit
+    attributes:
+      label: TestForge commit
+      description: "`git rev-parse --short HEAD`"
+      placeholder: 6bd7fc0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Node version and OS
+      placeholder: Node 24.11, Windows 11
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: The site or local target you ran against
+      placeholder: the local Toolshop copy (with-bugs), http://localhost:4200
+    validations:
+      required: true
+  - type: dropdown
+    id: run
+    attributes:
+      label: Run type
+      options:
+        - Standard
+        - Comprehensive (say which area below)
+        - Not a run (crawl, generation, the UI)
+    validations:
+      required: true
+  - type: input
+    id: gate
+    attributes:
+      label: Gate and area
+      description: Read-only, interactive or active; and the Comprehensive area, if any.
+      placeholder: read-only; Comprehensive security
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What the report said, or what happened
+      description: The run's `run.json` or the HTML export helps most.
+    validations:
+      required: true
+  - type: dropdown
+    id: again
+    attributes:
+      label: Does it happen again on a second run?
+      options:
+        - "Yes, every time"
+        - Sometimes
+        - "No, once"
+        - Not tried
+    validations:
+      required: true

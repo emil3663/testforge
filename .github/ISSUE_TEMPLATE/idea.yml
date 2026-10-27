@@ -1,0 +1,23 @@
+name: Idea
+description: Something TestForge could do, described by the problem it solves.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Work here is planned in phases, each with a decision record (`docs/decisions/`), so an idea starts as the problem it solves. If it fits a phase, it gets a `TFP-` number in its title. See `CONTRIBUTING.md`.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem it solves
+      description: What you were trying to do, and what got in the way.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you have in mind
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today instead
