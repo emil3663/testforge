@@ -6,7 +6,8 @@ record before they are built; TFP-244 is that record. The rest are small and
 can be picked up between Phase 39's tickets, after TFP-157's verification.
 
 **Ticket numbers:** TFP-244 to TFP-257, allocated against `main` at
-`8e93998` (highest then: TFP-243). Re-check before committing; renumber if
+`8e93998` (highest then: TFP-243); TFP-259 and TFP-260 added 2026-10-27
+(TFP-258 was taken meanwhile); TFP-261 and TFP-262 added 2026-10-27. Re-check before committing; renumber if
 another session took any of them.
 
 **Why this exists:**
@@ -15,6 +16,54 @@ another session took any of them.
   read first that are missing, stale, or describe another project;
 - the working agreement was rewritten (`docs/WORKING_AGREEMENTS.md`) and
   some of what it adopts needs code, config or a larger edit.
+
+---
+
+## Part 0 — Found 2026-10-27, fix first
+
+### TFP-261 - Make the server reachable from this machine only, and refuse cross-site requests
+
+- **Phase:** None — fix before anything else in this backlog
+- **Priority:** P0
+- **Suggested labels:** `security`, `bug`
+- **Problem it solves:** the README's security model says TestForge must
+  never be reachable beyond the tester's own machine, because `/api/run`
+  executes the code it is given. Two things contradict it today, both
+  measured 2026-10-27 on `6bd7fc0`:
+  - **It listens on every interface.** `npm run dev` and `npm start` run
+    `next dev` / `next start` with no hostname, and Next.js defaults to
+    `0.0.0.0`; the dev server announces a Network address. Anyone on the
+    same network who can reach port 3000 can call the API.
+  - **The API accepts cross-site requests.** No route checks `Host` or
+    `Origin`, and `POST /api/run` parses its body with `req.json()`
+    whatever the `Content-Type`. A `POST` carrying a foreign `Origin` and
+    `Content-Type: text/plain` — the kind of request any web page can send
+    without a CORS preflight — was accepted (202) and the code in it ran.
+    Whether a given browser will send it to `localhost` depends on the
+    browser (current Chrome asks the user first for public sites reaching
+    local addresses; not every browser does). A missing `Host` check also
+    leaves DNS rebinding open.
+- **Scope:**
+  - bind to loopback: `-H 127.0.0.1` on `dev`, `dev:development` and
+    `start` (the self-test scripts already do);
+  - one request guard for every `/api/*` route (Next's `proxy`/middleware):
+    refuse when `Host` isn't `localhost`, `127.0.0.1` or `[::1]` on the
+    server's port; refuse when `Origin` is present and isn't the same
+    origin; refuse a `POST`, `PUT` or `DELETE` that isn't
+    `Content-Type: application/json`. Refusals are 403 with a message that
+    says why;
+  - the UI's own requests keep working unchanged.
+- **Acceptance criteria:**
+  - the dev server's startup output shows no Network address, and the port
+    isn't reachable on the machine's LAN address;
+  - regression tests: the 2026-10-27 request (foreign `Origin`,
+    `text/plain`) gets 403 and runs nothing (checked with a marker the code
+    would have written); a foreign `Host` gets 403; a same-origin JSON
+    request from the UI still gets 202;
+  - the self-test and regression suites pass unchanged.
+- **Dependencies:** None. `SECURITY.md` (TFP-254) describes the server as
+  it is *after* this ticket, so it is committed with or after this fix,
+  never before.
 
 ---
 
@@ -201,6 +250,13 @@ another session took any of them.
 
 ### TFP-250 - Replace names used as permissions with the decision vocabulary
 
+- **Status:** Built 2026-10-27 (`1a4f18b`, `6d82c2e`, `18d1e1c`); not yet
+  independently verified. Its fresh-context review caught one reworded line
+  inside generated-suite helper code that `check:template-unchanged` misses
+  (TFP-258). Left for an owner decision: two helper-template lines
+  (`controls.ts:245`, `:282`) still carry a name, and changing them moves
+  the template baseline.
+
 - **Phase:** None (between tickets)
 - **Priority:** P1
 - **Suggested labels:** `docs`, `chore`
@@ -280,26 +336,102 @@ another session took any of them.
     run comments and closes it.
 - **Dependencies:** [TFP-217]
 
-### TFP-253 - Trim `TEST_PLAN.md` to cases, not narratives
+### TFP-253 - Split `TEST_PLAN.md` by area and slim its rows
+
+- **Phase:** None
+- **Priority:** P1
+- **Suggested labels:** `docs`, `context`
+- **Problem it solves:** `TEST_PLAN.md` is 298 KB in one file; 163 rows
+  exceed 400 characters and the longest (RUN-42) is 5,923. A session that
+  needs one case pays for all of them, and most of each row is a
+  measurement narrative that already lives in a decision record or under
+  `benchmarks/`. The information is already filed; the plan should point
+  at it, not repeat it.
+- **Scope (revised 2026-10-27):**
+  - **Split by area.** `TEST_PLAN.md` keeps the feature-status table, the
+    known limitations and an index; each case prefix moves to its own file
+    under `docs/test-plan/` (`GEN.md`, `RUN.md`, `RPT.md`, `HLT.md`, …).
+    A ticket names the area it touches, so a session reads one file.
+  - **Slim each row** to: ID, case, expected result, status, and one
+    evidence pointer — the record's decision, the ticket, the test file.
+    The "Proven (…)" narratives move to the decision record the ticket
+    belongs to, under that ticket, where they aren't already.
+  - **No separate outstanding-work file.** What's left is already in the
+    deferred-work register (build order) and the current handover (next
+    tickets); a third copy would drift. Instead, `CLAUDE.md` gets one line:
+    read the handover, then only the test-plan area and record section the
+    ticket names.
+- **Acceptance criteria:**
+  - the set of case IDs across the split files equals the set before
+    (diffed, in the commit body);
+  - no row over 400 characters; total bytes before and after in the commit
+    body;
+  - every moved narrative is findable in its record (spot-check of 20 rows
+    listed in the commit body);
+  - links from records and the README to `TEST_PLAN.md#…` anchors still
+    resolve, or are updated;
+  - `test-plan-doc` skill updated to the split layout.
+- **Dependencies:** None. Not while another session is editing
+  `TEST_PLAN.md`.
+
+### TFP-259 - Dead-code pass, and a check that keeps it clean
 
 - **Phase:** None
 - **Priority:** P2
-- **Suggested labels:** `docs`, `context`
-- **Problem it solves:** `TEST_PLAN.md` is 298 KB; 163 rows exceed 400
-  characters and the longest is 5,923. Every session that reads it spends
-  context on measurement narratives that already live in the decision
-  records and `benchmarks/`.
-- **Scope:** each row keeps ID, case, expected result, status and one
-  evidence pointer (record, ticket, test file). Narrative moves to the
-  record it came from if it isn't already there.
+- **Suggested labels:** `chore`, `tooling`
+- **Problem it solves:** the last deliberate cleanups were Phase 16's
+  deletions (2026-08-28) and TFP-070's dead env var (2026-09-23); nothing
+  checks for unused code since. A scan on 2026-10-27 (`knip` 5, scoped to
+  `src/`, `scripts/`, `tests/`, with the unit tests as entry points) found
+  the codebase lean, with a few real leftovers:
+  - `getDefaultInspectionPath` is defined twice, identically:
+    `src/app/_lib/derive.ts:220` and `src/lib/introspect/paths.ts:14`;
+  - `websiteSchema` is defined in `src/app/_lib/constants.ts:118` and again
+    in `src/app/page.tsx:36`; only the second is used;
+  - `playwright-core` is imported directly (`src/lib/run/redact.ts`) but
+    isn't in `package.json` (it arrives through `@playwright/test`);
+  - `.env.example` still describes `TESTFORGE_ENV` as a FastAPI overlay
+    (it now only labels `/api/health`'s output) and says that without an
+    OpenAI key TestForge "falls back to a sample test template" (the
+    template is the default generator); `.gitignore` keeps a Python
+    section for a toolchain Phase 16 removed.
+  Not findings: knip also lists `@axe-core/playwright`, `nspell` and the
+  dictionaries as unused (they're used by generated suites and by
+  `src/lib/generate`, which knip can't see through code strings) and
+  `request-cap-fixture.ts` (copied into run folders by path); 79 exports
+  are only used inside their own file — over-exported, not dead.
+- **Scope:** remove the duplicates (one implementation, imported where
+  needed), declare `playwright-core` or import through `@playwright/test`,
+  fix the `.env.example` and `.gitignore` text; commit a `knip.json` with
+  the false positives explained, and add `npx knip` to `nightly.yml`.
 - **Acceptance criteria:**
-  - the set of case IDs is identical before and after (diffed);
-  - no row over 400 characters; file size before and after in the commit
-    body;
-  - every removed sentence's content exists in a decision record or
-    benchmark folder (spot-check of 20 rows recorded in the commit body).
-- **Dependencies:** None. Not while another session is editing
-  `TEST_PLAN.md`.
+  - `npx knip` exits 0 on the committed config, and fails when an unused
+    file is added (shown once);
+  - `check:template-unchanged` byte-identical; unit suite unchanged.
+- **Dependencies:** None.
+
+### TFP-260 - Bind the local Docker stacks to loopback
+
+- **Phase:** None
+- **Priority:** P1
+- **Suggested labels:** `security`, `config`
+- **Problem it solves:** `docker-compose.yml` publishes Plane on port 80
+  and MinIO on 9000 and 9090 on every network interface, with credentials
+  that are defaults in a public repo (`plane-access-key` /
+  `plane-secret-key`, `change-me-before-production`). On a shared network
+  anyone who can reach the machine can open the MinIO console with them.
+  TestForge itself is loopback-only by rule; its test targets should be too.
+- **Scope:** publish as `127.0.0.1:<port>:<port>` in `docker-compose.yml`
+  and in the Toolshop compose files under WSL (D26); say in
+  `.env.development` and the README that the values are local placeholders,
+  and how to override them. Owner decision first: is Plane still used as a
+  target? If not, remove it (compose file, env vars, README sections)
+  instead.
+- **Acceptance criteria:**
+  - with the stacks up, `netstat` shows the ports bound to `127.0.0.1`
+    only; `http://localhost` still serves Plane;
+  - from another machine on the network, the ports don't answer.
+- **Dependencies:** None.
 
 ---
 
@@ -330,9 +462,50 @@ decisions index, the contribution rules, the version and release notes.
   - note in `SECURITY.md` that `.env.development`'s committed values are
     local development placeholders for the optional Plane stack, not
     secrets.
+- **Decided 2026-10-27 (owner):** reports through GitHub private
+  vulnerability reporting; best effort, acknowledgement within a week;
+  `main` supported until versioning starts; issues first, pull requests by
+  invitation.
+- **Status:** both files drafted 2026-10-27 in a planning pass. Before they
+  are committed: TFP-261 lands (SECURITY.md describes the fixed server),
+  and the owner switches on private vulnerability reporting in the
+  repository's Security settings (the policy points readers there).
 - **Acceptance criteria:** both files exist; every claim in the threat model
   points at the code or record that implements it.
 - **Dependencies:** None. Planning session can write these.
+
+### TFP-262 - GitHub Issues as the public front door
+
+- **Priority:** P1
+- **Suggested labels:** `docs`, `process`
+- **Problem it solves:** the repo is public and shared, but its history of
+  found-and-fixed problems is spread across 60+ decision records. Issues
+  were used in September (`Closes #67` to `#82`) and for #2 and #3, then
+  work moved entirely to `TFP-` tickets in docs. An outside reader can't
+  see what is known, what was found or what was done about it without
+  digging. Mirroring every `TFP-` ticket would be noise; nothing at all
+  hides a well-run project.
+- **Scope (decided 2026-10-27):**
+  - **Issue templates** (`.github/ISSUE_TEMPLATE/`): bug report (the fields
+    in `CONTRIBUTING.md`), idea, and a `config.yml` that disables blank
+    issues and links security reports to private reporting;
+  - **labels** from `TEST_PLAN.md`'s set, plus `known-limitation` and
+    `phase`;
+  - **known limitations as issues:** one open issue per item in
+    `TEST_PLAN.md`'s known-limitations list, linking the case and the
+    record that would close it;
+  - **one tracking issue per phase** from Phase 39 on: opened when the
+    record locks, linking the record; gate rulings summarised as comments;
+    closed by the commit that completes the phase. Earlier phases are not
+    back-filled (the index covers them);
+  - **outside reports** stay issues; one that becomes planned work gets its
+    `TFP-` number in its title (as `WORKING_AGREEMENTS.md` says).
+- **Acceptance criteria:** the templates show on "New issue"; a blank issue
+  can't be opened; every known limitation has an open issue; Phase 39 has a
+  tracking issue linking its record; `WORKING_AGREEMENTS.md` and
+  `CONTRIBUTING.md` describe the same rules.
+- **Dependencies:** None. Creating issues and labels needs GitHub access
+  with write permission: confirmation required.
 
 ### TFP-255 - Decisions index, roadmap header, and historical docs marked
 
@@ -354,6 +527,16 @@ decisions index, the contribution rules, the version and release notes.
   - a banner on each `docs/consolidation/` file: historical, superseded by
     Phase 16; or move the folder under `docs/history/`;
   - move `docs/TA-230.md` beside the skill that cites it.
+- **Done 2026-10-27 in a planning pass:** `docs/README.md`,
+  `docs/decisions/README.md` (the index), the roadmap header and Phase 39's
+  heading, a historical banner on every `docs/consolidation/` file and a
+  `consolidation/README.md`. **Done 2026-10-27 (Claude Code):** the move
+  of `docs/TA-230.md` to `skills/testing/find-the-hidden-platform/`, with
+  its links, and the three status lines, which the index no longer flags.
+  **Was left:** moving `docs/TA-230.md` beside its
+  skill (a `git mv`), and correcting three records' own status lines the
+  index flags: Phase 42 ("Locked", complete 2026-10-15), Phases 35 and 36
+  ("Approved").
 - **Acceptance criteria:** every file under `docs/` is reachable from
   `docs/README.md`; no phase heading's status contradicts its record's
   status line.
@@ -364,29 +547,49 @@ decisions index, the contribution rules, the version and release notes.
 - **Priority:** P2
 - **Suggested labels:** `docs`
 - **Problem it solves:** the README is mostly current (2026-10-20) but
-  overstates in places: "Comprehensive goes deep on one area, or all of
-  them" — `COMPREHENSIVE_AREAS` is security and accessibility only, and
-  all-areas runs are D5, planned.
+  states the goal as if it were built: "Comprehensive goes deep on one area,
+  or all of them". The goal is a Comprehensive set for every area and an
+  all-areas run (D5); today `COMPREHENSIVE_AREAS` is security and
+  accessibility. The fix is to say both — the goal, and what's built —
+  wherever the README describes coverage.
 - **Scope:** run the `repo-claim-audit` skill on README and fix what it
   finds; add a last-reviewed date.
 - **Acceptance criteria:** the audit's findings list is in the commit body,
   each resolved or justified.
 - **Dependencies:** None.
 
-### TFP-257 - Versions and release notes
+### TFP-257 - Start versioning
 
 - **Priority:** P1 (blocks TFP-247)
 - **Suggested labels:** `release`
-- **Problem it solves:** `package.json` says `0.1.0` and the repo has no
-  tags, so "which TestForge found this?" has no answer. CI users need a
-  version to pin.
-- **Scope:** a versioning rule (proposed: minor version per completed phase,
-  patch for fixes between), tags from now on, and a `CHANGELOG.md` written
-  from phase completions in the roadmap (not from commit subjects).
-- **Acceptance criteria:** the current `main` is tagged; the changelog's
-  entries each cite their phase record; the report includes the TestForge
-  version and commit.
-- **Dependencies:** [TFP-244] for the rule.
+- **Problem it solves:** `package.json` says `0.1.0`, unchanged since the
+  start, and the repo has no tags, so "which TestForge found this?" has no
+  answer, and a CI user has nothing to pin.
+- **What it takes:**
+  1. **The rule (owner decision).** Proposed: semantic versioning, staying
+     below 1.0 while the report format can still change; the minor version
+     goes up when a phase completes (Phase 39 → `0.2.0`), the patch for fixes
+     between phases; 1.0 when the report and CLI are declared stable
+     (after Phase 47).
+  2. **One source of truth:** `package.json`'s `version`.
+  3. **The product says its version:** `/api/health`, every run's
+     `run.json` and the report footer carry the version and the commit,
+     so a saved report answers the question by itself.
+  4. **A changelog:** `CHANGELOG.md`, one entry per version, written from
+     the phase records (what changed for a user), not from commit
+     subjects. The first entry, `0.1.0`, summarises Phases 16–38 in a few
+     lines and links the index.
+  5. **Tags and releases:** an annotated tag `v0.1.0` on the commit that
+     starts versioning, and `v0.2.0` when Phase 39 completes; a GitHub
+     release per tag with the changelog entry. Tags are pushed by Claude
+     Code; creating the first one is confirmation required.
+  6. **Later, with TFP-247:** a release workflow that builds the image
+     from the tag and tests it before publishing.
+- **Acceptance criteria:** `v0.1.0` exists; `/api/health` and a fresh
+  `run.json` show the version and commit; the changelog's entries each cite
+  their phase record.
+- **Dependencies:** None for steps 1–5 (the rule is decided first);
+  TFP-247 for step 6.
 
 ---
 
@@ -394,14 +597,15 @@ decisions index, the contribution rules, the version and release notes.
 
 Phase 39 and its tickets stay first. These slot in between gates:
 
-1. TFP-250 (names) and TFP-254/TFP-255 (docs) — no dependencies, small,
-   and they change what any outside reader sees first.
+0. **TFP-261 first.**
+1. TFP-250 (names), TFP-254 (with or after TFP-261), TFP-255 and TFP-262 —
+   small, and they change what any outside reader sees first.
 2. TFP-244 — the decision record, so the answer to "can it run in CI?"
    becomes a dated plan.
-3. TFP-257, then TFP-245.
+3. TFP-257 (steps 1–5 can go first, independently), then TFP-245.
 4. TFP-246 and TFP-247 (independent of each other once TFP-245 lands).
 5. TFP-248 — Gate A for Phase 47.
-6. TFP-252, TFP-253, TFP-256, TFP-251 — whenever a slot opens.
+6. TFP-260 and TFP-253 soon; TFP-252, TFP-259, TFP-256, TFP-251 whenever a slot opens.
 7. TFP-249 — after Phase 43.
 
 Where Phase 47 sits relative to the deferred-work build order (after
