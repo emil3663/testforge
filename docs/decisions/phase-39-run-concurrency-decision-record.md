@@ -840,6 +840,14 @@ sharing 5 requests per second). Medians of three; the capped run once.
   4 s, content missing at the 2 s waits; 8, 7 and 17 test timeouts in
   Standard's three runs). W1, run before each WN run, kept its Gate C
   times.
+  - **Correction (2026-10-27):** those counts are `run.mts`'s, which
+    counts a test's, an action's or a navigation's timeout but not a
+    fixture teardown's or an `afterAll` hook's. Counted from the records
+    (`benchmarks/2026-10-27-gate-d-rerun/analyse.mts`), clean WN had 8,
+    10 and 22 timeouts in Standard, 7, 10 and 9 in security (recorded as
+    none) and 17, 7 and 6 in accessibility (5, 0 and 3). W1, with-bugs
+    and the fixture had none either way. The ruling stands: it rests on
+    clean overloading with 6 workers, which the higher counts confirm.
 - **The capped Standard collapse:** TFP-157's slot server gave a freed
   slot to a waiter whose connection had gone, and held it for the 60 s
   lease. Measured afterwards: five abandoned waiters made the next

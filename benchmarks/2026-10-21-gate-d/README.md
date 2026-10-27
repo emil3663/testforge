@@ -14,7 +14,9 @@
     faster against 40%; clean W1 211 s, WN 386 s, **82.9% slower**. Not met on either copy.
   - Acceptance Criteria 7: with-bugs and the-internet the same with 1 and 6 workers; **clean differs** in every
     suite. With 6 workers the clean copy's pages and API came too slowly (API GETs over 4 s, content missing at
-    2 s waits, 8, 7 and 17 test timeouts in Standard's three runs); W1, running before each WN run, stayed at its
+    2 s waits, 8, 7 and 17 test timeouts in Standard's three runs; counted again from the records on 2026-10-27,
+    with teardown and hook timeouts too, 8, 10 and 22, and in security 7, 10 and 9, in accessibility 17, 7 and 6:
+    `../2026-10-27-gate-d-rerun/README.md`); W1, running before each WN run, stayed at its
     Gate C times, so it is load, not a copy that slowed down. The with-bugs copy, on the same stack, kept up.
   - Gate C's accessibility gap: A 215 s, WN 60 s, 72.1% faster against 30%: closed.
   - Phase 38's before and after on the local the-internet: d90de57 218 s, d202315 242 s, no timeouts, all five
