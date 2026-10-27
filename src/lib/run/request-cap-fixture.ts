@@ -10,6 +10,11 @@
  * - an automatic fixture: a timed check (its title in TESTFORGE_NOT_JUDGED_TITLES) is Not run, with the reason
  *   (TESTFORGE_NOT_JUDGED_REASON), as
  *   a page load slowed by the cap measures the cap, not the site (owner decision, 2026-10-21).
+ * - another (TFP-264, ruling 4 amended, 2026-10-28): each test records how long the cap held it up (the time at least
+ *   one of its requests waited for a slot) in a `request-cap-wait` annotation. A test that failed or timed out after
+ *   waiting longer than its assertion wait (2 s in a page's shared group, TFP-215; Playwright's own otherwise) also
+ *   gets a `request-cap-starved` one, which the report reads as Not run with that reason: the cap failed it, not the
+ *   site. A failure with less waiting stays Failed.
  *
  * Not counted, as Playwright doesn't route them: a redirect's later hops, a service worker's own requests and
  * WebSockets.
@@ -40,6 +45,37 @@ function counts(url: string): boolean {
 
 const HEADERS = { "x-testforge-cap-token": TOKEN };
 
+/** As REQUEST_CAP_WAIT_ANNOTATION and REQUEST_CAP_STARVED_ANNOTATION in src/lib/report/execution.ts. */
+const WAIT_ANNOTATION = "request-cap-wait";
+const STARVED_ANNOTATION = "request-cap-starved";
+/** TFP-215: a shared check's assertions wait 2 s (a test in a page's group carries `visit` annotations). */
+const SHARED_ASSERTION_WAIT_MS = 2000;
+/** Playwright's own assertion wait: playwright.config.ts sets none, so every other test's `expect` waits 5 s. */
+const DEFAULT_ASSERTION_WAIT_MS = 5000;
+
+// TFP-264: the running test's time held up by the cap, across all its requests at once: from the first of them to
+// start waiting for a slot to the last to get one. A worker runs one test at a time, but a page group's shared visit
+// outlives each check, so a request an earlier test started (an image still loading) is that test's, not this one's:
+// each wait counts for the test it started in.
+let currentTest = 0;
+let waitingNow = 0;
+let waitingSince = 0;
+let waitedMs = 0;
+const startWaiting = (): number => {
+    if (waitingNow++ === 0) waitingSince = Date.now();
+    return currentTest;
+};
+const stopWaiting = (startedIn: number) => {
+    if (startedIn !== currentTest) return;
+    if (--waitingNow === 0) waitedMs += Date.now() - waitingSince;
+};
+const waitedSoFar = () => waitedMs + (waitingNow > 0 ? Date.now() - waitingSince : 0);
+const startTest = () => {
+    currentTest++;
+    waitingNow = 0;
+    waitedMs = 0;
+};
+
 /**
  * Waits for a slot when the request counts; returns the call that hands it back (the server holds it a second more).
  * The slot is this fetch's open answer: handing it back closes the connection, and so does this process ending, so a
@@ -51,6 +87,7 @@ async function slot(url: string, signal?: AbortSignal): Promise<() => void> {
     const connection = new AbortController();
     const giveUp = () => connection.abort();
     signal?.addEventListener("abort", giveUp, { once: true });
+    const startedIn = startWaiting();
     try {
         const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
         if (response.status !== 200) throw new Error(`the request cap's slot server answered HTTP ${response.status}`);
@@ -58,6 +95,7 @@ async function slot(url: string, signal?: AbortSignal): Promise<() => void> {
         connection.abort();
         throw error;
     } finally {
+        stopWaiting(startedIn);
         signal?.removeEventListener("abort", giveUp);
     }
     return () => connection.abort();
@@ -108,7 +146,22 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
     capRequests(context.request, baseURL);
 }
 
-export const test = base.extend<{ testforgeNotJudged: void }, { browser: Browser }>({
+export const test = base.extend<{ testforgeNotJudged: void; testforgeCapWait: void }, { browser: Browser }>({
+    testforgeCapWait: [async ({}, provide, testInfo) => {
+        startTest();
+        await provide();
+        if (!SLOT_URL) return;
+        const waited = waitedSoFar();
+        testInfo.annotations.push({ type: WAIT_ANNOTATION, description: String(waited) });
+        const assertionWait = testInfo.annotations.some((annotation) => annotation.type === "visit") ? SHARED_ASSERTION_WAIT_MS : DEFAULT_ASSERTION_WAIT_MS;
+        const failed = testInfo.status === "failed" || testInfo.status === "timedOut";
+        if (failed && waited > assertionWait) {
+            testInfo.annotations.push({
+                type: STARVED_ANNOTATION,
+                description: `starved by the request cap: it waited ${(waited / 1000).toFixed(1)} s for request slots, longer than its ${assertionWait / 1000} s assertion wait, so its failure says nothing about the site`,
+            });
+        }
+    }, { auto: true }],
     browser: [async ({ browser }, provide) => {
         const newContext = browser.newContext.bind(browser);
         browser.newContext = async (options) => {

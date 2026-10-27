@@ -54,6 +54,8 @@ export interface RequestCapStats {
     /** Of them, how many had to wait for theirs, and for how long in all (ms). */
     waited: number;
     waitedMs: number;
+    /** TFP-264: how many tests the cap starved (reported Not run); set on the saved run once its records are read. */
+    starved?: number;
 }
 
 export interface RequestCap {

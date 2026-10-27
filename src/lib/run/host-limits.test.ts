@@ -20,6 +20,9 @@
  *   and at most 5 requests in any second at the server, with the waits counted; the timed check is Not run with its
  *   reason. With a stub ownership confirmation (TFP-220 replaces the stub in Phase 43): the machine's limit, no cap,
  *   and the timed check runs.
+ * - Decision table, in a real browser (TFP-264, ruling 4 amended): a test the cap holds up past its assertion wait (a
+ *   page of 200 images, capped) is Not run, "starved by the request cap", with its wait, and the same test uncapped
+ *   passes; a real defect under the cap with little waiting stays Failed. The capped run's budget is 60 minutes.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/host-limits.test.ts
@@ -198,6 +201,10 @@ async function withRecordingSite(run: (origin: string, arrivals: Array<{ path: s
         arrivals.push({ path, at: performance.now() });
         if (path.startsWith("/slow/")) setTimeout(() => res.writeHead(200, { "content-type": "image/png" }).end(png), 300);
         else if (path === "/heavy") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>heavy</title></head><body><h1>heavy</h1>${Array.from({ length: 30 }, (_, index) => `<img src="/slow/${index}.png" alt="${index}">`).join("")}</body></html>`);
+        // TFP-264: 200 quick images: uncapped they load in well under a second; capped at 5 a second, not inside 30 s.
+        // 10 quick images: 12 requests against 5 slots, so some wait about a second or two, well under 5 s.
+        else if (path === "/some") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>some</title><script src="/app.js"></script></head><body><h1>some</h1>${Array.from({ length: 10 }, (_, index) => `<img src="/s/${index}.png" alt="${index}">`).join("")}</body></html>`);
+        else if (path === "/many") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>many</title></head><body><h1>many</h1>${Array.from({ length: 200 }, (_, index) => `<img src="/m/${index}.png" alt="${index}">`).join("")}</body></html>`);
         else if (path.endsWith(".png")) res.writeHead(200, { "content-type": "image/png" }).end(png);
         else if (path === "/app.js") res.writeHead(200, { "content-type": "text/javascript" }).end("document.documentElement.dataset.ready = '1';");
         else if (path.startsWith("/api/")) res.writeHead(200, { "content-type": "application/json" }).end('{"ok":true}');
@@ -315,8 +322,10 @@ test("in a real browser: a test that fails while its page's requests wait for sl
         const records = report.execution as ExecutionRecord[];
         const summary = records.map((record) => `${record.title}: ${record.status} ${(record.rawMessage ?? "").slice(0, 80)}`).join(" | ");
         assert.equal(records.length, 8, summary);
+        // TFP-264 (ruling 4 amended): one whose page waited for its slots longer than its 5 s assertion wait before it
+        // failed is Not run, "starved by the request cap", as the ruling words it, though its failure here is on purpose.
         for (const record of records.filter((entry) => /fails on purpose/.test(entry.title))) {
-            assert.equal(record.status, "Failed", summary);
+            assert.ok(record.status === "Failed" || (record.status === "Not run" && /^starved by the request cap/.test(record.skipReason ?? "") && (record.requestCapWaitMs ?? 0) > 5000), summary);
             assert.match(record.rawMessage ?? "", /fails on purpose/, summary);
         }
         // Each next test passing inside its 30 s test timeout means none waited out a 60 s lease. On 54c38eb they timed
@@ -347,4 +356,114 @@ test("in a real browser: with the ownership confirmation (a stub until Phase 43)
     } finally {
         setOwnershipLookupForTests(null);
     }
+});
+
+/** TFP-264: one test that loads a page of 200 images, and one that checks a heading the page doesn't have. */
+const starvedSuite = (origin: string) => `import { test, expect } from '@playwright/test';
+
+test.describe('Starved', () => {
+  test('Starved: a page of 200 images loads', async ({ page }) => {
+    await page.goto('${origin}/many');
+    await expect(page.locator('h1')).toHaveText('many');
+  });
+});
+`;
+const defectSuite = (origin: string) => `import { test, expect } from '@playwright/test';
+
+test.describe('Defect', () => {
+  test('Defect: the heading says what it should', async ({ page }) => {
+    await page.goto('${origin}/some');
+    await expect(page.locator('h1')).toHaveText('not this heading');
+  });
+});
+`;
+/** TFP-264: the first test leaves 200 images waiting in a context it keeps open (as a page group's shared visit does); the next fails on purpose 6 s later. */
+const carrySuite = (origin: string) => `import { test, expect } from '@playwright/test';
+
+let kept;
+test.describe('Carry', () => {
+  test('Carry: leaves its images loading', async ({ browser }) => {
+    kept = await browser.newContext();
+    const page = await kept.newPage();
+    await page.goto('${origin}/many', { waitUntil: 'commit' });
+  });
+  test('Carry: the next test fails on its own', async () => {
+    await new Promise((resolve) => setTimeout(resolve, 6000));
+    expect(1, 'fails on purpose').toBe(2);
+  });
+});
+`;
+
+test("in a real browser: on a capped host, a test the cap holds up past its assertion wait is Not run, 'starved by the request cap', with its wait; the run counts it and has 60 minutes (TFP-264)", { skip: lanSkip }, async () => {
+    await withRecordingSite(async (origin) => {
+        const snapshot = await startRunJob(starvedSuite(origin), ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const [record] = report.execution as ExecutionRecord[];
+        const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 120)}`;
+        assert.equal(record.status, "Not run", said);
+        assert.match(record.skipReason ?? "", /^starved by the request cap: it waited \d+\.\d s for request slots, longer than its 5 s assertion wait/, said);
+        assert.ok((record.requestCapWaitMs ?? 0) > 5000, said);
+        // It ran out of time waiting: what the cap starved is still in its message, for whoever reads the evidence.
+        assert.match(record.rawMessage ?? "", /timeout|exceeded/i, said);
+        assert.equal(report.summary.failed, 0, said);
+        assert.equal(report.hostLimits?.requestCap?.starved, 1);
+        const output = job.outputChunks.join("");
+        assert.ok(output.includes("Run budget: up to 3600s"), output);
+        assert.ok(output.includes('Request cap: 1 test(s) waited for request slots longer than their assertion wait and failed, so they are reported Not run ("starved by the request cap"), not Failed.'), output);
+    });
+});
+
+test("in a real browser: the same test uncapped (the ownership confirmation's stub) passes, with no wait recorded (TFP-264)", { skip: lanSkip }, async () => {
+    setOwnershipLookupForTests((baseUrl) => Boolean(baseUrl?.startsWith(`http://${lanAddress}:`)));
+    try {
+        await withRecordingSite(async (origin) => {
+            const snapshot = await startRunJob(starvedSuite(origin), ["functional"], "fast", origin, [], [], "Check the site.");
+            const job = await finished(snapshot.runId, 300_000);
+            const report = job.result?.report;
+            assert.ok(report, job.result?.output);
+            const [record] = report.execution as ExecutionRecord[];
+            assert.equal(record.status, "Passed", `${record.status}: ${(record.rawMessage ?? "").slice(0, 120)}`);
+            assert.equal(record.requestCapWaitMs, undefined);
+            assert.equal(report.hostLimits?.requestCap, null);
+            assert.ok(!job.outputChunks.join("").includes("starved by the request cap"));
+        });
+    } finally {
+        setOwnershipLookupForTests(null);
+    }
+});
+
+test("in a real browser: on a capped host, a real defect with little waiting stays Failed (TFP-264)", { skip: lanSkip }, async () => {
+    await withRecordingSite(async (origin) => {
+        const snapshot = await startRunJob(defectSuite(origin), ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const [record] = report.execution as ExecutionRecord[];
+        const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 120)}`;
+        assert.equal(record.status, "Failed", said);
+        assert.equal(record.skipReason, undefined, said);
+        assert.match(record.rawMessage ?? "", /not this heading/, said);
+        assert.ok(record.requestCapWaitMs !== undefined && record.requestCapWaitMs > 0 && record.requestCapWaitMs < 5000, said);
+        assert.equal(report.hostLimits?.requestCap?.starved, 0);
+        assert.ok(job.outputChunks.join("").includes("Request cap: 0 test(s) waited"));
+    });
+});
+
+test("in a real browser: on a capped host, requests an earlier test left waiting don't count as the next test's wait (TFP-264)", { skip: lanSkip }, async () => {
+    // A page group's shared visit outlives each check. Counted per worker, the first test's 200 queued images would
+    // be 6 s of the second's wait, and its own failure would read as starved.
+    await withRecordingSite(async (origin) => {
+        const snapshot = await startRunJob(carrySuite(origin), ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const records = report.execution as ExecutionRecord[];
+        const said = records.map((record) => `${record.title}: ${record.status} ${record.skipReason ?? ""} ${record.requestCapWaitMs} ms`).join(" | ");
+        const next = records.find((record) => /fails on its own/.test(record.title));
+        assert.equal(next?.status, "Failed", said);
+        assert.equal(next?.requestCapWaitMs, 0, said);
+        assert.match(next?.rawMessage ?? "", /fails on purpose/, said);
+    });
 });

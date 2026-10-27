@@ -289,6 +289,13 @@ function annotationValues(test: JsonTest, type: string): string[] {
 
 const ISSUE_KINDS = new Set(["failure", "finding", "manual-review"]);
 
+/** TFP-264: the annotations the request cap's fixture writes (request-cap-fixture.ts, which can't import this). */
+export const REQUEST_CAP_WAIT_ANNOTATION = "request-cap-wait";
+export const REQUEST_CAP_STARVED_ANNOTATION = "request-cap-starved";
+/** How many of a run's records the request cap starved (TFP-264). */
+export const capStarvedCount = (records: Array<{ status: string; skipReason?: string }>) =>
+    records.filter((record) => record.status === "Not run" && record.skipReason?.startsWith("starved by the request cap")).length;
+
 /** TFP-134: `issue` annotations, JSON { kind, category, detail }; anything else is ignored. */
 function issuesOf(test: JsonTest): ComprehensiveIssueRecord[] {
     return annotationValues(test, "issue").flatMap((description) => {
@@ -362,7 +369,12 @@ export function flattenSuites(
                 // fresh page in the same attempt, which gives the result; the annotation holds the first attempt's
                 // failure, kept in the remarks whatever the re-run gave (shared-visit-rerun).
                 const rerun = test.annotations?.find((annotation) => annotation.type === "shared-visit-rerun")?.description ?? null;
-                const status: ExecutionStatus = test.status === "skipped" && skipReason ? "Not run" : mapStatus(test.status);
+                // TFP-264 (ruling 4 amended, 2026-10-28): on a capped host, a test that failed after the cap held it up
+                // longer than its assertion wait is Not run, with the cap's reason, never Failed (request-cap-fixture.ts).
+                const starved = test.status === "unexpected" ? test.annotations?.find((annotation) => annotation.type === REQUEST_CAP_STARVED_ANNOTATION)?.description ?? null : null;
+                const capWait = Number(test.annotations?.find((annotation) => annotation.type === REQUEST_CAP_WAIT_ANNOTATION)?.description);
+                const status: ExecutionStatus = starved ? "Not run" : test.status === "skipped" && skipReason ? "Not run" : mapStatus(test.status);
+                const notRunReason = starved ?? skipReason;
                 const message = latestResult ? extractMessage(latestResult) : "No result captured.";
                 const interactionType = deriveInteractionType(spec.title);
 
@@ -387,7 +399,7 @@ export function flattenSuites(
                                     spec.title,
                                     status,
                                     message,
-                                    skipReason
+                                    notRunReason
                                 ),
                                 findingsOf(test)
                             ),
@@ -399,7 +411,8 @@ export function flattenSuites(
                     ...(measurementsOf(test).length > 0 ? { measurements: measurementsOf(test) } : {}),
                     // TFP-195: a pool candidate, bound to this site and run outside the verdict.
                     generator: localModel ? "local model" : nextLineage.includes(CANDIDATE_DESCRIBE) ? "candidate" : "template",
-                    ...(status === "Not run" && skipReason ? { skipReason } : {}),
+                    ...(status === "Not run" && notRunReason ? { skipReason: notRunReason } : {}),
+                    ...(Number.isFinite(capWait) ? { requestCapWaitMs: capWait } : {}),
                     ...gateOf(test),
                     ...comprehensiveTags(test),
                     rawMessage: message,

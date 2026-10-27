@@ -1,7 +1,7 @@
 import type { ChildProcess } from "child_process";
 import { readFile, unlink } from "fs/promises";
 import type { ContentProfile } from "@/lib/generate/mock/types";
-import { flattenSuites } from "@/lib/report/execution";
+import { capStarvedCount, flattenSuites } from "@/lib/report/execution";
 import { recordCandidateRuns } from "@/lib/candidates/evidence";
 import { buildReport } from "@/lib/report/report";
 import type { GenerationRecord, JsonReport, RunReport } from "@/lib/report/types";
@@ -233,6 +233,11 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     if (parsedReport) {
         parsedReport = redactDeep(parsedReport, redactor);
     }
+    // TFP-264: on a capped host, how many tests the cap starved, reported Not run, not Failed.
+    const capStarved = job.requestCap && parsedReport ? capStarvedCount(flattenSuites(parsedReport.suites ?? [])) : 0;
+    if (job.requestCap) {
+        job.outputChunks.push(`Request cap: ${capStarved} test(s) waited for request slots longer than their assertion wait and failed, so they are reported Not run ("starved by the request cap"), not Failed.\n`);
+    }
     const output = redactor.redact(job.outputChunks.join("").trim());
     const duration = job.finishedAt - job.createdAt;
     // TFP-211: where the run's time went, from the timing reporter, outside the generated suite.
@@ -358,7 +363,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             report: {
                 ...aggregatedReport,
                 ...(runTiming ? { runTiming } : {}),
-                ...(job.hostLimits ? { hostLimits: { ...job.hostLimits, requestCap: job.requestCap ?? null } } : {}),
+                ...(job.hostLimits ? { hostLimits: { ...job.hostLimits, requestCap: job.requestCap ? { ...job.requestCap, starved: capStarved } : null } } : {}),
                 defects: {
                     ...aggregatedReport.defects,
                     issues: aggregatedReport.defects.issues.map((defect) => ({

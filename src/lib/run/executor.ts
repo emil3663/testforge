@@ -52,6 +52,9 @@ module.exports = TestForgeProgressReporter;
 `;
 }
 
+/** Ruling 5: a run on a capped host gets 60 minutes, whatever the suite's size. */
+export const CAPPED_RUN_BUDGET_MS = 3_600_000;
+
 function getRunTimeoutBudget(auditMode: TestAuditMode, isLinkHeavySuite: boolean) {
     if (auditMode === "deep") {
         return {
@@ -112,7 +115,9 @@ export async function startRunJob(
     const hostLimits = hostLimitsFor(baseUrl, { ownershipConfirmed: await hasOwnershipConfirmation(baseUrl) });
     const workerCount = hostLimits.workers;
     const estimatedExecutions = estimateTestCount(code) * browserProjects.length;
-    const runTimeout = calculateRunTimeout(
+    // Ruling 5 (decided by ruling 4 amended, 2026-10-28; TFP-264): a capped run's budget is 60 minutes, as the cap,
+    // not the suite's size, sets how long it takes.
+    const runTimeout = hostLimits.row === "capped" ? CAPPED_RUN_BUDGET_MS : calculateRunTimeout(
         code,
         browserProjects.length,
         auditMode
@@ -296,6 +301,7 @@ export async function startRunJob(
     let forceStopTimer: NodeJS.Timeout | null = null;
 
     // One budget for both passes: the timer stops whichever is running.
+    const budgetEndsAt = Date.now() + runTimeout;
     const timeoutId = setTimeout(() => {
         const child = job.process;
         if (job.status === "running" && child && child.exitCode === null) {
@@ -332,7 +338,8 @@ export async function startRunJob(
         void mergePasses(passes.map((pass) => pass.report), jsonReportFile, passes.map((pass) => pass.timing), timingFile)
             // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
             // first, with this run's login state, so the report has only the re-run's results.
-            .then(() => recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: runTimeout, prepare: (code, dir) => capped(code, dir) }))
+            // Ruling 5: on a capped host the re-check has what is left of the run's 60 minutes, not 60 more.
+            .then(() => recheckSiteSuiteAfterRun(job, { env: childEnv, workerCount, browserProjects, timeoutMs: hostLimits.row === "capped" ? Math.max(1000, budgetEndsAt - Date.now()) : runTimeout, prepare: (code, dir) => capped(code, dir) }))
             .catch((error: unknown) => {
                 job.outputChunks.push(`Site suite: the failing reused tests' pages could not be read again (${error instanceof Error ? error.message : String(error)}); their failures stand.\n`);
             })

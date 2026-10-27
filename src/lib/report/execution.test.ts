@@ -49,7 +49,7 @@ test("deriveArea: only whole titles match - a describe that merely mentions an a
 
 // --- Phase 34 (TFP-117): skipped tests say why ------------------------------
 
-const { flattenSuites } = await import("./execution.ts");
+const { flattenSuites, capStarvedCount, REQUEST_CAP_WAIT_ANNOTATION, REQUEST_CAP_STARVED_ANNOTATION } = await import("./execution.ts");
 
 function skippedSpec(annotations?: Array<{ type: string; description?: string }>) {
     return [
@@ -81,6 +81,51 @@ test("flattenSuites: a test that skipped itself reports its own reason, not an i
     assert.equal(record.area, "Database");
     assert.match(record.remarks, /^Not run\. .* did not run: database round trip: saves data through a form on the live site/);
     assert.doesNotMatch(record.remarks, /interrupted/);
+});
+
+/** One test with the given Playwright status and annotations, as the JSON reporter writes it. */
+function oneTest(status: "expected" | "unexpected", annotations: Array<{ type: string; description?: string }>) {
+    return [{
+        title: "suite.spec.ts",
+        specs: [],
+        suites: [{
+            title: "Functional Coverage",
+            specs: [{
+                id: "c1",
+                title: "TFFU-001: a page of 200 images loads",
+                tests: [{ projectName: "chromium", status, annotations, results: [{ duration: 31_000, retry: 0, errors: [{ message: "Test timeout of 30000ms exceeded." }], status: status === "expected" ? "passed" : "timedOut" }] }],
+            }],
+        }],
+    }];
+}
+
+test("flattenSuites: on a capped host, a failure the cap starved is Not run with its reason and wait; any other result stands (TFP-264, decision table)", () => {
+    const starved = "starved by the request cap: it waited 29.8 s for request slots, longer than its 5 s assertion wait, so its failure says nothing about the site";
+    const cases: Array<[string, "expected" | "unexpected", Array<{ type: string; description?: string }>, string, string | undefined, number | undefined]> = [
+        ["failed, starved", "unexpected", [{ type: REQUEST_CAP_WAIT_ANNOTATION, description: "29800" }, { type: REQUEST_CAP_STARVED_ANNOTATION, description: starved }], "Not run", starved, 29_800],
+        ["failed, little waiting", "unexpected", [{ type: REQUEST_CAP_WAIT_ANNOTATION, description: "120" }], "Failed", undefined, 120],
+        ["passed after waiting", "expected", [{ type: REQUEST_CAP_WAIT_ANNOTATION, description: "9000" }], "Passed", undefined, 9_000],
+        // The fixture never writes this on a pass; if one is there, a pass still stands.
+        ["passed, starved annotation", "expected", [{ type: REQUEST_CAP_STARVED_ANNOTATION, description: starved }], "Passed", undefined, undefined],
+        ["uncapped failure", "unexpected", [], "Failed", undefined, undefined],
+    ];
+    for (const [name, status, annotations, want, reason, wait] of cases) {
+        const [record] = flattenSuites(oneTest(status, annotations));
+        assert.equal(record.status, want, name);
+        assert.equal(record.skipReason, reason, name);
+        assert.equal(record.requestCapWaitMs, wait, name);
+    }
+    const [notRun] = flattenSuites(oneTest("unexpected", [{ type: REQUEST_CAP_STARVED_ANNOTATION, description: starved }]));
+    assert.match(notRun.remarks, /^Not run\. .* did not run: starved by the request cap: it waited 29\.8 s/);
+    assert.equal(capStarvedCount([notRun, ...flattenSuites(oneTest("unexpected", []))]), 1);
+});
+
+test("the request cap's fixture writes the annotations the report reads (TFP-264)", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const fixture = await readFile(new URL("../run/request-cap-fixture.ts", import.meta.url), "utf8");
+    assert.ok(fixture.includes(`const WAIT_ANNOTATION = "${REQUEST_CAP_WAIT_ANNOTATION}";`));
+    assert.ok(fixture.includes(`const STARVED_ANNOTATION = "${REQUEST_CAP_STARVED_ANNOTATION}";`));
+    assert.ok(fixture.includes("description: `starved by the request cap: "), "capStarvedCount's prefix");
 });
 
 test("flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording", () => {

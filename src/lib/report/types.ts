@@ -100,8 +100,13 @@ export interface ExecutionRecord {
     generator?: "template" | "local model" | "candidate";
     /** Phase 42 (TFP-195, TFP-203): the pool candidate the test was bound from (its `candidate` annotation), on either run type. */
     candidate?: string;
-    /** Phase 34 Option C: why a "Not run" test did not run (its skip annotation). */
+    /**
+     * Phase 34 Option C: why a "Not run" test did not run (its skip annotation). TFP-264: or, on a capped host, that the
+     * request cap starved it ("starved by the request cap: ...").
+     */
     skipReason?: string;
+    /** TFP-264: on a capped host, how long the cap held the test up, waiting for request slots (ms). */
+    requestCapWaitMs?: number;
     /** Phase 38 Decision 1: the gate the test declared; absent on runs from before TFP-146. */
     gate?: TestGate;
     /** Phase 35 (TFP-132): the page a Comprehensive test checked (`page` annotation). */
