@@ -14,7 +14,7 @@ below; planning steps happen in Cowork first.
 | R1 | Baseline: the full regression | Code | TFP-207 |
 | R2 | Flakes, from R1's evidence | Code | TFP-208 (written after R1) |
 | R3 | Claims audit: every phase's claims against code and measurements | Cowork, with Emil | tickets it finds |
-| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222, TFP-242, TFP-243 |
+| R4 | Small security items, and CI's Node version | Code | TFP-206, TFP-209, TFP-216, TFP-217, TFP-222, TFP-242, TFP-243, TFP-258 |
 | R5 | Three decisions: the Docker sandbox, app screens, scenario gaps | Cowork, with Emil | a decision record each |
 | R6 | The skills relook | Cowork, with Emil | skill proposals; TFP-236 to TFP-239 |
 
@@ -503,6 +503,36 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     re-linking (no deletion), and repair them only on Emil's word.
   - **Test plan:** a `TEST_PLAN.md` case.
 - **Dependencies:** none. It fits with R4, between gates.
+
+### TFP-258 — The template check covers every helper the generator writes
+
+- **Priority:** P1 · **Labels:** `test`, `generate`
+- **Found:** 2026-10-27, by TFP-250's fresh-context review.
+  - Rewording a comment inside `controls.ts`'s generated helpers changed
+    generated output.
+  - `check:template-unchanged` still reported every fixed input identical,
+    because none of its 166 inputs reaches those helpers.
+  - The check is the proof that a change leaves users' suites alone, so a
+    blind spot in it is a gap in that proof.
+- **Scope:**
+  - **List every helper** the generator can write into a suite (the
+    `tf*` helpers and their kin), and which fixed input reaches each.
+  - **Add fixed inputs,** or extend existing ones, until every helper is
+    reached. Record the new inputs, and move the baseline in its own commit.
+  - **Add a unit test** that fails if a helper the generator can emit is
+    reached by no fixed input. Gaps then can't reopen as helpers are added.
+- **Acceptance criteria:**
+  - **Coverage:** every emitted helper is reached by at least one fixed
+    input, shown by the new test.
+  - **Proof the gap is closed:** rewording a comment in `controls.ts`'s
+    helper makes `check:template-unchanged` report the input as different.
+  - **Test plan:** a `TEST_PLAN.md` case.
+- **Then (Emil, 2026-10-27):** the two generated comments that still name
+  the owner (`controls.ts`, "(Emil, 2026-10-12)" and "Emil's look at the
+  control counts") are reworded to the decision vocabulary ("owner
+  decision, <date>"). The baseline moves in its own commit, now measured
+  by the check.
+- **Dependencies:** none. Before the comment rewording. It fits with R4.
 
 ## R5 — Three decisions (Cowork first)
 
