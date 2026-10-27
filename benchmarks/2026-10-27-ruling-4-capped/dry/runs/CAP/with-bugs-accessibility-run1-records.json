@@ -1,0 +1,833 @@
+{
+  "label": "with-bugs",
+  "variant": "CAP",
+  "site": "http://172.31.208.1:4200",
+  "kind": "accessibility",
+  "run": 1,
+  "commit": "57bcc76",
+  "startedAt": "2026-10-27T21:56:19.783Z",
+  "runSeconds": 932,
+  "workers": 3,
+  "workersUsed": 3,
+  "units": 20,
+  "passes": 1,
+  "serialTests": 0,
+  "tests": 80,
+  "byStatus": {
+    "Failed": 76,
+    "Passed": 2,
+    "Not run": 2
+  },
+  "requestCap": {
+    "perSecond": 5,
+    "requests": 4928,
+    "waited": 4917,
+    "waitedMs": 30721371
+  },
+  "capDomain": "",
+  "timeouts": [
+    "TFAC-004: /#/ groups its checkboxes and radio buttons @/#/",
+    "TFAC-003: /#/ is tabbed through in reading order @/#/",
+    "TFAC-001: /#/ passes the WCAG 2.2 A and AA scan @/#/",
+    "TFAC-008: /#/product/6 groups its checkboxes and radio buttons @/#/product/6",
+    "TFAC-006: every form field has an accessible name: /#/product/6 @/#/product/6",
+    "TFAC-007: /#/product/6 is tabbed through in reading order @/#/product/6",
+    "TFAC-005: /#/product/6 passes the WCAG 2.2 A and AA scan @/#/product/6",
+    "TFAC-012: /#/product/7 groups its checkboxes and radio buttons @/#/product/7",
+    "TFAC-010: every form field has an accessible name: /#/product/7 @/#/product/7",
+    "TFAC-011: /#/product/7 is tabbed through in reading order @/#/product/7",
+    "TFAC-009: /#/product/7 passes the WCAG 2.2 A and AA scan @/#/product/7",
+    "TFAC-016: /#/product/8 groups its checkboxes and radio buttons @/#/product/8",
+    "TFAC-014: every form field has an accessible name: /#/product/8 @/#/product/8",
+    "TFAC-015: /#/product/8 is tabbed through in reading order @/#/product/8",
+    "TFAC-013: /#/product/8 passes the WCAG 2.2 A and AA scan @/#/product/8",
+    "TFAC-020: /#/product/9 groups its checkboxes and radio buttons @/#/product/9",
+    "TFAC-018: every form field has an accessible name: /#/product/9 @/#/product/9",
+    "TFAC-019: /#/product/9 is tabbed through in reading order @/#/product/9",
+    "TFAC-017: /#/product/9 passes the WCAG 2.2 A and AA scan @/#/product/9",
+    "TFAC-024: /#/product/10 groups its checkboxes and radio buttons @/#/product/10",
+    "TFAC-022: every form field has an accessible name: /#/product/10 @/#/product/10",
+    "TFAC-023: /#/product/10 is tabbed through in reading order @/#/product/10",
+    "TFAC-021: /#/product/10 passes the WCAG 2.2 A and AA scan @/#/product/10",
+    "TFAC-028: /#/product/11 groups its checkboxes and radio buttons @/#/product/11",
+    "TFAC-026: every form field has an accessible name: /#/product/11 @/#/product/11",
+    "TFAC-027: /#/product/11 is tabbed through in reading order @/#/product/11",
+    "TFAC-025: /#/product/11 passes the WCAG 2.2 A and AA scan @/#/product/11",
+    "TFAC-032: /#/product/12 groups its checkboxes and radio buttons @/#/product/12",
+    "TFAC-030: every form field has an accessible name: /#/product/12 @/#/product/12",
+    "TFAC-031: /#/product/12 is tabbed through in reading order @/#/product/12",
+    "TFAC-029: /#/product/12 passes the WCAG 2.2 A and AA scan @/#/product/12",
+    "TFAC-036: /#/product/1 groups its checkboxes and radio buttons @/#/product/1",
+    "TFAC-034: every form field has an accessible name: /#/product/1 @/#/product/1",
+    "TFAC-035: /#/product/1 is tabbed through in reading order @/#/product/1",
+    "TFAC-033: /#/product/1 passes the WCAG 2.2 A and AA scan @/#/product/1",
+    "TFAC-040: /#/product/2 groups its checkboxes and radio buttons @/#/product/2",
+    "TFAC-038: every form field has an accessible name: /#/product/2 @/#/product/2",
+    "TFAC-039: /#/product/2 is tabbed through in reading order @/#/product/2",
+    "TFAC-037: /#/product/2 passes the WCAG 2.2 A and AA scan @/#/product/2",
+    "TFAC-044: /#/product/3 groups its checkboxes and radio buttons @/#/product/3",
+    "TFAC-042: every form field has an accessible name: /#/product/3 @/#/product/3",
+    "TFAC-043: /#/product/3 is tabbed through in reading order @/#/product/3",
+    "TFAC-041: /#/product/3 passes the WCAG 2.2 A and AA scan @/#/product/3",
+    "TFAC-048: /#/category/hand-tools groups its checkboxes and radio buttons @/#/category/hand-tools",
+    "TFAC-046: every form field has an accessible name: /#/category/hand-tools @/#/category/hand-tools",
+    "TFAC-047: /#/category/hand-tools is tabbed through in reading order @/#/category/hand-tools",
+    "TFAC-045: /#/category/hand-tools passes the WCAG 2.2 A and AA scan @/#/category/hand-tools",
+    "TFAC-052: /#/category/power-tools groups its checkboxes and radio buttons @/#/category/power-tools",
+    "TFAC-050: every form field has an accessible name: /#/category/power-tools @/#/category/power-tools",
+    "TFAC-051: /#/category/power-tools is tabbed through in reading order @/#/category/power-tools",
+    "TFAC-049: /#/category/power-tools passes the WCAG 2.2 A and AA scan @/#/category/power-tools",
+    "TFAC-056: /#/category/undefined groups its checkboxes and radio buttons @/#/category/undefined",
+    "TFAC-054: every form field has an accessible name: /#/category/undefined @/#/category/undefined",
+    "TFAC-055: /#/category/undefined is tabbed through in reading order @/#/category/undefined",
+    "TFAC-053: /#/category/undefined passes the WCAG 2.2 A and AA scan @/#/category/undefined",
+    "TFAC-060: /#/auth/register groups its checkboxes and radio buttons @/#/auth/register",
+    "TFAC-058: every form field has an accessible name: /#/auth/register @/#/auth/register",
+    "TFAC-059: /#/auth/register is tabbed through in reading order @/#/auth/register",
+    "TFAC-057: /#/auth/register passes the WCAG 2.2 A and AA scan @/#/auth/register",
+    "TFAC-064: /#/contact groups its checkboxes and radio buttons @/#/contact",
+    "TFAC-062: every form field has an accessible name: /#/contact @/#/contact",
+    "TFAC-063: /#/contact is tabbed through in reading order @/#/contact",
+    "TFAC-061: /#/contact passes the WCAG 2.2 A and AA scan @/#/contact",
+    "TFAC-068: /#/auth/login groups its checkboxes and radio buttons @/#/auth/login",
+    "TFAC-066: every form field has an accessible name: /#/auth/login @/#/auth/login",
+    "TFAC-067: /#/auth/login is tabbed through in reading order @/#/auth/login",
+    "TFAC-065: /#/auth/login passes the WCAG 2.2 A and AA scan @/#/auth/login",
+    "TFAC-072: /#/auth/forgot-password groups its checkboxes and radio buttons @/#/auth/forgot-password",
+    "TFAC-070: every form field has an accessible name: /#/auth/forgot-password @/#/auth/forgot-password",
+    "TFAC-071: /#/auth/forgot-password is tabbed through in reading order @/#/auth/forgot-password",
+    "TFAC-069: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan @/#/auth/forgot-password",
+    "TFAC-076: /#/chainsaws groups its checkboxes and radio buttons @/#/chainsaws",
+    "TFAC-080: /#/rentals groups its checkboxes and radio buttons @/#/rentals"
+  ],
+  "records": [
+    {
+      "title": "TFAC-004: /#/ groups its checkboxes and radio buttons",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-002: every form field has an accessible name: /#/",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Error: form fields on /#/ with no accessible name (a screen reader announces them without a label): select, input[type=\"text\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"select\", + \"input[type=\\\"text\\\"]\", + ]",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-003: /#/ is tabbed through in reading order",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-001: /#/ passes the WCAG 2.2 A and AA scan",
+      "page": "/#/",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-008: /#/product/6 groups its checkboxes and radio buttons",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-006: every form field has an accessible name: /#/product/6",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-007: /#/product/6 is tabbed through in reading order",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-005: /#/product/6 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/6",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-012: /#/product/7 groups its checkboxes and radio buttons",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-010: every form field has an accessible name: /#/product/7",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-011: /#/product/7 is tabbed through in reading order",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-009: /#/product/7 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/7",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-016: /#/product/8 groups its checkboxes and radio buttons",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-014: every form field has an accessible name: /#/product/8",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-015: /#/product/8 is tabbed through in reading order",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-013: /#/product/8 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/8",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-020: /#/product/9 groups its checkboxes and radio buttons",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-018: every form field has an accessible name: /#/product/9",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-019: /#/product/9 is tabbed through in reading order",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-017: /#/product/9 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/9",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-024: /#/product/10 groups its checkboxes and radio buttons",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-022: every form field has an accessible name: /#/product/10",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-023: /#/product/10 is tabbed through in reading order",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-021: /#/product/10 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/10",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-028: /#/product/11 groups its checkboxes and radio buttons",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-026: every form field has an accessible name: /#/product/11",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-027: /#/product/11 is tabbed through in reading order",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-025: /#/product/11 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/11",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-032: /#/product/12 groups its checkboxes and radio buttons",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-030: every form field has an accessible name: /#/product/12",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-031: /#/product/12 is tabbed through in reading order",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-029: /#/product/12 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/12",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-036: /#/product/1 groups its checkboxes and radio buttons",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-034: every form field has an accessible name: /#/product/1",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-035: /#/product/1 is tabbed through in reading order",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-033: /#/product/1 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/1",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-040: /#/product/2 groups its checkboxes and radio buttons",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-038: every form field has an accessible name: /#/product/2",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-039: /#/product/2 is tabbed through in reading order",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-037: /#/product/2 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/2",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-044: /#/product/3 groups its checkboxes and radio buttons",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-042: every form field has an accessible name: /#/product/3",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-043: /#/product/3 is tabbed through in reading order",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-041: /#/product/3 passes the WCAG 2.2 A and AA scan",
+      "page": "/#/product/3",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-048: /#/category/hand-tools groups its checkboxes and radio buttons",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-046: every form field has an accessible name: /#/category/hand-tools",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-047: /#/category/hand-tools is tabbed through in reading order",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-045: /#/category/hand-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/hand-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-052: /#/category/power-tools groups its checkboxes and radio buttons",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-050: every form field has an accessible name: /#/category/power-tools",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-051: /#/category/power-tools is tabbed through in reading order",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-049: /#/category/power-tools passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/power-tools",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-056: /#/category/undefined groups its checkboxes and radio buttons",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-054: every form field has an accessible name: /#/category/undefined",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-055: /#/category/undefined is tabbed through in reading order",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-053: /#/category/undefined passes the WCAG 2.2 A and AA scan",
+      "page": "/#/category/undefined",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-060: /#/auth/register groups its checkboxes and radio buttons",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-058: every form field has an accessible name: /#/auth/register",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-059: /#/auth/register is tabbed through in reading order",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-057: /#/auth/register passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/register",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-064: /#/contact groups its checkboxes and radio buttons",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-062: every form field has an accessible name: /#/contact",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-063: /#/contact is tabbed through in reading order",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-061: /#/contact passes the WCAG 2.2 A and AA scan",
+      "page": "/#/contact",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-068: /#/auth/login groups its checkboxes and radio buttons",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-066: every form field has an accessible name: /#/auth/login",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-067: /#/auth/login is tabbed through in reading order",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-065: /#/auth/login passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/login",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-072: /#/auth/forgot-password groups its checkboxes and radio buttons",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-070: every form field has an accessible name: /#/auth/forgot-password",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-071: /#/auth/forgot-password is tabbed through in reading order",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-069: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan",
+      "page": "/#/auth/forgot-password",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-076: /#/chainsaws groups its checkboxes and radio buttons",
+      "page": "/#/chainsaws",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-074: every form field has an accessible name: /#/chainsaws",
+      "page": "/#/chainsaws",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-075: /#/chainsaws is tabbed through in reading order",
+      "page": "/#/chainsaws",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/chainsaws",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-073: /#/chainsaws passes the WCAG 2.2 A and AA scan",
+      "page": "/#/chainsaws",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/chainsaws: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ngcontent-ng-c38422",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span"
+      ]
+    },
+    {
+      "title": "TFAC-080: /#/rentals groups its checkboxes and radio buttons",
+      "page": "/#/rentals",
+      "status": "Failed",
+      "message": "Test timeout of 30000ms exceeded.",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-078: every form field has an accessible name: /#/rentals",
+      "page": "/#/rentals",
+      "status": "Passed",
+      "message": "",
+      "skipReason": "",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-079: /#/rentals is tabbed through in reading order",
+      "page": "/#/rentals",
+      "status": "Not run",
+      "message": "",
+      "skipReason": "no form with two or more fields on /#/rentals",
+      "findings": [],
+      "issues": []
+    },
+    {
+      "title": "TFAC-077: /#/rentals passes the WCAG 2.2 A and AA scan",
+      "page": "/#/rentals",
+      "status": "Failed",
+      "message": "Error: serious or critical WCAG violations on /#/rentals: WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2); WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"] expect(received).toEqual(expected) // deep equality - Expected - 1 + Received + 4 - Array [] + Array [ + \"WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\\\"_blank\\\"][_ng",
+      "skipReason": "",
+      "findings": [],
+      "issues": [
+        "failure WCAG 1.4.3 color-contrast (serious): Elements must meet minimum color contrast ratio thresholds - a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(1), a[target=\"_blank\"][_ngcontent-ng-c384224261=\"\"]:nth-child(2)",
+        "failure WCAG 1.1.1 image-alt (critical): Images must have alternative text - img[src$=\"broken.png\"]",
+        "manual-review WCAG 1.4.3 color-contrast: Elements must meet minimum color contrast ratio thresholds - .container > span, .order-md-first > .card-body > .card-text"
+      ]
+    }
+  ]
+}

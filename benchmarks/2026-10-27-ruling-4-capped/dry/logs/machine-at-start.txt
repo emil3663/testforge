@@ -1,0 +1,49 @@
+--- at start (Tue Oct 27 22:05:30 SAST 2026)
+--- processes
+svchost                96
+Code                   22
+conhost                19
+claude                 10
+RuntimeBroker          9
+copilotapp             9
+wsl                    8
+wslhost                8
+Docker Desktop         7
+msedgewebview2         6
+NVIDIA Overlay         5
+nvcontainer            4
+dllhost                4
+powershell             4
+bash                   4
+WmiPrvSE               3
+OpenConsole            3
+vmwp                   2
+taskhostw              2
+fontdrvhost            2
+RtkAudUService64       2
+NVDisplay.Container    2
+PresentMonService      2
+WUDFHost               2
+com.docker.backend     2
+--- ollama
+not running
+--- memory
+free GB 18,7 of 39,7
+--- docker
+pst-web-1 Up 3 minutes
+pst-laravel-api-1 Up 3 minutes
+pst-angular-ui-1 Up 3 minutes
+pst-mariadb-1 Up 3 minutes
+testforge-plane-beat-worker-1 Up 2 hours
+testforge-plane-worker-1 Up 2 hours
+testforge-plane-space-1 Up 2 hours (healthy)
+testforge-plane-db-1 Up 2 hours (healthy)
+testforge-plane-redis-1 Up 2 hours
+testforge-plane-minio-1 Up 2 hours
+testforge-plane-web-1 Up 2 hours (healthy)
+testforge-plane-api-1 Up 2 hours
+--- noise
+WARNING: 3 grep/tail/monitor processes running (kill leftovers by PID before measuring):
+  8960 bash.exe 2026-10-27 22:05:31 "C:\Program Files\Git\bin\bash.exe" -c "source '/c/Users/MSI workstation/.claude/shell-snapshots/snapshot-bash-1793126919764-5u9ck9.sh' 2>/dev/null || true && export TEMP='C:\Users\MSI workstation\AppData\Local\Temp' TMP='C:\Users\MSI workstation\AppData\Local\Temp' && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'bash \"/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start\"' < /dev/null && pwd -P >| '/c/Users/MSI workstation/AppData/Local/Temp/claude-b583-cwd'"
+  37236 bash.exe 2026-10-27 22:05:31 "C:\Program Files\Git\bin\..\usr\bin\bash.exe" -c "source '/c/Users/MSI workstation/.claude/shell-snapshots/snapshot-bash-1793126919764-5u9ck9.sh' 2>/dev/null || true && export TEMP='C:\Users\MSI workstation\AppData\Local\Temp' TMP='C:\Users\MSI workstation\AppData\Local\Temp' && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'bash \"/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start\"' < /dev/null && pwd -P >| '/c/Users/MSI workstation/AppData/Local/Temp/claude-b583-cwd'"
+  2288 bash.exe 2026-10-27 22:05:31 "C:\Program Files\Git\usr\bin\bash.exe" "/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh" "C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out" "C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start"

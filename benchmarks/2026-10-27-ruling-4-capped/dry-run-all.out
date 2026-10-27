@@ -1,0 +1,14 @@
+WARNING: 3 grep/tail/monitor processes running (kill leftovers by PID before measuring):
+start-with-bugs: 22:05:33 start
+start-with-bugs: 22:06:18 exit=0
+crawl-with-bugs: 22:06:18 start
+crawl-with-bugs: 22:06:43 exit=0
+inspect-with-bugs: 22:06:44 start
+inspect-with-bugs: 22:06:59 exit=0
+generate-with-bugs: 22:06:59 start
+generate-with-bugs: 22:07:01 exit=0
+run-with-bugs: 22:07:02 start
+run-with-bugs: 00:11:51 exit=0
+stop-toolshop: 00:11:51 start
+stop-toolshop: 00:11:53 exit=0
+all: 00:11:56 done

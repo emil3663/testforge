@@ -1,0 +1,11 @@
+(node:32840) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+with-bugs: 22:17:21 W1 standard run 1: 618 s, 1 worker(s) (1 used), 19 unit(s) in 2 pass(es), 483 tests {"Passed":379,"Failed":84,"Not run":20}; timeouts 0
+with-bugs: 23:29:24 CAP standard run 1: 4322 s, 3 worker(s) (3 used), 19 unit(s) in 2 pass(es), 483 tests {"Failed":348,"Passed":123,"Not run":12}; timeouts 334; cap: 22273 slot(s), 22220 waited, mean wait 6.15 s, 5.2 per s
+with-bugs: 23:30:57 W1 security run 1: 82 s, 1 worker(s) (1 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":119,"Failed":3}; timeouts 0
+with-bugs: 23:54:19 CAP security run 1: 1401 s, 3 worker(s) (3 used), 21 unit(s) in 1 pass(es), 122 tests {"Failed":108,"Passed":14}; timeouts 105; cap: 7431 slot(s), 7378 waited, mean wait 6.22 s, 5.3 per s
+with-bugs: 23:56:19 W1 accessibility run 1: 120 s, 1 worker(s) (1 used), 20 unit(s) in 1 pass(es), 80 tests {"Failed":41,"Not run":32,"Passed":7}; timeouts 0
+with-bugs: 00:11:51 CAP accessibility run 1: 932 s, 3 worker(s) (3 used), 20 unit(s) in 1 pass(es), 80 tests {"Failed":76,"Passed":2,"Not run":2}; timeouts 73; cap: 4928 slot(s), 4917 waited, mean wait 6.25 s, 5.3 per s
+exit=0

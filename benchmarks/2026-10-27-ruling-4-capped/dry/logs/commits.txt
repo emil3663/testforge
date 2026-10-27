@@ -1,0 +1,5 @@
+W1 CAP 57bcc76 (this repo)
+loopback http://localhost:4200
+capped http://172.31.208.1:4200
+cap counts every request
+rounds 1

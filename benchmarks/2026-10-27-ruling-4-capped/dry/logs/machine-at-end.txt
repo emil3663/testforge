@@ -1,0 +1,46 @@
+--- at the end (Wed Oct 28 00:11:53 SAST 2026)
+--- processes
+svchost                94
+Code                   22
+conhost                21
+claude                 10
+RuntimeBroker          9
+copilotapp             9
+wsl                    8
+wslhost                8
+bash                   7
+Docker Desktop         7
+msedgewebview2         6
+NVIDIA Overlay         5
+powershell             4
+dllhost                4
+nvcontainer            4
+WmiPrvSE               4
+OpenConsole            3
+taskhostw              2
+vmwp                   2
+RtkAudUService64       2
+fontdrvhost            2
+WUDFHost               2
+com.docker.backend     2
+NVDisplay.Container    2
+csrss                  2
+--- ollama
+not running
+--- memory
+free GB 18,3 of 39,7
+--- docker
+testforge-plane-beat-worker-1 Up 4 hours
+testforge-plane-worker-1 Up 4 hours
+testforge-plane-space-1 Up 4 hours (healthy)
+testforge-plane-db-1 Up 4 hours (healthy)
+testforge-plane-redis-1 Up 4 hours
+testforge-plane-minio-1 Up 4 hours
+testforge-plane-web-1 Up 4 hours (healthy)
+testforge-plane-api-1 Up 4 hours
+--- noise
+WARNING: 4 grep/tail/monitor processes running (kill leftovers by PID before measuring):
+  5136 bash.exe 2026-10-28 00:06:26 "C:\Program Files\Git\bin\bash.exe" -c "source '/c/Users/MSI workstation/.claude/shell-snapshots/snapshot-bash-1793126919764-5u9ck9.sh' 2>/dev/null || true && export TEMP='C:\Users\MSI workstation\AppData\Local\Temp' TMP='C:\Users\MSI workstation\AppData\Local\Temp' && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'bash \"/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/run-with-bugs.log\" | grep --line-buffered -v -E \"^(STEP|PASS) .* (start|exit=0)$|^STEP WARNING|^STEP  |^PASS 2[23]:\"' < /dev/null && pwd -P >| '/c/Users/MSI workstation/AppData/Local/Temp/claude-e410-cwd'"
+  21592 bash.exe 2026-10-28 00:06:26 "C:\Program Files\Git\bin\..\usr\bin\bash.exe" -c "source '/c/Users/MSI workstation/.claude/shell-snapshots/snapshot-bash-1793126919764-5u9ck9.sh' 2>/dev/null || true && export TEMP='C:\Users\MSI workstation\AppData\Local\Temp' TMP='C:\Users\MSI workstation\AppData\Local\Temp' && shopt -u extglob 2>/dev/null || true && { \builtin unalias -- 'unsetenv'; \builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'bash \"/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start\" \"C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/run-with-bugs.log\" | grep --line-buffered -v -E \"^(STEP|PASS) .* (start|exit=0)$|^STEP WARNING|^STEP  |^PASS 2[23]:\"' < /dev/null && pwd -P >| '/c/Users/MSI workstation/AppData/Local/Temp/claude-e410-cwd'"
+  42404 bash.exe 2026-10-28 00:06:26 "C:\Program Files\Git\usr\bin\bash.exe" "/c/Users/MSI workstation/AppData/Local/Temp/claude/c--Users-MSI-workstation-source-repos-testforge/54c5b4a3-6833-4a4b-a5c8-06fd3d7709f7/scratchpad/watch-run.sh" "C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry-run-all.out" "C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/all.start" "C:/Users/MSI workstation/source/repos/testforge/benchmarks/2026-10-27-ruling-4-capped/dry/logs/run-with-bugs.log"
+  18112 grep.exe 2026-10-28 00:06:26 "C:\Program Files\Git\usr\bin\grep.exe" --line-buffered -v -E "^(STEP|PASS) .* (start|exit=0)$|^STEP WARNING|^STEP  |^PASS 2[23]:"

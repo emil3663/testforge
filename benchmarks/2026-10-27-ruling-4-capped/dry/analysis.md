@@ -1,0 +1,1026 @@
+# Ruling 4's capped experiment: the numbers
+
+with-bugs, W1 (1 worker, uncapped, http://localhost:4200) against CAP (the capped row, http://172.31.208.1:4200); each run's time in seconds, in run order, median first.
+
+## Run times and the cap
+
+| Suite | W1 | CAP | CAP timeouts | CAP slots | CAP waited | CAP mean slot wait | CAP requests per second | W1 timeouts |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| standard | 618 (618) | 4322 (4322) | 334 | 22273 | 22220 | 6.15 s | 5.15 | 0 |
+| security | 82 (82) | 1401 (1401) | 105 | 7431 | 7378 | 6.22 s | 5.30 | 0 |
+| accessibility | 120 (120) | 932 (932) | 73 | 4928 | 4917 | 6.25 s | 5.29 | 0 |
+
+CAP counts: "" ("" is every request). Mean slot wait over every CAP pass: 6.18 s (34515 waits). CAP's three suites per round: 6655 s, against the 60-minute budget.
+
+## The same results, capped and uncapped
+
+- standard: **differs** (failures W1 84, CAP 348; 0 test(s) vary between runs of one variant; 4 timed check(s) Not run under the cap, listed apart).
+- security: **differs** (failures W1 3, CAP 108; 0 test(s) vary between runs of one variant; 0 timed check(s) Not run under the cap, listed apart).
+- accessibility: **differs** (failures W1 41, CAP 76; 0 test(s) vary between runs of one variant; 0 timed check(s) Not run under the cap, listed apart).
+
+**Ruling 4's outcome, as set in advance:** **different**: on a capped host the shared assertion wait and the test timeout are lengthened by the mean slot wait measured here (6.18 s), re-checked once; any test still different is reported Not run under the request cap; the budget is 60 minutes.
+
+## Per suite
+
+### standard
+
+- Timed checks Not run under the cap (owner decision 2026-10-21): landing page finishes loading within 5 s @; largest contentful paint stays under 4 s @; cumulative layout shift during load stays under 0.25 @; total blocking time during load (recorded, not judged) @.
+- Tests that vary between runs of one variant: none.
+  - failing in CAP only: navigation link health: Hand Tools @ (x8)
+  - failing in CAP only: link health: internal, external, and download links do not return broken responses @ (x7)
+  - failing in CAP only: keyboard navigation: links can receive focus and activate with Enter @ (x8)
+  - failing in CAP only: filters send and respect the chosen values on /#/category/hand-tools @/#/category/hand-tools
+  - failing in CAP only: usability: primary actions are reachable without scrolling at desktop viewport @
+  - failing in CAP only: the same components look the same on every inspected page (recorded as findings) @/#/
+  - failing in CAP only: keeps the core journey visible across common viewport sizes @
+  - failing in CAP only: dependency failure injection: localhost:8091 [xhr-fetch] @
+  - failing in CAP only: storage failure injection: sessionStorage on /#/ @
+  - failing in CAP only: storage failure injection: localStorage on /#/category/hand-tools @
+  - failing in CAP only: storage failure injection: localStorage on /#/auth/register @
+  - failing in CAP only: storage failure injection: sessionStorage on /#/auth/register @
+  - failing in CAP only: storage failure injection: localStorage on /#/contact @
+  - failing in CAP only: storage failure injection: localStorage on /#/auth/login @
+  - failing in CAP only: storage failure injection: sessionStorage on /#/auth/login @
+  - failing in CAP only: storage failure injection: localStorage on /#/auth/forgot-password @
+  - failing in CAP only: storage failure injection: sessionStorage on /#/auth/forgot-password @
+  - failing in CAP only: storage failure injection: localStorage on /#/chainsaws @
+  - failing in CAP only: session cookies set by the site expire and stay scoped to it @
+  - failing in CAP only: loads the target page and shows visible content @
+  - failing in CAP only: shows at least one interactive element related to the scenario @
+  - failing in CAP only: keeps navigation and guidance visible for a first-time user @
+  - failing in CAP only: usability: 3 [input] uses non-generic guidance text @
+  - failing in CAP only: usability: 4 [input] uses non-generic guidance text @
+  - failing in CAP only: accessible name and role: X Serch [form] @
+  - failing in CAP only: accessible name and role: X [button] @
+  - failing in CAP only: action element check: Bug Hunting Guide [button] @ (x8)
+  - failing in CAP only: navigation element check: Toggle navigation [button] @ (x8)
+  - failing in CAP only: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [Sorth] [form] @
+  - failing in CAP only: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [Sorth] [select] @
+  - failing in CAP only: form element check: X Serch [Search] [form] @
+  - failing in CAP only: form element check: X [Search] [button] @
+  - failing in CAP only: form element check: Serch [Search] [button] @
+  - failing in CAP only: form element check: 3 [Hand Tools] [input] @ (x2)
+  - failing in CAP only: form element check: 4 [Hand Tools] [input] @ (x2)
+  - failing in CAP only: form element check: 5 [Hand Tools] [input] @ (x2)
+  - failing in CAP only: form element check: 6 [Hand Tools] [input] @ (x2)
+  - failing in CAP only: form element check: 7 [Hand Tools] [input] @ (x2)
+  - failing in CAP only: form element check: 8 [Power Tools] [input] @
+  - failing in CAP only: form element check: 9 [Power Tools] [input] @
+  - failing in CAP only: form element check: 10 [Power Tools] [input] @
+  - failing in CAP only: form element check: 11 [Power Tools] [input] @
+  - failing in CAP only: form element check: 12 [By category:] [input] @
+  - failing in CAP only: visual representation: links are distinguishable from surrounding text @ (x8)
+  - failing in CAP only: technical security: link protocols are safe and do not expose obvious XSS vectors @ (x8)
+  - failing in CAP only: navigation link health: Home @ (x8)
+  - failing in CAP only: hover state: links show pointer cursor and preserve tooltip attributes @ (x8)
+  - failing in CAP only: anchor links point to existing in-page targets @ (x6)
+  - failing in CAP only: action element check: btn-decrease-quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button] @
+  - failing in CAP only: action element check: btn-increase-quantity [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button] @
+  - failing in CAP only: action element check: Add to cart [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button] @
+  - failing in CAP only: action element check: Add to favourites [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up to 70% of impact vibrations, protecting your wrist, elbow, and shoulder during prolonged nailing sessions. The 450g carbon steel head is precision-balanced and heat-treated for maximum hardness, ensuring accurate nail driving with minimal effort on every swing. The curved claw design effortlessly removes nails without damaging surrounding wood surfaces, making it equally useful for construction and renovation work. A fiberglass-reinforced handle combines lightweight strength with exceptional durability that far outlasts traditional wooden handles. The overmolded soft-grip zone conforms to your hand shape for a custom-feeling, fatigue-free hold throughout long working days. Recommended for professional framing, carpentry, and renovation projects where operator comfort matters as much as striking performance.] [button] @
+  - failing in CAP only: link "iMattSmart" on /#/product/6: on the page, named, with a valid href @/#/product/6
+  - failing in CAP only: link "Unsplash" to https://unsplash.com/photos/jaLaLQdkBOE on /#/product/6: on the page, named, with a valid href @/#/product/6
+  - failing in CAP only: cards linking to #/product/:id on /#/product/6: each on the page, named, with a valid href @/#/product/6
+  - failing in CAP only: link "More information" on /#/product/6: on the page, named, with a valid href @/#/product/6
+  - failing in CAP only: /#/product/6 keeps its forms, lists and cards consistent (recorded as findings) @/#/product/6
+  - failing in CAP only: /#/product/6 groups its checkboxes and radio buttons @/#/product/6
+  - failing in CAP only: /#/product/6 spells its interface text correctly (recorded as findings) @/#/product/6
+  - failing in CAP only: keeps page title stable for /#/product/6 @
+  - failing in CAP only: keeps heading structure stable for /#/product/6 @
+  - failing in CAP only: exposes structured data for /#/product/6 (recorded as a finding when missing) @
+  - failing in CAP only: /#/product/6 sends its security headers and session cookies @/#/product/6
+  - failing in CAP only: /#/product/6 names no software version in its response headers @/#/product/6
+  - failing in CAP only: /#/product/6 keeps passwords off plain HTTP @/#/product/6
+  - failing in CAP only: /#/product/6 puts no password or session token in a URL @/#/product/6
+  - failing in CAP only: /#/product/6 is tabbed through in reading order @/#/product/6
+  - failing in CAP only: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [Sort] [form] @
+  - failing in CAP only: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rating (Worst First) [Sort] [select] @
+  - failing in CAP only: form element check: 1 [By brand:] [input] @
+  - failing in CAP only: form element check: 2 [By brand:] [input] @
+  - failing in CAP only: form element check: 3 [By brand:] [input] @
+  - failing in CAP only: form element check: 4 [By brand:] [input] @
+  - failing in CAP only: form element check: 5 [By brand:] [input] @
+  - failing in CAP only: form element check: 6 [By brand:] [input] @
+  - failing in CAP only: form element check: 7 [By brand:] [input] @
+  - failing in CAP only: form element check: 8 [By brand:] [input] @
+  - failing in CAP only: form element check: 9 [By brand:] [input] @
+  - failing in CAP only: form element check: 10 [By brand:] [input] @
+  - failing in CAP only: form element check: on [Sustainability:] [input] @
+  - failing in CAP only: navigation link health: Untitled link to http://localhost:4200/ @ (x6)
+  - failing in CAP only: option lists show no error text on /#/category/hand-tools @/#/category/hand-tools
+  - failing in CAP only: cards linking to #/product/:id on /#/category/hand-tools: each on the page, named, with a valid href @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools keeps its forms, lists and cards consistent (recorded as findings) @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools has no overlapping controls @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools spells its interface text correctly (recorded as findings) @/#/category/hand-tools
+  - failing in CAP only: keeps page title stable for /#/category/hand-tools @
+  - failing in CAP only: keeps heading structure stable for /#/category/hand-tools @
+  - failing in CAP only: exposes structured data for /#/category/hand-tools (recorded as a finding when missing) @
+  - failing in CAP only: /#/category/hand-tools sends its security headers and session cookies @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools names no software version in its response headers @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools keeps passwords off plain HTTP @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools puts no password or session token in a URL @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools is tabbed through in reading order @/#/category/hand-tools
+  - failing in CAP only: form element check: First nameLast nameDate of birthAddressPostcodeCityCountryStateSelect your country *Albania Åland Islands Algeria American Samoa Andorra Angola Anguilla Antarctica Antigua and Barbuda Argentina Armenia Aruba Australia Austria Azerbaijan Bahamas (the) Bahrain Bangladesh Barbados Belarus Belgium Belize Benin Bermuda Bhutan Bolivia (Plurinational State of) Bonaire, Sint Eustatius and Saba Bosnia and Herzegovina Botswana Bouvet Island Brazil British Indian Ocean Territory (the) Brunei Darussalam Bulgaria Burkina Faso Burundi Cabo Verde Cambodia Cameroon Canada Cayman Islands (the) Central African Republic (the) Chad Chile China Christmas Island Cocos (Keeling) Islands (the) Colombia Comoros (the) Congo (the Democratic Republic of the) Congo (the) Cook Islands (the) Costa Rica Croatia Cuba Curaçao Cyprus Czechia Côte d'Ivoire Denmark Djibouti Dominica Dominican Republic (the) Ecuador Egypt El Salvador Equatorial Guinea Eritrea Estonia Eswatini Ethiopia Falkland Islands (the) [Malvinas] Faroe Islands (the) Fiji Finland France French Guiana French Polynesia French Southern Territories (the) Gabon Gambia (the) Georgia Germany Ghana Gibraltar Greece Greenland Grenada Guadeloupe Guam Guatemala Guernsey Guinea Guinea-Bissau Guyana Haiti Heard Island and McDonald Islands Holy See (the) Honduras Hong Kong Hungary Iceland India Indonesia Iran (Islamic Republic of) Iraq Ireland Isle of Man Israel Italy Jamaica Japan Jersey Jordan Kazakhstan Kenya Kiribati Korea (the Democratic People's Republic of) Korea (the Republic of) Kuwait Kyrgyzstan Lao People's Democratic Republic (the) Latvia Lebanon Lesotho Liberia Libya Liechtenstein Lithuania Luxembourg Macao Madagascar Malawi Malaysia Maldives Mali Malta Marshall Islands (the) Martinique Mauritania Mauritius Mayotte Mexico Micronesia (Federated States of) Moldova (the Republic of) Monaco Mongolia Montenegro Montserrat Morocco Mozambique Myanmar Namibia Nauru Nepal Netherlands (the) New Caledonia New Zealand Nicaragua Niger (the) Nigeria Niue Norfolk Island Northern Mariana Islands (the) Norway Oman Pakistan Palau Palestine, State of Panama Papua New Guinea Paraguay Peru Philippines (the) Pitcairn Poland Portugal Puerto Rico Qatar Republic of North Macedonia Romania Russian Federation (the) Rwanda Réunion Saint Barthélemy Saint Helena, Ascension and Tristan da Cunha Saint Kitts and Nevis Saint Lucia Saint Martin (French part) Saint Pierre and Miquelon Saint Vincent and the Grenadines Samoa San Marino Sao Tome and Principe Saudi Arabia Senegal Serbia Seychelles Sierra Leone Singapore Sint Maarten (Dutch part) Slovakia Slovenia Solomon Islands Somalia South Africa South Georgia and the South Sandwich Islands South Sudan Spain Sri Lanka Sudan (the) Suriname Svalbard and Jan Mayen Sweden Switzerland Syrian Arab Republic Taiwan (Province of China) Tajikistan Tanzania, United Republic of Thailand Timor-Leste Togo Tokelau Tonga Trinidad and Tobago Tunisia Turkey Turkmenistan Turks and Caicos Islands (the) Tuvalu Uganda Ukraine United Arab Emirates (the) United Kingdom of Great Britain and Northern Ireland (the) United States Minor Outlying Islands (the) United States of America (the) Uruguay Uzbekistan Vanuatu Venezuela (Bolivarian Republic of) Viet Nam Virgin Islands (British) Virgin Islands (U.S.) Wallis and Futuna Western Sahara Yemen Zambia Zimbabwe PhoneE-mail addressPasswordRegister [Customer registration] [form] @
+  - failing in CAP only: form element check: Your first name * [Customer registration] [input] @
+  - failing in CAP only: form element check: Your last name * [Customer registration] [input] @
+  - failing in CAP only: form element check: YYYY-MM-DD [Customer registration] [input] @
+  - failing in CAP only: form element check: Your address * [Customer registration] [input] @
+  - failing in CAP only: form element check: Your postcode * [Customer registration] [input] @
+  - failing in CAP only: form element check: Your city * [Customer registration] [input] @
+  - failing in CAP only: form element check: Your state * [Customer registration] [input] @
+  - failing in CAP only: form element check: Select your country *Albania Åland Islands Algeria American Samoa Andorra Angola Anguilla Antarctica Antigua and Barbuda Argentina Armenia Aruba Australia Austria Azerbaijan Bahamas (the) Bahrain Bangladesh Barbados Belarus Belgium Belize Benin Bermuda Bhutan Bolivia (Plurinational State of) Bonaire, Sint Eustatius and Saba Bosnia and Herzegovina Botswana Bouvet Island Brazil British Indian Ocean Territory (the) Brunei Darussalam Bulgaria Burkina Faso Burundi Cabo Verde Cambodia Cameroon Canada Cayman Islands (the) Central African Republic (the) Chad Chile China Christmas Island Cocos (Keeling) Islands (the) Colombia Comoros (the) Congo (the Democratic Republic of the) Congo (the) Cook Islands (the) Costa Rica Croatia Cuba Curaçao Cyprus Czechia Côte d'Ivoire Denmark Djibouti Dominica Dominican Republic (the) Ecuador Egypt El Salvador Equatorial Guinea Eritrea Estonia Eswatini Ethiopia Falkland Islands (the) [Malvinas] Faroe Islands (the) Fiji Finland France French Guiana French Polynesia French Southern Territories (the) Gabon Gambia (the) Georgia Germany Ghana Gibraltar Greece Greenland Grenada Guadeloupe Guam Guatemala Guernsey Guinea Guinea-Bissau Guyana Haiti Heard Island and McDonald Islands Holy See (the) Honduras Hong Kong Hungary Iceland India Indonesia Iran (Islamic Republic of) Iraq Ireland Isle of Man Israel Italy Jamaica Japan Jersey Jordan Kazakhstan Kenya Kiribati Korea (the Democratic People's Republic of) Korea (the Republic of) Kuwait Kyrgyzstan Lao People's Democratic Republic (the) Latvia Lebanon Lesotho Liberia Libya Liechtenstein Lithuania Luxembourg Macao Madagascar Malawi Malaysia Maldives Mali Malta Marshall Islands (the) Martinique Mauritania Mauritius Mayotte Mexico Micronesia (Federated States of) Moldova (the Republic of) Monaco Mongolia Montenegro Montserrat Morocco Mozambique Myanmar Namibia Nauru Nepal Netherlands (the) New Caledonia New Zealand Nicaragua Niger (the) Nigeria Niue Norfolk Island Northern Mariana Islands (the) Norway Oman Pakistan Palau Palestine, State of Panama Papua New Guinea Paraguay Peru Philippines (the) Pitcairn Poland Portugal Puerto Rico Qatar Republic of North Macedonia Romania Russian Federation (the) Rwanda Réunion Saint Barthélemy Saint Helena, Ascension and Tristan da Cunha Saint Kitts and Nevis Saint Lucia Saint Martin (French part) Saint Pierre and Miquelon Saint Vincent and the Grenadines Samoa San Marino Sao Tome and Principe Saudi Arabia Senegal Serbia Seychelles Sierra Leone Singapore Sint Maarten (Dutch part) Slovakia Slovenia Solomon Islands Somalia South Africa South Georgia and the South Sandwich Islands South Sudan Spain Sri Lanka Sudan (the) Suriname Svalbard and Jan Mayen Sweden Switzerland Syrian Arab Republic Taiwan (Province of China) Tajikistan Tanzania, United Republic of Thailand Timor-Leste Togo Tokelau Tonga Trinidad and Tobago Tunisia Turkey Turkmenistan Turks and Caicos Islands (the) Tuvalu Uganda Ukraine United Arab Emirates (the) United Kingdom of Great Britain and Northern Ireland (the) United States Minor Outlying Islands (the) United States of America (the) Uruguay Uzbekistan Vanuatu Venezuela (Bolivarian Republic of) Viet Nam Virgin Islands (British) Virgin Islands (U.S.) Wallis and Futuna Western Sahara Yemen Zambia Zimbabwe [Customer registration] [select] @
+  - failing in CAP only: form element check: Your phone * [Customer registration] [input] @
+  - failing in CAP only: form element check: Your e-mail * [Customer registration] [input] @
+  - failing in CAP only: action element check: Untitled button [Password] [button] @
+  - failing in CAP only: form element check: Register [Customer registration] [button] @
+  - failing in CAP only: navigation element check: Open chat [button] @ (x5)
+  - failing in CAP only: option lists show no error text on /#/auth/register @/#/auth/register
+  - failing in CAP only: /#/auth/register keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/register
+  - failing in CAP only: /#/auth/register has no overlapping controls @/#/auth/register
+  - failing in CAP only: /#/auth/register groups its checkboxes and radio buttons @/#/auth/register
+  - failing in CAP only: /#/auth/register spells its interface text correctly (recorded as findings) @/#/auth/register
+  - failing in CAP only: keeps page title stable for /#/auth/register @
+  - failing in CAP only: keeps heading structure stable for /#/auth/register @
+  - failing in CAP only: exposes structured data for /#/auth/register (recorded as a finding when missing) @
+  - failing in CAP only: /#/auth/register sends its security headers and session cookies @/#/auth/register
+  - failing in CAP only: /#/auth/register names no software version in its response headers @/#/auth/register
+  - failing in CAP only: /#/auth/register keeps passwords off plain HTTP @/#/auth/register
+  - failing in CAP only: every form field has an accessible name: /#/auth/register @
+  - failing in CAP only: form element check: Your first name * [Contact] [input] @
+  - failing in CAP only: form element check: Your last name * [Contact] [input] @
+  - failing in CAP only: form element check: Your email * [Contact] [input] @
+  - failing in CAP only: api element check: Select a subjectCustomer serviceWebmasterReturnError 101: Subject not foundPaymentsWarrantyStatus of my orderError 202: Translation error [Contact] [select] @
+  - failing in CAP only: form element check: Message [Message] [textarea] @
+  - failing in CAP only: form element check: Attachment [Attachment] [input] @
+  - failing in CAP only: form element check: Send [Contact] [button] @
+  - failing in CAP only: /#/contact keeps its forms, lists and cards consistent (recorded as findings) @/#/contact
+  - failing in CAP only: exposes structured data for /#/contact (recorded as a finding when missing) @
+  - failing in CAP only: /#/contact sends its security headers and session cookies @/#/contact
+  - failing in CAP only: /#/contact names no software version in its response headers @/#/contact
+  - failing in CAP only: /#/contact keeps passwords off plain HTTP @/#/contact
+  - failing in CAP only: /#/contact puts no password or session token in a URL @/#/contact
+  - failing in CAP only: every form field has an accessible name: /#/contact @
+  - failing in CAP only: form element check: Not yet an account? Register your accountForgot your Password? [Login] [form] @
+  - failing in CAP only: form element check: Your E-mail * [Login] [input] @
+  - failing in CAP only: form element check: Untitled button [Login] [button] @
+  - failing in CAP only: form element check: Login [Login] [button] @
+  - failing in CAP only: link "Register your account" on /#/auth/login: on the page, named, with a valid href @/#/auth/login
+  - failing in CAP only: link "Forgot your Password?" on /#/auth/login: on the page, named, with a valid href @/#/auth/login
+  - failing in CAP only: /#/auth/login keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/login
+  - failing in CAP only: /#/auth/login has no overlapping controls @/#/auth/login
+  - failing in CAP only: /#/auth/login groups its checkboxes and radio buttons @/#/auth/login
+  - failing in CAP only: /#/auth/login spells its interface text correctly (recorded as findings) @/#/auth/login
+  - failing in CAP only: keeps page title stable for /#/auth/login @
+  - failing in CAP only: keeps heading structure stable for /#/auth/login @
+  - failing in CAP only: exposes structured data for /#/auth/login (recorded as a finding when missing) @
+  - failing in CAP only: /#/auth/login sends its security headers and session cookies @/#/auth/login
+  - failing in CAP only: /#/auth/login names no software version in its response headers @/#/auth/login
+  - failing in CAP only: /#/auth/login keeps passwords off plain HTTP @/#/auth/login
+  - failing in CAP only: every form field has an accessible name: /#/auth/login @
+  - failing in CAP only: form element check: Untitled form [Forgot Password] [form] @
+  - failing in CAP only: form element check: Your E-mail * [Forgot Password] [input] @
+  - failing in CAP only: action element check: Set New Password [Forgot Password] [button] @
+  - failing in CAP only: /#/auth/forgot-password keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password has no overlapping controls @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password groups its checkboxes and radio buttons @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password spells its interface text correctly (recorded as findings) @/#/auth/forgot-password
+  - failing in CAP only: keeps page title stable for /#/auth/forgot-password @
+  - failing in CAP only: keeps heading structure stable for /#/auth/forgot-password @
+  - failing in CAP only: exposes structured data for /#/auth/forgot-password (recorded as a finding when missing) @
+  - failing in CAP only: /#/auth/forgot-password sends its security headers and session cookies @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password names no software version in its response headers @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password keeps passwords off plain HTTP @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password puts no password or session token in a URL @/#/auth/forgot-password
+  - failing in CAP only: every form field has an accessible name: /#/auth/forgot-password @
+  - failing in CAP only: /#/auth/forgot-password is tabbed through in reading order @/#/auth/forgot-password
+  - failing in CAP only: /#/chainsaws keeps its forms, lists and cards consistent (recorded as findings) @/#/chainsaws
+  - failing in CAP only: /#/chainsaws has no overlapping controls @/#/chainsaws
+  - failing in CAP only: /#/chainsaws groups its checkboxes and radio buttons @/#/chainsaws
+  - failing in CAP only: /#/chainsaws spells its interface text correctly (recorded as findings) @/#/chainsaws
+  - failing in CAP only: keeps page title stable for /#/chainsaws @
+  - failing in CAP only: keeps heading structure stable for /#/chainsaws @
+  - failing in CAP only: exposes structured data for /#/chainsaws (recorded as a finding when missing) @
+  - failing in CAP only: /#/chainsaws sends its security headers and session cookies @/#/chainsaws
+  - failing in CAP only: /#/chainsaws names no software version in its response headers @/#/chainsaws
+  - failing in CAP only: /#/chainsaws keeps passwords off plain HTTP @/#/chainsaws
+  - failing in CAP only: /#/chainsaws puts no password or session token in a URL @/#/chainsaws
+  - failing in CAP only: /#/chainsaws is tabbed through in reading order @/#/chainsaws
+  - failing in CAP only: option lists show no error text on /#/ @/#/
+  - failing in CAP only: link "Documentation" on /#/: on the page, named, with a valid href @/#/
+  - failing in CAP only: link "http://localhost:4200/" on /#/: on the page, named, with a valid href @/#/
+  - failing in CAP only: link "Home" on /#/: on the page, named, with a valid href @/#/
+  - status in CAP only: navigation link health: Hand Tools @ => Failed (x8)
+  - status in CAP only: link health: internal, external, and download links do not return broken responses @ => Failed (x7)
+  - status in CAP only: keyboard navigation: links can receive focus and activate with Enter @ => Failed (x8)
+  - status in CAP only: filters send and respect the chosen values on /#/category/hand-tools @/#/category/hand-tools => Failed
+  - status in CAP only: usability: primary actions are reachable without scrolling at desktop viewport @ => Failed
+  - status in CAP only: the same components look the same on every inspected page (recorded as findings) @/#/ => Failed
+  - status in CAP only: keeps the core journey visible across common viewport sizes @ => Failed
+  - status in CAP only: dependency failure injection: localhost:8091 [xhr-fetch] @ => Failed
+  - status in CAP only: storage failure injection: sessionStorage on /#/ @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/category/hand-tools @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/auth/register @ => Failed
+  - status in CAP only: storage failure injection: sessionStorage on /#/auth/register @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/contact @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/auth/login @ => Failed
+  - status in CAP only: storage failure injection: sessionStorage on /#/auth/login @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/auth/forgot-password @ => Failed
+  - status in CAP only: storage failure injection: sessionStorage on /#/auth/forgot-password @ => Failed
+  - status in CAP only: storage failure injection: localStorage on /#/chainsaws @ => Failed
+  - status in CAP only: session cookies set by the site expire and stay scoped to it @ => Failed
+  - status in CAP only: loads the target page and shows visible content @ => Failed
+  - status in W1 only: navigation link health: Hand Tools @ => Passed (x8)
+  - status in W1 only: link health: internal, external, and download links do not return broken responses @ => Passed (x7)
+  - status in W1 only: keyboard navigation: links can receive focus and activate with Enter @ => Passed (x8)
+  - status in W1 only: filters send and respect the chosen values on /#/category/hand-tools @/#/category/hand-tools => Passed
+  - status in W1 only: usability: primary actions are reachable without scrolling at desktop viewport @ => Passed
+  - status in W1 only: the same components look the same on every inspected page (recorded as findings) @/#/ => Passed
+  - status in W1 only: keeps the core journey visible across common viewport sizes @ => Passed
+  - status in W1 only: dependency failure injection: localhost:8091 [xhr-fetch] @ => Passed
+  - status in W1 only: storage failure injection: sessionStorage on /#/ @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/category/hand-tools @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/auth/register @ => Passed
+  - status in W1 only: storage failure injection: sessionStorage on /#/auth/register @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/contact @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/auth/login @ => Passed
+  - status in W1 only: storage failure injection: sessionStorage on /#/auth/login @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/auth/forgot-password @ => Passed
+  - status in W1 only: storage failure injection: sessionStorage on /#/auth/forgot-password @ => Passed
+  - status in W1 only: storage failure injection: localStorage on /#/chainsaws @ => Passed
+  - status in W1 only: session cookies set by the site expire and stay scoped to it @ => Not run
+  - status in W1 only: loads the target page and shows visible content @ => Passed
+  - finding in W1 only: link health: linked routes draw a page, not the app's "not found" view @ | 2 linked routes not checked: the check stops after 14 s (/#/product/8, /#/product/9)
+  - finding in W1 only: link health: linked routes draw a page, not the app's "not found" view @ | 3 linked routes not checked: the check stops after 14 s (/#/product/12, /#/product/13, /#/product/14)
+  - finding in W1 only: the same components look the same on every inspected page (recorded as findings) @/#/ | submit .btnSubmit differs across pages in share of its container's width: 10% on /#/auth/register, /#/contact; 50% on /#/auth/login, /#/auth/forgot-password
+  - finding in W1 only: anchor links point to existing in-page targets @ | link "Categories" has href="#", which points at no in-page target (a placeholder link) (x4)
+  - finding in W1 only: /#/product/6 spells its interface text correctly (recorded as findings) @/#/product/6 | "Reltded" in the heading "Reltded products" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean "Receded" or "Deluded" or "Felted"?
+  - finding in W1 only: /#/product/6 spells its interface text correctly (recorded as findings) @/#/product/6 | "Contakt" in the link "Contakt" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean "Contact"?
+  - finding in W1 only: /#/product/6 spells its interface text correctly (recorded as findings) @/#/product/6 | "Unsplash" in the link "Unsplash" on /#/product/6 is not in the dictionary (en-US, en-GB); did you mean "splash"?
+  - finding in W1 only: exposes structured data for /#/product/6 (recorded as a finding when missing) @ | no structured data (JSON-LD) on /#/product/6: search engines get no machine-readable description of the page
+  - finding in W1 only: /#/product/6 sends its security headers and session cookies @/#/product/6 | no Content-Security-Policy header on /#/product/6
+  - finding in W1 only: /#/product/6 sends its security headers and session cookies @/#/product/6 | any site can frame /#/product/6: no Content-Security-Policy frame-ancestors (or X-Frame-Options)
+  - finding in CAP only: HTTPS/SSL: secure links remain on HTTPS when marked as secure @ | 1 secure links not checked: the check stops after 20 s (https://unsplash.com/photos/t5YUoHW6zRo) (x4)
+  - finding in CAP only: HTTPS/SSL: secure links remain on HTTPS when marked as secure @ | 3 secure links not checked: the check stops after 20 s (https://unsplash.com/photos/jaLaLQdkBOE, https://unsplash.com/@barnimages, https://unsplash.com/photos/t5YUoHW6zRo)
+  - finding in CAP only: /#/ keeps its forms, lists and cards consistent (recorded as findings) @/#/ | the card titles on /#/: "Combination Pliers" has text-align right, where the other 5 have left
+  - finding in CAP only: /#/ keeps its forms, lists and cards consistent (recorded as findings) @/#/ | the card titles on /#/: "Long Nose Pliers" has text-align right, where the other 5 have left
+  - finding in CAP only: /#/ keeps its forms, lists and cards consistent (recorded as findings) @/#/ | the card titles on /#/: "Claw Hammer" has text-align right, where the other 5 have left
+  - finding in CAP only: /#/ keeps its forms, lists and cards consistent (recorded as findings) @/#/ | the card titles on /#/: "Thor Hammer" has text-align right, where the other 5 have left
+  - CAP run 1 timed out: TFFU-106: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-107: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-108: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-113: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-120: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-121: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-122: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-127: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-134: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-135: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-136: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-141: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-148: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-149: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-150: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-155: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-162: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-163: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-164: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-169: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-176: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-177: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-178: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-183: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-190: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-191: link health: internal, external, and download links do not return broken responses @
+  - CAP run 1 timed out: TFFU-192: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-197: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-204: navigation link health: Hand Tools @
+  - CAP run 1 timed out: TFFU-206: link health: linked routes draw a page, not the app's "not found" view @
+  - CAP run 1 timed out: TFFU-211: keyboard navigation: links can receive focus and activate with Enter @
+  - CAP run 1 timed out: TFFU-216: sort options order the items on /#/ @/#/
+  - CAP run 1 timed out: TFFU-217: filters send and respect the chosen values on /#/ @/#/
+  - CAP run 1 timed out: TFFU-219: quantity steppers change the value by one on /#/product/6 @/#/product/6
+  - CAP run 1 timed out: TFFU-220: sort options order the items on /#/category/hand-tools @/#/category/hand-tools
+  - CAP run 1 timed out: TFFU-221: filters send and respect the chosen values on /#/category/hand-tools @/#/category/hand-tools
+  - CAP run 1 timed out: TFFU-225: navigation links land where their text says, from /#/ @/#/
+  - CAP run 1 timed out: TFUS-023: usability: primary actions are reachable without scrolling at desktop viewport @
+  - CAP run 1 timed out: TFUS-048: the same components look the same on every inspected page (recorded as findings) @/#/
+  - CAP run 1 timed out: TFRM-001: keeps the core journey visible across common viewport sizes @
+  - CAP run 1 timed out: TFPL-004: no same-origin request fails while the page loads @
+  - CAP run 1 timed out: TFRL-001: dependency failure injection: localhost:8091 [xhr-fetch] @
+  - CAP run 1 timed out: TFRL-003: storage failure injection: sessionStorage on /#/ @
+  - CAP run 1 timed out: TFRL-006: storage failure injection: localStorage on /#/category/hand-tools @
+  - CAP run 1 timed out: TFRL-008: storage failure injection: localStorage on /#/auth/register @
+  - CAP run 1 timed out: TFRL-009: storage failure injection: sessionStorage on /#/auth/register @
+  - CAP run 1 timed out: TFRL-010: storage failure injection: localStorage on /#/contact @
+  - CAP run 1 timed out: TFRL-012: storage failure injection: localStorage on /#/auth/login @
+  - CAP run 1 timed out: TFRL-013: storage failure injection: sessionStorage on /#/auth/login @
+  - CAP run 1 timed out: TFRL-014: storage failure injection: localStorage on /#/auth/forgot-password @
+  - CAP run 1 timed out: TFRL-015: storage failure injection: sessionStorage on /#/auth/forgot-password @
+  - CAP run 1 timed out: TFRL-016: storage failure injection: localStorage on /#/chainsaws @
+  - CAP run 1 timed out: TFCS-001: session cookies set by the site expire and stay scoped to it @
+  - CAP run 1 timed out: TFFU-001: loads the target page and shows visible content @
+  - CAP run 1 timed out: TFFU-002: shows at least one interactive element related to the scenario @
+  - CAP run 1 timed out: TFUS-001: keeps navigation and guidance visible for a first-time user @
+  - CAP run 1 timed out: TFUS-002: usability: 3 [input] uses non-generic guidance text @
+  - CAP run 1 timed out: TFUS-003: usability: 4 [input] uses non-generic guidance text @
+  - CAP run 1 timed out: TFAC-016: accessible name and role: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)C
+  - CAP run 1 timed out: TFAC-017: accessible name and role: X Serch [form] @
+  - CAP run 1 timed out: TFAC-018: accessible name and role: X [button] @
+  - CAP run 1 timed out: TFFU-003: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-004: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-005: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rat
+  - CAP run 1 timed out: TFFU-006: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rat
+  - CAP run 1 timed out: TFFU-007: form element check: X Serch [Search] [form] @
+  - CAP run 1 timed out: TFFU-008: form element check: X [Search] [button] @
+  - CAP run 1 timed out: TFFU-009: form element check: Serch [Search] [button] @
+  - CAP run 1 timed out: TFFU-010: form element check: 3 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-011: form element check: 4 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-012: form element check: 5 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-013: form element check: 6 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-014: form element check: 7 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-015: form element check: 8 [Power Tools] [input] @
+  - CAP run 1 timed out: TFFU-016: form element check: 9 [Power Tools] [input] @
+  - CAP run 1 timed out: TFFU-017: form element check: 10 [Power Tools] [input] @
+  - CAP run 1 timed out: TFFU-018: form element check: 11 [Power Tools] [input] @
+  - CAP run 1 timed out: TFFU-019: form element check: 12 [By category:] [input] @
+  - CAP run 1 timed out: TFFU-110: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-112: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-114: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-105: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-111: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-116: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFFU-031: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-032: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-033: action element check: btn-decrease-quantity [Ergonomic claw hammer featuring an advanced shock reduction grip 
+  - CAP run 1 timed out: TFFU-034: form element check: 1 [Ergonomic claw hammer featuring an advanced shock reduction grip system that absorbs up
+  - CAP run 1 timed out: TFFU-035: action element check: btn-increase-quantity [Ergonomic claw hammer featuring an advanced shock reduction grip 
+  - CAP run 1 timed out: TFFU-036: action element check: Add to cart [Ergonomic claw hammer featuring an advanced shock reduction grip system tha
+  - CAP run 1 timed out: TFFU-037: action element check: Add to favourites [Ergonomic claw hammer featuring an advanced shock reduction grip syst
+  - CAP run 1 timed out: TFFU-124: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-126: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-128: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-241: link "iMattSmart" on /#/product/6: on the page, named, with a valid href @/#/product/6
+  - CAP run 1 timed out: TFFU-242: link "Unsplash" to https://unsplash.com/photos/jaLaLQdkBOE on /#/product/6: on the page, named, with a valid h
+  - CAP run 1 timed out: TFFU-243: cards linking to #/product/:id on /#/product/6: each on the page, named, with a valid href @/#/product/6
+  - CAP run 1 timed out: TFFU-244: link "More information" on /#/product/6: on the page, named, with a valid href @/#/product/6
+  - CAP run 1 timed out: TFUS-027: /#/product/6 keeps its forms, lists and cards consistent (recorded as findings) @/#/product/6
+  - CAP run 1 timed out: TFUS-028: /#/product/6 has no overlapping controls @/#/product/6
+  - CAP run 1 timed out: TFUS-029: /#/product/6 shows every image it loads @/#/product/6
+  - CAP run 1 timed out: TFAC-060: /#/product/6 groups its checkboxes and radio buttons @/#/product/6
+  - CAP run 1 timed out: TFSE-003: /#/product/6 spells its interface text correctly (recorded as findings) @/#/product/6
+  - CAP run 1 timed out: TFSE-015: keeps page title stable for /#/product/6 @
+  - CAP run 1 timed out: TFSE-016: keeps meta description stable for /#/product/6 @
+  - CAP run 1 timed out: TFSE-017: keeps heading structure stable for /#/product/6 @
+  - CAP run 1 timed out: TFSE-018: keeps canonical metadata stable for /#/product/6 @
+  - CAP run 1 timed out: TFSE-019: exposes structured data for /#/product/6 (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-005: /#/product/6 sends its security headers and session cookies @/#/product/6
+  - CAP run 1 timed out: TFSC-006: /#/product/6 names no software version in its response headers @/#/product/6
+  - CAP run 1 timed out: TFSC-007: /#/product/6 keeps passwords off plain HTTP @/#/product/6
+  - CAP run 1 timed out: TFSC-008: /#/product/6 puts no password or session token in a URL @/#/product/6
+  - CAP run 1 timed out: TFFU-119: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-125: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-130: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-043: every form field has an accessible name: /#/product/6 @
+  - CAP run 1 timed out: TFAC-059: /#/product/6 is tabbed through in reading order @/#/product/6
+  - CAP run 1 timed out: TFAC-050: /#/product/6 passes the WCAG 2.2 A and AA scan @/#/product/6
+  - CAP run 1 timed out: TFFU-039: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-040: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-041: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rat
+  - CAP run 1 timed out: TFFU-042: form element check: Name (A - Z)Name (Z - A)Price (High - Low)Price (Low - High)CO₂ Rating (Best First)CO₂ Rat
+  - CAP run 1 timed out: TFFU-043: form element check: 3 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-044: form element check: 4 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-045: form element check: 5 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-046: form element check: 6 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-047: form element check: 7 [Hand Tools] [input] @
+  - CAP run 1 timed out: TFFU-048: form element check: 1 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-049: form element check: 2 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-050: form element check: 3 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-051: form element check: 4 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-052: form element check: 5 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-053: form element check: 6 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-054: form element check: 7 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-055: form element check: 8 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-056: form element check: 9 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-057: form element check: 10 [By brand:] [input] @
+  - CAP run 1 timed out: TFFU-058: form element check: on [Sustainability:] [input] @
+  - CAP run 1 timed out: TFFU-132: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-137: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-138: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-140: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-142: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-222: option lists show no error text on /#/category/hand-tools @/#/category/hand-tools
+  - CAP run 1 timed out: TFFU-245: cards linking to #/product/:id on /#/category/hand-tools: each on the page, named, with a valid href @/#/categ
+  - CAP run 1 timed out: TFUS-030: /#/category/hand-tools keeps its forms, lists and cards consistent (recorded as findings) @/#/category/hand-to
+  - CAP run 1 timed out: TFUS-031: /#/category/hand-tools has no overlapping controls @/#/category/hand-tools
+  - CAP run 1 timed out: TFUS-032: /#/category/hand-tools shows every image it loads @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-062: /#/category/hand-tools groups its checkboxes and radio buttons @/#/category/hand-tools
+  - CAP run 1 timed out: TFSE-004: /#/category/hand-tools spells its interface text correctly (recorded as findings) @/#/category/hand-tools
+  - CAP run 1 timed out: TFSE-020: keeps page title stable for /#/category/hand-tools @
+  - CAP run 1 timed out: TFSE-021: keeps meta description stable for /#/category/hand-tools @
+  - CAP run 1 timed out: TFSE-022: keeps heading structure stable for /#/category/hand-tools @
+  - CAP run 1 timed out: TFSE-023: keeps canonical metadata stable for /#/category/hand-tools @
+  - CAP run 1 timed out: TFSE-024: exposes structured data for /#/category/hand-tools (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-009: /#/category/hand-tools sends its security headers and session cookies @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-010: /#/category/hand-tools names no software version in its response headers @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-011: /#/category/hand-tools keeps passwords off plain HTTP @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-012: /#/category/hand-tools puts no password or session token in a URL @/#/category/hand-tools
+  - CAP run 1 timed out: TFFU-133: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-139: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-144: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-044: every form field has an accessible name: /#/category/hand-tools @
+  - CAP run 1 timed out: TFAC-061: /#/category/hand-tools is tabbed through in reading order @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-051: /#/category/hand-tools passes the WCAG 2.2 A and AA scan @/#/category/hand-tools
+  - CAP run 1 timed out: TFFU-059: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-060: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-061: form element check: First nameLast nameDate of birthAddressPostcodeCityCountryStateSelect your country *Albani
+  - CAP run 1 timed out: TFFU-062: form element check: Your first name * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-063: form element check: Your last name * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-064: form element check: YYYY-MM-DD [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-065: form element check: Your address * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-066: form element check: Your postcode * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-067: form element check: Your city * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-068: form element check: Your state * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-069: form element check: Select your country *Albania Åland Islands Algeria American Samoa Andorra Angola Anguilla 
+  - CAP run 1 timed out: TFFU-070: form element check: Your phone * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-071: form element check: Your e-mail * [Customer registration] [input] @
+  - CAP run 1 timed out: TFFU-072: form element check: Your password * [Password] [input] @
+  - CAP run 1 timed out: TFFU-073: action element check: Untitled button [Password] [button] @
+  - CAP run 1 timed out: TFFU-074: form element check: Register [Customer registration] [button] @
+  - CAP run 1 timed out: TFFU-075: navigation element check: Open chat [button] @
+  - CAP run 1 timed out: TFFU-146: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-151: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-152: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-154: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-156: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-223: option lists show no error text on /#/auth/register @/#/auth/register
+  - CAP run 1 timed out: TFUS-033: /#/auth/register keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/register
+  - CAP run 1 timed out: TFUS-034: /#/auth/register has no overlapping controls @/#/auth/register
+  - CAP run 1 timed out: TFUS-035: /#/auth/register shows every image it loads @/#/auth/register
+  - CAP run 1 timed out: TFAC-064: /#/auth/register groups its checkboxes and radio buttons @/#/auth/register
+  - CAP run 1 timed out: TFSE-005: /#/auth/register spells its interface text correctly (recorded as findings) @/#/auth/register
+  - CAP run 1 timed out: TFSE-025: keeps page title stable for /#/auth/register @
+  - CAP run 1 timed out: TFSE-026: keeps meta description stable for /#/auth/register @
+  - CAP run 1 timed out: TFSE-027: keeps heading structure stable for /#/auth/register @
+  - CAP run 1 timed out: TFSE-028: keeps canonical metadata stable for /#/auth/register @
+  - CAP run 1 timed out: TFSE-029: exposes structured data for /#/auth/register (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-013: /#/auth/register sends its security headers and session cookies @/#/auth/register
+  - CAP run 1 timed out: TFSC-014: /#/auth/register names no software version in its response headers @/#/auth/register
+  - CAP run 1 timed out: TFSC-015: /#/auth/register keeps passwords off plain HTTP @/#/auth/register
+  - CAP run 1 timed out: TFSC-016: /#/auth/register puts no password or session token in a URL @/#/auth/register
+  - CAP run 1 timed out: TFFU-147: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-153: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-158: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-045: every form field has an accessible name: /#/auth/register @
+  - CAP run 1 timed out: TFAC-063: /#/auth/register is tabbed through in reading order @/#/auth/register
+  - CAP run 1 timed out: TFAC-052: /#/auth/register passes the WCAG 2.2 A and AA scan @/#/auth/register
+  - CAP run 1 timed out: TFFU-076: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-077: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-078: api element check: First nameLast nameEmail addressSubjectSelect a subjectCustomer serviceWebmasterReturnError
+  - CAP run 1 timed out: TFFU-079: form element check: Your first name * [Contact] [input] @
+  - CAP run 1 timed out: TFFU-080: form element check: Your last name * [Contact] [input] @
+  - CAP run 1 timed out: TFFU-081: form element check: Your email * [Contact] [input] @
+  - CAP run 1 timed out: TFFU-082: api element check: Select a subjectCustomer serviceWebmasterReturnError 101: Subject not foundPaymentsWarranty
+  - CAP run 1 timed out: TFFU-083: form element check: Message [Message] [textarea] @
+  - CAP run 1 timed out: TFFU-084: form element check: Attachment [Attachment] [input] @
+  - CAP run 1 timed out: TFFU-085: form element check: Send [Contact] [button] @
+  - CAP run 1 timed out: TFFU-086: navigation element check: Open chat [button] @
+  - CAP run 1 timed out: TFFU-160: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-165: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-166: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-168: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-170: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-224: option lists show no error text on /#/contact @/#/contact
+  - CAP run 1 timed out: TFUS-036: /#/contact keeps its forms, lists and cards consistent (recorded as findings) @/#/contact
+  - CAP run 1 timed out: TFSE-034: exposes structured data for /#/contact (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-017: /#/contact sends its security headers and session cookies @/#/contact
+  - CAP run 1 timed out: TFSC-018: /#/contact names no software version in its response headers @/#/contact
+  - CAP run 1 timed out: TFSC-019: /#/contact keeps passwords off plain HTTP @/#/contact
+  - CAP run 1 timed out: TFSC-020: /#/contact puts no password or session token in a URL @/#/contact
+  - CAP run 1 timed out: TFFU-161: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-167: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-172: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-046: every form field has an accessible name: /#/contact @
+  - CAP run 1 timed out: TFAC-065: /#/contact is tabbed through in reading order @/#/contact
+  - CAP run 1 timed out: TFAC-053: /#/contact passes the WCAG 2.2 A and AA scan @/#/contact
+  - CAP run 1 timed out: TFFU-087: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-088: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-089: form element check: Not yet an account? Register your accountForgot your Password? [Login] [form] @
+  - CAP run 1 timed out: TFFU-090: form element check: Your E-mail * [Login] [input] @
+  - CAP run 1 timed out: TFFU-091: form element check: Your password * [Login] [input] @
+  - CAP run 1 timed out: TFFU-092: form element check: Untitled button [Login] [button] @
+  - CAP run 1 timed out: TFFU-093: form element check: Login [Login] [button] @
+  - CAP run 1 timed out: TFFU-094: navigation element check: Open chat [button] @
+  - CAP run 1 timed out: TFFU-174: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-179: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-180: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-182: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-184: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFFU-246: link "Register your account" on /#/auth/login: on the page, named, with a valid href @/#/auth/login
+  - CAP run 1 timed out: TFFU-247: link "Forgot your Password?" on /#/auth/login: on the page, named, with a valid href @/#/auth/login
+  - CAP run 1 timed out: TFUS-039: /#/auth/login keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/login
+  - CAP run 1 timed out: TFUS-040: /#/auth/login has no overlapping controls @/#/auth/login
+  - CAP run 1 timed out: TFUS-041: /#/auth/login shows every image it loads @/#/auth/login
+  - CAP run 1 timed out: TFAC-068: /#/auth/login groups its checkboxes and radio buttons @/#/auth/login
+  - CAP run 1 timed out: TFSE-007: /#/auth/login spells its interface text correctly (recorded as findings) @/#/auth/login
+  - CAP run 1 timed out: TFSE-035: keeps page title stable for /#/auth/login @
+  - CAP run 1 timed out: TFSE-036: keeps meta description stable for /#/auth/login @
+  - CAP run 1 timed out: TFSE-037: keeps heading structure stable for /#/auth/login @
+  - CAP run 1 timed out: TFSE-038: keeps canonical metadata stable for /#/auth/login @
+  - CAP run 1 timed out: TFSE-039: exposes structured data for /#/auth/login (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-021: /#/auth/login sends its security headers and session cookies @/#/auth/login
+  - CAP run 1 timed out: TFSC-022: /#/auth/login names no software version in its response headers @/#/auth/login
+  - CAP run 1 timed out: TFSC-023: /#/auth/login keeps passwords off plain HTTP @/#/auth/login
+  - CAP run 1 timed out: TFSC-024: /#/auth/login puts no password or session token in a URL @/#/auth/login
+  - CAP run 1 timed out: TFFU-175: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-181: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-186: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-047: every form field has an accessible name: /#/auth/login @
+  - CAP run 1 timed out: TFAC-067: /#/auth/login is tabbed through in reading order @/#/auth/login
+  - CAP run 1 timed out: TFAC-054: /#/auth/login passes the WCAG 2.2 A and AA scan @/#/auth/login
+  - CAP run 1 timed out: TFFU-095: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-096: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-097: form element check: Untitled form [Forgot Password] [form] @
+  - CAP run 1 timed out: TFFU-098: form element check: Your E-mail * [Forgot Password] [input] @
+  - CAP run 1 timed out: TFFU-099: action element check: Set New Password [Forgot Password] [button] @
+  - CAP run 1 timed out: TFFU-100: navigation element check: Open chat [button] @
+  - CAP run 1 timed out: TFFU-188: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-193: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-194: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-196: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-198: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFUS-042: /#/auth/forgot-password keeps its forms, lists and cards consistent (recorded as findings) @/#/auth/forgot-pas
+  - CAP run 1 timed out: TFUS-043: /#/auth/forgot-password has no overlapping controls @/#/auth/forgot-password
+  - CAP run 1 timed out: TFUS-044: /#/auth/forgot-password shows every image it loads @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-070: /#/auth/forgot-password groups its checkboxes and radio buttons @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSE-008: /#/auth/forgot-password spells its interface text correctly (recorded as findings) @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSE-040: keeps page title stable for /#/auth/forgot-password @
+  - CAP run 1 timed out: TFSE-041: keeps meta description stable for /#/auth/forgot-password @
+  - CAP run 1 timed out: TFSE-042: keeps heading structure stable for /#/auth/forgot-password @
+  - CAP run 1 timed out: TFSE-043: keeps canonical metadata stable for /#/auth/forgot-password @
+  - CAP run 1 timed out: TFSE-044: exposes structured data for /#/auth/forgot-password (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-025: /#/auth/forgot-password sends its security headers and session cookies @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-026: /#/auth/forgot-password names no software version in its response headers @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-027: /#/auth/forgot-password keeps passwords off plain HTTP @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-028: /#/auth/forgot-password puts no password or session token in a URL @/#/auth/forgot-password
+  - CAP run 1 timed out: TFFU-189: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-195: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-200: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-048: every form field has an accessible name: /#/auth/forgot-password @
+  - CAP run 1 timed out: TFAC-069: /#/auth/forgot-password is tabbed through in reading order @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-055: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan @/#/auth/forgot-password
+  - CAP run 1 timed out: TFFU-101: action element check: Bug Hunting Guide [button] @
+  - CAP run 1 timed out: TFFU-102: navigation element check: Toggle navigation [button] @
+  - CAP run 1 timed out: TFFU-103: navigation element check: Open chat [button] @
+  - CAP run 1 timed out: TFFU-202: navigation link health: Untitled link to http://172.31.208.1:4200/ @
+  - CAP run 1 timed out: TFFU-207: link types: internal, external, anchor, mailto, and download links are classified correctly @
+  - CAP run 1 timed out: TFFU-208: visual representation: links are distinguishable from surrounding text @
+  - CAP run 1 timed out: TFFU-210: visited style configuration: stylesheet defines visited-link styling when same-origin rules are inspectable @
+  - CAP run 1 timed out: TFFU-212: technical security: link protocols are safe and do not expose obvious XSS vectors @
+  - CAP run 1 timed out: TFUS-045: /#/chainsaws keeps its forms, lists and cards consistent (recorded as findings) @/#/chainsaws
+  - CAP run 1 timed out: TFUS-046: /#/chainsaws has no overlapping controls @/#/chainsaws
+  - CAP run 1 timed out: TFUS-047: /#/chainsaws shows every image it loads @/#/chainsaws
+  - CAP run 1 timed out: TFAC-072: /#/chainsaws groups its checkboxes and radio buttons @/#/chainsaws
+  - CAP run 1 timed out: TFSE-009: /#/chainsaws spells its interface text correctly (recorded as findings) @/#/chainsaws
+  - CAP run 1 timed out: TFSE-045: keeps page title stable for /#/chainsaws @
+  - CAP run 1 timed out: TFSE-046: keeps meta description stable for /#/chainsaws @
+  - CAP run 1 timed out: TFSE-047: keeps heading structure stable for /#/chainsaws @
+  - CAP run 1 timed out: TFSE-048: keeps canonical metadata stable for /#/chainsaws @
+  - CAP run 1 timed out: TFSE-049: exposes structured data for /#/chainsaws (recorded as a finding when missing) @
+  - CAP run 1 timed out: TFSC-029: /#/chainsaws sends its security headers and session cookies @/#/chainsaws
+  - CAP run 1 timed out: TFSC-030: /#/chainsaws names no software version in its response headers @/#/chainsaws
+  - CAP run 1 timed out: TFSC-031: /#/chainsaws keeps passwords off plain HTTP @/#/chainsaws
+  - CAP run 1 timed out: TFSC-032: /#/chainsaws puts no password or session token in a URL @/#/chainsaws
+  - CAP run 1 timed out: TFFU-203: navigation link health: Home @
+  - CAP run 1 timed out: TFFU-209: hover state: links show pointer cursor and preserve tooltip attributes @
+  - CAP run 1 timed out: TFFU-214: anchor links point to existing in-page targets @
+  - CAP run 1 timed out: TFAC-071: /#/chainsaws is tabbed through in reading order @/#/chainsaws
+  - CAP run 1 timed out: TFAC-056: /#/chainsaws passes the WCAG 2.2 A and AA scan @/#/chainsaws
+  - CAP run 1 timed out: TFFU-218: option lists show no error text on /#/ @/#/
+  - CAP run 1 timed out: TFFU-226: link "Documentation" on /#/: on the page, named, with a valid href @/#/
+  - CAP run 1 timed out: TFFU-227: link "http://172.31.208.1:4200/" on /#/: on the page, named, with a valid href @/#/
+  - CAP run 1 timed out: TFFU-228: link "Home" on /#/: on the page, named, with a valid href @/#/
+
+### security
+
+- Timed checks Not run under the cap (owner decision 2026-10-21): none.
+- Tests that vary between runs of one variant: none.
+  - failing in W1 only: 19 known paths that leak (/.env, /.git/HEAD, /.git/config, /.svn/entries, /.DS_Store, /backup.zip, /backup.tar.gz, /backup.sql, /dump.sql, /database.sql, /logs/error.log, /logs/debug.log, /logs/laravel.log, /log/error.log, /log/debug.log, /log/laravel.log, /storage/logs/error.log, /storage/logs/debug.log, /storage/logs/laravel.log) are not reachable on the site or its own API @(known-path probe)
+  - failing in CAP only: /#/ uses no guessable sequential ids in its addresses (recorded as a finding) @/#/
+  - failing in CAP only: /#/ fetches no internal fields it never shows (recorded as a finding) @/#/
+  - failing in CAP only: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/6
+  - failing in CAP only: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6
+  - failing in CAP only: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/7
+  - failing in CAP only: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7
+  - failing in CAP only: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/8
+  - failing in CAP only: /#/product/8 fetches no internal fields it never shows (recorded as a finding) @/#/product/8
+  - failing in CAP only: /#/product/9 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/9
+  - failing in CAP only: /#/product/9 fetches no internal fields it never shows (recorded as a finding) @/#/product/9
+  - failing in CAP only: /#/product/10 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/10
+  - failing in CAP only: /#/product/10 fetches no internal fields it never shows (recorded as a finding) @/#/product/10
+  - failing in CAP only: /#/product/11 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/11
+  - failing in CAP only: /#/product/11 fetches no internal fields it never shows (recorded as a finding) @/#/product/11
+  - failing in CAP only: /#/product/12 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/12
+  - failing in CAP only: /#/product/12 fetches no internal fields it never shows (recorded as a finding) @/#/product/12
+  - failing in CAP only: /#/product/1 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/1
+  - failing in CAP only: /#/product/1 fetches no internal fields it never shows (recorded as a finding) @/#/product/1
+  - failing in CAP only: /#/product/2 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/2
+  - failing in CAP only: /#/product/2 fetches no internal fields it never shows (recorded as a finding) @/#/product/2
+  - failing in CAP only: /#/product/3 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/3
+  - failing in CAP only: /#/product/3 fetches no internal fields it never shows (recorded as a finding) @/#/product/3
+  - failing in CAP only: /#/category/hand-tools uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools fetches no internal fields it never shows (recorded as a finding) @/#/category/hand-tools
+  - failing in CAP only: /#/category/power-tools uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category/power-tools
+  - failing in CAP only: /#/category/power-tools fetches no internal fields it never shows (recorded as a finding) @/#/category/power-tools
+  - failing in CAP only: /#/category/undefined uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category/undefined
+  - failing in CAP only: /#/category/undefined fetches no internal fields it never shows (recorded as a finding) @/#/category/undefined
+  - failing in CAP only: /#/auth/register uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/register
+  - failing in CAP only: /#/auth/register fetches no internal fields it never shows (recorded as a finding) @/#/auth/register
+  - failing in CAP only: /#/contact uses no guessable sequential ids in its addresses (recorded as a finding) @/#/contact
+  - failing in CAP only: /#/contact fetches no internal fields it never shows (recorded as a finding) @/#/contact
+  - failing in CAP only: /#/auth/login uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/login
+  - failing in CAP only: /#/auth/login fetches no internal fields it never shows (recorded as a finding) @/#/auth/login
+  - failing in CAP only: /#/auth/forgot-password uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password fetches no internal fields it never shows (recorded as a finding) @/#/auth/forgot-password
+  - failing in CAP only: /#/ sends its security headers and session cookies @/#/
+  - failing in CAP only: /#/ puts no password or session token in a URL @/#/
+  - failing in CAP only: /#/product/6 sends its security headers and session cookies @/#/product/6
+  - failing in CAP only: /#/product/6 names no software version in its response headers @/#/product/6
+  - failing in CAP only: /#/product/6 keeps passwords off plain HTTP @/#/product/6
+  - failing in CAP only: /#/product/6 puts no password or session token in a URL @/#/product/6
+  - failing in CAP only: /#/product/7 puts no password or session token in a URL @/#/product/7
+  - failing in CAP only: /#/product/8 sends its security headers and session cookies @/#/product/8
+  - failing in CAP only: /#/product/8 names no software version in its response headers @/#/product/8
+  - failing in CAP only: /#/product/8 keeps passwords off plain HTTP @/#/product/8
+  - failing in CAP only: /#/product/8 puts no password or session token in a URL @/#/product/8
+  - failing in CAP only: /#/product/9 sends its security headers and session cookies @/#/product/9
+  - failing in CAP only: /#/product/9 names no software version in its response headers @/#/product/9
+  - failing in CAP only: /#/product/9 keeps passwords off plain HTTP @/#/product/9
+  - failing in CAP only: /#/product/9 puts no password or session token in a URL @/#/product/9
+  - failing in CAP only: /#/product/10 sends its security headers and session cookies @/#/product/10
+  - failing in CAP only: /#/product/10 names no software version in its response headers @/#/product/10
+  - failing in CAP only: /#/product/10 keeps passwords off plain HTTP @/#/product/10
+  - failing in CAP only: /#/product/10 puts no password or session token in a URL @/#/product/10
+  - failing in CAP only: /#/product/11 sends its security headers and session cookies @/#/product/11
+  - failing in CAP only: /#/product/11 names no software version in its response headers @/#/product/11
+  - failing in CAP only: /#/product/11 keeps passwords off plain HTTP @/#/product/11
+  - failing in CAP only: /#/product/11 puts no password or session token in a URL @/#/product/11
+  - failing in CAP only: /#/product/12 sends its security headers and session cookies @/#/product/12
+  - failing in CAP only: /#/product/12 names no software version in its response headers @/#/product/12
+  - failing in CAP only: /#/product/12 keeps passwords off plain HTTP @/#/product/12
+  - failing in CAP only: /#/product/12 puts no password or session token in a URL @/#/product/12
+  - failing in CAP only: /#/product/1 sends its security headers and session cookies @/#/product/1
+  - failing in CAP only: /#/product/1 names no software version in its response headers @/#/product/1
+  - failing in CAP only: /#/product/1 keeps passwords off plain HTTP @/#/product/1
+  - failing in CAP only: /#/product/1 puts no password or session token in a URL @/#/product/1
+  - failing in CAP only: /#/product/2 sends its security headers and session cookies @/#/product/2
+  - failing in CAP only: /#/product/2 names no software version in its response headers @/#/product/2
+  - failing in CAP only: /#/product/2 keeps passwords off plain HTTP @/#/product/2
+  - failing in CAP only: /#/product/2 puts no password or session token in a URL @/#/product/2
+  - failing in CAP only: /#/product/3 sends its security headers and session cookies @/#/product/3
+  - failing in CAP only: /#/product/3 names no software version in its response headers @/#/product/3
+  - failing in CAP only: /#/product/3 keeps passwords off plain HTTP @/#/product/3
+  - failing in CAP only: /#/product/3 puts no password or session token in a URL @/#/product/3
+  - failing in CAP only: /#/category/hand-tools sends its security headers and session cookies @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools names no software version in its response headers @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools keeps passwords off plain HTTP @/#/category/hand-tools
+  - failing in CAP only: /#/category/hand-tools puts no password or session token in a URL @/#/category/hand-tools
+  - failing in CAP only: /#/category/power-tools sends its security headers and session cookies @/#/category/power-tools
+  - failing in CAP only: /#/category/power-tools names no software version in its response headers @/#/category/power-tools
+  - failing in CAP only: /#/category/power-tools keeps passwords off plain HTTP @/#/category/power-tools
+  - failing in CAP only: /#/category/power-tools puts no password or session token in a URL @/#/category/power-tools
+  - failing in CAP only: /#/category/undefined sends its security headers and session cookies @/#/category/undefined
+  - failing in CAP only: /#/category/undefined names no software version in its response headers @/#/category/undefined
+  - failing in CAP only: /#/category/undefined keeps passwords off plain HTTP @/#/category/undefined
+  - failing in CAP only: /#/category/undefined puts no password or session token in a URL @/#/category/undefined
+  - failing in CAP only: /#/auth/register sends its security headers and session cookies @/#/auth/register
+  - failing in CAP only: /#/auth/register names no software version in its response headers @/#/auth/register
+  - failing in CAP only: /#/auth/register keeps passwords off plain HTTP @/#/auth/register
+  - failing in CAP only: /#/contact sends its security headers and session cookies @/#/contact
+  - failing in CAP only: /#/contact names no software version in its response headers @/#/contact
+  - failing in CAP only: /#/contact keeps passwords off plain HTTP @/#/contact
+  - failing in CAP only: /#/contact puts no password or session token in a URL @/#/contact
+  - failing in CAP only: /#/auth/login sends its security headers and session cookies @/#/auth/login
+  - failing in CAP only: /#/auth/login names no software version in its response headers @/#/auth/login
+  - failing in CAP only: /#/auth/login keeps passwords off plain HTTP @/#/auth/login
+  - failing in CAP only: /#/auth/forgot-password sends its security headers and session cookies @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password names no software version in its response headers @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password keeps passwords off plain HTTP @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password puts no password or session token in a URL @/#/auth/forgot-password
+  - failing in CAP only: /#/chainsaws sends its security headers and session cookies @/#/chainsaws
+  - failing in CAP only: /#/chainsaws names no software version in its response headers @/#/chainsaws
+  - failing in CAP only: /#/chainsaws keeps passwords off plain HTTP @/#/chainsaws
+  - failing in CAP only: /#/chainsaws puts no password or session token in a URL @/#/chainsaws
+  - failing in CAP only: /#/rentals sends its security headers and session cookies @/#/rentals
+  - status in CAP only: /#/ uses no guessable sequential ids in its addresses (recorded as a finding) @/#/ => Failed
+  - status in CAP only: /#/ fetches no internal fields it never shows (recorded as a finding) @/#/ => Failed
+  - status in CAP only: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/6 => Failed
+  - status in CAP only: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6 => Failed
+  - status in CAP only: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/7 => Failed
+  - status in CAP only: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7 => Failed
+  - status in CAP only: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/8 => Failed
+  - status in CAP only: /#/product/8 fetches no internal fields it never shows (recorded as a finding) @/#/product/8 => Failed
+  - status in CAP only: /#/product/9 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/9 => Failed
+  - status in CAP only: /#/product/9 fetches no internal fields it never shows (recorded as a finding) @/#/product/9 => Failed
+  - status in CAP only: /#/product/10 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/10 => Failed
+  - status in CAP only: /#/product/10 fetches no internal fields it never shows (recorded as a finding) @/#/product/10 => Failed
+  - status in CAP only: /#/product/11 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/11 => Failed
+  - status in CAP only: /#/product/11 fetches no internal fields it never shows (recorded as a finding) @/#/product/11 => Failed
+  - status in CAP only: /#/product/12 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/12 => Failed
+  - status in CAP only: /#/product/12 fetches no internal fields it never shows (recorded as a finding) @/#/product/12 => Failed
+  - status in CAP only: /#/product/1 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/1 => Failed
+  - status in CAP only: /#/product/1 fetches no internal fields it never shows (recorded as a finding) @/#/product/1 => Failed
+  - status in CAP only: /#/product/2 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/2 => Failed
+  - status in CAP only: /#/product/2 fetches no internal fields it never shows (recorded as a finding) @/#/product/2 => Failed
+  - status in W1 only: /#/ uses no guessable sequential ids in its addresses (recorded as a finding) @/#/ => Passed
+  - status in W1 only: /#/ fetches no internal fields it never shows (recorded as a finding) @/#/ => Passed
+  - status in W1 only: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/6 => Passed
+  - status in W1 only: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6 => Passed
+  - status in W1 only: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/7 => Passed
+  - status in W1 only: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7 => Passed
+  - status in W1 only: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/8 => Passed
+  - status in W1 only: /#/product/8 fetches no internal fields it never shows (recorded as a finding) @/#/product/8 => Passed
+  - status in W1 only: /#/product/9 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/9 => Passed
+  - status in W1 only: /#/product/9 fetches no internal fields it never shows (recorded as a finding) @/#/product/9 => Passed
+  - status in W1 only: /#/product/10 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/10 => Passed
+  - status in W1 only: /#/product/10 fetches no internal fields it never shows (recorded as a finding) @/#/product/10 => Passed
+  - status in W1 only: /#/product/11 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/11 => Passed
+  - status in W1 only: /#/product/11 fetches no internal fields it never shows (recorded as a finding) @/#/product/11 => Passed
+  - status in W1 only: /#/product/12 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/12 => Passed
+  - status in W1 only: /#/product/12 fetches no internal fields it never shows (recorded as a finding) @/#/product/12 => Passed
+  - status in W1 only: /#/product/1 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/1 => Passed
+  - status in W1 only: /#/product/1 fetches no internal fields it never shows (recorded as a finding) @/#/product/1 => Passed
+  - status in W1 only: /#/product/2 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/2 => Passed
+  - status in W1 only: /#/product/2 fetches no internal fields it never shows (recorded as a finding) @/#/product/2 => Passed
+  - finding in W1 only: /#/ uses no guessable sequential ids in its addresses (recorded as a finding) @/#/ | http://localhost:4200/#/product/:id on /#/ uses sequential integer ids (1, 2, 3, 4, 5, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)
+  - finding in W1 only: /#/ fetches no internal fields it never shows (recorded as a finding) @/#/ | GET http://localhost:8091/products returns "stock" (11, 0, ...) on its items, which /#/ never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - finding in W1 only: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/6 | http://localhost:4200/#/product/:id on /#/product/6 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)
+  - finding in W1 only: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6 | GET http://localhost:8091/products/6 returns "stock" (11) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - finding in W1 only: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6 | GET http://localhost:8091/products/6/related returns "stock" (11, ...) on its items, which /#/product/6 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - finding in W1 only: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/7 | http://localhost:4200/#/product/:id on /#/product/7 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)
+  - finding in W1 only: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7 | GET http://localhost:8091/products/7 returns "stock" (11) on its items, which /#/product/7 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - finding in W1 only: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7 | GET http://localhost:8091/products/7/related returns "stock" (11, ...) on its items, which /#/product/7 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - finding in W1 only: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/8 | http://localhost:4200/#/product/:id on /#/product/8 uses sequential integer ids (6, 7, 8, 9, 10, ...): the next record's address can be guessed; whether it reaches someone else's record needs an authorization test (OWASP WSTG-ATHZ-04)
+  - finding in W1 only: /#/product/8 fetches no internal fields it never shows (recorded as a finding) @/#/product/8 | GET http://localhost:8091/products/8 returns "stock" (11) on its items, which /#/product/8 never shows; the name suggests an internal detail (ASVS 15.3.1: return only the fields the page needs)
+  - CAP run 1 timed out: TFSC-005: /#/ uses no guessable sequential ids in its addresses (recorded as a finding) @/#/
+  - CAP run 1 timed out: TFSC-006: /#/ fetches no internal fields it never shows (recorded as a finding) @/#/
+  - CAP run 1 timed out: TFSC-011: /#/product/6 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/6
+  - CAP run 1 timed out: TFSC-012: /#/product/6 fetches no internal fields it never shows (recorded as a finding) @/#/product/6
+  - CAP run 1 timed out: TFSC-017: /#/product/7 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/7
+  - CAP run 1 timed out: TFSC-018: /#/product/7 fetches no internal fields it never shows (recorded as a finding) @/#/product/7
+  - CAP run 1 timed out: TFSC-023: /#/product/8 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/8
+  - CAP run 1 timed out: TFSC-024: /#/product/8 fetches no internal fields it never shows (recorded as a finding) @/#/product/8
+  - CAP run 1 timed out: TFSC-029: /#/product/9 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/9
+  - CAP run 1 timed out: TFSC-030: /#/product/9 fetches no internal fields it never shows (recorded as a finding) @/#/product/9
+  - CAP run 1 timed out: TFSC-035: /#/product/10 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/10
+  - CAP run 1 timed out: TFSC-036: /#/product/10 fetches no internal fields it never shows (recorded as a finding) @/#/product/10
+  - CAP run 1 timed out: TFSC-041: /#/product/11 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/11
+  - CAP run 1 timed out: TFSC-042: /#/product/11 fetches no internal fields it never shows (recorded as a finding) @/#/product/11
+  - CAP run 1 timed out: TFSC-047: /#/product/12 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/12
+  - CAP run 1 timed out: TFSC-048: /#/product/12 fetches no internal fields it never shows (recorded as a finding) @/#/product/12
+  - CAP run 1 timed out: TFSC-053: /#/product/1 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/1
+  - CAP run 1 timed out: TFSC-054: /#/product/1 fetches no internal fields it never shows (recorded as a finding) @/#/product/1
+  - CAP run 1 timed out: TFSC-059: /#/product/2 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/2
+  - CAP run 1 timed out: TFSC-060: /#/product/2 fetches no internal fields it never shows (recorded as a finding) @/#/product/2
+  - CAP run 1 timed out: TFSC-065: /#/product/3 uses no guessable sequential ids in its addresses (recorded as a finding) @/#/product/3
+  - CAP run 1 timed out: TFSC-066: /#/product/3 fetches no internal fields it never shows (recorded as a finding) @/#/product/3
+  - CAP run 1 timed out: TFSC-071: /#/category/hand-tools uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category/
+  - CAP run 1 timed out: TFSC-072: /#/category/hand-tools fetches no internal fields it never shows (recorded as a finding) @/#/category/hand-too
+  - CAP run 1 timed out: TFSC-077: /#/category/power-tools uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category
+  - CAP run 1 timed out: TFSC-078: /#/category/power-tools fetches no internal fields it never shows (recorded as a finding) @/#/category/power-t
+  - CAP run 1 timed out: TFSC-083: /#/category/undefined uses no guessable sequential ids in its addresses (recorded as a finding) @/#/category/u
+  - CAP run 1 timed out: TFSC-084: /#/category/undefined fetches no internal fields it never shows (recorded as a finding) @/#/category/undefined
+  - CAP run 1 timed out: TFSC-089: /#/auth/register uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/register
+  - CAP run 1 timed out: TFSC-090: /#/auth/register fetches no internal fields it never shows (recorded as a finding) @/#/auth/register
+  - CAP run 1 timed out: TFSC-095: /#/contact uses no guessable sequential ids in its addresses (recorded as a finding) @/#/contact
+  - CAP run 1 timed out: TFSC-096: /#/contact fetches no internal fields it never shows (recorded as a finding) @/#/contact
+  - CAP run 1 timed out: TFSC-101: /#/auth/login uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/login
+  - CAP run 1 timed out: TFSC-102: /#/auth/login fetches no internal fields it never shows (recorded as a finding) @/#/auth/login
+  - CAP run 1 timed out: TFSC-107: /#/auth/forgot-password uses no guessable sequential ids in its addresses (recorded as a finding) @/#/auth/for
+  - CAP run 1 timed out: TFSC-108: /#/auth/forgot-password fetches no internal fields it never shows (recorded as a finding) @/#/auth/forgot-pass
+  - CAP run 1 timed out: TFSC-001: /#/ sends its security headers and session cookies @/#/
+  - CAP run 1 timed out: TFSC-007: /#/product/6 sends its security headers and session cookies @/#/product/6
+  - CAP run 1 timed out: TFSC-008: /#/product/6 names no software version in its response headers @/#/product/6
+  - CAP run 1 timed out: TFSC-009: /#/product/6 keeps passwords off plain HTTP @/#/product/6
+  - CAP run 1 timed out: TFSC-010: /#/product/6 puts no password or session token in a URL @/#/product/6
+  - CAP run 1 timed out: TFSC-019: /#/product/8 sends its security headers and session cookies @/#/product/8
+  - CAP run 1 timed out: TFSC-020: /#/product/8 names no software version in its response headers @/#/product/8
+  - CAP run 1 timed out: TFSC-021: /#/product/8 keeps passwords off plain HTTP @/#/product/8
+  - CAP run 1 timed out: TFSC-022: /#/product/8 puts no password or session token in a URL @/#/product/8
+  - CAP run 1 timed out: TFSC-025: /#/product/9 sends its security headers and session cookies @/#/product/9
+  - CAP run 1 timed out: TFSC-026: /#/product/9 names no software version in its response headers @/#/product/9
+  - CAP run 1 timed out: TFSC-027: /#/product/9 keeps passwords off plain HTTP @/#/product/9
+  - CAP run 1 timed out: TFSC-028: /#/product/9 puts no password or session token in a URL @/#/product/9
+  - CAP run 1 timed out: TFSC-031: /#/product/10 sends its security headers and session cookies @/#/product/10
+  - CAP run 1 timed out: TFSC-032: /#/product/10 names no software version in its response headers @/#/product/10
+  - CAP run 1 timed out: TFSC-033: /#/product/10 keeps passwords off plain HTTP @/#/product/10
+  - CAP run 1 timed out: TFSC-034: /#/product/10 puts no password or session token in a URL @/#/product/10
+  - CAP run 1 timed out: TFSC-037: /#/product/11 sends its security headers and session cookies @/#/product/11
+  - CAP run 1 timed out: TFSC-038: /#/product/11 names no software version in its response headers @/#/product/11
+  - CAP run 1 timed out: TFSC-039: /#/product/11 keeps passwords off plain HTTP @/#/product/11
+  - CAP run 1 timed out: TFSC-040: /#/product/11 puts no password or session token in a URL @/#/product/11
+  - CAP run 1 timed out: TFSC-043: /#/product/12 sends its security headers and session cookies @/#/product/12
+  - CAP run 1 timed out: TFSC-044: /#/product/12 names no software version in its response headers @/#/product/12
+  - CAP run 1 timed out: TFSC-045: /#/product/12 keeps passwords off plain HTTP @/#/product/12
+  - CAP run 1 timed out: TFSC-049: /#/product/1 sends its security headers and session cookies @/#/product/1
+  - CAP run 1 timed out: TFSC-050: /#/product/1 names no software version in its response headers @/#/product/1
+  - CAP run 1 timed out: TFSC-051: /#/product/1 keeps passwords off plain HTTP @/#/product/1
+  - CAP run 1 timed out: TFSC-052: /#/product/1 puts no password or session token in a URL @/#/product/1
+  - CAP run 1 timed out: TFSC-055: /#/product/2 sends its security headers and session cookies @/#/product/2
+  - CAP run 1 timed out: TFSC-056: /#/product/2 names no software version in its response headers @/#/product/2
+  - CAP run 1 timed out: TFSC-057: /#/product/2 keeps passwords off plain HTTP @/#/product/2
+  - CAP run 1 timed out: TFSC-058: /#/product/2 puts no password or session token in a URL @/#/product/2
+  - CAP run 1 timed out: TFSC-061: /#/product/3 sends its security headers and session cookies @/#/product/3
+  - CAP run 1 timed out: TFSC-062: /#/product/3 names no software version in its response headers @/#/product/3
+  - CAP run 1 timed out: TFSC-063: /#/product/3 keeps passwords off plain HTTP @/#/product/3
+  - CAP run 1 timed out: TFSC-064: /#/product/3 puts no password or session token in a URL @/#/product/3
+  - CAP run 1 timed out: TFSC-067: /#/category/hand-tools sends its security headers and session cookies @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-068: /#/category/hand-tools names no software version in its response headers @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-069: /#/category/hand-tools keeps passwords off plain HTTP @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-070: /#/category/hand-tools puts no password or session token in a URL @/#/category/hand-tools
+  - CAP run 1 timed out: TFSC-073: /#/category/power-tools sends its security headers and session cookies @/#/category/power-tools
+  - CAP run 1 timed out: TFSC-074: /#/category/power-tools names no software version in its response headers @/#/category/power-tools
+  - CAP run 1 timed out: TFSC-075: /#/category/power-tools keeps passwords off plain HTTP @/#/category/power-tools
+  - CAP run 1 timed out: TFSC-076: /#/category/power-tools puts no password or session token in a URL @/#/category/power-tools
+  - CAP run 1 timed out: TFSC-079: /#/category/undefined sends its security headers and session cookies @/#/category/undefined
+  - CAP run 1 timed out: TFSC-080: /#/category/undefined names no software version in its response headers @/#/category/undefined
+  - CAP run 1 timed out: TFSC-081: /#/category/undefined keeps passwords off plain HTTP @/#/category/undefined
+  - CAP run 1 timed out: TFSC-082: /#/category/undefined puts no password or session token in a URL @/#/category/undefined
+  - CAP run 1 timed out: TFSC-085: /#/auth/register sends its security headers and session cookies @/#/auth/register
+  - CAP run 1 timed out: TFSC-086: /#/auth/register names no software version in its response headers @/#/auth/register
+  - CAP run 1 timed out: TFSC-087: /#/auth/register keeps passwords off plain HTTP @/#/auth/register
+  - CAP run 1 timed out: TFSC-088: /#/auth/register puts no password or session token in a URL @/#/auth/register
+  - CAP run 1 timed out: TFSC-091: /#/contact sends its security headers and session cookies @/#/contact
+  - CAP run 1 timed out: TFSC-092: /#/contact names no software version in its response headers @/#/contact
+  - CAP run 1 timed out: TFSC-093: /#/contact keeps passwords off plain HTTP @/#/contact
+  - CAP run 1 timed out: TFSC-094: /#/contact puts no password or session token in a URL @/#/contact
+  - CAP run 1 timed out: TFSC-097: /#/auth/login sends its security headers and session cookies @/#/auth/login
+  - CAP run 1 timed out: TFSC-098: /#/auth/login names no software version in its response headers @/#/auth/login
+  - CAP run 1 timed out: TFSC-099: /#/auth/login keeps passwords off plain HTTP @/#/auth/login
+  - CAP run 1 timed out: TFSC-100: /#/auth/login puts no password or session token in a URL @/#/auth/login
+  - CAP run 1 timed out: TFSC-103: /#/auth/forgot-password sends its security headers and session cookies @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-104: /#/auth/forgot-password names no software version in its response headers @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-105: /#/auth/forgot-password keeps passwords off plain HTTP @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-106: /#/auth/forgot-password puts no password or session token in a URL @/#/auth/forgot-password
+  - CAP run 1 timed out: TFSC-109: /#/chainsaws sends its security headers and session cookies @/#/chainsaws
+  - CAP run 1 timed out: TFSC-110: /#/chainsaws names no software version in its response headers @/#/chainsaws
+  - CAP run 1 timed out: TFSC-111: /#/chainsaws keeps passwords off plain HTTP @/#/chainsaws
+  - CAP run 1 timed out: TFSC-112: /#/chainsaws puts no password or session token in a URL @/#/chainsaws
+  - CAP run 1 timed out: TFSC-115: /#/rentals sends its security headers and session cookies @/#/rentals
+
+### accessibility
+
+- Timed checks Not run under the cap (owner decision 2026-10-21): none.
+- Tests that vary between runs of one variant: none.
+  - failing in CAP only: /#/ is tabbed through in reading order @/#/
+  - failing in CAP only: /#/product/6 groups its checkboxes and radio buttons @/#/product/6
+  - failing in CAP only: /#/product/6 is tabbed through in reading order @/#/product/6
+  - failing in CAP only: /#/product/7 groups its checkboxes and radio buttons @/#/product/7
+  - failing in CAP only: /#/product/7 is tabbed through in reading order @/#/product/7
+  - failing in CAP only: /#/product/8 groups its checkboxes and radio buttons @/#/product/8
+  - failing in CAP only: /#/product/8 is tabbed through in reading order @/#/product/8
+  - failing in CAP only: /#/product/9 groups its checkboxes and radio buttons @/#/product/9
+  - failing in CAP only: /#/product/9 is tabbed through in reading order @/#/product/9
+  - failing in CAP only: /#/product/10 groups its checkboxes and radio buttons @/#/product/10
+  - failing in CAP only: /#/product/10 is tabbed through in reading order @/#/product/10
+  - failing in CAP only: /#/product/11 groups its checkboxes and radio buttons @/#/product/11
+  - failing in CAP only: /#/product/11 is tabbed through in reading order @/#/product/11
+  - failing in CAP only: /#/product/12 groups its checkboxes and radio buttons @/#/product/12
+  - failing in CAP only: /#/product/12 is tabbed through in reading order @/#/product/12
+  - failing in CAP only: /#/product/1 groups its checkboxes and radio buttons @/#/product/1
+  - failing in CAP only: /#/product/1 is tabbed through in reading order @/#/product/1
+  - failing in CAP only: /#/product/2 groups its checkboxes and radio buttons @/#/product/2
+  - failing in CAP only: /#/product/2 is tabbed through in reading order @/#/product/2
+  - failing in CAP only: /#/product/3 groups its checkboxes and radio buttons @/#/product/3
+  - failing in CAP only: /#/product/3 is tabbed through in reading order @/#/product/3
+  - failing in CAP only: /#/category/hand-tools is tabbed through in reading order @/#/category/hand-tools
+  - failing in CAP only: /#/category/power-tools is tabbed through in reading order @/#/category/power-tools
+  - failing in CAP only: /#/category/undefined is tabbed through in reading order @/#/category/undefined
+  - failing in CAP only: /#/auth/register groups its checkboxes and radio buttons @/#/auth/register
+  - failing in CAP only: every form field has an accessible name: /#/auth/register @/#/auth/register
+  - failing in CAP only: /#/contact groups its checkboxes and radio buttons @/#/contact
+  - failing in CAP only: every form field has an accessible name: /#/contact @/#/contact
+  - failing in CAP only: /#/auth/login groups its checkboxes and radio buttons @/#/auth/login
+  - failing in CAP only: every form field has an accessible name: /#/auth/login @/#/auth/login
+  - failing in CAP only: /#/auth/forgot-password groups its checkboxes and radio buttons @/#/auth/forgot-password
+  - failing in CAP only: every form field has an accessible name: /#/auth/forgot-password @/#/auth/forgot-password
+  - failing in CAP only: /#/auth/forgot-password is tabbed through in reading order @/#/auth/forgot-password
+  - failing in CAP only: /#/chainsaws groups its checkboxes and radio buttons @/#/chainsaws
+  - failing in CAP only: /#/rentals groups its checkboxes and radio buttons @/#/rentals
+  - status in CAP only: /#/ is tabbed through in reading order @/#/ => Failed
+  - status in CAP only: /#/product/6 groups its checkboxes and radio buttons @/#/product/6 => Failed
+  - status in CAP only: /#/product/6 is tabbed through in reading order @/#/product/6 => Failed
+  - status in CAP only: /#/product/7 groups its checkboxes and radio buttons @/#/product/7 => Failed
+  - status in CAP only: /#/product/7 is tabbed through in reading order @/#/product/7 => Failed
+  - status in CAP only: /#/product/8 groups its checkboxes and radio buttons @/#/product/8 => Failed
+  - status in CAP only: /#/product/8 is tabbed through in reading order @/#/product/8 => Failed
+  - status in CAP only: /#/product/9 groups its checkboxes and radio buttons @/#/product/9 => Failed
+  - status in CAP only: /#/product/9 is tabbed through in reading order @/#/product/9 => Failed
+  - status in CAP only: /#/product/10 groups its checkboxes and radio buttons @/#/product/10 => Failed
+  - status in CAP only: /#/product/10 is tabbed through in reading order @/#/product/10 => Failed
+  - status in CAP only: /#/product/11 groups its checkboxes and radio buttons @/#/product/11 => Failed
+  - status in CAP only: /#/product/11 is tabbed through in reading order @/#/product/11 => Failed
+  - status in CAP only: /#/product/12 groups its checkboxes and radio buttons @/#/product/12 => Failed
+  - status in CAP only: /#/product/12 is tabbed through in reading order @/#/product/12 => Failed
+  - status in CAP only: /#/product/1 groups its checkboxes and radio buttons @/#/product/1 => Failed
+  - status in CAP only: /#/product/1 is tabbed through in reading order @/#/product/1 => Failed
+  - status in CAP only: /#/product/2 groups its checkboxes and radio buttons @/#/product/2 => Failed
+  - status in CAP only: /#/product/2 is tabbed through in reading order @/#/product/2 => Failed
+  - status in CAP only: /#/product/3 groups its checkboxes and radio buttons @/#/product/3 => Failed
+  - status in W1 only: /#/ is tabbed through in reading order @/#/ => Not run
+  - status in W1 only: /#/product/6 groups its checkboxes and radio buttons @/#/product/6 => Not run
+  - status in W1 only: /#/product/6 is tabbed through in reading order @/#/product/6 => Not run
+  - status in W1 only: /#/product/7 groups its checkboxes and radio buttons @/#/product/7 => Not run
+  - status in W1 only: /#/product/7 is tabbed through in reading order @/#/product/7 => Not run
+  - status in W1 only: /#/product/8 groups its checkboxes and radio buttons @/#/product/8 => Not run
+  - status in W1 only: /#/product/8 is tabbed through in reading order @/#/product/8 => Not run
+  - status in W1 only: /#/product/9 groups its checkboxes and radio buttons @/#/product/9 => Not run
+  - status in W1 only: /#/product/9 is tabbed through in reading order @/#/product/9 => Not run
+  - status in W1 only: /#/product/10 groups its checkboxes and radio buttons @/#/product/10 => Not run
+  - status in W1 only: /#/product/10 is tabbed through in reading order @/#/product/10 => Not run
+  - status in W1 only: /#/product/11 groups its checkboxes and radio buttons @/#/product/11 => Not run
+  - status in W1 only: /#/product/11 is tabbed through in reading order @/#/product/11 => Not run
+  - status in W1 only: /#/product/12 groups its checkboxes and radio buttons @/#/product/12 => Not run
+  - status in W1 only: /#/product/12 is tabbed through in reading order @/#/product/12 => Not run
+  - status in W1 only: /#/product/1 groups its checkboxes and radio buttons @/#/product/1 => Not run
+  - status in W1 only: /#/product/1 is tabbed through in reading order @/#/product/1 => Not run
+  - status in W1 only: /#/product/2 groups its checkboxes and radio buttons @/#/product/2 => Not run
+  - status in W1 only: /#/product/2 is tabbed through in reading order @/#/product/2 => Not run
+  - status in W1 only: /#/product/3 groups its checkboxes and radio buttons @/#/product/3 => Not run
+  - finding in W1 only: every form field has an accessible name: /#/auth/register @/#/auth/register | form field named only by its placeholder on /#/auth/register, which disappears as the user types: #password ("Your password *")
+  - finding in W1 only: every form field has an accessible name: /#/auth/login @/#/auth/login | form field named only by its placeholder on /#/auth/login, which disappears as the user types: #email ("Your E-mail *")
+  - finding in W1 only: every form field has an accessible name: /#/auth/login @/#/auth/login | form field named only by its placeholder on /#/auth/login, which disappears as the user types: #password ("Your password *")
+  - finding in W1 only: every form field has an accessible name: /#/auth/forgot-password @/#/auth/forgot-password | form field named only by its placeholder on /#/auth/forgot-password, which disappears as the user types: #email ("Your E-mail *")
+  - CAP run 1 timed out: TFAC-004: /#/ groups its checkboxes and radio buttons @/#/
+  - CAP run 1 timed out: TFAC-003: /#/ is tabbed through in reading order @/#/
+  - CAP run 1 timed out: TFAC-001: /#/ passes the WCAG 2.2 A and AA scan @/#/
+  - CAP run 1 timed out: TFAC-008: /#/product/6 groups its checkboxes and radio buttons @/#/product/6
+  - CAP run 1 timed out: TFAC-006: every form field has an accessible name: /#/product/6 @/#/product/6
+  - CAP run 1 timed out: TFAC-007: /#/product/6 is tabbed through in reading order @/#/product/6
+  - CAP run 1 timed out: TFAC-005: /#/product/6 passes the WCAG 2.2 A and AA scan @/#/product/6
+  - CAP run 1 timed out: TFAC-012: /#/product/7 groups its checkboxes and radio buttons @/#/product/7
+  - CAP run 1 timed out: TFAC-010: every form field has an accessible name: /#/product/7 @/#/product/7
+  - CAP run 1 timed out: TFAC-011: /#/product/7 is tabbed through in reading order @/#/product/7
+  - CAP run 1 timed out: TFAC-009: /#/product/7 passes the WCAG 2.2 A and AA scan @/#/product/7
+  - CAP run 1 timed out: TFAC-016: /#/product/8 groups its checkboxes and radio buttons @/#/product/8
+  - CAP run 1 timed out: TFAC-014: every form field has an accessible name: /#/product/8 @/#/product/8
+  - CAP run 1 timed out: TFAC-015: /#/product/8 is tabbed through in reading order @/#/product/8
+  - CAP run 1 timed out: TFAC-013: /#/product/8 passes the WCAG 2.2 A and AA scan @/#/product/8
+  - CAP run 1 timed out: TFAC-020: /#/product/9 groups its checkboxes and radio buttons @/#/product/9
+  - CAP run 1 timed out: TFAC-018: every form field has an accessible name: /#/product/9 @/#/product/9
+  - CAP run 1 timed out: TFAC-019: /#/product/9 is tabbed through in reading order @/#/product/9
+  - CAP run 1 timed out: TFAC-017: /#/product/9 passes the WCAG 2.2 A and AA scan @/#/product/9
+  - CAP run 1 timed out: TFAC-024: /#/product/10 groups its checkboxes and radio buttons @/#/product/10
+  - CAP run 1 timed out: TFAC-022: every form field has an accessible name: /#/product/10 @/#/product/10
+  - CAP run 1 timed out: TFAC-023: /#/product/10 is tabbed through in reading order @/#/product/10
+  - CAP run 1 timed out: TFAC-021: /#/product/10 passes the WCAG 2.2 A and AA scan @/#/product/10
+  - CAP run 1 timed out: TFAC-028: /#/product/11 groups its checkboxes and radio buttons @/#/product/11
+  - CAP run 1 timed out: TFAC-026: every form field has an accessible name: /#/product/11 @/#/product/11
+  - CAP run 1 timed out: TFAC-027: /#/product/11 is tabbed through in reading order @/#/product/11
+  - CAP run 1 timed out: TFAC-025: /#/product/11 passes the WCAG 2.2 A and AA scan @/#/product/11
+  - CAP run 1 timed out: TFAC-032: /#/product/12 groups its checkboxes and radio buttons @/#/product/12
+  - CAP run 1 timed out: TFAC-030: every form field has an accessible name: /#/product/12 @/#/product/12
+  - CAP run 1 timed out: TFAC-031: /#/product/12 is tabbed through in reading order @/#/product/12
+  - CAP run 1 timed out: TFAC-029: /#/product/12 passes the WCAG 2.2 A and AA scan @/#/product/12
+  - CAP run 1 timed out: TFAC-036: /#/product/1 groups its checkboxes and radio buttons @/#/product/1
+  - CAP run 1 timed out: TFAC-034: every form field has an accessible name: /#/product/1 @/#/product/1
+  - CAP run 1 timed out: TFAC-035: /#/product/1 is tabbed through in reading order @/#/product/1
+  - CAP run 1 timed out: TFAC-033: /#/product/1 passes the WCAG 2.2 A and AA scan @/#/product/1
+  - CAP run 1 timed out: TFAC-040: /#/product/2 groups its checkboxes and radio buttons @/#/product/2
+  - CAP run 1 timed out: TFAC-038: every form field has an accessible name: /#/product/2 @/#/product/2
+  - CAP run 1 timed out: TFAC-039: /#/product/2 is tabbed through in reading order @/#/product/2
+  - CAP run 1 timed out: TFAC-037: /#/product/2 passes the WCAG 2.2 A and AA scan @/#/product/2
+  - CAP run 1 timed out: TFAC-044: /#/product/3 groups its checkboxes and radio buttons @/#/product/3
+  - CAP run 1 timed out: TFAC-042: every form field has an accessible name: /#/product/3 @/#/product/3
+  - CAP run 1 timed out: TFAC-043: /#/product/3 is tabbed through in reading order @/#/product/3
+  - CAP run 1 timed out: TFAC-041: /#/product/3 passes the WCAG 2.2 A and AA scan @/#/product/3
+  - CAP run 1 timed out: TFAC-048: /#/category/hand-tools groups its checkboxes and radio buttons @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-046: every form field has an accessible name: /#/category/hand-tools @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-047: /#/category/hand-tools is tabbed through in reading order @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-045: /#/category/hand-tools passes the WCAG 2.2 A and AA scan @/#/category/hand-tools
+  - CAP run 1 timed out: TFAC-052: /#/category/power-tools groups its checkboxes and radio buttons @/#/category/power-tools
+  - CAP run 1 timed out: TFAC-050: every form field has an accessible name: /#/category/power-tools @/#/category/power-tools
+  - CAP run 1 timed out: TFAC-051: /#/category/power-tools is tabbed through in reading order @/#/category/power-tools
+  - CAP run 1 timed out: TFAC-049: /#/category/power-tools passes the WCAG 2.2 A and AA scan @/#/category/power-tools
+  - CAP run 1 timed out: TFAC-056: /#/category/undefined groups its checkboxes and radio buttons @/#/category/undefined
+  - CAP run 1 timed out: TFAC-054: every form field has an accessible name: /#/category/undefined @/#/category/undefined
+  - CAP run 1 timed out: TFAC-055: /#/category/undefined is tabbed through in reading order @/#/category/undefined
+  - CAP run 1 timed out: TFAC-053: /#/category/undefined passes the WCAG 2.2 A and AA scan @/#/category/undefined
+  - CAP run 1 timed out: TFAC-060: /#/auth/register groups its checkboxes and radio buttons @/#/auth/register
+  - CAP run 1 timed out: TFAC-058: every form field has an accessible name: /#/auth/register @/#/auth/register
+  - CAP run 1 timed out: TFAC-059: /#/auth/register is tabbed through in reading order @/#/auth/register
+  - CAP run 1 timed out: TFAC-057: /#/auth/register passes the WCAG 2.2 A and AA scan @/#/auth/register
+  - CAP run 1 timed out: TFAC-064: /#/contact groups its checkboxes and radio buttons @/#/contact
+  - CAP run 1 timed out: TFAC-062: every form field has an accessible name: /#/contact @/#/contact
+  - CAP run 1 timed out: TFAC-063: /#/contact is tabbed through in reading order @/#/contact
+  - CAP run 1 timed out: TFAC-061: /#/contact passes the WCAG 2.2 A and AA scan @/#/contact
+  - CAP run 1 timed out: TFAC-068: /#/auth/login groups its checkboxes and radio buttons @/#/auth/login
+  - CAP run 1 timed out: TFAC-066: every form field has an accessible name: /#/auth/login @/#/auth/login
+  - CAP run 1 timed out: TFAC-067: /#/auth/login is tabbed through in reading order @/#/auth/login
+  - CAP run 1 timed out: TFAC-065: /#/auth/login passes the WCAG 2.2 A and AA scan @/#/auth/login
+  - CAP run 1 timed out: TFAC-072: /#/auth/forgot-password groups its checkboxes and radio buttons @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-070: every form field has an accessible name: /#/auth/forgot-password @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-071: /#/auth/forgot-password is tabbed through in reading order @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-069: /#/auth/forgot-password passes the WCAG 2.2 A and AA scan @/#/auth/forgot-password
+  - CAP run 1 timed out: TFAC-076: /#/chainsaws groups its checkboxes and radio buttons @/#/chainsaws
+  - CAP run 1 timed out: TFAC-080: /#/rentals groups its checkboxes and radio buttons @/#/rentals
+
