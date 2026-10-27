@@ -32,6 +32,21 @@ commit (`git rm`); its history is in git and in the backlog.
 
 ## Do, in order
 
+0000. **(Added 2026-10-27, 15:30) Planning pass 3, docs only, one `docs`
+      commit, any time before or after tonight's run:** TFP-250's
+      verification note and the two owner decisions (helper lines;
+      versioning rule) in the backlog, and the new `CHANGELOG.md`.
+      **After Gate D's re-measurement is analysed** (it changes generated
+      output, so not before):
+      - TFP-250's follow-up: reword `src/lib/generate/mock/controls.ts`
+        lines 245 and 282 to their decision references, re-record
+        `TEMPLATE_BASELINE` in `nightly.yml` in its own commit, with
+        `check:template-unchanged` showing only those lines changed;
+      - TFP-257: version and commit in `/api/health`, `run.json` and the
+        report footer; then tag `v0.1.0` and make its GitHub release from
+        the changelog entry — **confirmation required before the tag is
+        pushed**.
+
 000. **(Added 2026-10-27, 13:30) Commit Phase 47's lock as one `docs`
      commit:** `docs/decisions/phase-47-ci-integration-decision-record.md`
      (new, locked), the dated amendment in the Phase 16 record, D31–D35 and

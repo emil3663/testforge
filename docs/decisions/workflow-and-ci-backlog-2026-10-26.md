@@ -263,12 +263,43 @@ another session took any of them.
 
 ### TFP-250 - Replace names used as permissions with the decision vocabulary
 
-- **Status:** Built 2026-10-27 (`1a4f18b`, `6d82c2e`, `18d1e1c`); not yet
-  independently verified. Its fresh-context review caught one reworded line
-  inside generated-suite helper code that `check:template-unchanged` misses
-  (TFP-258). Left for an owner decision: two helper-template lines
-  (`controls.ts:245`, `:282`) still carry a name, and changing them moves
-  the template baseline.
+- **Status:** Built 2026-10-27 (`1a4f18b`, `6d82c2e`, `18d1e1c`).
+  **Independently verified 2026-10-27 (Cowork, read-only, on a fresh clone
+  at `82421c9`):**
+  - *Remaining names:* in `src`, `README.md`, `docs/QUALITY_GATES.md`,
+    `CLAUDE.md` and `TEST_PLAN.md`, only the seven test-fixture values and
+    the two helper-template lines are left, each listed in a commit body —
+    **met**;
+  - *No SKILL.md heading names a person:* none; 10 sections now read "How to
+    invoke this skill"; remaining names in `skills/` are credit lines —
+    **met**;
+  - *Comments only:* all 51 changed `.ts` files compile to identical output
+    with comments stripped (TypeScript `transpileModule`,
+    `removeComments`), `1906d52` → `18d1e1c`. Template strings aren't
+    comments, so this also covers helper code no fixed input reaches
+    (TFP-258's blind spot) — **met**;
+  - *Template output:* `check:template-unchanged 1906d52 18d1e1c`: 166
+    inputs, 166 identical, 0 different — **met**;
+  - *Unit suite unchanged:* not re-run here; with no code change it can't
+    differ. The builder's run: 604 of 604 — **met by equivalence**;
+  - *Plugin loads:* `plugin.json` parses and all 12 SKILL.md frontmatters
+    are valid here; the load itself was shown by the builder on CLI
+    2.1.311 (12 skills listed, two invoked) — **met, load checked by the
+    builder only**;
+  - *Scope:* nothing under `benchmarks/` or `docs/decisions/` changed.
+  - *Judgement call ruled on:* provenance became "owner decision, <date>"
+    beside the ticket or decision reference already there, rather than the
+    reference alone. Accepted: it keeps the date, which the reference
+    alone doesn't carry.
+  **Owner decision, 2026-10-27:** `controls.ts:245` and `:282`, which still
+  name a person inside helper code written into every generated suite (and,
+  with Phase 47, into other teams' repos), are reworded to their decision
+  references, and the template baseline (`TEMPLATE_BASELINE` in
+  `nightly.yml`) is re-recorded in its own commit. After Gate D's
+  re-measurement is analysed, not before: it changes generated output.
+  The builder's own fresh-context review had caught `:245` reworded and put
+  it back (`18d1e1c`); the template check's blind spot for helpers no fixed
+  input reaches is TFP-258.
 
 - **Phase:** None (between tickets)
 - **Priority:** P1
@@ -602,11 +633,13 @@ decisions index, the contribution rules, the version and release notes.
   start, and the repo has no tags, so "which TestForge found this?" has no
   answer, and a CI user has nothing to pin.
 - **What it takes:**
-  1. **The rule (owner decision).** Proposed: semantic versioning, staying
+  1. **The rule (owner decision, 2026-10-27):** semantic versioning, staying
      below 1.0 while the report format can still change; the minor version
      goes up when a phase completes (Phase 39 → `0.2.0`), the patch for fixes
      between phases; 1.0 when the report and CLI are declared stable
-     (after Phase 47).
+     (after Phase 47). Rejected: 1.0.0 now (every report-format change
+     would become a major version); date-based versions (say nothing about
+     compatibility to a CI user pinning one).
   2. **One source of truth:** `package.json`'s `version`.
   3. **The product says its version:** `/api/health`, every run's
      `run.json` and the report footer carry the version and the commit,
@@ -616,7 +649,11 @@ decisions index, the contribution rules, the version and release notes.
      subjects. The first entry, `0.1.0`, summarises Phases 16–38 in a few
      lines and links the index.
   5. **Tags and releases:** an annotated tag `v0.1.0` on the commit that
-     starts versioning, and `v0.2.0` when Phase 39 completes; a GitHub
+     starts versioning, and `v0.2.0` when Phase 39 completes;
+     **`CHANGELOG.md` drafted 2026-10-27** (planning pass): `0.1.0` covers
+     everything complete so far — Phases 16–38 and 40–42, the post-Phase 42
+     review and TFP-261 — not "16–38" as first proposed, because 40–42
+     finished before 39; Phase 39's built work is listed under Unreleased; a GitHub
      release per tag with the changelog entry. Tags are pushed by Claude
      Code; creating the first one is confirmation required.
   6. **Later, with TFP-247:** a release workflow that builds the image
