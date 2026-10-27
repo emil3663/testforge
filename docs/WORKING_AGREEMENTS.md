@@ -115,7 +115,9 @@ These follow from the Claude Code team's current guidance (Boris Cherny's
 and Cat Wu's practices, 2026) where they fit how TestForge is built.
 
 **Auto mode for ticket implementation.** Auto mode is Claude Code's
-starting permission mode from v2.1.283: a separate classifier reviews
+starting permission mode, when no `permissions.defaultMode` is set, from
+v2.1.284 in the terminal and VS Code (v2.1.283 only on third-party
+providers or with telemetry off): a separate classifier reviews
 actions and blocks risky ones instead of prompting for each. A locked
 ticket already has its plan — the decision record — so the implementing
 session goes straight to building; plan mode is for work that isn't
