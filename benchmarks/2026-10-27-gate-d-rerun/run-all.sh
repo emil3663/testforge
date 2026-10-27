@@ -53,8 +53,17 @@ machine() {
     powershell -NoProfile -Command "\$os = Get-CimInstance Win32_OperatingSystem; 'free GB {0:N1} of {1:N1}' -f (\$os.FreePhysicalMemory/1MB), (\$os.TotalVisibleMemorySize/1MB)"
     echo "--- docker"
     docker ps --format '{{.Names}} {{.Status}}'
+    echo "--- noise"
+    noise
+}
+# Background load the session can't subtract (2026-10-27: 7 msedge processes all session; 15 tail | grep pipelines left
+# by Gate D's Monitors still running six days later). Lists each with its PID and start time; a monitor armed for this
+# session shows here too, so the reader judges which are leftovers.
+noise() {
+    powershell -NoProfile -Command "\$p = Get-CimInstance Win32_Process; \$e = @(\$p | Where-Object Name -eq 'msedge.exe'); \$m = @(\$p | Where-Object { \$_.Name -in 'grep.exe','tail.exe' -or (\$_.Name -eq 'bash.exe' -and \$_.CommandLine -match 'watch|monitor') }); if (\$e.Count) { 'WARNING: {0} msedge processes running (turn off Startup boost and background apps)' -f \$e.Count }; if (\$m.Count) { 'WARNING: {0} grep/tail/monitor processes running (kill leftovers by PID before measuring):' -f \$m.Count; \$m | Sort-Object CreationDate | ForEach-Object { '  {0} {1} {2:yyyy-MM-dd HH:mm:ss} {3}' -f \$_.ProcessId, \$_.Name, \$_.CreationDate, \$_.CommandLine } }; if (-not (\$e.Count + \$m.Count)) { 'none' }"
 }
 machine "at start" > "$L/machine-at-start.txt" 2>&1
+grep '^WARNING' "$L/machine-at-start.txt" >&2
 if [ "$DRY" != 1 ]; then
     docker ps --filter name=testforge-plane- --format '{{.Names}}' > "$L/plane-stopped.txt"
     [ -s "$L/plane-stopped.txt" ] && docker stop $(cat "$L/plane-stopped.txt") >> "$L/plane.log" 2>&1
