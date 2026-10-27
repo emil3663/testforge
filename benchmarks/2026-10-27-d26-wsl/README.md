@@ -4,7 +4,8 @@ Phase 39's Gate D ruling 3 (2026-10-26) moved D26 into Phase 39, before Gate D's
 move into WSL's Linux filesystem, with the proof that only speed changed (failure sets, score, bug 80).
 
 **Result: the same on both copies.** All six suites, test by test: 0 results unlike every Gate D round. The answer
-key's bugs: 0 verdicts changed, bug 80 included. The starts went from 20 to 25 minutes (first) and 14 to 18
+key's bugs: 0 verdicts changed, bug 80 included; scored with TFP-154's rule, 33 found, 0 hinted, 4 missed, as
+Gate D's W1 rounds and TFP-188. The starts went from 20 to 25 minutes (first) and 14 to 18
 minutes (with-bugs, later: 863 to 1,070 s at Gates B to D) to under 70 s. `comparison.txt` is `compare.mjs`'s output.
 
 ## The move
@@ -83,11 +84,65 @@ items differ is bug 4 (card titles with another
 `text-align`): with-bugs misaligns different titles on each load, so Gate D's own rounds listed 5, 3 and 4 items; WSL
 lists 3. `compare.mjs` shows them and counts only verdicts for a bug that already varied.
 
-**What "the score is unchanged" rests on.** TFP-188's score is read by hand under TFP-154's rule from this evidence;
-`compare.mjs` doesn't score. It checks that no bug went from evidence in every Gate D round to none, or the reverse,
+**What the mechanical check covers.** TFP-188's score is read by hand under TFP-154's rule from this evidence (the
+score, below); `compare.mjs` doesn't score. It checks that no bug went from evidence in every Gate D round to none, or the reverse,
 and that on bugs whose evidence was steady at Gate D no item appeared or went. A bug whose evidence was kept would
 score as before; a reader re-scoring bug 4's three items (card titles misaligned on hand-tools) would find it as
 Gate D's rounds did.
+
+## The score (TFP-154's rule, 2026-10-27, after verification)
+
+TFP-154's committed rule (`../2026-10-06-toolshop-known-bugs/scoring-rule.md`), as TFP-188 applied it: a bug is
+**found** when a with-bugs failure or finding names its page and cause; **hinted** when one touches it without naming
+the cause; an item the clean copy has too, with the same check and cause, is not a find. The clean copy is the
+control, so the score is with-bugs', read against clean. Read from `evidence.mjs`'s output on the WSL run, and on
+Gate D's W1 round 1; Gate D's rounds 2 and 3 hold the same items per bug but bugs 2 and 4 (`compare.mjs`), whose
+items name the same page and cause in every round. No item in either is marked "ALSO ON CLEAN".
+
+| ID | Bug | TFP-188 | Gate D W1 (rounds 1 to 3) | D26, WSL | Evidence (WSL) |
+| --- | --- | --- | --- | --- | --- |
+| 2 | Category sort order reversed | found | found | found | sort check, home and hand-tools: `"Name (A - Z)" ... puts "Wood Saw" before "Thor Hammer"` |
+| 3 | "Chainsaw" link to a missing page | found | found | found | link health: `/#/chainsaws (draws the same as ..., a route that cannot exist)` |
+| 4 | Product names right-aligned (category) | found | found | found | hand-tools card titles: `"Combination Pliers" has text-align left, where the other 6 have right` (and 2 more; random per load) |
+| 19 | Login email padding | found | found | found | `the fields of a form on /#/auth/login differ in padding-left` |
+| 22 | Forgot-password button font | missed | missed | missed | no item (Edge only) |
+| 23 | Forgot-password email padding | missed | missed | missed | no item (Firefox only) |
+| 26 | Home product images don't show | found | found | found | `"Slip Joint Pliers" has its image hidden, where the other 8 show theirs` |
+| 27 | Price filter doesn't send its maximum | found | found | found | `moving the "ngx-slider-max" slider ... from 100 to 99 sent ... which does not carry 99` |
+| 28 | Header logo a broken image | found | found | found | `images on ... that loaded but can't be shown: broken.png`, every page |
+| 29 | "Home" link points to contact | found | found | found | `"Home" on /#/ leads to /contact` |
+| 30 | Search icon a broken image | found | found | found | `images on /#/ ...: broken.png, broken.png` |
+| 31 | "Contact" misspelt | found | found | found | `"Contakt" ... did you mean "Contact"?`, every page |
+| 33 | "Sort" label misspelt | found | found | found | `"Sorth" in the heading "Sorth"` |
+| 34 | "Search" button misspelt | found | found | found | `"Serch" in the button "Serch"` |
+| 40 | Quantity +/- don't change it | found | found | found | `"+" beside "quantity" left it at 1` |
+| 42 | "Related products" misspelt | found | found | found | `"Reltded" in the heading "Reltded products"` |
+| 45 | Product buttons overlap | found | found | found | `"Add to cart" and "Add to favourites" overlap by 50 x 38 px` |
+| 46 | Product badge text black | found | found | found | axe `color-contrast`, product pages |
+| 49 | Rentals title centred | missed | missed | missed | no item (rentals isn't in Standard's selection) |
+| 53 | Registration tab order | found | found | found | `positive tabindex on /#/auth/register` |
+| 54 | Registration phone placeholder misspelt | missed | missed | missed | only 53's tab-order message, which names the "Phone" field, not a misspelling (absent in this version) |
+| 58 | Registration button width | found | found | found | `submit .btnSubmit differs across pages in share of its container's width` |
+| 59 | Registration dropdown fonts | found | found | found | `"Austria" has font-size 13.3333px, where the other 247 have 16px` |
+| 60 | Contact subject list error entries | found | found | found | `the "Subject" list on /#/contact offers "Error 101: Subject not found"` |
+| 62 | Contact message placeholder misspelt | found | found | found | `"Massage" in the placeholder` |
+| 63 | Contact attachment label font | found | found | found | `"Attachment" has font-family "Comic Sans"` |
+| 66 | Contact button width | found | found | found | as 58 |
+| 67 | Contact dropdown fonts | found | found | found | `"Return" has font-size 13.3333px` |
+| 75 | Products API exposes stock | found | found | found | security: `GET .../products returns "stock"`, 23 items |
+| 80 | Log file reachable from the web | found | found | found | security: `http://localhost:8091/logs/laravel.log answers 200 with its contents` |
+| 82 | Sequential, guessable ids | found | found | found | security: `/#/product/:id ... uses sequential integer ids` |
+| 85 | Link contrast below 4.5:1 | found | found | found | axe `color-contrast` on the footer `a[target="_blank"]`, every page |
+| 87 | Login fields have no labels | found | found | found | `form field named only by its placeholder on /#/auth/login`: `#email`, `#password` |
+| 91 | Quantity field has no label | found | found | found | `form fields on /#/product/6 with no accessible name: input[type="number"]` |
+| 92 | Product images have no alt | found | found | found | axe `image-alt` on the product cards' `.card-img-top` |
+| 93 | Home search form has no label | found | found | found | `form fields on /#/ with no accessible name: select, input[type="text"]` |
+| 94 | Home filters not in a fieldset | found | found | found | `10 checkboxes sharing the name "category_id" ... are not in a fieldset` |
+
+**Counts: found 33, hinted 0, missed 4, on both Gate D's W1 rounds and the WSL run, the same as TFP-188.** The 4
+missed are TFP-188's: 22 and 23 aren't visible in Chromium, 54 isn't in this version, 49 isn't on a selected page.
+
+## The run times
 
 **The times are not the new baseline.** One round, on a machine in use (Plane running, VS Code, Claude), not Gate D's
 quiet one; they are lower on every suite (Standard: with-bugs 17.7%, clean 18.1% below Gate D's medians), the
