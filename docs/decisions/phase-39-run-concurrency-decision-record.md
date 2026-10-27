@@ -874,3 +874,22 @@ sharing 5 requests per second). Medians of three; the capped run once.
 6. **TFFU-108** varies between runs on with-bugs, whatever the worker
    count. Recorded with the varying tests (Decision 7's method), not a
    defect of Phase 39.
+
+**Progress:**
+- **Ruling 1:** fixed in `66cd0c0`, verified (Cowork), pushed.
+- **Ruling 3, built 2026-10-27, awaiting verification**
+  (`benchmarks/2026-10-27-d26-wsl/README.md`). Both copies run from
+  `~/practice-software-testing` in Ubuntu under WSL.
+  - **The proof:** one W1 round of all three suites on each copy, test by
+    test against Gate D's three W1 rounds: 0 results unlike every round,
+    and 0 answer-key verdicts changed, bug 80 included. Clean was crawled
+    and generated afresh, as it reseeds its product ids on every start.
+  - **Starts:** first 65 s (with-bugs) and 51 s (clean), from 20 to 25
+    minutes; later 38 to 49 s (with-bugs) and 46 s (clean), from 863 to
+    1,070 s and 381 to 391 s at Gates B to D.
+  - **A workaround the move needed:** the API's storage goes to php-fpm's
+    user once composer has exited, for both copies, as a Linux filesystem
+    enforces composer's uid-82 `chown` (the API answered 500
+    without it). The composer reinstall without its timeout is removed.
+  - **The times aren't the baseline:** one round, on a machine in use.
+    Ruling 4's session takes it.

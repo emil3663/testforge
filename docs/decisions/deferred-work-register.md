@@ -27,6 +27,10 @@ with TFP-222 before Phase 39's TFP-155.
    - The README's start timings are corrected.
    - Failure sets and score are proven unchanged, and the run times
      become the new baseline.
+   - **Moved into Phase 39** by Gate D's ruling 3 (2026-10-26); **built
+     2026-10-27, awaiting verification**
+     (`benchmarks/2026-10-27-d26-wsl/`). The run-time baseline comes from
+     Gate D's re-measurement.
 2. **Phase 43 (D8): the ownership confirmation, once per site.**
    - Saved with the site: exact hosts, contact email, 90-day expiry,
      active and load ticks.
@@ -182,7 +186,7 @@ Statuses:
 
 | # | Item | Source | Emil (2026-10-19) | Status | Order | Waits on |
 | --- | --- | --- | --- | --- | --- | --- |
-| D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Planned** | Straight after Phase 39, before Phase 43 | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
+| D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Built 2026-10-27, awaiting verification** (`benchmarks/2026-10-27-d26-wsl/`) | Moved into Phase 39 by Gate D's ruling 3 (2026-10-26), before the re-measurement | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
 | D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
 | D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
 | D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
@@ -347,7 +351,7 @@ the tester's machine.
 
 **D26, moving the local copies into WSL.**
 
-*Why.* Testsmith's checkout sits in a Windows folder
+*Why* (as it stood before D26 was built, 2026-10-27). Testsmith's checkout sits in a Windows folder
 (`..\practice-software-testing`) mounted into Docker. Every file operation
 crosses from Windows into Docker's Linux. The slow steps on each start are:
 - Testsmith's `composer` service, with `composer install` and then

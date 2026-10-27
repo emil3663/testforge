@@ -138,7 +138,8 @@ Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
 In order (`product-roadmap.md`, `deferred-work-register.md`):
 
 - **Now:** Phase 39, run speed — Gates A–D measured; TFP-157's slot-server
-  fix verified and pushed (`66cd0c0`); D26 and Gate D's re-measurement next.
+  fix verified and pushed (`66cd0c0`); D26 (the Toolshop copies in WSL)
+  built, awaiting verification; Gate D's re-measurement next.
 - **Next:** Phase 43 ownership confirmation; then the remaining Standard
   sets (SEO, the WAI-ARIA APG patterns, the rest of accessibility and
   security); Comprehensive negative tests and SEO; all-areas runs; load
