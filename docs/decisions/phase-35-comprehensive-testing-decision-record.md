@@ -5,7 +5,7 @@ Scope: Add a "Comprehensive" run for one chosen area beside today's
 "Standard" run, and build its first two areas: passive (read-only) security
 and an automated WCAG scan for accessibility. The local model's
 site-specific scenarios are shown, labelled, but kept out of the verdict.
-Status: Approved (Emil, 2026-09-30).
+Status: First slice built and verified 2026-10-01 (Gate B); the later areas are in the deferred-work register. Approved (Emil, 2026-09-30).
 
 ## Context
 

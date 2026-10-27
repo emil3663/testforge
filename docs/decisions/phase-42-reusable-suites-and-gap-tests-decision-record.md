@@ -7,7 +7,7 @@ patterns, applied to any site that has the pattern; map which element and
 flow every test covers; and write new tests only for what the map shows is
 uncovered, so analysis time goes to the outliers instead of the standard
 things.
-Status: Locked 2026-10-12. Every decision confirmed by Emil the same day.
+Status: Complete 2026-10-15 (locked 2026-10-12; every decision confirmed by Emil the same day).
 Starts after Phase 41's Gate B. Tickets TFP-190 to TFP-197, plus TFP-200 and TFP-201 from Gate A.
 **Complete 2026-10-15** (TFP-205 verified; TFP-206 moves to the post-Phase 42 review).
 Corrections from the review's claims audit (R3, 2026-10-16) are marked

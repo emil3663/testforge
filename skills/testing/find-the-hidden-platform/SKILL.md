@@ -30,7 +30,7 @@ of what the tests that do run assert.
 
 ## The gap this closes
 
-`test-assist`'s TA-230 ([`docs/TA-230.md`](../../../docs/TA-230.md)) is the
+`test-assist`'s TA-230 ([`TA-230.md`](TA-230.md), beside this skill) is the
 concrete case. `FloatingLauncher`'s `register_global_hotkeys` parameter
 defaults to `False`, for a sound reason — the `True` path claims real,
 process-wide OS state (`RegisterHotKey`) that concurrent tests would fight
@@ -173,10 +173,10 @@ test defaults away from.
 
 ## Provenance
 find-the-hidden-platform audit (worked example), applying TA-230's own
-findings (docs/TA-230.md) to its own subject rather than a new codebase.
+findings (TA-230.md, beside this skill) to its own subject rather than a new codebase.
 Not measured here: whether this specific flag's mitigations (coverage for
 the widget-existence check, a cross-platform-safe attribute scan) have
-landed on the default branch at the time this audit runs — check docs/TA-230.md's
+landed on the default branch at the time this audit runs — check TA-230.md's
 own closing note for the latest status.
 ```
 

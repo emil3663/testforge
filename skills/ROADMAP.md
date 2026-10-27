@@ -65,7 +65,7 @@ including a suite that stayed green while the app died on startup.
 
 Built as [`skills/testing/find-the-hidden-platform/SKILL.md`](testing/find-the-hidden-platform/SKILL.md)
 by TFP-045, from a full extraction of TA-230 into
-[`docs/TA-230.md`](../docs/TA-230.md). States explicitly, in its own text,
+[`testing/find-the-hidden-platform/TA-230.md`](testing/find-the-hidden-platform/TA-230.md) (moved there from `docs/` by TFP-255). States explicitly, in its own text,
 that this is ISTQB's structural (white-box) testing category — code
 coverage of unreached paths — rather than leaving the connection implicit.
 
