@@ -976,3 +976,15 @@ planning pass (Cowork), and they match.
      reason. The budget is 60 minutes.
    - **Either way, Phase 39's timing runs end there.** Gate D closes on
      that session's result, and the phase completes once D26 is verified.
+
+**Progress:**
+- **Ruling 1:** built in `bb0b4be`; independently verified 2026-10-27
+  (Cowork). `machineWorkerLimit` evaluated for 1 to 32 cores gives 1, 1, 1,
+  2, 2, then 3 from 6 cores up; on 12 cores a local host and a confirmed
+  host get 3 workers and no cap, a remote host 3 workers capped at 5
+  requests per second. It is the only place a worker count is derived
+  (`executor.ts` and `stale-recheck.ts` pass it through). The builder's
+  unfiltered runs: unit 609 of 609, regression 59 passed. Its review's two
+  low findings are left as they are, ruled: the setup-doc test pins the
+  constant and the boundary test proves `machineWorkerLimit` uses it; the
+  re-measurement's `run.mts` is frozen evidence and isn't edited.
