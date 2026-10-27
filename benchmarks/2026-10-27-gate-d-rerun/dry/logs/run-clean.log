@@ -1,0 +1,14 @@
+(node:33128) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clean: 05:38:10 W1 standard run 1: 323 s, 1 worker(s) (1 used), 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; timeouts 0
+clean: 05:45:22 WN standard run 1: 432 s, 6 worker(s) (6 used), 17 unit(s) in 2 pass(es), 472 tests {"Failed":53,"Passed":402,"Not run":17}; timeouts 1
+clean: 05:48:23 W3 standard run 1: 180 s, 3 worker(s) (3 used), 17 unit(s) in 2 pass(es), 472 tests {"Passed":408,"Failed":46,"Not run":18}; timeouts 0
+clean: 05:49:44 W1 security run 1: 81 s, 1 worker(s) (1 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":120,"Failed":2}; timeouts 0
+clean: 05:52:23 WN security run 1: 159 s, 6 worker(s) (6 used), 21 unit(s) in 1 pass(es), 122 tests {"Failed":11,"Passed":111}; timeouts 0
+clean: 05:53:41 W3 security run 1: 77 s, 3 worker(s) (3 used), 21 unit(s) in 1 pass(es), 122 tests {"Passed":120,"Failed":2}; timeouts 0
+clean: 05:55:04 W1 accessibility run 1: 83 s, 1 worker(s) (1 used), 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; timeouts 0
+clean: 05:58:30 WN accessibility run 1: 207 s, 6 worker(s) (6 used), 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; timeouts 5
+clean: 05:59:40 W3 accessibility run 1: 69 s, 3 worker(s) (3 used), 20 unit(s) in 1 pass(es), 80 tests {"Passed":30,"Not run":31,"Failed":19}; timeouts 0
+exit=0

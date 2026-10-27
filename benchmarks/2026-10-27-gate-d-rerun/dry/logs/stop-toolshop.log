@@ -1,0 +1,25 @@
+time="2026-10-27T05:59:40+02:00" level=warning msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container pst-mariadb-1 Stopping 
+ Container pst-angular-ui-1 Stopping 
+ Container pst-web-1 Stopping 
+ Container pst-composer-1 Stopping 
+ Container pst-composer-1 Stopped 
+ Container pst-composer-1 Removing 
+ Container pst-composer-1 Removed 
+ Container pst-web-1 Stopped 
+ Container pst-web-1 Removing 
+ Container pst-web-1 Removed 
+ Container pst-laravel-api-1 Stopping 
+ Container pst-angular-ui-1 Stopped 
+ Container pst-angular-ui-1 Removing 
+ Container pst-angular-ui-1 Removed 
+ Container pst-laravel-api-1 Stopped 
+ Container pst-laravel-api-1 Removing 
+ Container pst-laravel-api-1 Removed 
+ Container pst-mariadb-1 Stopped 
+ Container pst-mariadb-1 Removing 
+ Container pst-mariadb-1 Removed 
+ Network pst_default Removing 
+ Network pst_default Removed 
+The local Toolshop is stopped.
+exit=0

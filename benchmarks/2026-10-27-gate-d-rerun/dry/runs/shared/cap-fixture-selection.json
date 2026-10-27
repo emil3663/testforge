@@ -1,0 +1,52 @@
+{
+  "label": "cap-fixture",
+  "site": "http://172.31.208.1:4472",
+  "commit": "6bd7fc0",
+  "crawledAt": "2026-10-27T02:56:10.902Z",
+  "status": "completed",
+  "seconds": 5,
+  "pages": 3,
+  "warnings": [],
+  "types": [
+    {
+      "rank": 1,
+      "label": "home",
+      "pattern": "/",
+      "pages": 1,
+      "representative": "/",
+      "placement": "always covered (home); home is always ranked first"
+    },
+    {
+      "rank": 2,
+      "label": "sign-in",
+      "pattern": "/login",
+      "pages": 1,
+      "representative": "/login",
+      "placement": "always covered (form, largest); after home, which is always ranked first"
+    },
+    {
+      "rank": 3,
+      "label": "form",
+      "pattern": "/notes",
+      "pages": 1,
+      "representative": "/notes",
+      "placement": "always covered (form); after /login by interactive elements (5 interactive elements against 6 interactive elements)"
+    }
+  ],
+  "standard": {
+    "pages": [
+      "/",
+      "/login",
+      "/notes"
+    ],
+    "skipped": []
+  },
+  "comprehensive": {
+    "pages": [
+      "/",
+      "/login",
+      "/notes"
+    ],
+    "skipped": []
+  }
+}

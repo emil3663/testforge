@@ -1,0 +1,40 @@
+--- at start (Tue Oct 27 04:53:11 SAST 2026)
+--- processes
+svchost                95
+conhost                22
+Code                   22
+tail                   15
+grep                   15
+chrome                 14
+msedgewebview2         13
+RuntimeBroker          11
+claude                 9
+wsl                    8
+wslhost                8
+msedge                 7
+Docker Desktop         7
+bash                   6
+NVIDIA Overlay         5
+powershell             5
+dllhost                4
+OpenConsole            4
+WmiPrvSE               4
+nvcontainer            4
+taskhostw              2
+PresentMonService      2
+RtkAudUService64       2
+NVDisplay.Container    2
+msrdc                  2
+--- ollama
+not running
+--- memory
+free GB 16,9 of 39,7
+--- docker
+testforge-plane-beat-worker-1 Up About an hour
+testforge-plane-worker-1 Up About an hour
+testforge-plane-space-1 Up About an hour (healthy)
+testforge-plane-db-1 Up About an hour (healthy)
+testforge-plane-redis-1 Up About an hour
+testforge-plane-minio-1 Up About an hour
+testforge-plane-web-1 Up About an hour (healthy)
+testforge-plane-api-1 Up About an hour

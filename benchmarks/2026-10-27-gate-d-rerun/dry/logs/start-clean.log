@@ -1,0 +1,129 @@
+Testsmith's repository at 5a6ccc26 (pinned 5a6ccc26), in Ubuntu
+time="2026-10-27T05:30:58+02:00" level=warning msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container pst-composer-1 Stopping 
+ Container pst-web-1 Stopping 
+ Container pst-angular-ui-1 Stopping 
+ Container pst-mariadb-1 Stopping 
+ Container pst-composer-1 Stopped 
+ Container pst-composer-1 Removing 
+ Container pst-composer-1 Removed 
+ Container pst-web-1 Stopped 
+ Container pst-web-1 Removing 
+ Container pst-web-1 Removed 
+ Container pst-laravel-api-1 Stopping 
+ Container pst-angular-ui-1 Stopped 
+ Container pst-angular-ui-1 Removing 
+ Container pst-mariadb-1 Stopped 
+ Container pst-mariadb-1 Removing 
+ Container pst-laravel-api-1 Stopped 
+ Container pst-laravel-api-1 Removing 
+ Container pst-angular-ui-1 Removed 
+ Container pst-mariadb-1 Removed 
+ Container pst-laravel-api-1 Removed 
+ Network pst_default Removing 
+ Network pst_default Removed 
+Starting sprint5 (the first start builds images and installs the app: several minutes)
+time="2026-10-27T05:31:01+02:00" level=warning msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Network pst_default Creating 
+ Network pst_default Created 
+ Container pst-laravel-api-1 Creating 
+ Container pst-mariadb-1 Creating 
+ Container pst-angular-ui-1 Creating 
+ Container pst-angular-ui-1 Created 
+ Container pst-mariadb-1 Created 
+ Container pst-laravel-api-1 Created 
+ Container pst-composer-1 Creating 
+ Container pst-web-1 Creating 
+ Container pst-web-1 Created 
+ Container pst-composer-1 Created 
+ Container pst-angular-ui-1 Starting 
+ Container pst-mariadb-1 Starting 
+ Container pst-laravel-api-1 Starting 
+ Container pst-angular-ui-1 Started 
+ Container pst-mariadb-1 Started 
+ Container pst-laravel-api-1 Started 
+ Container pst-composer-1 Starting 
+ Container pst-web-1 Starting 
+ Container pst-composer-1 Started 
+ Container pst-web-1 Started 
+time="2026-10-27T05:31:09+02:00" level=warning msg="/home/testforge/practice-software-testing/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+Seeding the database for sprint5
+
+Warning: Module "FFI" is already loaded in Unknown on line 0
+
+   INFO  Preparing database.  
+
+  Creating migration table ...................................... 64.24ms DONE
+
+   INFO  Running migrations.  
+
+  2021_09_21_060217_create_downloads_table ...................... 40.86ms DONE
+  2022_01_03_00000_create_brands_table .......................... 85.94ms DONE
+  2022_01_03_00001_create_categories_table ..................... 246.32ms DONE
+  2022_01_03_00002_create_product_images_table .................. 26.95ms DONE
+  2022_01_03_102447_create_products_table ...................... 557.31ms DONE
+  2022_01_03_111016_create_users_table ......................... 244.35ms DONE
+  2022_01_03_111025_create_invoices_table ...................... 226.48ms DONE
+  2022_01_03_111235_create_invoice_items_table ................. 188.12ms DONE
+  2022_01_03_113043_create_contact_requests_table ............... 31.67ms DONE
+  2022_01_03_113043_create_favorites_table ..................... 247.07ms DONE
+  2022_01_04_114043_create_contact_request_replies_table ....... 170.44ms DONE
+  2022_04_12_102512_create_jobs_table ........................... 69.88ms DONE
+  2023_09_21_070634_create_failed_jobs_table .................... 98.09ms DONE
+  2023_10_22_084035_create_carts_table .......................... 20.75ms DONE
+  2023_10_22_084104_create_cart_items_table .................... 175.44ms DONE
+  2023_10_29_070654_create_jobs_information_table ............... 21.83ms DONE
+  2023_12_10_175109_payments ................................... 138.27ms DONE
+  2023_12_10_175207_payment_bank_transfer_details ............... 39.87ms DONE
+  2023_12_10_175250_payment_credit_card_details ................. 28.06ms DONE
+  2023_12_10_175302_payment_gift_card_details ................... 21.38ms DONE
+  2023_12_10_175404_payment_bnpl_details ........................ 48.17ms DONE
+  2023_12_10_190159_payment_cash_on_delivery_details ............ 39.98ms DONE
+  2025_04_14_175346_create_cache_table .......................... 45.90ms DONE
+  2025_09_20_045327_alter_numeric_columns_to_bigint ............ 462.16ms DONE
+  2025_10_12_124644_add_eco_discount_to_invoices_table .......... 82.68ms DONE
+  2026_04_08_000000_make_invoice_user_id_nullable .............. 109.80ms DONE
+  2026_04_09_000000_create_product_specs_table ................. 168.67ms DONE
+  2026_04_10_000000_add_product_filter_indexes .................. 90.54ms DONE
+  2026_04_10_000001_add_missing_fk_indexes ..................... 453.02ms DONE
+  2026_04_10_000002_add_fulltext_search_indexes ................ 542.27ms DONE
+  2026_04_24_000000_add_house_number_to_users_table ............ 176.89ms DONE
+
+
+   INFO  Seeding database.  
+
+  Database\Seeders\BrandSeeder ....................................... RUNNING  
+  Database\Seeders\BrandSeeder ..................................... 5 ms DONE  
+
+  Database\Seeders\UserSeeder ........................................ RUNNING  
+  Database\Seeders\UserSeeder .................................... 199 ms DONE  
+
+  Database\Seeders\CategorySeeder .................................... RUNNING  
+  Database\Seeders\CategorySeeder .................................. 7 ms DONE  
+
+  Database\Seeders\ProductImageSeeder ................................ RUNNING  
+  Database\Seeders\ProductImageSeeder .............................. 6 ms DONE  
+
+  Database\Seeders\ProductSeeder ..................................... RUNNING  
+  Database\Seeders\ProductSeeder ................................. 157 ms DONE  
+
+  Database\Seeders\ProductSpecSeeder ................................. RUNNING  
+  Database\Seeders\ProductSpecSeeder ............................. 183 ms DONE  
+
+  Database\Seeders\FavoriteSeeder .................................... RUNNING  
+  Database\Seeders\FavoriteSeeder .................................. 6 ms DONE  
+
+  Database\Seeders\InvoiceSeeder ..................................... RUNNING  
+  Database\Seeders\InvoiceSeeder ................................. 584 ms DONE  
+
+  Database\Seeders\InvoiceItemSeeder ................................. RUNNING  
+  Database\Seeders\InvoiceItemSeeder ........................... 3,250 ms DONE  
+
+  database\seeders\PaymentSeeder ..................................... RUNNING  
+  database\seeders\PaymentSeeder ............................... 1,395 ms DONE  
+
+
+sprint5 is running (started in 55 s):
+  app  http://localhost:4200
+  API  http://localhost:8091  (documentation: http://localhost:8091/api/documentation)
+exit=0

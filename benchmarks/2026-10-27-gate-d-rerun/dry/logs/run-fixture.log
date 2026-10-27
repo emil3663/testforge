@@ -1,0 +1,11 @@
+(node:12212) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/MSI%20workstation/source/repos/testforge/src/lib/report/execution.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\MSI workstation\source\repos\testforge\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+fixture: 04:54:53 W1 standard run 1: 85 s, 1 worker(s) (1 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 04:55:28 WN standard run 1: 35 s, 6 worker(s) (6 used), 12 unit(s) in 2 pass(es), 123 tests {"Passed":104,"Failed":9,"Not run":10}; timeouts 0
+fixture: 04:55:41 W1 security run 1: 13 s, 1 worker(s) (1 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 04:55:50 WN security run 1: 10 s, 6 worker(s) (4 used), 4 unit(s) in 1 pass(es), 20 tests {"Passed":20}; timeouts 0
+fixture: 04:55:57 W1 accessibility run 1: 7 s, 1 worker(s) (1 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+fixture: 04:56:03 WN accessibility run 1: 5 s, 6 worker(s) (3 used), 3 unit(s) in 1 pass(es), 12 tests {"Not run":5,"Passed":7}; timeouts 0
+exit=0
