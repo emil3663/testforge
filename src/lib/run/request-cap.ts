@@ -40,6 +40,8 @@ export const NOT_JUDGED_REASON_ENV_VAR = "TESTFORGE_NOT_JUDGED_REASON";
 /** The module a capped run's units import in place of `@playwright/test`, copied into the run's folder. */
 export const REQUEST_CAP_MODULE = "testforge-request-cap.ts";
 export const REQUEST_CAP_TOKEN_HEADER = "x-testforge-cap-token";
+/** On a slot's answer: "1" when it waited in the queue, "0" when it was free at once (request-cap-fixture.ts reads it). */
+export const REQUEST_CAP_QUEUED_HEADER = "x-testforge-cap-queued";
 /** How long a slot stays held after it's handed back. */
 export const HOLD_AFTER_RESPONSE_MS = 1000;
 const LEASE_MS = 60_000;
@@ -82,7 +84,7 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
             const next = waiting.shift()!;
             if (next.res.destroyed || next.res.writableEnded) continue;
             stats.waitedMs += performance.now() - next.asked;
-            grant(next.res);
+            grant(next.res, true);
         }
     };
     /** A slot handed back: free once the hold after it has passed, then given to the next waiter. */
@@ -98,12 +100,13 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
         }, HOLD_AFTER_RESPONSE_MS);
         timers.add(timer);
     };
-    const grant = (res: ServerResponse) => {
+    // TFP-264: the answer says whether the slot came from the queue, so the worker counts only real waiting.
+    const grant = (res: ServerResponse, queued: boolean) => {
         held.set(res, setTimeout(() => {
             // The lease ran out: the connection is closed, which hands the slot back as any close does.
             res.destroy();
         }, LEASE_MS));
-        res.writeHead(200, { "content-type": "text/plain", "cache-control": "no-store" });
+        res.writeHead(200, { "content-type": "text/plain", "cache-control": "no-store", [REQUEST_CAP_QUEUED_HEADER]: queued ? "1" : "0" });
         res.flushHeaders();
     };
     const server = createServer((req, res) => {
@@ -123,7 +126,7 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
             if (index >= 0) waiting.splice(index, 1);
         });
         if (held.size < perSecond && waiting.length === 0) {
-            grant(res);
+            grant(res, false);
             return;
         }
         stats.waited++;

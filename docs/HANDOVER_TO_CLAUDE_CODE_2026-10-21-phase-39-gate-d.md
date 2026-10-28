@@ -31,6 +31,15 @@ record. In order:
     template check, unit and regression suites, and stop for
     verification. Commit this planning note and the record's amendment
     with it.
+3c. **(Added 2026-10-28, 03:30) Three rulings on `f8333b6`** (record,
+    "Amended again 2026-10-28"): keep the 100 ms slack; a failing step that
+    isn't an `expect` step is starved only if a request was still waiting
+    for a slot when it failed (within 100 ms); the re-check gap is D37 and
+    a `TEST_PLAN.md` known limitation (with its GitHub issue, per TFP-262's
+    rule). Add a real-browser case: a click that times out on a page whose
+    requests were queued only at its start stays Failed. Re-run the template
+    check, unit and regression suites; commit with this note; stop for
+    verification. Then push `7a06160` to the new commit.
 4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
    for verification. No timing session. When both are verified, Gate D
    closes and Phase 39 completes (`0.2.0`).

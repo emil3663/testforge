@@ -19,6 +19,8 @@ import assert from "node:assert";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
@@ -42,7 +44,7 @@ const lanSkip = needsChromium || (lanAddress ? false : "this machine has no LAN 
 const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
 const T = 1_800_000_000_000;
-const step = (kind: "goto" | "expect", startedAt: number, duration: number, failed: boolean) => ({ kind, target: "", startedAt, duration, failed });
+const step = (kind: "goto" | "expect" | "other", startedAt: number, duration: number, failed: boolean) => ({ kind, target: "", startedAt, duration, failed });
 
 test("waitingWithin: only the waiting inside the window counts", () => {
     assert.equal(waitingWithin([[T, T + 1000], [T + 3000, T + 6000]], T + 500, T + 4000), 500 + 1000);
@@ -71,7 +73,13 @@ test("starvedReason: only waiting during the step that failed counts against its
         ["never waited", { assertionWaitMs: 5000, spans: [] }, [load, check], false],
         ["an instant failure after a long wait", { assertionWaitMs: 5000, spans: [[T, T + 12_000]] }, [load, step("expect", T + 12_000, 1, true)], false],
         ["no failing step (a plain timeout in the test's own code)", { assertionWaitMs: 5000, spans: [[T, T + 30_000]] }, [load], false],
+        // Amended again (2026-10-28): a step that isn't an assertion is starved only if a request was still waiting as it
+        // failed (within the 100 ms slack), however long it waited before.
         ["a navigation that timed out waiting", { assertionWaitMs: 5000, spans: [[T + 200, T + 30_000]] }, [step("goto", T, 30_000, true)], true],
+        ["a click that timed out, its page queued only at its start", { assertionWaitMs: 5000, spans: [[T, T + 6_000]] }, [step("other", T, 30_000, true)], false],
+        ["a click that timed out, a request still waiting 50 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_950]] }, [step("other", T, 30_000, true)], true],
+        ["a click that timed out, the last wait over 150 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_850]] }, [step("other", T, 30_000, true)], false],
+        ["a click that failed at once on a page still loading", { assertionWaitMs: 5000, spans: [[T, T + 9_000]] }, [step("goto", T, 500, false), step("other", T + 500, 20, true)], true],
         ["a shared check, waited through its 2 s", { assertionWaitMs: 2000, spans: [[T + 12_000, T + 15_000]] }, [load, step("expect", T + 12_000, 1_950, true)], true],
         ["a shared check, waited 1.5 s of its 2 s", { assertionWaitMs: 2000, spans: [[T + 12_500, T + 15_000]] }, [load, step("expect", T + 12_000, 2_000, true)], false],
     ];
@@ -151,7 +159,7 @@ test("in a real browser: on a capped host, a test the cap holds up past its asse
         const [record] = report.execution as ExecutionRecord[];
         const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 120)}`;
         assert.equal(record.status, "Not run", said);
-        assert.match(record.skipReason ?? "", /^starved by the request cap: during the step that failed, its requests waited \d+\.\d s for slots, as long as its 5 s assertion wait/, said);
+        assert.match(record.skipReason ?? "", /^starved by the request cap: when the step that failed gave up, its requests were still waiting for slots \(\d+\.\d s of waiting during it\)/, said);
         assert.ok((record.requestCapWaitMs ?? 0) > 5000, said);
         // It ran out of time waiting: what the cap starved is still in its message, for whoever reads the evidence.
         assert.match(record.rawMessage ?? "", /timeout|exceeded/i, said);
@@ -159,7 +167,7 @@ test("in a real browser: on a capped host, a test the cap holds up past its asse
         assert.equal(report.hostLimits?.requestCap?.starved, 1);
         const output = job.outputChunks.join("");
         assert.ok(output.includes("Run budget: up to 3600s"), output);
-        assert.ok(output.includes(`Request cap: 1 test(s) failed while their requests waited for slots through the failing step's assertion wait, so they are reported Not run ("starved by the request cap"), not Failed.`), output);
+        assert.ok(output.includes(`Request cap: 1 test(s) failed while the cap held up their requests in the step that failed, so they are reported Not run ("starved by the request cap"), not Failed.`), output);
     });
 });
 
@@ -195,7 +203,7 @@ test("in a real browser: on a capped host, a real defect with little waiting sta
         assert.match(record.rawMessage ?? "", /not this heading/, said);
         assert.ok(record.requestCapWaitMs !== undefined && record.requestCapWaitMs > 0 && record.requestCapWaitMs < 5000, said);
         assert.equal(report.hostLimits?.requestCap?.starved, 0);
-        assert.ok(job.outputChunks.join("").includes("Request cap: 0 test(s) failed while their requests waited"));
+        assert.ok(job.outputChunks.join("").includes("Request cap: 0 test(s) failed while the cap held up"));
     });
 });
 
@@ -267,5 +275,62 @@ test.describe('Functional Coverage', () => {
         assert.equal(record.status, "Not run", said);
         assert.match(record.skipReason ?? "", /^starved by the request cap: during the step that failed, its requests waited \d+\.\d s for slots, as long as its 2 s assertion wait/, said);
         assert.equal(report.hostLimits?.requestCap?.starved, 1);
+    });
+});
+
+test("in a real browser: on a capped host, a click that times out on a page whose requests were queued only at its start stays Failed (TFP-264, amended again)", { skip: lanSkip }, async () => {
+    // The page's 30 slow images wait for slots for the click's first seconds and are all in long before the 30 s test
+    // timeout; the button is missing. Under the assertion rule for actions, those seconds of waiting would starve it.
+    await withRecordingSite(async (origin) => {
+        const code = `import { test, expect } from '@playwright/test';
+
+test.describe('Click', () => {
+  test('Click: a button that is not there', async ({ page }) => {
+    await page.goto('${origin}/heavy', { waitUntil: 'commit' });
+    await page.click('#missing');
+  });
+});
+`;
+        const snapshot = await startRunJob(code, ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const [record] = report.execution as ExecutionRecord[];
+        const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 160)}`;
+        assert.equal(record.status, "Failed", said);
+        assert.match(record.rawMessage ?? "", /timeout|exceeded/i, said);
+        assert.ok((record.requestCapWaitMs ?? 0) > 5000, `its page did wait for slots, at first: ${said}`);
+        assert.equal(report.hostLimits?.requestCap?.starved, 0);
+    });
+});
+
+test("in a real browser: on a capped host, a load that fails at once on a refused connection, its slot free, stays Failed (TFP-264)", { skip: lanSkip }, async () => {
+    // A site that is down is the site's failure. Its slot was free at once, so no request waited: not starved.
+    await withRecordingSite(async (origin) => {
+        const closed = await new Promise<number>((resolve) => {
+            const probe = createServer();
+            probe.listen(0, lanAddress!, () => {
+                const { port } = probe.address() as AddressInfo;
+                probe.close(() => resolve(port));
+            });
+        });
+        const code = `import { test, expect } from '@playwright/test';
+
+test.describe('Down', () => {
+  test('Down: the page answers', async ({ page }) => {
+    await page.goto('http://${lanAddress}:${closed}/');
+  });
+});
+`;
+        const snapshot = await startRunJob(code, ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const [record] = report.execution as ExecutionRecord[];
+        const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 160)}`;
+        assert.equal(record.status, "Failed", said);
+        assert.match(record.rawMessage ?? "", /ERR_CONNECTION_REFUSED|ECONNREFUSED/i, said);
+        assert.equal(record.requestCapWaitMs, 0, said);
+        assert.equal(report.hostLimits?.requestCap?.starved, 0);
     });
 });

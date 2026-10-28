@@ -38,7 +38,7 @@ process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
 process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
 
 const { hostLimitsFor, machineWorkerLimit, siteDomainOf, countsAgainstCap } = await import("./host-limits.ts");
-const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER } = await import("./request-cap.ts");
+const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER, REQUEST_CAP_QUEUED_HEADER } = await import("./request-cap.ts");
 const { setOwnershipLookupForTests } = await import("./ownership.ts");
 const { TIMED_CHECK_TITLES } = await import("../generate/mock/performance-checks.ts");
 const { startRunJob } = await import("./executor.ts");
@@ -101,8 +101,22 @@ async function takeSlot(cap: { url: string; token: string }, signal?: AbortSigna
     const connection = new AbortController();
     signal?.addEventListener("abort", () => connection.abort(), { once: true });
     const response = await fetch(`${cap.url}/slot`, { method: "POST", headers: { [REQUEST_CAP_TOKEN_HEADER]: cap.token }, signal: connection.signal });
-    return { status: response.status, release: () => connection.abort() };
+    return { status: response.status, queued: response.headers.get(REQUEST_CAP_QUEUED_HEADER), release: () => connection.abort() };
 }
+
+test("the slot server says whether a slot came from the queue: the first 5 at once, the 6th after waiting (TFP-264)", async () => {
+    const cap = await startRequestCap(5);
+    try {
+        const first = await Promise.all(Array.from({ length: 5 }, () => takeSlot(cap)));
+        assert.deepEqual(first.map((slot) => slot.queued), ["0", "0", "0", "0", "0"]);
+        const sixth = takeSlot(cap);
+        first[0].release();
+        assert.equal((await sixth).queued, "1");
+        for (const slot of [...first, await sixth]) slot.release();
+    } finally {
+        await cap.close();
+    }
+});
 
 test("the slot server: at most 5 slots held at once, each held a second after it's handed back; each wait is counted; a wrong token gets none (boundary values)", async () => {
     const cap = await startRequestCap(5);

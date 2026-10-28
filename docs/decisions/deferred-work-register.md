@@ -209,6 +209,7 @@ Statuses:
 | D34 | Comprehensive all-areas runs in CI | Phase 47, deferred (2026-10-27) | Wanted, with D5 | **Planned**, with D5 | With D5 | D5, TFP-248 |
 | D35 | Native integrations for other CI systems (GitLab component, Azure DevOps task) and SARIF output for code scanning | Phase 47, deferred (2026-10-27) | Not before someone asks | Open | - | TFP-248 |
 | D36 | Workers that back off when a site slows down (adaptive concurrency) | Phase 39 re-measurement ruling 1 (2026-10-27) | Deferred: a fixed limit of 3 holds for now | Open | - | Phase 39 complete |
+| D37 | The stale re-check's re-runs judged for cap starvation (it has no timing reporter, so a reused test it re-runs on a capped host keeps its re-run result) | Phase 39 ruling 4 amended (2026-10-28) | Deferred: rare path, documented as a known limitation | Open | - | TFP-264 |
 
 ## Phases or items not wrapped up
 

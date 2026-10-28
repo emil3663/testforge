@@ -3,10 +3,11 @@ import { REQUEST_CAP_STARVED_ANNOTATION, REQUEST_CAP_WAITS_ANNOTATION } from "@/
 import type { RawTiming, TimingStep } from "@/lib/run/timing";
 
 /**
- * TFP-264 (ruling 4 amended, item 2 as amended, Emil, 2026-10-28): on a capped host, a test that failed is starved by
- * the request cap when its own requests' waiting for slots during the step that failed (from the step's start to the
- * failure) is as long as that step's assertion wait: 2 s for a shared check, 5 s otherwise. Waiting earlier in the test
- * doesn't count, so a check that fails at once, or after its requests arrived, stays Failed.
+ * TFP-264 (ruling 4 amended, item 2 as amended, and amended again, Emil, 2026-10-28): on a capped host, a test that
+ * failed is starved by the request cap when its own requests' waiting for slots during the step that failed (from the
+ * step's start to the failure) is as long as that step's assertion wait: 2 s for a shared check, 5 s otherwise; or,
+ * when that step isn't an assertion, when one of its requests was still waiting as it failed. Waiting earlier in the
+ * test doesn't count, so a check that fails at once, or after its requests arrived, stays Failed.
  *
  * The cap's module (request-cap-fixture.ts) records the test's waiting spans and its assertion wait; the timing reporter
  * (timing.ts) records when each step started and whether it failed. Neither alone can tell: the worker doesn't see
@@ -45,11 +46,23 @@ export function failingStep(steps: TimingStep[]): (TimingStep & { startedAt: num
     return last && last.failed && last.kind !== "settle" ? last : null;
 }
 
-/** Why the cap starved the test, or null when its failure stands. */
+/**
+ * Why the cap starved the test, or null when its failure stands. An assertion (`expect`) is starved when its requests
+ * waited through its assertion wait. Any other step (a click, fill or load that waited out its timeout) is starved only
+ * when one of its requests was still waiting for a slot as it failed, within the same slack (amended again,
+ * 2026-10-28): the page was still incomplete when it was judged. A missing button on a page that had finished loading
+ * stays Failed, however long the page waited first.
+ */
 export function starvedReason(waits: CapWaits, steps: TimingStep[]): string | null {
     const step = failingStep(steps);
     if (!step) return null;
-    const during = waitingWithin(waits.spans, step.startedAt, step.startedAt + step.duration);
+    const failedAt = step.startedAt + step.duration;
+    const during = waitingWithin(waits.spans, step.startedAt, failedAt);
+    if (step.kind !== "expect") {
+        const stillWaiting = waits.spans.some(([start, end]) => start <= failedAt && end >= failedAt - STEP_TIMING_SLACK_MS);
+        if (!stillWaiting) return null;
+        return `starved by the request cap: when the step that failed gave up, its requests were still waiting for slots (${(during / 1000).toFixed(1)} s of waiting during it), so its failure says nothing about the site`;
+    }
     if (during < waits.assertionWaitMs - STEP_TIMING_SLACK_MS) return null;
     return `starved by the request cap: during the step that failed, its requests waited ${(during / 1000).toFixed(1)} s for slots, as long as its ${waits.assertionWaitMs / 1000} s assertion wait, so its failure says nothing about the site`;
 }

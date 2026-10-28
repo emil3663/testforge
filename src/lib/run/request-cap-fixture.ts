@@ -58,24 +58,38 @@ const DEFAULT_ASSERTION_WAIT_MS = 5000;
 // outlives each check, so a request an earlier test started (an image still loading) is that test's, not this one's:
 // each wait counts for the test it started in.
 // The spans in which at least one of them waited, [start, end] in ms since the epoch, so the run can find the
-// waiting during the step that failed.
+// waiting during the step that failed. Only real waiting counts: a request the slot server queued (its answer says so,
+// as REQUEST_CAP_QUEUED_HEADER in request-cap.ts), one given up while queued, and one still waiting as the test ends.
+// A slot that was free at once is not waiting, however few ms its fetch took.
+const QUEUED_HEADER = "x-testforge-cap-queued";
 let currentTest = 0;
-let waitingNow = 0;
-let waitingSince = 0;
-let spans: Array<[number, number]> = [];
-const startWaiting = (): number => {
-    if (waitingNow++ === 0) waitingSince = Date.now();
-    return currentTest;
+let waits: Array<[number, number]> = [];
+const pending = new Set<{ asked: number }>();
+const startWaiting = () => {
+    const wait = { asked: Date.now() };
+    pending.add(wait);
+    return { test: currentTest, wait };
 };
-const stopWaiting = (startedIn: number) => {
-    if (startedIn !== currentTest) return;
-    if (--waitingNow === 0) spans.push([waitingSince, Date.now()]);
+const stopWaiting = (started: { test: number; wait: { asked: number } }, queued: boolean) => {
+    pending.delete(started.wait);
+    if (started.test === currentTest && queued) waits.push([started.wait.asked, Date.now()]);
 };
-const spansSoFar = (): Array<[number, number]> => (waitingNow > 0 ? [...spans, [waitingSince, Date.now()]] : spans);
+/** The test's waits so far, merged where they overlap. */
+const spansSoFar = (): Array<[number, number]> => {
+    const now = Date.now();
+    const all = [...waits, ...[...pending].map((wait): [number, number] => [wait.asked, now])].sort((left, right) => left[0] - right[0]);
+    const merged: Array<[number, number]> = [];
+    for (const [start, end] of all) {
+        const last = merged.at(-1);
+        if (last && start <= last[1]) last[1] = Math.max(last[1], end);
+        else merged.push([start, end]);
+    }
+    return merged;
+};
 const startTest = () => {
     currentTest++;
-    waitingNow = 0;
-    spans = [];
+    waits = [];
+    pending.clear();
 };
 
 /**
@@ -89,15 +103,19 @@ async function slot(url: string, signal?: AbortSignal): Promise<() => void> {
     const connection = new AbortController();
     const giveUp = () => connection.abort();
     signal?.addEventListener("abort", giveUp, { once: true });
-    const startedIn = startWaiting();
+    const started = startWaiting();
+    let queued = false;
     try {
         const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
+        queued = response.headers.get(QUEUED_HEADER) === "1";
         if (response.status !== 200) throw new Error(`the request cap's slot server answered HTTP ${response.status}`);
     } catch (error) {
+        // Given up while it waited (its context closed): that was waiting.
+        queued = connection.signal.aborted;
         connection.abort();
         throw error;
     } finally {
-        stopWaiting(startedIn);
+        stopWaiting(started, queued);
         signal?.removeEventListener("abort", giveUp);
     }
     return () => connection.abort();

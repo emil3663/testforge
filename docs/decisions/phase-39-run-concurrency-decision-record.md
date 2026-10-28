@@ -1029,6 +1029,25 @@ averaged 5.15 to 5.30 counted requests per second against a cap of 5.
    would have been reported Not run (RUN-42's lease test showed two).
    Rejected: re-running starved candidates once under the cap (catches
    more, but costs run time on every capped run).
+
+   **Amended again 2026-10-28 (Emil; questions from `f8333b6`):**
+   - **Slack:** "exceeds its assertion wait" is read as at least the
+     assertion wait less 100 ms. A 2 s step measures as little as
+     1,900 ms (TFP-215's boundary test), and waiting can't outlast its
+     step; without the slack a starved check could never qualify.
+   - **A failing step that isn't an assertion** (a click, fill or load that
+     waits out its timeout) is starved only if the test's own requests were
+     **still waiting for a slot when the step failed**, within the same
+     100 ms: the page was still incomplete when it was judged. Otherwise it
+     stays Failed, so a missing button on a page that finished loading
+     isn't hidden. (Measured on `f8333b6`'s rule: a 30 s click with only its
+     first 6 s queued came out starved.) Rejected: the assertion rule for
+     actions (can hide real defects); never starving an action (would
+     blame the site for the cap's slowness).
+   - **The stale re-check isn't judged** (it has no timing reporter): a
+     reused test it re-runs keeps its re-run result. Deferred as D37 and
+     listed in `TEST_PLAN.md`'s known limitations; it doesn't hold Phase 39
+     open.
 3. **The cap is proven, not assumed** (TFP-265). Counted requests above 5
    per second may be slots handed back by connections that closed before
    their request left (TFP-157's leak fix), which would be harmless, or
