@@ -51,11 +51,18 @@ export const notJudgedReason = (perSecond: number) =>
 
 export interface RequestCapStats {
     perSecond: number;
-    /** Requests that took a slot. */
+    /** Requests that asked for a slot. */
     requests: number;
-    /** Of them, how many had to wait for theirs, and for how long in all (ms). */
+    /** Of them, how many had to wait for theirs, and for how long in all (ms) the ones given a slot waited. */
     waited: number;
     waitedMs: number;
+    /**
+     * TFP-265: of them, how many were given a slot, and how many gave up their place while they waited (their
+     * connection closed first: a context that closed, a worker that ended). Once a run's workers have ended, the two
+     * make up `requests`: a waiter that gave up asked but never took a slot, so it is counted but never arrives.
+     */
+    granted?: number;
+    gaveUp?: number;
     /** TFP-264: how many tests the cap starved (reported Not run); set on the saved run once its records are read. */
     starved?: number;
 }
@@ -70,7 +77,7 @@ export interface RequestCap {
 
 export async function startRequestCap(perSecond: number): Promise<RequestCap> {
     const token = randomBytes(16).toString("hex");
-    const stats: RequestCapStats = { perSecond, requests: 0, waited: 0, waitedMs: 0 };
+    const stats: RequestCapStats = { perSecond, requests: 0, waited: 0, waitedMs: 0, granted: 0, gaveUp: 0 };
     type Waiter = { res: ServerResponse; asked: number };
     // The slots held, each by its connection's response, with the lease that takes it back.
     const held = new Map<ServerResponse, NodeJS.Timeout>();
@@ -82,7 +89,11 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
     const grantNext = () => {
         while (!closed && held.size < perSecond && waiting.length > 0) {
             const next = waiting.shift()!;
-            if (next.res.destroyed || next.res.writableEnded) continue;
+            if (next.res.destroyed || next.res.writableEnded) {
+                // Gone before its close event took it out of the line; that event then finds nothing to remove.
+                stats.gaveUp!++;
+                continue;
+            }
             stats.waitedMs += performance.now() - next.asked;
             grant(next.res, true);
         }
@@ -102,6 +113,7 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
     };
     // TFP-264: the answer says whether the slot came from the queue, so the worker counts only real waiting.
     const grant = (res: ServerResponse, queued: boolean) => {
+        stats.granted!++;
         held.set(res, setTimeout(() => {
             // The lease ran out: the connection is closed, which hands the slot back as any close does.
             res.destroy();
@@ -123,7 +135,10 @@ export async function startRequestCap(perSecond: number): Promise<RequestCap> {
                 return;
             }
             const index = waiting.findIndex((waiter) => waiter.res === res);
-            if (index >= 0) waiting.splice(index, 1);
+            if (index >= 0) {
+                waiting.splice(index, 1);
+                stats.gaveUp!++;
+            }
         });
         if (held.size < perSecond && waiting.length === 0) {
             grant(res, false);

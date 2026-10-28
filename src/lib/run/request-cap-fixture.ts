@@ -154,7 +154,16 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
     const closing = new AbortController();
     context.once("close", () => closing.abort());
     await context.route("**/*", async (route) => {
-        const release = await slot(route.request().url(), closing.signal);
+        let release: () => void;
+        try {
+            release = await slot(route.request().url(), closing.signal);
+        } catch (error) {
+            // TFP-265: its context closed while it waited, so the request is moot. Thrown, the abort failed the test
+            // that owned the context, however its own checks had gone ("AbortError: This operation was aborted": 66 of
+            // the 2026-10-27 capped hosted runs' 688 tests).
+            if (closing.signal.aborted) return;
+            throw error;
+        }
         try {
             await route.fallback();
         } catch (error) {
