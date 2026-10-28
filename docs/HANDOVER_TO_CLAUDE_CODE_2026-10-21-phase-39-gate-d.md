@@ -47,6 +47,13 @@ record. In order:
     queued stays Failed); re-run the template check, unit and regression
     suites; commit with this note and push. No further verification stop
     for this: go straight on to TFP-265, and stop after it.
+3e. **(Added 2026-10-28, 06:15) Before TFP-265 can be verified** (record,
+    "TFP-264's verification is reopened" and "Rulings on TFP-265"): fix the
+    carry-over flake (reproduce in Ubuntu under WSL; 20 passes in a row on
+    both Windows and WSL); change the run line's wording; assert worker
+    restarts in the arrival runs; settle the slot-then-close case. Re-run
+    the template check, unit and regression suites, commit with this note,
+    push everything (`5300706` included), and stop for verification.
 4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
    for verification. No timing session. When both are verified, Gate D
    closes and Phase 39 completes (`0.2.0`).

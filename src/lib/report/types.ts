@@ -290,8 +290,8 @@ export interface RunReport {
     runTiming?: import("@/lib/run/timing").RunTiming;
     /**
      * Phase 39 (TFP-157, Decision 11): the worker count, the host's row in Decision 10, whether the ownership
-     * confirmation was present, and on a capped host how many requests took a slot and how many waited. Absent on runs
-     * from before it.
+     * confirmation was present, and on a capped host how many requests asked for a slot, were given one, gave up
+     * waiting, and waited (given and gave up: TFP-265). Absent on runs from before it.
      */
     hostLimits?: import("@/lib/run/host-limits").HostLimits & { requestCap: import("@/lib/run/request-cap").RequestCapStats | null };
     // Phase 34 (TFP-119): how the suite was generated - the gap-fill outcome

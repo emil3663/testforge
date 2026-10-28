@@ -139,7 +139,12 @@ test.describe('Defect', () => {
   });
 });
 `;
-/** TFP-264: the first test leaves 200 images waiting in a context it keeps open (as a page group's shared visit does); the next fails on purpose 6 s later. */
+/**
+ * TFP-264: the first test leaves 200 images waiting in a context it keeps open (as a page group's shared visit does);
+ * the next fails on purpose 6 s later. The page sends its images a second after its head, so the first test always ends
+ * before they reach the cap's route: charged to the test running then, they were the next test's wait (about 11 s in
+ * Linux runs, by chance of timing, before the page was made to send them late).
+ */
 const carrySuite = (origin: string) => `import { test, expect } from '@playwright/test';
 
 let kept;
@@ -147,7 +152,7 @@ test.describe('Carry', () => {
   test('Carry: leaves its images loading', async ({ browser }) => {
     kept = await browser.newContext();
     const page = await kept.newPage();
-    await page.goto('${origin}/many', { waitUntil: 'commit' });
+    await page.goto('${origin}/many-late', { waitUntil: 'commit' });
   });
   test('Carry: the next test fails on its own', async () => {
     await new Promise((resolve) => setTimeout(resolve, 6000));
@@ -227,6 +232,40 @@ test("in a real browser: on a capped host, requests an earlier test left waiting
         assert.equal(next?.status, "Failed", said);
         assert.equal(next?.requestCapWaitMs, 0, said);
         assert.match(next?.rawMessage ?? "", /fails on purpose/, said);
+        // The first test's images did wait for slots, while the next test ran.
+        assert.ok((report.hostLimits?.requestCap?.waited ?? 0) > 100, `${report.hostLimits?.requestCap?.waited} waited: ${said}`);
+    });
+});
+
+test("in a real browser: on a capped host, fetches a test's click sets off on a page an earlier test loaded count as its own wait, and starve it (TFP-264)", { skip: lanSkip }, async () => {
+    // As on a shared visit: the page is the first test's, the click and its 100 API calls the second's. Charged to the
+    // test that loaded the page instead, the second test's starved check would read as Failed.
+    await withRecordingSite(async (origin) => {
+        const code = `import { test, expect } from '@playwright/test';
+
+let kept;
+test.describe('Shared', () => {
+  test('Shared: loads the page', async ({ browser }) => {
+    kept = await (await browser.newContext()).newPage();
+    await kept.goto('${origin}/button');
+  });
+  test('Shared: the button gets the page ready', async () => {
+    await kept.click('#go');
+    await expect(kept.locator('h2')).toHaveText('ready');
+  });
+});
+`;
+        const snapshot = await startRunJob(code, ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const records = report.execution as ExecutionRecord[];
+        const said = records.map((record) => `${record.title}: ${record.status} ${record.skipReason ?? ""} ${record.requestCapWaitMs} ms`).join(" | ");
+        assert.equal(records.find((record) => /loads the page/.test(record.title))?.status, "Passed", said);
+        const clicked = records.find((record) => /button gets the page ready/.test(record.title));
+        assert.equal(clicked?.status, "Not run", said);
+        assert.match(clicked?.skipReason ?? "", /^starved by the request cap: during the step that failed, its requests waited \d+\.\d s for slots, as long as its 5 s assertion wait/, said);
+        assert.equal(report.hostLimits?.requestCap?.starved, 1, said);
     });
 });
 

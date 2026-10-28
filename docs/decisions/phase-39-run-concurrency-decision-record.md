@@ -1122,4 +1122,34 @@ queued at that moment. Rejected: counting any queued request at failure
   generator file changed. Open: the instant-failure clarification above,
   one follow-up commit with a real-browser case (a strict-mode failure while
   a request is queued stays Failed), then TFP-265.
+- **TFP-264's verification is reopened (Cowork, 2026-10-28, 06:15).** In
+  the Linux environment, `cap-starved.test.ts`'s case "requests an earlier
+  test left waiting don't count as the next test's wait" fails
+  intermittently: 3 of 4 runs on `afc4873`, 2 of 3 on `56ef95e`, each time
+  with about 11 s (10,963 to 10,997 ms) charged to the next test instead of
+  0. The 13-of-13 recorded at 04:40 was a run where it passed. The verdict
+  in that case stays right (the next test fails for its own reason), but a
+  wait charged to the wrong test can turn a real failure into "starved"
+  when the failing step is an `expect`. It passes on the builder's Windows
+  machine, which is why the builder and its review didn't see it.
+
+**Rulings on TFP-265 (`5300706`, Emil, 2026-10-28):**
+1. **The carry-over flake is fixed first, as part of TFP-264.** Reproduce it
+   in Ubuntu under WSL, find why an earlier test's queued requests are
+   charged to the next, and fix it. Proof: the case passes at least 20
+   times in a row both on Windows and in WSL; record the counts.
+2. **The `AbortError` fix stays in TFP-265.** A test failed by its own
+   context closing while its requests waited is the cap failing a test,
+   the same family as TFP-264. Accepted although outside the stated scope.
+3. **The run line says what happened:** "N slot(s) given; M request(s)
+   gave up waiting when their test ended", replacing "N request(s) to the
+   site took a slot", which counted both.
+4. **Workers that restart are asserted,** as TFP-265's scope says: a test
+   that fails, so Playwright restarts its worker while its requests wait,
+   inside the arrival runs; no second over 5 arrivals.
+5. **A context that closes after its request got a slot but before it was
+   sent:** check whether Playwright 1.59 can do this. If it can, drop it
+   quietly as in item 2 and add a case; if it can't, say why in the
+   ticket's report.
+
 

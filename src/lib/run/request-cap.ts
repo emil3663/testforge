@@ -30,7 +30,7 @@ import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
  * A slot still held after LEASE_MS (a worker that kept its connection open but never handed the slot back) is taken
  * back, so a run never stalls on it.
  *
- * Decision 11: the run records how many requests took a slot and how many of them waited.
+ * Decision 11: the run records how many requests were given a slot, how many gave up waiting, and how many waited.
  */
 export const REQUEST_CAP_URL_ENV_VAR = "TESTFORGE_REQUEST_CAP_URL";
 export const REQUEST_CAP_TOKEN_ENV_VAR = "TESTFORGE_REQUEST_CAP_TOKEN";

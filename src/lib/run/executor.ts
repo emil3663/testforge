@@ -351,7 +351,8 @@ export async function startRunJob(
             .finally(async () => {
                 if (requestCap) {
                     job.requestCap = requestCap.stats();
-                    job.outputChunks.push(`Request cap: ${job.requestCap.requests} request(s) to the site took a slot; ${job.requestCap.waited} of them waited (${Math.round(job.requestCap.waitedMs / 1000)} s in all).\n`);
+                    // TFP-265 (ruling 3): slots given and requests that gave up apart; "took a slot" counted both.
+                    job.outputChunks.push(`Request cap: ${job.requestCap.granted} slot(s) given; ${job.requestCap.gaveUp} request(s) gave up waiting when their test ended; ${job.requestCap.waited} request(s) waited for a slot, the ones given one ${Math.round(job.requestCap.waitedMs / 1000)} s in all.\n`);
                     await requestCap.close();
                 }
                 void removeAuthState(authDir);

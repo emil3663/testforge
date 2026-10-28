@@ -20,11 +20,8 @@
  *   and at most 5 requests in any second at the server, with the waits counted; the timed check is Not run with its
  *   reason. With a stub ownership confirmation (TFP-220 replaces the stub in Phase 43): the machine's limit, no cap,
  *   and the timed check runs.
- * - TFP-265, the cap proven at the server, 3 runs of the executor on the recording site: tests that pass, fail or time
- *   out while their requests still wait for slots; no second has more than 5 arrivals, at least as many slots were
- *   given as arrived, and the requests counted beyond those given gave up waiting. A test that
- *   passes while its requests wait stays Passed. The slot server's counts of slots given and waiters that gave up,
- *   offline.
+ * - TFP-265, offline: the slot server's counts of slots given and waiters that gave up; through the executor, the run
+ *   line says the two apart. The cap proven at the server: cap-arrivals.test.ts.
  * - TFP-264's cap-starved failures, offline and in a real browser on the same recording site: cap-starved.test.ts.
  *
  * Run via:
@@ -207,7 +204,7 @@ test("the timed checks, by title: each of Performance's load-timed checks, and n
     for (const title of untimed) assert.ok(!TIMED_CHECK_TITLES.some((pattern) => pattern.test(title)), title);
 });
 
-const { lanAddress, withRecordingSite } = await import("../../test-support/recording-site.ts");
+const { lanAddress, withRecordingSite, busiestSecond } = await import("../../test-support/recording-site.ts");
 
 
 /** Six areas, one unit file each, so the run's workers share them: a page load each, an API request, a context of its own, and a timed and an untimed check. */
@@ -244,16 +241,6 @@ test.describe('Performance Coverage', () => {
 /** A run finalized: its result set and its record saved (run.json written, no .tmp left: waitForSavedRun). */
 const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
-/** The most requests that arrived within any one second. */
-const busiestSecond = (arrivals: Array<{ at: number }>) => {
-    const times = arrivals.map((arrival) => arrival.at).sort((left, right) => left - right);
-    let most = 0;
-    for (let start = 0, end = 0; end < times.length; end++) {
-        while (times[end] - times[start] >= 1000) start++;
-        most = Math.max(most, end - start + 1);
-    }
-    return most;
-};
 
 const lanSkip = needsChromium || (lanAddress ? false : "this machine has no LAN IPv4 address to serve a remote-looking host from");
 
@@ -276,15 +263,17 @@ test("in a real browser: a capped host's run uses at most 3 workers sharing 5 re
         const busiest = busiestSecond(arrivals);
         const first = Math.min(...arrivals.map((arrival) => arrival.at));
         assert.ok(busiest <= 5, `${busiest} requests within one second at the server; slots ${limits.requestCap?.requests}, arrivals ${arrivals.length}: ${arrivals.map((arrival) => `${Math.round(arrival.at - first)}${arrival.path}`).join(" ")}`);
-        // Every request the site got took a slot (the page loads and their resources, the API requests, the context
-        // the test opened itself), and the run says how many waited. A few slots go to requests that never leave the
-        // browser: a test that passes closes its context while its page's images still wait for theirs.
-        assert.ok((limits.requestCap?.requests ?? 0) >= arrivals.length, `${limits.requestCap?.requests} slots, ${arrivals.length} arrived`);
+        // As many slots given as requests arrived, or more (the page loads and their resources, the API requests, the
+        // context the test opened itself), and the run says how many waited. A few slots go to requests that never leave
+        // the browser: a test that passes closes its context while its page's images still wait for theirs.
+        assert.ok((limits.requestCap?.granted ?? 0) >= arrivals.length, `${limits.requestCap?.granted} slots given, ${arrivals.length} arrived`);
         for (const path of ["/p1", "/api/p1", "/app.js", "/a.png", "/weight"]) assert.ok(arrivals.some((arrival) => arrival.path === path), path);
         assert.ok((limits.requestCap?.waited ?? 0) > 0, "some waited");
         const output = job.outputChunks.join("");
         assert.ok(output.includes(`Host limits: ${limits.note}\n`), output);
-        assert.match(output, new RegExp(`Request cap: ${limits.requestCap?.requests} request\\(s\\) to the site took a slot; ${limits.requestCap?.waited} of them waited`));
+        // TFP-265 (ruling 3): the slots given and the requests that gave up, apart.
+        assert.match(output, new RegExp(`Request cap: ${limits.requestCap?.granted} slot\\(s\\) given; ${limits.requestCap?.gaveUp} request\\(s\\) gave up waiting when their test ended; ${limits.requestCap?.waited} request\\(s\\) waited for a slot, the ones given one \\d+ s in all\\.\\n`));
+        assert.ok(!output.includes("took a slot"), "the old wording, which counted both");
     });
 });
 
@@ -326,86 +315,6 @@ test("in a real browser: a test that fails while its page's requests wait for sl
         const output = job.outputChunks.join("");
         assert.ok(!output.includes("Run timed out"), `the run was stopped at its budget after ${Math.round((Date.now() - started) / 1000)} s: ${summary}`);
     });
-});
-
-/**
- * TFP-265: tests that end while their requests still wait for slots: one passes and closes its context with a page of
- * 200 images queued; one fails at once, and one times out, while theirs wait (Playwright replaces a worker after a
- * failure; not asserted here). Ordinary page loads and API requests run beside them.
- */
-function waitingSuiteFor(origin: string) {
-    return `import { test, expect } from '@playwright/test';
-
-test.describe('Ends', () => {
-  test('Ends: passes while its images wait', async ({ page }) => {
-    await page.goto('${origin}/many', { waitUntil: 'commit' });
-    await expect(page.locator('h1')).toHaveText('many');
-  });
-  test('Ends: the next page loads', async ({ page }) => {
-    await page.goto('${origin}/p1');
-    await expect(page.locator('h1')).toHaveText('/p1');
-  });
-});
-
-test.describe('Fails', () => {
-  test('Fails: on purpose while its images wait', async ({ page }) => {
-    await page.goto('${origin}/heavy', { waitUntil: 'commit' });
-    expect(1, 'fails on purpose').toBe(2);
-  });
-  test('Fails: the API answers', async ({ request }) => {
-    expect((await request.get('${origin}/api/p2')).ok()).toBe(true);
-  });
-});
-
-test.describe('Times out', () => {
-  test('Times out: while its images wait', async ({ page }) => {
-    test.setTimeout(5000);
-    await page.goto('${origin}/many');
-  });
-  test('Times out: the next page loads', async ({ page }) => {
-    await page.goto('${origin}/p3');
-    await expect(page.locator('h1')).toHaveText('/p3');
-  });
-});
-`;
-}
-
-test("in a real browser: on a capped host, no second has more than 5 arrivals at the site across 3 runs, with tests passing, failing and timing out while their requests wait; at least as many slots given as arrivals, and what was counted beyond the slots given gave up waiting (TFP-265)", { skip: lanSkip }, async (t) => {
-    for (const run of [1, 2, 3]) {
-        await withRecordingSite(async (origin, arrivals) => {
-            const snapshot = await startRunJob(waitingSuiteFor(origin), ["functional"], "fast", origin, [], [], "Check the site.");
-            const job = await finished(snapshot.runId, 300_000);
-            const report = job.result?.report;
-            assert.ok(report, job.result?.output);
-            const records = report.execution as ExecutionRecord[];
-            const statuses = records.map((record) => `${record.title}: ${record.status} ${record.requestCapWaitMs} ms ${(record.rawMessage ?? "").slice(0, 160)}`).join(" | ");
-            // The suite did what it is for: tests ended with requests waiting, and two failed (restarting their workers).
-            assert.equal(records.find((record) => /passes while its images wait/.test(record.title))?.status, "Passed", statuses);
-            const fails = records.find((record) => /on purpose while its images wait/.test(record.title));
-            assert.equal(fails?.status, "Failed", statuses);
-            assert.ok((fails?.requestCapWaitMs ?? 0) > 0, `it ended with its images waiting: ${statuses}`);
-            // It ran out of time waiting (TFP-264 reports it Not run, starved; either way, it didn't pass).
-            const timesOut = records.find((record) => /Times out: while its images wait/.test(record.title));
-            assert.notEqual(timesOut?.status, "Passed", statuses);
-            assert.match(timesOut?.rawMessage ?? "", /Test timeout of 5000ms exceeded/, statuses);
-            assert.ok(records.filter((record) => /next page loads|API answers/.test(record.title)).every((record) => record.status === "Passed"), statuses);
-
-            const cap = report.hostLimits?.requestCap;
-            assert.ok(cap, "the run's cap counts");
-            const busiest = busiestSecond(arrivals);
-            const first = Math.min(...arrivals.map((arrival) => arrival.at));
-            const spanS = (Math.max(...arrivals.map((arrival) => arrival.at)) - first) / 1000;
-            const line = `run ${run}: busiest second ${busiest} arrivals; ${arrivals.length} arrivals over ${spanS.toFixed(1)} s; ${cap.requests} asked, ${cap.granted} given a slot, ${cap.gaveUp} gave up, ${cap.waited} waited`;
-            t.diagnostic(line);
-            assert.ok(busiest <= 5, `${line}: ${arrivals.map((arrival) => `${Math.round(arrival.at - first)}${arrival.path}`).join(" ")}`);
-            // As many slots given as arrivals, or more: a few go unused (a request its context closed after its slot came).
-            // A count, not a per-arrival match.
-            assert.ok((cap.granted ?? 0) >= arrivals.length, line);
-            // What was counted beyond the slots given is waiters that gave up: they never arrive.
-            assert.equal(cap.requests, (cap.granted ?? 0) + (cap.gaveUp ?? 0), line);
-            assert.ok((cap.gaveUp ?? 0) > 0, `tests ended while their requests waited: ${line}`);
-        });
-    }
 });
 
 test("in a real browser: with the ownership confirmation (a stub until Phase 43), the same host's run uses the machine's limit and no cap, and the timed check runs (Acceptance Criteria 6)", { skip: lanSkip }, async () => {

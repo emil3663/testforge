@@ -20,7 +20,7 @@
  * WebSockets.
  */
 import { test as base } from "@playwright/test";
-import type { APIRequestContext, Browser, BrowserContext } from "@playwright/test";
+import type { APIRequestContext, Browser, BrowserContext, Frame, Request } from "@playwright/test";
 
 export * from "@playwright/test";
 
@@ -55,20 +55,27 @@ const DEFAULT_ASSERTION_WAIT_MS = 5000;
 
 // TFP-264: the running test's time held up by the cap, across all its requests at once: from the first of them to
 // start waiting for a slot to the last to get one. A worker runs one test at a time, but a page group's shared visit
-// outlives each check, so a request an earlier test started (an image still loading) is that test's, not this one's:
-// each wait counts for the test it started in.
+// outlives each check, so a request an earlier test started (an image still loading) is that test's, not this one's.
+// A resource a page's HTML pulls in (PARSER_LOADED) counts for the test that asked for the page, not the one running
+// when it reaches the route: a test that ends as its page commits leaves the browser to parse it, and its images can
+// reach the route only once the next test has begun (TFP-264's carry-over, about 11 s charged to the next test in
+// Linux runs, 2026-10-28). Everything else counts for the test running, as before: a navigation, a fetch or XHR (on a
+// shared visit, one a later check's click sets off is that check's), an API request, a request with no frame. Not
+// told apart: an image a later check's action brings in (a lazy image it scrolls to) counts for the page's test.
 // The spans in which at least one of them waited, [start, end] in ms since the epoch, so the run can find the
 // waiting during the step that failed. Only real waiting counts: a request the slot server queued (its answer says so,
 // as REQUEST_CAP_QUEUED_HEADER in request-cap.ts), one given up while queued, and one still waiting as the test ends.
 // A slot that was free at once is not waiting, however few ms its fetch took.
 const QUEUED_HEADER = "x-testforge-cap-queued";
+/** Playwright's resource types for what a page's HTML pulls in as it is parsed. */
+const PARSER_LOADED = new Set(["image", "stylesheet", "script", "font", "media", "texttrack"]);
 let currentTest = 0;
 let waits: Array<[number, number]> = [];
 const pending = new Set<{ asked: number }>();
-const startWaiting = () => {
+const startWaiting = (owner: number) => {
     const wait = { asked: Date.now() };
-    pending.add(wait);
-    return { test: currentTest, wait };
+    if (owner === currentTest) pending.add(wait);
+    return { test: owner, wait };
 };
 const stopWaiting = (started: { test: number; wait: { asked: number } }, queued: boolean) => {
     pending.delete(started.wait);
@@ -96,14 +103,14 @@ const startTest = () => {
  * Waits for a slot when the request counts; returns the call that hands it back (the server holds it a second more).
  * The slot is this fetch's open answer: handing it back closes the connection, and so does this process ending, so a
  * worker Playwright restarts after a failed test never keeps one (Gate D ruling 1). `signal` gives up the place in the
- * queue: a test's context closing while its requests still wait.
+ * queue: a test's context closing while its requests still wait. `owner` is the test its waiting counts for.
  */
-async function slot(url: string, signal?: AbortSignal): Promise<() => void> {
+async function slot(url: string, signal?: AbortSignal, owner = currentTest): Promise<() => void> {
     if (!SLOT_URL || !counts(url)) return () => undefined;
     const connection = new AbortController();
     const giveUp = () => connection.abort();
     signal?.addEventListener("abort", giveUp, { once: true });
-    const started = startWaiting();
+    const started = startWaiting(owner);
     let queued = false;
     try {
         const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
@@ -153,10 +160,26 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
     // context closed while it waited) hands its slot straight back.
     const closing = new AbortController();
     context.once("close", () => closing.abort());
+    // TFP-264: the test each frame's document was asked for in (its navigation request reaching this route; a hash or
+    // pushState change makes none), for the waiting the resources its HTML pulls in count against.
+    const loadedIn = new WeakMap<Frame, number>();
+    const ownerOf = (request: Request): number => {
+        try {
+            if (request.isNavigationRequest()) {
+                loadedIn.set(request.frame(), currentTest);
+                return currentTest;
+            }
+            if (!PARSER_LOADED.has(request.resourceType())) return currentTest;
+            return loadedIn.get(request.frame()) ?? currentTest;
+        } catch {
+            // No frame (a service worker's request).
+            return currentTest;
+        }
+    };
     await context.route("**/*", async (route) => {
         let release: () => void;
         try {
-            release = await slot(route.request().url(), closing.signal);
+            release = await slot(route.request().url(), closing.signal, ownerOf(route.request()));
         } catch (error) {
             // TFP-265: its context closed while it waited, so the request is moot. Thrown, the abort failed the test
             // that owned the context, however its own checks had gone ("AbortError: This operation was aborted": 66 of
@@ -168,6 +191,10 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
             await route.fallback();
         } catch (error) {
             release();
+            // TFP-265 (ruling 5): its context closed after the slot came, before the request went on. Playwright 1.59
+            // doesn't throw here (the call resolves and the request is dropped: cap-arrivals.test.ts); if a later one
+            // does, the request is moot, as for a waiter.
+            if (closing.signal.aborted) return;
             throw error;
         }
         void route.request().response().catch(() => null).then(release);
