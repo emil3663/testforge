@@ -40,6 +40,13 @@ record. In order:
     requests were queued only at its start stays Failed. Re-run the template
     check, unit and regression suites; commit with this note; stop for
     verification. Then push `7a06160` to the new commit.
+3d. **(Added 2026-10-28, 04:40) TFP-264 verified on `afc4873`, with one
+    clarification** (record, "a third clarification"): an action is starved
+    only if it timed out with a request still queued. Add that condition
+    and a real-browser case (a strict-mode failure while a request is
+    queued stays Failed); re-run the template check, unit and regression
+    suites; commit with this note and push. No further verification stop
+    for this: go straight on to TFP-265, and stop after it.
 4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
    for verification. No timing session. When both are verified, Gate D
    closes and Phase 39 completes (`0.2.0`).

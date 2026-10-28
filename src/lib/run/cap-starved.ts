@@ -6,7 +6,7 @@ import type { RawTiming, TimingStep } from "@/lib/run/timing";
  * TFP-264 (ruling 4 amended, item 2 as amended, and amended again, Emil, 2026-10-28): on a capped host, a test that
  * failed is starved by the request cap when its own requests' waiting for slots during the step that failed (from the
  * step's start to the failure) is as long as that step's assertion wait: 2 s for a shared check, 5 s otherwise; or,
- * when that step isn't an assertion, when one of its requests was still waiting as it failed. Waiting earlier in the
+ * when that step isn't an assertion, when it timed out with one of its requests still waiting. Waiting earlier in the
  * test doesn't count, so a check that fails at once, or after its requests arrived, stays Failed.
  *
  * The cap's module (request-cap-fixture.ts) records the test's waiting spans and its assertion wait; the timing reporter
@@ -49,9 +49,10 @@ export function failingStep(steps: TimingStep[]): (TimingStep & { startedAt: num
 /**
  * Why the cap starved the test, or null when its failure stands. An assertion (`expect`) is starved when its requests
  * waited through its assertion wait. Any other step (a click, fill or load that waited out its timeout) is starved only
- * when one of its requests was still waiting for a slot as it failed, within the same slack (amended again,
- * 2026-10-28): the page was still incomplete when it was judged. A missing button on a page that had finished loading
- * stays Failed, however long the page waited first.
+ * when it timed out and one of its requests was still waiting for a slot as it did, within the same slack (amended
+ * again, and a third clarification, 2026-10-28): the page was still incomplete when it was judged. A missing button on
+ * a page that had finished loading stays Failed, however long the page waited first; so does an action that failed at
+ * once (a strict-mode violation, a detached element, an invalid selector), on what the page is, not on the wait.
  */
 export function starvedReason(waits: CapWaits, steps: TimingStep[]): string | null {
     const step = failingStep(steps);
@@ -59,6 +60,7 @@ export function starvedReason(waits: CapWaits, steps: TimingStep[]): string | nu
     const failedAt = step.startedAt + step.duration;
     const during = waitingWithin(waits.spans, step.startedAt, failedAt);
     if (step.kind !== "expect") {
+        if (!step.timedOut) return null;
         const stillWaiting = waits.spans.some(([start, end]) => start <= failedAt && end >= failedAt - STEP_TIMING_SLACK_MS);
         if (!stillWaiting) return null;
         return `starved by the request cap: when the step that failed gave up, its requests were still waiting for slots (${(during / 1000).toFixed(1)} s of waiting during it), so its failure says nothing about the site`;

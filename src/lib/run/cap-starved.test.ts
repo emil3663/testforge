@@ -11,6 +11,8 @@
  *   Decision 10 caps): a test the cap holds up through its failing step is Not run, and the same test uncapped passes;
  *   a real defect with some waiting, one after an early wait, and one after an earlier test's queued images stay
  *   Failed; a real shared check (2 s) starved through its failing check is Not run. The capped budget is 60 minutes.
+ *   An action is starved only when it timed out: a strict-mode failure while its page's requests are queued stays
+ *   Failed (a third clarification, 2026-10-28).
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/run/cap-starved.test.ts
@@ -44,7 +46,7 @@ const lanSkip = needsChromium || (lanAddress ? false : "this machine has no LAN 
 const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
 const T = 1_800_000_000_000;
-const step = (kind: "goto" | "expect" | "other", startedAt: number, duration: number, failed: boolean) => ({ kind, target: "", startedAt, duration, failed });
+const step = (kind: "goto" | "expect" | "other", startedAt: number, duration: number, failed: boolean, timedOut = false) => ({ kind, target: "", startedAt, duration, failed, timedOut });
 
 test("waitingWithin: only the waiting inside the window counts", () => {
     assert.equal(waitingWithin([[T, T + 1000], [T + 3000, T + 6000]], T + 500, T + 4000), 500 + 1000);
@@ -75,11 +77,15 @@ test("starvedReason: only waiting during the step that failed counts against its
         ["no failing step (a plain timeout in the test's own code)", { assertionWaitMs: 5000, spans: [[T, T + 30_000]] }, [load], false],
         // Amended again (2026-10-28): a step that isn't an assertion is starved only if a request was still waiting as it
         // failed (within the 100 ms slack), however long it waited before.
-        ["a navigation that timed out waiting", { assertionWaitMs: 5000, spans: [[T + 200, T + 30_000]] }, [step("goto", T, 30_000, true)], true],
-        ["a click that timed out, its page queued only at its start", { assertionWaitMs: 5000, spans: [[T, T + 6_000]] }, [step("other", T, 30_000, true)], false],
-        ["a click that timed out, a request still waiting 50 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_950]] }, [step("other", T, 30_000, true)], true],
-        ["a click that timed out, the last wait over 150 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_850]] }, [step("other", T, 30_000, true)], false],
-        ["a click that failed at once on a page still loading", { assertionWaitMs: 5000, spans: [[T, T + 9_000]] }, [step("goto", T, 500, false), step("other", T + 500, 20, true)], true],
+        ["a navigation that timed out waiting", { assertionWaitMs: 5000, spans: [[T + 200, T + 30_000]] }, [step("goto", T, 30_000, true, true)], true],
+        ["a click that timed out, its page queued only at its start", { assertionWaitMs: 5000, spans: [[T, T + 6_000]] }, [step("other", T, 30_000, true, true)], false],
+        ["a click that timed out, a request still waiting 50 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_950]] }, [step("other", T, 30_000, true, true)], true],
+        ["a click that timed out, the last wait over 150 ms before", { assertionWaitMs: 5000, spans: [[T + 29_000, T + 29_850]] }, [step("other", T, 30_000, true, true)], false],
+        // A third clarification (2026-10-28): only a step that timed out. One that fails at once (a strict-mode
+        // violation, a detached element, an invalid selector) fails on what the page is, even with a request queued.
+        ["a click that failed at once on a page still loading", { assertionWaitMs: 5000, spans: [[T, T + 9_000]] }, [step("goto", T, 500, false), step("other", T + 500, 20, true)], false],
+        ["a click that failed late, not by timing out, a request still waiting", { assertionWaitMs: 5000, spans: [[T + 200, T + 30_000]] }, [step("other", T, 29_000, true)], false],
+        ["a load that failed at once (refused), a request still waiting", { assertionWaitMs: 5000, spans: [[T, T + 9_000]] }, [step("goto", T, 30, true)], false],
         ["a shared check, waited through its 2 s", { assertionWaitMs: 2000, spans: [[T + 12_000, T + 15_000]] }, [load, step("expect", T + 12_000, 1_950, true)], true],
         ["a shared check, waited 1.5 s of its 2 s", { assertionWaitMs: 2000, spans: [[T + 12_500, T + 15_000]] }, [load, step("expect", T + 12_000, 2_000, true)], false],
     ];
@@ -99,7 +105,7 @@ test("markCapStarved: marks an unexpected test whose failing step waited, once; 
     const spec = (id: string, status: string, annotations: Array<{ type: string; description?: string }>) => ({ id, title: id, tests: [{ status, annotations }] });
     const report = { suites: [{ title: "a.spec.ts", specs: [spec("starved", "unexpected", [waits([[T, T + 31_000]])]), spec("passed", "expected", [waits([[T, T + 31_000]])])], suites: [{ title: "inner", specs: [spec("early", "unexpected", [waits([[T, T + 12_000]])]), spec("untimed", "unexpected", [waits([[T, T + 31_000]])]), spec("plain", "unexpected", [])] }] }] };
     const timing = { version: 1, tests: [
-        { id: "starved", retry: 0, steps: [step("goto", T, 30_000, true)] },
+        { id: "starved", retry: 0, steps: [step("goto", T, 30_000, true, true)] },
         { id: "passed", retry: 0, steps: [step("goto", T, 30_000, false)] },
         { id: "early", retry: 0, steps: [step("goto", T, 12_000, false), step("expect", T + 12_000, 5_000, true)] },
         { id: "plain", retry: 0, steps: [step("expect", T, 5_000, true)] },
@@ -331,6 +337,32 @@ test.describe('Down', () => {
         assert.equal(record.status, "Failed", said);
         assert.match(record.rawMessage ?? "", /ERR_CONNECTION_REFUSED|ECONNREFUSED/i, said);
         assert.equal(record.requestCapWaitMs, 0, said);
+        assert.equal(report.hostLimits?.requestCap?.starved, 0);
+    });
+});
+
+test("in a real browser: on a capped host, a strict-mode failure while the page's requests are still queued stays Failed (TFP-264, a third clarification)", { skip: lanSkip }, async () => {
+    // The page's 200 images are still waiting for slots (about 40 s of them at 5 a second) when the click fails at once:
+    // its locator matches them all. It failed on what the page is, not on the wait.
+    await withRecordingSite(async (origin) => {
+        const code = `import { test, expect } from '@playwright/test';
+
+test.describe('Strict', () => {
+  test('Strict: click the image', async ({ page }) => {
+    await page.goto('${origin}/many', { waitUntil: 'domcontentloaded' });
+    await page.locator('img').click();
+  });
+});
+`;
+        const snapshot = await startRunJob(code, ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 300_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const [record] = report.execution as ExecutionRecord[];
+        const said = `${record?.status} ${record?.skipReason} ${record?.requestCapWaitMs} ms: ${(record?.rawMessage ?? "").slice(0, 160)}`;
+        assert.equal(record.status, "Failed", said);
+        assert.match(record.rawMessage ?? "", /strict mode violation/, said);
+        assert.ok((record.requestCapWaitMs ?? 0) > 0, `its requests were queued as it failed: ${said}`);
         assert.equal(report.hostLimits?.requestCap?.starved, 0);
     });
 });

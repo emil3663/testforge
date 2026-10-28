@@ -117,6 +117,10 @@ test("in a real browser: loads, settle waits (one capped), requests and the fail
     // The browser and request set-up isn't the tests' own: only their calls are kept, each once.
     const health = raw.tests.find((record) => record.title.includes("link health"))!;
     assert.deepEqual(health.steps.map((step) => `${step.kind} ${step.target}`), ["request /a", "expect ", "request /b", "expect "]);
+    // TFP-264: a step that ran out of time says so (the capped settle wait); one that passed doesn't.
+    const steps = raw.tests.flatMap((record) => record.steps);
+    assert.equal(steps.filter((step) => step.kind === "settle" && step.timedOut).length, 1, "/busy's settle wait timed out");
+    assert.ok(steps.filter((step) => !step.failed).every((step) => step.timedOut === false));
     const timing = summarizeTiming(raw, { baseUrl: origin, profile: profile() });
     assert.equal(timing.tests, 4);
     assert.equal(timing.pageLoads.count, 4, "/, /a, /, /busy");

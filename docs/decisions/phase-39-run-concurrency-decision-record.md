@@ -1102,3 +1102,24 @@ averaged 5.15 to 5.30 counted requests per second against a cap of 5.
   - the counted rate's excess over arrivals is explained in the ticket's
     report (for example, slots handed back unused).
 - **Dependencies:** None.
+
+**Ruling 4, item 2, a third clarification (Emil, 2026-10-28, on `afc4873`):**
+a failing step that isn't an `expect` step is starved only if it **timed
+out** and one of the test's own requests was still queued for a slot when it
+did (within 100 ms). An action that fails at once — a strict-mode violation
+(two matching elements), a detached element, an invalid selector — fails on
+what the page is, not on the wait, and stays Failed even if a request was
+queued at that moment. Rejected: counting any queued request at failure
+(as built in `afc4873`), which would hide those failures.
+
+**Progress:**
+- **TFP-264:** built through `e9943b4`, `f8333b6` and `afc4873`; independently
+  verified 2026-10-28 (Cowork) on `afc4873`: the rule's code matches the
+  ruling in both branches; `cap-starved.test.ts` 13 of 13 and
+  `execution.test.ts` pass in a separate Linux environment, the 8
+  real-browser cases included (Chromium 1243, newer than the builder's);
+  `check:template-unchanged 57bcc76 afc4873`: 166 of 166 identical, no
+  generator file changed. Open: the instant-failure clarification above,
+  one follow-up commit with a real-browser case (a strict-mode failure while
+  a request is queued stays Failed), then TFP-265.
+

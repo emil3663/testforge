@@ -33,6 +33,11 @@ export interface TimingStep {
     failed: boolean;
     /** TFP-264: when the step started (ms since the epoch), so a failing step's slot waits can be found. */
     startedAt?: number;
+    /**
+     * TFP-264 (a third clarification, 2026-10-28): the step failed by running out of time, its own timeout or the
+     * test's, not at once (a strict-mode violation, a detached element, an invalid selector).
+     */
+    timedOut?: boolean;
 }
 
 export interface TimingTest {
@@ -72,6 +77,14 @@ function kindOf(step) {
   return { kind: 'other', target: '' };
 }
 
+// TFP-264: how Playwright 1.59 says a call ran out of time: "TimeoutError: page.click: Timeout 1500ms exceeded." for
+// its own timeout, "Error: page.click: Test timeout of 2500ms exceeded." for the test's.
+const TIMED_OUT = /\\bTimeout \\d+ms exceeded|\\bTest timeout of \\d+ms exceeded/;
+
+function timedOut(error) {
+  return Boolean(error) && TIMED_OUT.test(String(error.message || '').split('\\n')[0]);
+}
+
 function inFixture(step) {
   for (let parent = step.parent; parent; parent = parent.parent) {
     if (parent.category === 'fixture' || parent.category === 'hook') return true;
@@ -92,7 +105,7 @@ class TestForgeTimingReporter {
     if (!kind) return;
     const key = test.id + ':' + result.retry;
     if (!this.steps.has(key)) this.steps.set(key, []);
-    this.steps.get(key).push({ kind: kind.kind, target: kind.target, duration: step.duration, failed: Boolean(step.error), startedAt: step.startTime.getTime() });
+    this.steps.get(key).push({ kind: kind.kind, target: kind.target, duration: step.duration, failed: Boolean(step.error), timedOut: timedOut(step.error), startedAt: step.startTime.getTime() });
   }
 
   onTestEnd(test, result) {
