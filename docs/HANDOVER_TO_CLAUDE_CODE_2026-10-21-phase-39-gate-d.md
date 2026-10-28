@@ -23,6 +23,14 @@ record. In order:
 3. **(Replaced 2026-10-28.)** Ruling 4's experiment stopped at its dry run:
    read "Ruling 4 amended (Emil, 2026-10-28)" at the end of the Phase 39
    record. Push `96ffcf3` and commit the dry run's output with the ruling.
+3b. **(Added 2026-10-28, 02:00) TFP-264's starved rule is amended:** only
+    waiting that overlaps the failing step counts (record, ruling 4
+    amended, item 2). Change `e9943b4`'s rule in a follow-up commit, add
+    the two new acceptance cases (early wait then a real failure stays
+    Failed; a shared check's 2 s case in a real browser), re-run the
+    template check, unit and regression suites, and stop for
+    verification. Commit this planning note and the record's amendment
+    with it.
 4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
    for verification. No timing session. When both are verified, Gate D
    closes and Phase 39 completes (`0.2.0`).

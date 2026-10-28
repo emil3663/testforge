@@ -11,10 +11,10 @@
  *   (TESTFORGE_NOT_JUDGED_REASON), as
  *   a page load slowed by the cap measures the cap, not the site (owner decision, 2026-10-21).
  * - another (TFP-264, ruling 4 amended, 2026-10-28): each test records how long the cap held it up (the time at least
- *   one of its requests waited for a slot) in a `request-cap-wait` annotation. A test that failed or timed out after
- *   waiting longer than its assertion wait (2 s in a page's shared group, TFP-215; Playwright's own otherwise) also
- *   gets a `request-cap-starved` one, which the report reads as Not run with that reason: the cap failed it, not the
- *   site. A failure with less waiting stays Failed.
+ *   one of its own requests waited for a slot) in a `request-cap-wait` annotation, and a test that failed or timed out
+ *   also records when it waited and its assertion wait (2 s in a page's shared group, TFP-215; Playwright's own
+ *   otherwise) in a `request-cap-waits` one. The run (src/lib/run/cap-starved.ts) sets it against the step that
+ *   failed: only waiting during that step can have failed it.
  *
  * Not counted, as Playwright doesn't route them: a redirect's later hops, a service worker's own requests and
  * WebSockets.
@@ -45,9 +45,9 @@ function counts(url: string): boolean {
 
 const HEADERS = { "x-testforge-cap-token": TOKEN };
 
-/** As REQUEST_CAP_WAIT_ANNOTATION and REQUEST_CAP_STARVED_ANNOTATION in src/lib/report/execution.ts. */
+/** As REQUEST_CAP_WAIT_ANNOTATION and REQUEST_CAP_WAITS_ANNOTATION in src/lib/report/execution.ts. */
 const WAIT_ANNOTATION = "request-cap-wait";
-const STARVED_ANNOTATION = "request-cap-starved";
+const WAITS_ANNOTATION = "request-cap-waits";
 /** TFP-215: a shared check's assertions wait 2 s (a test in a page's group carries `visit` annotations). */
 const SHARED_ASSERTION_WAIT_MS = 2000;
 /** Playwright's own assertion wait: playwright.config.ts sets none, so every other test's `expect` waits 5 s. */
@@ -57,23 +57,25 @@ const DEFAULT_ASSERTION_WAIT_MS = 5000;
 // start waiting for a slot to the last to get one. A worker runs one test at a time, but a page group's shared visit
 // outlives each check, so a request an earlier test started (an image still loading) is that test's, not this one's:
 // each wait counts for the test it started in.
+// The spans in which at least one of them waited, [start, end] in ms since the epoch, so the run can find the
+// waiting during the step that failed.
 let currentTest = 0;
 let waitingNow = 0;
 let waitingSince = 0;
-let waitedMs = 0;
+let spans: Array<[number, number]> = [];
 const startWaiting = (): number => {
     if (waitingNow++ === 0) waitingSince = Date.now();
     return currentTest;
 };
 const stopWaiting = (startedIn: number) => {
     if (startedIn !== currentTest) return;
-    if (--waitingNow === 0) waitedMs += Date.now() - waitingSince;
+    if (--waitingNow === 0) spans.push([waitingSince, Date.now()]);
 };
-const waitedSoFar = () => waitedMs + (waitingNow > 0 ? Date.now() - waitingSince : 0);
+const spansSoFar = (): Array<[number, number]> => (waitingNow > 0 ? [...spans, [waitingSince, Date.now()]] : spans);
 const startTest = () => {
     currentTest++;
     waitingNow = 0;
-    waitedMs = 0;
+    spans = [];
 };
 
 /**
@@ -151,15 +153,11 @@ export const test = base.extend<{ testforgeNotJudged: void; testforgeCapWait: vo
         startTest();
         await provide();
         if (!SLOT_URL) return;
-        const waited = waitedSoFar();
-        testInfo.annotations.push({ type: WAIT_ANNOTATION, description: String(waited) });
-        const assertionWait = testInfo.annotations.some((annotation) => annotation.type === "visit") ? SHARED_ASSERTION_WAIT_MS : DEFAULT_ASSERTION_WAIT_MS;
-        const failed = testInfo.status === "failed" || testInfo.status === "timedOut";
-        if (failed && waited > assertionWait) {
-            testInfo.annotations.push({
-                type: STARVED_ANNOTATION,
-                description: `starved by the request cap: it waited ${(waited / 1000).toFixed(1)} s for request slots, longer than its ${assertionWait / 1000} s assertion wait, so its failure says nothing about the site`,
-            });
+        const waited = spansSoFar();
+        testInfo.annotations.push({ type: WAIT_ANNOTATION, description: String(waited.reduce((total, [from, to]) => total + to - from, 0)) });
+        if (testInfo.status === "failed" || testInfo.status === "timedOut") {
+            const assertionWaitMs = testInfo.annotations.some((annotation) => annotation.type === "visit") ? SHARED_ASSERTION_WAIT_MS : DEFAULT_ASSERTION_WAIT_MS;
+            testInfo.annotations.push({ type: WAITS_ANNOTATION, description: JSON.stringify({ assertionWaitMs, spans: waited }) });
         }
     }, { auto: true }],
     browser: [async ({ browser }, provide) => {

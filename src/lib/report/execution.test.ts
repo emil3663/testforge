@@ -49,7 +49,7 @@ test("deriveArea: only whole titles match - a describe that merely mentions an a
 
 // --- Phase 34 (TFP-117): skipped tests say why ------------------------------
 
-const { flattenSuites, capStarvedCount, REQUEST_CAP_WAIT_ANNOTATION, REQUEST_CAP_STARVED_ANNOTATION } = await import("./execution.ts");
+const { flattenSuites, capStarvedCount, REQUEST_CAP_WAIT_ANNOTATION, REQUEST_CAP_WAITS_ANNOTATION, REQUEST_CAP_STARVED_ANNOTATION } = await import("./execution.ts");
 
 function skippedSpec(annotations?: Array<{ type: string; description?: string }>) {
     return [
@@ -124,8 +124,9 @@ test("the request cap's fixture writes the annotations the report reads (TFP-264
     const { readFile } = await import("node:fs/promises");
     const fixture = await readFile(new URL("../run/request-cap-fixture.ts", import.meta.url), "utf8");
     assert.ok(fixture.includes(`const WAIT_ANNOTATION = "${REQUEST_CAP_WAIT_ANNOTATION}";`));
-    assert.ok(fixture.includes(`const STARVED_ANNOTATION = "${REQUEST_CAP_STARVED_ANNOTATION}";`));
-    assert.ok(fixture.includes("description: `starved by the request cap: "), "capStarvedCount's prefix");
+    assert.ok(fixture.includes(`const WAITS_ANNOTATION = "${REQUEST_CAP_WAITS_ANNOTATION}";`));
+    const marker = await readFile(new URL("../run/cap-starved.ts", import.meta.url), "utf8");
+    assert.ok(marker.includes("return `starved by the request cap: "), "capStarvedCount's prefix");
 });
 
 test("flattenSuites: a skipped or interrupted test with no stated reason keeps the generic wording", () => {

@@ -1017,6 +1017,18 @@ averaged 5.15 to 5.30 counted requests per second against a cap of 5.
      by the request cap"**, with the time it waited, never Failed;
    - a test that fails without that much waiting stays Failed;
    - the capped run's time budget is 60 minutes (ruling 5).
+
+   **Amended 2026-10-28 (Emil; TFP-264's build showed the gap):** only
+   slot waiting that **overlaps the step that failed** counts. A test is
+   starved when its own requests' waiting during that step (from the
+   step's start to the failure) exceeds that step's assertion wait — 2 s
+   for a shared check, 5 s otherwise. Waiting earlier in the test doesn't
+   count, so a check that fails at once, or after its requests arrived,
+   stays Failed. As first worded, any waiting in the test counted, and
+   with slot waits averaging 2.8 to 6.2 s on capped sites real defects
+   would have been reported Not run (RUN-42's lease test showed two).
+   Rejected: re-running starved candidates once under the cap (catches
+   more, but costs run time on every capped run).
 3. **The cap is proven, not assumed** (TFP-265). Counted requests above 5
    per second may be slots handed back by connections that closed before
    their request left (TFP-157's leak fix), which would be harmless, or
@@ -1047,6 +1059,10 @@ averaged 5.15 to 5.30 counted requests per second against a cap of 5.
     passes;
   - a test that fails for a real defect under the cap, with little waiting,
     stays Failed;
+  - **(added 2026-10-28)** a test that waits for slots early, then fails
+    for a real defect in a later step whose requests didn't wait, stays
+    Failed; a shared check (2 s assertion wait) starved during its failing
+    step is Not run — both in a real browser on the fixture;
   - uncapped runs are unchanged: template output byte-identical
     (`check:template-unchanged`), unit and regression suites pass in full;
   - `TEST_PLAN.md` gains the case; RUN-42 notes the change.

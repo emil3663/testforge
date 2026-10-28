@@ -31,9 +31,13 @@ export interface TimingStep {
     target: string;
     duration: number;
     failed: boolean;
+    /** TFP-264: when the step started (ms since the epoch), so a failing step's slot waits can be found. */
+    startedAt?: number;
 }
 
 export interface TimingTest {
+    /** TFP-264: Playwright's test id, the JSON report's spec id. */
+    id?: string;
     titlePath: string[];
     title: string;
     /** The test's `page` annotation: the page it is about. */
@@ -88,13 +92,14 @@ class TestForgeTimingReporter {
     if (!kind) return;
     const key = test.id + ':' + result.retry;
     if (!this.steps.has(key)) this.steps.set(key, []);
-    this.steps.get(key).push({ kind: kind.kind, target: kind.target, duration: step.duration, failed: Boolean(step.error) });
+    this.steps.get(key).push({ kind: kind.kind, target: kind.target, duration: step.duration, failed: Boolean(step.error), startedAt: step.startTime.getTime() });
   }
 
   onTestEnd(test, result) {
     const key = test.id + ':' + result.retry;
     const page = test.annotations.find((annotation) => annotation.type === 'page');
     this.tests.push({
+      id: test.id,
       titlePath: test.titlePath(),
       title: test.title,
       page: page && page.description ? page.description : null,

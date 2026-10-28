@@ -236,7 +236,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     // TFP-264: on a capped host, how many tests the cap starved, reported Not run, not Failed.
     const capStarved = job.requestCap && parsedReport ? capStarvedCount(flattenSuites(parsedReport.suites ?? [])) : 0;
     if (job.requestCap) {
-        job.outputChunks.push(`Request cap: ${capStarved} test(s) waited for request slots longer than their assertion wait and failed, so they are reported Not run ("starved by the request cap"), not Failed.\n`);
+        job.outputChunks.push(`Request cap: ${capStarved} test(s) failed while their requests waited for slots through the failing step's assertion wait, so they are reported Not run ("starved by the request cap"), not Failed.\n`);
     }
     const output = redactor.redact(job.outputChunks.join("").trim());
     const duration = job.finishedAt - job.createdAt;

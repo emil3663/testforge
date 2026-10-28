@@ -289,8 +289,13 @@ function annotationValues(test: JsonTest, type: string): string[] {
 
 const ISSUE_KINDS = new Set(["failure", "finding", "manual-review"]);
 
-/** TFP-264: the annotations the request cap's fixture writes (request-cap-fixture.ts, which can't import this). */
+/**
+ * TFP-264: the annotations the request cap's fixture writes (request-cap-fixture.ts, which can't import this): the
+ * test's total wait, and, on a failure, its waiting spans and assertion wait; and the one the run adds to a starved
+ * test (src/lib/run/cap-starved.ts).
+ */
 export const REQUEST_CAP_WAIT_ANNOTATION = "request-cap-wait";
+export const REQUEST_CAP_WAITS_ANNOTATION = "request-cap-waits";
 export const REQUEST_CAP_STARVED_ANNOTATION = "request-cap-starved";
 /** How many of a run's records the request cap starved (TFP-264). */
 export const capStarvedCount = (records: Array<{ status: string; skipReason?: string }>) =>

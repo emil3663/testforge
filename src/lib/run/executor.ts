@@ -21,6 +21,7 @@ import { splitSuite } from "@/lib/run/split";
 import { hostLimitsFor } from "@/lib/run/host-limits";
 import { hasOwnershipConfirmation } from "@/lib/run/ownership";
 import { requestCapEnv, startRequestCap, withRequestCap, writeRequestCapModule } from "@/lib/run/request-cap";
+import { markCapStarved } from "@/lib/run/cap-starved";
 import type { RequestCap } from "@/lib/run/request-cap";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
@@ -335,7 +336,11 @@ export async function startRunJob(
         if (forceStopTimer) {
             clearTimeout(forceStopTimer);
         }
+        // TFP-264: on a capped host, the failures the cap starved are marked before the stale re-check reads the
+        // report's failures (a starved test isn't one). The re-check has no timing reporter, so its re-runs aren't judged.
+        const markStarved = () => (requestCap ? markCapStarved(jsonReportFile, timingFile).catch(() => 0) : Promise.resolve(0));
         void mergePasses(passes.map((pass) => pass.report), jsonReportFile, passes.map((pass) => pass.timing), timingFile)
+            .then(markStarved)
             // Phase 42 (TFP-191): failing reused tests on a page that changed are regenerated and re-run
             // first, with this run's login state, so the report has only the re-run's results.
             // Ruling 5: on a capped host the re-check has what is left of the run's 60 minutes, not 60 more.
