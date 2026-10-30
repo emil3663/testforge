@@ -1,7 +1,7 @@
 # Handover to Claude Code — after Phase 39 (2026-10-30)
 
-**Use this only once Phase 39 is verified complete** (Gate D closed, step 3f
-of the Phase 39 handover verified). In the commit that adds the first work
+**Phase 39 was verified complete on 2026-10-31 — use this now.** (Originally: use this only once Phase 39 is verified complete (Gate D closed, step 3f
+of the Phase 39 handover verified).) In the commit that adds the first work
 from this file, delete both `HANDOVER_TO_CLAUDE_CODE_2026-10-21-phase-39-gate-d.md`
 and `HANDOVER_TO_CLAUDE_CODE_2026-10-26-workflow-and-names.md` (`git rm`):
 this replaces them. Their history is in git and the records.
@@ -29,6 +29,40 @@ this replaces them. Their history is in git and the records.
 
 ## Work, in order (owner decision, 2026-10-30)
 
+0. **TFP-266, first (P0, added 2026-10-30, 23:30):** upgrade Next.js to
+   16.4.3 or later and clear the dependency advisories, as the workflow
+   backlog's TFP-266 entry says. Stop for verification.
+0a. **CodeQL advanced setup (owner decision, 2026-10-30; part of TFP-267,
+   do it first — it's independent of the code).** The owner turns off
+   code scanning's default setup in GitHub's settings (done from the
+   planning session in the owner's browser). Then add, in one `ci` commit:
+   - `.github/codeql/codeql-config.yml`:
+     ```yaml
+     name: TestForge CodeQL config
+     # benchmarks/ and examples/ are frozen evidence (generated suites, run
+     # output), never edited; comparisons/ is generated and gitignored.
+     paths-ignore:
+       - benchmarks/**
+       - examples/**
+       - comparisons/**
+     ```
+   - `.github/workflows/codeql.yml`: on push and pull requests to `main`
+     and weekly; `permissions: { contents: read, security-events: write,
+     actions: read }`; languages `javascript-typescript` and `actions`
+     (what default setup scanned), `build-mode: none`; the default query
+     suite; `config-file: ./.github/codeql/codeql-config.yml`. Use the
+     current major versions of `actions/checkout` (the repo's workflows use
+     `@v7`) and `github/codeql-action` — check the latest major first, as
+     TFP-216 did.
+   Proof: the workflow's first run succeeds and uploads; the Security tab's
+   open alerts no longer include any under `benchmarks/` or `examples/`
+   (they close as no longer found); the 13 production alerts are still
+   there for TFP-267.
+0b. **TFP-267, code scanning** (backlog entry): the generated link checks'
+   escaping fix, the three hardening items, then ask the owner before moving
+   CodeQL to advanced setup and dismissing the by-design alerts. Do it
+   beside item 1 so the template baseline moves once. Stop for
+   verification.
 1. **The helper lines and the template baseline** (TFP-250 follow-up,
    backlog's TFP-250 entry): reword `src/lib/generate/mock/controls.ts`
    lines 245 and 282 to their decision references; re-record

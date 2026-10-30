@@ -72,6 +72,115 @@ another session took any of them.
 
 ---
 
+### TFP-266 - Upgrade Next.js and clear the known dependency vulnerabilities (added 2026-10-30)
+
+- **Phase:** None — straight after Phase 39 is verified complete
+- **Priority:** P0
+- **Suggested labels:** `security`, `dependencies`
+- **Problem it solves:** GitHub's Dependabot flagged the repo, and
+  `npm audit` on `211a4a7` (2026-10-30) gives 23 advisories: 2 critical, 17
+  high, 3 moderate, 1 low; 7 of them in packages the app runs
+  (`--omit=dev`). The one that matters is **`next` 16.2.3**, with 33
+  advisories fixed by **16.4.3** (not a major version):
+  - several **Middleware / Proxy bypasses** (GHSA-267c-6grr-h53f,
+    GHSA-26hh-7cqf-hhc6, GHSA-492v-c6pp-mqqv, GHSA-6gpp-xcg3-4w24). TFP-261's
+    request guard *is* a Next Proxy (`src/proxy.ts`), so a bypass could undo
+    it;
+  - **unauthenticated RCE on Windows-hosted servers** (GHSA-p293-qw3h-jr36),
+    and TestForge runs on Windows.
+  Others need features TestForge doesn't use (`next/image`, `next/og`,
+  `use cache`, Server Actions): no file in `src/` uses them. Loopback
+  binding (TFP-261) limits who can reach the server, but not a page in the
+  tester's own browser if the guard is bypassed.
+  The rest are transitive: through `next` (sharp, postcss, zod, nanoid,
+  source-map-js, baseline-browser-mapping) and through dev tooling
+  (Allure's `handlebars` and `adm-zip`, `axios`, `markdown-it`, and others),
+  each with a non-major fix.
+- **Scope:**
+  - `next` and `eslint-config-next` to 16.4.3 or later (read
+    `node_modules/next/dist/docs/` for changes, per `AGENTS.md`);
+  - `npm audit fix` for the rest, without `--force`; anything it can't fix
+    without a major version is listed, not forced;
+  - a nightly check: `npm audit --omit=dev --audit-level=high` fails the
+    nightly (with `shell: bash`), so the app's own dependencies can't drift
+    back unnoticed;
+  - SECURITY.md's "dependencies are not scanned automatically" gap updated
+    (Dependabot alerts and the nightly check).
+- **Acceptance criteria:**
+  - `npm audit --omit=dev` reports no critical or high advisory;
+  - the request-guard regression spec and `src/proxy.test.ts` pass on the
+    new Next, and a request through each bypass's documented shape that
+    applies to an `/api/*` route is still refused (or the ticket says why a
+    shape can't apply);
+  - template check byte-identical; unit and regression suites pass in full;
+    the self-test build and `npm run dev` start, bound to `127.0.0.1`;
+  - the remaining advisories (dev-only, or no non-major fix) listed in the
+    commit body.
+- **Dependencies:** Phase 39 verified complete.
+
+---
+
+### TFP-267 - Code scanning: fix the real findings, quiet the noise (added 2026-10-30)
+
+- **Phase:** None — after TFP-266
+- **Priority:** P1
+- **Suggested labels:** `security`, `generate`, `ci`
+- **Problem it solves:** GitHub's code scanning (CodeQL, default setup) shows
+  about 5,000 open alerts (read 2026-10-30 in the owner's browser): 0
+  critical, 18 high, the rest medium or lower. Almost all are in
+  `benchmarks/` (frozen copies of generated suites). GitHub's own
+  production-code filter (`autofilter:true`, excluding tests and generated
+  files) leaves 13. Triage, by reading each one's code on `211a4a7`:
+  - **Real, in every generated suite — "Replacement of a substring with
+    itself":** the link checks' selector escaping in
+    `src/lib/generate/mock/link-audits/detail-tests.ts` (lines 23, 41, 61,
+    94) and `experience-tests.ts` (213). Inside the template literal,
+    `.replace(/"/g, '\\"')` writes `.replace(/"/g, '\"')` into the suite,
+    which in the suite is `"` replaced by `"`: nothing is escaped, and
+    backslashes aren't either. A link whose `href` contains `"` or `\`
+    produces an invalid selector, so its link test fails on TestForge's own
+    error, not the site's. This is where most of the benchmark alerts come
+    from (thousands of copies).
+  - **Hardening, low risk:**
+    - `src/lib/generate/mock/index.ts:117` (alert #10): `hostname.includes("demoqa.com")`
+      also matches `demoqa.com.example`; use an exact host or a `.demoqa.com`
+      suffix;
+    - `src/lib/run/persistence.ts:181` (#1, path injection): every API
+      caller already checks `isValidRunId` (UUID) first; also check inside
+      `runJsonPath`, so a future caller can't skip it;
+    - `src/lib/generate/mock/journey-tests.ts:26` (#3): the attribute name
+      escapes `:` only; escape it properly for CSS. It is then quoted as a
+      JS string, so this is selector correctness, not code injection.
+  - **By design or false positives, dismissed in GitHub with the reason:**
+    - `src/lib/introspect/dom-snapshot.ts` 517, 650, 680 and
+      `src/app/api/crawl/route.ts:188` ("incomplete URL scheme check"): the
+      crawl follows same-origin http(s) links only, and these lists skip
+      inert links; nothing is rendered or executed from them;
+    - `src/lib/generate/benchmark-quality.ts:28` ("bad HTML filtering
+      regexp"): a heuristic that scores generated code, not a filter;
+    - `scripts/comparison-fixture.mjs` 412, 435: the local test fixture,
+      dev only;
+    - the test files and `skills/` helper scripts (#4, #5, #7, #8, #9,
+      #11): test-only code.
+  - **Noise:** `benchmarks/` and `examples/` are evidence, never edited.
+- **Scope:** fix the escaping in the generator (with real-browser cases:
+  an `href` containing `"`, and one containing `\`, are found and checked);
+  the three hardening items; then — **owner decision** — move CodeQL from
+  default to advanced setup with a committed config that ignores
+  `benchmarks/**` and `examples/**` (default setup can't exclude paths), and
+  dismiss the by-design alerts with their reasons.
+- **Acceptance criteria:**
+  - the generated link checks escape `"` and `\` (unit and real-browser);
+  - `check:template-unchanged` shows only the escaping lines changed;
+    `TEMPLATE_BASELINE` re-recorded in its own commit;
+  - after the next scan, the production-code view (`autofilter:true`) shows
+    no open alert that isn't dismissed with a reason;
+  - unit and regression suites pass in full.
+- **Dependencies:** TFP-266. The baseline moves once, together with the
+  helper-lines change if they land close together.
+
+---
+
 ## Part 1 — TestForge in a target's CI pipeline (proposed Phase 47)
 
 > **Locked 2026-10-27 as Phase 47** (`phase-47-ci-integration-decision-record.md`).

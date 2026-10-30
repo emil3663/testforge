@@ -1,7 +1,7 @@
 # TestForge — what it actually does
 
-*Living doc. Last reviewed 2026-10-26, against `main` at `8e93998` (Phase 39
-Gate D ruled). Reviewed at every phase completion
+*Living doc. Last reviewed 2026-10-31, against `main` at `b38c622` (Phase 39
+complete). Reviewed at every phase completion
 ([`WORKING_AGREEMENTS.md`](WORKING_AGREEMENTS.md)). Point new readers here
 first; `README.md` is the how-to, `docs/decisions/product-roadmap.md` the
 phase-by-phase ledger, `TEST_PLAN.md` the case-by-case status.*
@@ -137,17 +137,19 @@ Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
 
 In order (`product-roadmap.md`, `deferred-work-register.md`):
 
-- **Now:** Phase 39, run speed — Gates A–D measured; TFP-157's slot-server
-  fix verified and pushed (`66cd0c0`); D26 (the Toolshop copies in WSL)
-  built, awaiting verification; Gate D's re-measurement next.
-- **Next:** Phase 43 ownership confirmation; then the remaining Standard
+- **Done:** Phase 39, run speed (2026-10-31): Standard about 2.5 times faster on the with-bugs
+  Toolshop; at most 3 workers; capped runs report cap-starved tests as Not run.
+- **Next:** the Next.js upgrade and code-scanning fixes (TFP-266, TFP-267),
+  a few small tickets and `v0.2.0`; then Phase 47, TestForge as a step in a
+  target's CI pipeline (`docs/decisions/phase-47-ci-integration-decision-record.md`),
+  with the application's rename (D39, "Mr Onion" proposed) before its
+  Docker image is published.
+- **After that:** Phase 43 ownership confirmation; the remaining Standard
   sets (SEO, the WAI-ARIA APG patterns, the rest of accessibility and
   security); Comprehensive negative tests and SEO; all-areas runs; load
   testing.
 - **Locked, not started:** Phase 44 scenario gaps, Phase 45 Docker sandbox,
   Phase 46 app screens.
-- **Locked, next after Phase 39:** Phase 47, TestForge as a step in a
-  target's CI pipeline (`docs/decisions/phase-47-ci-integration-decision-record.md`).
 - **Deferred, not cancelled:** a hosted SaaS version
   (`saas-prerequisites.md`); the OpenAI path (Phase 28, parked).
 

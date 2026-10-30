@@ -277,7 +277,7 @@ The coverage proposal measured the Standard run against the published standards 
 All eight decisions are locked (Emil, 2026-10-05). Until the ownership confirmation exists, the script-payload test is Not run (Decision 6). Builds after TFP-145. See `phase-38-standard-run-gates-and-conformance-decision-record.md`.
 
 
-### Phase 39 — Run speed: fewer page visits, then workers (locked 2026-10-06, amended and locked 2026-10-16; in progress: Gates A–D measured 2026-10-20 to 2026-10-26, Decision 13 open — see the record's Gate D ruling)
+### Phase 39 — Run speed: fewer page visits, then workers (complete 2026-10-31: Gate D closed; 3 workers at most; cap-starved tests reported Not run; the cap proven at the server)
 Amended 2026-10-16 (Emil). R1 (TFP-207) found that almost every test loads its
 page afresh, and that Standard on with-bugs takes 1,535 s of its 1,800 s
 limit. So the phase now cuts page visits before adding workers, in this

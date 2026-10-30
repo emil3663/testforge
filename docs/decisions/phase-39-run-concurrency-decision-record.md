@@ -1188,3 +1188,36 @@ queued at that moment. Rejected: counting any queued request at failure
    in one line: where it is and that it's for reproducing Linux-only
    failures.
 
+**Verification of `b38c622` and `4b7120b` (Cowork, 2026-10-31, Linux, 2
+cores, machine limit 1):**
+- `cap-arrivals.test.ts`, `host-limits.test.ts` and `split.test.ts`
+  together: 22 of 22, three rounds in a row — including Acceptance Criteria
+  6 (no second over 5 arrivals), the restart case and the new
+  garbage-collection case. Two of these failed here on `70a0ad3`.
+- `cap-starved.test.ts`: 15 of 15.
+- No generator file changed since `70a0ad3`, so the builder's 166-of-166
+  template check stands. The builder's evidence: unit 631 of 631; regression
+  59; the nightly by manual dispatch green on `b38c622` (630 passed, 1
+  Windows-only skip; template 166 of 166).
+- `4b7120b`'s release paths read: a held slot is released when its
+  response arrives or its request fails, and on context close; the held
+  set can't grow without bound.
+
+**Rulings (Emil, 2026-10-31):**
+1. **`4b7120b` is accepted** although no ruling asked for it: it fixes the
+   cap handing a slot back before its request arrived, which is the
+   promise TFP-265 exists to prove.
+2. **TFP-265's "never more than 5 arrivals" is re-established on the fixed
+   code** by the runs above and the builder's. The nightly runs the arrival
+   cases every night from now on, so a regression shows.
+3. **The 712 and 724 ms failures** (close to the test's own 300 ms pause)
+   stopped once the helper was fixed and stay unexplained: recorded as one
+   data point. If they recur, they're investigated, not re-explained.
+4. **The garbled sentence in `b38c622`'s message** is corrected in the
+   next commit's body, as the builder proposed.
+
+**Gate D closes, and Phase 39 is complete (2026-10-31).** TFP-157, TFP-158,
+TFP-264 and TFP-265 are verified; D26 is verified; the timing runs ended
+with ruling 4 amended. This is `0.2.0` in `CHANGELOG.md`, tagged by the
+next handover's version step with the owner's confirmation.
+
