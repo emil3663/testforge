@@ -116,20 +116,6 @@ export function useRun(
     }, [activeRunId, step, setError, setStep]);
 
     useEffect(() => {
-        const pageGroups = result?.report?.seo?.pageGroups ?? [];
-        if (pageGroups.length === 0) {
-            if (selectedSeoPageKey !== null) {
-                setSelectedSeoPageKey(null);
-            }
-            return;
-        }
-
-        if (!selectedSeoPageKey || !pageGroups.some((group) => group.pageKey === selectedSeoPageKey)) {
-            setSelectedSeoPageKey(pageGroups[0].pageKey);
-        }
-    }, [result, selectedSeoPageKey]);
-
-    useEffect(() => {
         if (!openReportInNewPage || !result) {
             return;
         }
@@ -417,7 +403,7 @@ export function useRun(
         setActiveTab,
         openReportInNewPage,
         setOpenReportInNewPage,
-        selectedSeoPageKey,
+        selectedSeoPageKey: selectedSeoPageGroup?.pageKey ?? null,
         setSelectedSeoPageKey,
         statusFilter,
         setStatusFilter,

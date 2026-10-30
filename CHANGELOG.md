@@ -11,6 +11,13 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
+### Security
+
+- Next.js 16.4.3 (from 16.2.3): 33 advisories, among them Proxy bypasses and
+  remote code execution on Windows-hosted servers. The app's own
+  dependencies have no known advisory, and the nightly fails if a high or
+  critical one appears.
+
 ### Run speed and honest capped runs (Phase 39, in progress — becomes 0.2.0, the first tag, when its final gate passes)
 
 Already on `main` and in 0.1.0's tag, not yet signed off:

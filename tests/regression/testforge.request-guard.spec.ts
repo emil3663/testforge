@@ -69,4 +69,40 @@ test.describe("TFP-261: the API answers only the tester's own pages on this mach
         expect(response.status()).toBe(403);
         expect((await response.json()).error).toMatch(/Host "attacker\.example:3001" isn't this machine/);
     });
+
+    // TFP-266: the shapes of Next's Proxy bypasses that can apply to an API route, from another host, so an answer here
+    // means the guard didn't run: GHSA-267c-6grr-h53f and GHSA-26hh-7cqf-hhc6 (the .rsc and segment-prefetch variants of
+    // a path), GHSA-492v-c6pp-mqqv (route parameters in the query, on a dynamic route), and spellings of the path.
+    // GHSA-6gpp-xcg3-4w24 needs a single entry in config.i18n.locales, and next.config.ts has no i18n.
+    for (const path of [
+        "/api/runs.rsc",
+        "/api/runs/.rsc",
+        "/api/runs.segments/_tree.segment.rsc",
+        "/api/runs.segments/$c$runs/__PAGE__.segment.rsc",
+        "/api/runs?_rsc=1",
+        "/api/runs/diff?nxtPa=b&nxtPid=b",
+        "/api/runs/00000000-0000-4000-8000-000000000000?nxtPrunId=x",
+        "/api/runs/",
+        "/api//runs",
+        "/API/runs",
+        "//api/runs",
+        "/%61pi/runs",
+        "/api%2Fruns",
+    ]) {
+        test(`from another host, ${path} gets no answer from the API`, async ({ request }) => {
+            const response = await request.get(`${SELF}${path}`, { headers: { host: "attacker.example:3001", rsc: "1", "next-router-prefetch": "1" }, maxRedirects: 0 });
+            const body = await response.text();
+            // 403 from the guard, or a page Next doesn't route to the API at all: a redirect or a 404 carries no API data.
+            expect([301, 302, 307, 308, 400, 403, 404], `${response.status()}: ${body.slice(0, 200)}`).toContain(response.status());
+            expect(body, "no run data").not.toMatch(/"(runs|runId)"\s*:/);
+        });
+    }
+
+    test("a POST to /api/run's .rsc variant, from another site, starts nothing", async ({ request }) => {
+        const marker = join(dir, "rsc.txt");
+        const response = await request.post("/api/run.rsc", { headers: { origin: "https://attacker.example", "content-type": "text/plain", rsc: "1" }, data: JSON.stringify({ code: markerSuite(marker), selectedPractices: ["functional"], auditMode: "fast", description: "TFP-266 refused" }), maxRedirects: 0 });
+        expect(response.status(), await response.text()).not.toBe(202);
+        await new Promise((resolve) => setTimeout(resolve, 3_000));
+        expect(existsSync(marker), "the request's code wrote its marker").toBe(false);
+    });
 });

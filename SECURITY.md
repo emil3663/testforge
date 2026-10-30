@@ -74,7 +74,10 @@ designed not to be intrusive, but they are still automated traffic.
 ### Known gaps
 
 - No sandbox for generated or model-written code until Phase 45.
-- Dependencies are not scanned automatically yet.
+- Dependencies are watched, not fixed for you: Dependabot alerts are on, and
+  the nightly fails on a high or critical advisory in the app's own
+  dependencies (`npm audit --omit=dev`). Dev tooling isn't checked: Allure's
+  and ESLint's chains carry advisories `npm audit fix` can't clear.
 - The Docker test targets publish their ports on every interface, not on
   `127.0.0.1` only; their development credentials are reachable from the
   same network while they run.
