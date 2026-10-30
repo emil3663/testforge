@@ -332,6 +332,10 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     - Google has blocked the security change on the testforgeapp account
       for 7 days (from 2026-10-19), so the setup can be done from about
       2026-10-26.
+    - **Done by the owner, 2026-10-30:** 2-step verification and the app
+      password on `testforgeapp@gmail.com`; the repository secret
+      `TESTFORGE_SMTP_PASSWORD` and the variable `CI_REPORT_TO`
+      (`testforgeapp+ci@gmail.com`). Part B can be built.
 - **Scope:**
   - **A `notify` job** in `.github/workflows/nightly.yml`.
     - It has `needs: [unit, template-unchanged]` and `if: always()`, so it

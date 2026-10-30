@@ -1152,4 +1152,39 @@ queued at that moment. Rejected: counting any queued request at failure
    quietly as in item 2 and add a case; if it can't, say why in the
    ticket's report.
 
+**Verification of `70a0ad3` (Cowork, 2026-10-28, 08:30, Linux, 2 cores):**
+- **The carry-over fix holds:** "requests an earlier test left waiting"
+  passed 20 of 20 in a row here, where it had failed 3 of 4 on `afc4873`.
+- **`check:template-unchanged 57bcc76 70a0ad3`:** 166 of 166 identical.
+- **Every cap case that doesn't depend on the worker count passes:**
+  `cap-starved.test.ts`, `execution.test.ts` and the rest of
+  `cap-arrivals.test.ts` and `host-limits.test.ts`, 37 of 39.
+- **Two fail, on this machine's core count, not on the cap:** with 2 cores
+  the machine's limit is 1 worker.
+  - `cap-arrivals.test.ts`'s restart case assumes the three groups' first
+    tests run in three different workers (`workers:
+    {"ends-1":0,"ends-2":0,"fails-1":0,"fails-2":1,"times-out-1":1,"times-out-2":2}`).
+  - TFP-157's Acceptance Criteria 6 case ("at most 3 workers sharing 5
+    requests per second, measured at the server") asserts more than one
+    worker was used ("1 workers").
+  - The nightly runs these real-browser tests on GitHub's `ubuntu-latest`
+    (4 cores, so a limit of 2 workers), and hasn't run them yet.
+
+**Rulings on `70a0ad3` (Emil, 2026-10-28):**
+1. **The worker-count tests don't depend on the machine.** Give the
+   executor's worker count a test-only override (as the ownership stub
+   does), set it in those cases to the count they assume, and prove each
+   with the machine limit forced to 1, 2 and 3. Then run the nightly by
+   manual dispatch and show it green.
+2. **The lazy-image gap is a known limitation, not fixed here:** an image a
+   later check's own action brings in (a lazy-loaded image it scrolls to)
+   is charged to the test that loaded the page, so a starved check of that
+   kind can still come out Failed. Listed in `TEST_PLAN.md`'s known
+   limitations with its issue, and deferred as D40.
+3. **The run line's last clause** ("W request(s) waited for a slot, the
+   ones given one S s in all") is accepted as worded.
+4. **The WSL setup stays** in the Ubuntu user's home: the nightly runs on
+   Linux, and the carry-over flake showed only there. Noted in `CLAUDE.md`
+   in one line: where it is and that it's for reproducing Linux-only
+   failures.
 

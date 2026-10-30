@@ -210,6 +210,34 @@ Statuses:
 | D35 | Native integrations for other CI systems (GitLab component, Azure DevOps task) and SARIF output for code scanning | Phase 47, deferred (2026-10-27) | Not before someone asks | Open | - | TFP-248 |
 | D36 | Workers that back off when a site slows down (adaptive concurrency) | Phase 39 re-measurement ruling 1 (2026-10-27) | Deferred: a fixed limit of 3 holds for now | Open | - | Phase 39 complete |
 | D37 | The stale re-check's re-runs judged for cap starvation (it has no timing reporter, so a reused test it re-runs on a capped host keeps its re-run result) | Phase 39 ruling 4 amended (2026-10-28) | Deferred: rare path, documented as a known limitation | Open | - | TFP-264 |
+| D38 | "Comprehensive" becomes "Break Me" once more areas have Comprehensive sets: UI, report and docs wording | Emil, 2026-10-28 | Wanted, when more areas are built | Open | - | More Comprehensive areas (D4, D7) |
+| D39 | A new application name (many "testforge" repos exist): repo, package, `testforge-skills` plugin, data folder (`%LOCALAPPDATA%\TestForge`, one-time move), `TESTFORGE_*` settings, test-ID prefixes, `TFP-` prefix, `testforgeapp@gmail.com` | Emil, 2026-10-28; **proposed name "Mr Onion" (Emil, 2026-10-30)** | Wanted. Tagline "Mr Onion: peel back every layer" (Standard the first layer, "Break Me" the core). Ruled out: "Mr Pickles" (Cucumber's "pickles", the Pickles docs tool, a TV brand), "Señor Onion" (could read as a caricature; the ñ breaks technical names), "Allium" (JUXT's spec language with a Claude Code plugin; Alumnium, an AI testing tool), "Tearjerker", "Core Sample", "Shallot" (owner's preference) | **Proposed**, not committed: see "D39, before the name is committed" below | Its own short phase, after the trademark check, before Phase 47's TFP-247 (Emil, 2026-10-30) | The checks below |
+
+**D39, before the name is committed (2026-10-30).** "Mr Onion" is the
+proposed name. First checks: no software, app, GitHub project or testing tool
+found under it; `mr-onion` and `mronion` unregistered on npm (2026-10-30).
+Before anything is renamed:
+1. **Trademark search:** CIPC (South Africa); the US (USPTO) and EU (EUIPO)
+   registers if it will be marketed abroad. Classes 9 and 42 (software,
+   software services).
+2. **Domain:** decide whether one is wanted, and check `mronion` / `mr-onion`
+   in the extensions wanted.
+3. **Registries:** GitHub repo `emil3663/mr-onion` (free under the owner's
+   account), npm `mr-onion` (re-check just before publishing), container image
+   `ghcr.io/emil3663/mr-onion` (Phase 47, TFP-247).
+4. **Internal names**, chosen together in the rename's own decision record:
+   the settings prefix (`MRONION_*`, with the `TESTFORGE_*` names read as a
+   fallback for a while), the local data folder and its one-time move, the
+   plugin name, the test-ID prefixes (`TFFU-`, `TFSE-`…), the ticket prefix,
+   and the `testforgeapp@gmail.com` addresses.
+5. **Timing (Emil, 2026-10-30):** the rename is its own short phase with
+   its own decision record, after the trademark check and before Phase
+   47's TFP-247 publishes an image or action; outside pipelines will pin
+   that name. `v0.2.0` is tagged under the current name when Phase 39
+   completes: tags and releases survive a GitHub repo rename, and old links
+   redirect.
+6. **Mascot (optional):** a friendly onion character, which also settles the
+   faint Tor ("onion") association.
 
 ## Phases or items not wrapped up
 

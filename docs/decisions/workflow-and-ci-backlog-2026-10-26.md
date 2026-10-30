@@ -460,6 +460,14 @@ another session took any of them.
 
 ### TFP-260 - Bind the local Docker stacks to loopback
 
+- **Owner decision, 2026-10-28: Plane stays, secured.** It may be used by
+  other people or setups, and the next sites under test will come in the
+  same way. Plane's 80 and MinIO's 9000/9090 are published on `127.0.0.1`
+  in `docker-compose.yml`; the Toolshop's ports through TestForge's own
+  override file. The committed credentials stay as development
+  placeholders; `.env.example` and `SECURITY.md` say to change them before
+  Plane runs anywhere else. Removal was considered and rejected.
+
 - **Phase:** None
 - **Priority:** P1
 - **Suggested labels:** `security`, `config`
@@ -611,6 +619,42 @@ decisions index, the contribution rules, the version and release notes.
 
 ### TFP-256 - README claims check
 
+- **Status:** Done 2026-10-28 (planning pass, `repo-claim-audit`), against
+  `main` at `f8333b6`. **25 claims checked: 6 false, 4 stale, 2 understated,
+  0 unverifiable.** All fixed in `README.md`:
+  - *False:* "Node.js 20+" (unit tests and scripts need 22.6; `.nvmrc`
+    is 24 — the README's own tool-stack table said so); "Comprehensive goes
+    deep on one area, or all of them" (`COMPREHENSIVE_AREAS` is security and
+    accessibility; all-areas is D5); "active … only behind a typed ownership
+    confirmation" (not built: active tests are always Not run until
+    Phase 43); self-test and regression "keep the latest 5" artifacts (each
+    upload has `retention-days: 30`); the setup step "add your OpenAI API
+    key" as the one configuration step (the path is parked, no completion
+    has succeeded); the tagline "you tell it what you want to test in plain
+    English … the AI handles the syntax" (generation is the deterministic
+    template from site inspection; the description field only steers area
+    selection).
+  - *Stale:* the security model told the reader not to bind to a
+    non-loopback interface (TFP-261 now binds `127.0.0.1` and guards the
+    API); "Open http://localhost:3000" (the dev server prints
+    `127.0.0.1`); "572 tests at TFP-207"; GitHub Copilot as the AI tool
+    (Claude Code is, and the gap writer calls its CLI).
+  - *Understated:* the host limits and request cap weren't mentioned; CI
+    integration (Phase 47) wasn't mentioned.
+  - *Checked true:* the 12 skills (8 + 4); every `npm run` script in the
+    table exists and every package script is documented; the example suite
+    file exists; save-suite's `.playwright-runs/generated-suites` and the
+    `chromium` project; `runs/` as the run root (`TESTFORGE_RUNS_ROOT`);
+    the gap writer's four Claude Code flags; the gap limit of 5; promotion
+    after 3 clean sites; the library has entries; the nightly's 02:00 UTC
+    schedule, 30-day log and pipefail step.
+  - *First ten seconds:* the tagline oversold AI and undersold the product
+    (crawl, page types, deterministic suite, honest coverage). It now leads
+    with what TestForge does, says the AI is optional, and links the docs,
+    changelog, security and contributing pages.
+  - *Left for TFP-260:* the Plane lines (step 5, tech stack, scripts),
+    pending the owner's decision on Plane.
+
 - **Priority:** P2
 - **Suggested labels:** `docs`
 - **Problem it solves:** the README is mostly current (2026-10-20) but
@@ -665,6 +709,23 @@ decisions index, the contribution rules, the version and release notes.
   TFP-247 for step 6.
 
 ---
+
+## Owner plans to carry into the register (2026-10-28) — carried 2026-10-30 as D38 and D39
+
+To add to `deferred-work-register.md` once Claude Code's D37 commit has
+landed (the file is in its working set now):
+- **D38 — "Comprehensive" becomes "Break Me"** once more areas have
+  Comprehensive sets: UI, report and docs wording.
+- **D39 — The application gets a new name** (there are many "testforge"
+  repos); proposed "Mr Onion" (2026-10-30), its own short phase before
+  TFP-247, `v0.2.0` tagged under the current name. Superseded by the
+  register's D39 entry. To settle before Phase 47's TFP-247 publishes an image or
+  action, and before the first GitHub release, since outside pipelines will
+  pin the name. It touches the repo and package names, the
+  `testforge-skills` plugin, the local data folder
+  (`%LOCALAPPDATA%\TestForge`, which needs a one-time move), the
+  `TESTFORGE_*` settings, test-ID prefixes (`TF…`), the `TFP-` ticket
+  prefix and the `testforgeapp@gmail.com` addresses.
 
 ## Recommended execution order
 

@@ -1,7 +1,9 @@
 # TestForge
 
-**TestForge is an AI-native test automation assistant that works alongside testers, not instead of them.**  
-You tell it what you want to test in plain English. It writes TypeScript Playwright code. You review it, run it, and learn from it. The AI handles the syntax; you provide the judgment.
+**TestForge is a test automation assistant that works alongside testers, not instead of them.**  
+Point it at a site. It crawls it, inspects one page of each kind, writes a real Playwright TypeScript suite from what it found, runs it, and reports what was tested, how, and what wasn't tested and why. The generator is deterministic and needs no AI or API key; a local model or Claude Code can optionally write tests for the gaps. You review the code, run it, and keep it: it's plain Playwright.
+
+*README last reviewed 2026-10-28 (TFP-256). Also: [what it does today](docs/APPLICATION_OVERVIEW.md) · [all docs](docs/README.md) · [changelog](CHANGELOG.md) · [security](SECURITY.md) · [contributing](CONTRIBUTING.md).*
 
 ---
 
@@ -13,9 +15,12 @@ running the dev server — this is intended behaviour under the local-only
 model, not a vulnerability to be patched. There is no authentication,
 sandboxing, or multi-tenant isolation.
 
-**Do not bind TestForge to a non-loopback interface and do not expose it
-through a tunnel** (ngrok, Cloudflare Tunnel, port forwarding, etc.). Doing
-so exposes arbitrary remote code execution to anyone who can reach the port.
+So TestForge listens on `127.0.0.1` only, and its API refuses any request
+whose `Host` isn't local, whose `Origin` isn't TestForge's own, or whose
+write isn't JSON (TFP-261). **Don't override the address and don't expose
+it through a tunnel** (ngrok, Cloudflare Tunnel, port forwarding, a reverse
+proxy): anyone who can reach the port can run code on the machine. Full
+model and how to report a problem: [`SECURITY.md`](SECURITY.md).
 
 ---
 
@@ -167,17 +172,18 @@ The gap between these two worlds is brutal. Testers are told: "Learn to code." T
 | **Node.js 24** (`.nvmrc`) | TestForge runs on Next.js; the unit tests and scripts need 22.6 or later for `--experimental-strip-types`, and CI uses `.nvmrc` |
 | **Docker Desktop** | Runs local test targets: the Toolshop copies (`scripts/toolshop-local/`) and, optionally, Plane |
 | **VS Code** | Code editor — open this repo as a workspace (optional) |
-| **GitHub Copilot** | AI assistant in VS Code (optional, install from the extension marketplace) |
+| **Claude Code** | Optional: the gap writer can call its CLI (`claude` on the PATH) to write tests for coverage gaps; it's also how this repo is developed |
 | **Git** | Version control |
 
 ---
 
 ## Features
 
-- **Deterministic generation, no API key needed.** A template generator writes a standard Playwright TypeScript suite from what TestForge actually finds on the site. A local model (Ollama) or OpenAI can fill only the areas the template left empty; neither is required, and no live OpenAI completion has succeeded yet (`TEST_PLAN.md`, known limitation 5).
+- **Deterministic generation, no API key needed.** A template generator writes a standard Playwright TypeScript suite from what TestForge actually finds on the site. A local model (Ollama) can fill only the areas the template left empty. An OpenAI path exists but is parked: no live completion has succeeded (`TEST_PLAN.md`, known limitation 5).
 - **Crawl, page types and inspection.** TestForge crawls the site, groups its pages into page types by address pattern and form signature, and tests one page of each type (up to 8), then inspects those pages so every check targets real elements.
-- **Standard and Comprehensive runs.** Standard tests the critical working path. Comprehensive goes deep on one area, or all of them, and tries to break fields and flows.
-- **Three gates.** Read-only by default; interactive when switched on; active (tests that change data) only behind a typed ownership confirmation.
+- **Standard and Comprehensive runs.** Standard tests the critical working path. Comprehensive goes deep on one area at a time. The goal is a Comprehensive set for every area, plus an all-areas run that tries to break fields and flows; **built today: security (passive) and accessibility.** The rest are in the build order (`docs/decisions/deferred-work-register.md`).
+- **Three gates.** Read-only by default, behind a request guard; interactive when switched on; active (tests that change data, and attack-shaped tests) only behind a typed ownership confirmation per site. **The confirmation isn't built yet (Phase 43), so active tests are reported Not run today.**
+- **Polite to other people's sites.** A local host gets up to 3 workers; any other host gets at most 3 workers sharing 5 requests per second, and timed checks there are Not run with the reason, until the ownership confirmation lifts the cap.
 - **Checks across the areas.** Functional controls (sorts, filters, steppers, links), layout consistency and overlap, spelling, tab order and grouping, WCAG 2.2 A/AA with axe, passive security headers and probes, SEO, and performance graded by Core Web Vitals bands.
 - **Measured against known bugs.** On local copies of the Toolshop practice site with 37 known bugs in reach, Standard alone finds 30 (TFP-207, 2026-10-16), and Standard plus Comprehensive security and accessibility finds 33 (Phase 41 Gate B). See `docs/decisions/phase-41-check-gaps-decision-record.md`.
 - **Reusable site suites and a test library.** Each site's Standard suite is kept and reused, regenerated only for page types that changed. Comprehensive tests live in a library written against component patterns.
@@ -198,11 +204,11 @@ Beyond the web app, `skills/` packages TestForge's own testing and engineering j
 
 | Tool | Version | Notes |
 |---|---|---|
-| Node.js | 20+ | [nodejs.org](https://nodejs.org) |
+| Node.js | 24 (`.nvmrc`); 22.6 at least | [nodejs.org](https://nodejs.org) |
 | Git | any | [git-scm.com](https://git-scm.com) |
 | Docker Desktop | latest | [docker.com](https://docker.com) — needed for the local test targets |
 | VS Code | latest | [code.visualstudio.com](https://code.visualstudio.com) (optional) |
-| GitHub Copilot | extension | Install from VS Code marketplace (optional) |
+| Claude Code | latest | Optional, for the gap writer ([code.claude.com](https://code.claude.com/docs)) |
 
 ---
 
@@ -231,11 +237,10 @@ npx playwright install chromium
 cp .env.example .env
 ```
 
-Edit `.env` and add your OpenAI API key (optional — TestForge works without it using a template-based generator):
-
-```
-OPENAI_API_KEY=sk-...
-```
+Nothing in it is required: the template generator needs no key. Optional
+settings are described in the file, including a local model
+(`TESTFORGE_OLLAMA_MODEL`; setup in [`docs/LOCAL_MODEL_SETUP.md`](docs/LOCAL_MODEL_SETUP.md))
+and the parked OpenAI path (`OPENAI_API_KEY`).
 
 ### 5. Start a test target with Docker
 
@@ -263,7 +268,7 @@ re-checked since Phase 38.
 npm run dev
 ```
 
-Open **<http://localhost:3000>** in your browser.
+Open **<http://127.0.0.1:3000>** in your browser (TestForge listens on this machine only).
 
 ---
 
@@ -349,7 +354,7 @@ npx playwright test --project=chromium
 | `npm run start` | Start the production build |
 | `npm run dev:development` | Start TestForge in dev mode with `.env.development` |
 | `npm run lint` | Run ESLint |
-| `npm run test:unit` | Run the unit suite (572 tests at TFP-207; about 13 min) |
+| `npm run test:unit` | Run the unit suite (about 620 tests; about 14 min) |
 | `npm run check:template-unchanged -- <commit>` | Compare the template generator's output on 166 fixed inputs with a commit's |
 | `npm run test:self` | Run the smoke suite |
 | `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
@@ -372,8 +377,9 @@ npx playwright test --project=chromium
 ## CI reports
 
 - The PR validation workflow runs lint, build, and the smoke suite with Allure on every pull request, and uploads a smoke Allure artifact.
-- The self-test workflow runs the same checks on every push to `main` and keeps the latest 5 smoke-report artifacts.
-- The regression workflow can be triggered manually from GitHub Actions and keeps the latest 5 regression-report artifacts. It builds once, before Playwright starts the server.
+- The self-test workflow runs the same checks on every push to `main` and keeps its smoke-report artifacts for 30 days.
+- The regression workflow can be triggered manually from GitHub Actions and keeps its regression-report artifacts for 30 days. It builds once, before Playwright starts the server.
+- Running TestForge itself as a step in another project's pipeline is planned as Phase 47 (`docs/decisions/phase-47-ci-integration-decision-record.md`).
 - The nightly workflow runs the unit suite and `check:template-unchanged` (against the recorded template baseline) every night at 02:00 UTC and on manual dispatch, not on every push. The unit log is kept as an artifact for 30 days.
 
 ---

@@ -7,6 +7,10 @@ git and in the phase records.
 You are a fresh session, started on purpose so the latest versions of
 Emil's account skills are loaded.
 
+> **When Phase 39 is verified complete,** stop. The next work is in
+> `docs/HANDOVER_TO_CLAUDE_CODE_2026-10-30-after-phase-39.md`, which replaces
+> this file and the workflow handover.
+
 ## Now (added 2026-10-27, 21:10): the re-measurement ruling
 
 Read **"Re-measurement ruling (Emil, 2026-10-27)"** at the end of the Phase 39
@@ -54,6 +58,14 @@ record. In order:
     restarts in the arrival runs; settle the slot-then-close case. Re-run
     the template check, unit and regression suites, commit with this note,
     push everything (`5300706` included), and stop for verification.
+3f. **(Added 2026-10-28, 08:30) Last items before Phase 39 closes** (record,
+    "Rulings on `70a0ad3`"): make the worker-count tests independent of the
+    machine (test-only override; proven at limits 1, 2 and 3), then run the
+    nightly by manual dispatch and show it green; D40 as a known limitation
+    with its issue (D38 and D39 are reserved for the rename notes in the
+    workflow backlog); one `CLAUDE.md` line on the WSL setup. Re-run the
+    template check, unit and regression suites, commit with this note, push,
+    and stop for verification.
 4. **TFP-264, then TFP-265**, each with tests on the fixture, each stopping
    for verification. No timing session. When both are verified, Gate D
    closes and Phase 39 completes (`0.2.0`).

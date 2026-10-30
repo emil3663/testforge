@@ -43,9 +43,10 @@ commit (`git rm`); its history is in git and in the backlog.
         `TEMPLATE_BASELINE` in `nightly.yml` in its own commit, with
         `check:template-unchanged` showing only those lines changed;
       - TFP-257: version and commit in `/api/health`, `run.json` and the
-        report footer; then tag `v0.1.0` and make its GitHub release from
-        the changelog entry — **confirmation required before the tag is
-        pushed**.
+        report footer; then, once Phase 39 is complete, set `package.json`
+        to `0.2.0`, tag **`v0.2.0`** (the first tag; `0.1.0` stays untagged,
+        owner decision 2026-10-28) and make its GitHub release from the
+        changelog — **confirmation required before the tag is pushed**.
 
 000. **(Added 2026-10-27, 13:30) Commit Phase 47's lock as one `docs`
      commit:** `docs/decisions/phase-47-ci-integration-decision-record.md`

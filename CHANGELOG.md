@@ -11,7 +11,7 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
-### Run speed (Phase 39, in progress — becomes 0.2.0 when its final gate passes)
+### Run speed and honest capped runs (Phase 39, in progress — becomes 0.2.0, the first tag, when its final gate passes)
 
 Already on `main` and in 0.1.0's tag, not yet signed off:
 - A page's read-only checks, from every area, share one visit of the page
@@ -25,9 +25,20 @@ Already on `main` and in 0.1.0's tag, not yet signed off:
   second, and timed checks (load, LCP, CLS, TBT) are Not run there, with
   the reason. The ownership confirmation (Phase 43) will lift the cap.
 - The run record says where the run's time went.
+- At most 3 workers on any host: 6 overloaded a modest local site and
+  changed its results.
+- On a capped host, a test the request cap starved is reported **Not run,
+  "starved by the request cap"**, with its wait, not Failed; real defects
+  stay Failed. Tests no longer fail with `AbortError` when their context
+  closes while requests wait. The cap is proven at the server: never more
+  than 5 arrivals in a second.
 - Record: [`phase-39-run-concurrency-decision-record.md`](docs/decisions/phase-39-run-concurrency-decision-record.md).
 
-## [0.1.0] — date set when the tag is made
+## [0.1.0] — untagged starting point
+
+*Not tagged (owner decision, 2026-10-28): Phase 39 completes before the
+version stamp lands, so the first tag is `v0.2.0`. This entry stays as the
+baseline it describes.*
 
 The first tagged version: everything built from Phase 16 to Phase 42,
 except Phase 39 (above). Before this, Phases 1–15 (April 2026) moved
@@ -117,5 +128,4 @@ TestForge from a FastAPI backend to Next.js ([history](docs/consolidation/README
 - The `testforge-skills` Claude Code plugin: 12 testing and engineering
   skills, usable without the app ([`skills/README.md`](skills/README.md)).
 
-[Unreleased]: https://github.com/emil3663/testforge/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/emil3663/testforge/releases/tag/v0.1.0
+[Unreleased]: https://github.com/emil3663/testforge/commits/main
