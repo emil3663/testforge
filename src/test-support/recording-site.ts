@@ -29,6 +29,9 @@ export async function withRecordingSite(run: (origin: string, arrivals: Array<{ 
         const path = (req.url ?? "/").split("?")[0];
         arrivals.push({ path, at: performance.now() });
         if (path.startsWith("/slow/")) setTimeout(() => res.writeHead(200, { "content-type": "image/png" }).end(png), 300);
+        // A page of 20 images the site answers only after 4 s, so each holds its slot that long.
+        else if (path.startsWith("/held/")) setTimeout(() => res.writeHead(200, { "content-type": "image/png" }).end(png), 4000);
+        else if (path === "/held") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>held</title></head><body><h1>held</h1>${Array.from({ length: 20 }, (_, index) => `<img src="/held/${index}.png" alt="${index}">`).join("")}</body></html>`);
         else if (path === "/heavy") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>heavy</title></head><body><h1>heavy</h1>${Array.from({ length: 30 }, (_, index) => `<img src="/slow/${index}.png" alt="${index}">`).join("")}</body></html>`);
         // TFP-264: 60 quick images: capped, the page takes about 12 s to load, inside the 30 s test timeout.
         else if (path === "/sixty") res.writeHead(200, { "content-type": "text/html" }).end(`<!doctype html><html lang="en"><head><title>sixty</title></head><body><h1>sixty</h1>${Array.from({ length: 60 }, (_, index) => `<img src="/x/${index}.png" alt="${index}">`).join("")}</body></html>`);

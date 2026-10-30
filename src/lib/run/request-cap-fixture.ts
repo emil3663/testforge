@@ -99,6 +99,9 @@ const startTest = () => {
     pending.clear();
 };
 
+/** The slots this worker holds. Garbage collecting an unread fetch response closes its connection, handing its slot back with its request still on its way. */
+const heldSlots = new Set<Response>();
+
 /**
  * Waits for a slot when the request counts; returns the call that hands it back (the server holds it a second more).
  * The slot is this fetch's open answer: handing it back closes the connection, and so does this process ending, so a
@@ -112,8 +115,9 @@ async function slot(url: string, signal?: AbortSignal, owner = currentTest): Pro
     signal?.addEventListener("abort", giveUp, { once: true });
     const started = startWaiting(owner);
     let queued = false;
+    let response: Response;
     try {
-        const response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
+        response = await fetch(`${SLOT_URL}/slot`, { method: "POST", headers: HEADERS, signal: connection.signal });
         queued = response.headers.get(QUEUED_HEADER) === "1";
         if (response.status !== 200) throw new Error(`the request cap's slot server answered HTTP ${response.status}`);
     } catch (error) {
@@ -125,7 +129,11 @@ async function slot(url: string, signal?: AbortSignal, owner = currentTest): Pro
         stopWaiting(started, queued);
         signal?.removeEventListener("abort", giveUp);
     }
-    return () => connection.abort();
+    heldSlots.add(response);
+    return () => {
+        heldSlots.delete(response);
+        connection.abort();
+    };
 }
 
 const capped = new WeakSet<object>();

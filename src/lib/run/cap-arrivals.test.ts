@@ -103,6 +103,48 @@ test("in a real browser: a context that closes after its request got a slot but 
     for (const record of records) assert.equal(record.status, "Passed", `${record.title}: ${record.rawMessage ?? ""}`);
 });
 /**
+/**
+ * A worker's garbage collection doesn't hand back the slots of requests still on their way. Each slot is an unread
+ * fetch response, and collecting one nobody keeps closes its connection, which is how a slot is handed back. So the
+ * worker forces collections for about 2 s while the site holds 5 images open for 4 s: a sixth may not arrive meanwhile.
+ * A slot collected in the first second shows; one collected later wouldn't, as the test ends and closes its context.
+ */
+const heldSlotsSpec = (origin: string) => `import { test, expect } from '@playwright/test';
+import { setFlagsFromString } from 'node:v8';
+import { runInNewContext } from 'node:vm';
+
+setFlagsFromString('--expose-gc');
+const collect = runInNewContext('gc');
+
+test.describe('Held', () => {
+  test('Held: slots stay held through garbage collection', async ({ page }) => {
+    await page.goto('${origin}/held', { waitUntil: 'commit' });
+    await expect(page.locator('h1')).toHaveText('held');
+    for (let index = 0; index < 8; index++) {
+      collect();
+      await page.waitForTimeout(250);
+    }
+  });
+});
+`;
+
+test("in a real browser: a worker's garbage collection doesn't free the slots of requests still in flight: with the site holding 5 images open, no sixth arrives", { skip: lanSkip }, async () => {
+    await withRecordingSite(async (origin, arrivals) => {
+        const snapshot = await startRunJob(heldSlotsSpec(origin), ["functional"], "fast", origin, [], [], "Check the site.");
+        const job = await finished(snapshot.runId, 120_000);
+        const report = job.result?.report;
+        assert.ok(report, job.result?.output);
+        const statuses = (report.execution as ExecutionRecord[]).map((record) => `${record.title}: ${record.status} ${(record.rawMessage ?? "").slice(0, 160)}`).join(" | ");
+        assert.ok((report.execution as ExecutionRecord[]).every((record) => record.status === "Passed"), statuses);
+        const images = arrivals.filter((arrival) => arrival.path.startsWith("/held/"));
+        assert.ok(images.length > 0, "the images arrived");
+        // The page's own slot goes back a second after it loads, so 5 images hold all 5 slots until the first is answered.
+        const first = images[0].at;
+        const whileHeld = images.filter((arrival) => arrival.at < first + 3500);
+        assert.ok(whileHeld.length <= 5, `${whileHeld.length} images arrived while the first was held: ${images.map((arrival) => Math.round(arrival.at - first)).join(" ")} ms`);
+    });
+});
+
  * TFP-265: tests that end while their requests still wait for slots: one passes and closes its context with a page of
  * 200 images queued; one fails at once, and one times out, while theirs wait, so Playwright goes on in a new worker
  * (ruling 4). Ordinary page loads and API requests run beside them. Each test first tells `workerSite` its worker
