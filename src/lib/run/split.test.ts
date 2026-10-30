@@ -33,7 +33,7 @@ const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts")
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { startRunJob } = await import("./executor.ts");
 const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
-const { machineWorkerLimit } = await import("./host-limits.ts");
+const { setMachineLimitForTests } = await import("./host-limits.ts");
 const { flattenSuites } = await import("../report/execution.ts");
 const { inspectPages } = await import("../introspect/inspector.ts");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
@@ -216,7 +216,10 @@ test("in a real browser: Comprehensive security and accessibility on the fixture
 /** A run finalized: its result set and its record saved (run.json written, no .tmp left: waitForSavedRun). */
 const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutMs);
 
-test("in a real browser: the executor runs a Standard suite on the local fixture as units across its workers, with every test's result as one file on one worker gives (Decisions 8 and 12)", { skip: needsChromium }, async () => {
+test("in a real browser: the executor runs a Standard suite on the local fixture as units across its workers, with every test's result as one file on one worker gives (Decisions 8 and 12)", { skip: needsChromium }, async (t) => {
+    // Two workers on any machine: "across its workers" can't hold on a machine whose limit is 1.
+    setMachineLimitForTests(2);
+    t.after(() => setMachineLimitForTests(null));
     const fixture = await startRecordedFixture();
     try {
         const paths = ["/", "/login", "/notes"];
@@ -232,11 +235,11 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         assert.ok(report, job.result?.output);
         assert.deepEqual(outcome(report.execution), outcome(flattenSuites(oneFile.suites ?? [])), "every test, the same area, page, status and findings");
         // The run's record: how many unit files ran tests, and how many workers took them (a local host: the machine's
-        // limit since TFP-157, half its cores, at most 3).
+        // limit since TFP-157, here the test's).
         // TFP-156: the active security checks are the serial group's, run after the rest.
         const parallel = units.filter((unit) => unit.kind !== "serial");
         assert.equal(units.length - parallel.length, 1, "a serial group");
-        const said = `Split into ${parallel.length} unit file(s) (${paths.length} page(s), ${parallel.length - paths.length} other), run by ${machineWorkerLimit()} worker(s).\n`;
+        const said = `Split into ${parallel.length} unit file(s) (${paths.length} page(s), ${parallel.length - paths.length} other), run by 2 worker(s).\n`;
         assert.ok(job.outputChunks.includes(said), job.outputChunks.join(""));
         assert.equal(report.runTiming?.files, units.length);
         assert.ok((report.runTiming?.workers ?? 0) > 1, `${report.runTiming?.workers} workers`);
@@ -245,7 +248,10 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
     }
 });
 
-test("in a real browser: with interactive tests on, the serial group runs after the last read-only test ends, one test at a time, as the run's timing record shows (Acceptance Criteria 5, TFP-156)", { skip: needsChromium }, async () => {
+test("in a real browser: with interactive tests on, the serial group runs after the last read-only test ends, one test at a time, as the run's timing record shows (Acceptance Criteria 5, TFP-156)", { skip: needsChromium }, async (t) => {
+    // Two workers on any machine, as above: the read-only units on more than one.
+    setMachineLimitForTests(2);
+    t.after(() => setMachineLimitForTests(null));
     const fixture = await startRecordedFixture();
     try {
         const paths = ["/", "/login", "/notes", "/forms"];

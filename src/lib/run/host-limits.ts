@@ -42,13 +42,20 @@ export function machineWorkerLimit(cores: number = availableParallelism()): numb
     return Math.min(MACHINE_MAX_WORKERS, Math.max(1, Math.floor(cores / 2)));
 }
 
+let machineLimitForTests: number | null = null;
+
+/** Tests only: the machine's limit a run gets, so a case that needs a worker count doesn't depend on the machine; null for the real one. */
+export function setMachineLimitForTests(limit: number | null) {
+    machineLimitForTests = limit;
+}
+
 export function hostLimitsFor(baseUrl: string | undefined, options: { ownershipConfirmed: boolean; cores?: number }): HostLimits {
     const limits = rowFor(baseUrl, options);
     return { ...limits, note: describeHostLimits(limits) };
 }
 
 function rowFor(baseUrl: string | undefined, options: { ownershipConfirmed: boolean; cores?: number }): Omit<HostLimits, "note"> {
-    const machine = machineWorkerLimit(options.cores);
+    const machine = machineLimitForTests ?? machineWorkerLimit(options.cores);
     if (isLocalDevelopmentHost(baseUrl)) {
         return { row: "local", workers: machine, requestsPerSecond: null, ownershipConfirmed: options.ownershipConfirmed, siteDomain: null };
     }

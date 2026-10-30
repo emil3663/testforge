@@ -30,6 +30,7 @@ process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const { startRunJob } = await import("./executor.ts");
+const { setMachineLimitForTests } = await import("./host-limits.ts");
 const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
@@ -103,7 +104,6 @@ test("in a real browser: a context that closes after its request got a slot but 
     for (const record of records) assert.equal(record.status, "Passed", `${record.title}: ${record.rawMessage ?? ""}`);
 });
 /**
-/**
  * A worker's garbage collection doesn't hand back the slots of requests still on their way. Each slot is an unread
  * fetch response, and collecting one nobody keeps closes its connection, which is how a slot is handed back. So the
  * worker forces collections for about 2 s while the site holds 5 images open for 4 s: a sixth may not arrive meanwhile.
@@ -145,6 +145,7 @@ test("in a real browser: a worker's garbage collection doesn't free the slots of
     });
 });
 
+/**
  * TFP-265: tests that end while their requests still wait for slots: one passes and closes its context with a page of
  * 200 images queued; one fails at once, and one times out, while theirs wait, so Playwright goes on in a new worker
  * (ruling 4). Ordinary page loads and API requests run beside them. Each test first tells `workerSite` its worker
@@ -214,6 +215,9 @@ async function withWorkerSite(run: (url: string, workers: Record<string, number>
 }
 
 test("in a real browser: on a capped host, no second has more than 5 arrivals at the site across 3 runs, with tests passing, failing and timing out while their requests wait, and workers restarting after the failures; at least as many slots given as arrivals, and what was counted beyond the slots given gave up waiting (TFP-265)", { skip: lanSkip }, async (t) => {
+    // Three workers on any machine: each group's first test needs its own, for a restart to be told from a free worker.
+    setMachineLimitForTests(3);
+    t.after(() => setMachineLimitForTests(null));
     for (const run of [1, 2, 3]) {
         await withWorkerSite((workerSite, workers) => withRecordingSite(async (origin, arrivals) => {
             const snapshot = await startRunJob(waitingSuiteFor(origin, workerSite), ["functional"], "fast", origin, [], [], "Check the site.");

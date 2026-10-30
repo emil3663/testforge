@@ -39,7 +39,7 @@ const scratch = mkdtempSync(join(tmpdir(), "testforge-host-limits-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
 process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
 
-const { hostLimitsFor, machineWorkerLimit, siteDomainOf, countsAgainstCap } = await import("./host-limits.ts");
+const { hostLimitsFor, machineWorkerLimit, setMachineLimitForTests, siteDomainOf, countsAgainstCap } = await import("./host-limits.ts");
 const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER, REQUEST_CAP_QUEUED_HEADER } = await import("./request-cap.ts");
 const { setOwnershipLookupForTests } = await import("./ownership.ts");
 const { TIMED_CHECK_TITLES } = await import("../generate/mock/performance-checks.ts");
@@ -78,6 +78,22 @@ test("the machine's limit: half the cores, at least 1, at most 3; a capped host 
     }
 });
 
+test("a test's machine limit stands in for the machine's on every host row, a capped host still never more than 3, and null restores the machine's (Phase 39 rulings on 70a0ad3)", (t) => {
+    t.after(() => setMachineLimitForTests(null));
+    setMachineLimitForTests(2);
+    for (const cores of [2, 12]) {
+        assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores }).workers, 2);
+        assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: true, cores }).workers, 2);
+        assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: false, cores }).workers, 2);
+    }
+    setMachineLimitForTests(6);
+    assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores: 2 }).workers, 6);
+    assert.equal(hostLimitsFor("https://example.com", { ownershipConfirmed: false, cores: 2 }).workers, 3);
+    setMachineLimitForTests(null);
+    assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores: 12 }).workers, 3);
+    assert.equal(hostLimitsFor("http://127.0.0.1:1", { ownershipConfirmed: false, cores: 2 }).workers, 1);
+});
+
 test("what counts against the cap: the site's host and every host under its domain, never a third party or a non-HTTP URL (equivalence partitions)", () => {
     for (const [host, domain] of [["www.example.com", "example.com"], ["api.practicesoftwaretesting.com", "practicesoftwaretesting.com"], ["example.com", "example.com"], ["shop.example.co.uk", "example.co.uk"], ["the-internet.herokuapp.com", "herokuapp.com"], ["192.168.1.10", "192.168.1.10"], ["[::1]", "::1"]]) {
         assert.equal(siteDomainOf(host), domain, host);
@@ -98,12 +114,16 @@ test("a capped run's units import the cap's module in place of @playwright/test,
     assert.match(withRequestCap(unit, join(root, "serial"), root), /from '\.\.\/testforge-request-cap'/);
 });
 
-/** A slot as the cap's module takes one: the fetch's open answer, handed back by closing its connection. */
+/**
+ * A slot as the cap's module takes one: the fetch's open answer, handed back by closing its connection. The answer is
+ * kept: garbage collecting an unread fetch response closes its connection, which would hand the slot back early (on a
+ * 2-core run a held slot went about 276 ms before the test released it, 2026-10-30).
+ */
 async function takeSlot(cap: { url: string; token: string }, signal?: AbortSignal) {
     const connection = new AbortController();
     signal?.addEventListener("abort", () => connection.abort(), { once: true });
     const response = await fetch(`${cap.url}/slot`, { method: "POST", headers: { [REQUEST_CAP_TOKEN_HEADER]: cap.token }, signal: connection.signal });
-    return { status: response.status, queued: response.headers.get(REQUEST_CAP_QUEUED_HEADER), release: () => connection.abort() };
+    return { response, status: response.status, queued: response.headers.get(REQUEST_CAP_QUEUED_HEADER), release: () => connection.abort() };
 }
 
 test("the slot server says whether a slot came from the queue: the first 5 at once, the 6th after waiting (TFP-264)", async () => {
@@ -177,7 +197,7 @@ test("the slot server: a worker whose process ends while it holds slots (Playwri
     // A separate process takes all five slots and keeps them, as a worker does mid-request; then it is killed.
     const holder = spawn(process.execPath, ["-e", `
         const take = () => fetch(${JSON.stringify(`${cap.url}/slot`)}, { method: "POST", headers: { ${JSON.stringify(REQUEST_CAP_TOKEN_HEADER)}: ${JSON.stringify(cap.token)} } });
-        Promise.all([take(), take(), take(), take(), take()]).then(() => { console.log("held"); setInterval(() => {}, 1000); });
+        Promise.all([take(), take(), take(), take(), take()]).then((slots) => { console.log("held"); setInterval(() => slots, 1000); });
     `], { stdio: ["ignore", "pipe", "inherit"], windowsHide: true });
     try {
         await new Promise<void>((resolve, reject) => {
@@ -244,7 +264,10 @@ const finished = (id: string, timeoutMs: number) => waitForSavedRun(id, timeoutM
 
 const lanSkip = needsChromium || (lanAddress ? false : "this machine has no LAN IPv4 address to serve a remote-looking host from");
 
-test("in a real browser: a capped host's run uses at most 3 workers sharing 5 requests per second, measured at the server, with its waits counted and the timed check Not run (Acceptance Criteria 6)", { skip: lanSkip }, async () => {
+test("in a real browser: a capped host's run uses at most 3 workers sharing 5 requests per second, measured at the server, with its waits counted and the timed check Not run (Acceptance Criteria 6)", { skip: lanSkip }, async (t) => {
+    // Three workers on any machine: "more than one used" can't hold on a machine whose limit is 1.
+    setMachineLimitForTests(3);
+    t.after(() => setMachineLimitForTests(null));
     await withRecordingSite(async (origin, arrivals) => {
         const snapshot = await startRunJob(suiteFor(origin), ["functional", "performance"], "fast", origin, [], [], "Check the site.");
         const job = await finished(snapshot.runId, 300_000);
@@ -258,7 +281,7 @@ test("in a real browser: a capped host's run uses at most 3 workers sharing 5 re
 
         const limits = report.hostLimits;
         assert.ok(limits, "the run record's host limits");
-        assert.deepEqual([limits.row, limits.workers, limits.requestsPerSecond, limits.ownershipConfirmed, limits.siteDomain], ["capped", Math.min(3, machineWorkerLimit()), 5, false, lanAddress]);
+        assert.deepEqual([limits.row, limits.workers, limits.requestsPerSecond, limits.ownershipConfirmed, limits.siteDomain], ["capped", 3, 5, false, lanAddress]);
         assert.ok((report.runTiming?.workers ?? 0) > 1 && (report.runTiming?.workers ?? 0) <= 3, `${report.runTiming?.workers} workers`);
         const busiest = busiestSecond(arrivals);
         const first = Math.min(...arrivals.map((arrival) => arrival.at));

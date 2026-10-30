@@ -33,6 +33,10 @@ before it reaches the model, so a session uses fewer tokens.
 - During a measurement session, the monitor only reads the run's log: no repo-wide searches, builds or tests.
 - On this machine, stopping or expiring a Monitor leaves its inner script running: kill it by PID before re-arming, and check for leftovers when a session ends.
 
+## Linux-only failures
+
+The WSL setup in the Ubuntu user's home (`~/testforge-wsl`, a clone of this repo; Node in `~/.local/node/bin`; `PLAYWRIGHT_BROWSERS_PATH=~/pw-wrapped`) is for reproducing Linux-only failures, and `taskset -c 0-1` there gives a real low-core machine.
+
 ## When you're corrected
 
 When the owner corrects something that would recur, propose a one-line rule
