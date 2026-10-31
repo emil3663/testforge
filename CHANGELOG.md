@@ -23,7 +23,7 @@ The first tagged version.
 
 ### Security
 
-- Next.js 16.4.3 (from 16.2.3), which clears Dependabot's 33 alerts on
+- Next.js 16.4.3 (from 16.2.3), which fixes the 33 advisories on
   `next`, among them Proxy bypasses and remote code execution on
   Windows-hosted servers. The app's own
   dependencies have no known advisory, and the nightly fails if a high or

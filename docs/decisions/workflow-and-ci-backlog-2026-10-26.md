@@ -97,6 +97,12 @@ another session took any of them.
     since haven't triggered a check. If it hasn't rescanned by the next
     session, turning Dependabot alerts off and on in the repo's settings
     forces one (owner's go-ahead first).
+    **2026-10-31, 06:40 (owner's go-ahead):** Dependabot alerts turned off
+    and on in the owner's browser (security updates left off). Half a
+    minute later "Dependency files checked" still read 2026-10-28; the
+    dependency graph itself had re-read `package-lock.json` on 2026-10-30.
+    Re-checked after `v0.2.0`; if it is still stale a day later, ask GitHub
+    support.
   - **The SEO page-selection gap** (the `useRun.ts` effect removed in
     `5a93ecc`): a unit test of the derived selection — the first group
     when none or a vanished one is selected, the chosen one otherwise —
