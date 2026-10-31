@@ -70,30 +70,33 @@ test.describe("TFP-261: the API answers only the tester's own pages on this mach
         expect((await response.json()).error).toMatch(/Host "attacker\.example:3001" isn't this machine/);
     });
 
-    // TFP-266: the shapes of Next's Proxy bypasses that can apply to an API route, from another host, so an answer here
-    // means the guard didn't run: GHSA-267c-6grr-h53f and GHSA-26hh-7cqf-hhc6 (the .rsc and segment-prefetch variants of
-    // a path), GHSA-492v-c6pp-mqqv (route parameters in the query, on a dynamic route), and spellings of the path.
-    // GHSA-6gpp-xcg3-4w24 needs a single entry in config.i18n.locales, and next.config.ts has no i18n.
-    for (const path of [
-        "/api/runs.rsc",
-        "/api/runs/.rsc",
-        "/api/runs.segments/_tree.segment.rsc",
-        "/api/runs.segments/$c$runs/__PAGE__.segment.rsc",
-        "/api/runs?_rsc=1",
-        "/api/runs/diff?nxtPa=b&nxtPid=b",
-        "/api/runs/00000000-0000-4000-8000-000000000000?nxtPrunId=x",
-        "/api/runs/",
-        "/api//runs",
-        "/API/runs",
-        "//api/runs",
-        "/%61pi/runs",
-        "/api%2Fruns",
-    ]) {
-        test(`from another host, ${path} gets no answer from the API`, async ({ request }) => {
+    // TFP-266: the shapes of Next's Proxy bypasses that can apply to an API route, from another host, each with the exact
+    // status measured: GHSA-267c-6grr-h53f and GHSA-26hh-7cqf-hhc6 (the .rsc and segment-prefetch variants of a path), a
+    // route parameter in the query, and spellings of the path. Without the guard, /api/runs?_rsc=1 is 200 with the runs,
+    // the .segment.rsc path 204 and the diff path the route's own 400, which is why these pin 403, not "no data".
+    // Can't apply: GHSA-492v-c6pp-mqqv needs a dynamic route, and src/app/api has none; GHSA-6gpp-xcg3-4w24 needs a single
+    // entry in config.i18n.locales, and next.config.ts has no i18n.
+    for (const [path, status] of [
+        ["/api/runs.rsc", 403],
+        ["/api/runs/.rsc", 403],
+        ["/api/runs.segments/_tree.segment.rsc", 403],
+        ["/api/runs.segments/$c$runs/__PAGE__.segment.rsc", 403],
+        ["/api/runs?_rsc=1", 403],
+        ["/api/runs/diff?nxtPa=b&nxtPid=b", 403],
+        ["/%61pi/runs", 403],
+        ["/api%2Fruns", 403],
+        // Next's own redirect to /api/runs, before the guard, which then refuses it (the DNS rebinding case above).
+        ["/api/runs/", 308],
+        ["/api//runs", 308],
+        ["//api/runs", 308],
+        // Paths are case-sensitive: this is the 404 page, not the API.
+        ["/API/runs", 404],
+    ] as const) {
+        test(`from another host, ${path} gets ${status}, not the API's answer`, async ({ request }) => {
             const response = await request.get(`${SELF}${path}`, { headers: { host: "attacker.example:3001", rsc: "1", "next-router-prefetch": "1" }, maxRedirects: 0 });
             const body = await response.text();
-            // 403 from the guard, or a page Next doesn't route to the API at all: a redirect or a 404 carries no API data.
-            expect([301, 302, 307, 308, 400, 403, 404], `${response.status()}: ${body.slice(0, 200)}`).toContain(response.status());
+            expect(response.status(), body.slice(0, 200)).toBe(status);
+            if (status === 308) expect(response.headers().location).toBe("/api/runs");
             expect(body, "no run data").not.toMatch(/"(runs|runId)"\s*:/);
         });
     }

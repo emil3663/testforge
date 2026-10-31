@@ -13,8 +13,9 @@ the report and the CI command are declared stable, after Phase 47.
 
 ### Security
 
-- Next.js 16.4.3 (from 16.2.3): 33 advisories, among them Proxy bypasses and
-  remote code execution on Windows-hosted servers. The app's own
+- Next.js 16.4.3 (from 16.2.3), which clears Dependabot's 33 alerts on
+  `next`, among them Proxy bypasses and remote code execution on
+  Windows-hosted servers. The app's own
   dependencies have no known advisory, and the nightly fails if a high or
   critical one appears.
 
