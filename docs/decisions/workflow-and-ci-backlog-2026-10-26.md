@@ -74,6 +74,34 @@ another session took any of them.
 
 ### TFP-266 - Upgrade Next.js and clear the known dependency vulnerabilities (added 2026-10-30)
 
+- **Status:** Built `5a93ecc`, `1a9c2f5` (2026-10-31). **Independently
+  verified 2026-10-31 (Cowork, Linux, fresh clone at `1a9c2f5`):** `next`
+  16.4.3; `npm audit --omit=dev`: 0 vulnerabilities; the 2026-10-27 attack
+  replayed against `npm run dev` on 16.4.3 — a foreign-origin `text/plain`
+  POST, a same-origin `text/plain` POST, a rebinding `Host`, a `null`
+  `Origin`, `/api/runs?_rsc=1` from a foreign origin, and an RSC-prefetch
+  request with a rebinding `Host` — all 403, the run's marker file never
+  written, the LAN address not answering; `src/proxy.test.ts` 5 of 5; no
+  generator file changed. Rulings (Emil, 2026-10-31):
+  - **Accepted.** The bypass cases pin the guard; the builder showed 10 of
+    15 fail without it.
+  - **The remaining advisories are dev-only and accepted for now**: all of
+    Allure's chain (its latest release still pulls a vulnerable
+    `dompurify`), and ESLint's (`minimatch`, `glob`). `npm audit` on
+    `1a9c2f5` here shows 27 by package: 7 critical, 1 high, 19 moderate —
+    the builder's "8" counted critical and high only. Re-checked when Allure
+    or ESLint publish fixes; no `overrides`.
+  - **Dependabot hasn't rescanned since 2026-10-28 07:31** ("Dependency
+    files checked", read in the owner's browser 2026-10-31 03:15): its 114
+    open alerts are from `70a0ad3`, before the upgrade, and several pushes
+    since haven't triggered a check. If it hasn't rescanned by the next
+    session, turning Dependabot alerts off and on in the repo's settings
+    forces one (owner's go-ahead first).
+  - **The SEO page-selection gap** (the `useRun.ts` effect removed in
+    `5a93ecc`): a unit test of the derived selection — the first group
+    when none or a vanished one is selected, the chosen one otherwise —
+    lands with TFP-267's first commit.
+
 - **Phase:** None — straight after Phase 39 is verified complete
 - **Priority:** P0
 - **Suggested labels:** `security`, `dependencies`

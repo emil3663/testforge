@@ -4,6 +4,7 @@ import type { ExecutionStatus, RunReport } from "@/lib/report/types";
 import { BASE_REPORT_TABS } from "@/app/_lib/constants";
 import { getContinuationExcludedTitles } from "@/app/_lib/derive";
 import { pollRunUntilDone } from "@/app/_hooks/pollRun";
+import { selectSeoPageGroup } from "@/app/_hooks/seoPageSelection";
 import type { ContentProfile, ReportTab, RunLifecycleStatus, RunProgressSnapshot, RunResult, RunStatusSnapshot, Step, TestAuditMode } from "@/app/_lib/types";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 
@@ -369,7 +370,7 @@ export function useRun(
             : "Continue remaining tests needs at least one completed test from the stopped run."
         : "";
     const seoPageGroups = report?.seo?.pageGroups ?? [];
-    const selectedSeoPageGroup = seoPageGroups.find((group) => group.pageKey === selectedSeoPageKey) ?? seoPageGroups[0] ?? null;
+    const selectedSeoPageGroup = selectSeoPageGroup(seoPageGroups, selectedSeoPageKey);
     const selectedSeoRecommendations = selectedSeoPageGroup
         ? report?.seo?.recommendations.filter(
             (recommendation) => !recommendation.pageKey || recommendation.pageKey === selectedSeoPageGroup.pageKey
