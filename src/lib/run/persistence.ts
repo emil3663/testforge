@@ -1,4 +1,5 @@
 import type { GenerationRecord } from "@/lib/report/types";
+import type { ProducedBy } from "@/lib/report/produced-by-types";
 import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
 import { dirname, join, resolve, sep } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
@@ -27,6 +28,8 @@ export interface RunRecord {
     lastAccessedAt: string | null;
     result: RunResultPayload;
     artifactFiles: Record<string, PersistedArtifactFile>;
+    /** TFP-257: the TestForge that ran this; absent on runs from before it. */
+    producedBy?: ProducedBy;
     // Phase 17 Group 4 (TFP-073): the crawl/introspect snapshot this run
     // used, persisted so two runs can be diffed for newly discovered/missing
     // elements without needing the in-memory job. Null for runs that had
@@ -169,6 +172,7 @@ export async function persistRunJob(
         enableInteractive: job.enableInteractive,
         login: job.login,
         generation: job.generation,
+        ...(job.producedBy ? { producedBy: job.producedBy } : {}),
         ...(isComprehensive(job.runMode) ? { runMode: job.runMode } : {}),
     };
 

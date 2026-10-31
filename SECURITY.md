@@ -19,8 +19,8 @@ is published with credit to the reporter, unless you'd rather not be named.
 
 ## Supported versions
 
-Until versioning starts (see `docs/decisions/workflow-and-ci-backlog-2026-10-26.md`,
-TFP-257), only the current `main` branch is supported. Fixes are not
+Versions are numbered from `0.2.0` (see `docs/decisions/workflow-and-ci-backlog-2026-10-26.md`,
+TFP-257), but only the current `main` branch is supported. Fixes are not
 backported.
 
 ## Security model

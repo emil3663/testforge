@@ -1,4 +1,4 @@
-import { escapeReportHtml, formatMilliseconds } from "./text";
+import { buildVersionFooterHtml, escapeReportHtml, formatMilliseconds } from "./text";
 import type { RunReport } from "./types";
 import { buildPageTypesHtmlSection } from "./page-types-html";
 import { buildCoverageMapHtmlSection } from "./coverage-map-html";
@@ -93,6 +93,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
         ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
         ${buildCoverageMapHtmlSection(report.coverageMap)}
     </main>
+    ${buildVersionFooterHtml(report.producedBy)}
 </body>
 </html>`;
 }

@@ -55,6 +55,8 @@ export interface RunResultPayload {
     duration: number;
     progress: RunProgressSnapshot;
     report?: RunReport;
+    /** TFP-257: on a run that ended with no report, so what it exports still says its version. */
+    producedBy?: import("@/lib/report/produced-by-types").ProducedBy;
 }
 
 export interface RunStatusPayload {
@@ -112,6 +114,8 @@ export interface RunJob {
     // TFP-157 (Phase 39 Decisions 10 and 11): the host's row, its caps, and whether the ownership confirmation was
     // present; and, on a capped host, how the request cap went (set once the run's last pass closes).
     hostLimits?: import("@/lib/run/host-limits").HostLimits;
+    /** TFP-257: the TestForge running this, stamped at the start, so a pull during a run can't change what it says. */
+    producedBy?: import("@/lib/report/produced-by-types").ProducedBy;
     requestCap?: import("@/lib/run/request-cap").RequestCapStats | null;
     // TFP-094: the run's secret values (credentials and session contents),
     // used to scrub everything the run produces. In memory only: never on a
@@ -263,6 +267,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             job.enableInteractive,
             job.hostLimits?.note ?? null
         );
+        aggregatedReport.producedBy = job.producedBy;
         job.artifactFiles = collectArtifactFiles(executionRecords);
         const zeroExecution = aggregatedReport.summary.planned === 0;
 
@@ -317,6 +322,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
                 runStatus: job.cancellationRequested ? "cancelled" : "failed",
                 passed: false,
                 output: finalOutput || "Playwright completed without executing any tests.",
+                producedBy: job.producedBy,
                 duration,
                 progress: {
                     ...job.progress,
@@ -396,6 +402,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             runStatus,
             passed: false,
             output: finalOutput,
+            producedBy: job.producedBy,
             duration,
             progress: job.progress,
         };

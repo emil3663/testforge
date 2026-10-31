@@ -121,7 +121,7 @@ Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
   per data folder.
 - **Async runs.** `POST /api/run` returns a job (202); the UI polls
   `GET /api/run`. Concurrency is by worker count with per-host request caps
-  (Phase 39, in progress).
+  (Phase 39).
 - **Security model.** `/api/run` executes generated code with the user's
   privileges. That is accepted under the local-only model (Phase 16) and is
   why TestForge must never be bound to a non-loopback interface or tunnelled

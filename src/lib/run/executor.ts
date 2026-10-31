@@ -19,6 +19,7 @@ import type { RawTiming } from "@/lib/run/timing";
 import { STANDARD_RUN } from "@/lib/comprehensive/run-mode";
 import { splitSuite } from "@/lib/run/split";
 import { hostLimitsFor } from "@/lib/run/host-limits";
+import { currentVersion } from "@/lib/version";
 import { hasOwnershipConfirmation } from "@/lib/run/ownership";
 import { requestCapEnv, startRequestCap, withRequestCap, writeRequestCapModule } from "@/lib/run/request-cap";
 import { markCapStarved } from "@/lib/run/cap-starved";
@@ -215,6 +216,7 @@ export async function startRunJob(
         runMode,
         workerCount,
         hostLimits,
+        producedBy: currentVersion(),
         requestCap: null,
         redactions: preparedLogin?.secrets ?? [],
         artifactFiles: new Map(),

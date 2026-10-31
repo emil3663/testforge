@@ -130,6 +130,7 @@ test("both HTML exports end with the page types, the covered list and the skippe
         assert.ok(html.indexOf('id="covered-urls"') > section && html.indexOf('id="skipped-urls"') > html.indexOf('id="covered-urls"'), `${name}: covered list, then skipped list`);
         // Nothing but the closing tags after the skipped list.
         assert.match(html.slice(html.indexOf('id="skipped-urls"')), /^id="skipped-urls"[^>]*>[^<]*<\/pre>\s*<\/section>\s*<\/main>/, `${name}: the export ends with the lists`);
+        assert.match(html.slice(html.indexOf("</main>")), /^<\/main>\s*<footer[^>]*>TestForge version not recorded<\/footer>/, `${name}: the version line follows the report (TFP-257)`);
         assert.ok(html.includes(`${ORIGIN}/#/product/2\n`) || html.includes(`${ORIGIN}/#/product/2`), `${name}: full URLs`);
         assert.match(html, /Found 9 page types\. Covered 8/);
         assert.match(html, /over the cap of 8 types: ranked 9th/);

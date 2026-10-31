@@ -1,4 +1,4 @@
-import { escapeReportHtml, formatMilliseconds } from "./text";
+import { buildVersionFooterHtml, escapeReportHtml, formatMilliseconds } from "./text";
 import { buildFallbackExecutionHtmlMarkup } from "./status";
 import { describePageInspection } from "./page-inspection-text";
 import { describeSiteSuite } from "./site-suite-text";
@@ -14,6 +14,7 @@ interface RunResultLike {
     output: string;
     progress: Parameters<typeof buildFallbackExecutionHtmlMarkup>[0];
     report?: RunReport;
+    producedBy?: RunReport["producedBy"];
 }
 
 export function buildReportHtmlDocument(report: RunReport, runId: string) {
@@ -383,6 +384,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
         ${buildPageTypesHtmlSection(report.generation?.pageTypes)}
         ${buildCoverageMapHtmlSection(report.coverageMap)}
     </main>
+    ${buildVersionFooterHtml(report.producedBy)}
     <script>
         function showTab(btn, id) {
             document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
@@ -431,6 +433,7 @@ export function buildExecutionOutputHtmlDocument(result: RunResultLike) {
             <pre>${escapeReportHtml(result.output)}</pre>
         </section>
     </main>
+    ${buildVersionFooterHtml(result.producedBy)}
 </body>
 </html>`;
 }

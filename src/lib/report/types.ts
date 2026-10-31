@@ -286,6 +286,8 @@ export interface RunReport {
     notTested: NotTestedElement[];
     /** Phase 42 (TFP-192): absent when the run had no page data or no suite source. */
     coverageMap?: CoverageMap;
+    /** TFP-257: the TestForge that ran this, stamped when the run started; absent on runs from before it. */
+    producedBy?: import("./produced-by-types").ProducedBy;
     /** Phase 39 (TFP-211): where the run's time went; absent on runs from before it, or when the timing reporter wrote nothing. */
     runTiming?: import("@/lib/run/timing").RunTiming;
     /**

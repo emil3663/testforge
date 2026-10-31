@@ -54,6 +54,8 @@ test.describe("TestForge regression coverage", () => {
         const payload = (await response.json()) as {
             status: string;
             service: string;
+            version: string;
+            commit: string | null;
             environment: string;
             mode: string;
             siteUrl: string;
@@ -62,6 +64,9 @@ test.describe("TestForge regression coverage", () => {
 
         expect(payload.status).toBe("ok");
         expect(payload.service).toBe("testforge-next");
+        // TFP-257: package.json's version, and the commit this runs from.
+        expect(payload.version).toMatch(/^\d+\.\d+\.\d+$/);
+        expect(payload.commit).toMatch(/^[0-9a-f]{7,}$/);
         expect(typeof payload.environment).toBe("string");
         // TFP-031: after TFP-010/011 removed the FastAPI proxy layer, every
         // route always runs in-process - there is no other mode to report.

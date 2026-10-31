@@ -11,6 +11,14 @@ export function escapeReportHtml(value: string) {
         .replace(/'/g, "&#39;");
 }
 
+/** TFP-257: the report's last line, from the run's own stamp, so a saved report says what made it, not what reads it. */
+export function buildVersionFooterHtml(producedBy: { version: string; commit: string | null } | undefined) {
+    const made = producedBy
+        ? `TestForge ${escapeReportHtml(producedBy.version)}${producedBy.commit ? ` (${escapeReportHtml(producedBy.commit)})` : ""}`
+        : "TestForge version not recorded";
+    return `<footer style="max-width: 1140px; margin: 0 auto; padding: 0 16px 24px; font-size: 12px; color: #71717a;">${made}</footer>`;
+}
+
 export function formatMilliseconds(value: number) {
     if (value >= 60000) {
         return `${(value / 60000).toFixed(1)}m`;
