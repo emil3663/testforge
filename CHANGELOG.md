@@ -11,17 +11,42 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-10-31
+
+The first tagged version.
+
+### Which TestForge found this
+
+- `/api/health`, each run's `run.json` and the report's last line now give
+  the TestForge version and commit that ran it. Runs from before say the
+  version wasn't recorded ([TFP-257](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+
 ### Security
 
 - Next.js 16.4.3 (from 16.2.3), which clears Dependabot's 33 alerts on
   `next`, among them Proxy bypasses and remote code execution on
   Windows-hosted servers. The app's own
   dependencies have no known advisory, and the nightly fails if a high or
-  critical one appears.
+  critical one appears ([TFP-266](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+- A `.rsc` or segment-prefetch spelling of an API path can't reach the API
+  from another site or host: each is pinned in the regression suite
+  (TFP-266).
+- Code scanning moved to a committed setup that ignores frozen evidence:
+  no alert is left open that isn't dismissed with a reason
+  ([TFP-267](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
 
-### Run speed and honest capped runs (Phase 39, in progress — becomes 0.2.0, the first tag, when its final gate passes)
+### Fixed
 
-Already on `main` and in 0.1.0's tag, not yet signed off:
+- A link with no text whose address holds `"` or `\` no longer fails its
+  check on TestForge's own error instead of the site's (TFP-267).
+- DemoQA's suites go only to DemoQA itself, not to a host that merely
+  contains its name, and a journey step's attribute name is escaped for
+  CSS whatever it holds (TFP-267).
+- Run ids are held inside the runs folder on every path, and a stray folder
+  there is passed over (TFP-267).
+
+### Run speed and honest capped runs (Phase 39)
+
 - A page's read-only checks, from every area, share one visit of the page
   instead of loading it once per check; shared checks wait 2 s, not 5 s, for
   an assertion; a failing shared check keeps its trace, screenshot and the
@@ -48,7 +73,7 @@ Already on `main` and in 0.1.0's tag, not yet signed off:
 version stamp lands, so the first tag is `v0.2.0`. This entry stays as the
 baseline it describes.*
 
-The first tagged version: everything built from Phase 16 to Phase 42,
+Everything built from Phase 16 to Phase 42,
 except Phase 39 (above). Before this, Phases 1–15 (April 2026) moved
 TestForge from a FastAPI backend to Next.js ([history](docs/consolidation/README.md)).
 
@@ -136,4 +161,5 @@ TestForge from a FastAPI backend to Next.js ([history](docs/consolidation/README
 - The `testforge-skills` Claude Code plugin: 12 testing and engineering
   skills, usable without the app ([`skills/README.md`](skills/README.md)).
 
-[Unreleased]: https://github.com/emil3663/testforge/commits/main
+[Unreleased]: https://github.com/emil3663/testforge/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/emil3663/testforge/releases/tag/v0.2.0
