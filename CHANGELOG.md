@@ -11,6 +11,13 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
+### Security
+
+- Plane, MinIO and the local Toolshop copies answer on this machine only.
+  MinIO's console and the Toolshop's MariaDB were open to the local network,
+  with credentials that are defaults in a public repo
+  ([TFP-260](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+
 ## [0.2.0] — 2026-10-31
 
 The first tagged version.

@@ -94,6 +94,10 @@ Testsmith's files are not changed. TestForge adds:
   example, make the API's request throttling count across requests).
 - **Only Testsmith's `docker-compose.yml`.** Its override file adds cron,
   phpMyAdmin and MailCatcher, which no TestForge run needs, so it isn't used.
+- **`compose.loopback.yml`: this machine only (TFP-260).** Testsmith's file
+  publishes 4200, 8091, 8000 and 3306 on every interface, MariaDB with the
+  root password `root` among them. This replaces those lists with
+  `127.0.0.1` ones; `!override` is what stops compose merging them.
 
 **Removed with D26:** installing the packages again with
 `COMPOSER_PROCESS_TIMEOUT=0` when compose's own `composer` service gave up at

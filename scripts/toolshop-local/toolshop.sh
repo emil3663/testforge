@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # D26: the local Toolshop's commands, run inside the WSL distribution by start-toolshop.ps1 and stop-toolshop.ps1
 # (`wsl -d Ubuntu --cd <this folder> -e bash ./toolshop.sh ...`). Testsmith's checkout lives in the distribution's
-# own Linux filesystem, so Docker's bind mounts of its code never cross the Windows mount; only TestForge's two
+# own Linux filesystem, so Docker's bind mounts of its code never cross the Windows mount; only TestForge's
 # small compose overrides are read from this folder.
 #   checkout <upstream> <commit>      clone if missing, check out the commit, print it
 #   compose <sprint> <args...>        docker compose with Testsmith's file and TestForge's overrides
@@ -15,7 +15,7 @@ command=${1:?command}
 shift
 
 files_for() {
-    files=(-f docker-compose.yml -f "$here/compose.local.yml")
+    files=(-f docker-compose.yml -f "$here/compose.local.yml" -f "$here/compose.loopback.yml")
     if [ "$1" = sprint5-with-bugs ]; then files+=(-f "$here/compose.with-bugs.yml"); fi
 }
 

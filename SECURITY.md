@@ -42,13 +42,13 @@ be deployed, shared on a network or exposed to the internet.
   can't drive it. Don't override the address, and don't put it behind a
   tunnel, a reverse proxy or port forwarding: anyone who can reach the port
   can run code on the machine.
-- **Its test targets should be local too.** The optional Docker stacks
-  (Plane, MinIO, the local Toolshop copies) are for testing only. Today
-  they publish their ports on every interface, Docker's default (MinIO
-  9000 and 9090, Plane's 80, the Toolshop's 4200, 8091, 8000 and 3306), so
-  stop them when they aren't in use, and see the known gaps below. Their committed credentials
-  (`.env.development`, `docker-compose.yml`) are well-known development
-  placeholders, not secrets; change them before running either stack
+- **Its test targets are local too.** The optional Docker stacks (Plane,
+  MinIO, the local Toolshop copies) are for testing only, and publish their
+  ports on `127.0.0.1` only (MinIO 9000 and 9090, Plane's 80, the Toolshop's
+  4200, 8091, 8000 and 3306). Don't change the bound address. Their committed
+  credentials (`.env.development`, `docker-compose.yml`, and Testsmith's
+  MariaDB root password `root`) are well-known development placeholders, not
+  secrets; change them, in `.env` for Plane, before running either stack
   anywhere else.
 
 ### What TestForge does to limit harm
@@ -78,6 +78,3 @@ designed not to be intrusive, but they are still automated traffic.
   the nightly fails on a high or critical advisory in the app's own
   dependencies (`npm audit --omit=dev`). Dev tooling isn't checked: Allure's
   and ESLint's chains carry advisories `npm audit fix` can't clear.
-- The Docker test targets publish their ports on every interface, not on
-  `127.0.0.1` only; their development credentials are reachable from the
-  same network while they run.

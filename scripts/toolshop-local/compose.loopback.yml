@@ -1,0 +1,14 @@
+# TFP-260: the local copies answer on this machine only. Testsmith's docker-compose.yml publishes these on every
+# interface, MariaDB with the root password "root" among them. Compose merges `ports` lists, so !override replaces
+# Testsmith's rather than adding to them. Testsmith's files are left as they are.
+services:
+  angular-ui:
+    ports: !override
+      - 127.0.0.1:4200:4200
+  web:
+    ports: !override
+      - 127.0.0.1:8091:80
+      - 127.0.0.1:8000:81
+  mariadb:
+    ports: !override
+      - 127.0.0.1:3306:3306

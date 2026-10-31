@@ -8,8 +8,9 @@
   filesystem (D26: ~/practice-software-testing in Ubuntu, so Docker's bind
   mounts of its code never cross the Windows mount), checks out the pinned
   commit, and starts the chosen version with
-  `docker compose -f docker-compose.yml up -d` (with TestForge's compose.with-bugs.yml
-  for with-bugs; the optional cron,
+  `docker compose up -d` on Testsmith's docker-compose.yml with TestForge's
+  overrides (compose.local.yml, compose.loopback.yml, and compose.with-bugs.yml
+  for with-bugs: run by hand without them, its ports open to the network; the optional cron,
   phpMyAdmin and MailCatcher services are left out). Then it waits for the
   app and the API's documentation page to answer, and seeds the database
   for that version. Each step inside the distribution is a command of

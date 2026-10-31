@@ -259,8 +259,11 @@ The site is then at **<http://localhost:4200>**.
 
 The repo's `docker-compose.yml` also starts Plane at **<http://localhost>**
 (`docker compose up -d`, then about 60 seconds to initialise; Plane asks
-you to create an admin account on first run). That setup hasn't been
-re-checked since Phase 38.
+you to create an admin account on first run). Plane and the Toolshop answer
+on this machine only. Plane's keys in `.env.example` and `.env.development`
+are local placeholders: before running it anywhere else, set your own
+(`PLANE_SECRET_KEY`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`) in `.env`,
+which is the file `docker compose` reads.
 
 ### 6. Start TestForge
 
