@@ -196,7 +196,7 @@ export async function loadRunRecord(runId: string): Promise<RunRecord | null> {
 export async function listRunRecords(): Promise<RunRecord[]> {
     const entries = await readdir(RUNS_ROOT, { withFileTypes: true }).catch(() => []);
     const records = await Promise.all(
-        entries.filter((entry) => entry.isDirectory()).map((entry) => loadRunRecord(entry.name))
+        entries.filter((entry) => entry.isDirectory() && isValidRunId(entry.name)).map((entry) => loadRunRecord(entry.name))
     );
 
     return records.filter((record): record is RunRecord => record !== null);

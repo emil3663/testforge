@@ -300,6 +300,22 @@ test("listRunRecords includes persisted runs", async () => {
     assert.ok(records.some((record) => record.runId === job.id));
 });
 
+test("TFP-267: a folder in runs/ that isn't a run's (a copy, a backup) is passed over, not the end of the list", async () => {
+    const root = process.env.TESTFORGE_RUNS_ROOT!;
+    await mkdir(root, { recursive: true });
+    const copy = join(root, `${randomUUID()} - Copy`);
+    await mkdir(copy);
+    await writeFile(join(copy, "run.json"), JSON.stringify({ runId: "copy" }), "utf8");
+    await mkdir(join(root, "backup"));
+    try {
+        const records = await listRunRecords();
+        assert.ok(records.every((record) => record.runId !== "copy"), "the copy isn't listed");
+    } finally {
+        rmSync(copy, { recursive: true, force: true });
+        rmSync(join(root, "backup"), { recursive: true, force: true });
+    }
+});
+
 test("TFP-267: runJsonPath refuses what isn't a run id, so a caller that skips the check can't leave the runs folder", async () => {
     for (const runId of ["../../etc/passwd", "..\\..\\secret", "", "not-a-uuid"]) {
         assert.throws(() => runJsonPath(runId), /Not a run id/, runId);
