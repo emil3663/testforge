@@ -81,7 +81,10 @@ export function runDir(runId: string) {
 export function runJsonPath(runId: string) {
     // TFP-267: every API caller checks first; here too, so a future caller can't skip it.
     if (!isValidRunId(runId)) throw new Error(`Not a run id: ${JSON.stringify(runId)}`);
-    return join(runDir(runId), "run.json");
+    // CodeQL's alert #1 doesn't take the UUID check as a barrier; it does this, inline, on the resolved path.
+    const path = resolve(runDir(runId), "run.json");
+    if (!path.startsWith(RUNS_ROOT + sep)) throw new Error(`Not a run id: ${JSON.stringify(runId)}`);
+    return path;
 }
 
 export function runSuitePath(runId: string) {

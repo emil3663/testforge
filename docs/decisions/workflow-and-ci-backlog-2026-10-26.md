@@ -150,6 +150,30 @@ another session took any of them.
 
 ### TFP-267 - Code scanning: fix the real findings, quiet the noise (added 2026-10-30)
 
+- **Status:** Built `cad75ad`, `1551810`, `24c4449`, `b65020a`, `e8a52c7`
+  (2026-10-31); CodeQL moved to advanced setup in `31eae23` (5,000 alerts to
+  16; none under `benchmarks/` or `examples/`). **Verified 2026-10-31
+  (Cowork, Linux, `e8a52c7`):** `check:template-unchanged 1a9c2f5 e8a52c7`:
+  4 of 166 differ, and every changed line read: the link selectors'
+  `.replace(/["\\]/g, '\\$&')` (escapes `"` and `\`; the old one escaped
+  nothing) and the helper comment's reworded provenance — nothing else;
+  link-audit, persistence, runs-route and SEO-selection tests 77 of 77,
+  the stray-folder skip included. Rulings (Emil, 2026-10-31):
+  - **#1 (`persistence.ts`, path injection) is fixed, not dismissed:** add
+    a containment check CodeQL recognises — the resolved run path must stay
+    inside the runs root — beside the UUID check, so the scanner keeps
+    guarding that file; it closes on the next scan.
+  - **The other 13 are dismissed with these reasons:** #12–#15 false
+    positive (inert links skipped in a same-origin crawl; nothing rendered
+    or executed from them); #2 false positive (a heuristic scoring generated
+    code, not a filter); #7, #8 won't fix, by design (`skills/` ships in the
+    plugin; the pattern is built from `caseIdCore`, a deliberate caller
+    option); #4, #5, #9, #11 used in tests; #5891, #5892 used in tests
+    (the local comparison fixture, dev only).
+  - **The audit count:** the builder's correction in `e8a52c7` stands (its
+    "8" was npm's total on 30 Oct; the 19 moderates are newer advisories).
+  - Done when the next scan shows no open alert that isn't dismissed.
+
 - **Phase:** None — after TFP-266
 - **Priority:** P1
 - **Suggested labels:** `security`, `generate`, `ci`
