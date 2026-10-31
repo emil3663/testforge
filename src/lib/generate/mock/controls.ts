@@ -242,7 +242,7 @@ function tfRoute(url: string) {
   return route.replace(/\/+$/, '') || '/';
 }
 
-// A text's words, with the synonym table applied (Emil, 2026-10-12).
+// A text's words, with the synonym table applied (owner decision, 2026-10-12).
 function tfWords(text: string) {
   const canonical = text.toLowerCase()
     .replace(/\bsign[\s-]?in\b|\blog[\s-]?in\b|\blog[\s-]?on\b/g, ' login ')
@@ -279,7 +279,7 @@ async function tfCheckNavLinks(page: import('@playwright/test').Page, startPath:
   let moved = false;
   for (let index = 0; index < links.length; index++) {
     if (index > 0) {
-      // TFP-214 (Emil's look at the control counts, 2026-10-20): back to the start page by Back, as full navigation,
+      // TFP-214 (owner decision, 2026-10-20): back to the start page by Back, as full navigation,
       // when the last link moved; loaded again only when Back doesn't reach it.
       if (moved) {
         await page.goBack({ timeout: 5000 }).catch(() => null);
