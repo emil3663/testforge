@@ -139,8 +139,8 @@ In order (`product-roadmap.md`, `deferred-work-register.md`):
 
 - **Done:** Phase 39, run speed (2026-10-31): Standard about 2.5 times faster on the with-bugs
   Toolshop; at most 3 workers; capped runs report cap-starved tests as Not run.
-- **Next:** the Next.js upgrade and code-scanning fixes (TFP-266, TFP-267),
-  a few small tickets and `v0.2.0`; then Phase 47, TestForge as a step in a
+- **Next:** a few small tickets, after `v0.2.0` (2026-10-31, the first
+  tagged version); then Phase 47, TestForge as a step in a
   target's CI pipeline (`docs/decisions/phase-47-ci-integration-decision-record.md`),
   with the application's rename (D39, "Mr Onion" proposed) before its
   Docker image is published.
