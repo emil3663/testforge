@@ -23,7 +23,8 @@ function quote(value: string) {
 }
 
 function attributeSelector(attributeName: string, rawValue: string) {
-    const name = attributeName.replace(/:/g, "\\:");
+    // TFP-267: anything a CSS name can't hold, not just the `:` of an attribute like xlink:href.
+    const name = attributeName.replace(/[^\w-]/g, "\\$&");
     // onclick is matched by substring: the raw value is the URL a script
     // assigns to location, not the whole attribute.
     const operator = attributeName === "onclick" ? "*=" : "=";

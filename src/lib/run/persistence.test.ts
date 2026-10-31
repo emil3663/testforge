@@ -27,6 +27,7 @@ process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
 const {
     archiveRun,
     isValidRunId,
+    runJsonPath,
     listRunRecords,
     loadRunRecord,
     markRunAccessed,
@@ -297,6 +298,14 @@ test("listRunRecords includes persisted runs", async () => {
 
     const records = await listRunRecords();
     assert.ok(records.some((record) => record.runId === job.id));
+});
+
+test("TFP-267: runJsonPath refuses what isn't a run id, so a caller that skips the check can't leave the runs folder", async () => {
+    for (const runId of ["../../etc/passwd", "..\\..\\secret", "", "not-a-uuid"]) {
+        assert.throws(() => runJsonPath(runId), /Not a run id/, runId);
+        await assert.rejects(loadRunRecord(runId), /Not a run id/, runId);
+    }
+    assert.match(runJsonPath(randomUUID()), /run\.json$/);
 });
 
 test("isValidRunId: accepts real randomUUID() output, in either case", () => {

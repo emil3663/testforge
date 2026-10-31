@@ -17,7 +17,7 @@ export function buildHiddenLinkLocatorExpression(link: LinkDetail) {
 /** The same choice, made at run time inside a generated loop over a link payload. */
 export const RUNTIME_HIDDEN_LINK_LOCATOR = `link.text
                     ? page.getByRole('link', { name: link.text, exact: true, includeHidden: true }).first()
-                    : page.locator('a[href="' + (link.rawHref || link.url).replace(/"/g, '\\"') + '"]').first()`;
+                    : page.locator('a[href="' + (link.rawHref || link.url).replace(/["\\\\]/g, '\\\\$&') + '"]').first()`;
 
 /**
  * TFP-159 (approach: owner decision, 2026-10-06): reveals what a closed menu

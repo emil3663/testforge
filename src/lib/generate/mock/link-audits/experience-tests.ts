@@ -210,8 +210,8 @@ ${keyboardHasHidden ? `${buildRevealHelper("        ")}\n` : ""}        await re
                 : ` : ""}link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
 ${keyboardHasHidden ? `            if (!link.isVisible) {
                 // TFP-159: hidden at inspection - open its menu by keyboard first; a link users can't reach fails, naming the menu.
                 const reach = await tfReveal(locator, 'keyboard');

@@ -8,6 +8,11 @@ import { findMatchingProfilePage, resolveLinkAuditPaths } from "./locators";
 import { createSuite } from "./suite";
 import type { BestPracticeArea, ContentProfile, GeneratedSuite, TestAuditMode } from "./types";
 
+/** TFP-267: the site or a host under it, not any host that merely contains the name (demoqa.com.example). */
+export function isDemoQaHost(hostname: string) {
+    return hostname === "demoqa.com" || hostname.endsWith(".demoqa.com");
+}
+
 export function buildDemoQaSuites(
     baseUrl: string,
     description: string,

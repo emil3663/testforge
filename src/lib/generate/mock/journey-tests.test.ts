@@ -48,6 +48,17 @@ function profile(journeys: CandidateJourney[]): ContentProfile {
     return { scannedAt: "", baseUrl: "https://app.example.com", pages: [], journeys };
 }
 
+test("TFP-267: an attribute's name is escaped for CSS, whatever it holds, and an ordinary name is left alone", () => {
+    const selectorFor = (attributeName: string) => {
+        const step = { ...loginForm, attributeName, rawValue: "x" };
+        const [code] = buildJourneyTests(profile([journey({ steps: [step] })]), rules([journey().id]));
+        return code;
+    };
+    assert.ok(selectorFor("xlink:href").includes(String.raw`[xlink\\:href="x"]`), selectorFor("xlink:href"));
+    assert.ok(selectorFor("data.id").includes(String.raw`[data\\.id="x"]`), selectorFor("data.id"));
+    assert.ok(selectorFor("data-test_id").includes(`[data-test_id="x"]`), selectorFor("data-test_id"));
+});
+
 test("no selection generates no journey test - never every candidate", () => {
     assert.deepStrictEqual(buildJourneyTests(profile([journey()]), rules([])), []);
     assert.deepStrictEqual(buildJourneyTests(null, rules(["automatic||/ > /login > /authenticate"])), []);

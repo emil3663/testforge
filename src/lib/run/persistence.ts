@@ -79,6 +79,8 @@ export function runDir(runId: string) {
 }
 
 export function runJsonPath(runId: string) {
+    // TFP-267: every API caller checks first; here too, so a future caller can't skip it.
+    if (!isValidRunId(runId)) throw new Error(`Not a run id: ${JSON.stringify(runId)}`);
     return join(runDir(runId), "run.json");
 }
 

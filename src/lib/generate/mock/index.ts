@@ -2,7 +2,7 @@
 
 import { getBestPracticeAreas, buildCoverageComment, buildManualFollowUpComment } from "./areas";
 import { buildContentSuites, buildContentProfileComment } from "./content-suites";
-import { buildDemoQaSuites } from "./demoqa-suites";
+import { buildDemoQaSuites, isDemoQaHost } from "./demoqa-suites";
 import { buildJourneyTests, JOURNEY_HELPERS, JOURNEY_TESTS_NOTE } from "./journey-tests";
 import { escapeForSingleQuotedString, summarizeDescription, toSentenceCase } from "./format";
 import { buildGenericSuites } from "./generic-suites";
@@ -114,7 +114,7 @@ export function mockGenerateDetailed(
     const suiteTitle = escapeForSingleQuotedString(
         toSentenceCase(summarizeDescription(description))
     );
-    const suites = parsedBaseUrl.hostname.includes("demoqa.com")
+    const suites = isDemoQaHost(parsedBaseUrl.hostname)
         ? buildDemoQaSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode)
         : buildGenericSuites(baseUrl, description, bestPracticeAreas, contentProfile, auditMode);
     const contentSuites = buildContentSuites(contentProfile, contentRules, bestPracticeAreas);

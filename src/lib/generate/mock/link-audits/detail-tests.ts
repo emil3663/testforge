@@ -20,7 +20,7 @@ export function buildLinkDetailTests(
         for (const link of links) {
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
-                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                : page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
             await expect(rendered).toBeVisible();
@@ -38,7 +38,7 @@ export function buildLinkDetailTests(
         for (const link of links) {
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
-                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                : page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
             await expect(rendered).toBeVisible();
@@ -58,7 +58,7 @@ export function buildLinkDetailTests(
         for (const link of links) {
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
-                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                : page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
             await expect(rendered).toBeVisible();
@@ -91,7 +91,7 @@ export function buildLinkDetailTests(
 
             const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
-                : page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                : page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
             const urlBeforeInteraction = page.url();

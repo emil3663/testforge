@@ -84,8 +84,8 @@ ${interactionNonApiLinks.some((link) => !link.isVisible) ? `            // TFP-1
 ` : ""}            const linkLocator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const renderedLink = linkLocator.or(linkLocator.locator('*')).filter({ visible: true }).first();
 
@@ -159,8 +159,8 @@ ${hasHiddenLinks ? `            // TFP-159: a link hidden at inspection (a close
 ` : ""}            const locator = link.text
                 ? page.getByRole('link', { name: link.text, exact: true }).first()
                 : link.rawHref
-                    ? page.locator('a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.rawHref.replace(/"/g, '\\"') + '"]:has(:visible)').first()
-                    : page.locator('a[href="' + link.url.replace(/"/g, '\\"') + '"]:visible, a[href="' + link.url.replace(/"/g, '\\"') + '"]:has(:visible)').first();
+                    ? page.locator('a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.rawHref.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first()
+                    : page.locator('a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:visible, a[href="' + link.url.replace(/["\\\\]/g, '\\\\$&') + '"]:has(:visible)').first();
             // The link, or what renders it: an anchor around a positioned image has no box of its own.
             const rendered = locator.or(locator.locator('*')).filter({ visible: true }).first();
 
