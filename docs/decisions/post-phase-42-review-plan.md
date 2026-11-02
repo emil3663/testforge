@@ -347,6 +347,12 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   the two named below: `audit` and `dead-code` came later, and a night with
   either red mustn't email PASS. The case is TST-06 (TST-05 was taken). The
   send is `scripts/nightly-email/send.mjs` with `nodemailer` pinned at 10.1.7.
+  **Sent 2026-11-02, awaiting the owner's receipt:** manual nightly
+  41514922513 on `7671c6e`, all five jobs green; Gmail answered
+  `250 2.0.0 OK`, 1 accepted, 0 rejected; the password appears in the run's
+  log only as `***` (`benchmarks/2026-11-02-tfp217-email/`). This session
+  can't read the inbox, so the received subject and body, and that the link
+  opens the run, are still to record.
 - **Priority:** P2 · **Labels:** `ci`, `enhancement`
 - **Problem it solves:** the nightly result (TFP-210) is visible only on
   GitHub.

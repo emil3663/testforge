@@ -1,0 +1,16 @@
+Subject: TestForge nightly: PASS · 7671c6e · 2026-11-02
+
+https://github.com/emil3663/testforge/actions/runs/41514922513
+
+Trigger: workflow_dispatch
+Commit: 7671c6e
+Template base: 24c4449
+
+unit: success
+tests 687, pass 686, fail 0, cancelled 0, skipped 1, duration_ms 1009532.209072
+
+template-unchanged: success
+24c4449 -> 7671c6e: 166 inputs, 166 identical, 0 different
+
+audit: success
+dead-code: success
