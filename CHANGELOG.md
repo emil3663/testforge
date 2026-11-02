@@ -17,6 +17,16 @@ the report and the CI command are declared stable, after Phase 47.
   MinIO's console and the Toolshop's MariaDB were open to the local network,
   with credentials that are defaults in a public repo
   ([TFP-260](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+- Claude Code as the gap writer no longer loads this machine's CLAUDE.md,
+  auto memory or hooks
+  ([TFP-209](docs/decisions/post-phase-42-review-plan.md)).
+
+### Changed
+
+- A run's environment now passes on `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
+  and `NODE_EXTRA_CA_CERTS` when they are set. TestForge doesn't yet set
+  Playwright's own proxy option, so this hasn't been shown to carry a run
+  through a proxy ([TFP-209](docs/decisions/post-phase-42-review-plan.md)).
 
 ## [0.2.0] — 2026-10-31
 

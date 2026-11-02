@@ -129,12 +129,15 @@ function claudeCommand(): string[] {
  * - `--disallowedTools "*"`: every tool removed, MCP tools included (which
  *   `--tools` doesn't touch);
  * - `--strict-mcp-config` with no `--mcp-config`: no MCP server loaded;
- * - `--disable-slash-commands`: no skills or commands.
- * Not used: `--restricted` and `--permission-prompts none` need 2.1.248 and
- * 2.1.259; `--bare` reads only an API key, not a signed-in subscription; and
+ * - `--disable-slash-commands`: no skills or commands;
+ * - `--safe-mode` (TFP-209; the same reference, read 2026-11-02, Claude Code
+ *   2.1.311 here): the machine's CLAUDE.md, auto memory and hooks don't load,
+ *   and sign-in works as normal. Hooks from managed policy still apply.
+ * Not used: `--restricted` and `--permission-prompts none`, not revisited
+ * since 2.1.238 (they needed 2.1.248 and 2.1.259); `--bare` reads only an API key, not a signed-in subscription; and
  * `--no-session-persistence` would stop `--resume`, which revisions need.
  */
-export const CLAUDE_NO_TOOLS = ["--tools", "", "--disallowedTools", "*", "--strict-mcp-config", "--disable-slash-commands"];
+export const CLAUDE_NO_TOOLS = ["--tools", "", "--disallowedTools", "*", "--strict-mcp-config", "--disable-slash-commands", "--safe-mode"];
 
 /** The arguments of one call: print mode, JSON out, no tools, and the session to resume. */
 export function claudeArgs(session: string | null): string[] {

@@ -11,6 +11,9 @@
  * TestForge sets for that run on purpose (the interactive switch, the run's
  * login state, the JSON report's path). Everything else is left out.
  *
+ * TFP-209: the proxy settings go through too, when set. A test can read them,
+ * so a proxy URL with a password in it is within a test's reach.
+ *
  * This keeps keys out of a test's reach; it is not a sandbox. A real one
  * (the tests run inside Docker) is for the post-Phase 42 review.
  */
@@ -27,6 +30,8 @@ const PASSED_ON = new Set([
     "DISPLAY", "WAYLAND_DISPLAY", "XDG_RUNTIME_DIR", "XAUTHORITY", "FONTCONFIG_PATH",
     // Where Playwright's browsers are installed, when not in the default place
     "PLAYWRIGHT_BROWSERS_PATH",
+    // A proxy between this machine and the site, and the certificate it signs with
+    "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "NODE_EXTRA_CA_CERTS",
 ]);
 
 /** The run's environment: the names above from `from` (matched without case, as Windows does), then `set`. */

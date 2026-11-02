@@ -63,8 +63,9 @@ test("the call: every tool off, from an empty temporary folder removed afterward
     await writer.revise(revisionPrompt(false, "expected visible"));
     const [first, second] = calls();
     // The flags from Claude Code's CLI reference: --tools "" (built-in tools off), --disallowedTools "*" (every
-    // tool, MCP included), --strict-mcp-config (no MCP server), --disable-slash-commands (no skills).
-    assert.deepEqual(CLAUDE_NO_TOOLS, ["--tools", "", "--disallowedTools", "*", "--strict-mcp-config", "--disable-slash-commands"]);
+    // tool, MCP included), --strict-mcp-config (no MCP server), --disable-slash-commands (no skills),
+    // --safe-mode (no CLAUDE.md, auto memory or hooks, TFP-209).
+    assert.deepEqual(CLAUDE_NO_TOOLS, ["--tools", "", "--disallowedTools", "*", "--strict-mcp-config", "--disable-slash-commands", "--safe-mode"]);
     for (const call of [first, second]) {
         const at = call.args.indexOf("--tools");
         assert.deepEqual(call.args.slice(at, at + CLAUDE_NO_TOOLS.length), CLAUDE_NO_TOOLS, call.args.join(" "));
@@ -212,6 +213,12 @@ test('the environment', async () => {
 });
 
 test("runEnv: only the names a run needs, matched without case, then the run's own (TFP-202)", () => {
-    const env = runEnv({ TESTFORGE_INTERACTIVE: "0" }, { Path: "C:\\bin", SystemRoot: "C:\\Windows", OPENAI_API_KEY: "k", TESTFORGE_DATA_DIR: "d", NODE_OPTIONS: "--require x", HTTPS_PROXY: "http://u:p@h" } as unknown as NodeJS.ProcessEnv);
+    const env = runEnv({ TESTFORGE_INTERACTIVE: "0" }, { Path: "C:\\bin", SystemRoot: "C:\\Windows", OPENAI_API_KEY: "k", TESTFORGE_DATA_DIR: "d", NODE_OPTIONS: "--require x" } as unknown as NodeJS.ProcessEnv);
     assert.deepEqual(env, { Path: "C:\\bin", SystemRoot: "C:\\Windows", TESTFORGE_INTERACTIVE: "0" });
+});
+
+test("runEnv: the proxy settings pass on when set, matched without case, and nothing else new (TFP-209)", () => {
+    const proxy = { HTTP_PROXY: "http://h:1", https_proxy: "http://h:2", NO_PROXY: "localhost", NODE_EXTRA_CA_CERTS: "/ca.pem" };
+    assert.deepEqual(runEnv({}, { ...proxy, ALL_PROXY: "http://h:3", NODE_TLS_REJECT_UNAUTHORIZED: "0", OPENAI_API_KEY: "k" } as unknown as NodeJS.ProcessEnv), proxy);
+    assert.deepEqual(runEnv({}, {} as unknown as NodeJS.ProcessEnv), {});
 });

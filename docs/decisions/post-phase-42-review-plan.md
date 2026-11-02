@@ -270,6 +270,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     and nothing else new; a test of `runEnv` shows it.
   - Done: targeted tests, unit and regression suites pass; no Claude Code
     call.
+  - **Built 2026-11-02, awaiting verification.** `--safe-mode`, checked in
+    the CLI reference and `--help` of Claude Code 2.1.311 (this machine's
+    `claude`, 2.1.238 no longer). The reference gives no first version, and
+    doesn't say the flag works with `-p` and `--resume`; the ticket rules
+    out a live call, so that stays unproven, and a `claude` without the flag
+    would fail every gap-writer call. The proxy names are passed on; nothing
+    sets Playwright's `proxy` option, so carrying a run through a proxy
+    isn't shown.
 
 ### TFP-216 — CI on Node 24: the app's workflows and the actions
 
