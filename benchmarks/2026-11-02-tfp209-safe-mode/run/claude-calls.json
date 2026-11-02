@@ -1,0 +1,62 @@
+[
+  {
+    "at": "2026-11-02T19:44:24.589Z",
+    "ms": 7463,
+    "exit": 0,
+    "cwdEntries": 0,
+    "args": [
+      "-p",
+      "--output-format",
+      "json",
+      "--tools",
+      "",
+      "--disallowedTools",
+      "*",
+      "--strict-mcp-config",
+      "--disable-slash-commands",
+      "--safe-mode"
+    ],
+    "promptStart": "Write the body of one Playwright test (TypeScript) that checks one element on the site at http://localhost:420",
+    "is_error": false,
+    "num_turns": 1,
+    "total_cost_usd": 0.0280285,
+    "usage": {
+      "input": 2,
+      "cacheCreate": 2359,
+      "cacheRead": 649,
+      "output": 442
+    },
+    "result": "```ts\nawait page.goto('/#/');\n\nconst element = page.getByText('Bug Hunting Guide', { exact: true }).first();\n\nawait expect(element).toBeVisible();\nawait expect(element).toHaveText('Bug Hunting Guide');\nawait expect(element).toBeEnabled();\n\nawait element.scrollIntoViewIfNeeded();\nawait element.hover();\nawait expect(element).toBeVisible();\nawait expect(element).toBeEnabled();\n```"
+  },
+  {
+    "at": "2026-11-02T19:44:38.063Z",
+    "ms": 4365,
+    "exit": 0,
+    "cwdEntries": 0,
+    "args": [
+      "-p",
+      "--output-format",
+      "json",
+      "--tools",
+      "",
+      "--disallowedTools",
+      "*",
+      "--strict-mcp-config",
+      "--disable-slash-commands",
+      "--safe-mode",
+      "--resume",
+      "0d508e2c-9f4a-4117-ad54-fa595c2eee2b"
+    ],
+    "promptStart": "Generalise the test you just wrote to the component's pattern, so it can run on another site that has the same",
+    "is_error": false,
+    "num_turns": 1,
+    "total_cost_usd": 0.0379741,
+    "usage": {
+      "input": 4,
+      "cacheCreate": 606,
+      "cacheRead": 3008,
+      "output": 224
+    },
+    "result": "```ts\nawait page.goto(__PAGE__);\n\nconst element = __LOCATOR__;\n\nawait expect(element).toBeVisible();\nawait expect(element).toHaveText(/\\S/);\nawait expect(element).toBeEnabled();\n\nawait element.scrollIntoViewIfNeeded();\nawait element.hover();\nawait expect(element).toBeVisible();\nawait expect(element).toBeEnabled();\n```"
+  }
+]

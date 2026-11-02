@@ -1,0 +1,20 @@
+2026-11-02T19:44:25.300Z [DEBUG] [reduced mode] Skipping skill dir discovery
+2026-11-02T19:44:25.434Z [DEBUG] Skipping plugin hooks - safe mode disables installed plugins (managed settings-file hooks still run; built-in plugins load regardless)
+2026-11-02T19:44:25.553Z [DEBUG] Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless
+2026-11-02T19:44:25.580Z [DEBUG] Registered 0 hooks from 3 plugins
+2026-11-02T19:44:26.040Z [DEBUG] [claudeai-mcp] Disabled in safe mode
+2026-11-02T19:44:26.221Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:26.223Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:26.271Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:26.271Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:26.276Z [DEBUG] Hooks: checkForNewResponses returning 0 responses, 0 hooks still pending
+2026-11-02T19:44:38.490Z [DEBUG] [reduced mode] Skipping skill dir discovery
+2026-11-02T19:44:38.534Z [DEBUG] Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless
+2026-11-02T19:44:38.549Z [DEBUG] Registered 0 hooks from 3 plugins
+2026-11-02T19:44:38.593Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:38.627Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:38.746Z [DEBUG] Skipping plugin hooks - safe mode disables installed plugins (managed settings-file hooks still run; built-in plugins load regardless)
+2026-11-02T19:44:38.797Z [DEBUG] [claudeai-mcp] Disabled in safe mode
+2026-11-02T19:44:38.813Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:38.814Z [DEBUG] $.fs.ancestors (cc-plugin-agents-md): project memory is off
+2026-11-02T19:44:38.819Z [DEBUG] Hooks: checkForNewResponses returning 0 responses, 0 hooks still pending

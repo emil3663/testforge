@@ -278,6 +278,31 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     would fail every gap-writer call. The proxy names are passed on; nothing
     sets Playwright's `proxy` option, so carrying a run through a proxy
     isn't shown.
+  - **Verified 2026-11-02 (Cowork, Linux, `2036c1d`):** `--safe-mode` is in
+    Claude Code's CLI reference ("CLAUDE.md, skills, plugins, hooks, MCP
+    servers … and auto memory do not load. Authentication, model selection,
+    built-in tools, and permissions work normally"); `hardening.test.ts` 7
+    passed, 1 skipped (the Windows-only `.cmd` case); the commit's
+    seen-failing evidence meets `QUALITY_GATES.md` §1, its two mutants
+    included. Rulings (Emil, 2026-11-02):
+    - **One real gap-writer call is allowed,** overriding the ticket's "no
+      Claude Code call": the gap writer once, gap limit 1, on the local
+      with-bugs Toolshop, with `--safe-mode`. Done when it returns a gap test
+      and Claude Code's log shows no CLAUDE.md, memory or hook loaded.
+    - **Real proxy support is deferred as D41,** decided with Phase 47: the
+      browser using the proxy (Playwright's `proxy` option) and the
+      lowercase names (`http_proxy`, `https_proxy`, `no_proxy`).
+    - A password in a proxy URL being readable by a test is accepted, as
+      `SECURITY.md` says; the changed `runEnv` test is accepted.
+  - **Done 2026-11-02:** the one real call, on `2036c1d`
+    (`benchmarks/2026-11-02-tfp209-safe-mode/`): 1 gap test saved at the
+    first attempt ($0.066), its writing and generalising processes both under
+    `--safe-mode`, so `-p` and `--resume` work with it. The debug log has
+    `Registered 0 hooks` and `project memory is off`, and the transcript
+    none of CLAUDE.md, MEMORY.md or this machine's instructions, which an
+    earlier session's transcript without the flag has. Claude Code's built-in
+    hook modules still load, and user settings are still read for
+    permissions.
 
 ### TFP-216 — CI on Node 24: the app's workflows and the actions
 

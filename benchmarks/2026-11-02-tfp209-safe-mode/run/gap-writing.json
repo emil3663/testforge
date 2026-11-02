@@ -1,0 +1,23 @@
+{
+  "writer": "claude-code",
+  "gaps": 28,
+  "asked": 1,
+  "saved": 1,
+  "rejected": 0,
+  "failed": 0,
+  "costUsd": 0.0660026,
+  "tests": [
+    {
+      "title": "gap test: Bug Hunting Guide [button] on /#/",
+      "covers": "/#/ element page.getByText('Bug Hunting Guide', { exact: true }).first()",
+      "attempts": 1,
+      "costUsd": 0.0660026,
+      "outcome": "saved; candidate aa9e43ddbd61 added"
+    }
+  ],
+  "candidates": {
+    "matched": 0,
+    "added": 1,
+    "notKept": 0
+  }
+}
