@@ -30,6 +30,26 @@ the same commit (standing execution policy, rule 2).
   then applied exactly as written and the result recorded either way.
   Nothing is tuned after the numbers are seen. The model is Phase 37
   Decision 4; Phase 36 Decision 7 is another example.
+- **A test counts only if it could have gone red** (owner decision,
+  2026-11-02). Three tiers, by kind of change:
+  1. **Bug fixes: red first.** A test that reproduces the bug is written
+     before the fix and shown failing on the unfixed code; the commit body
+     quotes that failure, then shows the same test passing with the fix.
+     Several of this project's defects (TFP-264's carry-over, the cap's
+     early release in `4b7120b`) would have been caught sooner this way.
+  2. **New or changed behaviour: proven red.** Test-first is encouraged. At
+     minimum, each new test is shown failing with the change removed or on
+     the previous commit (a mutant, a revert, a `git stash`), and the
+     commit body says how and what it printed.
+  3. **Exceptions are stated, never silent.** When a test can't be made to
+     fail — unreachable code behind another check, docs, measurement
+     sessions, behaviour-preserving refactors (which have
+     `check:template-unchanged` and `behavior-preservation-verification`
+     instead) — the commit body says so and names what checks the change
+     instead.
+  A test that has never been seen to fail is not evidence for the change it
+  was written with. The `dont-stub-what-you-prove` skill covers the related
+  trap: a test that stubs what it is meant to prove.
 - **Standards references are copied from the source.** ASVS 5.0
   requirement IDs come from `github.com/OWASP/ASVS` (the 5.0 release), with
   the file and version recorded. They are never written from memory (Phase
@@ -169,16 +189,21 @@ report is a claim; this checklist turns it into evidence.
    intended one.
 5. **Read model output by hand** against Phase 33's bar, and record the
    result for each category.
-6. **Check each acceptance criterion separately.** Mark each one met, not
+6. **Check that each new test could have gone red** (section 1's three
+   tiers): a bug fix's reproduction failing before the fix, a behaviour
+   change's test failing with the change removed, or a stated exception.
+   Where the report gives no such evidence, ask for it, or produce it by
+   reverting the change locally.
+7. **Check each acceptance criterion separately.** Mark each one met, not
    met, or not checkable here, with the reason.
-7. **Check the docs landed in the same commit:** `TEST_PLAN.md` case, record
+8. **Check the docs landed in the same commit:** `TEST_PLAN.md` case, record
    status, roadmap, handover.
-8. **State the limits.** Say what couldn't be verified, and where it can
+9. **State the limits.** Say what couldn't be verified, and where it can
    be. For example, the verifier's VM has Node 22 and no Chromium, so the
    real-browser tests skip there and run on the local dev machine.
-9. **Fix defects in the ticket.** Any defect found goes back to the builder
+10. **Fix defects in the ticket.** Any defect found goes back to the builder
    in that ticket before the gate passes.
-10. **Record the verdict** in the record's status line, the roadmap and the
+11. **Record the verdict** in the record's status line, the roadmap and the
     status audit, so the next session does not have to verify the work
     again.
 

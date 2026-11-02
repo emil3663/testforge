@@ -145,6 +145,11 @@ cause a mistake. Ticket-specific rulings stay in the records.
   build.
 - RTK compresses shell output (`CLAUDE.md`); evidence stays unfiltered.
 
+**Red before green.** A bug fix starts with a test that reproduces the bug
+and is shown failing; a behaviour change's tests are shown failing with the
+change removed; anything that can't be shown red says why
+(`QUALITY_GATES.md` §1, owner decision 2026-11-02).
+
 **Check before reporting.** Before a ticket is reported done, the session
 runs its own checks, then a fresh-context review of the diff against the
 ticket (Claude Code's `/code-review`, or a subagent given the ticket's
