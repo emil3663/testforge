@@ -343,6 +343,23 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-217 — The nightly run emails its summary
 
+- **Verified 2026-11-02 (Cowork):** `7671c6e`'s `notify` job needs all four
+  jobs and runs `if: always()`; the SMTP password reaches only the send step,
+  in a job installed with `--ignore-scripts`. Nightly 41514922513's run page
+  shows the summary (read in the owner's browser): "TestForge nightly: PASS
+  · 7671c6e · 2026-11-02", the run link, trigger, commit, template base
+  `24c4449`, unit 687 tests / 686 pass / 1 skipped, template 166 of 166,
+  audit and dead-code success. Accepted departures: `needs` lists all four
+  jobs, TST-06, `nodemailer` pinned at 10.1.7. Small fix for the next
+  commit: `duration_ms` prints as `1009532.209072`; show it as whole
+  seconds or minutes. **Received (owner, 2026-11-02 22:27):** from
+  `testforgeapp@gmail.com` to `testforgeapp+ci` at 22:17, the body as on the
+  run page (run link, trigger, commit `7671c6e`, template base `24c4449`,
+  unit 687/686/0 failed/1 skipped, template 166 of 166, audit and dead-code
+  success), and its link opened run 41514922513. TFP-217 is done; TST-06
+  closes. A FAIL email and a cancelled run are left to the first real ones;
+  not forced.
+
 - **Status:** Parts A and B built 2026-11-02. `needs` lists all four jobs, not
   the two named below: `audit` and `dead-code` came later, and a night with
   either red mustn't email PASS. The case is TST-06 (TST-05 was taken). The

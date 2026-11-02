@@ -43,11 +43,11 @@ debug option is set on the transport.
 
 ## Not shown
 
-- **That the email arrived, and that its link opens the run.** That inbox can't
-  be read from here, so the ticket's "received subject and body" are still to
-  be recorded. Sender and recipient are the same mailbox, so it may be under
-  All Mail rather than the Inbox.
+- **Receipt, shown by the owner, not here.** That inbox can't be read from this
+  session. The owner received it from `testforgeapp@gmail.com` to
+  `testforgeapp+ci` at 22:17, the body as on the run page, and its link opened
+  the run (the review plan's TFP-217 entry).
 - **A FAIL email or a cancelled run.** This run passed. Those paths are unit
   tests; `if: always()` under a real cancellation hasn't run on GitHub.
-- **The run page's summary.** Written by the step, which passed; GitHub's API
-  doesn't return it, so it's for a person to look at.
+- **The run page's summary,** by this session: GitHub's API doesn't return it.
+  It was read in the owner's browser (the same entry).

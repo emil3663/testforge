@@ -39,7 +39,8 @@ test("a passing run: PASS, the short commit and date in the subject, the counts,
     assert.ok(body.includes("Commit: 4eff1dc"), body);
     assert.ok(body.includes("Template base: 24c4449"), body);
     assert.ok(body.includes("unit: success"), body);
-    assert.ok(body.includes("tests 658, pass 657, fail 0, cancelled 0, skipped 1, duration_ms 1196617.5"), body);
+    assert.ok(body.includes("tests 658, pass 657, fail 0, cancelled 0, skipped 1, duration 19.9 min"), body);
+    assert.ok(!body.includes("duration_ms"), body);
     assert.ok(body.includes(`template-unchanged: success\n${TEMPLATE}`), body);
     assert.ok(!body.includes("Failing tests"), body);
 });
@@ -53,6 +54,13 @@ test("failing tests: FAIL, each name, capped at 20 with how many more", () => {
     assert.ok(body.includes("failing test 20\n"), body);
     assert.ok(!body.includes("failing test 21"), body);
     assert.ok(body.includes("and 3 more"), body);
+});
+
+test("the unit duration reads in minutes, to one decimal place", () => {
+    const duration = (ms) => buildSummary({ jobs: ALL_GREEN, unit: { ...COUNTS, duration_ms: ms }, templateLine: TEMPLATE, run: RUN }).body;
+    assert.ok(duration(1009532.209072).includes("duration 16.8 min"), duration(1009532.209072));
+    assert.ok(duration(60000).includes("duration 1.0 min"), duration(60000));
+    assert.ok(duration(0).includes("duration 0.0 min"), duration(0));
 });
 
 test("exactly 20 failing tests: all named, no 'and N more'", () => {

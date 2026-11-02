@@ -5,7 +5,7 @@
 const JOBS = ["unit", "audit", "dead-code", "template-unchanged"];
 export const MAX_FAILING_NAMES = 20;
 const COUNTS = ["tests", "suites", "pass", "fail", "cancelled", "skipped", "todo", "duration_ms"];
-const SHOWN_COUNTS = ["tests", "pass", "fail", "cancelled", "skipped", "duration_ms"];
+const SHOWN_COUNTS = ["tests", "pass", "fail", "cancelled", "skipped"];
 
 const stripColour = (text) => text.replace(/\u001b\[[0-9;]*m/g, "");
 
@@ -60,7 +60,7 @@ export function buildSummary({ jobs, unit, templateLine, run }) {
         `Template base: ${run.base}`,
         "",
         result("unit"),
-        unit ? SHOWN_COUNTS.map((name) => `${name} ${unit[name]}`).join(", ") : unreadable("Counts", jobs.unit),
+        unit ? [...SHOWN_COUNTS.map((name) => `${name} ${unit[name]}`), `duration ${(unit.duration_ms / 60_000).toFixed(1)} min`].join(", ") : unreadable("Counts", jobs.unit),
         ...(unit ? failingLines(unit) : []),
         "",
         result("template-unchanged"),

@@ -174,7 +174,7 @@ Recurring checks run on a schedule rather than when someone remembers.
 | Routine | Cadence | What it does | State |
 |---|---|---|---|
 | Unit suite, template check, advisory audit and dead-code check | Nightly 02:00 UTC, plus manual dispatch | `.github/workflows/nightly.yml` | Running |
-| Nightly summary email | After the nightly run | Quick-view summary with a link to results, on the run's page and by email (`.github/workflows/nightly.yml`, `notify`) | Built, live proof pending |
+| Nightly summary email | After the nightly run | Quick-view summary with a link to results, on the run's page and by email (`.github/workflows/nightly.yml`, `notify`) | Running |
 | Living-docs check | Weekly | Checks `APPLICATION_OVERVIEW.md`, `README.md` and this file against the code and the roadmap (`repo-claim-audit` skill) and reports what is false or stale | Scheduled task, set up 2026-10-26 |
 | Nightly-failure triage | After a red nightly | Reads the failing job and drafts an issue with the failing test, the first bad commit and a reproduction | Ticketed (see `docs/decisions/workflow-and-ci-backlog-2026-10-26.md`) |
 
