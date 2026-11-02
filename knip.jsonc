@@ -1,0 +1,31 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/**/*.test.{ts,tsx}",
+    "src/app/**/{page,layout,route,error,not-found,loading,global-error,robots,sitemap,manifest}.{ts,tsx}",
+    "tests/**/*.spec.ts",
+    "playwright*.config.ts",
+    // Run by hand on measurement results, as the decision records cite them.
+    "scripts/benchmark-summary.mjs",
+    "scripts/comparison-report.mjs",
+    // Spawned by path from check-template-unchanged.mjs.
+    "scripts/template-unchanged/generate.mjs",
+    // Read by the allure CLI, by this name.
+    "allurerc.mjs"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "scripts/**/*.{mjs,mts,ts}", "tests/**/*.ts", "*.{ts,mjs}"],
+  // An export used only in its own file is over-exported, not dead (79 of them at TFP-259).
+  "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": [
+    // Imported by generated suites and written into run folders, in code strings knip can't see.
+    "@axe-core/playwright",
+    // Read by path from src/lib/generate's spelling check, or through a code string.
+    "dictionary-en",
+    "dictionary-en-gb",
+    "nspell",
+    // Imported from src/app/globals.css, which knip doesn't follow.
+    "tailwindcss"
+  ],
+  // scripts/benchmark-local-models.mjs runs the machine's own Ollama, which isn't an npm package.
+  "ignoreBinaries": ["ollama"]
+}

@@ -1,7 +1,8 @@
 name: Nightly
 
 # TFP-210: the unit suite and the template check, too slow for every push (about 12 min of units
-# locally), so nightly and on manual dispatch.
+# locally), so nightly and on manual dispatch. The advisory audit (TFP-266) and the dead-code check
+# (TFP-259) run alongside them.
 
 on:
   schedule:
@@ -81,6 +82,27 @@ jobs:
       - name: Check the app's dependencies for high and critical advisories
         shell: bash
         run: npm audit --omit=dev --audit-level=high
+
+  # TFP-259: unused files, exports and dependencies; knip.jsonc says why each exception is there.
+  dead-code:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for dead code
+        run: npx knip
 
   template-unchanged:
     runs-on: ubuntu-latest

@@ -1,6 +1,6 @@
 import type { CandidateJourney, DependencyMapEntry, FormRecord, SiteGraph, StorageUsage } from "@/lib/introspect/types";
 
-export type { FormFieldRecord, FormRecord } from "@/lib/introspect/types";
+export type { FormRecord } from "@/lib/introspect/types";
 
 export const BEST_PRACTICE_OPTIONS = [
     "functional",
@@ -129,7 +129,7 @@ export interface ContentProfilePage {
 // TFP-084/086: re-exported from introspect/types.ts (not redeclared) so the
 // generator, coverage, and persistence layers share the exact same shape
 // inspectPages actually produces.
-export type { CandidateJourney, DependencyKind, JourneySource, NamedFlow, DependencyMapEntry, SiteGraph, SiteGraphEdge, SiteGraphEdgeKind, SiteGraphNode, StorageKind, StorageUsage } from "@/lib/introspect/types";
+export type { CandidateJourney, DependencyKind, DependencyMapEntry, SiteGraph, SiteGraphEdge, SiteGraphEdgeKind, StorageKind, StorageUsage } from "@/lib/introspect/types";
 
 export interface ContentProfile {
     scannedAt: string;

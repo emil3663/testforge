@@ -1,4 +1,5 @@
 import { BEST_PRACTICE_OPTIONS, BEST_PRACTICE_KEYWORDS, DEFAULT_BASE_URL } from "@/app/_lib/constants";
+import { getDefaultInspectionPath } from "@/lib/introspect/paths";
 import type { NamedFlow } from "@/lib/introspect/types";
 import { ENV_NAME_PATTERN, ENV_NAME_RULE_MESSAGE, LOGIN_CONFIG_FIELDS, LOGIN_FIELD_LABELS } from "@/lib/run/login-fields";
 import type { LoginConfigField } from "@/lib/run/login-fields";
@@ -215,15 +216,6 @@ export function getLinkPreviewLabel(link: NonNullable<ContentProfilePage["linkDe
 
 export function getEmbeddedPreviewLabel(embeddedLink: NonNullable<ContentProfilePage["embeddedLinkDetails"]>[number]) {
     return embeddedLink.text.trim() || embeddedLink.rawValue.trim() || embeddedLink.url.trim();
-}
-
-export function getDefaultInspectionPath(baseUrl: string) {
-    try {
-        const pathname = new URL(baseUrl).pathname || "/";
-        return pathname === "/" ? "/" : pathname.replace(/\/$/, "");
-    } catch {
-        return "/";
-    }
 }
 
 export function normalizeInspectionPaths(baseUrl: string, manualPaths: string[], selectedPaths: string[]) {

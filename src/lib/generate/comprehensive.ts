@@ -2,7 +2,7 @@ import type { ComprehensivePageScope } from "@/lib/comprehensive/pages";
 import { comprehensiveLabel, type ComprehensiveArea, type ComprehensiveRunMode } from "@/lib/comprehensive/run-mode";
 import type { CheckStandard } from "@/lib/comprehensive/standards";
 import { PASSIVE_SECURITY_HELPERS } from "./comprehensive-security-helpers";
-import { checkDetails, PAGE_ANNOTATION, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
+import { checkDetails, passiveSecurityPageTests, passiveSecurityRunTests, PROBE_PAGE } from "./comprehensive-security";
 import { ACCESSIBILITY_HELPERS, accessibilityPageTests } from "./comprehensive-accessibility";
 import { guessableIdsTest, knownPathsTest, PROBE_HELPERS, PROBE_STANDARDS } from "./security-probes";
 import { apiFieldsTest } from "./api-fields";
@@ -27,8 +27,6 @@ import { shareReadOnlyVisits, type ShareOptions } from "./shared-visits";
 // The suite runs its tests one at a time in a single worker by itself
 // (TFP-133, added at Gate A): the one-worker rule of Decision 2 must not
 // depend on the caller sending runMode, or on the host the request named.
-
-export { PAGE_ANNOTATION };
 
 export interface PageCheckContext {
     path: string;

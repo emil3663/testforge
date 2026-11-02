@@ -13,8 +13,6 @@
 // what the check finds, else the category whose "List of Mapped CWEs"
 // contains the check's CWE. The reasoning sits beside each entry.
 
-export const TOP10_SOURCE = "OWASP Top 10:2025, github.com/OWASP/Top10 master 3a31f35 (2025/docs/en)";
-
 export const TOP10_2025 = {
     A01: "A01:2025 Broken Access Control",
     A02: "A02:2025 Security Misconfiguration",

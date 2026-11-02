@@ -1,4 +1,3 @@
-import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/seo";
 import type { BestPracticeArea, ReportTab, TestAuditMode } from "@/app/_lib/types";
 
 export const BEST_PRACTICE_OPTIONS = [
@@ -113,20 +112,4 @@ export const BEST_PRACTICE_KEYWORDS: Record<BestPracticeArea, string[]> = {
     "cookie/session": ["cookie", "cookies", "session", "login", "authentication"],
     database: ["database", "persist", "persistence", "save", "saved", "update"],
     reliability: ["reliability", "resilience", "degrade", "graceful", "offline", "failure", "outage"],
-};
-
-export const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    name: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    applicationCategory: "DeveloperApplication",
-    operatingSystem: "Web",
-    url: getSiteUrl(),
-    featureList: [
-        "Plain-English Playwright test generation",
-        "Crawl-aware page selection",
-        "Content-aware assertions",
-        "Structured regression reporting",
-    ],
 };

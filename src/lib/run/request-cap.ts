@@ -32,11 +32,11 @@ import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
  *
  * Decision 11: the run records how many requests were given a slot, how many gave up waiting, and how many waited.
  */
-export const REQUEST_CAP_URL_ENV_VAR = "TESTFORGE_REQUEST_CAP_URL";
-export const REQUEST_CAP_TOKEN_ENV_VAR = "TESTFORGE_REQUEST_CAP_TOKEN";
-export const REQUEST_CAP_DOMAIN_ENV_VAR = "TESTFORGE_REQUEST_CAP_DOMAIN";
-export const NOT_JUDGED_TITLES_ENV_VAR = "TESTFORGE_NOT_JUDGED_TITLES";
-export const NOT_JUDGED_REASON_ENV_VAR = "TESTFORGE_NOT_JUDGED_REASON";
+const REQUEST_CAP_URL_ENV_VAR = "TESTFORGE_REQUEST_CAP_URL";
+const REQUEST_CAP_TOKEN_ENV_VAR = "TESTFORGE_REQUEST_CAP_TOKEN";
+const REQUEST_CAP_DOMAIN_ENV_VAR = "TESTFORGE_REQUEST_CAP_DOMAIN";
+const NOT_JUDGED_TITLES_ENV_VAR = "TESTFORGE_NOT_JUDGED_TITLES";
+const NOT_JUDGED_REASON_ENV_VAR = "TESTFORGE_NOT_JUDGED_REASON";
 /** The module a capped run's units import in place of `@playwright/test`, copied into the run's folder. */
 export const REQUEST_CAP_MODULE = "testforge-request-cap.ts";
 export const REQUEST_CAP_TOKEN_HEADER = "x-testforge-cap-token";

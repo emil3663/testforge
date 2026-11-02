@@ -14,28 +14,18 @@ import { shareReadOnlyVisits, type ShareOptions } from "../shared-visits";
 
 export { BEST_PRACTICE_OPTIONS } from "./types";
 export type {
-    ActionableElementDetail,
     ActionableElementType,
     BestPracticeArea,
     ContentProfile,
-    ContentProfilePage,
     ContentRules,
     DependencyKind,
     CandidateJourney,
     DependencyMapEntry,
-    JourneySource,
-    NamedFlow,
     SiteGraph,
-    SiteGraphEdge,
     SiteGraphEdgeKind,
-    SiteGraphNode,
-    DragDropTargetDetail,
-    GeneratedSuite,
     InteractionCategory,
     LinkCategory,
     LinkDetail,
-    LocatorHint,
-    StorageKind,
     StorageUsage,
     TestAuditMode,
 } from "./types";

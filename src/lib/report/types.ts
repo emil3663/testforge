@@ -5,8 +5,8 @@ import type { SiteSuiteRecord } from "./site-suite-types";
 import type { CoverageMap } from "./coverage-map-types";
 import type { PageTypeCoverageRecord } from "./page-type-types";
 export type { PageTypeCoverageEntry, PageTypeCoverageRecord } from "./page-type-types";
-export type { CandidateBindingRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord, SiteSuiteRegeneration } from "./site-suite-types";
-export type { CoverageMap, CoverageMapEntry, CoverageMapKind, CoverageMapType } from "./coverage-map-types";
+export type { CandidateBindingRecord, GapWritingRecord, SiteSuiteRecheck, SiteSuiteRecord } from "./site-suite-types";
+export type { CoverageMap, CoverageMapEntry, CoverageMapType } from "./coverage-map-types";
 
 // "Not run" (Phase 34 Option C): the test skipped itself with a stated reason -
 // not run by choice, e.g. interactive tests off. "Blocked" is a skip or

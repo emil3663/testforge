@@ -383,7 +383,7 @@ npx playwright test --project=chromium
 - The self-test workflow runs the same checks on every push to `main` and keeps its smoke-report artifacts for 30 days.
 - The regression workflow can be triggered manually from GitHub Actions and keeps its regression-report artifacts for 30 days. It builds once, before Playwright starts the server.
 - Running TestForge itself as a step in another project's pipeline is planned as Phase 47 (`docs/decisions/phase-47-ci-integration-decision-record.md`).
-- The nightly workflow runs the unit suite and `check:template-unchanged` (against the recorded template baseline) every night at 02:00 UTC and on manual dispatch, not on every push. The unit log is kept as an artifact for 30 days.
+- The nightly workflow runs the unit suite, `check:template-unchanged` (against the recorded template baseline) and `knip` (dead code) every night at 02:00 UTC and on manual dispatch, not on every push. The unit log is kept as an artifact for 30 days.
 
 ---
 

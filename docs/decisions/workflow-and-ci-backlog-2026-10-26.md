@@ -591,6 +591,16 @@ another session took any of them.
 
 ### TFP-259 - Dead-code pass, and a check that keeps it clean
 
+- **Status:** Built 2026-11-02, awaiting verification. The config is
+  `knip.jsonc`, not `knip.json`, as the false positives are explained in
+  comments. `playwright-core` is declared at `^1.59.1`, the range of
+  `@playwright/test`, so the tree keeps one copy. knip 6 found two things
+  the 2026-10-27 scan hadn't: `TOP10_SOURCE` (unused, removed; the header
+  comment of `standards.ts` has the same provenance) and unused re-exports,
+  removed with their five env-var exports in `request-cap.ts`. `scripts/`
+  isn't a blanket entry: only package.json's scripts and the three named in
+  `knip.jsonc` are, so an unused script fails the check too.
+
 - **Phase:** None
 - **Priority:** P2
 - **Suggested labels:** `chore`, `tooling`
@@ -626,6 +636,20 @@ another session took any of them.
 - **Dependencies:** None.
 
 ### TFP-260 - Bind the local Docker stacks to loopback
+
+- **Status:** Built `769afb4` (2026-10-31). **Verified (Cowork, 2026-10-31):**
+  `docker-compose.yml` binds MinIO's 9000/9090 and Plane's 80 to
+  `127.0.0.1`; `scripts/toolshop-local/compose.loopback.yml` replaces
+  Testsmith's port lists with `!override` (4200, 8091, 8000, 3306 on
+  `127.0.0.1`), and `toolshop.sh` loads it for both versions; `SECURITY.md`
+  describes it. The builder measured every port bound to `127.0.0.1` and no
+  answer on the LAN address from the same machine (MinIO had answered there
+  before). **Open, for the owner:** the other-machine check (RUN-47 ⚠️) —
+  with the stacks up, `http://192.168.1.17:9090` and `:4200` must not load
+  from a phone or another computer on the network.
+- `v0.2.0` tagged on `b19f314` and released 2026-10-31 04:32 UTC (checked
+  via the API: published, not a draft). Dependabot re-checked at 06:55:
+  still "Dependency files checked: 2026-10-28 07:31", 114 open.
 
 - **Owner decision, 2026-10-28: Plane stays, secured.** It may be used by
   other people or setups, and the next sites under test will come in the
