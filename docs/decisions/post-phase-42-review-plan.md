@@ -521,6 +521,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-242 — Remove an unsaved run's evidence folder in the sweep
 
+- **Status:** Built 2026-11-03, awaiting verification: `removeOrphanedArtifactFolders`
+  in `persistence.ts`, called by the executor after the `run-` sweep. Each
+  candidate is checked against its own run's record, as a folder is only ever
+  its own run's. Beyond the ticket: a folder whose saved run's record can't be
+  read or has a malformed entry is kept, as is one whose run is saved in the
+  real `runs/` while a test points `RUNS_ROOT` elsewhere, and names that aren't
+  `artifacts-<a run id>` are left alone.
+  `TEST_PLAN.md` RUN-48.
 - **Priority:** P3 · **Labels:** `run`, `maintenance`
 - **Decided:** Emil, 2026-10-21, after 278 MB of leftovers were cleared from
   `.playwright-runs` (505 `artifacts-<id>` folders and about 40 run files,

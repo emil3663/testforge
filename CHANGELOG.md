@@ -28,6 +28,13 @@ the report and the CI command are declared stable, after Phase 47.
   Playwright's own proxy option, so this hasn't been shown to carry a run
   through a proxy ([TFP-209](docs/decisions/post-phase-42-review-plan.md)).
 
+### Fixed
+
+- Starting a run now clears `artifacts-<id>` folders left by interrupted runs:
+  older than an hour, of no active run, and needed by no saved run. A folder
+  whose saved run can't be read is kept
+  ([TFP-242](docs/decisions/post-phase-42-review-plan.md)).
+
 ## [0.2.0] — 2026-10-31
 
 The first tagged version.

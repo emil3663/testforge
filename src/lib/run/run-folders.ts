@@ -32,11 +32,11 @@ export async function removeRunFolder(dir: string) {
 }
 
 /** Removes the folders under root that `isStale` names (given each one's name and age), each as removeRunFolder does. */
-export async function removeStaleRunFolders(root: string, isStale: (name: string, ageMs: number) => boolean) {
+export async function removeStaleRunFolders(root: string, isStale: (name: string, ageMs: number) => boolean | Promise<boolean>) {
     const now = Date.now();
     for (const entry of await readdir(root).catch(() => [] as string[])) {
         const dir = join(root, entry);
         const info = await stat(dir).catch(() => null);
-        if (info?.isDirectory() && isStale(entry, now - info.mtimeMs)) await removeRunFolder(dir);
+        if (info?.isDirectory() && (await isStale(entry, now - info.mtimeMs))) await removeRunFolder(dir);
     }
 }

@@ -1,11 +1,12 @@
 import type { GenerationRecord } from "@/lib/report/types";
 import type { ProducedBy } from "@/lib/report/produced-by-types";
-import { mkdir, readdir, readFile, rename, rm, writeFile } from "fs/promises";
-import { dirname, join, resolve, sep } from "path";
+import { mkdir, readdir, readFile, rename, rm, stat, writeFile } from "fs/promises";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "path";
 import type { ContentProfile } from "@/lib/generate/mock/types";
 import type { LoginConfig } from "@/lib/run/auth";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
 import { isComprehensive, type RunMode } from "@/lib/comprehensive/run-mode";
+import { removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
 
 export type RunRetention = "full" | "archived";
 
@@ -198,6 +199,37 @@ export async function loadRunRecord(runId: string): Promise<RunRecord | null> {
     } catch {
         return null;
     }
+}
+
+const pathExists = (path: string) => stat(path).then(() => true, () => false);
+
+// relative, not a string prefix: on Windows the same path can differ in its drive letter's case.
+function isInside(dir: string, filePath: string) {
+    const path = relative(dir, filePath);
+    return path.split(sep)[0] !== ".." && !isAbsolute(path);
+}
+
+async function savedRunNeedsFolder(runId: string, dir: string) {
+    // Tests point RUNS_ROOT at a scratch folder but share the real .playwright-runs, whose saved runs they can't read.
+    const realRunsRoot = join(process.cwd(), "runs");
+    if (RUNS_ROOT !== realRunsRoot && (await pathExists(join(realRunsRoot, runId)))) return true;
+    const record = await loadRunRecord(runId);
+    // A saved run whose record can't be read might point here: keep the folder.
+    if (!record) return pathExists(runDir(runId));
+    return Object.values(record.artifactFiles ?? {}).some((file) => typeof file?.filePath !== "string" || isInside(dir, file.filePath));
+}
+
+/**
+ * TFP-242: artifacts-<id> folders a crash left behind, older than the hour, of no active run and needed by no saved
+ * run. If persistRunJob's move and its clean-up both fail, a saved run's record can still point in. A folder is only
+ * ever its own run's, so each is checked against that one record, not all of runs/. Saved runs are D29's.
+ */
+export async function removeOrphanedArtifactFolders(root: string, activeRunIds: string[]) {
+    await removeStaleRunFolders(root, async (name, ageMs) => {
+        const runId = name.slice("artifacts-".length);
+        if (!name.startsWith("artifacts-") || !isValidRunId(runId) || activeRunIds.includes(runId) || ageMs <= STALE_RUN_FOLDER_MS) return false;
+        return !(await savedRunNeedsFolder(runId, join(root, name)));
+    });
 }
 
 export async function listRunRecords(): Promise<RunRecord[]> {

@@ -13,6 +13,7 @@ import type { RunJob } from "@/lib/run/jobs";
 import { appendProcessOutput } from "@/lib/run/output";
 import { buildRunSelection, estimateTestCount } from "@/lib/run/selection";
 import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
+import { removeOrphanedArtifactFolders } from "@/lib/run/persistence";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
 import type { RawTiming } from "@/lib/run/timing";
@@ -135,6 +136,7 @@ export async function startRunJob(
     // they were (artifacts-<id>), which persistence reads. Removed when the run is finalized.
     const runFolders = [...runJobs.keys()].map((id) => `run-${id}`);
     await removeStaleRunFolders(runsDir, (name, ageMs) => /^(run|gap|recheck)-/.test(name) && !runFolders.includes(name) && ageMs > STALE_RUN_FOLDER_MS);
+    await removeOrphanedArtifactFolders(runsDir, [...runJobs.keys()]);
     // TFP-156: the serial group runs in a second pass, from a folder of its own the first pass's config leaves out.
     const { dir: runDir, config: configFile } = await createRunFolder(runsDir, `run-${runId}`, ", testIgnore: ['serial/**']");
 
