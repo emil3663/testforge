@@ -81,6 +81,16 @@ Status: **Locked (Emil, 2026-10-27). Not started.**
      any remote host, with timed checks Not run and the report saying so,
      until Phase 43 gives it a confirmation.
 
+   **Amended 2026-11-02 (Emil):** the CLI can start the app itself.
+   `--server "<command>" --port <n>`, repeatable for a backend and a
+   frontend, starts each command, waits until its port answers (with a
+   timeout that ends the run with exit `2`), runs TestForge against
+   `localhost`, then stops every server it started, whatever the result.
+   Modelled on `scripts/with_server.py` in Anthropic's `webapp-testing`
+   skill (`github.com/anthropics/skills`, Apache-2.0): the pattern, or the
+   code with its notice added to `THIRD_PARTY_NOTICES.md` if any is reused.
+   A team can still start the app in its own job step and pass only the URL.
+
 3. **TestForge in CI is still single-user.** (Emil, 2026-10-27) Phase 16
    Decision 1 is amended, not reversed: TestForge runs on the tester's own
    machine *or on their own team's CI runner*, never as a shared service.
@@ -230,6 +240,11 @@ the same change as this lock.
 
 TFP-245 to TFP-249 are as written in `workflow-and-ci-backlog-2026-10-26.md`
 Part 1, with these changes once this record locks:
+- TFP-245 also builds `--server`/`--port` (Decision 2, amended
+  2026-11-02), with acceptance cases: the local Toolshop's start command
+  given as `--server`, the run passes on clean and fails on with-bugs, and
+  no server process is left afterwards; a server that never opens its port
+  ends the run with exit `2`, also leaving nothing running.
 - TFP-245 calls `src/lib/pipeline/` (Decision 4) instead of reimplementing
   anything, and opens no server.
 - TFP-246's baseline uses `diffRuns` on runs restored from the data folder.

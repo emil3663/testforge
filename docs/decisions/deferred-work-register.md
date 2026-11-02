@@ -75,7 +75,7 @@ without renumbering the items below, which the tables' Order columns cite).
      inconclusive, with a confidence score and a threshold below which a
      person decides.
    - Calibrated on the labelled failures.
-9. **D27: TestForge measured against QA My App.**
+9. **D27: TestForge measured against QA My App and Playwright's Test Agents.**
    - A comparison benchmark on the local Toolshop copies, run once
      Standard is complete (after D3 and D19).
    - Scored with TFP-154's rule against the answer key.
@@ -197,7 +197,7 @@ Statuses:
 | # | Item | Source | Emil (2026-10-19) | Status | Order | Waits on |
 | --- | --- | --- | --- | --- | --- | --- |
 | D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Built 2026-10-27, awaiting verification** (`benchmarks/2026-10-27-d26-wsl/`) | Moved into Phase 39 by Gate D's ruling 3 (2026-10-26), before the re-measurement | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
-| D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
+| D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) and Playwright's Test Agents (planner, generator, healer; added 2026-11-02) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
 | D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
 | D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
 | D30 | A solo performance pass, so real sites without the ownership confirmation still get performance judged | Emil, 2026-10-21, after TFP-157's ruling that timed checks are Not run under the request cap | Wanted | **Planned**, with D3 | 7, with D3 | TFP-157 (Phase 39). What it covers is below |
@@ -471,6 +471,21 @@ very end it could no longer change the order.
   file defects to GitHub, which is turned off for the benchmark.
 - **The output:** a short report under `benchmarks/`, with what TestForge
   should take from it, ticketed or added here.
+- **Second yardstick (Emil, 2026-11-02): Playwright's Test Agents** —
+  planner, generator and healer, in Playwright from 1.59 (Microsoft's
+  Playwright team; they run with an AI host such as Claude Code). Run the
+  same way, on the same copies, scored with the same rule, beside QA My App.
+  Recorded as well:
+  - **What the healer changes:** every test it repairs, and whether the
+    repair made a failing test pass on with-bugs. A repair that turns a
+    real defect green is a defect hidden, not a test fixed; TestForge
+    deliberately reports a failure that survives regeneration (RUN-30), so
+    a difference there is a design choice to show, not a TestForge miss.
+  - **Against TestForge's reuse:** the healer is the nearest outside match
+    to TestForge's stale-test regeneration (Phase 42), so the report
+    compares the two directly.
+  - **Not permanent:** a one-off comparison when Standard is complete;
+    repeated only at a milestone (for example before 1.0), never a gate.
 - **Later:** "E2E Test Generator" against `write-playwright-test`, and "A11y
   Enforcer" against D3's accessibility set, the same way, if D27 proves
   useful.
