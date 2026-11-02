@@ -343,6 +343,10 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-217 — The nightly run emails its summary
 
+- **Status:** Parts A and B built 2026-11-02. `needs` lists all four jobs, not
+  the two named below: `audit` and `dead-code` came later, and a night with
+  either red mustn't email PASS. The case is TST-06 (TST-05 was taken). The
+  send is `scripts/nightly-email/send.mjs` with `nodemailer` pinned at 10.1.7.
 - **Priority:** P2 · **Labels:** `ci`, `enhancement`
 - **Problem it solves:** the nightly result (TFP-210) is visible only on
   GitHub.

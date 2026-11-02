@@ -2,7 +2,7 @@ name: Nightly
 
 # TFP-210: the unit suite and the template check, too slow for every push (about 12 min of units
 # locally), so nightly and on manual dispatch. The advisory audit (TFP-266) and the dead-code check
-# (TFP-259) run alongside them.
+# (TFP-259) run alongside them, and each run emails its summary (TFP-217).
 
 on:
   schedule:
@@ -30,6 +30,8 @@ jobs:
   unit:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    outputs:
+      summary: ${{ steps.counts.outputs.summary }}
 
     steps:
       - name: Check out repository
@@ -53,6 +55,13 @@ jobs:
       - name: Run the unit suite
         shell: bash
         run: npm run test:unit 2>&1 | tee unit.log
+
+      # TFP-217: the counts and failing names, for the notify job.
+      - name: Pass on the unit counts
+        id: counts
+        if: always()
+        shell: bash
+        run: node scripts/nightly-email/notify.mjs unit unit.log >> "$GITHUB_OUTPUT"
 
       - name: Upload the unit log
         if: always()
@@ -107,6 +116,8 @@ jobs:
   template-unchanged:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      line: ${{ steps.check-line.outputs.line }}
 
     steps:
       # The check extracts the base ref with git archive, so it needs the history.
@@ -125,6 +136,55 @@ jobs:
         run: npm ci
 
       - name: Check the template output is unchanged against the baseline
+        shell: bash
         env:
           BASE: ${{ inputs.template-base || env.TEMPLATE_BASELINE }}
-        run: npm run check:template-unchanged -- "$BASE" HEAD
+        run: npm run check:template-unchanged -- "$BASE" HEAD 2>&1 | tee template.log
+
+      - name: Pass on the check's line
+        id: check-line
+        if: always()
+        shell: bash
+        run: node scripts/nightly-email/notify.mjs template template.log >> "$GITHUB_OUTPUT"
+
+  # TFP-217: every run says how it went, on its own page and by email, whether its jobs passed, failed or were
+  # cancelled. A failed send fails this job, so a missing email shows here. The password reaches only the send step.
+  notify:
+    needs: [unit, audit, dead-code, template-unchanged]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        if: always()
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        if: always()
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # No install script runs here: this job goes on to hold the SMTP password.
+      - name: Install dependencies
+        if: always()
+        run: npm ci --ignore-scripts
+
+      - name: Build the summary
+        if: always()
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TRIGGER: ${{ github.event_name }}
+          COMMIT: ${{ github.sha }}
+          TEMPLATE_BASE: ${{ inputs.template-base || env.TEMPLATE_BASELINE }}
+        run: node scripts/nightly-email/notify.mjs build nightly-email.json
+
+      - name: Send the summary
+        if: always()
+        env:
+          TESTFORGE_SMTP_PASSWORD: ${{ secrets.TESTFORGE_SMTP_PASSWORD }}
+          CI_REPORT_TO: ${{ vars.CI_REPORT_TO }}
+        run: node scripts/nightly-email/notify.mjs send nightly-email.json
