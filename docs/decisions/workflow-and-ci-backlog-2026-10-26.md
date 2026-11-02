@@ -591,8 +591,20 @@ another session took any of them.
 
 ### TFP-259 - Dead-code pass, and a check that keeps it clean
 
-- **Status:** Built 2026-11-02, awaiting verification. The config is
-  `knip.jsonc`, not `knip.json`, as the false positives are explained in
+- **Status:** **Built `a1b4b46`; verified 2026-11-02 (Cowork, Linux, fresh clone):**
+  `npx knip` exit 0 (one harmless `.css` hint); `tsc --noEmit` clean;
+  `check:template-unchanged 769afb4 a1b4b46` 166 of 166 identical; one
+  `playwright-core` (1.59.1, deduped under `@playwright/test` and
+  `@axe-core/playwright`); `.gitignore` keeps `/runs/` and the commit holds
+  nothing under `runs/`; the nightly's `dead-code` job runs `npx knip` with
+  no pipe, so it can fail. Rulings (Emil, 2026-11-02): `dist/` stays out
+  (nothing produces it); `knip.jsonc` accepted (its comments explain each
+  exception); `PAGE_ANNOTATION` left as over-exported; the `.venv`
+  patterns go from eslint's ignore list in the next commit; `knip` as a
+  dev dependency accepted; the slower unit run (22 min) is one data point.
+  **Done 2026-11-02:** a manual nightly (run 41506182823, on `a1b4b46`)
+  shows the `dead-code` job green on GitHub.
+  The config is `knip.jsonc`, not `knip.json`, as the false positives are explained in
   comments. `playwright-core` is declared at `^1.59.1`, the range of
   `@playwright/test`, so the tree keeps one copy. knip 6 found two things
   the 2026-10-27 scan hadn't: `TOP10_SOURCE` (unused, removed; the header
