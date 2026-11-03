@@ -239,9 +239,12 @@ Before anything is renamed:
      services firm (35, 36), Germany's "Mr. Onions" (35, 41, 43). No live
      EU or UK mark, and none for Moon and Me's "Mr Onion" character.
    - **South Africa:** no company named "Mr Onion" on CIPC's BizPortal.
-     **Still to do:** CIPC's trade mark e-search (eServices login), a
-     special search, or a search by a South African trade mark attorney,
-     which is recommended before a logo or public launch.
+     CIPC's trade mark search couldn't be found in eServices.
+   **Owner decision (Emil, 2026-11-03):** the trademark check is done for
+   the rename. No same name was found in South Africa; the mark will be
+   registered in the EU or the US, not South Africa. Noted: a US or EU
+   registration gives no rights in South Africa, and South Africa's register
+   itself wasn't searched.
 2. **Domain:** decide whether one is wanted, and check `mronion` / `mr-onion`
    in the extensions wanted.
 3. **Registries:** GitHub repo `emil3663/mr-onion` (free under the owner's
