@@ -621,7 +621,7 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-258 — The template check covers every helper the generator writes
 
-- **Status:** Done and verified 2026-11-03, with two decisions open (below). 13 helper sources
+- **Status:** Done and verified 2026-11-03; its two findings are TFP-268 and TFP-269. 13 helper sources
   (`*_HELPER(S)` constants and `build*Helper(s)` functions under
   `src/lib/generate`). Of their top-level declarations, the 166 inputs left 5
   unreached: the journey helpers, the route helpers and `tfSameSite`, which
@@ -645,16 +645,15 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     TFP-250's premise ("changed generated output") held for `:282`, not
     `:245`. But `READ_ONLY_GUARD_HELPER`'s 7 reach saved suites in full
     through site-suite reuse (`withGuardHelper`) and the gap writer, which
-    the check doesn't run. **Open, for Emil:** keep those comments through
-    the move (template output changes, the baseline moves; they are then
-    covered), run the check on the site-suite path too, or accept the gap.
+    the check doesn't run. **Decided (Emil, 2026-11-03):** keep those
+    comments through the move, as TFP-269 (workflow backlog, Part 4).
   - **Found on the way, not fixed:** `normalizeContentProfile` drops every
     journey whose path revisits a page, as its path list is de-duplicated
     (`normalizeStringList`). All 10 in the fixed profile end in a form that
     posts to its own page, so all 10 are dropped; a user selecting such a
     journey gets no journey test. The journeys input adds one journey that
-    doesn't revisit, so the helpers are reached either way. A ticket of its
-    own, on Emil's word.
+    doesn't revisit, so the helpers are reached either way. Now TFP-268
+    (P1, workflow backlog, Part 4; Emil, 2026-11-03).
   - **The "Then" rewording** was done in `24c4449` (TFP-250): no name is left
     in `controls.ts`.
   - **Verified 2026-11-03 (Cowork):** the uncommitted files on `4c4d560`, on a

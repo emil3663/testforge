@@ -7,7 +7,8 @@ can be picked up between Phase 39's tickets, after TFP-157's verification.
 
 **Ticket numbers:** TFP-244 to TFP-257, allocated against `main` at
 `8e93998` (highest then: TFP-243); TFP-259 and TFP-260 added 2026-10-27
-(TFP-258 was taken meanwhile); TFP-261 and TFP-262 added 2026-10-27. Re-check before committing; renumber if
+(TFP-258 was taken meanwhile); TFP-261 and TFP-262 added 2026-10-27; TFP-268 to TFP-270
+added 2026-11-03 (highest then: TFP-267). Re-check before committing; renumber if
 another session took any of them.
 
 **Why this exists:**
@@ -910,6 +911,106 @@ decisions index, the contribution rules, the version and release notes.
   their phase record.
 - **Dependencies:** None for steps 1–5 (the rule is decided first);
   TFP-247 for step 6.
+
+---
+
+## Part 4 — Found 2026-11-03 (TFP-258's build), owner decision 2026-11-03
+
+Emil agreed all three on 2026-11-03, and their place in the work order
+(the handover's list): TFP-268 first, then TFP-252 and TFP-253, then TFP-269,
+then TFP-270, then Phase 47.
+
+### TFP-268 - A journey that revisits a page is dropped, so no journey test is written (added 2026-11-03)
+
+- **Status:** Open. Found by TFP-258's build (2026-11-03), not fixed there.
+- **Phase:** None — first, before TFP-252
+- **Priority:** P1
+- **Suggested labels:** `bug`, `generate`, `introspect`
+- **Problem it solves:** `normalizeJourneys` (`src/lib/generate/normalize.ts`)
+  reads a journey's `path` through `normalizeStringList`, which removes
+  repeats. A journey whose path visits a page twice (for example a form that
+  posts back to its own page) loses a path entry, its steps no longer line
+  up with the path, and the journey is dropped as not aligned. Measured in
+  TFP-258's build: all 10 journeys in the fixed content profile end in a form
+  that posts to its own page, so all 10 are dropped. A user who selects such
+  a journey gets no journey test and no message saying why. It has been so
+  since `6a5b4c4`, which added journeys.
+- **Scope:**
+  - Keep a journey's path as given: trim and drop empty entries, but don't
+    remove repeats. The other string lists keep their de-duplication.
+  - Check the rest of the journey pipeline (ranking, selection, the journey
+    test writer) handles a repeated page.
+  - If a selected journey is still dropped for another reason, say so where
+    the user sees it, not silently.
+- **Acceptance criteria:**
+  - **Red first:** a unit test with a journey whose path revisits a page,
+    failing on today's code (dropped), passing after the fix.
+  - The fixed profile's 10 journeys survive normalisation, and a selected one
+    produces a journey test.
+  - `check:template-unchanged` shows the change only in inputs with selected
+    journeys, and each changed line is read; the baseline moves in its own
+    commit if output changes.
+  - A `TEST_PLAN.md` case.
+- **Dependencies:** none.
+
+### TFP-269 - Keep helper comments in generated suites, so the template check sees them (added 2026-11-03)
+
+- **Status:** Open. TFP-258's gap; `TEST_PLAN.md` GEN-107 stays ⚠️ until
+  this lands.
+- **Phase:** None — after TFP-253
+- **Priority:** P2
+- **Suggested labels:** `generate`, `test`
+- **Problem it solves:** the shared-visit pass moves helper declarations to
+  the top of a suite with `getText()` and removes them from `getFullStart()`,
+  so the comment lines before each declaration are dropped: 20 distinct
+  lines (`controls.ts` 8, `READ_ONLY_GUARD_HELPER` 7, `SPELLING_HELPERS` 3,
+  `LAYOUT_HELPERS` 2). A change to them changes no output the template check
+  compares. `READ_ONLY_GUARD_HELPER`'s 7 do reach users' suites in full,
+  through site-suite reuse (`withGuardHelper`) and the gap writer, which the
+  check doesn't run. Options weighed (TFP-258's entry): keep the comments
+  through the move; run the check on the site-suite path too; accept the
+  gap. **Chosen (Emil, 2026-11-03): keep the comments through the move.**
+- **Scope:**
+  - The shared-visit pass carries each declaration's leading comments with
+    it.
+  - Extend `helper-coverage.test.mjs` to fail on a helper comment line no
+    output carries.
+  - Re-record `TEMPLATE_BASELINE` in `nightly.yml` in its own commit.
+- **Acceptance criteria:**
+  - **Red first:** the extended coverage test fails on today's code, naming
+    the 20 lines.
+  - `check:template-unchanged` shows only added comment lines (about 100
+    inputs, per TFP-258's estimate), every kind read; no code line changes.
+  - GEN-107 moves to ✅.
+- **Dependencies:** TFP-258 (done).
+
+### TFP-270 - Clear the six Dependabot alerts in dev dependencies (added 2026-11-03)
+
+- **Status:** Open.
+- **Phase:** None — after TFP-269, before Phase 47
+- **Priority:** P3
+- **Suggested labels:** `security`, `dependencies`
+- **Problem it solves:** Dependabot (last check 2026-11-02 21:58, after
+  being stale since 2026-10-28) shows 6 open alerts, all in development
+  dependencies that other packages pull in, so the nightly `npm audit
+  --omit=dev` doesn't see them: DOMPurify 3.4.16 under Allure's report
+  packages (#142 critical, #139 high, #138 low; Allure has no fixed release),
+  brace-expansion 1.1.14 under ESLint (#56 high, #110 moderate), minimatch
+  under ESLint's plugins (#144 moderate).
+- **Scope:**
+  - An npm `overrides` entry pinning a patched DOMPurify, with a comment
+    saying why and when to remove it (when Allure ships a fixed version).
+  - Update brace-expansion and minimatch (`npm audit fix` where it works;
+    an override only if not).
+  - The Allure report and ESLint still work.
+- **Acceptance criteria:**
+  - `npm audit` (dev included) shows none of the six; the count of what's
+    left is stated.
+  - An Allure report builds and opens; `npm run lint` passes; unit tests
+    pass.
+  - Dependabot's open alerts drop to 0 after the push, or the ones left are
+    named with a reason.
+- **Dependencies:** none.
 
 ---
 

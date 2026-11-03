@@ -86,12 +86,21 @@ this replaces them. Their history is in git and the records.
    nightly summary email; Part B can be built — the owner finished the Gmail
    and GitHub setup on 2026-10-30; prove it with one manual dispatch that
    sends the email, and check the password appears nowhere in the log), TFP-242, TFP-243, TFP-258 (`docs/decisions/post-phase-42-review-plan.md`).
-6. **TFP-252, the nightly-failure issue** (with TFP-217).
-7. **TFP-253, splitting `TEST_PLAN.md` by area**, as revised in the backlog.
+6. **TFP-268, journeys that revisit a page are dropped** (P1, added
+   2026-11-03, workflow backlog's Part 4). Stop for verification.
+7. **TFP-252, the nightly-failure issue** (with TFP-217).
+8. **TFP-253, splitting `TEST_PLAN.md` by area**, as revised in the backlog.
    Nothing else may be editing it at the time.
-8. **Phase 47**, from its record: TFP-263 (the pipeline move), TFP-245 (the
+9. **TFP-269, keep helper comments in generated suites** (Part 4): the
+   baseline moves once, in its own commit.
+10. **TFP-270, the six Dependabot alerts** (Part 4).
+11. **Phase 47**, from its record: TFP-263 (the pipeline move), TFP-245 (the
    CLI), TFP-246 (baselines). **Stop before TFP-247:** the rename phase
-   (D39) comes first, once the owner's trademark check is done.
+   (D39) comes first. The trademark check is done (owner decision,
+   2026-11-03, in the register's D39); the rename needs its own decision
+   record from a planning session.
+
+Order of 6 to 11: owner decision, 2026-11-03. Items 0 to 5 are done.
 
 ## Not for this handover
 
