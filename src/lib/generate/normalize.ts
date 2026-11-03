@@ -76,17 +76,21 @@ export function normalizeTestAuditMode(input: unknown): TestAuditMode {
     return input === "deep" ? "deep" : DEFAULT_TEST_AUDIT_MODE;
 }
 
-function normalizeStringList(input: unknown) {
+// TFP-268: order and repeats kept, for a journey's path, where a page visited
+// twice is two entries.
+function normalizeStringSequence(input: unknown) {
     if (!Array.isArray(input)) {
         return [] as string[];
     }
 
-    return [...new Set(
-        input
-            .filter((item): item is string => typeof item === "string")
-            .map((item) => item.replace(/\s+/g, " ").trim())
-            .filter(Boolean)
-    )];
+    return input
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.replace(/\s+/g, " ").trim())
+        .filter(Boolean);
+}
+
+function normalizeStringList(input: unknown) {
+    return [...new Set(normalizeStringSequence(input))];
 }
 
 function normalizePaths(input: unknown) {
@@ -189,7 +193,7 @@ function normalizeJourneys(input: unknown, graph: SiteGraph): CandidateJourney[]
         }
 
         const journey = item as Record<string, unknown>;
-        const path = normalizeStringList(journey.path);
+        const path = normalizeStringSequence(journey.path);
         const steps = graph.edges.length > 0 && Array.isArray(journey.steps)
             ? journey.steps.filter((step): step is Record<string, unknown> => !!step && typeof step === "object")
             : [];

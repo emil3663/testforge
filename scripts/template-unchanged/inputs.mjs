@@ -54,9 +54,9 @@ function key(input) {
 }
 
 /**
- * TFP-258: the page data with one more journey, along the graph's first edge between two pages. Its own journeys
- * all revisit a page (a form that posts to itself), and normalizeContentProfile drops those today: its path list is
- * de-duplicated, so the steps no longer line up. This one doesn't revisit, so JOURNEY_HELPERS is reached either way.
+ * TFP-258: the page data with one more journey, along the graph's first edge between two pages. Its own 10 journeys
+ * all revisit a page (a form that posts to itself), which normalizeContentProfile dropped until TFP-268; this one
+ * doesn't, so JOURNEY_HELPERS was reached either way. Kept, so the inputs and their keys stay as they were.
  */
 export function withJourney(profile) {
     const edge = profile.siteGraph.edges.find((candidate) => candidate.from !== candidate.to);

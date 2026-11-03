@@ -8,6 +8,7 @@ import assert from "node:assert";
 import { test } from "node:test";
 import { buildJourneyTests, buildJourneyTitle, JOURNEY_HELPERS } from "./journey-tests.ts";
 import { mockGenerate } from "./index.ts";
+import { normalizeContentProfile } from "../normalize.ts";
 import type { CandidateJourney, ContentProfile, ContentRules, SiteGraphEdge } from "./types";
 
 function edge(overrides: Partial<SiteGraphEdge>): SiteGraphEdge {
@@ -70,6 +71,22 @@ test("exactly the selected journeys get a test, and an id the profile doesn't of
 
     assert.strictEqual(tests.length, 1);
     assert.ok(tests[0].includes(`test('${buildJourneyTitle(other)}'`));
+});
+
+test("TFP-268: a selected journey through a form that posts back to its own page gets a test, after the route's normalising", () => {
+    const toContact = edge({ to: "/contact", text: "Contact", rawValue: "/contact" });
+    const contactForm = edge({ from: "/contact", to: "/contact", kind: "form-submit", text: "Message Send", rawValue: "/contact", tagName: "form", attributeName: "action" });
+    const revisit = journey({ id: "automatic||/ > /contact > /contact", path: ["/", "/contact", "/contact"], steps: [toContact, contactForm] });
+    const siteGraph = {
+        nodes: ["/", "/contact"].map((path) => ({ path, url: `https://app.example.com${path}`, title: path, inspected: true })),
+        edges: [toContact, contactForm],
+    };
+
+    const normalized = normalizeContentProfile({ ...profile([revisit]), siteGraph });
+    const [body] = buildJourneyTests(normalized, rules([revisit.id]));
+
+    assert.ok(body?.includes(`test('journey / > /contact > /contact'`), String(body));
+    assert.ok(body.includes("Step 3: fill and submit \"Message Send\" (form submit) to /contact"));
 });
 
 test("the test is skipped unless interactive tests are enabled for the run", () => {

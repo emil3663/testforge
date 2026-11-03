@@ -922,7 +922,20 @@ then TFP-270, then Phase 47.
 
 ### TFP-268 - A journey that revisits a page is dropped, so no journey test is written (added 2026-11-03)
 
-- **Status:** Open. Found by TFP-258's build (2026-11-03), not fixed there.
+- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
+  commit. Found by TFP-258's build (2026-11-03). A journey's path keeps its
+  order and repeats (`normalizeStringSequence`); other lists still
+  de-duplicate. **Verified on a Linux clone, the uncommitted files on
+  `435d78f`:** `journeys.test.ts` and `journey-tests.test.ts` 28 of 28
+  passed, 0 skipped; with the old `normalize.ts`, the two TFP-268 tests fail
+  (26 passed, 2 failed). `check:template-unchanged 435d78f`: 172 inputs, 170
+  identical, 2 different, the two "journeys selected" inputs; the fast one
+  read: +373 −1, ten journey tests added (TFFU-037 to -046, each entering,
+  submitting the form and checking the page still renders), the existing
+  journey renumbered to TFFU-047, no other line changed. Claude Code's full
+  unit run (708 of 708), `tsc` and ESLint weren't re-run here.
+  **Open, for Emil:** the scope's "say so where the user sees it" isn't
+  built (`route.ts` narrows the selection silently; GEN-108 ⚠️).
 - **Phase:** None — first, before TFP-252
 - **Priority:** P1
 - **Suggested labels:** `bug`, `generate`, `introspect`

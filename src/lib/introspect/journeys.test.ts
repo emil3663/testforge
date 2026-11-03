@@ -192,6 +192,18 @@ test("journeys survive normalizeContentProfile; a journey whose steps don't matc
     assert.deepStrictEqual(profile?.journeys, journeys);
 });
 
+// TFP-268: the path was de-duplicated like a text list, so a page visited twice
+// lost an entry, the steps no longer lined up and the journey was dropped.
+test("a journey whose path revisits a page survives normalizeContentProfile", () => {
+    const g = graph(["/", "/contact", "link"], ["/contact", "/contact", "form-submit"]);
+    const { journeys } = identifyJourneys(g);
+    assert.deepStrictEqual(journeys.map((journey) => journey.path), [["/contact", "/contact"], ["/", "/contact", "/contact"]]);
+
+    const profile = normalizeContentProfile({ scannedAt: "", baseUrl: "http://site.test", pages: [], siteGraph: g, journeys });
+
+    assert.deepStrictEqual(profile?.journeys, journeys);
+});
+
 // TFP-090: the selection carried in run config.
 test("selectJourneys returns exactly the selected journeys in rank order, drops unknown ids, and empty selects nothing", () => {
     const { journeys } = identifyJourneys(chain(3));
