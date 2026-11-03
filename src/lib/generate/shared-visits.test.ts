@@ -468,12 +468,12 @@ ${[
     const { records, report } = await run(code, "evidence", [`--output=${output.split("\\").join("/")}`]);
     const record = (title: string) => records.find((entry) => entry.title === title)!;
     assert.deepEqual(records.map((entry) => `${entry.title}: ${entry.status}`), ["1 passes: Passed", "2 fails: Failed", "3 after the failure, passes: Passed"]);
-    // The failing check: Playwright's trace and screenshot (its capture reaches the shared context), and the visit's
-    // video, each a file the report's evidence links to.
+    // The failing check: Playwright's trace and screenshot, and the visit's video, each a file the evidence links to.
     const failing = record("2 fails");
     const kinds = new Set(failing.artifacts.map((artifact) => artifact.artifactType));
     for (const kind of ["trace", "video", "screenshot"] as const) assert.ok(kinds.has(kind), `${kind} in ${[...kinds].join(", ")}`);
     assert.equal(failing.artifacts.filter((artifact) => artifact.artifactType === "video").length, 1, "one video");
+    assert.equal(failing.artifacts.filter((artifact) => artifact.fileName === "error-context.md").length, 1, "one error context, though the visit's afterAll has Playwright attach it twice (TFP-243)");
     for (const artifact of failing.artifacts) assert.ok(statSync(artifact.filePath).size > 0, `${artifact.artifactType}: ${artifact.filePath} exists`);
     const notes = annotations(report).get("2 fails") ?? [];
     assert.ok(notes.some((note) => note.type === "shared-visit-video" && /^this check starts \d+\.\d s into the video of the shared visit$/.test(note.description ?? "")), JSON.stringify(notes));

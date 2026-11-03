@@ -34,6 +34,10 @@ the report and the CI command are declared stable, after Phase 47.
   older than an hour, of no active run, and needed by no saved run. A folder
   whose saved run can't be read is kept
   ([TFP-242](docs/decisions/post-phase-42-review-plan.md)).
+- A failed check on a shared page no longer lists its `error-context.md`
+  twice, one link of which answered HTTP 400. Runs saved before this keep the
+  broken link; the working one still serves the file
+  ([TFP-243](docs/decisions/post-phase-42-review-plan.md)).
 
 ## [0.2.0] — 2026-10-31
 

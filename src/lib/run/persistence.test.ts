@@ -230,6 +230,27 @@ test("evidence move failure: falls back to the original path instead of losing t
     assert.ok(record, "the run record must still be written even when an artifact failed to move");
 });
 
+test("evidence move, one file listed twice (TFP-243): both links resolve to the one moved copy", async () => {
+    const job = await makeJob();
+    const nestedDir = join(job.artifactDir, "test-1-chromium");
+    await mkdir(nestedDir, { recursive: true });
+    const contextFile = join(nestedDir, "error-context.md");
+    await writeFile(contextFile, "fake-error-context", "utf8");
+    const artifact = { filePath: contextFile, fileName: "error-context.md", contentType: "text/markdown" };
+    job.artifactFiles.set("artifact-1", artifact);
+    job.artifactFiles.set("artifact-2", artifact);
+
+    await persistRunJob(job as never);
+
+    // Read back as a restart would: the links a saved report serves are the record's.
+    const record = await loadRunRecord(job.id);
+    mustExist(record, "the record must be saved");
+    const movedPath = join(runEvidenceDir(job.id), "test-1-chromium", "error-context.md");
+    assert.equal(record.artifactFiles["artifact-1"].filePath, movedPath);
+    assert.equal(record.artifactFiles["artifact-2"].filePath, movedPath, "the second link must point at the moved copy, not the path it left");
+    assert.equal(await readFile(record.artifactFiles["artifact-2"].filePath, "utf8"), "fake-error-context");
+});
+
 test("pin overrides sweep: a pinned, superseded, no-longer-failing run is never auto-archived", async () => {
     const baseUrl = `https://pin-test.example/${randomUUID()}`;
     const older = await makeJob({ baseUrl, finishedAt: Date.now(), result: fakeResult(randomUUID(), ["flaky login button"]) });

@@ -565,6 +565,30 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-243 — A test's evidence listed twice gets a broken second link
 
+- **Status:** Done and verified 2026-11-03. The cause is
+  Playwright 1.59.1, not the re-run or TFP-241's attachments: a failed test
+  followed by an `afterAll` hook gets its `error-context.md` attached twice, as
+  the trace fixture is set up again for the hook, and every shared visit ends
+  with one. The hook stays, as TFP-241 needs it, so the template is unchanged.
+  `createExecutionArtifacts` lists a path once, and `persistRunJob` points a
+  repeated path's links at the one moved copy. `TEST_PLAN.md` RUN-49.
+  - **Existing runs, measured 2026-11-03:** 35 of the 2,064 runs saved at the
+    time are affected, not the 8 found on 2026-10-21 (9 finished on 2026-10-20 or 21,
+    and the rest up to 2026-11-02), with 53 broken links. All 53 can be
+    repaired by re-linking to a moved copy that exists. None is repaired:
+    that waits for Emil's word.
+- **Verified 2026-11-03 (Cowork):** the uncommitted files, applied to `25d1d12`
+  on a Linux clone: `artifacts.test.ts` and `persistence.test.ts` gave 19
+  passed, 0 failed, 0 skipped, and `tsc` exit 0. With the two source changes
+  removed, the listing test and the save test fail (17 passed, 2 failed) and
+  the same-name test passes, as the report said; its proof against a wrong fix
+  wasn't re-run here, nor the real-browser shared-visit test, the full unit
+  and regression suites, or the template check, which are Claude Code's.
+  The diff matches the claims: `resolve`d paths de-duplicated in
+  `createExecutionArtifacts`, one move per old path in `persistRunJob`.
+  The two unit failures on the earlier full run (a 2.68 s page-speed reading,
+  a 6,782 ms wait against 5,000 ms) passed alone and on the final run:
+  load, not proven.
 - **Priority:** P2 · **Labels:** `bug`, `report`
 - **Found:** 2026-10-21, checking saved runs' evidence after the
   `.playwright-runs` clean-up.

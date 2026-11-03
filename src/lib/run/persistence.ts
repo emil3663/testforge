@@ -137,6 +137,9 @@ export async function persistRunJob(
         await mkdir(evidenceDir, { recursive: true });
     }
 
+    // TFP-243: a file listed twice is tried once, so its links can't disagree about where it is.
+    const settledPaths = new Map<string, string>();
+
     for (const [artifactId, artifact] of job.artifactFiles) {
         const oldPath = resolve(artifact.filePath);
         // TFP-198: the root plus a separator, so .../artifacts-run1 never claims .../artifacts-run10/file.png.
@@ -147,10 +150,11 @@ export async function persistRunJob(
         const newPath = join(evidenceDir, relativePath);
 
         await mkdir(dirname(newPath), { recursive: true });
-        const moved = await rename(oldPath, newPath).then(() => true).catch(() => false);
+        const filePath = settledPaths.get(oldPath) ?? await rename(oldPath, newPath).then(() => newPath).catch(() => oldPath);
+        settledPaths.set(oldPath, filePath);
 
         persistedArtifacts[artifactId] = {
-            filePath: moved ? newPath : oldPath,
+            filePath,
             fileName: artifact.fileName,
             contentType: artifact.contentType,
         };

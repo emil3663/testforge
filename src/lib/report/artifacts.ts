@@ -78,9 +78,19 @@ export function buildArtifactLabel(artifactType: ExecutionArtifact["artifactType
 
 export function createExecutionArtifacts(result: JsonTestResult | undefined, testId: string, browser: string) {
     const attachments = result?.attachments ?? [];
+    const seenPaths = new Set<string>();
 
     return attachments
         .filter((attachment) => attachment.path)
+        // TFP-243: Playwright attaches a failed test's error-context.md again when an afterAll hook follows it.
+        .filter((attachment) => {
+            const path = resolve(attachment.path ?? "");
+            if (seenPaths.has(path)) {
+                return false;
+            }
+            seenPaths.add(path);
+            return true;
+        })
         .map((attachment, index) => {
             const fileName = basename(attachment.path ?? `artifact-${index}`);
             const artifactType = inferArtifactType(fileName, attachment.contentType);
