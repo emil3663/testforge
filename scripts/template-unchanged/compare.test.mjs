@@ -8,7 +8,7 @@
 import assert from "node:assert";
 import { test } from "node:test";
 import { CheckError, compareOutputs, formatResult, MOCK_GENERATE_ARITY, requireArity, requireExports } from "./compare.mjs";
-import { AREAS, buildInputs } from "./inputs.mjs";
+import { AREAS, buildAllInputs, buildInputs } from "./inputs.mjs";
 
 test("identical outputs pass", () => {
     const outputs = { a: "line 1\nline 2", b: "x" };
@@ -43,12 +43,25 @@ test("a missing export stops with its name; a changed mockGenerate signature sto
     assert.throws(() => requireArity("mockGenerate", (a, b, c) => [a, b, c], MOCK_GENERATE_ARITY), /mockGenerate takes 3 parameters, not the 6/);
 });
 
-test("the input list is exactly the 166: 144 without page data, 22 with it, each key unique", () => {
-    const inputs = buildInputs();
-    assert.equal(inputs.length, 166);
+test("the input list is the 166 (144 without page data, 22 with it), then TFP-258's 6; each key unique", () => {
+    const all = buildAllInputs();
+    assert.equal(all.length, 172);
+    // buildInputs is still the 166 alone, as the tests and benchmark scripts that loop over it expect.
+    assert.deepEqual(buildInputs(), all.slice(0, 166));
+    assert.equal(new Set(all.map((input) => input.key)).size, 172);
+    // TFP-258's come after the 166, which keep their order and keys.
+    assert.deepEqual(all.slice(166).map((input) => input.key), [
+        "page-data | http://127.0.0.1:4410 | fast | Check the site. | functional | journeys selected",
+        "page-data | http://127.0.0.1:4410 | fast | Check the site. | functional | a hash-route link",
+        "page-data | http://127.0.0.1:4410 | deep | Check the site. | functional | journeys selected",
+        "page-data | http://127.0.0.1:4410 | deep | Check the site. | functional | a hash-route link",
+        "comprehensive | page-data | http://127.0.0.1:4410 | security",
+        "comprehensive | page-data | http://127.0.0.1:4410 | accessibility",
+    ]);
+    const inputs = all.slice(0, 166);
+    assert.ok(inputs.every((input) => !input.variant && !input.comprehensive));
     assert.equal(inputs.filter((input) => !input.pageData).length, 144);
     assert.equal(inputs.filter((input) => input.pageData).length, 22);
-    assert.equal(new Set(inputs.map((input) => input.key)).size, 166);
     assert.equal(AREAS.length, 10);
     const perTargetAndMode = inputs.filter((input) => !input.pageData && input.baseUrl === "https://demoqa.com" && input.mode === "deep");
     assert.equal(perTargetAndMode.length, 24);

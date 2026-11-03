@@ -575,8 +575,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   - **Existing runs, measured 2026-11-03:** 35 of the 2,064 runs saved at the
     time are affected, not the 8 found on 2026-10-21 (9 finished on 2026-10-20 or 21,
     and the rest up to 2026-11-02), with 53 broken links. All 53 can be
-    repaired by re-linking to a moved copy that exists. None is repaired:
-    that waits for Emil's word.
+    repaired by re-linking to a moved copy that exists. **Repaired
+    2026-11-03 (Emil's word):** a one-off script, not committed, re-pointed
+    all 53 at the moved copy in each run's `evidence/` folder, after a dry run.
+    Claude Code measured 35 records written, 35 `run.json.bak-tfp243` backups
+    (kept for now), every link pointing at a file that exists, and each record
+    otherwise identical to its backup. Every evidence link opened in two
+    reports: `9577f3c5` (TFUS-004, 9 of 9) and `fb75f1ac` (50 of 50). Saved
+    reports still show the file twice; that's D29's.
 - **Verified 2026-11-03 (Cowork):** the uncommitted files, applied to `25d1d12`
   on a Linux clone: `artifacts.test.ts` and `persistence.test.ts` gave 19
   passed, 0 failed, 0 skipped, and `tsc` exit 0. With the two source changes
@@ -615,6 +621,49 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-258 — The template check covers every helper the generator writes
 
+- **Status:** Done and verified 2026-11-03, with two decisions open (below). 13 helper sources
+  (`*_HELPER(S)` constants and `build*Helper(s)` functions under
+  `src/lib/generate`). Of their top-level declarations, the 166 inputs left 5
+  unreached: the journey helpers, the route helpers and `tfSameSite`, which
+  only Comprehensive writes and the check never ran. 6 inputs come after the
+  166, whose keys and outputs are unchanged: selected journeys and a
+  hash-route link (both audit modes), Comprehensive security and
+  accessibility. `helper-coverage.test.mjs` fails on any declaration no
+  output carries, and on any `tf*` helper the source declares that no output
+  does (which catches `tfLeakSignature`, outside the naming convention).
+  172 of 172 identical against `HEAD` and the nightly's `24c4449`, so the
+  baseline doesn't move. `TEST_PLAN.md` GEN-107 (⚠️). A ref from before
+  `134b183` can no longer be compared (exit 2, named).
+  - **Acceptance "proof the gap is closed": met for comments inside a
+    declaration, not for the one TFP-250 reworded.** The shared-visit pass
+    moves declarations with `getText()` and removes them from
+    `getFullStart()`, so the comments before each one are dropped: 20
+    distinct lines (`controls.ts` 8, `READ_ONLY_GUARD_HELPER` 7, also part of
+    `CONTROL_HELPERS`, `SPELLING_HELPERS` 3, `LAYOUT_HELPERS` 2) are in no
+    fixed output. `controls.ts:245`, above
+    `tfWords`, is one: it is in no suite the template generator writes, so
+    TFP-250's premise ("changed generated output") held for `:282`, not
+    `:245`. But `READ_ONLY_GUARD_HELPER`'s 7 reach saved suites in full
+    through site-suite reuse (`withGuardHelper`) and the gap writer, which
+    the check doesn't run. **Open, for Emil:** keep those comments through
+    the move (template output changes, the baseline moves; they are then
+    covered), run the check on the site-suite path too, or accept the gap.
+  - **Found on the way, not fixed:** `normalizeContentProfile` drops every
+    journey whose path revisits a page, as its path list is de-duplicated
+    (`normalizeStringList`). All 10 in the fixed profile end in a form that
+    posts to its own page, so all 10 are dropped; a user selecting such a
+    journey gets no journey test. The journeys input adds one journey that
+    doesn't revisit, so the helpers are reached either way. A ticket of its
+    own, on Emil's word.
+  - **The "Then" rewording** was done in `24c4449` (TFP-250): no name is left
+    in `controls.ts`.
+  - **Verified 2026-11-03 (Cowork):** the uncommitted files on `4c4d560`, on a
+    Linux clone: the template-check tests 8 of 8 passed, 0 skipped;
+    `check:template-unchanged 24c4449` gave 172 inputs, 172 identical, 0
+    different. With the coverage test limited to the first 166 inputs, both
+    its tests fail, naming the route helpers and `tfSameSite` among the
+    unreached declarations, as reported. Not re-run here: the full unit
+    suite, `tsc`, ESLint and the planted-helper proofs, which are Claude Code's.
 - **Priority:** P1 · **Labels:** `test`, `generate`
 - **Found:** 2026-10-27, by TFP-250's fresh-context review.
   - Rewording a comment inside `controls.ts`'s generated helpers changed

@@ -124,8 +124,13 @@ The gates catch failures that are mechanical. Quality is judged by reading.
   of Phases 34, 36 and 37 set this, and so does Phase 35 Acceptance
   Criterion 1. Reading the diff does not count as a check. The check is
   `npm run check:template-unchanged -- <base-ref> [<head-ref>]` (TFP-137,
-  GEN-58): 166 fixed inputs, 22 of them with page data, each ref's own
+  GEN-58): 172 fixed inputs, 28 of them with page data, each ref's own
   generator, compared byte for byte. Exit 0 only when all are identical.
+  Two of them run Comprehensive's generator, so a change to Comprehensive
+  alone shows as different there. Every helper the generator can write into
+  a suite is reached by at least one, and a unit test fails if a new one
+  isn't (TFP-258, GEN-107); comments between a helper's declarations are
+  the known exception.
 - **Form-submitting tests run only with `TESTFORGE_INTERACTIVE=1`** (GEN-44).
 - **A healthy real site doesn't turn red because of the template's own
   mistakes** (Phase 36 Decision 1, GEN-50). Every false failure found goes

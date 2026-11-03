@@ -11,6 +11,9 @@ export function requireExports(moduleName, module, names) {
 
 /** mockGenerate(baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode). */
 export const MOCK_GENERATE_ARITY = 6;
+/** TFP-258: buildComprehensiveSuite(baseUrl, mode, scope), its options defaulted; selectComprehensivePages(profile, baseUrl, pageCap). */
+export const COMPREHENSIVE_SUITE_ARITY = 3;
+export const SELECT_PAGES_ARITY = 3;
 
 export function requireArity(name, fn, arity) {
     if (fn.length !== arity) throw new CheckError(`${name} takes ${fn.length} parameters, not the ${arity} this check calls it with`);

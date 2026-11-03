@@ -360,7 +360,7 @@ npx playwright test --project=chromium
 | `npm run dev:development` | Start TestForge in dev mode with `.env.development` |
 | `npm run lint` | Run ESLint |
 | `npm run test:unit` | Run the unit suite (about 620 tests; about 14 min) |
-| `npm run check:template-unchanged -- <commit>` | Compare the template generator's output on 166 fixed inputs with a commit's |
+| `npm run check:template-unchanged -- <commit>` | Compare the template generator's output on 172 fixed inputs with a commit's |
 | `npm run test:self` | Run the smoke suite |
 | `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
 | `npm run test:regression` | Run the regression suite |

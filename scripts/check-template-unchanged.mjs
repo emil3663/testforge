@@ -1,7 +1,9 @@
 // Phase 35 TFP-137: proves the template generator's output unchanged between
-// two refs, on 166 fixed inputs (scripts/template-unchanged/inputs.mjs),
+// two refs, on 172 fixed inputs (scripts/template-unchanged/inputs.mjs),
 // byte for byte. Gate A and every "Standard output unchanged" regression
-// policy rest on this; it used to exist only on the verifier's side.
+// policy rest on this; it used to exist only on the verifier's side. Since
+// TFP-258 it runs Comprehensive's generator too, so a ref from before
+// Phase 35's Comprehensive runs can't be compared (exit 2, named).
 //
 //   npm run check:template-unchanged -- <base-ref> [<head-ref>]
 //
