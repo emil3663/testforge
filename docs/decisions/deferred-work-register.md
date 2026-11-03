@@ -222,6 +222,26 @@ Before anything is renamed:
 1. **Trademark search:** CIPC (South Africa); the US (USPTO) and EU (EUIPO)
    registers if it will be marketed abroad. Classes 9 and 42 (software,
    software services).
+   **Results so far (owner and Cowork, 2026-11-03; a first pass, not legal
+   clearance):**
+   - **US (USPTO), live marks, classes 9 and 42:** 340 matching "MR" or
+     "ONION", none "MR ONION". The only "MR. ONION" filed (1994, processed
+     onions) is dead. Live "___ ONION" software marks exist: SECURITY ONION
+     (9, 42), TRUST ONION (9, pending), THE ONION TALKS (9, pending), BLUE
+     ONION (42, ×3), RED ONION (42), DIGITAL ONION (42). None covers testing
+     or developer tools, but "onion" is a crowded word in software: easy to
+     register around, weak to defend.
+   - **TMview (EU, UK and the other offices it holds), "Mr Onion":** 32
+     marks. None live in 9 or 42: the one class 9 filing (Thailand, 2009)
+     has ended, and there are none in 42. Live "Mr Onion" marks are in other
+     classes: a restaurant chain's in China (29, 30, 31, 43; its domains may
+     be taken), Malaysia (29, 30, 43), Mexico (31), a Chinese financial
+     services firm (35, 36), Germany's "Mr. Onions" (35, 41, 43). No live
+     EU or UK mark, and none for Moon and Me's "Mr Onion" character.
+   - **South Africa:** no company named "Mr Onion" on CIPC's BizPortal.
+     **Still to do:** CIPC's trade mark e-search (eServices login), a
+     special search, or a search by a South African trade mark attorney,
+     which is recommended before a logo or public launch.
 2. **Domain:** decide whether one is wanted, and check `mronion` / `mr-onion`
    in the extensions wanted.
 3. **Registries:** GitHub repo `emil3663/mr-onion` (free under the owner's

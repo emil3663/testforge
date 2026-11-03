@@ -656,9 +656,9 @@ another session took any of them.
   `127.0.0.1`), and `toolshop.sh` loads it for both versions; `SECURITY.md`
   describes it. The builder measured every port bound to `127.0.0.1` and no
   answer on the LAN address from the same machine (MinIO had answered there
-  before). **Open, for the owner:** the other-machine check (RUN-47 ⚠️) —
-  with the stacks up, `http://192.168.1.17:9090` and `:4200` must not load
-  from a phone or another computer on the network.
+  before). **Other-machine check done (owner, 2026-11-03):** with the stacks
+  up, a phone on the same Wi-Fi got `ERR_CONNECTION_TIMED_OUT` on
+  `http://192.168.1.17:9090` and `:4200`. RUN-47 is ✅.
 - `v0.2.0` tagged on `b19f314` and released 2026-10-31 04:32 UTC (checked
   via the API: published, not a draft). Dependabot re-checked at 06:55:
   still "Dependency files checked: 2026-10-28 07:31", 114 open.
