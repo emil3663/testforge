@@ -521,7 +521,7 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
 
 ### TFP-242 — Remove an unsaved run's evidence folder in the sweep
 
-- **Status:** Built 2026-11-03, awaiting verification: `removeOrphanedArtifactFolders`
+- **Status:** Done and verified 2026-11-03 (`2a3e234`): `removeOrphanedArtifactFolders`
   in `persistence.ts`, called by the executor after the `run-` sweep. Each
   candidate is checked against its own run's record, as a folder is only ever
   its own run's. Beyond the ticket: a folder whose saved run's record can't be
@@ -549,6 +549,19 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   - **Test plan:** a `TEST_PLAN.md` case; unit and regression suites pass.
 - **Not in scope:** saved runs in `runs/` (D29, the retention policy).
 - **Dependencies:** none. It fits with R4, between Phase 39's gates.
+- **Verified 2026-11-03 (Cowork):** on a fresh Linux clone at `2a3e234`,
+  `run-folders.test.ts` gave 14 passed, 0 failed, 0 skipped. Read the keep
+  rules in the diff: age, active run, run-id name, the real `runs/` check,
+  an unreadable record (kept when its run folder exists) and a malformed
+  entry (kept) all match the commit's claims, and the red-first failure is
+  quoted in its body. Claude Code's other figures (unit 701, regression 72,
+  template 166, 13 mutants killed) were not re-run here.
+- **Known limits, accepted as documented (RUN-48):** a finished run's
+  leftover waits for a server restart, because `runJobs` keeps finished runs
+  until then; and a `run.json` that parses but isn't a record's shape counts
+  as pointing nowhere, so its folder can be removed. Only a hand edit makes
+  that shape, and keeping such folders would also keep real orphans of runs
+  without artifacts. Either can be reopened as a small ticket on Emil's word.
 
 ### TFP-243 — A test's evidence listed twice gets a broken second link
 
