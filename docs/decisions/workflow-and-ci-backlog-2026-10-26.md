@@ -8,7 +8,7 @@ can be picked up between Phase 39's tickets, after TFP-157's verification.
 **Ticket numbers:** TFP-244 to TFP-257, allocated against `main` at
 `8e93998` (highest then: TFP-243); TFP-259 and TFP-260 added 2026-10-27
 (TFP-258 was taken meanwhile); TFP-261 and TFP-262 added 2026-10-27; TFP-268 to TFP-270
-added 2026-11-03 (highest then: TFP-267). Re-check before committing; renumber if
+added 2026-11-03 (highest then: TFP-267); TFP-271 added 2026-11-04. Re-check before committing; renumber if
 another session took any of them.
 
 **Why this exists:**
@@ -922,8 +922,8 @@ then TFP-270, then Phase 47.
 
 ### TFP-268 - A journey that revisits a page is dropped, so no journey test is written (added 2026-11-03)
 
-- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
-  commit. Found by TFP-258's build (2026-11-03). A journey's path keeps its
+- **Status:** Done and verified 2026-11-04 (`6211ae7`; baseline moved in
+  `8d6f408`). Found by TFP-258's build (2026-11-03). A journey's path keeps its
   order and repeats (`normalizeStringSequence`); other lists still
   de-duplicate. **Verified on a Linux clone, the uncommitted files on
   `435d78f`:** `journeys.test.ts` and `journey-tests.test.ts` 28 of 28
@@ -934,8 +934,9 @@ then TFP-270, then Phase 47.
   submitting the form and checking the page still renders), the existing
   journey renumbered to TFFU-047, no other line changed. Claude Code's full
   unit run (708 of 708), `tsc` and ESLint weren't re-run here.
-  **Open, for Emil:** the scope's "say so where the user sees it" isn't
-  built (`route.ts` narrows the selection silently; GEN-108 ⚠️).
+  The scope's "say so where the user sees it" isn't built (`route.ts`
+  narrows the selection silently; GEN-108 ⚠️): split out as TFP-271 (Emil,
+  2026-11-04).
 - **Phase:** None — first, before TFP-252
 - **Priority:** P1
 - **Suggested labels:** `bug`, `generate`, `introspect`
@@ -1024,6 +1025,32 @@ then TFP-270, then Phase 47.
   - Dependabot's open alerts drop to 0 after the push, or the ones left are
     named with a reason.
 - **Dependencies:** none.
+
+### TFP-271 - Tell the user when a selected journey is dropped (added 2026-11-04)
+
+- **Status:** Open. Split from TFP-268's scope (Emil, 2026-11-04).
+- **Phase:** None — after TFP-270, before Phase 47
+- **Priority:** P3
+- **Suggested labels:** `generate`, `ui`
+- **Problem it solves:** the generate route (`src/app/api/generate/route.ts`,
+  around lines 93–96) narrows the user's selected journey ids to the
+  journeys that survive `normalizeContentProfile`, and says nothing about the
+  rest. TFP-268 fixed the known cause (a path that revisits a page), but any
+  other mismatch would again drop a selected journey silently: the user
+  selected it, and no test and no reason appear.
+- **Scope:**
+  - The generate response lists each selected journey id that was dropped,
+    with a short reason (for example "its steps don't match its path").
+  - The UI shows that list beside the generated suite, in plain words.
+  - Nothing changes when no selected journey is dropped.
+- **Acceptance criteria:**
+  - **Red first:** a route test that selects a journey which can't survive
+    normalising, failing on today's code (no field), passing after.
+  - The UI shows the message for that case (a component or end-to-end
+    test), and shows nothing extra in the usual case.
+  - `check:template-unchanged`: 172 of 172 identical (suites don't change).
+  - GEN-108 moves from ⚠️ to ✅.
+- **Dependencies:** TFP-268 (done).
 
 ---
 

@@ -94,13 +94,16 @@ this replaces them. Their history is in git and the records.
 9. **TFP-269, keep helper comments in generated suites** (Part 4): the
    baseline moves once, in its own commit.
 10. **TFP-270, the six Dependabot alerts** (Part 4).
+10a. **TFP-271, tell the user when a selected journey is dropped** (Part 4,
+   P3, added 2026-11-04).
 11. **Phase 47**, from its record: TFP-263 (the pipeline move), TFP-245 (the
    CLI), TFP-246 (baselines). **Stop before TFP-247:** the rename phase
    (D39) comes first. The trademark check is done (owner decision,
    2026-11-03, in the register's D39); the rename needs its own decision
    record from a planning session.
 
-Order of 6 to 11: owner decision, 2026-11-03. Items 0 to 5 are done.
+Order of 6 to 11: owner decision, 2026-11-03; 10a added 2026-11-04. Items
+0 to 6 are done (TFP-268: `6211ae7`, baseline `8d6f408`).
 
 ## Not for this handover
 
