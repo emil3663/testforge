@@ -4,7 +4,8 @@
 complete). Reviewed at every phase completion
 ([`WORKING_AGREEMENTS.md`](WORKING_AGREEMENTS.md)). Point new readers here
 first; `README.md` is the how-to, `docs/decisions/product-roadmap.md` the
-phase-by-phase ledger, `TEST_PLAN.md` the case-by-case status.*
+phase-by-phase ledger, `docs/test-plan/` the case-by-case status (indexed
+from `TEST_PLAN.md`).*
 
 ## In one paragraph
 

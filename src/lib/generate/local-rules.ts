@@ -4,7 +4,7 @@
  * Phase 31 (TFP-106): `testforge-qwen7b` invented `expect(locator).toBeAccessible()`
  * on every accessibility-worded request; a worked example of the real matchers
  * fixed it. Phase 33: the same lever, one guide per category the baseline
- * (TEST_PLAN.md GEN-28) found thin - each a short rule plus a worked example.
+ * (docs/test-plan/GEN.md, GEN-28) found thin - each a short rule plus a worked example.
  *
  * Only the guides for the categories in scope are sent (localRulesFor), because
  * the model copies an example's structure (Phase 32, GEN-30): a guide for an

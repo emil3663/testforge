@@ -21,7 +21,8 @@ reference.
 | [`decisions/README.md`](decisions/README.md) | Index of every decision record, backlog and report, by phase |
 | [`decisions/product-roadmap.md`](decisions/product-roadmap.md) | The map across phases, with each phase's status |
 | [`decisions/deferred-work-register.md`](decisions/deferred-work-register.md) | Everything deferred, its build order and the standing rules |
-| [`../TEST_PLAN.md`](../TEST_PLAN.md) | Every test case, its status and evidence; known limitations |
+| [`../TEST_PLAN.md`](../TEST_PLAN.md) | Feature status, known limitations, and the index of test-case areas |
+| [`test-plan/`](test-plan/) | Every test case, its status and evidence, one file per area (`GEN.md`, `RUN.md`, …) |
 
 ## Setup guides
 

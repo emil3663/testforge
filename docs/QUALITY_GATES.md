@@ -164,7 +164,8 @@ The gates catch failures that are mechanical. Quality is judged by reading.
   - a defect found while building or verifying a ticket is fixed in that
     ticket;
   - documentation lands in the same commit as the work it describes.
-- **`TEST_PLAN.md` cases land with their code**, as each record's
+- **Test-plan cases land with their code**, in their area's file under
+  `docs/test-plan/` (`TEST_PLAN.md` is the index), as each record's
   Regression Policy requires.
 - **Status lines match git.** When a phase closes, its record's status line
   is reconciled with what git shows. Phase 36 reconciled ten records.
@@ -201,7 +202,7 @@ report is a claim; this checklist turns it into evidence.
    reverting the change locally.
 7. **Check each acceptance criterion separately.** Mark each one met, not
    met, or not checkable here, with the reason.
-8. **Check the docs landed in the same commit:** `TEST_PLAN.md` case, record
+8. **Check the docs landed in the same commit:** test-plan case, record
    status, roadmap, handover.
 9. **State the limits.** Say what couldn't be verified, and where it can
    be. For example, the verifier's VM has Node 22 and no Chromium, so the

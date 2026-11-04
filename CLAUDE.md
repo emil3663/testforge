@@ -3,6 +3,8 @@
 Quality gates, evidence rules and the verification checklist: `docs/QUALITY_GATES.md`.
 How work is decided, built and recorded, and what *owner decision* and
 *confirmation required* mean: `docs/WORKING_AGREEMENTS.md`.
+Read the handover, then only the test-plan area (`docs/test-plan/<area>.md`)
+and the record section the ticket names.
 
 ## Shell output: use RTK
 

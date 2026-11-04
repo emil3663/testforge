@@ -1,7 +1,7 @@
 /**
  * TFP-115 (Phase 34, Decision 2): the template's performance checks.
  * Their runtime behaviour (pass on a healthy page, fail with a named culprit)
- * is proven live on the comparison fixture - see TEST_PLAN.md GEN-40.
+ * is proven live on the comparison fixture - see docs/test-plan/GEN.md, GEN-40.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/performance-checks.test.ts

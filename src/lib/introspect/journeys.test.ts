@@ -6,7 +6,7 @@
  * pages, a named flow's exit beyond the graph is carried as declared (Decision
  * 4's amendment), and nothing longer than the hop cap is surfaced - excluded,
  * not truncated into a shorter, wrong candidate. The live half (a real
- * target's real flow) is recorded in TEST_PLAN.md INT-09.
+ * target's real flow) is recorded in docs/test-plan/INT.md, INT-09.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/introspect/journeys.test.ts

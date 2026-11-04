@@ -1,7 +1,7 @@
 /**
  * TFP-116 (Phase 34, Decision 3): the template's security checks.
  * Runtime behaviour (a real XSS defect fails the payload test; headers and
- * cookie flags become findings) is proven live - see TEST_PLAN.md GEN-41.
+ * cookie flags become findings) is proven live - see docs/test-plan/GEN.md, GEN-41.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/generate/mock/security-checks.test.ts

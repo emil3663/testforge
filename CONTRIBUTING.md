@@ -75,8 +75,9 @@ npm run test:self            # needs Chromium: npx playwright install chromium
 what was considered and rejected, and what it deliberately doesn't do. End
 with `Closes #N` when it completes an issue, `Refs #N` for progress on one.
 
-Documentation that describes the change — `TEST_PLAN.md`, the decision
-record, the README — is updated in the same commit.
+Documentation that describes the change — the test plan (a case in its
+area's file under `docs/test-plan/`), the decision record, the README — is
+updated in the same commit.
 
 ## Licence
 

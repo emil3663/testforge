@@ -96,7 +96,7 @@ owner decision ─► decision record ─► tickets ─► handover ─► buil
 6. **Rule.** At each gate the owner rules on the measured results. The
    ruling and its table are recorded under the gate in the decision record.
 7. **Record.** The record's status line, `product-roadmap.md`, the
-   deferred-work register and `TEST_PLAN.md` are updated in the same
+   deferred-work register and the test plan are updated in the same
    commit as the work they describe.
 
 **Commits** go to `main` in small, reviewable commits, in Conventional
@@ -139,8 +139,8 @@ cause a mistake. Ticket-specific rulings stay in the records.
 **Context is the scarce resource.**
 - One handover per fresh session; `/clear` between unrelated tickets.
 - Read the section of a large file the ticket names, not the whole file.
-  `TEST_PLAN.md` (about 300 KB), the deferred-work register and the roadmap
-  are references, not reading lists.
+  The test plan's area files (`docs/test-plan/GEN.md` is about 190 KB), the
+  deferred-work register and the roadmap are references, not reading lists.
 - Research goes to a subagent so the implementing context stays on the
   build.
 - RTK compresses shell output (`CLAUDE.md`); evidence stays unfiltered.
@@ -191,7 +191,8 @@ loop like any other work.
 | `docs/APPLICATION_OVERVIEW.md` | What TestForge is and does now, for a new reader | Every phase completion |
 | `docs/decisions/product-roadmap.md` | Every phase, in order, with its status | Every lock, gate and completion |
 | `docs/decisions/deferred-work-register.md` | Everything deferred, its build order and standing rules | Whenever a record defers or picks up work |
-| `TEST_PLAN.md` | Case-by-case status and known limitations | In the commit that changes the behaviour |
+| `TEST_PLAN.md` | Feature status, known limitations, and the index of test-case areas | In the commit that changes the behaviour |
+| `docs/test-plan/<area>.md` | Case-by-case status, one file per area (`GEN`, `RUN`, …) | In the commit that changes the behaviour |
 | `docs/QUALITY_GATES.md` | Gates, evidence and verification | When a gate or check changes |
 | This file | How work is done | When the loop changes; reviewed at each phase completion |
 

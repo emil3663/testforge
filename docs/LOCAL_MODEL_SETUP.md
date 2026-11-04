@@ -144,9 +144,9 @@ every accessibility request. Two things now guard against that:
 Compiling is not the same as being right. The check cannot see a missing
 `await`, a wrong URL, or an assertion that fails on your real page, and some
 categories come back thin: a suite that only checks visibility, filed under a
-heading like "SEO". `TEST_PLAN.md` records a per-category baseline (GEN-28)
-and the Phase 33 results per area (GEN-32 to GEN-36), and Known Limitations
-item 9 lists the details. Reliability suites in particular often repeat one
+heading like "SEO". `docs/test-plan/GEN.md` records a per-category baseline (GEN-28)
+and the Phase 33 results per area (GEN-32 to GEN-36), and `TEST_PLAN.md`'s
+Known Limitations item 9 lists the details. Reliability suites in particular often repeat one
 test under titles naming the page's fields, so read those closely.
 
 ## When it falls back

@@ -533,7 +533,7 @@ another session took any of them.
 
 ### TFP-252 - Nightly-failure triage
 
-- **Status:** Done and verified 2026-11-04, committed with this status
+- **Status:** Done and verified 2026-11-04: `c44f1e8`
   (`feat(ci): open, update and close a nightly failure issue (TFP-252)`).
   An `issue` job in `nightly.yml` (only `issues: write` and
   `actions: read`; skipped when a run is cancelled; `notify` waits for it)
@@ -580,6 +580,23 @@ another session took any of them.
 
 ### TFP-253 - Split `TEST_PLAN.md` by area and slim its rows
 
+- **Status:** In two steps. **Step 1, the split, built 2026-11-04 and
+  verified (Cowork, 2026-11-04), awaiting commit:** nine area files under
+  `docs/test-plan/` (HLT, GEN, CRW, INT, RUN, RPT, EXP, SAV, TST), each its
+  old §3.x text under a heading and a link back; `TEST_PLAN.md` keeps
+  everything else, with §3 as an index (335,601 to 19,365 bytes); living
+  docs and five code comments point at the area files; dated records keep
+  their historical mentions. **Verified** from the uncommitted files against
+  `c44f1e8`'s `TEST_PLAN.md`, with Cowork's own script: 205 case rows and
+  205 IDs before, 205 and 205 after, none left in `TEST_PLAN.md`; none
+  missing, extra or duplicated; every row byte-identical; LF only; all nine
+  index links resolve and each area file links back. Claude Code's
+  repo-wide link check (199 files, 19 links into the plan, no new broken
+  link) wasn't re-run here. **Step 2, slimming the rows** (no row over 400
+  characters, long "Proven" narratives moved to the decision records, the
+  20-row spot-check), is its own commit and review, because it rewrites
+  rows. The `test-plan-doc` skill is a user-level skill: updating it to the
+  new layout is the owner's (proposed from a planning session).
 - **Phase:** None
 - **Priority:** P1
 - **Suggested labels:** `docs`, `context`

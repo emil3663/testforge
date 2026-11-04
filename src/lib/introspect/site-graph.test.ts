@@ -4,7 +4,7 @@
  * Deterministic coverage of the edge rules the decision record's acceptance
  * criterion depends on (an edge names the actual element that produces it,
  * never an assumed connection). The live half of that criterion - the graph
- * matching a real target's navigation - is recorded in TEST_PLAN.md INT-08.
+ * matching a real target's navigation - is recorded in docs/test-plan/INT.md, INT-08.
  *
  * Run via:
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/lib/introspect/site-graph.test.ts
