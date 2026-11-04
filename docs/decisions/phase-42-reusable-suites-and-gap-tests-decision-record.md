@@ -204,6 +204,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   coarse, and such a test tests something that is gone (a link taken off a
   page). Only a hand-edited test outlives that.
 
+#### RUN-29 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A site's suite is saved outside the repo and reused while its page types are unchanged (TFP-190, Phase 42 Decisions 1 and 4; unit: `src/lib/site-suites/site-suites.test.ts` (generates through `POST /api/generate` on the comparison fixture's `/types` shop, pages inspected in a real browser), `src/lib/run/generation-record.test.ts`)
+
+**Expected result:** Each template-written suite (Standard, and Comprehensive per area; owner decision, 2026-10-13) is saved per origin and suite identity in TestForge's data folder (`TESTFORGE_DATA_DIR`, else the OS app-data folder), with each page type's structural signatures and each test's file and written hash. **Proven (decision table: site unchanged / one page's structure changed / a page removed x a test edited by hand):** a second run of the unchanged site reuses all 143 tests and generates none, and the suite is the saved one; `types-contact-phone` (the contact form gains a tel field) regenerates only `/types/account/:slug`'s tests and reuses every other, its hand-edited test kept as edited and flagged as on a changed page; `types-privacy-removed` retires the privacy page's tests and the other pages' link tests of it. The repo's `git status` is the same before and after; the data folder resolves per platform (equivalence partitioning). The report and the HTML export say, in one sentence, what was reused, generated, regenerated and retired, and the edits to check. Gate: Phase 42 Gate A.
+
 ### TFP-191 — A stale reused test is regenerated and re-run before it counts
 
 - **Priority:** P1 · **Labels:** `run`
@@ -228,6 +236,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   so a run of selected tests stays one; hand-edited tests keep their
   result. The site suite saves its generation inputs and page data for
   this.
+
+#### RUN-30 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A reused test that fails on a page whose structure changed is regenerated and re-run before it counts (TFP-191, Phase 42 Decision 1's stale-test rule; owner decision, 2026-10-13; unit: `src/lib/site-suites/stale.test.ts` (generates through `POST /api/generate` and runs through `POST /api/run` on the comparison fixture's `/types` shop, in a real browser), `src/lib/run/generation-record.test.ts`)
+
+**Expected result:** After the run, each failing test that was reused from the site suite (written before this generation), not edited by hand and of one page type has its page read again with the inspection that saved its signature. **Proven (decision table: reused or written by this generation x page structure changed or not):** reused, `types-contact-subject-list` (Subject becomes a list): `/types/account/:slug` is named as changed with the contact page's signature before and after, its tests are regenerated from a fresh inspection and re-run, and the report has only the re-run's results - the stale Subject check is gone and its regenerated check of the list passes; the sentence names the regeneration, the failing tests and the re-run's counts. Reused, `types-quantity-readonly` (the field turns read-only, the signature doesn't change): the failure stands and is said to be on an unchanged page. Written by this generation: not read again, the failure stands. The re-run's other failures on the contact page (the WCAG scan's target size, the tab order of its inline labels) are reported as the re-run found them. Gate: Phase 42 Gate A.
 
 ### TFP-192 — The coverage map and its index
 
@@ -259,6 +275,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   saved tests are matched by describe chain, title and the pages they visit.
   End checks: unit 530/530, regression 57/57, `check:template-unchanged`
   166/166.
+
+#### RPT-20 evidence
+
+Moved word for word from [`docs/test-plan/RPT.md`](../test-plan/RPT.md) by TFP-253; the case's row there links here.
+
+**Test:** The coverage map: each element, link and flow the inspection found, the tests that touch it, and what no test touches, per page type (TFP-192, Phase 42 Decision 3; unit: `src/lib/report/coverage-map.test.ts` (generates through `POST /api/generate` on the comparison fixture's `/types` shop, pages inspected in a real browser))
+
+**Expected result:** Read from the suite's code: an element is touched by a test that visits its page and uses its locator (a form without an id by its recorded action, method and occurrence, as the form check finds it); a link likewise, or by a site-wide link check that requests its URL; a flow by its journey test. A whole-page check touches no single element. **Proven (equivalence partitioning over what touches an element):** every element check maps to the element it checks (the Subject check to the Subject field alone; the contact form's check to the form); with the Subject check taken out of the suite, the Subject field is named in `/types/account/:slug`'s "touched by none"; every unselected candidate journey is listed as touched by none; the index gives exactly the Subject check for the Subject field, a run of one, and for a link its on-page check and the site-wide link check. The report (app and HTML export) shows the headline and, per page type, covered of total and the untouched names. Gate: Phase 42 Gate A.
 
 ### Gate A rulings (Emil, 2026-10-14)
 
@@ -303,6 +327,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   region it is in. A repeated link counts once in the totals and in each
   page type it appears on.
 
+#### RPT-21 evidence
+
+Moved word for word from [`docs/test-plan/RPT.md`](../test-plan/RPT.md) by TFP-253; the case's row there links here.
+
+**Test:** Coverage in two tiers, a repeated link counted once (TFP-201, Phase 42 Gate A ruling 1; unit: `src/lib/report/coverage-map.test.ts`)
+
+**Expected result:** **In context:** a test finds and checks the item on its page; this tier is the gap list and the index. **Reachability:** a link whose URL a site-wide check requests without finding it on a page; it stays on the gap list, saying so. A link with the same text and target on several pages is one item, covered in context when checked on any of them. **Proven on the fixture's `/types` shop (equivalence partitioning):** `/types/legal/privacy`'s link, requested by the site-wide link check and found on no page, is reachability-only and on `/types/help/terms`'s gap list; `/types/product/101`'s link, on every page, with its on-page check kept on the terms page alone, is one item covered in context by that one test; distinct links are fewer than links found on pages; the index for a link gives its on-page checks, not the site-wide request. The headline names both tiers and the distinct-link count. Gate: Phase 42 batch 2.
+
 ### TFP-200 — A list wrapped in its label is named as the browser names it
 
 - **Priority:** P2 · **Labels:** `bug`, `generate`
@@ -325,6 +357,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   fixture's case is `/wrapped`, and the TFP-191 defect's list lost its
   `aria-label`. The coverage map's blind-spot note was never added, since
   the fix came in the same batch.
+
+#### GEN-95 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A control inside its label is named as the browser names it (TFP-200, Phase 42 Gate A ruling 2; unit: `src/lib/introspect/label-names.test.ts` (inspects the comparison fixture's `/wrapped` page, then runs the generated checks in a real browser))
+
+**Expected result:** The inspection reads a label's text without the labelled control's own content, as Chromium's accessible name does. **Proven (equivalence partitioning over what the label holds besides its text):** a list (`Subject`), a list followed by text (`Size *`) and a textarea holding text (`Message`) are named so, and their generated element checks pass. On the code before the fix the names were "Subject OrderOther", "Size ChooseM *" and "Message Hello", and the test fails. RUN-30's list now has no `aria-label` and its regenerated check still passes. Template output: unchanged on recorded profiles (`check:template-unchanged`); the change is in what new inspections record.
 
 ### TFP-193 — The library: pattern entries, seeded from Phase 41
 
@@ -351,6 +391,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   whole output on the fixture's and the Toolshop's page data, Standard
   and Comprehensive, is byte-identical before and after
   (`benchmarks/2026-10-14-tfp193-library/`).
+
+#### GEN-96 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The library: Phase 41's checks as pattern entries, applied by the patterns inspection finds (TFP-193, Phase 42 Decision 2; unit: `src/lib/library/library.test.ts`; output: `benchmarks/2026-10-14-tfp193-library/`)
+
+**Expected result:** 15 entries in `src/lib/library/entries.ts`, each with its pattern, binding, technique, gate, where it runs, its builder and the bugs it caught. **Proven:** every caught bug is in the answer key, and together they are exactly Phase 41's Gate B finds (2, 4, 19, 26, 27, 29, 31, 33, 34, 40, 42, 45, 53, 58, 59, 60, 62, 63, 66, 67, 75, 80, 82, 94); the image check lists none of its own. Applying an entry (decision table): a page with the pattern gets the check, one without doesn't (the fixture's `/store` sort list against `/wrapped`'s lists; `/` with no list or field); a page known only by its path matches only an entry for any page; the generated Standard suite has each check on exactly the pages its entry binds to, and the cross-page layout check needs two. The generators' whole output (Standard fast and deep, Comprehensive security and accessibility, on the fixture's and the local Toolshop's page data) is byte-identical before and after the move: 8 of 8.
 
 ### TFP-194 — Claude Code writes gap tests, once per gap, opt-in per site
 
@@ -381,6 +429,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   as an argument, since the prompt carries text from the site. Not built:
   a control in the app for the setting (the route only).
 
+#### RUN-31 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Gap tests, once per gap, opt-in per site (TFP-194, Phase 42 Decisions 5 and 6; unit: `src/lib/gap-writer/gap-writer.test.ts` (generates through `POST /api/generate` on the comparison fixture's `/types` pages in a real browser, with a stand-in for Claude Code reached by the real call path))
+
+**Expected result:** A site's `gapWriter` setting (`off` by default; `claude-code`; `local-model`) decides whether its uncovered elements and links get tests. Each written body runs at the read-only gate inside the request guard. A failure is revised in the same session (up to 3 attempts); a breach is rejected at once. A saved test joins the site suite and is reused; a gap tried without one isn't asked for again. **Proven (decision table: opt-in x what the written test does):** off, the writer is never called and nothing is written; on, one call per gap, every target on the in-context gap list and no covered link asked for, all saved in "Gap tests", and the report names the count and the cost; the same site again, no call, the gap tests reused; a failing test fixed on the second attempt, resuming the first call's session; a test that POSTs rejected as a breach, never saved or revised, and the next generation asks for another gap; the local model chosen with none configured, nothing written, and the report says why. The settings route refuses an unknown writer and a request that names no site.
+
 ### TFP-195 — The candidate pool
 
 - **Priority:** P1 · **Labels:** `library`, `ai`
@@ -409,6 +465,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   site's opt-in, since nothing leaves the machine. Before writing, a gap a
   candidate matches gets no new test, on either run type, so on Standard
   such a gap stays uncovered.
+
+#### RUN-32 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The candidate pool: gap tests generalised, run on other sites outside the verdict (TFP-195, Phase 42 Decision 8; unit: `src/lib/candidates/candidates.test.ts` (two comparison fixture sites, through `POST /api/generate` and `POST /api/run`, with TFP-194's stand-in for Claude Code))
+
+**Expected result:** After a gap test is saved, its writer generalises it (`__PAGE__`, `__LOCATOR__`). TestForge binds it back to the same element and runs it; only a pass joins the pool, one file per pattern (kind, type, name). **Proven (decision table: site x run type x the candidate's state):** first site, the gap test generalised, checked and pooled with its source; second site, Comprehensive, the candidate bound to it in "Candidate tests" and run beside a template check, the report listing it in its own section and the Comprehensive summary counting the template check alone, and its evidence gaining the run (site, status, run id); second site, Standard, never run; second site opted in, no new gap test for the candidate's pattern; one pattern from two sites merged into one candidate with both sources; a rejected candidate kept with its reason, never bound, never proposed again.
 
 ### TFP-196 — Promotion
 
@@ -447,6 +511,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   which caused 15 unrelated failures in the first full run). End checks:
   unit 551/551, regression 57/57, `check:template-unchanged` 166/166.
   TFP-194 was tested with a stand-in; no real Claude Code call was made.
+
+#### RUN-33 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Promotion: only a candidate meeting the rule is offered; approved ones become library entries, rejected ones stay rejected (TFP-196, Phase 42 Decision 8's rule; unit: `src/lib/candidates/promotion.test.ts` (through `/api/candidates`))
+
+**Expected result:** The rule: gates passed on every run (no breach), and a real defect caught (a run labelled real, or a benchmark bug) or 3 sites with no unlabelled failure, and the tester's approval. **Proven (decision table):** no runs, 2 clean sites, 3 sites with an unlabelled failure, and 3 sites with a breach are not offered; 3 clean sites and 1 site with a run labelled real (bug 27) are; approving one below the rule is refused (409, naming why); labelling the failure "not a defect" makes the 3-site candidate offered, while a breach never is. Approved: `library:promote` writes it as an entry with its evidence, caught bug 27 and approver, marks it promoted, and doesn't write it twice. Rejected: kept with its reason, refused approval afterwards, and its pattern is still in the pool, so TFP-195 never proposes it again.
 
 ### Batch 2 rulings (Emil, 2026-10-14)
 
@@ -552,6 +624,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
     gap tests and candidates run inside the main run.
   - No real Claude Code call was made.
 
+#### RUN-34 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The gap writer and the tests it writes, hardened (TFP-202, P0, Phase 42 batch 2 ruling 5; unit: `src/lib/gap-writer/hardening.test.ts` (TFP-194's stand-in for Claude Code by the real call path; a gap-test spec and a `POST /api/run` run in a real browser))
+
+**Expected result:** Claude Code runs with every tool off, without this machine's CLAUDE.md, auto memory or hooks (TFP-209), and from an empty temporary folder; written tests may use only the page and `expect`; every Playwright run gets only the environment Playwright needs, plus the proxy settings when set (TFP-209); page text is untrusted data in the prompt. **Proven (equivalence partitioning):** each call carries `--tools "" --disallowedTools "*" --strict-mcp-config --disable-slash-commands --safe-mode`, from an empty folder under the OS temp folder, kept for the revision and removed afterwards; through a `.cmd` shim on Windows the empty `--tools` value still arrives; 27 forbidden constructs (Node, imports, `fetch`, XHR, WebSocket, `sendBeacon`, `page.request.post`, routes, `context()`, computed names, `arguments`, `this`, prototypes...) are each refused, a body using `process` is refused before Playwright starts, and 6 ordinary bodies pass; a gap-test spec and a main-run test both read no `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GITHUB_TOKEN` or `TESTFORGE_*` setting while the run's own `TESTFORGE_INTERACTIVE` arrives; `runEnv` passes `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` and `NODE_EXTRA_CA_CERTS` when set, in either case, and not `ALL_PROXY`; an injection string (with a forged end marker) is one JSON line inside the PAGE-DATA block, and a revision's run output is sent the same way. **Live (2026-11-02, TFP-209, one real call, `benchmarks/2026-11-02-tfp209-safe-mode/`):** a gap test saved under `--safe-mode`, with `-p` and `--resume`, no hook registered and no project memory, CLAUDE.md or MEMORY.md in the log or transcript.
+
 ### TFP-203 — On Standard, a matching candidate becomes the gap's test
 
 - **Priority:** P1 · **Labels:** `library`
@@ -581,6 +661,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   `tfReadOnlyGuarded is not defined` (the template's helper sits inside the
   functional describe); the suite now gets a top-level copy.
 
+#### RUN-35 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** On Standard, a matching pool candidate becomes the gap's test (TFP-203, Phase 42 batch 2 ruling 2; unit: `src/lib/candidates/candidates.test.ts` (two comparison fixture sites, through `POST /api/generate`, in a real browser), `src/lib/run/generation-record.test.ts`)
+
+**Expected result:** A candidate whose pattern matches a gap on a Standard run is bound to the site and run through the gap test's gates; if it passes it joins the site suite under "Gap tests", inside the verdict. **Proven (decision table):** the second site's Standard run binds the first site's candidate (recorded with its id, `writer: "candidate"`), asks no writer, writes nothing under "Candidate tests", and the coverage map counts the gap covered; the next run reuses it. A candidate that breaches the read-only gate there, or that the code check refuses (`fetch`), is not bound, the gap is recorded as tried with the candidate's id, and the next run doesn't try it again. The record is kept, cleaned when malformed, and said in the report ("Pool candidates: 1 bound as its gap's test (...), 1 not bound, failing the gates here."). Verification fix (2026-10-15): the bound test names its candidate, and a Standard run of it on the second site (1 executed, 1 passed, in the verdict) adds that run to its evidence, so its verdict goes from 1 site to 2.
+
 ### TFP-204 — Generation applies promoted library entries
 
 - **Priority:** P1 · **Labels:** `library`, `generate`
@@ -604,6 +692,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
   fixed by `check:template-unchanged`), so with nothing promoted its output
   is byte for byte the same. Not done: promoted entries on Comprehensive
   runs, and in `entries.ts`'s catalogue.
+
+#### RUN-36 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Generation applies the library's promoted entries (TFP-204, Phase 42 batch 2 ruling 3; unit: `src/lib/library/promoted.test.ts` (TFP-193's recorded fixture profile; and one case through `POST /api/generate` and `POST /api/run` on the comparison fixture's `/types` pages, in a real browser))
+
+**Expected result:** A promoted entry in `src/lib/library/promoted/` is bound wherever inspection found its pattern and runs inside the verdict on Standard runs with the functional area. **Proven (decision table):** an element's pattern gets a test on each page with it, bound to the page and the generator's locator, in the functional describe at the read-only gate, the guard's helper written once, and each element counted covered; a repeated link gets one test, on its first page; a pattern on no page, an entry the code check refuses (`fetch`), and nothing promoted each leave the code byte for byte as it came; the repo's folder holds no entry yet, and an unreadable entry file is skipped. Through the routes: a promoted entry for one of the site's uncovered links is generated on Standard functional (not on Standard accessibility), covers the gap, and runs: 1 executed, 1 passed.
 
 ### TFP-197 — Measure the gap writer (Gate B)
 
@@ -778,6 +874,14 @@ on the local Toolshop copies (Phase 41 Decision 7).
     price if shown, `href`), e.g. `card 4 of 9 on /category/hand-tools
     ("ECO Sledgehammer", $17.75, #/product/10)`. A passing test's output is
     unchanged. `check:template-unchanged` against `980346f`: 166 of 166.
+
+#### GEN-97 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The template checks every link on the pages it selects (TFP-205, Phase 42 Gate B ruling; unit: `src/lib/generate/mock/link-audits/inventory-tests.test.ts` (fixture pages served locally and inspected in a real browser; the committed Toolshop data offline), `src/lib/report/coverage-map.test.ts`)
+
+**Expected result:** One read-only test per distinct link (text and target, once, on the first selected page it is on), at the end of the functional suite: the link is on its page by the generator's own locator (or its address), visible and named when inspection found it visible, with a valid `href`; a same-origin target is loaded once a run (link health and the linked-routes check already load them; any other is loaded through the page inside the request guard, up to 20, the rest named as not loaded); an external target gets the `href` check only. **Proven (decision table):** on the fixture, 5 tests for 5 distinct links, the one on two pages once; all pass, with no request to the external link's origin; link health fails on the broken one, naming it; with no other check loading the targets, the broken link's own test fails ("leads to /missing, which answers 404"), the external one sends nothing, and one over a cap of 2 is named as not loaded; offline, on the pages TFP-197's crawls selected for both Toolshop copies (with Gate B's committed inspection of them), every distinct link is covered in context and none is on the gap list.
 
 ### TFP-206 — Code check: allow `response.request().method()`
 

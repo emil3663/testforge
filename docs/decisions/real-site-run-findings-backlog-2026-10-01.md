@@ -47,6 +47,14 @@ TFP-140 was the last issued ticket.
     measured unchanged except for this check.
 - **Dependencies:** None.
 
+#### GEN-63 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The anchor-target check never crashes on href="#" (TFP-141; unit: `src/lib/generate/mock/link-audits/anchor-target.test.ts` (real browser, through the Playwright CLI); fixture: `/anchors`)
+
+**Expected result:** On rizonetech.com (run `5ce88c9c`, 2026-10-01) the check "anchor links point to existing in-page targets" crashed on 5 of 5 pages: it passed each link's href to `page.locator`, so `href="#"` became the CSS selector `#` ("Unexpected token \"#\" while parsing css selector") - a tool crash reported as a site failure. The target is now looked up in the page by id, or by name, with the fragment URL-decoded; no selector is built from an href. An empty fragment (`#`) is a named finding - 'link "Menu" has href="#", which points at no in-page target (a placeholder link)' - and not a failure; `#top` passes, since browsers scroll to the top for it with no such element. A real missing target still fails, as "Anchor target missing for #<id>". **Proven in a real browser:** a page with `#`, `#section`, `#top` and an encoded `#caf%C3%A9` passes with the one finding; `#missing` fails by name, never with a selector error; both fail on the previous code. **Fixture:** a new `/anchors` page (not linked from the nav) with `href="#"`, a real target and `#top`; TestForge's own inspector finds them and the generated check passes with the placeholder finding. The fixture's existing pages answer identically (6 of 6). **Output measured:** `check:template-unchanged` gives 166 of 166 identical - no fixed input reaches this check - so it was also measured on the rizonetech.com page data (fast and deep): only the 5 anchor tests' bodies change, nothing else in either suite.
+
 ### TFP-142 — The hover and HTTPS/SSL checks must not hang for 30 s per page
 
 - **Phase:** 35 (follow-up) · **Priority:** P2
@@ -67,6 +75,14 @@ TFP-140 was the last issued ticket.
   - A deliberately stalled dependency is reported as the check's own timeout
     with its reason, not as a plain 30 s failure.
 - **Dependencies:** None.
+
+#### GEN-64 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The hover-state and HTTPS/SSL link checks bound their own waits and name what they could not check (TFP-142; unit: `src/lib/generate/mock/link-audits/link-check-timeouts.test.ts` (real browser, through the Playwright CLI))
+
+**Expected result:** On rizonetech.com (run `5ce88c9c`, 2026-10-01) the hover check hit the 30 s test timeout on 5 of 5 pages - `hover()` retried forever on a skip link parked off-screen ("outside of the viewport") - and the HTTPS/SSL check on 3, requesting every secure link in turn (59 on one page, many repeated) at up to 15 s each. **Hover:** each link gets 2 s and the check 15 s; a link that can't be hovered is named with the reason - "links that could not be hovered, so their cursor was not checked: #content (outside of the viewport)" - and links left when the budget ends are a finding ("N of M links not hovered: the check stops after 15 s"). A hovered link without a pointer cursor still fails. **HTTPS/SSL:** each distinct URL is requested once, for up to 5 s, and the check stops after 20 s; a URL that can't be reached is named with its reason ("no answer within 5 s", "getaddrinfo ENOTFOUND ...") - reachability is link health's job - and the ones left when the budget ends are named. A link marked secure that is not https, or a request that ends on http, still fails. **Proven in a real browser:** an off-screen skip link passes in seconds with the named finding (timed out at 30 s on the previous code); a server that accepts and never answers, listed twice, plus an unresolvable host passes in under 15 s with one finding naming both and their reasons, and the stalled URL is requested once (failed on the previous code). **Live, rizonetech.com, one worker:** all 10 checks pass - hover 20 to 22 s (15 s budget plus the page load), HTTPS/SSL 4.7 to 12.5 s; `cnvrg.io` is named as ENOTFOUND. **Output measured:** `check:template-unchanged` gives 164 of 166 identical; the 2 that differ (page-data, no areas, fast and deep) differ only in the hover test. On the rizonetech.com page data (fast and deep) only the 5 hover and 5 HTTPS/SSL tests change.
 
 ### TFP-143 — Resolve the double-reporting between the Standard accessible-name checks and the axe scan
 
@@ -119,6 +135,14 @@ TFP-140 was the last issued ticket.
   - On a fixture with a mix of session and non-session cookies lacking the
     flags, the Standard and passive-security runs report the same set.
 - **Dependencies:** None.
+
+#### GEN-65 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The Standard and passive-security checks flag the same cookies for missing HttpOnly/Secure (TFP-144; unit: `src/lib/generate/mock/cookie-scope.test.ts` (real browser, through the Playwright CLI); fixture: `security-mixed-cookies`)
+
+**Expected result:** On rizonetech.com (2026-10-01) the Standard security check named 6 cookies for missing HttpOnly and Comprehensive passive security none, on the same site: the Standard check took every cookie the site set, passive security only those named like a session. **Rule:** in scope are the site's own cookies named like a session (`SESSION_COOKIE_NAME`, the rule passive security and the cookie/session check already use, Phase 34 Decision 3). All 6 rizonetech.com cookies were analytics or consent cookies (`_clck`, `_clsk`, `_fbp`, `tk_ai`, `FCCDCF`, `FCNEC`) that their own scripts must read, so HttpOnly is not theirs to have. The Standard check is renamed "session cookies set by the site carry protective flags (recorded as findings)", names each as 'session cookie "<name>" has no ...', and with no session-named cookie on the landing page is Not run with the reason ("no session cookie on the landing page (N cookie(s) set by the site, none named like a session), so there is nothing to check") rather than passing having checked nothing. Passive security is unchanged. **Proven in a real browser:** one page sets `sid`, `_ga` and `theme`, none HttpOnly; both checks pass and flag exactly `sid`. On the previous code the Standard check flagged `_ga`, `sid` and `theme`. A page with only `_ga` makes the Standard check Not run with its reason. **Fixture, live through the app (one worker):** with `security-mixed-cookies` (the same three cookies on the home page), the Standard security run and the Comprehensive passive-security run both flag only `sid`. **Output measured:** `check:template-unchanged` gives 152 of 166 identical; the 14 that differ (every input that includes security) are identical once this one test is removed. **Since TFP-147 (GEN-69)** Standard has no cookie check of its own: its security suite runs the passive check, built by the same function, so the two cannot drift. The unit test now pins that, and both still flag only `sid`. One outcome changed: with no session-named cookie the check is no longer Not run ("no session cookie on the landing page"); it also reads the headers, so it passes with the header findings and names no cookie.
 
 ### TFP-145 — Standard accessible-name checks fail links that have a name
 
@@ -215,6 +239,14 @@ TFP-140 was the last issued ticket.
     one link is tested twice and another not at all. Nothing fails wrongly.
     Recorded in the commit; not ticketed.
 
+#### GEN-66 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The Standard accessible-name check tests the link it was generated for (TFP-145; unit: `src/lib/generate/mock/actionable-elements/accessible-names.test.ts` (introspects a real page, then runs the generated checks through the Playwright CLI); fixture: `/names`)
+
+**Expected result:** On rizonetech.com (run `5ce88c9c`, 2026-10-01) TFAC-008 "Home", 009 "Services", 018 and 038 "AI" failed as "has no accessible name" on links that have one. Introspection records a name only for an element with an `aria-label` or a `<label>` (its `aria-label ?? label ?? text` chain stops at the label, which is `""` when there is none), so most links fell through `buildLocatorExpression` to `getByText(text, { exact: true }).first()`. That resolves to the element holding the text - the `<span>` inside a WordPress menu link, which has no name - and `.first()` made same-text links all test the first one. A link with a target is now found the way introspection recorded it: the `<a>` whose resolved href and collapsed text match, and which of those it was in page order; a link that is no longer there fails as "<name> (a link to <url>) is not on the page". Links with an id, links without a target and other elements keep the previous locator; `buildLocatorExpression` (shared with the functional checks) is unchanged. **Proven in a real browser, from real introspection:** a span-wrapped menu link and its plain footer copy pass; of two "Open" links, the one to `/notes` passes and the one to `/login` (text `aria-hidden`) fails as "Open has no accessible name"; an image link with no alt fails as "Untitled link to .../login?from=icon has no accessible name". On the previous code the menu link fails ("locator resolved to `<span>Home</span>`"). **Fixture, live through the app:** a Standard accessibility run on `/names` gives 7 passed, 2 failed - exactly the "Open" link to `/login` and the image link; the fixture's other pages answer as before. **rizonetech.com, live, one worker, from the saved page data:** the 40 accessible-name checks go from 36 passed, 4 failed (TFAC-008, 009, 018, 038, as in the saved run) to 40 passed. **Output measured:** `check:template-unchanged` gives 162 of 166 identical; the 4 that differ (fixture page data, accessibility and no areas, fast and deep) are identical once the accessible-name tests are removed. On the rizonetech.com page data only 36 of the 40 accessible-name tests change, nothing else; the actionable-elements golden file changes only in its accessibility key. **Follow-up (2026-10-05):** a link's position now counts only links with the visibility introspection recorded, in the recorded data and in the page (introspection's own rule: not `display: none`, not `visibility: hidden`, non-zero box). Introspection drops a link that repeats another's URL, text and container whatever its visibility, so a hidden mobile copy of a menu link is in the page but not in the data. **Proven in a real browser (error guessing):** a menu "Home", a `display: none` copy in the same list and a footer "Home"; introspection records two visible "Home" links, and both checks pass. On `0504f92` the footer check resolved to `locator('a').nth(1)`, the hidden copy, and failed as "Home has no accessible name". **Output measured** against `0504f92`: 162 of 166 identical; the 4 that differ are identical once the accessible-name tests are removed, and in those only TFAC-002 to 005 change. On the saved rizonetech.com page data no visible link's position changes; 10 hidden links' positions do (each page's hidden "AI" and "Contact Us" copies, from 1 to 0), and those checks assert only that the link is attached.
+
 ### TFP-151 — Accessible-name checks for buttons and other non-link elements land on a child element
 
 - **Phase:** after Phase 38 · **Priority:** P3
@@ -250,6 +282,14 @@ TFP-140 was the last issued ticket.
   - Accepted: the actionable-elements golden file changes in its
     `signup-form` check. A form with an id but no name has no role, so the
     check is now Not run with its reason (T23).
+
+#### GEN-74 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The accessible-name check tests the button, field or form it was generated for, and doesn't ask an element with no role for a name (TFP-151, T23; Not run: owner decision, 2026-10-06; unit: `src/lib/generate/mock/actionable-elements/control-names.test.ts` (introspects a real page, then runs the generated checks through the Playwright CLI))
+
+**Expected result:** **Lookup** (`accessibility.ts`): a button, select, textarea or input with no id, label, placeholder or role-and-name - until now `getByText(text).first()`, the element holding the text - is found among its own kind (`button, input[type=button|submit|reset], [role=button]` not on `<a>`; `select`; `textarea`; other inputs) by the text introspection recorded (computed as introspection does: an input's value, aria-label, placeholder or name, else collapsed textContent), its visibility and its position among those, as TFP-145 finds links. A `<form>` without an id is the `<form>` itself, by TFP-160's record (action, method, occurrence), or the nth `<form>` in a profile without one. Elements with an id, label, placeholder or role-and-name keep their locator. **No role:** a `<form>` with no `aria-label`, `aria-labelledby` or `title` (no `role` attribute) is generic under HTML-AAM, so its check is Not run: "<name> is a <form> with no accessible name, so it has no role (HTML-AAM): there is no name to check". **Proven (equivalence partitioning over how an element gets or lacks its name), 2026-10-06:** `<button><span>Save</span></button>` passes (failed on the old check, which read the span); two "Open" buttons under different headings, the second's text `aria-hidden`: the first passes, the second fails "Open has no accessible name" (the old check tested the first twice and passed both); an icon-only button with only an id fails "show-password has no accessible name"; an unnamed `<form>` is Not run with the reason (the old check asked it for a name); a `<form aria-label="Newsletter">` is checked and passes; the fields and the buttons inside the forms pass. **Limits, not changed here:** introspection records an element only with text, a label, a placeholder or an id, so an icon-only button with none of those (Toolshop's show-password toggle, R10) gets no check here; the axe scan catches it. Two same-text buttons with the same container label are one record (introspection's dedupe), so only the first is checked. Introspection gives every `<input>` the role `textbox`, so a `type="search"` input (role `searchbox`) with an aria-label is looked for as a textbox and not found. **Output measured:** `check:template-unchanged` against `91222c5`: 166 of 166 identical. The fixed inputs generate accessible-name checks only for the home page's links, so none reaches the changed paths. The actionable-elements golden output (`__fixtures__/golden-output.json`) changes in one check, its `signup-form` form: the three Not-run lines are added (a form with an id but no accessible name has no role either).
 
 ### TFP-152 — The accessible-name check passes an image link that has no name
 
@@ -332,6 +372,14 @@ TFP-140 was the last issued ticket.
   and only the Accessibility block changes. The `alt=" "` case is measured
   by Code: a false pass on `34622b0`, a failure now.
 
+#### GEN-68 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The accessible-name check follows HTML-AAM 4.1.10 for an `<img alt="">`, not Playwright's departure from it (TFP-152; owner decision, 2026-10-05: the standard decides, not any one tool; unit: `src/lib/generate/mock/actionable-elements/accessible-names.test.ts` (introspects a real page, then runs the generated checks through the Playwright CLI))
+
+**Expected result:** HTML-AAM 4.1.10 (checked 2026-10-05) gives an image with `alt=""` no name and uses `title` only when there is no `alt` attribute; Playwright 1.59.1 falls back to the `title`. Before reading the name, the check takes the `title` off every `img[alt=""]` inside the element (the page is not reused). When that leaves no name it fails as "<name> has no accessible name: HTML-AAM 4.1.10 gives an <img alt=""> no name and does not use its title ("<title>")". **Proven in a real browser (equivalence partitioning: where the only text sits):** `<a href="/logo"><img alt="" title="Home"></a>` fails with that message, naming the link by its target; `<a href="/titled" title="Home"><img alt=""></a>` (accname step 2I) and `<a href="/alt"><img alt="Home"></a>` pass. On the previous code all three passed. **rizonetech.com, live:** the logo link (TFAC-007) is exactly that markup; Chromium 147's own accessibility tree gives it the name `""` (evidence only). The 40 checks for `/` from the saved page data give 39 passed and 1 failed, TFAC-007 with that message (`benchmarks/2026-10-05-tfp152-logo-link/`; labelled-failure T18). **Output measured:** `check:template-unchanged` against `cdec8e0` gives 162 of 166 identical; the 4 that differ are identical once the accessible-name tests are removed, and all 16 accessible-name tests in them change. The golden file changes only in its accessibility key. **Follow-up (2026-10-06):** "empty" is HTML-AAM's "empty when trimmed of whitespace": any `img` whose `alt` is present and only ASCII whitespace counts, not only `alt=""`. Playwright treats `alt=" "` as a real image and falls back to the title. **Proven in a real browser (boundary value analysis on the alt):** `<a href="/blank"><img alt=" " title="Home"></a>` passed on `34622b0` and now fails with the HTML-AAM 4.1.10 message; the other three cases are unchanged. **Output measured** against `34622b0`: 162 of 166 identical; the 4 that differ change only in their 16 accessible-name tests; the golden file only in its accessibility key. Other places where Playwright departs from the standard are not covered; once TFP-148 adds the axe scan to Standard, a disagreement shows in the report.
+
 ### TFP-159 — Link checks expect links in closed menus to be visible
 
 - **Phase:** after Phase 38 · **Priority:** P2
@@ -384,6 +432,14 @@ TFP-140 was the last issued ticket.
     time, nearest hidden ancestor first. Trying ARIA on every ancestor first
     picked a far toggle over the nearer menu button.
 
+#### GEN-72 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A link in a closed menu or behind a collapsed navbar's toggle is checked as what it is (TFP-159, approach: owner decision, 2026-10-06; unit: `src/lib/generate/mock/link-audits/hidden-links.test.ts` (introspects the comparison fixture, then runs the generated suite through the Playwright CLI, deep mode); fixture: `menus`, `menus-toggle-broken`)
+
+**Expected result:** **Rule** (`link-audits/reveal.ts`, run in the generated test): the control that reveals a hidden element is an `aria-expanded` element whose `aria-controls` (or `data-bs-target`, `data-target`, `href="#id"`) names a hidden ancestor, failing that one just before that ancestor (Bootstrap's dropdown), nearest hidden ancestor first; a hidden control is revealed first, up to 3 levels. **Link health** (a link hidden at inspection): its presence (`toBeAttached`, located with `includeHidden`) and its own address (HTTP status under 400, or its `href`), never its visibility; it then tries to reveal the link by click and, if it can't, records a finding: "<link> is healthy by its address, but users can't reach it: the '<menu>' menu didn't open" (or "... opened, but it stays hidden", or "no control was found that reveals it"). **Link type**: a hidden link is classified by its address and presence. **Keyboard**: opens the menu by keyboard (focus the control, Enter); a link still hidden fails, "<link> can't be reached by keyboard: <reason>". **Responsive** (TFRM-001): at each viewport, an item not visible is revealed by clicking its control first; still hidden, it fails with the reason. Visible links' checks are unchanged. **Proven (decision table: visible; closed menu that opens; opens but stays hidden; toggle broken; behind a toggle at 390 px; hidden with no control), 2026-10-06:** `menus`: Shop (visible) passes; Hand Tools passes health with no finding and is reached by keyboard through "Categories"; Archived passes health with "... the 'Categories' menu opened, but it stays hidden" and fails the keyboard check naming the menu; link types pass; at 390 px the responsive check opens the collapsed nav (`aria-controls`) and passes. `menus-toggle-broken`: Hand Tools passes health with "... the 'Categories' menu didn't open", and the keyboard check fails with the same reason. A link hidden with no control passes health with "... no control was found that reveals it". On the old generator the `menus` suite failed Hand Tools' and Archived's health, link types, keyboard and responsive. **Not in scope, still open:** the deep-mode "navigation destination" check still requires hidden links visible; form and accessible-name checks look up a button hidden at desktop with `getByRole` and fail to find it. **Output measured:** `check:template-unchanged` against `882a47d`: 162 of 166 identical; the 4 that differ (page-data inputs with the responsive area) change only in TFRM-001 (the reveal helper and each item revealed first). No fixed input has a hidden link, so their link checks are unchanged.
+
 ### TFP-160 — Form checks locate a form by its joined label text
 
 - **Phase:** after Phase 38 · **Priority:** P2
@@ -414,6 +470,14 @@ TFP-140 was the last issued ticket.
   - Accepted: a form with an id keeps its id-based check, as TFP-145 does
     for links.
 
+#### GEN-73 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The form check finds the `<form>` itself and the fields introspection recorded in it (TFP-160, approach: owner decision, 2026-10-06; unit: `src/lib/generate/mock/actionable-elements/form-check.test.ts` (introspects the comparison fixture's `/forms`, then runs the generated checks through the Playwright CLI); fixture: `/forms`, `forms-missing-field`)
+
+**Expected result:** **Introspection** records, for each `<form>`, a `form` record: its `action` and `method` as written ("" when absent), its `occurrence` among the page's earlier forms with the same action and method, and its fields (`input` other than hidden, `select`, `textarea`, `button`: tag, type, name, id) in document order. **The check** finds, among the page's `<form>` elements, the one with that action and method at that occurrence (failing "no form on <path> with action ..., method ..."), asserts it visible (or attached, if hidden at inspection), then asserts each recorded field is inside it: by name, else id, else by count of its kind; it fails naming each one missing ("fields missing from the form on /forms: input named \"tag\""). Text is no longer used to find a form. **A form with an id** keeps its id-based check, unchanged, as TFP-145 keeps a link's id. **A profile without form records** (saved before TFP-160) falls back to the nth `<form>` on the page, n from the profile's order, and "at least one control", as before. **Proven (error guessing, from T21 and T22 on practicesoftwaretesting.com), 2026-10-06:** on `/forms`, the multi-field form (fields in their own `<div>`s with no text between them, an `<input type="submit">`, no id: Playwright counts the input's value as the form's text and introspection doesn't, so the old `getByText` found nothing, as T22) and the lone-`<select>` form (the old check counted fields inside the `<select>`, as T21) both fail on the old generator and pass on the new one; with `forms-missing-field` the multi-field form fails naming `input named "tag"` and the `<select>` form still passes. A profile without form records gives the fallback. **Output measured:** `check:template-unchanged` against `6852538`: 162 of 166 identical; the 4 that differ (page-data inputs with the functional area) change only in their two `[form]` checks, to the fallback, since the fixed inputs' profiles have no form records.
+
 ### TFP-161 — The orphan-page check judges pages it never loaded
 
 - **Phase:** after Phase 38 · **Priority:** P3
@@ -442,6 +506,14 @@ TFP-140 was the last issued ticket.
   - Accepted: a page's links to itself (`#top`) no longer count as inbound
     links, as the check's title implies.
 
+#### GEN-75 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The orphan-page check judges only pages that were loaded (TFP-161, T24; owner decisions, 2026-10-06: inspection records requested and failed pages, the start page is the first path requested, a 5xx is not loaded; unit: `src/lib/generate/mock/link-audits/orphan-pages.test.ts` (introspects the comparison fixture, then runs the generated check through the Playwright CLI); fixture: `hub-down`, `/unreachable`)
+
+**Expected result:** **Inspection** (`inspectPages`, `/api/introspect`) adds `requestedPaths` (in order) and `failedPages` (`{ path, reason }`) to the profile. A page fails when it can't be loaded (timeout, dropped connection) or answers 500-599 ("HTTP 503"); it is left out of `pages`. A 4xx is still a page. **The check**, for a profile with `requestedPaths`: the start page is the first requested path. Start page not loaded: Not run, "the start page / could not be loaded when the site was inspected (HTTP 502), so which pages it links to is unknown". Otherwise each loaded page except the start needs a link from another loaded page; a page's links to itself (`#top`) no longer count. With another page not loaded, an unlinked page is a finding ("/anchors has no link from another loaded page; /unreachable could not be loaded, so a link from there was not seen"), not a failure; with every page loaded it fails, "/anchors is not linked from any other inspected page". A profile without `requestedPaths` (saved before TFP-161) gets the previous check, unchanged. **Proven (decision table: start loaded or not; another page lost or not; page linked or not), 2026-10-06:** `hub-down` with `/`, `/anchors`, `/names` (pages only the home page links to, like the-internet's examples): Not run, naming `/`; the previous check on the same profile failed `/names` as an orphan, as T24. `/`, `/anchors`, `/unreachable`: passes with the finding naming `/unreachable`. `/`, `/notes`, `/anchors`: fails naming `/anchors`. `/`, `/login`, `/notes`: passes, no finding. A profile without the record gets the previous check. **Output measured:** `check:template-unchanged` against `bf9cc36`: 166 of 166 identical. The fixed inputs' stored profiles have no `requestedPaths`, so they keep the previous check; the new path shows only in profiles inspected from now on.
+
 ### TFP-162 — Hidden elements in the remaining checks
 
 - **Phase:** after TFP-159 · **Priority:** P2
@@ -463,6 +535,14 @@ TFP-140 was the last issued ticket.
   - `check:template-unchanged` shows only these checks changed.
 - **Dependencies:** none.
 - **Done, `cefa24d`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
+
+#### GEN-86 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Hidden elements in the remaining checks (TFP-162, TFP-159's approach; unit: `src/lib/generate/mock/link-audits/hidden-links.test.ts`)
+
+**Expected result:** **Deep mode's navigation destination check:** a link hidden at inspection (a closed menu) is taken by its own address - present in the page, its href resolving to its destination - and not clicked; whether users can reach it stays the keyboard check's question. Emitted only when the page has such a link. **Form and name checks:** an element hidden at inspection that has a role and a name is looked up with `getByRole(..., { includeHidden: true })`, since getByRole alone searches the accessibility tree, which leaves hidden elements out (0 matches against 1). **Proven 2026-10-07:** on the fixture's `menus` state, deep mode, the destination check passes with Hand Tools and Archived in the closed Categories menu (it failed on the previous code, "Hand Tools ... not found"), and the closed menu's hidden "Clear filters" button (aria-label) is looked up with includeHidden and its checks pass.
 
 ### TFP-163 — Introspection misses or merges some controls
 
@@ -493,6 +573,14 @@ TFP-140 was the last issued ticket.
   type.
 - **Done, `be688d3`, `f4ed183`, verified 2026-10-07 (Cowork)**, in the batch with TFP-177.
 
+#### INT-11 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Introspection records controls as they are (TFP-163; unit: `src/lib/introspect/controls.test.ts`)
+
+**Expected result:** **Roles by input type** (ARIA in HTML): search is a searchbox (a combobox with a list), number a spinbutton, range a slider, image/submit/button/reset a button, text-like fields with a list a combobox; text, email, tel, url and password stay textbox. **Buttons:** a button with no text, label or id (icon-only) is recorded, with its position among the page's buttons, and found by it; same-text buttons are no longer merged - each records its position and which of the same-text buttons it is, and is found as the nth. Older profiles (no position) generate exactly as before. **Proven 2026-10-07:** each input type's role (equivalence partitioning); on the fixture's `/controls`, the labelled search field is found by role and its checks pass, the icon-only button's name check fails ("has no accessible name"), and the two "Delete" buttons get two checks, the enabled one passing and the disabled one failing. A fresh, read-only inspection of with-bugs `/#/auth/login` now records the show-password toggle (R15) at position 3.
+
 ### TFP-164 — The visible download-link check's pattern lost its escaped dot
 
 - **Phase:** after TFP-159 · **Priority:** P3
@@ -509,6 +597,14 @@ TFP-140 was the last issued ticket.
   - The generated pattern contains `\.(pdf`.
   - `check:template-unchanged` shows only the download check changed.
 - **Dependencies:** none.
+
+#### GEN-87 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The download checks' pattern keeps its escaped dot (TFP-164; unit: `src/lib/generate/mock/link-audits/download-pattern.test.ts`)
+
+**Expected result:** Written as `\.` inside a template string, the backslash was dropped, so the visible link-types check and the download-link check emitted `/.(pdf|...)/`, which counts `.../getpdf` as a download. Both now emit `\.(pdf|doc|...)([?#].*)?$`, as TFP-159's hidden-link path already did. **Proven 2026-10-07:** equivalence partitioning on the emitted pattern - `report.pdf`, `report.PDF`, `sheet.xlsx?v=2`, `deck.pptx#page=3` match; `getpdf`, `xpdf`, `reportzip` don't (the test fails on the previous code).
 
 ## Recommended Execution Order
 

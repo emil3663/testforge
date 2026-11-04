@@ -4,4 +4,4 @@ Section 3.1 of the [test plan](../../TEST_PLAN.md), which keeps the app overview
 
 | ID | Test | Expected Result | Status |
 |----|------|-----------------|--------|
-| HLT-01 | `GET /api/health` (automated: `tests/regression/testforge.sections.spec.ts` — "reports health and observability metadata") | Response is `ok`; JSON body includes `status: "ok"`, `service: "testforge-next"`, a string `environment`, `mode: "local-in-process"` (TFP-031 — every route runs in-process since TFP-010/011 deleted the FastAPI proxy layer, so there is no other mode to report), a `siteUrl` containing `http`, and an ISO `timestamp`; response carries `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` restricting `camera`, and a `Content-Security-Policy` with `default-src 'self'`. | ✅ |
+| HLT-01 | `GET /api/health` | `status: "ok"`, the service, environment, mode, site URL and timestamp; the security headers, `default-src 'self'` among them. [Evidence](../decisions/phase-16-implementation-backlog.md#hlt-01-evidence). | ✅ |

@@ -227,3 +227,45 @@ than assumed:
    was closer to "don't make me manually decide on routine same-day
    regression runs, but never touch a run I've flagged or one that's the
    only evidence for a live bug."
+
+## Test-plan evidence for cases with no ticket of their own (TFP-253)
+
+### RUN-08 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A finished run survives a server restart (automated: `npm run test:unit` — `src/lib/run/persistence.test.ts`, "round-trip: read back with no reference to the originating job models a restart", plus "evidence move: files land under evidence/..." and "evidence move failure: falls back to the original path...")
+
+**Expected result:** `runs/<runId>/run.json` and `suite.spec.ts` are readable, and evidence resolves under `runs/<runId>/evidence/`, using only data on disk — no reference to the in-memory job that produced it, modeling exactly what a fresh process sees after a restart. A failed evidence `rename()` falls back to the artifact's original path rather than losing the record.
+
+### RUN-09 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Retention: pin overrides automatic archiving; archiving keeps `run.json`/`suite.spec.ts` and deletes only `evidence/`; a fixed defect's run becomes sweep-eligible once superseded by a passing re-test of the same suite (RUN-28) (automated: `npm run test:unit` — `src/lib/run/persistence.test.ts`, "pin overrides sweep...", "archive: keeps run.json and suite.spec.ts...", "still-open-defect exemption...", "lastAccessedAt: null after persisting...")
+
+**Expected result:** A pinned run is never archived by the sweep even when superseded and its one failure is fixed elsewhere; an unpinned, superseded run whose failure is fixed becomes archived (evidence gone, report/suite intact); a run that is still the only evidence for a still-failing test is never auto-archived; `lastAccessedAt` is `null` on a fresh run, set on first read, unchanged on a second.
+
+### RUN-10 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Honest coverage: a target with more discovered elements than written tests shows sub-100% coverage even when every written test passes, and the uncovered list names specific elements (automated: `npm run test:unit` — `src/lib/report/discovered-coverage.test.ts`, "Group 2: more discovered elements than tests still shows <100% coverage...")
+
+**Expected result:** With 2 discovered elements and only 1 matching executed (passing) test, the Functional row is `partial` at 50%, not `covered`, and both the row's and the top-level `uncovered` list name the specific untested element, not just "Functional".
+
+### RUN-11 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** "Not tested, and why": every unmatched discovered element carries exactly one of not-selected / excluded-by-generator / generator-gap, and generator-gap is real, not vacuous (automated: `npm run test:unit` — `src/lib/report/discovered-coverage.test.ts`, "Group 3: not-selected, excluded-by-generator..." and "...an unselected practice area buckets all of its discovered elements as not-selected")
+
+**Expected result:** A link element with dedicated link-audit coverage and elements beyond the generator's 50-element cap are `excluded-by-generator`; elements in an unselected practice area are `not-selected`; a selected, eligible element with no matching executed test is `generator-gap` — no element carries two reasons, and the generator-gap bucket is demonstrably non-empty.
+
+### RUN-12 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Diffing two runs of the same `baseUrl`: specific test names (not just a percentage), per-area coverage deltas, and newly discovered/missing elements, against a deliberately regenerated suite with one fewer test (automated: `npm run test:unit` — `src/lib/run/diff.test.ts`, "Group 4: two runs with a deliberately dropped test...", plus `src/app/api/runs/diff/route.test.ts`'s real-request coverage of `GET /api/runs/diff`)
+
+**Expected result:** Given run A (3 passing tests, 100% Functional coverage) and run B (a regenerated 2-test suite where one carried-over test now fails and the third is simply absent), the diff names both affected tests by title with their exact from/to status (the absent one reported as "not run", not conflated with a failure), reports the Functional coverage delta as -50, and lists the specific elements newly discovered/missing between the two runs' own introspection snapshots. Diffing two runs with different `baseUrl` values is rejected.

@@ -71,6 +71,14 @@ another session took any of them.
   and `CONTRIBUTING.md` (`c284e82`). The startup criterion reworded to
   "no LAN address" (owner decision, 2026-10-27).
 
+#### RUN-43 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The API answers only the tester's own pages on this machine (TFP-261, P0; unit: `src/proxy.test.ts`; regression: `tests/regression/testforge.request-guard.spec.ts`, the built server)
+
+**Expected result:** `npm run dev`, `dev:development` and `start` bind to `127.0.0.1`, so the port isn't reachable on the machine's LAN address. A request guard (`src/proxy.ts`, Next's proxy, on every `/api/*` route) refuses with 403 and the reason: a `Host` that isn't `localhost`, `127.0.0.1` or `[::1]` (DNS rebinding); an `Origin` that isn't the same origin, port included (another site's page in the tester's browser); a `POST`, `PUT`, `PATCH` or `DELETE` that isn't `Content-Type: application/json`, which a page can't send cross-site without a preflight. Measured 2026-10-27 before it: a `POST /api/run` with a foreign `Origin` and `text/plain` was accepted (202) and its code ran. The port isn't checked: a loopback `Host` comes only from this machine, and the `Origin` check compares the whole origin. **Proven (decision table):** each loopback name with and without a port goes on, other names or none are refused; the same origin goes on, another site, another port or `null` is refused; every write method needs JSON (a charset parameter allowed), a read needs no type. **Proven (regression, the built server, with a positive control):** in one test, the 2026-10-27 request (another site's `Origin`, `text/plain`) and a same-origin `text/plain` one each get 403 with their reason, then the same suite sent as the UI sends it (same `Origin`, JSON) gets 202 and writes its marker file; once that control run has finished, and 5 s more, neither refused request's marker exists (a run either had started would have been queued before the control's); a request naming another host gets 403. **Observed:** `npm run dev` on port 3105 listened on `127.0.0.1:3105` only, answered on `127.0.0.1` and `localhost`, and got no connection on the LAN address. Its startup still prints "Network: http://127.0.0.1:3105": Next.js names the bound address, loopback, and no LAN address appears, which meets the criterion as reworded (owner decision, 2026-10-27: "no LAN address", not "no Network line"). **Next's Proxy bypasses (TFP-266, Next 16.4.3):** the regression spec sends the shapes that can apply to an API route from another host (GHSA-267c-6grr-h53f and GHSA-26hh-7cqf-hhc6's `.rsc` and segment-prefetch variants, a route parameter in the query, spellings of the path) and a POST to `/api/run.rsc` from another site, each pinned to the status measured: 403 from the guard for 8, Next's 308 to `/api/runs` for 3 (which the guard then refuses), the 404 page for `/API/runs`. GHSA-492v-c6pp-mqqv can't apply: `src/app/api` has no dynamic route. GHSA-6gpp-xcg3-4w24 can't apply: `next.config.ts` has no `i18n`. These cases pin the guard; they don't show the upgrade fixed it: every shape gets the same status on 16.2.3 and 16.4.3 (2026-10-31), as the advisories describe pages, not route handlers. Without the guard (16.2.3): `/api/runs?_rsc=1` 200 with the runs, the `.segment.rsc` path 204, the diff path its own 400, and 5 others 404 instead of 403.
+
 ---
 
 ### TFP-266 - Upgrade Next.js and clear the known dependency vulnerabilities (added 2026-10-30)
@@ -237,6 +245,14 @@ another session took any of them.
   - unit and regression suites pass in full.
 - **Dependencies:** TFP-266. The baseline moves once, together with the
   helper-lines change if they land close together.
+
+#### GEN-106 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A link with no text is found by its href, whatever the href holds, and generated selectors and hosts are matched exactly (TFP-267; unit: `src/lib/generate/mock/link-audits/href-escaping.test.ts`, in a real browser; `demoqa-host.test.ts`; `journey-tests.test.ts`)
+
+**Expected result:** The link checks build `a[href="..."]` inside the generated suite. Inside the generator's template literals `'\\"'` wrote `'\"'` into the suite, which there is just `"`, so the replace did nothing (CodeQL: "replacement of a substring with itself"). An href holding `"` broke the selector, one holding `\` matched nothing, and the check failed on TestForge's own error, not the site's. Fixed on 11 lines in four files: the ticket's five, and `coverage-tests.ts` (4), `experience-tests.ts:214` and `reveal.ts` (1 each), which it didn't list; `format.ts`'s `escapeForDoubleQuotedSelector` was already right. **Proven (real browser):** textless links with a `"`, a `\`, both, and a `\` at the end are found; on the old code those 4 fail and an href with neither passes. Also: DemoQA's suites go only to `demoqa.com` and hosts under it, not `demoqa.com.example`; a journey step's attribute name is escaped for CSS whatever it holds, not just `:`. Template: 4 of 166 inputs change, 54 selector lines and, with TFP-250's helper wording, 4 comment lines, and nothing else.
 
 ---
 
@@ -578,10 +594,18 @@ another session took any of them.
     run comments and closes it.
 - **Dependencies:** [TFP-217]
 
+#### TST-07 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** A red nightly opens or updates one failure issue, and the next green one closes it (TFP-252; unit: `scripts/nightly-email/issue.test.mjs`; `.github/workflows/nightly.yml`, job `issue`)
+
+**Expected result:** After the four check jobs, whatever their results unless the run was cancelled (then it is skipped, and the email says so), `issue` (its own job, with `issues: write` and `actions: read`; never the SMTP password) runs `notify.mjs issue`, no model. A red night (the email's verdict, `nightlyPassed`) with no open issue titled `Nightly failing` opens one; with one open, comments on it; a green night closes it with a comment naming the run; a quiet green night only reads. The report: the run's link, the short commit, each job's result, the failing tests (as the email names them) and the commits since the last run of `nightly.yml` that concluded green on the branch, with GitHub's compare link (at most 20 listed, then "and N more" from GitHub's total); no green run, a green run that can't be looked up, or a range that can't be listed, is said with `gh`'s own reason, and the issue is opened all the same. "Green" is the run's own conclusion, which counts `issue` and `notify` too, so a range can be longer than it need be, never shorter. Test names and commit subjects are in a text fence longer than any run of `~` inside it, so an `@name` in one notifies nobody. A branch's runs use `Nightly failing on <branch>`, so a test dispatch can't touch main's. The open issue is found by exact title through the list API, not search, so one opened a minute earlier is found. The email links the issue (opened, updated, closed), or says the issue job couldn't do its part. **Proven (unit, offline; `gh` played by `fake-gh.mjs`, a JSON state, not GitHub):** the plan's four cases; red, red, green, green through `notify.mjs`: one issue opened, then commented on, then closed, then left alone, an issue with another title untouched; a branch's red night opens its own issue and leaves main's; a failed green-run lookup still opens the issue; a `~~~~` name, 300 commits, gh's 404 and 502 reasons; the email's line for each action and for an issue job that failed or was cancelled. Against `HEAD`'s `notify.mjs` the command tests fail (`unknown command: issue`); with the email's line removed, its two tests fail; each review fix undone (a fixed fence, the listed count, stderr not captured, a lookup that throws) fails its test. **Proven live (2026-11-04, branch `tfp-252-check`, four manual dispatches, branch deleted after):** run 41741173103 green, issue job `none`, no email line; an empty commit, then run 41743846846 with `template-base=435d78f` (template check 170 of 172, so red) opened #17 "Nightly failing on tfp-252-check" with the run, each job's result and the 1-commit range from the green run's `bc54e7d`, email "Failure issue: opened …/issues/17"; run 41746797189, the same, commented on #17 and opened none, "updated"; run 41749704644 green closed #17 with "Green again: …", "closed". One issue opened in all, closed at the end; none for `main`. Email lines read from bodies rebuilt from each notify job's logged inputs; each sent subject matched the log. **Not proven:** the cancelled-run skip (workflow only). **Gap seen live, closed (Emil, 2026-11-04):** a failure outside the unit job was named by its result alone. A red template check now carries its own line (`**Template check:** N inputs, N identical, N different`, or that it can't be read), as the email does; `audit` and `dead-code` have no line of their own. Unit-proven (fails without the change: 2 tests), not re-run live.
+
 ### TFP-253 - Split `TEST_PLAN.md` by area and slim its rows
 
-- **Status:** In two steps. **Step 1, the split, built 2026-11-04 and
-  verified (Cowork, 2026-11-04), awaiting commit:** nine area files under
+- **Status:** Done, in two steps. **Step 1, the split: done and verified
+  2026-11-04, `0bf35c5`:** nine area files under
   `docs/test-plan/` (HLT, GEN, CRW, INT, RUN, RPT, EXP, SAV, TST), each its
   old §3.x text under a heading and a link back; `TEST_PLAN.md` keeps
   everything else, with §3 as an index (335,601 to 19,365 bytes); living
@@ -592,10 +616,23 @@ another session took any of them.
   missing, extra or duplicated; every row byte-identical; LF only; all nine
   index links resolve and each area file links back. Claude Code's
   repo-wide link check (199 files, 19 links into the plan, no new broken
-  link) wasn't re-run here. **Step 2, slimming the rows** (no row over 400
-  characters, long "Proven" narratives moved to the decision records, the
-  20-row spot-check), is its own commit and review, because it rewrites
-  rows. The `test-plan-doc` skill is a user-level skill: updating it to the
+  link) wasn't re-run here. **Step 2, slimming the rows: done and verified
+  2026-11-04, committed with this status (`docs(test-plan): slim case rows
+  and move their evidence to the records (TFP-253)`):** 166 rows over 400
+  characters now read ID | case | short expected result with an `[Evidence]`
+  link | status; each one's original Test and Expected text moved word for
+  word under a `<ID> evidence` heading in its ticket's record (8 without a
+  ticket at the end of the Phase 17 or Phase 34 record); the 39 short rows
+  untouched. **Verified** from the uncommitted files against `0bf35c5`, with
+  Cowork's own script (its own cell splitting, aware of code spans): 205
+  case IDs before and after, none missing, extra or duplicated; longest row
+  399 characters, none over 400; every status cell unchanged; all 166
+  evidence links land on exactly one heading of that name, and both original
+  cells are word for word in the section under it; no line deleted in any
+  decision record. Claude Code's 20-row spot-check, repo-wide link check and
+  the reviewer's two reads of the 98 hand-written short results weren't
+  re-run here; three slim rows read (GEN-95, GEN-51, INT-09) say what their
+  evidence says. The `test-plan-doc` skill is a user-level skill: updating it to the
   new layout is the owner's (proposed from a planning session).
 - **Phase:** None
 - **Priority:** P1
@@ -747,6 +784,14 @@ another session took any of them.
     `:8091` the Toolshop, with its start script's bug-80 check passing;
   - from another machine on the network, the ports don't answer.
 - **Dependencies:** None.
+
+#### RUN-47 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The local Docker test targets answer on this machine only (TFP-260; `docker-compose.yml`, `scripts/toolshop-local/compose.loopback.yml`)
+
+**Expected result:** Plane's 80 and MinIO's 9000 and 9090 are published on `127.0.0.1`, and the Toolshop's 4200, 8091, 8000 and 3306 through an override with `ports: !override`, as compose merges `ports` lists and Testsmith's file isn't TestForge's to edit. MariaDB's root password is `root` and MinIO's keys are defaults in a public repo, so their reach matters. **Proven (2026-10-31, Windows, Plane and with-bugs running):** `netstat` lists all seven on `127.0.0.1` only; on this machine's LAN address none answers, where MinIO's two did before; through `localhost`, Plane, the app, the API and the MinIO console answer 200 in 9 to 151 ms; `start-toolshop.ps1` passes its bug-80 check; the clean version's merged config has the same four. **Other machine (owner, 2026-11-03):** with Plane, MinIO and the Toolshop running, a phone on the same Wi-Fi opened `http://192.168.1.17:9090` and `:4200`: both ended in `ERR_CONNECTION_TIMED_OUT`. From another machine a timeout can't tell a loopback bind from Windows Firewall dropping the connection; with `netstat` showing all seven on `127.0.0.1` only, together they meet the acceptance.
 
 ---
 
@@ -955,6 +1000,14 @@ decisions index, the contribution rules, the version and release notes.
 - **Dependencies:** None for steps 1–5 (the rule is decided first);
   TFP-247 for step 6.
 
+#### RUN-46 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The product says its version: which TestForge ran a saved report (TFP-257; unit: `src/lib/version.test.ts`, offline and through the executor in a real browser; regression: `/api/health` in `testforge.sections.spec.ts`)
+
+**Expected result:** `package.json`'s `version` is the one source of truth, and the commit comes from git. `/api/health` gives both. A built server gives what it was built from (`next.config.ts`, at `next build`), as a pull under a running `next start` changes HEAD, not the code running; a dev server reads them on each call. A run takes its stamp when it starts (`producedBy`), kept in `run.json` and on its report, or on the result where a cancelled or failed run has no report, so a saved report says what made it, not what reads it, and a pull during a run can't change it. The line after the report comes from that stamp; the report's HTML is also built in the browser, so it can't ask git. A run from before this says its version wasn't recorded. A copy with no `package.json` or no git says `unknown` and a null commit, and doesn't fail, and one with no `.git` of its own doesn't report the commit of a repo it sits inside. **Proven (real browser):** a fresh run's `run.json`, its report and the saved report's HTML carry the stamp. **Proven (offline):** both report exports end with the version line after `</main>` (`src/lib/selection/coverage.test.ts`), and a report-less result's export carries it.
+
 ---
 
 ## Part 4 — Found 2026-11-03 (TFP-258's build), owner decision 2026-11-03
@@ -1009,6 +1062,14 @@ then TFP-270, then Phase 47.
     commit if output changes.
   - A `TEST_PLAN.md` case.
 - **Dependencies:** none.
+
+#### GEN-108 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A journey whose path visits a page twice survives the generate route's normalising, so selecting it writes its test (TFP-268; unit: `src/lib/introspect/journeys.test.ts` — "a journey whose path revisits a page survives normalizeContentProfile"; `src/lib/generate/mock/journey-tests.test.ts` — "TFP-268: a selected journey through a form that posts back to its own page gets a test, after the route's normalising")
+
+**Expected result:** `normalizeJourneys` read a journey's `path` through the de-duplicating string-list normaliser, so a form posting back to its own page (`/contact > /contact`) lost an entry, its steps no longer lined up with the path, and the journey was dropped without a word: selected on the review screen, no test written. Since `6a5b4c4`, which added journeys. The path now keeps its order and repeats (trimmed, empty entries dropped); every other string list is still de-duplicated. Ranking, selection (by id) and the journey test writer (step by step, from `steps`) don't depend on a path's pages being distinct. **Proven:** both unit tests fail on the old code (no journeys survive; no test written) and pass on the new one. On the fixed content profile (`benchmarks/2026-09-29/content-profile.json`), all 10 of whose journeys end in a form posting to its own page: 0 of 10 survived and 0 tests were written before, 10 and 10 after. Template: `check:template-unchanged` against `435d78f`, 170 of 172 identical; the 2 "journeys selected" inputs each gain the 10 journey tests (+373 −1 lines: the journey that was already there moves from the 1st to the 11th id, TFFU-037 to -047 in fast mode, -044 to -054 in deep), every line read. **Not covered:** a selected journey dropped for another reason (steps that don't match the graph) still gets no test and no message (`route.ts` narrows `selectedJourneyIds` to the survivors without a word). Introspect returns journeys unnormalised and generate normalises them, so this holds only while the two agree, and no test checks that they do: this bug was such a disagreement.
 
 ### TFP-269 - Keep helper comments in generated suites, so the template check sees them (added 2026-11-03)
 

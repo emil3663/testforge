@@ -218,6 +218,14 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   `docs/decisions/data/labelled-failures.md`. Independently verified and
   pushed 2026-09-30.
 
+#### GEN-50 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A healthy real site doesn't turn red on the template's own mistakes (TFP-123, Phase 36 Decision 1; unit: `src/lib/generate/mock/false-failures.test.ts` (real browser), `locators.test.ts`; live: the-internet.herokuapp.com; labelled set: `docs/decisions/data/labelled-failures.md`)
+
+**Expected result:** Four failures on the-internet, each re-run and the page read by hand, each a template error. **TFFU-002** (sign-in control) visited `/`, a list of examples with no sign-in control; it now visits the first inspected page with one (a password field, or a Log in / Sign in button or link), and `/` only when none has. **TFFU-007, 010:** the GitHub ribbon is `<a><img style="position:absolute"></a>`, so the anchor itself has a 0x0 box and `a[href=...]:visible` never matched, while the image is on screen and the anchor is the first Tab stop. Link locators now match an anchor that renders itself or through its content (`:visible, :has(:visible)`), still skipping hidden copies; visibility checks and clicks use what renders the link (`link.or(link.locator('*')).filter({ visible: true })`); attribute checks and focus stay on the anchor. Not loosened: a link must still be on screen. **TFFU-015** (keyboard) had three layered causes, each found once the one before was fixed: the same locator; a race where Enter only starts a navigation and the next link was sought on the new site (now waits up to 5 s for the URL to change, then reloads the links page); and an http link the site upgrades to https by 301 (now compares host and path). **Live, 2026-09-30:** all four reproduced first (runs `15dbf0fd`, `04f40ce8`), then passed (functional 13/13, run `ae16b41c`; free-form 28/33, run `03bae90c`, the 5 left being real SEO gaps, TFP-124). **Output measured:** 240 of 264 fixed inputs byte-identical; the other 24 differ only by the link-locator edits and, in the 12 that include the keyboard test, its two edits (checked by undoing them). Not changed: the search-control test's `/` (nothing has failed there); `a[href]:visible` link counts.
+
 ### TFP-124 — Optional SEO items as findings
 
 - **Phase:** 36 · **Priority:** P2 · **Labels:** `enhancement`, `generate`
@@ -234,6 +242,22 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   restarted per suite, so two SEO suites both numbered a TFSE-001. Emil
   accepted a one-time renumbering; see the Gate A follow-ups.
 
+#### GEN-52 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Optional SEO items are findings; baseline SEO items fail, naming what is missing and where (TFP-124, Phase 36 Decision 2; unit: `src/lib/generate/mock/seo-findings.test.ts` (real browser); live: the-internet.herokuapp.com)
+
+**Expected result:** Owner decision, 2026-09-29. **Findings, not failures:** a page with no structured data (no non-empty JSON-LD script) records "no structured data (JSON-LD) on <page>"; a site that links no web-app manifest records "no web-app manifest linked from /". Both use Playwright annotations, as the security header findings do (RPT-11), and both titles say "(recorded as a finding when missing)". A manifest the page does link to but that can't be fetched, or has no name, still fails: a broken reference isn't a missing optional item. **Still failures, now named:** "no meta description on <page>" (or "… is missing or no longer matches the inspected one"), "no canonical link on <page>", "the canonical link on <page> points to a different page", "/robots.txt has no Sitemap: line", "no /robots.txt (HTTP <status>)"; sitemap.xml keeps its verdict and gains the same kind of message. **Proven in a real browser:** a bare site gives the two findings and passes them, and fails the three baseline items; a complete site passes all five with no findings; a manifest link that 404s fails. **Live, 2026-09-30, the-internet:** 6/9, with TFSE-005 and TFSE-008 passing with their findings, and TFSE-002, 004 and 006 failing with "no meta description on /login", "no canonical link on /login", "/robots.txt has no Sitemap: line". **Output measured:** of 264 fixed inputs, 240 byte-identical; the 24 with page data and SEO in scope change only in these tests. **Found, not fixed:** test IDs restart per suite, so the landing-page SEO suite and the per-page SEO suite both have a TFSE-001.
+
+#### GEN-53 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** No two tests in one generated file share an ID (Phase 36 Gate A follow-up; unit: `src/lib/generate/mock/test-ids.test.ts`)
+
+**Expected result:** IDs are `TF<area code>-<nnn>`. Each suite used to begin at 001, so an area with two suites repeated IDs: the landing-page SEO suite and the per-page SEO suite both had a TFSE-001 (found in TFP-124). Suites that share an area code are now numbered on from each other (`renderSuites` in `mock/index.ts`). The owner accepted the one-time renumbering 2026-09-30. **What moves:** the per-page SEO suite's tests go up by one (old TFSE-001…008 are now TFSE-002…009); the TFSE IDs cited for the 2026-09-30 live run in GEN-52 and the labelled-failure set are the old numbers, and past records keep the numbers they were written with. The run diff matches tests by full title, so comparing a run from before this change with one after shows those SEO tests as removed and added, once. **Output measured:** of 264 fixed inputs, 24 had a duplicate ID before and 0 after; 240 are byte-identical; the 24 that change (every input with page data and SEO in scope) are identical once IDs are removed, and all 312 renumbered IDs are TFSE. **Unit:** with every area selected on a two-page profile, fast and deep, no ID repeats and the SEO IDs run 001, 002, … across both suites; the test fails on the previous code.
+
 ### TFP-125 — Small defects from the audit
 
 - **Phase:** 36 · **Priority:** P2 · **Labels:** `bug`
@@ -248,6 +272,30 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   the spikes and the 3B Modelfile moved with TFP-126 (`142e937`).
   Independently verified and pushed 2026-09-30; two follow-ups from the
   verification are listed under Gate A.
+
+#### GEN-51 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The cookie/session test can fail (TFP-125, Phase 36 Decision 3; unit: `src/lib/generate/mock/cookie-session-checks.test.ts` (real browser); live: the-internet.herokuapp.com, comparison fixture)
+
+**Expected result:** The old test asserted the browser's cookie list is an array, which is always true. It is removed, not kept beside the new one. After the landing page loads, the site's own session cookies are checked. A cookie counts as a session cookie by name (session, sess, sid, auth, token, jwt, JSESSIONID, PHPSESSID, connect.sid, rack.session, laravel_session), the stated rule, since TestForge can't tell session cookies apart for certain. **Fails** when one stays valid for more than 30 days, or is set for a parent domain (sent to every subdomain), naming the cookie and the problem. **Not run**, with the reason, when the site sets no session cookie on its landing page. **Proven in a real browser** (a local site served as app.site.test): a browser-session cookie and a 1-day one pass; a 400-day one fails as "stays valid for 400 days (more than 30)"; `Domain=site.test` fails as "set for .site.test, so every subdomain of site.test receives it"; a 2-year `_ga` cookie is ignored, so the test is Not run. **Live, 2026-09-30:** the-internet passes (`rack.session`, browser-session, host-only); the fixture sets no cookie, so Not run. **Output measured:** of 264 fixed inputs, 240 are byte-identical; the 24 cookie/session suites differ only by this test. **Shared with subdomains (Gate A follow-up, 2026-09-30):** a session cookie whose domain starts with "." for the site's own host (`Domain=app.site.test`) is sent to that host's subdomains too. It passes with the named finding 'session cookie "sid" is set for .app.site.test, so subdomains of app.site.test also receive it'; before, the leading dot was stripped and it passed silently. The parent-domain case still fails and records no finding. Both are proven in a real browser. Output measured: of 264 fixed inputs, 240 byte-identical; the 24 cookie/session suites gain only that line.
+
+#### RPT-15 evidence
+
+Moved word for word from [`docs/test-plan/RPT.md`](../test-plan/RPT.md) by TFP-253; the case's row there links here.
+
+**Test:** A suite with nothing to run says so, and why, instead of "run failed" (TFP-125, Phase 36 Decision 3; unit: `src/lib/run/jobs.test.ts`; live: the-internet.herokuapp.com)
+
+**Expected result:** When every area in scope turns out not applicable (e.g. database on a site whose only form is a sign-in), the template writes no test, only the note saying why. Playwright then reports "No tests found", and the run used to end as **failed** with no report. Now a suite that declares no `test(...)` and whose only error is "No tests found" ends with the new terminal status **empty**. It keeps its structured report: the recommendation reads "Nothing to run: the suite has no tests" (neutral badge, RPT-14), the output starts "Nothing to run: the generated suite has no tests." followed by each empty area's reasons, and "Areas with no tests" lists them. The progress line reads "Nothing to run". **Still failed:** a suite that declares tests yet ran none, and an empty suite with any other error (e.g. a syntax error). **Live, 2026-09-30:** the-internet with database only: 0 tests; status `empty`; the report names Database with "no form that saves visible text was found on the inspected pages".
+
+#### TST-01 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** Unit tests that need a real browser skip, with the reason, where Chromium isn't installed (TFP-125, Phase 36 Decision 3; `src/test-support/chromium.ts`)
+
+**Expected result:** Ten unit tests drive a real Chromium: six launch it directly (accessible names, the per-type check, link locators, the image-link case, database field locators, session cookies), and four route tests make the route inspect a page. Where Playwright's Chromium isn't installed they failed, for a reason that had nothing to do with the code, as the Gate C verification sandbox showed. Each now passes node:test's `skip` option the reason from `chromiumSkipReason()`: "needs a real browser, and Playwright's Chromium is not installed (expected at <path>); install it with: npx playwright install chromium". The other tests in the same files still run. **Measured, 2026-09-30:** with `PLAYWRIGHT_BROWSERS_PATH` pointed at an empty folder, `npm run test:unit` gives 340 passed, 10 skipped with the reason, 0 failed; with Chromium installed, 350 passed, 0 skipped.
 
 ### TFP-126 — Build the local model benchmark
 
@@ -265,6 +313,14 @@ Ticket numbers are estimates; TFP-122 was the last issued.
 - **Status:** Landed `142e937` (TEST_PLAN GEN-48); the C1-only run was
   independently verified 2026-09-29. C8 support and the `num_gpu` probe
   land with TFP-127. Verified as a whole and pushed 2026-09-30.
+
+#### GEN-48 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The local-model benchmark measures a configuration repeatably (TFP-126, Phase 36 Decisions 4-6; unit: `src/lib/generate/benchmark-quality.test.ts`; manual, on-demand: `npm run benchmark:local -- --config C1`, then `node scripts/benchmark-summary.mjs benchmarks/<date>/<config>`)
+
+**Expected result:** **Real path, not a copy:** each fixture case's messages are built by `buildGapFillMessages` (moved out of the route; the route's chat bodies are byte-identical before and after, 36 requests captured) and sent through `generateLocalSuite`, the route's own call and gates. That function now also returns the model's token `usage`, and the raw `code` when a gate rejects it; the route ignores both. The same messages (`withLocalRules`) then go to Ollama's native `/api/chat` for its timings. **Quality checks (unit-tested):** both gates; at least one test; the area's category signal (performance measures time; SEO checks title and meta description; database fills and reloads; security sends a payload or checks the protocol; reliability uses `route()`; accessibility checks names or roles; functional interacts with the page, a trait TestForge defines because Decision 6 names none); no leaked example data; no duplicate titles. Each signal is tested present and absent. **Method findings from smoke runs:** a native call made straight after the identical OpenAI-compatible call reused Ollama's prompt cache (6202 tokens evaluated in 0.3 s). So each round makes every case's TestForge-path call, then every case's native call, and each call follows a different request. The cold numbers come from a native warm-up with the model unloaded first. Endpoints are compared per output token, since their outputs differ. Other GPU programs exclude Ollama's own runner. Saved suites are excluded from `tsc` and ESLint, since rejected ones must be kept as written. **Live, C1, 2026-09-29:** 21 of 21 prompt token counts identical across endpoints; rounds 2-3 agree within ~1% per output token, round 1 ran 5-33% slower on TestForge's path. Numbers are in `benchmarks/2026-09-29/C1/` and the Phase 36 measurement report.
 
 ### TFP-127 — Run the benchmark and choose the model
 
@@ -291,6 +347,14 @@ Ticket numbers are estimates; TFP-122 was the last issued.
   SEO, security and accessibility 3/3; reliability 1/3, database 1/3,
   functional 0/3 without a guessed destination. Recorded in the report;
   awaiting verification.
+
+#### GEN-49 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** The local model configuration is chosen by measurement (TFP-127, Phase 36 Decisions 5 and 7, amended 2026-09-29; manual: `npm run benchmark:local`; report: `docs/decisions/phase-36-local-model-measurement-report.md`)
+
+**Expected result:** Eight configurations, 21 suites each, on the reference machine (RTX 2050, 4 GB): C1 today's model; C2 same at context 12288; C3 7B q3_K_M; C4 3B; C5 qwen3.5 4B; C6 llama3.1 8B; C8 C1 with `num_gpu` raised; C7 the best qualifier with flash attention and a q8_0 KV cache. C8's `num_gpu` was found by stepping it from 12 to 29 and recording each load: every value loaded; from 22 the VRAM is full and the driver overflows into system memory, so 29 was used. Decision 7's bar (no more than 1 worse than C1 on gates, signal, clean passes and detections; no more timeouts): **C8 qualifies and is the fastest**, median 39.5 s against C1's 68.2 s with equal or better quality. C2 misses on clean passes (18 against 20), C4 on gates (16), C5 on timeouts (16; it reasons before answering), C6 on everything, C7 on gates (19) and speed (92.8 s). **Corrected 2026-09-30:** the benchmark had run model suites without the `test.use({ baseURL })` TestForge's merged suite gives them, so suites with relative URLs failed on "Cannot navigate to invalid URL" (C3: 3, C6: 2). Re-run with the base URL, no new model calls: C3 has 19 clean passes, not 17, and **also qualifies**, at 56.9 s; C6 still doesn't. The choice (C8) is unchanged. The benchmark now adds the base URL (`withBaseUrl`, unit-tested). **Confirmation run** (the owner's request, since applications were closed during C5): C1 and C8 back to back gave 65.5 s and 39.4 s, clean passes 18 and 21. C1's own clean passes moved from 20 to 18 between identical runs, the size of the bar, which the report states. Adopted: `ollama/Modelfile.testforge-qwen7b` gains `num_gpu 29`; `docs/LOCAL_MODEL_SETUP.md` explains it. **Still owed:** the Phase 33 category bar on C8 before Phase 35 relies on it.
 
 ## Recommended Execution Order
 

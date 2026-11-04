@@ -140,6 +140,14 @@ issued number as of this record).
 - **Acceptance criteria:** As stated in Acceptance Criteria 1 above.
 - **Dependencies:** None.
 
+#### GEN-29 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: every assertion is awaited (TFP-108; unit: `src/lib/generate/local-rules.test.ts` — "the worked example awaits every assertion", "the shared block requires await on every expect"; `src/lib/generate/validate.test.ts` — `findUnawaitedAssertions` cases)
+
+**Expected result:** The shared block of `LOCAL_MODEL_RULES`, not a category section, says to write `await` before every `expect(...)`, because an unawaited assertion on page or a locator never runs. The worked example is checked mechanically for unawaited assertions, so it can't teach the defect. The check is `findUnawaitedAssertions` in `validate.ts`: it walks the TypeScript AST, sees through `.not`, `expect.soft` and parentheses, and uses the type checker to separate a silent no-op (the matcher returns a promise, e.g. `toHaveURL`) from a synchronous value matcher that still runs (`toBe`). **Audit of every live suite kept from Phases 30-31 (18, including the 10 GEN-28 baseline suites):** 1 silent no-op, the known security `expect(page).toHaveURL(...)`. 2 unawaited synchronous `expect(value).toBe(...)` in performance, which break the rule but still check. The other 16 are clean. The 9 new Phase 32 live suites (GEN-30) are all clean. The route does not yet reject unawaited assertions; this is a rule plus an audit, not a gate.
+
 ### TFP-109 — Neutralize the worked example's URL and re-verify against a real Ollama
 
 - **Phase:** 32
@@ -156,6 +164,14 @@ issued number as of this record).
   record's Implementation status updated with the actual result.
 - **Acceptance criteria:** As stated in Acceptance Criteria 2 above.
 - **Dependencies:** None.
+
+#### GEN-30 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: the rules example's URL does not leak into suites (TFP-109; unit: `local-rules.test.ts` — "the worked example only navigates to an unmistakable placeholder"; live: see Expected Result)
+
+**Expected result:** `ACCESSIBILITY_EXAMPLE` navigates only to `https://example.invalid/EXAMPLE-ONLY`, and the rules text contains no `localhost`. **Leak confirmed, then removed.** Live on 2026-09-24, `testforge-qwen7b`, production build, with the GEN-28 accessibility wording that had leaked ("Check the login page (email and password fields, Sign in button) for accessibility coverage.", accessibility selected). Everything was identical except the example's URL. Control, example at `http://localhost:3000/login`: 3/3 suites navigated to `/login`. Treatment, placeholder: 0/3 did, and all used the request's own base URL. The placeholder itself was copied 0 times in 6 runs. The GEN-27 wording, re-run with the placeholder as a regression check, passed 3 consecutive times and also used the base URL. All 9 runs returned `generatedBy: "ollama"`, passed strict `tsc`, and were clean under the GEN-29 await audit. **Second finding: the model copies the example's structure.** All 6 suites with the GEN-28 wording reused the example's test names word for word ("Email field is labelled and reachable by keyboard", "… has an accessible role and name"), extended the same pattern to the password field, and added a near-tautological `getByRole('main')` → `toHaveRole('main')` check. The GEN-27 wording produced the model's own names. So a worked example should hold only data that is safe to copy verbatim.
 
 ## Recommended Execution Order
 

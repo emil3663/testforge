@@ -552,6 +552,14 @@ and SEO. It runs on the tester's own machine against a local target.
   - The suite passes with no environment variable set beyond `.env.development`.
 - **Dependencies:** TFP-011, TFP-030
 
+#### HLT-01 evidence
+
+Moved word for word from [`docs/test-plan/HLT.md`](../test-plan/HLT.md) by TFP-253; the case's row there links here.
+
+**Test:** `GET /api/health` (automated: `tests/regression/testforge.sections.spec.ts` — "reports health and observability metadata")
+
+**Expected result:** Response is `ok`; JSON body includes `status: "ok"`, `service: "testforge-next"`, a string `environment`, `mode: "local-in-process"` (TFP-031 — every route runs in-process since TFP-010/011 deleted the FastAPI proxy layer, so there is no other mode to report), a `siteUrl` containing `http`, and an ISO `timestamp`; response carries `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` restricting `camera`, and a `Content-Security-Policy` with `default-src 'self'`.
+
 ### TFP-032 — Record the SaaS prerequisites
 
 - **Phase:** 16D

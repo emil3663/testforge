@@ -175,6 +175,22 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   model (`/api/run` already runs caller-supplied code with the user's
   own privileges), not a new risk this ticket introduces.
 
+#### RUN-16 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Config-driven login: a run can log in once and every test in it starts signed in (TFP-092, automated: `tests/regression/testforge.auth.spec.ts` — "with a login configured, every test in the run starts signed in - and the same tests fail without it"; unit: `src/lib/run/auth.test.ts`)
+
+**Expected result:** `/api/run` accepts a `login` block — `loginUrl`, `usernameSelector`, `passwordSelector`, `submitSelector`, `usernameEnv`, `passwordEnv` (the NAMES of environment variables), and at least one of `postLoginPath` / `postLoginSelector` — drives that login once in Chromium before the run starts, and every test in the run reuses the resulting `storageState` (`use.storageState` in `playwright.config.ts`, from an environment variable the executor always sets or removes, never inherits). Against a real fixture with a real cookie login: a suite of two tests that never log in themselves (`/secure` shows `#logout` and `Secure area`; `/account` shows `#logout`) fails both tests with no `login`, and passes both with it. Verified live against `https://the-internet.herokuapp.com` (`tomsmith`, from environment variables): the test asserting `h2` "Secure Area" and the Logout link — only reachable when authenticated, since `/secure` otherwise redirects to `/login` — failed with `Received string: "Login Page"` with no `login`, and passed with it, along with a second test that also never logs in. **Defect found live and fixed here:** the first live run logged in "successfully" yet every test still landed on the login page, because that site binds a session to the User-Agent *and* Accept-Language it was issued to, and the login ran in a default browser context (system locale `en-GB`) while the tests ran as Desktop Chrome / `en-US`. The login and the tests now share one options object (`src/lib/run/browser-context.ts`, imported by both `playwright.config.ts` and the login), and the fixture is session-bound the same way so the regression test fails without the fix (confirmed red before green) and asserts the login request carried Desktop Chrome's User-Agent and `en-US`. The state file lives in a per-run directory outside the evidence directory and is removed when the run's process ends (Decision 5: single-run only) — asserted gone after the run — and any left by a crashed run are swept at the next run start.
+
+#### RUN-17 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A failed login is a named run-level error, never a silent unauthenticated run (TFP-092, automated: `tests/regression/testforge.auth.spec.ts` — "a wrong credential is a named run-level error, and no run starts", "a bad selector is a named run-level error that names the selector", "a credential environment variable that is not set is a named error", "an invalid login config is rejected before anything runs; inline credentials are never accepted")
+
+**Expected result:** The run does not start (no `runId`, no per-run state left behind). A wrong password returns 422 `login-failed`: "Login failed: after submitting the login form the page ended on /login, and the page /secure ... never appeared. Check the credentials (VAR / VAR) ... The run was not started, so no test ran unauthenticated." A bad selector: "Login failed: the username field (selector \"#no-such-field\") was not found on <url>. Check the login selectors." A credential variable that is not set: 422 `credential-missing`, naming the variable. A malformed config is 400: any field other than the eight named ones — so any inline credential, whatever it is called — is refused, a credential reference that is not a valid environment variable name is refused, a `loginUrl` on another origin is refused (the credentials are typed into that page), and a config with neither `postLoginPath` nor `postLoginSelector` is refused (without a signed-in signal a failed login could not be told from a successful one). Verified live against `https://the-internet.herokuapp.com`: a wrong password and a bad selector each returned the named 422 above.
+
 ### TFP-093 — Named credential references, never inlined
 
 - **Phase:** 20
@@ -206,6 +222,14 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   back in a "variable X is not set" error — narrows the mistake, does
   not rule it out (an all-upper-case password would still pass), stated
   in `TEST_PLAN.md`'s Known Limitations.
+
+#### RUN-19 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A login references credentials by the NAME of an environment variable and never carries a value; the literal credentials appear in no generated code, persisted run config, or API response (TFP-093, automated: `tests/regression/testforge.auth.spec.ts` — "the literal credentials appear in no generated code, persisted run config, or API response", "a credential pasted where a variable name belongs is refused before it is looked up, and never echoed back"; unit: `src/lib/run/auth.test.ts`)
+
+**Expected result:** Against the real fixture through the built app, with the configured password (`Fixture-Pass-7391-zq`) and username (`fixture-user`) as the search values: a grep of the introspect response, the suite `/api/generate` produced (over 200 characters of real generated code), the run's start response, its final status, the persisted `run.json`, and the persisted `suite.spec.ts` finds neither value. The persisted `run.json` `login` block is exactly the references — the URL, selectors, and the two variable *names* — and nothing else. **The grep is not vacuous:** with `run.json` deliberately made to carry the password, the test fails with `run.json contains the password` (mutation restored, not committed). The reference mechanism itself (`usernameEnv`/`passwordEnv`, values read from the server's environment at run time, `.env.example` documenting the convention) landed with TFP-092. Hardened here: a name must be upper-case letters, digits and underscores (the convention every variable in this repo's `.env` files follows), so a credential pasted where a name belongs — typically mixed-case or containing punctuation — is refused with a 400 before it is ever looked up, instead of being treated as a variable name and echoed back in a "variable X is not set" message; verified for `hunter2`, `Hunter2Hunter2`, and the fixture's real password.
 
 ### TFP-094 — Redact credentials and storageState from traces, screenshots, and the report
 
@@ -248,6 +272,14 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   Limitations); values under 4 characters are not redacted (would
   shred unrelated text).
 
+#### RUN-18 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** An authenticated run hands back none of its credentials or its session — not in the API result, the HTML report, the persisted evidence, a trace, or a download (TFP-094, automated: `tests/regression/testforge.auth.spec.ts` — "a run that deliberately tries to leak its credentials and session hands back none of them"; unit: `src/lib/run/redact.test.ts`)
+
+**Expected result:** **Probed first, not assumed:** a real authenticated run that fails a test left its whole `storageState` — the session cookie and its value — inside `trace.zip` (recorded in the trace's context options), even though the login itself ran in a bare, untraced context and the password and username were absent from the trace of a run that did not type them itself. So capture is not excluded by default. Every run that logged in now scrubs everything it produced before it can reach the result, the persisted evidence, or a download: the run's secret values (the two credentials plus every cookie and web-storage value in the session, held in memory for that run only and never persisted) are redacted — raw, JSON-escaped, and percent-encoded — from text artifacts, from **inside** trace zips (each entry rewritten, entries and binary resources preserved), from the parsed report, and from the console output; the assembled result is then scrubbed a second time as a whole with any `storageState` key dropped outright, as an independent layer that does not depend on knowing the values. It fails closed: an artifact that cannot be scrubbed and might hold a secret (an unreadable zip, an unrecognized file type containing one) is deleted, not kept, and the run's output says how many artifacts were redacted or removed. **The regression test actively tries to leak:** the suite prints the session cookie to stdout, types the username and password into fields (the trace records action values), and fails on an assertion whose message contains the session. It then searches the API result, the HTML report built from it, every persisted file (including inside every zip), and every artifact downloaded through the API. **Confirmed red without the fix:** with scrubbing neutralised it reported 31 leaks — the API result, the HTML report, `error-context.md` (password, username, session), five entries inside `trace.zip` including the network log, `run.json`, and the downloads. With it: none, and the trace is still a valid, useful one (still contains its context options and the failing assertion, marked `[redacted]` where it was scrubbed).
+
 ### TFP-095 — Automation-account setup instructions
 
 - **Phase:** 20
@@ -277,6 +309,14 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
     shape.
 - **Dependencies:** TFP-092 (needs the real config shape to document
   against), TFP-093 (needs the real credential-reference shape).
+
+#### RUN-20 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The automation-account setup doc names all four exemption categories and matches the real login config, so it cannot drift (TFP-095, automated: `npm run test:unit` — `src/lib/run/setup-doc.test.ts`)
+
+**Expected result:** `docs/AUTOMATED_ACCOUNT_SETUP.md` has a section for each of lockout, rate limiting, MFA interruption, and new-sign-in alerts, written generically rather than per identity provider. Its field table lists exactly the eight fields a `login` block accepts (`LOGIN_CONFIG_FIELDS`, the single list `normalizeLoginConfig` validates against) and no other; its JSON example uses every one and is accepted by `normalizeLoginConfig`; the environment-variable names it tells you to set are the ones its example references and satisfy the upper-case rule it states; every error message it quotes still exists in `auth.ts` (a reworded error fails the test); its claim of four workers in fast mode and two in deep matches the executor; and no example contains an inline credential. `README.md` and `.env.example` both point at it (there is no run-config UI field to point from — Decision 7, TFP-097). Confirmed the guard bites: renaming `postLoginPath` in the doc's table makes it fail (reverted).
 
 ### TFP-097 — Login config entry in the run-config UI
 
@@ -321,6 +361,14 @@ commit as the code. See `product-roadmap.md`'s Sequencing note.
   applies to reruns and continued runs too. The setup doc's field table
   gained an "In the app" column and its "no UI yet" note became
   instructions; README updated the same way.
+
+#### RUN-21 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The login can be entered in the UI, and behaves exactly as the equivalent `/api/run` request (TFP-097, automated: `tests/regression/testforge.login-ui.spec.ts` — "a login entered in the UI authenticates a real run exactly as the equivalent /api/run request body does", "with nothing typed the run carries no login, and is signed out", "a credential typed where a variable name belongs blocks the run and is never sent", "an incomplete login is not run signed out...", "the section has no field that takes a password, and says so"; unit: `src/app/_lib/derive.test.ts`, `src/lib/run/setup-doc.test.ts`)
+
+**Expected result:** An "Authenticated Run" section (collapsed by default, above the generated suite) has one text input per login field, labelled as the setup doc's field table labels them (the label list is shared code, `LOGIN_FIELD_LABELS`, so UI, doc and server cannot disagree), and no password field: the two credential fields take an environment-variable **name**, and the section says never to type a password. Against the real app and the real cookie-login fixture: typing the login and clicking Run sent `/api/run` a `login` block equal, field for field, to the API body (`loginUrl`, the three selectors, `usernameEnv`/`passwordEnv`, `postLoginPath`, `postLoginSelector`); the same suite sent straight to the API with that block gave identical per-test results (both `Passed` — a signed-out run fails both, RUN-16), and the two persisted runs carry an identical `login` block with the password absent. With nothing typed the request has no `login` at all. A credential typed into a variable-name field (`Fixture-Pass-7391-zq`) blocks Run — the button is disabled, a message names the field and does not echo the value — and **no request is sent**, so it never leaves the browser; fixing the field re-enables Run. Filling in only some of the login is *not* run signed out: the request is sent and the server's named error (`Login config: "usernameEnv" is required.`) appears. **Confirmed the equivalence test bites:** with the UI's `login` deliberately dropped from the request, it failed (expected the block, received `undefined`); reverted.
 
 ## Recommended Execution Order
 

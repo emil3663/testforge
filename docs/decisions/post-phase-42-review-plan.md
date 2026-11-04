@@ -162,6 +162,46 @@ TFP-207 accepted (`bfd900a..6d8f7e4`), with three corrections made to its
   the two Toolshop copies.
 - **Stop for verification.**
 
+#### GEN-98 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A listing's repeated cards get one test, by position, not a test per card (TFP-208, ruling confirmed by the owner 2026-10-19; unit: `src/lib/generate/mock/link-audits/inventory-tests.test.ts` (fixture pages served locally and inspected in a real browser; the committed Toolshop data offline), `src/lib/report/coverage-map.test.ts`)
+
+**Expected result:** A card group is 3 or more links on a page whose targets share an address but a last segment that is an identifier (Phase 40's `isIdSegment`: `#/product/1`, `/product/01M50R4WF...`). Its links get no test each; the page gets one read-only test, `cards linking to <pattern> on <page>`: such cards are on the page, and each one there at run time, by position, is visible and named (when inspection found them visible) and has a valid `href` of the pattern. Their targets are loaded as one link's would be (the inspected cards' by link health, unchanged). The coverage map counts each card covered in context by its group's test. Why: the Toolshop pages a category's products with no order (`paginate(9)`, no `ORDER BY`, both versions), so with-bugs' `/#/category/hand-tools` showed other products from one load to the next, and R1 (TFP-207) had 5 false failures there. **Proven (decision table):** on a fixture listing that shows another 4 of 12 items on every load, no test per card and one cards test, which passes on the run's other items; a link outside the cards keeps its own test; every card is covered in context; a listing whose card targets answer 404 passes its cards test and fails link health, naming the card; with no cards, the cards test fails ("a card linking to /item/:id is on /cards"). Boundary values: 2 links to one pattern are no group, 3 are; words (`/category/hand-tools`) are not ids. Offline, on both Toolshop copies' selected pages: no link on the gap list, each listing's cards (home, a product's related products, hand-tools) have their test. `check:template-unchanged` against `980346f`: 166 of 166 identical (the fixed inputs have no card group).
+
+#### GEN-99 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A failing cards test names each failing card's product, and every one of them (TFP-208, the owner's condition on confirming the ruling, 2026-10-19; unit: `src/lib/generate/mock/link-audits/inventory-tests.test.ts` (fixture pages served locally and run in a real browser))
+
+**Expected result:** The cards test checks every card before it fails, then fails once, with `<n> of <count> cards on <page> failed:` and a line per failing card: its position and what it showed at run time, its name (a heading in the card, else its first line of text), a price if it shows one, and its `href`, e.g. `card 4 of 9 on /category/hand-tools ("ECO Sledgehammer", $17.75, #/product/10): does not link to #/product/:id`. A passing cards test's output is unchanged. **Proven (decision table, against GEN-98's fixture listing):** cards all well-formed: passes, as before; two of the run's 4 cards linking to no item: one failure, `2 of 4 cards on /cards failed`, naming card 2 and card 4, each by its own product name and price and its `href`; on the code before the change the case fails (the test stopped at the first card, named only by its slot). `check:template-unchanged` against `980346f`: 166 of 166 identical (the fixed inputs have no card group).
+
+#### RUN-37 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** An artifact asked for while its run is being saved is served, not refused (TFP-208; unit: `src/app/api/run/route.test.ts`)
+
+**Expected result:** A run reads as finished once its result is set; its evidence is then moved from Playwright's output into the run's folder (`persistRunJob`). The job keeps that save as `job.saving`, set with no `await` between it and the result, and `GET /api/run?runId=...&artifactId=...` waits for it before resolving the artifact, so it never reads a path whose file has just been moved. Found by the regression suite on 2026-10-16 ("captures session evidence artifacts for failed generated runs": 404 "Artifact file is unavailable", once in three attempts). **Proven (state transition, saving to saved):** a job whose save moves the file at once and names its new place only later; a request in between waits and gets the file (200, its contents). Mutation check: without the wait, the same test gets 404.
+
+#### TST-02 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** Real-browser unit tests run Playwright in a folder of their own (TFP-208; `src/test-support/playwright-cli.ts`)
+
+**Expected result:** Every unit test that runs a generated spec through the Playwright CLI does it through `runPlaywrightSpec`: its own folder under `.playwright-unit-runs/`, with a config that is the repo's with `testDir` set to that folder, so Playwright's start-up walk of its test folder sees no other run's files. R1's (TFP-207) `cookie-scope.test.ts:90` and an earlier `api-fields.test.ts` case failed with a report holding no test; the cause, named by the helper's first run: the repo config's `testDir` is the shared `.playwright-runs`, and a folder another run removed mid-walk failed it (`ENOENT: no such file or directory, scandir '...'`). A run whose report holds no test fails at once, naming its exit code, the report's errors and its error output (no retry). A folder Windows still holds (`EBUSY`, a failed test's video and trace) is retried and left, never failing a test; a later run removes it after an hour.
+
+#### TST-03 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** A unit test that starts a run waits until the run is saved, not just finished (TFP-208; `src/test-support/saved-run.ts`)
+
+**Expected result:** `waitForSavedRun(runId, limit)` returns once the job has its result and its `run.json` is written (no `run.json.tmp` left). A job's result is set before `run.json` is written; a test that returned at the result left that write running into its file's cleanup, which removes the runs folder, and the late rename failed the file as an unhandled rejection (`ENOENT ... rename 'run.json.tmp' -> 'run.json'`, `hardening.test.ts`, once in TFP-208's first full unit run, a flake no earlier run showed). All five such waits use it: `hardening.test.ts`, `candidates.test.ts` (two), `promoted.test.ts`, `stale.test.ts`.
+
 ### TFP-208 result (built 2026-10-16, verified 2026-10-19)
 
 Commits `decbfad`, `60aac09`, `21933f7`, `4c0aca0`, `139f8df`, then
@@ -248,6 +288,14 @@ logs and times in `benchmarks/2026-10-19-tfp210/`.
   575 tests, 574 passed, 0 failed, 1 skipped (Windows only); suite 1,036 s,
   job 1,089 s. `template-unchanged` green: 166 of 166 against `980346f`, job
   31 s. Logs in `benchmarks/2026-10-19-tfp210/23a1338/`.
+
+#### TST-04 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** CI runs the unit suite and the template check nightly and on manual dispatch, not on every push (TFP-210; `.github/workflows/nightly.yml`)
+
+**Expected result:** Six jobs, on a 02:00 UTC schedule and on `workflow_dispatch`: `audit` (TFP-266), `dead-code` (TFP-259: `npx knip`, `knip.jsonc`), `issue` (TFP-252, TST-07), `notify` (TFP-217, TST-06) and these two. `unit`: Node 24, Chromium installed, `npm run test:unit`, its log kept as an artifact; with Chromium there, no real-browser test skips (TST-01). `template-unchanged`: full history, `npm run check:template-unchanged -- <base> HEAD`, the base the recorded baseline (`TEMPLATE_BASELINE`, `6211ae7`) unless dispatch names another; a deliberate change of template output updates the baseline in its own commit. Neither runs on a push. The regression workflow builds once, through `test:regression:allure` (TFP-208's build first, `webServer` start only), no separate `npm run build`. **Proven (2026-10-19, `4eff1dc`, dispatched by hand; `benchmarks/2026-10-19-tfp210/`):** `unit` green: 575 tests, 574 passed, 0 failed, 1 skipped (Windows only, with its reason), suite 1,123 s, job 1,181 s. `template-unchanged` green: 166 of 166 identical against `980346f`, job 22 s. Regression green: 57 passed, built once, job 403 s.
 
 ## R3 — Claims audit (Cowork)
 
@@ -466,6 +514,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     - Setting on github.com: Settings, Notifications, Actions: "Only
       notify for failed workflows".
 
+#### TST-06 evidence
+
+Moved word for word from [`docs/test-plan/TST.md`](../test-plan/TST.md) by TFP-253; the case's row there links here.
+
+**Test:** Every nightly says how it went, on its own page and by email (TFP-217; unit: `scripts/nightly-email/summary.test.mjs`; `.github/workflows/nightly.yml`, job `notify`)
+
+**Expected result:** After all four jobs and `issue` (TST-07), whatever their results, `notify` writes the summary to the run's page and sends it from `testforgeapp@gmail.com` through Gmail (port 465, TLS, the `TESTFORGE_SMTP_PASSWORD` secret, on the send step only) to the `CI_REPORT_TO` variable. Subject `TestForge nightly: PASS` or `FAIL`, the short commit and the date; FAIL when any job didn't succeed or didn't report. Plain-text body: the run's link, trigger, commit, template base; `unit`'s result, counts and failing tests (at most 20, then "and N more"); the template check's line; `audit` and `dead-code`. Counts that can't be read are said to be, never left out. A failed send fails the job. **Proven (equivalence partitioning, boundary at 20 names; each assertion seen failing by mutant, 15 of 15):** PASS; FAIL for each of the four jobs failed, cancelled or skipped, and for a job not reported; 20 and 23 failing tests; a cancelled job with no counts; a green job whose counts weren't found; the log's parser on node:test's output, colour codes included; a send with no password or recipient fails before connecting; a refused send fails with the server's reason and without the password; a rejected recipient fails. Live (2026-11-02, nightly 41514922513, `benchmarks/2026-11-02-tfp217-email/`): sent, Gmail `250 2.0.0 OK`, the password only as `***` in the log; the owner received it at 22:17 with the body as on the run page, and its link opened the run. A FAIL email and a cancelled run are left to the first real ones (owner, 2026-11-02).
+
 ### TFP-222 — Each app run in a folder of its own
 
 - **Priority:** P2 · **Labels:** `flaky`, `run`
@@ -519,6 +575,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     folders.
   - It fits while Gate A waits for Emil's targets, with the rest of R4.
 
+#### RUN-39 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Each app run in a folder of its own (TFP-222, R4; unit: `src/lib/run/run-folders.test.ts` (the executor, in a real browser))
+
+**Expected result:** TFP-208 found that a Playwright run whose config's `testDir` is the shared `.playwright-runs` walks all of it as it starts, and a folder another run removes mid-walk fails it (`ENOENT ... scandir`): the run executes nothing. TST-02 fixed it for the unit tests; the app's runs (the executor, a gap run, a stale re-check) still used that config. Each now runs in its own folder under `.playwright-runs/` (`run-<id>`, `gap-...`, `recheck-<id>-...`) with a config that is the repo's with `testDir` set to that folder (`src/lib/run/run-folders.ts`, which TST-02's helper now shares). A run's folder holds its spec, reporters, report, timing file and login state; its artifacts stay where they were (`artifacts-<id>`), so persistence, saved runs and diffing read what they read before. The folder is removed when the run is finalized (a gap run's and a re-check's when they end; a run whose login fails, at once), retried while Windows holds it and then left, never failing a run. At each run's start, a login state no active run owns is removed at once (Decision 5, as before, now also inside run folders), and a run, gap or re-check folder over an hour old whose run isn't active is removed. **Proven (state transition, real browser):** two app runs started at once (`startRunJob`) while a third run's folder (144 subfolders) is made and removed over and over in `.playwright-runs`: each executes and passes its 3 tests, with no `ENOENT` or `scandir` in its output; each held its spec and config in `run-<id>`, and once finalized its record is saved and its folder gone. **Proven (the stale re-check, real browser; unit: `src/lib/site-suites/stale.test.ts`, added at verification, Cowork 2026-10-21):** a run through `/api/run` whose reused contact test fails on a changed page: its re-check ran in one folder of its own, `recheck-<runId>-...` under `.playwright-runs/`, holding `test-<runId>-regenerated.spec.ts` and a config whose `testDir` is the folder; its tests executed (every contact result reported is the re-run's, some passing); and the folder is gone after. On the code before, 3 of 3 attempts failed: a run executed 0 of 3, with `ENOENT: no such file or directory, scandir '.playwright-runs/artifacts-...'`. `check:template-unchanged` against `ae4a1ff`: 166 of 166 identical. Run time (one Standard run on local with-bugs within TFP-211's spread) is measured in Gate C's session (C2 against F), as the record decides.
+
 ### TFP-242 — Remove an unsaved run's evidence folder in the sweep
 
 - **Status:** Done and verified 2026-11-03 (`2a3e234`): `removeOrphanedArtifactFolders`
@@ -562,6 +626,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   as pointing nowhere, so its folder can be removed. Only a hand edit makes
   that shape, and keeping such folders would also keep real orphans of runs
   without artifacts. Either can be reopened as a small ticket on Emil's word.
+
+#### RUN-48 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The start-of-run sweep removes orphaned `artifacts-<id>` folders (TFP-242; unit: `src/lib/run/run-folders.test.ts`, directly and through the executor in a real browser)
+
+**Expected result:** Removed: a folder older than the hour of a run never saved, of a saved run whose evidence moved out, and of a saved run pointing only at a folder whose name starts the same or at another drive. Kept: an active run's folder however old; one under the hour; one a saved run's record points into, as `persistRunJob` leaves it when a move and its clean-up both fail, including a path differing only in the drive letter's case; one whose saved run's record can't be read or has a malformed entry; one whose run is saved in the real `runs/` while a test points `RUNS_ROOT` elsewhere; and anything not named `artifacts-<a run id>`. Starting a run sweeps a planted orphan on the real `.playwright-runs`. Thirteen mutants of the rule, each killed. **Not proven:** the retry-then-leave for a folder Windows holds, which is `removeRunFolder`'s, unchanged and shared with the `run-` sweep. **Known limits:** a run active in another server process sharing `.playwright-runs` isn't in this one's `runJobs`, and a folder's time changes only with its direct children: the `run-` sweep has the same two. A record's pointer to a file already gone (TFP-243's duplicate link) still keeps its folder. `runJobs` also holds finished runs until the server restarts, so a finished run's leftover waits for that. A `run.json` that parses but isn't a record's shape, which only a hand edit makes, counts as pointing nowhere.
 
 ### TFP-243 — A test's evidence listed twice gets a broken second link
 
@@ -618,6 +690,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
     re-linking (no deletion), and repair them only on Emil's word.
   - **Test plan:** a `TEST_PLAN.md` case.
 - **Dependencies:** none. It fits with R4, between gates.
+
+#### RUN-49 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** A failed test's evidence is listed once, and a file listed twice keeps both links (TFP-243; unit: `src/lib/report/artifacts.test.ts`, `src/lib/run/persistence.test.ts`; in a real browser, through a shared visit: `src/lib/generate/shared-visits.test.ts`)
+
+**Expected result:** Playwright 1.59.1 attaches a failed test's `error-context.md` a second time when an `afterAll` hook follows it, and every shared visit ends with one. The report lists a file once, by its full path, and two files of one name in different folders stay two. Saving moves a file listed twice once and points both links at the moved copy.
 
 ### TFP-258 — The template check covers every helper the generator writes
 
@@ -690,6 +770,14 @@ doc fixes are made from Cowork, and anything needing code is a ticket.
   decision, <date>"). The baseline moves in its own commit, now measured
   by the check.
 - **Dependencies:** none. Before the comment rewording. It fits with R4.
+
+#### GEN-107 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Every helper the generator can write into a suite is reached by a fixed input of the template check (TFP-258; unit: `scripts/template-unchanged/helper-coverage.test.mjs`, `scripts/template-unchanged/compare.test.mjs`)
+
+**Expected result:** A helper is any `export const *_HELPER(S)` or `export function build*Helper(s)` under `src/lib/generate`, 13 today. Each is parsed into its top-level declarations, and each declaration, comments inside it included, must appear in at least one of the 172 fixed outputs, ignoring indentation and with or without its visits routed through `tfGoto`. The 166 left 5 declarations unreached: the journey helpers, the route helpers, and `tfSameSite`. 6 inputs were added after the 166, whose keys and outputs are unchanged: selected journeys and a hash-route link, in both audit modes, and Comprehensive security and accessibility. A second test catches a `tf*` helper outside that convention by name (`tfLeakSignature`, written inline in a Comprehensive test): every one the generator's source declares must be declared in some output. **Proven:** with the 166 the first test fails naming the 5; a `tf*` declaration in a template no input writes fails the second by name; a reworded comment in the route helpers is reported by the check in the 2 hash-route inputs, and one inside `controls.ts`' `tfCheckNavLinks` in 8 (4 of them among the 166). **Not covered:** comments between a helper's declarations: 20 distinct lines, in `controls.ts` (8), `READ_ONLY_GUARD_HELPER` (7, also part of `CONTROL_HELPERS`), `SPELLING_HELPERS` (3) and `LAYOUT_HELPERS` (2), are in no fixed output, as the shared-visit pass moves declarations without the comments before them. They are in no suite the template generator writes, `controls.ts`' line above `tfWords` included; but `READ_ONLY_GUARD_HELPER`'s 7 are written in full by site-suite reuse (`withGuardHelper`) and the gap writer, which the check doesn't run.
 
 ## R5 — Three decisions (Cowork first)
 

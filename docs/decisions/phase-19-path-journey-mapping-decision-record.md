@@ -216,6 +216,14 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
     actual element that produces it.
 - **Dependencies:** None.
 
+#### INT-08 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Per-`baseUrl` walkable site graph: nodes are pages, edges are the specific element that navigates from one page to another — `link` (`<a href>`), `form-submit` (`form[action]` / `formaction`), or `action` (onclick/`data-href` navigation) — composed from existing introspect output with no extra crawl pass (TFP-088, automated: `npm run test:unit` — `src/lib/introspect/site-graph.test.ts`, "an internal link is an edge naming the element that produces it", "a form action and a formaction button are form-submit edges", "external, anchor, mailto, download and inert links are not edges", …)
+
+**Expected result:** `inspectPages` returns a `siteGraph` (also on `/api/introspect`'s response, carried on `ContentProfile`, and so persisted into a run's `contentProfile`); every edge names its `from`/`to` path, `kind`, the element's `tagName`, visible `text`, and the raw attribute value it navigates by. External, anchor, mailto, download, and inert links are never edges; a link self-edge is dropped but a form-submit self-edge is kept; query/hash never create a distinct page (same normalization as the crawl). Verified live, called directly (`inspectPages`, not through the dev server — see INT-07): introspecting `https://the-internet.herokuapp.com` paths `/`, `/login`, `/secure` gives 46 nodes / 45 edges — 44 `link` edges from `/` (e.g. `/` → `/login` via `<a href="/login">` "Form Authentication", `/` → `/add_remove_elements` via `<a href="/add_remove_elements/">` "Add/Remove Elements", trailing slash normalized away) and one `form-submit` edge `/login` → `/authenticate` via the real `<form action="/authenticate">`; the 44 targets never introspected themselves (`/abtest`, `/authenticate`, …) are `inspected: false` leaf nodes. `/secure` redirects to `/login` when unauthenticated, so its snapshot lands on the `/login` node rather than creating a `/secure` one. **Known limit:** a form's outcome is only knowable by submitting it, which introspect never does, so `/login` → `/authenticate` is where the graph stops — the `/authenticate` → `/secure` redirect after a successful login is not an edge.
+
 ### TFP-089 — Identify and rank candidate journeys
 
 - **Phase:** 19
@@ -247,6 +255,22 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   - `TEST_PLAN.md` cases per Acceptance Criteria §2 above.
 - **Acceptance criteria:** per Acceptance Criteria §2 above.
 - **Dependencies:** TFP-088.
+
+#### GEN-18 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Candidate-journey review screen: TFP-089's ranked journeys are listed with a per-journey select control, nothing pre-selected, and "Generate selected" writes exactly the selection into run config as `contentRules.selectedJourneyIds` (TFP-090, automated: `tests/regression/testforge.journeys.spec.ts` — "lists real candidates unselected, and 'Generate selected' carries exactly the selection into run config", "changing the selection after generating blocks running until regenerated"; unit: `src/lib/introspect/journeys.test.ts` — "selectJourneys returns exactly the selected journeys...", "normalizeContentRules carries selectedJourneyIds exactly, defaulting to none")
+
+**Expected result:** Against a real fixture site served by the spec itself (`/` → `/login` link, `/login` form posting to `/authenticate`; introspected for real through the built app, no API stubbing) the "Candidate Journeys" section lists `/login → /authenticate` (#1) and `/ → /login → /authenticate` (#2), each with its real step elements ("Sign in (link)", "(form submit)"), both `aria-pressed="false"`, and "Generate selected" disabled. The initial `/api/generate` request carried `selectedJourneyIds: []` (default-off, never all). Selecting only #2 and using "Generate selected" sent a second `/api/generate` whose `contentRules.selectedJourneyIds` was exactly `[#2's id]` — not both, not none — and `/api/introspect` was called once in total (the reviewed scan is reused, so the ids still match). Changing the selection after generating shows "Generate the suite again after changing the selected journeys before running it." until regenerated. An id no longer offered by the current scan is dropped, never sent. Since TFP-091 (GEN-19) the generator reads `selectedJourneyIds`, so "Generate selected" now adds one journey test per selected journey; before it, the selection was carried in run config only.
+
+#### INT-09 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Candidate journeys: every simple path of at most 6 hops ending in a form-submit edge (automatic), plus config-named flows (`{ label, entryPath, exitPath }`), deduped by page sequence, named-first then shortest-first, capped at 20 (TFP-089, automated: `npm run test:unit` — `src/lib/introspect/journeys.test.ts`, "a path ending in a form submit is a candidate...", "a named flow whose exit is beyond the graph matches as far as the form submit and carries the exit as declared", "a named flow outranks an automatic candidate over the same pages...", "a journey of exactly the hop limit is surfaced; one hop over is excluded, not truncated", "a named flow whose exit is reachable only past the hop limit is excluded with a warning, with no shorter fallback", "no more than the journey cap is surfaced...")
+
+**Expected result:** `inspectPages` (and `/api/introspect`, via an optional `namedFlows` body field) returns ranked `journeys`, also carried on `ContentProfile`; each names its page sequence and the real element per hop (`steps`), and a named flow carries `declaredExitPath` with `exitInGraph` (Decision 4 amendment: an exit beyond a form-submit is declared, unverified, until TFP-091 submits). A path over `MAX_JOURNEY_HOPS` (6) is excluded, never truncated into a shorter one; a named flow only reachable past the cap is excluded with a warning, not replaced by a shorter fallback. Verified live, called directly (see INT-07): `https://the-internet.herokuapp.com` `/`, `/login`, `/secure` with named flow `{ login, /login, /secure }` gives #1 `named(login)` `/login > /authenticate` via the real `form` "Username Password Login", `declaredExitPath` `/secure`, `exitInGraph: false`; and #2 `automatic` `/ > /login > /authenticate` (`<a>` "Form Authentication", then that form) — the automatic `/login > /authenticate` is folded into #1. 25 real pages introspected with no named flows: 6 journeys, longest 3 hops, so the 6-hop/20-journey starting defaults held and were not retuned; the 2 distinct forms found (`/forgot_password` self-posting, `/login` → `/authenticate`) each appear as a 1-hop journey plus longer prefixed variants, which the shortest-first rank puts after them. **Known limits:** a `<form>` with no `action` attribute (e.g. `/upload`) posts to its own page by HTML rules, but a JS-driven form looks identical to introspect, so no edge is assumed for it; and the graph only has outgoing edges for introspected pages, so journeys are only as broad as the page set introspected.
 
 ### TFP-090 — Surface candidate journeys for review
 
@@ -304,6 +328,22 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
 - **Acceptance criteria:** per Acceptance Criteria §4 above.
 - **Dependencies:** TFP-090.
 
+#### GEN-19 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** End-to-end journey tests: one generated test per journey selected on the review screen walks its real pages and elements in order, asserts each step, and verifies a named flow's declared exit for real; skipped unless interactive tests are enabled for the run (TFP-091, automated: `tests/regression/testforge.journeys.spec.ts` — "journey tests are skipped by default and reported as not covered, with their own reason", "with interactive tests enabled a real journey walks every step and a named flow's exit is verified for real", "the run option appears only for a suite with journey tests, and its state reaches /api/run"; unit: `src/lib/generate/mock/journey-tests.test.ts`)
+
+**Expected result:** Against a real fixture site through the built app's own routes (no stubbing of introspect/generate/run): with `enableInteractive` **off** all three journey tests are reported `Blocked` (skipped) and listed as `interactive-skipped` in `notTested`, with the Functional row `uncovered`; with it **on**, the automatic journey `/ > /login > /authenticate` (follow the real `<a href="/login">` "Sign in", then fill and submit the real `<form action="/authenticate">`, asserting the submit reached `/authenticate` without a 5xx) `Passed`; named flow `signin` (declared exit `/secure`) `Passed` because the post/redirect/get really lands on `/secure`; named flow `broken` (declared exit `/nowhere`) `Failed` with the specific message "the journey broken declares /nowhere as its exit, but after submitting the app ended on /secure". Verified live against `https://the-internet.herokuapp.com` (generated from real introspection, run directly with `TESTFORGE_INTERACTIVE=1`): the automatic journey `/ > /login > /authenticate` `Passed` (link "Form Authentication" then the real login form, `/authenticate` answered without a 5xx); named flow `{ login, /login, /secure }` `Failed` with "the journey login declares /secure as its exit, but after submitting the app ended on /login" — correct and expected, since sample values are not that site's credentials. **Known limits:** journey tests submit forms with generic sample values by input type (TestForge cannot know a real credential), so a login-style flow will fail its exit assertion against a real site until a flow can supply real input (Phase 20 territory); a journey is generated only into a functional suite that is itself being generated.
+
+#### RUN-15 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Coverage matches real executed tests to discovered elements despite the `TFxx-000:` id prefix real titles carry, and a skipped-by-default journey is neither "covered" nor a generator gap (TFP-091, automated: `tests/regression/testforge.journeys.spec.ts` — "a real run's passing element checks are matched to their discovered elements"; unit: `src/lib/report/discovered-coverage.test.ts` — "an element's check is matched to its discovered element when the executed title carries the TFxx id prefix a real run has", "a generated journey that was skipped ... stays uncovered with its own reason")
+
+**Expected result:** **Defect found and fixed in this ticket:** coverage matched executed titles against title builders that omit the `TFFU-003: ` prefix Playwright reports, so on a real run every discovered element was reported untested — probed live against a one-form fixture, all 3 passing element checks (`form element check: Name Go`, `form element check: n`, `action element check: Go`) came back Functional `uncovered`, 0%, `generator-gap`. RUN-10/RUN-11's unit tests used bare titles, so they could not see it. Now the same run reports Functional `covered` with no uncovered elements. Candidate journeys join the functional discovered surface: a journey generated into the suite counts (covered if it ran; `interactive-skipped` if it was skipped/blocked; `generator-gap` if no record); one not generated is listed as `not-selected` and not counted.
+
 ### TFP-096 — Named-flow entry in the run-config UI
 
 - **Phase:** 19
@@ -345,6 +385,14 @@ code they describe. See `product-roadmap.md`'s Sequencing note.
   after generating makes the suite stale, like the other content-aware
   inputs. Real credentials for a flow are Phase 20's (stored, never
   inline); this field carries only the entry and exit paths.
+
+#### GEN-20 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Named flows can be entered in the UI and behave exactly as if sent to the API (TFP-096, automated: `tests/regression/testforge.journeys.spec.ts` — "a named flow entered in the UI produces the same ranked candidates as the same flow sent to the API, and shows on the review screen", "a line that is not a flow is reported, not silently ignored"; unit: `src/app/_lib/derive.test.ts`)
+
+**Expected result:** A "Named flows" textarea in the Content Rules section takes one flow per line as `label: /entry -> /exit` (`=>` and the arrow character also accepted; a missing leading slash is added). Against the real fixture through the built app: entering `signin: /login -> /secure` sent `/api/introspect` exactly `namedFlows: [{ label: "signin", entryPath: "/login", exitPath: "/secure" }]`, and the `journeys` in that response were identical (deep-equal, ids and ranks included) to a direct API call with the same flow; the Candidate Journeys screen listed it first as "Named flow: signin", `/login → /authenticate`, with "Declared exit /secure" marked unverified. A line that does not parse is not dropped silently: an inline message names it (`This line was not understood and will be ignored: "..."`), and it disappears once the line is fixed. Editing the flows after generating marks the suite stale (Run blocked until regenerated), like the other content-aware inputs. A parsed flow survives the server's `normalizeNamedFlows` unchanged, so the UI cannot show one flow and send another.
 
 ## Recommended Execution Order
 

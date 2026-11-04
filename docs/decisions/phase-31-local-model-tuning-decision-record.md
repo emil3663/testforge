@@ -161,6 +161,14 @@ issued number as of this record).
 - **Acceptance criteria:** As stated in Acceptance Criteria 1 and 3 above.
 - **Dependencies:** TFP-103 (validator) landed.
 
+#### GEN-27 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: accessibility requests generate real checks, not the template (TFP-106; automated: route "the local path sends the shared prompt plus the local rules", "the OpenAI path never sees the local rules"; unit: `src/lib/generate/local-rules.test.ts`; live: see Expected Result)
+
+**Expected result:** Only on the local path, `src/lib/generate/local-rules.ts` is appended to the system message. It names the accessibility matchers that exist, forbids the invented ones, says `expect(page)` only takes page matchers, and includes a worked example. The OpenAI path's system message is exactly `SYSTEM_PROMPT`, and `prompt.ts` is unchanged. The unit tests type-check every matcher the rules recommend, forbid, or call a page matcher against the installed `@playwright/test`, so a Playwright rename fails the test instead of quietly teaching the model a wrong API. Live against `testforge-qwen7b` through a production build on 2026-09-24, with the exact wording that failed 3/3 before: the first attempt passed 2 of 3. The failure was a new mistake, `expect(page).toHaveRole(...)`, so the page-vs-locator rule was added. The next three consecutive requests all returned `generatedBy: "ollama"` (74-83s), and each also passes a standalone strict `tsc`. Each suite asserts `toHaveRole` and `toHaveAccessibleName` per control, and two of the three also assert `toBeFocused`. They use the request's base URL, not the example's.
+
 ### TFP-107 — Baseline per-category defect survey against the real local model
 
 - **Phase:** 31
@@ -180,6 +188,14 @@ issued number as of this record).
 - **Acceptance criteria:** As stated in Acceptance Criteria 2 above.
 - **Dependencies:** TFP-106 landed (so accessibility is tested post-fix,
   not pre-fix).
+
+#### GEN-28 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: per-category baseline (TFP-107; live, 2026-09-24)
+
+**Expected result:** One real generation per best-practice area, all 10 in `BEST_PRACTICE_OPTIONS` (the Phase 31 record listed 9 and missed `reliability`), against `testforge-qwen7b` through a production build with the TFP-106 rules. Each request used the same wording ("Check the login page (email and password fields, Sign in button) for `<area>` coverage.") with only that area selected. **Compiles (route type check and standalone strict `tsc`): 10/10**, 29-96s each, so no invented APIs appeared in any category. **Has a check specific to its area**, judged by reading each suite: functional ✅ (enabled state and attributes); responsive/mobile ✅ (3 viewports); accessibility ✅ (role, accessible name, focus); usability ✅ (keyboard reachability); cookie/session ✅ (`context().cookies()` before and after sign-in); security ⚠️ (invalid-input error is real, but its HTTPS check is a missing-`await` `expect(page).toHaveURL('https://…')` against an http base URL); reliability ⚠️ (title and focus only); performance/load ❌ (asserts status 200, measures no time); seo/content ❌ and database ❌ (one visibility-only test each). 9 of 10 suites navigated to `/login`, which the rules example uses but the requests don't; earlier suites used the bare base URL. That pointed at the example leaking, but wasn't proven here; GEN-30 later confirmed it with a controlled re-run, and removed it. One sample per area: a baseline, not a rate.
 
 ## Recommended Execution Order
 

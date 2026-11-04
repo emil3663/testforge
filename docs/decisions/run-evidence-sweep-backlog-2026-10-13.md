@@ -61,6 +61,14 @@ make the bug fire more often, not less.
   four new tests fail on the previous code and the ten existing ones pass on
   both. RUN-28.
 
+#### RUN-28 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** The sweep keeps a run's evidence until its failures are shown fixed, compares only runs of the same suite, and writes records atomically (TFP-198, GitHub issue #2, run-evidence-sweep backlog Decisions 1 to 3; unit: `src/lib/run/persistence.test.ts`)
+
+**Expected result:** **Clearing (Decision 1):** an older run's failing test counts as fixed only if a test with the same title ran and **passed** in the newest run of the same suite; absent, Failed, Not run, Blocked or Flaky there keeps the older run, and its `evidence/`, as it is. **Grouping (Decision 2):** runs are compared only within one suite identity (`suiteIdentity`): the `baseUrl`, the selected practices in any order, and the run type (Standard, or Comprehensive for one area; records without `runMode` are Standard). **Records:** `run.json` is written to `run.json.tmp` and renamed into place, so a failed write leaves the previous record whole and the run in `listRunRecords()`. **Artifacts:** a file counts as under the job's artifact root only below the root plus a separator (`artifacts-run1` never claims `artifacts-run10/...`). **Storage assumes one TestForge process at a time** (Decision 3; README and `persistence.ts`). **Proven (decision table: what the newest run says about the failing title x whether the runs are the same suite):** passed, same suite - archived (also with the practices in another order); failed, absent, Not run, Blocked, Flaky - kept; passed but different practices, or Comprehensive against Standard - kept; the issue's own drop-in test (an accessibility run, then a links run of the same site) keeps the accessibility run. A `run.json.tmp` that can't be written makes the pin fail with `run.json` byte-identical and still listed. The four new tests fail on the previous code (the sweep, the table, the atomic write, the prefix) and the ten existing ones pass on both.
+
 ### TFP-199 — The read-only guard notes site beacons instead of failing
 
 - **Priority:** P1 · **Labels:** `bug`, `run`, `gates`

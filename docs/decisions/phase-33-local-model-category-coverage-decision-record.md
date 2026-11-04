@@ -185,6 +185,14 @@ issued number as of this record).
 - **Acceptance criteria:** As stated in Acceptance Criteria 1 above.
 - **Dependencies:** TFP-108 (the check itself) landed.
 
+#### GEN-31 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: a suite with a never-run assertion is rejected (TFP-110; automated: route "a local suite with an unawaited web-first assertion falls back as unawaited_assertion", "an unawaited synchronous value assertion is not rejected - it still checks", "an invented API is still invalid_output even when an assertion is also unawaited")
+
+**Expected result:** After the type check passes, `generateWithOllama` runs `findUnawaitedAssertions` (GEN-29). Any unawaited assertion that returns a promise returns the template, labelled `fallbackReason: "unawaited_assertion"`, with `model` reported and the offending lines logged. The Phase 31 security line `expect(page).toHaveURL(...)` is rejected. An unawaited synchronous `expect(value).toBe(...)` is **not** rejected, because it still runs, and TestForge's own template generator writes that form. The type check runs first, so an invented API stays `invalid_output` and the two failures stay distinct. Detect and fall back, never rewrite (Phase 33 Decision 1). If the check itself can't run, it fails closed.
+
 ### TFP-111 — Reliability: a real dependency/storage failure-injection example
 
 - **Phase:** 33
@@ -205,6 +213,14 @@ issued number as of this record).
   (reliability's specific bar).
 - **Dependencies:** None.
 
+#### GEN-32 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: reliability tests simulate a real failure (TFP-111; unit: `local-rules.test.ts` [reliability] cases, "localRulesFor: …"; route: "the local path sends only the guides for the areas the template generator would cover"; live: see Expected Result)
+
+**Expected result:** Reliability here means TestForge's own definition: graceful degradation when a dependency or storage fails. The worked example mirrors the template generator. It blocks `'**/api/**'`, blocks every other host, and makes `localStorage` throw, each before `page.goto`. It then asserts only that the page survived: status below 500, body visible, no uncaught `pageerror`. The unit tests check the example: failure set up before load, each test a different failure, no specific fallback text, placeholders only, all awaited, compiles. Guides are sent only for the areas `getBestPracticeAreas` puts in scope, because the model copies examples. **Live (`testforge-qwen7b`, production build, the GEN-28 wording "Check the login page (email and password fields, Sign in button) for reliability coverage.", reliability selected). Every attempt is recorded.** Attempt 1: 0/3 genuine. Two failed the type check (`response` used but never declared). The one that compiled routed invented patterns like `'**/email-input/**'`, which block nothing, and compared a promise with `toBe`. The cause was the rules' own "replace placeholders with the request's elements" instruction. Attempt 2, rules saying the three failures are generic and not placeholders, that `page.route` can't block an element, to keep `const response`, and never to pass a promise to `expect`: **3/3 contain a real failure simulation** (`'**/api/**'` aborted before load, survival asserted). But only 1/3 covered all three failure kinds with accurate names. 2/3 repeated the same API-block test three times under titles like "when email input is blocked". Attempt 3 added a rule to name tests after what they block: 1/3 genuine. The other 2/3 kept the misleading titles and blocked a guessed `'**/api/login'` that only fires on submit and is never triggered, so they check nothing. That rule was reverted, and the committed rules are attempt 2's. **Result: the category's defining trait now appears (it never did before), but the model maps the request's inputs and button onto reliability tests in 4 of the 6 attempt-2 and attempt-3 suites.** Those suites have misleading titles and duplicates, and sometimes block requests that never fire. None has been run against a real site. **Phase 37 update (TFP-130, GEN-57):** the duplication half is now gated. A local suite whose tests share one body, whatever their titles, is rejected as `duplicate_tests` and the template is kept; GEN-54's reliability-2 is rejected. The naming half, titles that don't match what the body does, needs judgement and is not gated.
+
 ### TFP-112 — Performance, SEO, and database: real category-specific examples
 
 - **Phase:** 33
@@ -220,6 +236,30 @@ issued number as of this record).
   `TEST_PLAN.md` update per category.
 - **Acceptance criteria:** As stated in Acceptance Criteria 2 above.
 - **Dependencies:** None.
+
+#### GEN-33 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: performance tests measure time (TFP-112; unit: `local-rules.test.ts` [performance/load]; live: see Expected Result)
+
+**Expected result:** The guide requires a timing measurement against a budget: `Date.now()` around `page.goto`, or Navigation Timing through `page.evaluate`. A status code or a visibility check alone doesn't count. The example's budgets are 3000 ms load, 800 ms first byte and 2000 ms DOM ready. **Live, 3 consecutive (GEN-28 login wording, performance/load selected): 3/3 genuine.** Each suite measures load time and first-byte and DOM-ready timing against budgets, and all compile, pass strict `tsc` and leak no placeholders. All three are the example almost verbatim, with the request's URL and page name substituted. That is the copying Phase 32 predicted, and here it produces exactly the intended tests. The budgets are the example's defaults, not ones tuned for any site. (Baseline, GEN-28: a 200 status check, no timing.)
+
+#### GEN-34 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: SEO tests check what search engines read (TFP-112; unit: `local-rules.test.ts` [seo/content]; live)
+
+**Expected result:** The guide asks for the title (`toHaveTitle`), the meta description (`meta[name="description"]` content) and a single level-1 heading, with the real text used if the request or profile gives it. **Live, 3 consecutive: 3/3 genuine.** 3/3 check title and meta description, and 2/3 also check the single `h1`. One suite also added two visibility checks for the request's fields under the SEO heading, a minor spill-over. (Baseline: one visibility-only test.)
+
+#### GEN-35 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: database tests check persistence through the page (TFP-112; unit: `local-rules.test.ts` [database]; live)
+
+**Expected result:** The guide asks the suite to save a unique value (`Date.now()`), reload, and check the value is still shown. On a page with no saving form, it should write `test.skip` rather than fake it. **Live.** Since a sign-in page has nothing to persist, the 3 consecutive runs used a contact-form wording ("Check the contact page form (name and message fields, Send button) for database coverage."). Attempt 1: 3/3 real save-reload-check flows, but all copied the example's `EXAMPLE-VALUE` prefix into test data (`EXAMPLE-NAME …`). The unique value is copy-safe data, so the example now uses `TestForge check …`, and a test keeps placeholders out of it. **Attempt 2: 3/3 genuine, no leaks.** Separately, with the GEN-28 login wording (1 run), the skip rule did not work: the model invented a "create a user and sign in" flow asserting a guessed `Welcome,` text, which is not persistence. (Baseline: one visibility-only test.)
 
 ### TFP-113 — Security: fix the protocol assumption, broaden within existing guidance
 
@@ -238,6 +278,14 @@ issued number as of this record).
   update.
 - **Acceptance criteria:** As stated in Acceptance Criteria 2 above.
 - **Dependencies:** None.
+
+#### GEN-36 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: security tests don't assume HTTPS (TFP-113; unit: `local-rules.test.ts` [security]; live)
+
+**Expected result:** The guide covers three things. HTTPS is asserted only behind `test.skip(pageUrl.startsWith('http://'), …)`. Invalid input must not be accepted (the page doesn't move on). Script-like input must not open a dialog (`page.on('dialog')`). **Live, GEN-28 login wording.** Attempt 1, with a negated skip `test.skip(!pageUrl.startsWith('https://'))`: 3/3 checked invalid input and script injection, but the HTTPS check was wrong in every suite. 2/3 replaced it with a trivial `http:` assertion. 1/3 dropped the `!`, which skips on HTTPS and asserts `https:` on the http site, the baseline's false assertion again. The skip condition is now positive, so there's no negation to lose, and a test enforces it. **Attempt 2: 3/3 have category-specific checks, and 0/3 assert https on an http site.** 2/3 have all three checks with the skip copied correctly. 1/3 dropped the HTTPS test and reduced the script check to "stays on the page" without a dialog listener. (Baseline: one real invalid-input check and an un-awaited, wrong `https://` assertion.)
 
 ## Recommended Execution Order
 

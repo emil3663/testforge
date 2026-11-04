@@ -166,6 +166,22 @@ whatever follows them.
 - **Dependencies:** None (extends Phase 17's introspect/coverage
   machinery, already landed).
 
+#### INT-07 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Per-`baseUrl` dependency map: XHR/fetch, form-action, third-party-script, iframe, redirect, and cookie dependencies, deduped by (host, kind) — cookies further deduped by name so distinctly-named cookies on one host don't collapse to one row (TFP-084, automated: `npm run test:unit` — `src/lib/introspect/dependency-map.test.ts`, "a same-origin script is not recorded...", "a third-party script is recorded with its host and kind...", "a same-origin fetch is tagged sameOrigin: true, not misclassified...", "distinctly-named cookies on the same host are separate rows...")
+
+**Expected result:** `inspectPages` returns a `dependencyMap` naming each real outbound dependency by host and kind; a same-origin script is never recorded, a same-origin fetch is recorded but tagged `sameOrigin: true`. Verified live, called directly (not through the manually-running dev server on :3000, which independently fails to launch headless Chromium in its current process — reproduces on unmodified `main` too, a pre-existing environment issue, not a TFP-084 regression): introspecting `cah-pwa` (`http://localhost:8001`) names `www.gstatic.com` as `third-party-script` (3 Firebase SDK `<script src>` tags, deduped to 1 row, `sameOrigin: false`); introspecting `https://the-internet.herokuapp.com/login` names `298279967.log.optimizely.com` as `xhr-fetch` (`sameOrigin: false`), 5 distinctly-named cookies on `the-internet.herokuapp.com` as 5 separate `cookie` rows (`sameOrigin: true`), and `the-internet.herokuapp.com` as `form-action` to `/authenticate` (`sameOrigin: true`).
+
+#### RUN-13 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Reliability: one `page.route()` failure-injection test per routable dependency from TFP-084's map, folded into the same discovered-coverage denominator as functional/accessibility (not a separate report tab); cookie-kind dependencies are `excluded-by-generator` since a cookie isn't a routable request. Decision 4 (revised): redirect-kind dependencies are tested by default, same as any other routable kind — each generated test runs in its own isolated Playwright context with no shared `storageState` today, so blocking one can't affect any other test in the run; that risk only becomes real once Phase 20 introduces a run-wide cached `storageState`, and the fix at that point must be pinpointed to the specific dependency matching the configured login URL, not a blanket kind-wide exclusion (TFP-085, automated: `npm run test:unit` — `src/lib/report/discovered-coverage.test.ts`, "TFP-085: reliability folds into the same discovered-coverage denominator...", "TFP-085: a cookie-kind dependency is excluded-by-generator...", "Decision 4 (revised): a redirect-kind dependency is tested by default like any other routable dependency, not excluded..."; `src/lib/generate/mock/dependency-failure-injection.test.ts`, "routes by host + pathname, not the full sampleUrl...", "a form-action dependency with a known raw action attribute actually submits the form once blocked...", "cookie is not a routable dependency kind; every other kind, including redirect, is...")
+
+**Expected result:** Blocking a real recorded dependency and running the generated test against it produces a named pass or a named failure, never a bare Playwright timeout. A `form-action` test also calls `requestSubmit()` on the located form once its endpoint is blocked, so the block is actually exercised on a page whose dependency only fires on submit, not just present during an inert reload — still read-only from the target's point of view, since the abort happens client-side before the request leaves the browser. Verified live: `https://the-internet.herokuapp.com/login` — blocking its Optimizely `xhr-fetch` beacon and its `/authenticate` `form-action` (submitted via `requestSubmit()`) both pass, a real graceful-degradation result; `cah-pwa` (`http://localhost:8001`) — blocking `www.gstatic.com`'s Firebase SDK script (`third-party-script`) produces a named failure citing the exact console errors (`Cannot read properties of undefined (reading 'INTERNAL')`, `firebase is not defined`), a real defect this test correctly surfaces rather than a timeout.
+
 ### TFP-085 — Generate `page.route()` failure-injection tests from the dependency map
 
 - **Phase:** 18
@@ -237,6 +253,14 @@ whatever follows them.
     storage-failure test (no false-positive coverage claim).
 - **Dependencies:** None (independent of TFP-084/085 — different failure
   class).
+
+#### RUN-14 evidence
+
+Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-253; the case's row there links here.
+
+**Test:** Reliability: generic storage-entry-point failure injection — introspect runs a real behavioral probe (an instrumented getter/`indexedDB.open` wrapper the page's own scripts actually execute through, not a static source grep) to detect which of `localStorage`/`sessionStorage`/`indexedDB` a page touches at all; one generated test per detected (page, kind) mocks that entry point to throw and asserts the app degrades rather than crashing. Schema/corrupted-value seeding is explicitly out of scope (Decision 3, resolved: deferred — TestForge has no generic way to infer a target's storage schema, so this stays a manual/config-supplied capability for a later phase, not built in Phase 18) — this is the generic entry-point-unavailable case only (TFP-086, automated: `npm run test:unit` — `src/lib/generate/mock/storage-failure-injection.test.ts`, "a target that doesn't touch storage at all generates no storage-failure test...", "one test per detected (page, storage kind)..."; `src/lib/report/discovered-coverage.test.ts`, "TFP-086: storage failure injection folds into the same reliability row as TFP-085's dependency tests...", "TFP-086: a page with no detected storage usage contributes nothing...")
+
+**Expected result:** A target that doesn't touch storage at all generates no storage-failure test (no false-positive coverage claim); a target that does gets one test per kind actually detected, folded into the same "Reliability" coverage row TFP-085 established. Verified live against `cah-pwa` (`http://localhost:8001`), which really does use `localStorage` (confirmed independently via its `app.js`): the behavioral probe detected all three kinds in use — `localStorage`/`sessionStorage` from the app's own code, `indexedDB` from the Firebase Firestore SDK's own offline-persistence layer, a real finding the probe caught that a source grep of the app's own code would have missed. All three generated tests pass — the app's initial load degrades gracefully even with each storage entry point mocked to throw. Verified the negative case against `https://the-internet.herokuapp.com/login`, which touches none of the three: the probe reports all-false and zero storage-failure tests are generated for it.
 
 ## Recommended Execution Order
 

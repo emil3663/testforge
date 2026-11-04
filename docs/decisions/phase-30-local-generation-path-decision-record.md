@@ -207,6 +207,30 @@ issued number as of this record).
 - **Acceptance criteria:** As stated above.
 - **Dependencies:** None (Decisions 3, 5, 6 locked above).
 
+#### GEN-21 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local model generates a suite (TFP-103; automated against a fake Ollama: `src/app/api/generate/route.test.ts` — "a local model generates, fence stripped, labelled with the catalog id", "a configured local model wins over an OpenAI key"; unit: `src/lib/generate/ollama.test.ts`; live: see Expected Result)
+
+**Expected result:** With `TESTFORGE_OLLAMA_MODEL=testforge-qwen7b` and the model created per `docs/LOCAL_MODEL_SETUP.md`, `/api/generate` returns 200, `generatedBy: "ollama"`, `model: "testforge-qwen7b:latest"`, and `code` with no markdown fence — even when `OPENAI_API_KEY` is also set. A suite is only returned as `generatedBy: "ollama"` if it type-checks against `@playwright/test` (GEN-26). Live against a real Ollama (RTX 2050, 4GB VRAM) through a production build (`next build` + `next start`) on 2026-09-24: a functional request ("the email and password fields accept input and the Sign in button submits the form") returned `generatedBy: "ollama"` in 29s, fence-free, and the suite also passes a standalone strict `tsc`. An accessibility-worded request in the same session was rejected as `invalid_output` (see Known Limitations item 9).
+
+#### GEN-25 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: Ollama returns an error or an empty answer (TFP-103; automated: "Ollama answering with an error falls back as ollama_error, not unreachable", "a local completion that is only a fence falls back as empty_completion")
+
+**Expected result:** HTTP 500 from Ollama → `fallbackReason: "ollama_error"`, not `ollama_unreachable`. A completion that is only a fence → `empty_completion`, never 200 with empty `code`.
+
+#### GEN-26 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Local path: a suite that doesn't type-check is never labelled model output (TFP-103 follow-up; automated: route "a local suite that does not type-check falls back as invalid_output"; unit: `src/lib/generate/validate.test.ts`)
+
+**Expected result:** The local model's suite is type-checked in-process against the installed `@playwright/test` (TypeScript compiler API, `strict: false`, only errors in the generated file count). The real `toBeAccessible()` output → template suite, `fallbackReason: "invalid_output"`, `model` still reported, errors logged on the server. The same suite using `toHaveAccessibleName` passes; a syntax error and an uninstalled import are rejected; the template generator's own suite for every coverage area passes (no false positives on known-good output).
+
 ### TFP-104 — Setup documentation for the local path
 
 - **Phase:** 30

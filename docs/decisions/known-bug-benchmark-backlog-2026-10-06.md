@@ -172,6 +172,22 @@ services to third parties. So:
     - TFP-161's orphan check still clears the `#…` part, so it is
       meaningless on a hash-routed site. That is TFP-166.
 
+#### GEN-76 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A `#/` link is a page on a hash-routed site: the crawl and inspection find each route, named as the address bar shows it (TFP-165 Decisions 1 to 3, owner decision, 2026-10-06; unit: `src/lib/introspect/routes.test.ts` (the `#` rule, then a real crawl through `/api/crawl` and inspection of the fixture's `/spa`); fixture: `/spa`)
+
+**Expected result:** **Rule** (`src/lib/introspect/routes.ts`, and `isRouteHref` in the page snapshot): a `#` link is a page when its fragment starts with `/` or `!/`; `#top`, `#details`, a bare `#` stay in-page anchors. **Name:** the path, then the route: `/#/contact`, `/app#!/legacy`; a path-routed page is named as before. **Crawl:** keeps a route fragment in its de-duplication key (still drops the query and an anchor). **Introspection:** a route link is `internal`, with its full URL. **Wait:** a route is loaded as a fresh document (`about:blank` first), then network idle, bounded at 10 s, as for paths: moving between routes of one document doesn't reload it, and Playwright's network-idle state has already fired. **Proven (equivalence partitioning: route, anchor, bare `#`, none), 2026-10-06:** the rule and names on each partition; the crawl of `/spa` finds `/spa#!/legacy`, `/spa#/`, `/spa#/chainsaws`, `/spa#/contact`, `/spa#/products`, `/spa#/products/1`, each drawn (the app draws after a request; none read as "Loading..."); inspection records the 6 route links as `internal` and `#details`, `#top` as `anchor`. On the previous code the crawl found only `/spa` and every `#` link was an anchor.
+
+#### GEN-77 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A linked route that the app draws as "not found" fails link health, naming it (TFP-165 Decision 4; unit: `src/lib/introspect/routes.test.ts` (the generated functional suite, deep mode, through the Playwright CLI, one worker); fixture: `/spa`, `#/chainsaws`)
+
+**Expected result:** **Probe** (generated, `link-audits/routes.ts`): once per run (per worker), the app's view of a route that can't exist (`<path>#/testforge-missing-<random>`, or `#!/` for hashbang links), read as the page's text after a fresh load settled to network idle (bounded); read-only, page loads only. **Bulk check** "link health: linked routes draw a page, not the app's \"not found\" view": each linked route once (the start route `#/` excepted), failing with those that draw the same as the probe; it stops after 14 s and names any not checked as a finding. The request-based bulk check skips routes (the server answers every route the same). **Per-link check** for a route link: present (hidden links found as TFP-159 finds them, with its reach finding) with its `href`, and its view differs from the probe. The anchor check no longer sees routes; link types classify them as internal. **Proven, 2026-10-06:** on `/spa#/` the bulk check fails naming only `/spa#/chainsaws` ("draws the same as /spa#/testforge-missing-..., a route that cannot exist"); the per-link check fails Chainsaws with the same reason and passes Contact, Products, Legacy and First product; the anchor check passes (`#top`, `#details` exist), as do link types and the request-based check. **Output measured:** `check:template-unchanged` against `2f435a6`: 166 of 166 identical; no fixed input is hash-routed. **Limits:** a view that changes on every load (random content) can make a missing route look found (a miss, not a false failure); TFP-161's orphan check still strips every `#` part, so on a hash-routed site its counts are meaningless.
+
 ### TFP-166 — The orphan-page check on hash-routed sites
 
 - **Priority:** P2 (before TFP-154) · **Labels:** `bug`, `generate`, `seo`
@@ -190,6 +206,14 @@ services to third parties. So:
   hash-routed column fails falsely on the old code, as "/spa#/contact is not
   linked", and on the new code only the genuinely unlinked `/spa#/offer`
   fails. Profiles without `requestedPaths` keep the old check.
+
+#### GEN-78 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** On a hash-routed site the orphan check counts pages by route (TFP-166; unit: `src/lib/generate/mock/link-audits/orphan-pages.test.ts` (introspects the comparison fixture, then runs the generated check through the Playwright CLI); fixture: `/spa`, its unlinked route `#/offer`)
+
+**Expected result:** For a profile with `requestedPaths` (TFP-161's branch), each page and each of its links is counted by its page key, origin + `pagePathOf` (TFP-165): a hash route keeps its `#/...`, an in-page anchor is dropped. Page names follow the same rule, so the start page `/#/` stays `/#/`. Until now every `#` part was cleared, so each route of a hash-routed site counted as the same page, and with TFP-161's self-link rule every route's links looked like links to itself. A profile without `requestedPaths` keeps the previous check, unchanged. **Proven (decision table, the hash-routed column added to TFP-161's), 2026-10-06:** `/spa#/`, `/spa#/contact`, `/spa#/products`: passes (each linked from the nav on the other routes); `/spa#/`, `/spa#/contact`, `/spa#/offer`: fails, "/spa#/offer is not linked from any other inspected page". The previous check failed the first set too, "/spa#/contact is not linked from any other inspected page". TFP-161's path-routed columns pass unchanged. **Output measured:** `check:template-unchanged` against `dfabfaf`: 166 of 166 identical; the fixed inputs' profiles have no `requestedPaths`, so none reaches this branch.
 
 ### TFP-167 — Generated tests wait for single-page apps to draw
 
@@ -242,6 +266,14 @@ services to third parties. So:
     to 136 s (+31%). With-bugs Toolshop's 5 pages 766 s to 1,170 s (+53%),
     within the 30-minute budget.
 
+#### GEN-79 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Every page visit in a generated test waits for the page to draw (TFP-167, owner decision, 2026-10-06; unit: `src/lib/generate/page-visits.test.ts` (the rewrite, then the fixture's `/late-form` inspected, generated and run through the Playwright CLI, one worker); fixture: `/late-form`, drawn after `/api/slow`, 1.5 s)
+
+**Expected result:** **Helper** (`src/lib/generate/page-visits.ts`): every `page.goto(...)` in a Standard or Comprehensive suite becomes `tfGoto(page, ...)` with its arguments unchanged, and `tfGoto` is added once after `test.use`: a hash route loads as a fresh document (as TFP-165's crawl does), the page loads as the test asked, then the network must go quiet for at most 5 s; the wait never fails a test. Rejected: waiting for a known element (generated tests can't know each app's markers). **Proven (equivalence partitioning: content in the HTML, drawn after a slow request, drawn by a hash route), 2026-10-07:** on `/late-form` the form check and the form's name check pass; on the previous code both failed ("no form on /late-form with action \"/notes\", method get", "(a form) is not on the page"), as T25 on the Toolshop; the button's name check and the axe scan pass on both. On the fixture's hash route `/spa#/contact` (drawn after the same 1.5 s request, with a form), the generated visit is `tfGoto(page, '/spa#/contact')` and the route's form check passes; on the previous code it failed, "no form on /spa#/contact with action \"/notes\", method get". `routePageVisits` is idempotent: a second pass leaves a suite unchanged (otherwise the helper's own `page.goto` would become a call to itself). Fixture pages with content in their HTML give the same results as before (a Standard run on `/`, `/login`, `/notes`: 87 passed, 9 failed, 3 not run, before and after). **Run-time cost** (Standard, all areas, fast, one worker): the fixture 104 s to 136 s (+31%); the with-bugs Toolshop's 5 pages 766 s (TFP-154) to 1,170 s (+53%), within the 30-minute budget. **Output measured:** `check:template-unchanged` against `bc62533`: 12 of 166 identical (no page visits); in the 154 that differ, the helper is added once and every other changed line (1,042) is `page.goto(` to `tfGoto(page, `.
+
 ### TFP-168 — Route model and OpenAI page visits through `tfGoto`
 
 - **Priority:** P3 · **Labels:** `bug`, `generate`
@@ -256,6 +288,14 @@ services to third parties. So:
 - **Acceptance criteria:** a merged suite and a scenario suite contain no
   raw `page.goto` outside `tfGoto`'s own body, and type-check.
 - **Dependencies:** TFP-167.
+
+#### GEN-88 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Model and OpenAI page visits go through `tfGoto` (TFP-168; unit: `src/lib/generate/page-visits.test.ts`, `src/lib/generate/gap-fill.test.ts`)
+
+**Expected result:** The local model's gap-fill block, its Comprehensive scenarios and an OpenAI-written suite route every `page.goto` through the helper TFP-167 added, defined once per file: the template's, or one added before the model's block when the template has none (the template stays a byte-for-byte prefix). An OpenAI suite whose imports aren't the template's line gets the helper after its last import. Re-running the routing on a routed suite changes nothing. **Proven 2026-10-07:** a merged gap-fill suite, a Comprehensive scenario suite and an OpenAI suite with its own double-quoted import each have no raw `page.goto` outside the helper's body, the helper once, and type-check; the case fails on the previous code ("gap-fill: no raw page.goto").
 
 ### TFP-169 — TFP-147's security case: ECONNRESET at fixture start-up
 
@@ -359,6 +399,14 @@ services to third parties. So:
   - `check:template-unchanged`: any change is explained (fixed inputs carry
     their own page data, so none is expected).
 - **Dependencies:** none.
+
+#### INT-10 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Inspection reads a page only once it has drawn (TFP-177, T30; unit: `src/lib/generate/mock/link-audits/orphan-pages.test.ts`)
+
+**Expected result:** After network idle, inspection also waits for 1 s of quiet - no request in flight and no element added, removed or re-texted - within the same 10 s bound, and is never failed for the wait. Network idle alone can come true in a gap before an app's data requests start; on TFP-175's with-bugs run inspection read home and the category drawn but without their product cards, and the product page failed the orphan check. The crawl keeps network idle alone (not in scope). **Proven 2026-10-07:** the fixture's `/late-links` draws its link to `/late-links/item` only after a request started 800 ms late; inspection records the link and the generated orphan check passes for the item (both fail on the previous code). A fresh, read-only inspection of with-bugs `/#/` and `/#/category/hand-tools` records 9 product links on each (7 s for both pages).
 
 ### TFP-178 — Label the clean Toolshop's baseline failures
 

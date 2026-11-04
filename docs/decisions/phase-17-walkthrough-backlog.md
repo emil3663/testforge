@@ -103,6 +103,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     unchanged except where they assert on the now-larger interface shape.
 - **Dependencies:** None.
 
+#### INT-04 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Actionable elements report `isVisible` (TFP-053, automated: "introspect reports isVisible on every discovered actionable element")
+
+**Expected result:** Every discovered actionable element carries a boolean `isVisible`. Verified live against `test-assist`, separately from this suite: `#btnRecord`, `#btnClearSession`, `#uploadImage`, `#btnStopRecord`, `#textInput`, `#btnTextOk`, `#btnTextCancel` all report `isVisible: false` — this repo's own landing page has no naturally-hidden element to assert the `false` case against directly.
+
 ### TFP-054 — Stop asserting unconditional visibility for conditionally-hidden elements
 
 - **Phase:** 17 (pre-lock)
@@ -133,6 +141,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     of a false visibility claim.
   - No regression in the 34 currently-passing tests from that same run.
 - **Dependencies:** TFP-053.
+
+#### GEN-11 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** An element hidden at introspection time does not get an unconditional visibility claim (TFP-054, automated: "does not assert unconditional visibility for an element hidden at introspection time")
+
+**Expected result:** A synthetic element with `isVisible: false` generates `toBeAttached()` plus a "Hidden at introspection time" comment, not `toBeVisible()`. Verified live against `test-assist`: regenerating TFP-040's exact suite now produces 0 of the 7 originally-confirmed false positives (41 of 42 passing; the 42nd, `TFFU-036`, is a separate, pre-existing finding unrelated to visibility).
 
 ### TFP-055 — Capture ARIA state and toggle-group membership during introspection
 
@@ -165,6 +181,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     correct finding TA-252 was filed from.
 - **Dependencies:** None (can land alongside TFP-053).
 
+#### INT-05 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Actionable elements report ARIA state and toggle-group membership (TFP-055, automated: "introspect reports ARIA state and toggle-group membership on actionable elements")
+
+**Expected result:** Every discovered actionable element carries `ariaPressed`/`ariaSelected`/`ariaChecked`/`ariaExpanded`/`groupId` as `string \| null`. Verified live against `test-assist`, separately from this suite: the seven `.tool-btn` elements are detected as one group (`role` `button` + shared `containerLabel` + 3+ members), each reporting a real `ariaChecked` value now that TA-252 has shipped; `strokeColor`/`strokeSize`/`fillOpacity` (role `textbox`) and `Undo`/`Redo`/`Clear` (one-shot action verbs) are correctly excluded from grouping.
+
 ### TFP-056 — Generate accessibility coverage from real per-element data
 
 - **Phase:** 17 (pre-lock)
@@ -193,6 +217,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
 - **Dependencies:** None (independent of TFP-055; stronger in combination
   with it).
 
+#### GEN-13 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Accessibility suite asserts a real accessible name and role per discovered element (TFP-056, automated: "generates per-element accessible-name and role checks, skipping hidden elements")
+
+**Expected result:** A visible synthetic element generates a `toHaveAccessibleName(/.+/)` plus an `ariaSnapshot()`-derived role check; a hidden one (`isVisible: false`) gets the same `toBeAttached()` treatment as GEN-11 instead, since accessible-name/role computation is undefined for an element excluded from the accessibility tree. Verified live against `test-assist`: 24 of 31 discovered elements got a real per-element check, all passing (`TFAC-002`…`TFAC-031`), including one that caught a genuine finding first try — `#uploadImage` had no accessible name under a hand-rolled text/aria-label/placeholder/title heuristic; switching to Playwright's own `toHaveAccessibleName` (which follows the real accname algorithm, including the wrapping `<label>` test-assist actually uses) resolved the false positive.
+
 ### TFP-057 — Generate ARIA-state-toggle assertions for discovered groups
 
 - **Phase:** 17 (pre-lock)
@@ -219,6 +251,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     passing test asserting `aria-pressed`/`aria-selected` toggles on
     click.
 - **Dependencies:** TFP-055.
+
+#### GEN-12 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A detected toggle group generates an ARIA-state assertion (TFP-057, automated: "generates a toggle-group ARIA assertion for a detected selection group")
+
+**Expected result:** A synthetic 3-member `groupId`-sharing group generates a presence test (every member exposes an ARIA state attribute) and, since one member's `ariaChecked` is `"true"`, a toggle-behavior test. Verified live against `test-assist`: the generated accessibility suite's `TFAC-002`/`TFAC-003` both pass now that TA-252 has shipped and every `.tool-btn` reports a real `aria-checked`. The pre-TA-252 "produces a failing test naming the missing ARIA state" half of this ticket's acceptance criteria was confirmed by tracing the generator's own logic (no member would have `activeAriaStateField()`, so the toggle test wouldn't generate at all and the presence test's `toBeTruthy()` would fail), not re-verified live against a reverted target.
 
 ### TFP-058 — Generate responsive coverage from real elements, add a touch smoke check
 
@@ -248,6 +288,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     viewport.
 - **Dependencies:** None.
 
+#### GEN-14 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Responsive suite checks real discovered elements per viewport and adds a touch smoke test (TFP-058, automated: "checks real discovered elements across viewports and adds a touch smoke test")
+
+**Expected result:** The viewport loop asserts up to 5 real `isVisible: true` elements stay visible at each of mobile/tablet/desktop, in addition to the existing `body`/heading check; a separate test dispatches `touchstart`/`touchend` at mobile viewport on one of those elements as an explicit smoke check (static introspection can't see touch-specific handlers, so this claims only "doesn't error on tap," not app-specific touch behavior). Verified live against `test-assist`: `TFRM-001` (5 real elements checked per viewport) and `TFRM-002` (touch smoke) both pass.
+
 ### TFP-059 — Generate usability coverage from real elements instead of duplicating functional's count check
 
 - **Phase:** 17 (pre-lock)
@@ -272,6 +320,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
   - Usability and Functional suites no longer assert the same claim in
     different words for the same target.
 - **Dependencies:** None.
+
+#### GEN-15 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Usability suite asserts content-specific claims instead of an interactive-element count (TFP-059, automated: "replaces the usability interactive-count check with content-specific assertions")
+
+**Expected result:** Per-element checks assert any labeled/placeholder-bearing element's text isn't a generic phrase (`submit`, `click here`, `ok`, …); a combined check asserts up to 5 `isVisible: true` elements from the `form`/`action` categories have a bounding box above the desktop fold (900px). Elements hidden at introspection time are excluded from the sample entirely, not attach-only fallback like GEN-11/GEN-13 — a first pass without that filter flagged test-assist's own hidden `#btnRecord` as a false "not rendered on first paint" failure. Verified live against `test-assist`: `TFUS-002`…`TFUS-007` all pass.
 
 ### TFP-060 — Auto-generate a paired negative assertion for discovered action pairs
 
@@ -299,6 +355,14 @@ human-tester-instinct gap entirely isn't this backlog's claim.
     additive, not required.
 - **Dependencies:** None.
 
+#### GEN-16 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A detected action pair (e.g. Undo/Redo) gets a negative-assertion regression guard, and only a real pair does (TFP-060, automated: "generates a negative-assertion test for a detected action pair, and only for it")
+
+**Expected result:** Two exactly-matching elements from a fixed opposite-word list (undo/redo, save/discard, open/close, …) generate one test asserting a wholly unrelated interaction (a mouse move to a neutral point) doesn't change either element's enabled state or text; an unpaired third element (no matching counterpart) generates nothing. Verified live against `test-assist`: exactly one pair test generated (Undo/Redo), passing, with no spurious pair among Select/Highlight/Text/Circle/Arrow/Rectangle/Pen or Save PNG/Export JSON.
+
 ### TFP-061 — Detect drag-and-drop targets and generate a basic coverage test
 
 - **Phase:** 17 (pre-lock)
@@ -323,6 +387,22 @@ human-tester-instinct gap entirely isn't this backlog's claim.
   - Regenerating against `test-assist` detects its canvas as a drop
     target and produces at least one drag-and-drop test.
 - **Dependencies:** None.
+
+#### GEN-17 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** A detected drop target gets valid- and invalid-content drag-and-drop tests (TFP-061, automated: "generates valid- and invalid-content drag-and-drop tests for a detected drop target")
+
+**Expected result:** A drop target generates a valid-content test (drops a real 1x1 PNG via a dragover+drop DragEvent sequence, asserting an observable DOM change and no uncaught page error) and an invalid-content test (drops a text file, asserting only no crash). Verified live against `test-assist`: both generated tests pass against the real canvas.
+
+#### INT-06 evidence
+
+Moved word for word from [`docs/test-plan/INT.md`](../test-plan/INT.md) by TFP-253; the case's row there links here.
+
+**Test:** Pages report drag-and-drop targets (TFP-061, automated: "introspect reports dragDropTargets as a well-shaped array")
+
+**Expected result:** Every page carries a `dragDropTargets` array with `isVisible`/`isDraggableSource`/`isDropTarget` booleans and a string `tagName`. Detection dispatches a non-bubbling synthetic `dragover` event per candidate and checks `defaultPrevented`, since real drop targets (test-assist's canvas included) attach handlers via `addEventListener`, invisible to an attribute-only scan. Verified live against `test-assist`, separately from this suite: introspecting test-assist detects exactly one drop target, the real `<main class="canvas-wrap">` — a first pass with a bubbling probe also flagged 6 of its own descendants as false positives, since the probe's event bubbled into the ancestor's real listener; disabling bubbling on the probe (not on the generated test's own drop simulation, which still bubbles like a real interaction) fixed it.
 
 ### TFP-062 — Resolve Phase 18's scope gap on local (non-network) failure injection
 

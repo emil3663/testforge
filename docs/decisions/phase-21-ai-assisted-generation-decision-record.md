@@ -170,6 +170,22 @@ backlog before filing, since other work may have claimed numbers since.
 - **Dependencies:** Phase 28 (TFP-083) landing first, so real comparison
   data isn't noise from an unguarded call.
 
+#### GEN-37 evidence
+
+Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-253; the case's row there links here.
+
+**Test:** Generator comparison, template vs. local model, against real targets (TFP-098/099; manual, on-demand: `npm run compare:generators`, see `docs/GENERATOR_COMPARISON.md`; report: `docs/decisions/phase-21-comparison-report.md`)
+
+**Expected result:** One command generates both suites from the same request and introspection data through the real `/api/generate`. It runs both through `/api/run`, where they are persisted like any run, and diffs the clean pair with `/api/runs/diff`. On the comparison fixture it also re-runs each suite with that case's injected defect switched on. **Run live on 2026-09-24 against the fixture (7 areas, 6 injected defects) and https://the-internet.herokuapp.com (5 cases).** Real diffs and real runs; nothing mocked. Findings: the template writes far more tests where it writes any (functional 31 vs. 1) in 1-11 ms, against a local median of 67 s, with 2/16 local generations timing out. For these requests it wrote **no** tests for performance, database or security. Defect detection on the fixture: local 6/6, template 2/6. The fixture's caveat applies (designed alongside the local model's examples). On the real site the template found 5 real SEO gaps to the local model's 2, and each generator had 2-3 false failures. Every dimension is scored or explicitly skipped: coverage is shown both as the run report's figure (title-matched, which scores model-written tests ~0% for functional, accessibility and reliability) and as a title-independent element-reference proxy; pass/fail is compared per area; detection is skipped on the real site because there is no injected defect. Defects fixed on the way: RPT-09 (model-written tests filed as Functional), a fixture defect hidden by form re-submission, and a skipped test counted as a failure in the report.
+
+#### RPT-09 evidence
+
+Moved word for word from [`docs/test-plan/RPT.md`](../test-plan/RPT.md) by TFP-253; the case's row there links here.
+
+**Test:** Model-written tests are reported under their area (TFP-098; unit: `src/lib/report/execution.test.ts`)
+
+**Expected result:** A test's area comes from its `test.describe` title. The template generator's suite names ("Accessibility Coverage", "SEO and Content Coverage", ...) map exactly as before. A describe titled exactly an area's key or label, case-insensitive ("Accessibility", "Performance/Load", "SEO", "Cookies"), now maps to that area too. This is what `SYSTEM_PROMPT` asks models to write. Before this, every model-written test was filed under Functional, which made per-area reports and the Phase 21 comparison meaningless. Only whole titles match: "Login security notes" stays Functional. Found while building the generator comparison.
+
 ### TFP-099 — Build the deterministic-vs-OpenAI comparison report
 
 - **Phase:** 21
