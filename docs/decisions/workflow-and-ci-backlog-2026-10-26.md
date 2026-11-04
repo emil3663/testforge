@@ -1073,8 +1073,8 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-269 - Keep helper comments in generated suites, so the template check sees them (added 2026-11-03)
 
-- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
-  commit; the baseline moves after it in its own commit. The shared-visit
+- **Status:** Done and verified 2026-11-04: `06489fd`; baseline moved in
+  `2d210e8`. The shared-visit
   pass carries each moved declaration's leading comments
   (`withLeadingComments` in `shared-visits.ts`); declarations are still
   compared by their code alone. **Verified** on a Linux clone, the
