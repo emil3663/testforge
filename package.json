@@ -51,5 +51,12 @@
     "knip": "6.44.0",
     "nodemailer": "10.1.7",
     "tailwindcss": "^4"
+  },
+  "//": [
+    "overrides.dompurify (TFP-270, 2026-11-04): Allure's report packages (@allurereport/web-commons 3.22.1, the latest) pin dompurify 3.4.16, which has GHSA-cg2g-xh64-v4q7 (critical), GHSA-mrv2-3pqr-j5jr (high) and GHSA-c6gr-qvv4-5v3f (low); 3.4.17 fixes all three. Remove this override when an Allure release depends on dompurify 3.4.17 or later (check: npm view @allurereport/web-commons dependencies.dompurify).",
+    "It patches the installed copy only: the report pages Allure writes run a DOMPurify 3.4.16 compiled into its plugins' prebuilt bundles (dist/static/report.tar), which only an Allure release replaces. Allure calls it with USE_PROFILES html alone, and the three advisories need SAFE_FOR_TEMPLATES, IN_PLACE hooks or an xhtml PARSER_MEDIA_TYPE."
+  ],
+  "overrides": {
+    "dompurify": "3.4.17"
   }
 }

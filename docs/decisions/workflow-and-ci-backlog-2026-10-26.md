@@ -1117,7 +1117,27 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-270 - Clear the six Dependabot alerts in dev dependencies (added 2026-11-03)
 
-- **Status:** Open.
+- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
+  commit. Only `package.json` and `package-lock.json`: `npm audit fix`
+  without `--force` (brace-expansion 1.1.14 to 1.1.21, and 19 ESLint-tree
+  packages within their ranges) and an `overrides` entry pinning dompurify
+  3.4.17, its reason and removal check in a top-level `"//"` field.
+  **Verified** on a Linux clone against `b091875`'s lockfile: `npm audit`
+  (dev included) went from 27 (19 moderate, 1 high, 7 critical) to 21
+  moderate, only the `glob` and `minimatch <11.0.1` sections left;
+  `npm audit --omit=dev --audit-level=high` 0; the lockfile has dompurify
+  3.4.17 and brace-expansion 1.1.21 (the other two copies 5.0.12). So #142,
+  #139, #138, #56 and #110 are gone; **#144 (minimatch) stays:** fixed only
+  in 11.0.1+, which no released ESLint plugin supports (minimatch 11 has no
+  default export, which `eslint-plugin-import` calls). **Ruling (Emil,
+  2026-11-04):** dismiss #144 in Dependabot as tolerable risk (dev-only lint
+  tooling, globs from our own config; revisit when ESLint's plugins support
+  minimatch 11). **The override is partial by
+  nature:** Allure's report pages still run a DOMPurify 3.4.16 compiled into
+  its prebuilt bundles, which only an Allure release replaces; Allure calls
+  it with none of the options the three advisories need. Claude Code's
+  Allure smoke report (5 of 5, opened, no errors), lint (0 errors) and unit
+  run (725 of 725) weren't re-run here.
 - **Phase:** None — after TFP-269, before Phase 47
 - **Priority:** P3
 - **Suggested labels:** `security`, `dependencies`
