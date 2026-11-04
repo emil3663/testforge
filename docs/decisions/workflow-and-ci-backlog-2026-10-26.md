@@ -533,6 +533,32 @@ another session took any of them.
 
 ### TFP-252 - Nightly-failure triage
 
+- **Status:** Done and verified 2026-11-04, committed with this status
+  (`feat(ci): open, update and close a nightly failure issue (TFP-252)`).
+  An `issue` job in `nightly.yml` (only `issues: write` and
+  `actions: read`; skipped when a run is cancelled; `notify` waits for it)
+  runs `scripts/nightly-email/issue.mjs`, no model: a red night opens
+  "Nightly failing" or comments on the open one, the next green run comments
+  and closes it, and the email links it. A branch's runs use "Nightly failing
+  on <branch>", so a test dispatch can't touch `main`'s issue (Emil,
+  2026-11-04). **Verified:** on a Linux clone, the uncommitted files on
+  `4621e64`: `issue.test.mjs` and `summary.test.mjs` 43 of 43 passed, 0
+  skipped; with HEAD's `notify.mjs`, the three command tests fail
+  (`unknown command: issue`). **Live (Emil's go, 4 dispatches on
+  `tfp-252-check`):** green, then two forced reds (`template-base=435d78f`),
+  then green; [#17](https://github.com/emil3663/testforge/issues/17) opened,
+  commented once, closed (2026-11-04 01:08:54 UTC, 2 comments); read over
+  the REST API: its body has the run link, each job's result and the
+  one-commit range from the green run's `bc54e7d` with the compare link,
+  fenced; it is the only "Nightly failing" issue in the repo; the branch is
+  deleted. The emails' issue lines are Claude Code's reconstructions from
+  the logs, not read from the inbox. Not tested live: the cancelled-run skip.
+  **Gap found live, closed before the commit (Emil, 2026-11-04):** a
+  failure outside the unit job was named only by its result. A red
+  template check now puts its own line in the issue ("N inputs, N
+  identical, N different", or that it can't be read), as the email does;
+  `audit` and `dead-code` have no line of their own. Two unit tests
+  (`issue.test.mjs`) fail without the change; not re-run live.
 - **Phase:** None
 - **Priority:** P2
 - **Suggested labels:** `ci`

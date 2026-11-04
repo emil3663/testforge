@@ -10,6 +10,8 @@
     "scripts/comparison-report.mjs",
     // Spawned by path from check-template-unchanged.mjs.
     "scripts/template-unchanged/generate.mjs",
+    // Run by path, standing in for gh, from nightly-email/issue.test.mjs (TFP-252).
+    "scripts/nightly-email/fake-gh.mjs",
     // Read by the allure CLI, by this name.
     "allurerc.mjs"
   ],

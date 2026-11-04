@@ -2,7 +2,8 @@ name: Nightly
 
 # TFP-210: the unit suite and the template check, too slow for every push (about 12 min of units
 # locally), so nightly and on manual dispatch. The advisory audit (TFP-266) and the dead-code check
-# (TFP-259) run alongside them, and each run emails its summary (TFP-217).
+# (TFP-259) run alongside them, and each run emails its summary (TFP-217). A red night opens or updates one
+# failure issue, and the next green one closes it (TFP-252).
 
 on:
   schedule:
@@ -147,10 +148,50 @@ jobs:
         shell: bash
         run: node scripts/nightly-email/notify.mjs template template.log >> "$GITHUB_OUTPUT"
 
+  # TFP-252: a red night opens one "Nightly failing" issue, or comments on the open one, with the failing tests, the
+  # run and the commits since the last green run; the next green run closes it. No model. Its own job, so the
+  # token that can write issues and the SMTP password are never in one job. A cancelled run isn't a red night: the
+  # job is skipped, and the email says so.
+  issue:
+    needs: [unit, audit, dead-code, template-unchanged]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      actions: read
+    outputs:
+      action: ${{ steps.issue.outputs.action }}
+      url: ${{ steps.issue.outputs.url }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Needs nothing installed: node and gh, which the runner has.
+      - name: Open, update or close the failure issue
+        id: issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEEDS: ${{ toJSON(needs) }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+          WORKFLOW_FILE: nightly.yml
+        run: node scripts/nightly-email/notify.mjs issue >> "$GITHUB_OUTPUT"
+
   # TFP-217: every run says how it went, on its own page and by email, whether its jobs passed, failed or were
   # cancelled. A failed send fails this job, so a missing email shows here. The password reaches only the send step.
+  # TFP-252: it waits for the issue job, so the email links the issue.
   notify:
-    needs: [unit, audit, dead-code, template-unchanged]
+    needs: [unit, audit, dead-code, template-unchanged, issue]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
