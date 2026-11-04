@@ -214,6 +214,7 @@ Statuses:
 | D39 | A new application name (many "testforge" repos exist): repo, package, `testforge-skills` plugin, data folder (`%LOCALAPPDATA%\TestForge`, one-time move), `TESTFORGE_*` settings, test-ID prefixes, `TFP-` prefix, `testforgeapp@gmail.com` | Emil, 2026-10-28; **proposed name "Mr Onion" (Emil, 2026-10-30)** | Wanted. Tagline "Mr Onion: peel back every layer" (Standard the first layer, "Break Me" the core). Ruled out: "Mr Pickles" (Cucumber's "pickles", the Pickles docs tool, a TV brand), "Señor Onion" (could read as a caricature; the ñ breaks technical names), "Allium" (JUXT's spec language with a Claude Code plugin; Alumnium, an AI testing tool), "Tearjerker", "Core Sample", "Shallot" (owner's preference) | **Proposed**, not committed: see "D39, before the name is committed" below | Its own short phase, after the trademark check, before Phase 47's TFP-247 (Emil, 2026-10-30) | The checks below |
 | D40 | An image a later check's own action brings in (a lazy-loaded image it scrolls to) charged to that check, not to the test that loaded the page, so a check the cap starved that way is Not run, not Failed | Phase 39 rulings on `70a0ad3`, item 2 (2026-10-28) | Deferred: a known limitation, [#16](https://github.com/emil3663/testforge/issues/16) | Open | - | TFP-264 |
 | D41 | Runs that really go through a proxy: the browser using it (Playwright's `proxy` option) and the lowercase variable names (`http_proxy`, `https_proxy`, `no_proxy`); TFP-209 only passes the uppercase names through | TFP-209's verification (2026-11-02) | Deferred, decided with Phase 47 (CI runners behind a corporate proxy) | Open | With Phase 47 | Phase 47's record |
+| D42 | A small System One decision model (Jev first; others benchmarked against it) as a fallback when the deterministic rules can't settle which Standard tests apply: page type, a form's purpose, which APG widget a control is, whether a library test fits a component | Emil, 2026-11-04, revisiting Martin's System One pointer from Phase 34 (only the typed-verdict pattern was adopted then, in TFP-119) | Wanted, with the reasoning below; Jev because most people he has spoken to use it, with a benchmark of the others at the time; packaging looked at closer to the time, with its pros and cons | Open | With D2, when its widget recognition is designed | D2; the labelled set below. What it covers is below |
 
 **D39, before the name is committed (2026-10-30).** "Mr Onion" is the
 proposed name. First checks: no software, app, GitHub project or testing tool
@@ -263,6 +264,49 @@ Before anything is renamed:
    redirect.
 6. **Mascot (optional):** a friendly onion character, which also settles the
    faint Tor ("onion") association.
+
+**D42, a decision model for choosing Standard tests (2026-11-04).** Martin
+pointed at System One models (small, fast models for a single yes/no or
+pick-one decision: Jev, Kev, Laya, GLiNER2.5-Decide) during Phase 34. Then,
+only the pattern was adopted: each gate records a typed verdict (TFP-119),
+and the checks behind it stay deterministic code. Emil asked (2026-11-04)
+whether such a model could help decide which Standard tests run against a
+page.
+- **Why the rules stay primary.** Page selection (Phase 40) and test
+  selection are deterministic: address pattern, form signature, the
+  controls found. That gives reproducible results and a readable "tested
+  because, not tested because" in the report, both product requirements. A
+  model's reason is a label and a confidence, not a rule a tester can read,
+  and Phase 47 runs no models in CI (D33).
+- **Where it would help.** The cases where structure doesn't say what a
+  thing is:
+  - page types behind uninformative addresses (hash-routed or
+    query-string apps, as on Toolshop before TFP-165/166);
+  - a form's purpose when its fields don't settle it (a newsletter
+    sign-up against a login, a filter panel against a search);
+  - which APG widget a control is (tabs, combobox, disclosure...), from
+    messy markup, for D2's 30 patterns. This is the likeliest first payoff;
+  - whether a Phase 42 library test applies to a component.
+- **Shape, if it goes ahead:**
+  1. **Fallback only.** The model is asked only when the rules return
+     unknown or a tie.
+  2. **A typed verdict like any gate's.** Model and version, label,
+     confidence, and a threshold below which the page gets the generic set.
+     The report says the choice was model-assisted.
+  3. **Pinned and on the CPU.** The 7B local model already fills the GPU.
+     Pinning keeps reruns identical.
+  4. **Measured before it's trusted.** Against a labelled set (Phase 40's
+     hand-picked benchmark, the Toolshop pages, D2's widgets). It stays out
+     of Standard unless it beats the rules on the cases they got wrong.
+- **Which model (Emil, 2026-11-04).** Jev is the starting choice: most
+  people Emil has spoken to use it. The others are benchmarked against it
+  at the time, on the same labelled set. Their sizes and speeds haven't
+  been checked yet; that is the first step.
+- **Packaging (Emil, 2026-11-04).** Whether the model can be bundled
+  (which would turn D33's "no models in CI" from a blocker into a
+  decision) is looked at closer to the time, with its pros and cons.
+- **Related:** D19's failure triage is the other place a model like this
+  could earn a role; its labelled set overlaps.
 
 ## Phases or items not wrapped up
 
