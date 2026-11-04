@@ -1073,8 +1073,21 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-269 - Keep helper comments in generated suites, so the template check sees them (added 2026-11-03)
 
-- **Status:** Open. TFP-258's gap; `TEST_PLAN.md` GEN-107 stays ⚠️ until
-  this lands.
+- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
+  commit; the baseline moves after it in its own commit. The shared-visit
+  pass carries each moved declaration's leading comments
+  (`withLeadingComments` in `shared-visits.ts`); declarations are still
+  compared by their code alone. **Verified** on a Linux clone, the
+  uncommitted files on `7e2f5ef`: `helper-coverage.test.mjs` and
+  `shared-visits.test.ts` 8 of 8 passed, 0 skipped; with the old
+  `shared-visits.ts`, the new coverage test fails ("20 distinct comment
+  lines reached by no fixed input"). `check:template-unchanged 7e2f5ef`: 172
+  inputs, 98 identical, 74 different; Cowork's own line analysis of all 74:
+  0 lines removed, 0 added lines that aren't comments (no blank lines
+  either), 29 distinct comment lines added (the 20, plus 9 from the
+  Comprehensive security and accessibility helpers that Standard suites had
+  been dropping). GEN-107 ✅ (row 381 characters). Claude Code's full unit
+  run (724 of 724) and `tsc`/ESLint weren't re-run here.
 - **Phase:** None — after TFP-253
 - **Priority:** P2
 - **Suggested labels:** `generate`, `test`

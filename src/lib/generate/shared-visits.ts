@@ -198,7 +198,8 @@ const tfSharedTest = test.extend<{ tfShared: { visit: (path: string) => Promise<
 
 type Frame = { title: string; statement: ts.ExpressionStatement; pinned: boolean };
 type TestEntry = { statement: ts.ExpressionStatement; lineage: Frame[]; call: ts.CallExpression };
-type Declaration = { statement: ts.Statement; frame: Frame; names: string[]; text: string };
+// text: the declaration alone, which two copies are compared by; written: it with the comments before it, as it moves (TFP-269).
+type Declaration = { statement: ts.Statement; frame: Frame; names: string[]; text: string; written: string };
 
 const stringLiteral = (node: ts.Node | undefined) => (node && (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) ? node.text : null);
 const calleeText = (call: ts.CallExpression, file: ts.SourceFile) => call.expression.getText(file);
@@ -269,6 +270,19 @@ export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): s
     const file = ts.createSourceFile("suite.spec.ts", code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
     const tests: TestEntry[] = [];
     const declarations: Declaration[] = [];
+    // TFP-269: the comments written directly before a declaration, with no blank line between, move with it; a note a
+    // blank line above (an area's, or the end of a test) isn't its own. From the start of the first one's line, so the
+    // comments keep their indent to reindent.
+    const withLeadingComments = (statement: ts.Statement) => {
+        let next = statement.getStart(file);
+        let from = next;
+        for (const range of [...(ts.getLeadingCommentRanges(code, statement.getFullStart()) ?? [])].reverse()) {
+            if ((code.slice(range.end, next).match(/\n/g) ?? []).length > 1) break;
+            next = range.pos;
+            from = code.lastIndexOf("\n", range.pos - 1) + 1;
+        }
+        return code.slice(from, statement.getEnd());
+    };
     const describes: Array<{ frame: Frame; statements: readonly ts.Statement[] }> = [];
 
     const walk = (statements: readonly ts.Statement[], lineage: Frame[]) => {
@@ -291,7 +305,7 @@ export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): s
                 continue;
             }
             const names = declarationNames(statement);
-            if (names) declarations.push({ statement, frame, names, text: statement.getText(file) });
+            if (names) declarations.push({ statement, frame, names, text: statement.getText(file), written: withLeadingComments(statement) });
             else frame.pinned = true;
         }
     };
@@ -377,7 +391,13 @@ export function shareReadOnlyVisits(code: string, options: ShareOptions = {}): s
 
     let result = code;
     for (const [from, to] of removals.sort((a, b) => b[0] - a[0])) result = result.slice(0, from) + result.slice(to);
-    const helpers = [SHARED_VISIT_HELPER, ...[...new Map(hoisted.map((declaration) => [declaration.text, declaration.text])).values()].map((text) => reindent(text, ""))].join("\n\n");
+    // Each declaration once, in the place of its first copy, with the comments of the first copy that has any (TFP-269).
+    const once = new Map<string, string>();
+    for (const { text, written } of hoisted) {
+        const kept = once.get(text);
+        if (kept === undefined || (kept === text && written !== text)) once.set(text, written);
+    }
+    const helpers = [SHARED_VISIT_HELPER, ...[...once.values()].map((text) => reindent(text, ""))].join("\n\n");
     const at = result.indexOf(PAGE_VISIT_HELPER);
     result = at >= 0
         ? `${result.slice(0, at + PAGE_VISIT_HELPER.length)}\n\n${helpers}${result.slice(at + PAGE_VISIT_HELPER.length)}`

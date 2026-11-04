@@ -76,6 +76,25 @@ test("TFP-258: every declaration in every helper the generator can write is in a
     assert.deepStrictEqual(unreached, [], `reached by no fixed input:\n${unreached.join("\n")}`);
 });
 
+// TFP-269: the comments before a helper's declarations, which getText() leaves out, must reach an output too, so a
+// change to them can't pass the check unseen.
+test("TFP-269: every comment line before a declaration in every helper is in at least one fixed output", async () => {
+    const sources = await helperSources();
+    const lines = new Set(outputs.flatMap((output) => output.split("\n")));
+    const unreached = new Set();
+    for (const [name, source] of Object.entries(sources)) {
+        const file = ts.createSourceFile("helper.ts", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+        for (const statement of file.statements) {
+            for (const range of ts.getLeadingCommentRanges(source, statement.getFullStart()) ?? []) {
+                for (const line of flat(source.slice(range.pos, range.end)).split("\n")) if (!lines.has(line)) unreached.add(`${name}: ${line}`);
+            }
+        }
+    }
+    // A helper inside another (READ_ONLY_GUARD_HELPER in CONTROL_HELPERS) names its lines under both.
+    const distinct = new Set([...unreached].map((entry) => entry.slice(entry.indexOf(": ") + 2)));
+    assert.deepStrictEqual([...unreached], [], `${distinct.size} distinct comment lines reached by no fixed input:\n${[...unreached].join("\n")}`);
+});
+
 // A tf* helper the generator writes from outside the convention (tfLeakSignature, inline in a test body's
 // template) is still caught by name: whatever string it lives in, some fixed output must declare it.
 test("TFP-258: every tf* helper the generator's source declares is declared in at least one fixed output", () => {
