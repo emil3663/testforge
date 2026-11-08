@@ -1,6 +1,7 @@
 import { join } from "path";
 import { ConfigError, loadConfig, USAGE } from "@/cli/config";
 import { EXIT_COULD_NOT_RUN, installExitHandlers } from "@/cli/exit";
+import { setting } from "@/lib/settings";
 
 /**
  * Phase 47 (TFP-245): `testforge run ...`. Started by bin/testforge.mjs from TestForge's own folder (the run
@@ -26,7 +27,7 @@ async function main(argv: string[]): Promise<number> {
 
     let config;
     try {
-        config = await loadConfig(rest, process.env.TESTFORGE_CLI_CWD || process.cwd());
+        config = await loadConfig(rest, setting("CLI_CWD") || process.cwd());
     } catch (error) {
         if (error instanceof ConfigError) {
             console.error(`testforge: invalid configuration: ${error.message}`);

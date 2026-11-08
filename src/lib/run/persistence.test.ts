@@ -19,6 +19,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { after, before, test } from "node:test";
+import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-persistence-test-"));
@@ -322,7 +323,7 @@ test("listRunRecords includes persisted runs", async () => {
 });
 
 test("TFP-267: a folder in runs/ that isn't a run's (a copy, a backup) is passed over, not the end of the list", async () => {
-    const root = process.env.TESTFORGE_RUNS_ROOT!;
+    const root = setting("RUNS_ROOT")!;
     await mkdir(root, { recursive: true });
     const copy = join(root, `${randomUUID()} - Copy`);
     await mkdir(copy);
@@ -451,13 +452,13 @@ test("sweep (decision table): only a passing re-test of the same title, in the s
 test("record writes are atomic: a write that fails leaves the previous run.json whole, not truncated", async () => {
     const job = await makeJob();
     await persistRunJob(job as never);
-    const before = await readFile(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json"), "utf8");
+    const before = await readFile(join(setting("RUNS_ROOT")!, job.id, "run.json"), "utf8");
 
     // Something already sits where the temporary file goes, so the write fails before it can replace run.json.
-    await mkdir(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json.tmp"));
+    await mkdir(join(setting("RUNS_ROOT")!, job.id, "run.json.tmp"));
     await assert.rejects(setRunPinned(job.id, true));
 
-    const after = await readFile(join(process.env.TESTFORGE_RUNS_ROOT!, job.id, "run.json"), "utf8");
+    const after = await readFile(join(setting("RUNS_ROOT")!, job.id, "run.json"), "utf8");
     assert.equal(after, before, "run.json is exactly what it was");
     const record = await loadRunRecord(job.id);
     mustExist(record, "the run still loads");

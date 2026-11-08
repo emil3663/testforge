@@ -30,6 +30,7 @@ import { release } from "node:os";
 import { join } from "node:path";
 
 const { generateLocalSuite, withLocalRules, ollamaTimeoutMs } = await import("../src/lib/generate/local-generation.ts");
+const { setting } = await import("../src/lib/settings.ts");
 const { buildGapFillMessages } = await import("../src/lib/generate/messages.ts");
 const { scoreSuite, withBaseUrl } = await import("../src/lib/generate/benchmark-quality.ts");
 const { normalizeBaseUrl, normalizeContentProfile, normalizeContentRules, normalizeSelectedPractices, normalizeTestAuditMode } = await import("../src/lib/generate/normalize.ts");
@@ -89,7 +90,7 @@ if (config.base && !numCtx && !rerunRelative) {
 }
 const calls = Number(arg("calls", "3"));
 const server = arg("server", "http://127.0.0.1:3100");
-const ollamaHost = (process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || "http://localhost:11434/v1").replace(/\/v1\/?$/, "");
+const ollamaHost = (setting("OLLAMA_BASE_URL")?.trim() || "http://localhost:11434/v1").replace(/\/v1\/?$/, "");
 const date = arg("date", new Date().toISOString().slice(0, 10));
 const root = join("benchmarks", date);
 const outDir = join(root, configId);

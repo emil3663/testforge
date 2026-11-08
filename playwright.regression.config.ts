@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { mkdtempSync } from "node:fs";
 import os from "node:os";
 import { join } from "node:path";
+import { setting } from "./src/lib/settings";
 import { AUTH_FIXTURE_ENV } from "./tests/regression/auth-fixture";
 
 export default defineConfig({
@@ -47,6 +48,6 @@ export default defineConfig({
         // A credential only ever reaches TestForge as an environment variable.
         // Phase 42 (TFP-190): site suites are saved in TestForge's data folder; the
         // server under test gets a temporary one outside the repo, never the real one.
-        env: { ...AUTH_FIXTURE_ENV, TESTFORGE_DATA_DIR: process.env.TESTFORGE_DATA_DIR || mkdtempSync(join(os.tmpdir(), "testforge-regression-data-")) },
+        env: { ...AUTH_FIXTURE_ENV, TESTFORGE_DATA_DIR: setting("DATA_DIR") || mkdtempSync(join(os.tmpdir(), "testforge-regression-data-")) },
     },
 });

@@ -18,6 +18,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
+import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-runs-route-test-"));
@@ -31,7 +32,7 @@ after(() => {
 });
 
 before(async () => {
-    await mkdir(process.env.TESTFORGE_RUNS_ROOT!, { recursive: true });
+    await mkdir(setting("RUNS_ROOT")!, { recursive: true });
 });
 
 function patchRequest(body: unknown) {

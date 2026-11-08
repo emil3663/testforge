@@ -1,5 +1,6 @@
 import { defineConfig } from "@playwright/test";
 import { RUN_CONTEXT_OPTIONS } from "./src/lib/run/browser-context";
+import { setting } from "./src/lib/settings";
 
 export default defineConfig({
   testDir: ".playwright-runs",
@@ -11,7 +12,7 @@ export default defineConfig({
     // TFP-092: set by the executor to this run's own login state when the run
     // asked for a login, otherwise removed from the environment - so every
     // test in an authenticated run starts signed in, and nothing else does.
-    storageState: process.env.TESTFORGE_STORAGE_STATE || undefined,
+    storageState: setting("STORAGE_STATE") || undefined,
     trace: "retain-on-failure",
     video: "retain-on-failure",
     screenshot: "only-on-failure",

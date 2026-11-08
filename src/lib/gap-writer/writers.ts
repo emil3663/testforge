@@ -6,6 +6,7 @@ import { join } from "path";
 import OpenAI from "openai";
 import { DEFAULT_OLLAMA_BASE_URL, OLLAMA_PLACEHOLDER_API_KEY, resolveOllamaModel, stripCodeFence } from "@/lib/generate/ollama";
 import { ollamaTimeoutMs } from "@/lib/generate/local-generation";
+import { setting } from "@/lib/settings";
 
 /**
  * Phase 42 (TFP-194, Decision 6): the writers of gap tests. Each writes the
@@ -112,7 +113,7 @@ function body(text: string): string {
 }
 
 function claudeCommand(): string[] {
-    const configured = process.env.TESTFORGE_CLAUDE_COMMAND?.trim();
+    const configured = setting("CLAUDE_COMMAND")?.trim();
     if (configured) {
         const parsed = JSON.parse(configured) as unknown;
         if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((part) => typeof part === "string")) return parsed as string[];
@@ -202,7 +203,7 @@ export function claudeCodeWriter(): GapWriter {
 
 export function localModelWriter(configuredModel: string): GapWriter {
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
-    const client = new OpenAI({ apiKey: OLLAMA_PLACEHOLDER_API_KEY, baseURL: process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || DEFAULT_OLLAMA_BASE_URL, maxRetries: 0 });
+    const client = new OpenAI({ apiKey: OLLAMA_PLACEHOLDER_API_KEY, baseURL: setting("OLLAMA_BASE_URL")?.trim() || DEFAULT_OLLAMA_BASE_URL, maxRetries: 0 });
     let model: string | null = null;
     const ask = async (content: string): Promise<GapWriterReply> => {
         const signal = AbortSignal.timeout(ollamaTimeoutMs());

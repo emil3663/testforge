@@ -1,5 +1,6 @@
 import { homedir } from "os";
 import { join, resolve } from "path";
+import { setting } from "@/lib/settings";
 
 /**
  * Phase 42 (TFP-190, Decision 4; folder: owner decision, 2026-10-13):
@@ -16,7 +17,8 @@ import { join, resolve } from "path";
  * Read on every call, not once at load, so a test can point it elsewhere.
  */
 export function dataDir(env: Record<string, string | undefined> = process.env, platform: NodeJS.Platform = process.platform, home: string = homedir()): string {
-    if (env.TESTFORGE_DATA_DIR?.trim()) return resolve(env.TESTFORGE_DATA_DIR.trim());
+    const configured = setting("DATA_DIR", env)?.trim();
+    if (configured) return resolve(configured);
     if (platform === "win32") return join(env.LOCALAPPDATA?.trim() || join(home, "AppData", "Local"), "TestForge");
     if (platform === "darwin") return join(home, "Library", "Application Support", "TestForge");
     return join(env.XDG_DATA_HOME?.trim() || join(home, ".local", "share"), "testforge");

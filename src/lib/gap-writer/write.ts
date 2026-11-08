@@ -9,6 +9,7 @@ import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
 import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type SiteSuiteManifest, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
+import { setting } from "@/lib/settings";
 import { composeGapTest, gapTestTitle, runGapTest, type GapRunOutcome } from "./gap-run";
 import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
 
@@ -72,7 +73,7 @@ export function doneGaps(manifest: SiteSuiteManifest): Set<string> {
 }
 
 export function gapLimit(): number {
-    const configured = Number(process.env.TESTFORGE_GAP_LIMIT);
+    const configured = Number(setting("GAP_LIMIT"));
     return Number.isInteger(configured) && configured >= 0 ? configured : DEFAULT_GAP_LIMIT;
 }
 

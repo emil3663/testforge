@@ -7,6 +7,7 @@ import type { LoginConfig } from "@/lib/run/auth";
 import type { RunJob, RunResultPayload } from "@/lib/run/jobs";
 import { isComprehensive, type RunMode } from "@/lib/comprehensive/run-mode";
 import { removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "@/lib/run/run-folders";
+import { setting } from "@/lib/settings";
 
 export type RunRetention = "full" | "archived";
 
@@ -74,8 +75,9 @@ export interface RunVerdict {
 // Overridable so tests never read or write the real runs/ directory a live
 // dev server is using. Default is today's exact behavior - unset, this
 // resolves identically to before the override existed.
-export const RUNS_ROOT = process.env.TESTFORGE_RUNS_ROOT
-    ? resolve(process.env.TESTFORGE_RUNS_ROOT)
+const CONFIGURED_RUNS_ROOT = setting("RUNS_ROOT");
+export const RUNS_ROOT = CONFIGURED_RUNS_ROOT
+    ? resolve(CONFIGURED_RUNS_ROOT)
     : join(process.cwd(), "runs");
 
 const RUN_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

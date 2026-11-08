@@ -2,6 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ProducedBy } from "@/lib/report/produced-by-types";
+import { setting } from "./settings";
 
 /**
  * TFP-257: which TestForge this is. package.json's `version` is the one source of truth, and the commit comes from git,
@@ -14,8 +15,9 @@ import type { ProducedBy } from "@/lib/report/produced-by-types";
  * than failing a run, and a copy without a .git of its own doesn't report the commit of a repo it sits inside.
  */
 export function currentVersion(root = process.cwd()): ProducedBy {
-    if (process.env.TESTFORGE_BUILD_VERSION) {
-        return { version: process.env.TESTFORGE_BUILD_VERSION, commit: process.env.TESTFORGE_BUILD_COMMIT || null };
+    const builtVersion = setting("BUILD_VERSION");
+    if (builtVersion) {
+        return { version: builtVersion, commit: setting("BUILD_COMMIT") || null };
     }
     return { version: packageVersion(root), commit: gitCommit(root) };
 }

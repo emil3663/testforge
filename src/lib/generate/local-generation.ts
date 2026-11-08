@@ -3,6 +3,7 @@ import { countGate, type GateVerdict } from "./gates";
 import { localRulesFor } from "./local-rules";
 import type { BestPracticeArea } from "./mock/types";
 import { DEFAULT_OLLAMA_BASE_URL, OLLAMA_PLACEHOLDER_API_KEY, resolveOllamaModel, stripCodeFence } from "./ollama";
+import { setting } from "@/lib/settings";
 import { findDuplicateTests, findPromisesToPlainMatchers, findTypeErrors, findUnawaitedAssertions } from "./validate";
 
 // The local (Ollama) model call and every gate its output must pass - moved
@@ -40,7 +41,7 @@ export type LocalSuiteResult =
 export const DEFAULT_OLLAMA_TIMEOUT_MS = 180_000;
 
 export function ollamaTimeoutMs(): number {
-    const raw = Number(process.env.TESTFORGE_OLLAMA_TIMEOUT_MS);
+    const raw = Number(setting("OLLAMA_TIMEOUT_MS"));
     return Number.isFinite(raw) && raw > 0 ? raw : DEFAULT_OLLAMA_TIMEOUT_MS;
 }
 
@@ -74,7 +75,7 @@ export async function generateLocalSuite(
     try {
         const client = new OpenAI({
             apiKey: OLLAMA_PLACEHOLDER_API_KEY,
-            baseURL: process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || DEFAULT_OLLAMA_BASE_URL,
+            baseURL: setting("OLLAMA_BASE_URL")?.trim() || DEFAULT_OLLAMA_BASE_URL,
             maxRetries: 0,
         });
 
