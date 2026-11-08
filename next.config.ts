@@ -46,7 +46,7 @@ const built = currentVersion();
 
 const nextConfig: NextConfig = {
   ...(process.env.NODE_ENV === "production"
-    ? { env: { TESTFORGE_BUILD_VERSION: built.version, TESTFORGE_BUILD_COMMIT: built.commit ?? "" } }
+    ? { env: { MRONION_BUILD_VERSION: built.version, MRONION_BUILD_COMMIT: built.commit ?? "" } }
     : {}),
   async headers() {
     return [

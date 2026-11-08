@@ -9,7 +9,7 @@ import { setting } from "./settings";
  * so a saved report answers "which TestForge found this?" by itself. Server only: the report's HTML is also built in
  * the browser, so a run carries this as data (producedBy), stamped when it starts.
  *
- * A built server says what it was built from (next.config.ts sets TESTFORGE_BUILD_* at `next build`): a pull under a
+ * A built server says what it was built from (next.config.ts sets MRONION_BUILD_* at `next build`): a pull under a
  * running `next start` changes HEAD, not the code running. Otherwise it's read on each call, so a dev server stays
  * right after a pull. A copy with no package.json or no git says so (the version "unknown", the commit null) rather
  * than failing a run, and a copy without a .git of its own doesn't report the commit of a repo it sits inside.

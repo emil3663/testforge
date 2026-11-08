@@ -17,8 +17,8 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-version-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const { currentVersion } = await import("./version.ts");
@@ -56,13 +56,13 @@ test("the footer names the run's own stamp, without a commit where there's none,
 
 test("a built server says what it was built from, whatever HEAD is now", (t) => {
     t.after(() => {
-        delete process.env.TESTFORGE_BUILD_VERSION;
-        delete process.env.TESTFORGE_BUILD_COMMIT;
+        delete process.env.MRONION_BUILD_VERSION;
+        delete process.env.MRONION_BUILD_COMMIT;
     });
-    process.env.TESTFORGE_BUILD_VERSION = "9.9.9";
-    process.env.TESTFORGE_BUILD_COMMIT = "abc1234";
+    process.env.MRONION_BUILD_VERSION = "9.9.9";
+    process.env.MRONION_BUILD_COMMIT = "abc1234";
     assert.deepEqual(currentVersion(), { version: "9.9.9", commit: "abc1234" });
-    process.env.TESTFORGE_BUILD_COMMIT = "";
+    process.env.MRONION_BUILD_COMMIT = "";
     assert.deepEqual(currentVersion(), { version: "9.9.9", commit: null });
 });
 

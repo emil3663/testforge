@@ -21,7 +21,7 @@ import { after, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-jobs-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { createEmptyProgress, finalizeRunJob } = await import("./jobs.ts");
 // Every module is loaded here, before the first test() is registered: on

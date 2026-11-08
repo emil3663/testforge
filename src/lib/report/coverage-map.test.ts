@@ -26,8 +26,8 @@ import { after, before, test } from "node:test";
 import type { ContentProfile } from "../generate/mock/types.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-coverage-map-"));
-const savedDataDir = process.env.TESTFORGE_DATA_DIR;
-process.env.TESTFORGE_DATA_DIR = scratch;
+const savedDataDir = process.env.MRONION_DATA_DIR;
+process.env.MRONION_DATA_DIR = scratch;
 
 const { POST } = await import("../../app/api/generate/route.ts");
 const { NextRequest } = await import("next/server");
@@ -64,8 +64,8 @@ before(async () => {
 });
 
 after(() => {
-    if (savedDataDir === undefined) delete process.env.TESTFORGE_DATA_DIR;
-    else process.env.TESTFORGE_DATA_DIR = savedDataDir;
+    if (savedDataDir === undefined) delete process.env.MRONION_DATA_DIR;
+    else process.env.MRONION_DATA_DIR = savedDataDir;
     rmSync(scratch, { recursive: true, force: true });
 });
 

@@ -23,8 +23,8 @@ import { after, test } from "node:test";
 import { setting } from "@/lib/settings";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-run-folders-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { startRunJob } = await import("./executor.ts");
 const { runJobs } = await import("./jobs.ts");

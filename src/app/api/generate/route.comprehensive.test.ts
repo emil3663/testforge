@@ -15,7 +15,7 @@ import { after, test } from "node:test";
 import { chatBodies, completion, fakeBaseUrl, fakeOpenAi, installFakeServer, json } from "./route-test-helpers.ts";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-comprehensive-route-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 after(() => rmSync(scratchRoot, { recursive: true, force: true }));
 
 const { POST: generate } = await import("./route.ts");
@@ -62,8 +62,8 @@ const SCENARIO = [
 ].join("\n");
 
 function useOllama() {
-    process.env.TESTFORGE_OLLAMA_MODEL = LOCAL_MODEL;
-    process.env.TESTFORGE_OLLAMA_BASE_URL = fakeBaseUrl();
+    process.env.MRONION_OLLAMA_MODEL = LOCAL_MODEL;
+    process.env.MRONION_OLLAMA_BASE_URL = fakeBaseUrl();
 }
 
 async function comprehensive(area: string) {

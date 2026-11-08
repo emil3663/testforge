@@ -48,7 +48,7 @@ export interface CliConfig {
 const PRACTICES = BEST_PRACTICE_OPTIONS.map((option) => option.id) as BestPracticeArea[];
 const DEFAULT_SERVER_TIMEOUT_S = 120;
 
-export const USAGE = `Usage: testforge run --url <base URL> [options]
+export const USAGE = `Usage: mr-onion run --url <base URL> [options]
 
   --url <url>              the site to test (required)
   --mode <mode>            standard (default) or comprehensive
@@ -59,7 +59,7 @@ export const USAGE = `Usage: testforge run --url <base URL> [options]
   --description <text>     what to test, as typed in the UI
   --pages </a,/b,...>      test these pages instead of crawling
   --interactive            also run the interactive (journey) tests
-  --out <dir>              where the reports go (default ./testforge-out)
+  --out <dir>              where the reports go (default ./mr-onion-out)
   --data-dir <dir>         TestForge's data folder, runs included (restore and save it between jobs)
   --report-only            report failures, exit 0 unless the run couldn't run
   --baseline <run.json>    fail only on failures this earlier run didn't have; "latest" for the
@@ -123,7 +123,7 @@ export function parseFlags(argv: string[]): { raw: Raw; configFile: string | nul
             const { field, kind } = FLAGS[flag];
             raw[field] = kind === "boolean" ? true : kind === "number" ? numberFrom(flag, value()) : kind === "list" ? value().split(",").map((item) => item.trim()).filter(Boolean) : value();
         } else {
-            throw new ConfigError(flag, "is not an option of testforge run");
+            throw new ConfigError(flag, "is not an option of mr-onion run");
         }
     }
     if (servers.length > 0) raw.servers = servers;
@@ -242,7 +242,7 @@ export function buildConfig(fileRaw: Raw, flagRaw: Raw, cwd: string): CliConfig 
         pages: raw.pages === undefined ? [] : stringList("pages", raw.pages).map((page) => (page.startsWith("/") ? page : `/${page}`)),
         interactive: optionalBoolean("interactive", raw.interactive),
         login,
-        out: resolve(cwd, optionalString("out", raw.out, "testforge-out")),
+        out: resolve(cwd, optionalString("out", raw.out, "mr-onion-out")),
         dataDir: dataDir === null ? null : resolve(cwd, dataDir),
         reportOnly: optionalBoolean("reportOnly", raw.reportOnly),
         baseline: baseline === null || baseline === "latest" ? baseline : resolve(cwd, baseline),

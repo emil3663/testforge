@@ -39,7 +39,7 @@ const PATHS = ["types", "types/product/101", "types/product/102", "types/product
 const ACCOUNT = "/types/account/:slug";
 
 let fixture: Awaited<ReturnType<typeof startRecordedFixture>>;
-const savedDataDir = process.env.TESTFORGE_DATA_DIR;
+const savedDataDir = process.env.MRONION_DATA_DIR;
 const folders: string[] = [];
 const repoStatus = () => execFileSync("git", ["status", "--porcelain", "--untracked-files=all"], { encoding: "utf8" });
 let statusBefore = "";
@@ -52,8 +52,8 @@ before(async () => {
 
 after(async () => {
     await fixture?.close();
-    if (savedDataDir === undefined) delete process.env.TESTFORGE_DATA_DIR;
-    else process.env.TESTFORGE_DATA_DIR = savedDataDir;
+    if (savedDataDir === undefined) delete process.env.MRONION_DATA_DIR;
+    else process.env.MRONION_DATA_DIR = savedDataDir;
     for (const folder of folders) rmSync(folder, { recursive: true, force: true });
 });
 
@@ -61,7 +61,7 @@ after(async () => {
 function freshDataDir() {
     const folder = mkdtempSync(join(tmpdir(), "testforge-data-"));
     folders.push(folder);
-    process.env.TESTFORGE_DATA_DIR = folder;
+    process.env.MRONION_DATA_DIR = folder;
     return folder;
 }
 
@@ -176,7 +176,7 @@ test("nothing is written inside the repo (TFP-190)", { skip: needsChromium }, as
 
 test("the data folder: TESTFORGE_DATA_DIR, else where the platform keeps app data (equivalence partitioning)", () => {
     const home = "/home/emil";
-    assert.equal(dataDir({ TESTFORGE_DATA_DIR: " /srv/tf-data " }, "win32", home), resolve("/srv/tf-data"));
+    assert.equal(dataDir({ MRONION_DATA_DIR: " /srv/tf-data " }, "win32", home), resolve("/srv/tf-data"));
     assert.equal(dataDir({ LOCALAPPDATA: "C:\\Users\\Emil\\AppData\\Local" }, "win32", home), join("C:\\Users\\Emil\\AppData\\Local", "TestForge"));
     assert.equal(dataDir({}, "win32", home), join(home, "AppData", "Local", "TestForge"));
     assert.equal(dataDir({}, "darwin", home), join(home, "Library", "Application Support", "TestForge"));

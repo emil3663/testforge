@@ -36,8 +36,8 @@ import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-host-limits-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { hostLimitsFor, machineWorkerLimit, setMachineLimitForTests, siteDomainOf, countsAgainstCap } = await import("./host-limits.ts");
 const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER, REQUEST_CAP_QUEUED_HEADER } = await import("./request-cap.ts");

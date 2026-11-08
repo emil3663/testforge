@@ -111,21 +111,21 @@ test("for the same page data the CLI's request is the UI's, and its suite the ro
     assert.deepEqual(cliRequest, uiBody);
 
     // Each side in a data folder of its own: a site suite saved by one would be reused by the other.
-    const saved = { dataDir: process.env.TESTFORGE_DATA_DIR, key: process.env.OPENAI_API_KEY, local: process.env.TESTFORGE_OLLAMA_MODEL };
+    const saved = { dataDir: process.env.MRONION_DATA_DIR, key: process.env.OPENAI_API_KEY, local: process.env.MRONION_OLLAMA_MODEL };
     delete process.env.OPENAI_API_KEY;
-    delete process.env.TESTFORGE_OLLAMA_MODEL;
+    delete process.env.MRONION_OLLAMA_MODEL;
     const [uiData, cliData] = [await mkdtemp(join(tmpdir(), "tfp245-ui-")), await mkdtemp(join(tmpdir(), "tfp245-cli-"))];
     t.after(async () => {
-        for (const [key, value] of [["TESTFORGE_DATA_DIR", saved.dataDir], ["OPENAI_API_KEY", saved.key], ["TESTFORGE_OLLAMA_MODEL", saved.local]] as const) {
+        for (const [key, value] of [["MRONION_DATA_DIR", saved.dataDir], ["OPENAI_API_KEY", saved.key], ["MRONION_OLLAMA_MODEL", saved.local]] as const) {
             if (value === undefined) delete process.env[key];
             else process.env[key] = value;
         }
         await Promise.all([uiData, cliData].map((dir) => rm(dir, { recursive: true, force: true })));
     });
 
-    process.env.TESTFORGE_DATA_DIR = uiData;
+    process.env.MRONION_DATA_DIR = uiData;
     const ui = await (await POST(new NextRequest(new URL("http://localhost/api/generate"), { method: "POST", body: JSON.stringify(uiBody), headers: { "content-type": "application/json" } }))).json();
-    process.env.TESTFORGE_DATA_DIR = cliData;
+    process.env.MRONION_DATA_DIR = cliData;
     const cli = await generateSuite(cliRequest, { models: false });
 
     assert.ok(cli.ok);

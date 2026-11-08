@@ -33,9 +33,9 @@ const LOCAL_MODEL = "testforge-qwen7b";
 const CATALOG_ID = `${LOCAL_MODEL}:latest`;
 
 function useOllama(opts: { timeoutMs?: number; baseUrl?: string } = {}) {
-    process.env.TESTFORGE_OLLAMA_MODEL = LOCAL_MODEL;
-    process.env.TESTFORGE_OLLAMA_BASE_URL = opts.baseUrl ?? fakeBaseUrl();
-    if (opts.timeoutMs) process.env.TESTFORGE_OLLAMA_TIMEOUT_MS = String(opts.timeoutMs);
+    process.env.MRONION_OLLAMA_MODEL = LOCAL_MODEL;
+    process.env.MRONION_OLLAMA_BASE_URL = opts.baseUrl ?? fakeBaseUrl();
+    if (opts.timeoutMs) process.env.MRONION_OLLAMA_TIMEOUT_MS = String(opts.timeoutMs);
 }
 
 /** A base URL nothing is listening on: bind an ephemeral port, then release it. */
@@ -60,10 +60,10 @@ const GAP = ["database"];
 
 /** The template-only suite for the same request (model variable unset). */
 async function templateFor(practices: string[]) {
-    const saved = process.env.TESTFORGE_OLLAMA_MODEL;
-    delete process.env.TESTFORGE_OLLAMA_MODEL;
+    const saved = process.env.MRONION_OLLAMA_MODEL;
+    delete process.env.MRONION_OLLAMA_MODEL;
     const body = await (await POST(request(practices))).json();
-    if (saved !== undefined) process.env.TESTFORGE_OLLAMA_MODEL = saved;
+    if (saved !== undefined) process.env.MRONION_OLLAMA_MODEL = saved;
     return body.code as string;
 }
 
@@ -247,7 +247,7 @@ test("Option B: a hung local model times out on its own budget - template kept, 
     fakeOpenAi([CATALOG_ID], () => {
         /* never responds */
     });
-    process.env.TESTFORGE_OPENAI_TIMEOUT_MS = "60000"; // must not apply to the local path
+    process.env.MRONION_OPENAI_TIMEOUT_MS = "60000"; // must not apply to the local path
     useOllama({ timeoutMs: 300 });
     const started = Date.now();
     const body = await expectFallback("timeout");

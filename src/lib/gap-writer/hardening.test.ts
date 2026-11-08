@@ -24,13 +24,13 @@ import { after, test } from "node:test";
 import type { RunReport } from "../report/types.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-hardening-"));
-const PROBES = { OPENAI_API_KEY: "sk-testforge-probe", ANTHROPIC_API_KEY: "sk-ant-testforge-probe", GITHUB_TOKEN: "ghp_testforge_probe", TESTFORGE_OLLAMA_MODEL: "probe-model", TESTFORGE_PROBE_SECRET: "probe" };
-const savedEnv = Object.fromEntries(["TESTFORGE_CLAUDE_COMMAND", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "TESTFORGE_RUNS_ROOT", "TESTFORGE_DATA_DIR", ...Object.keys(PROBES)].map((key) => [key, process.env[key]]));
+const PROBES = { OPENAI_API_KEY: "sk-testforge-probe", ANTHROPIC_API_KEY: "sk-ant-testforge-probe", GITHUB_TOKEN: "ghp_testforge_probe", TESTFORGE_OLLAMA_MODEL: "probe-model", TESTFORGE_PROBE_SECRET: "probe", MRONION_OLLAMA_MODEL: "probe-model", MRONION_PROBE_SECRET: "probe" };
+const savedEnv = Object.fromEntries(["MRONION_CLAUDE_COMMAND", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_RUNS_ROOT", "MRONION_DATA_DIR", ...Object.keys(PROBES)].map((key) => [key, process.env[key]]));
 const FAKE = join(process.cwd(), "src/test-support/fake-claude.mjs");
-process.env.TESTFORGE_CLAUDE_COMMAND = JSON.stringify([process.execPath, FAKE]);
+process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([process.execPath, FAKE]);
 process.env.FAKE_CLAUDE_MODE = "good";
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { claudeCodeWriter, gapPrompt, revisionPrompt, CLAUDE_NO_TOOLS } = await import("./writers.ts");
 const { forbiddenConstruct } = await import("./code-check.ts");
@@ -87,12 +87,12 @@ test("the call through the Windows shell (a .cmd claude): the empty --tools valu
     freshLog();
     const shim = join(scratch, "claude shim.cmd");
     writeFileSync(shim, `@"${process.execPath}" "${FAKE}" %*\r\n`);
-    process.env.TESTFORGE_CLAUDE_COMMAND = JSON.stringify([shim]);
+    process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([shim]);
     const writer = claudeCodeWriter();
     try {
         await writer.write(TARGET, "http://127.0.0.1:9");
     } finally {
-        process.env.TESTFORGE_CLAUDE_COMMAND = JSON.stringify([process.execPath, FAKE]);
+        process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([process.execPath, FAKE]);
         await writer.dispose!();
     }
     const [call] = calls();
@@ -176,7 +176,7 @@ test("the environment: a gap test reads no key, token or TestForge setting (TFP-
 test('the environment', async () => {
   for (const name of ${JSON.stringify(Object.keys(PROBES))}) expect(process.env[name], name).toBeUndefined();
   expect(Object.keys(process.env).filter((name) => /KEY|TOKEN|SECRET|PASSWORD/i.test(name))).toEqual([]);
-  expect(Object.keys(process.env).filter((name) => name.startsWith('TESTFORGE_') && name !== 'TESTFORGE_INTERACTIVE')).toEqual([]);
+  expect(Object.keys(process.env).filter((name) => /^(MRONION|TESTFORGE)_/.test(name) && !name.endsWith('_INTERACTIVE'))).toEqual([]);
 });
 `);
         assert.deepEqual(outcome, { verdict: "passed" });
@@ -196,6 +196,13 @@ test('the environment', async () => {
   for (const name of ${JSON.stringify(Object.keys(PROBES))}) expect(process.env[name], name).toBeUndefined();
   expect(process.env.TESTFORGE_INTERACTIVE).toBe('0');
   expect(process.env.PATH ?? process.env.Path).toBeTruthy();
+  // Phase 48 Decision 8 (TFP-276): every setting the run passes on arrives under both names, with the same value.
+  expect(process.env.MRONION_INTERACTIVE).toBe('0');
+  expect(process.env.MRONION_TIMING_FILE).toBeTruthy();
+  for (const name of Object.keys(process.env).filter((name) => /^(MRONION|TESTFORGE)_/.test(name))) {
+    const twin = name.startsWith('MRONION_') ? 'TESTFORGE_' + name.slice(8) : 'MRONION_' + name.slice(10);
+    expect(process.env[twin], twin).toBe(process.env[name]);
+  }
 });
 `;
         const response = await runRoute.POST(new NextRequest(new URL("http://localhost/api/run"), { method: "POST", body: JSON.stringify({ code, selectedPractices: ["functional"], description: "env" }), headers: { "content-type": "application/json" } }));
@@ -213,8 +220,9 @@ test('the environment', async () => {
 });
 
 test("runEnv: only the names a run needs, matched without case, then the run's own (TFP-202)", () => {
-    const env = runEnv({ TESTFORGE_INTERACTIVE: "0" }, { Path: "C:\\bin", SystemRoot: "C:\\Windows", OPENAI_API_KEY: "k", TESTFORGE_DATA_DIR: "d", NODE_OPTIONS: "--require x" } as unknown as NodeJS.ProcessEnv);
-    assert.deepEqual(env, { Path: "C:\\bin", SystemRoot: "C:\\Windows", TESTFORGE_INTERACTIVE: "0" });
+    const env = runEnv({ TESTFORGE_INTERACTIVE: "0" }, { Path: "C:\\bin", SystemRoot: "C:\\Windows", OPENAI_API_KEY: "k", TESTFORGE_DATA_DIR: "d", MRONION_DATA_DIR: "d", NODE_OPTIONS: "--require x" } as unknown as NodeJS.ProcessEnv);
+    // Phase 48 Decision 8: the run's own settings under both names; neither name of the server's own is inherited.
+    assert.deepEqual(env, { Path: "C:\\bin", SystemRoot: "C:\\Windows", TESTFORGE_INTERACTIVE: "0", MRONION_INTERACTIVE: "0" });
 });
 
 test("runEnv: the proxy settings pass on when set, matched without case, and nothing else new (TFP-209)", () => {

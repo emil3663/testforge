@@ -16,6 +16,7 @@ import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFo
 import { removeOrphanedArtifactFolders } from "@/lib/run/persistence";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
+import { underBothNames } from "@/lib/settings";
 import type { RawTiming } from "@/lib/run/timing";
 import { STANDARD_RUN } from "@/lib/comprehensive/run-mode";
 import { splitSuite } from "@/lib/run/split";
@@ -34,7 +35,7 @@ const RUN_TIMEOUT_GRACE_MS = 15_000;
 export function buildProgressReporterSource() {
     return `class TestForgeProgressReporter {
   emit(event) {
-    process.stdout.write('TESTFORGE_PROGRESS ' + JSON.stringify(event) + '\\n');
+    process.stdout.write('MRONION_PROGRESS ' + JSON.stringify(event) + '\\n');
   }
 
   onBegin(config, suite) {
@@ -270,7 +271,7 @@ export async function startRunJob(
         ],
         {
             cwd: process.cwd(),
-            env: { ...childEnv, PLAYWRIGHT_JSON_OUTPUT_FILE: pass.report, [TIMING_FILE_ENV_VAR]: pass.timing },
+            env: { ...childEnv, ...underBothNames({ PLAYWRIGHT_JSON_OUTPUT_FILE: pass.report, [TIMING_FILE_ENV_VAR]: pass.timing }) },
             windowsHide: true,
             stdio: ["ignore", "pipe", "pipe"],
         }

@@ -4,7 +4,7 @@
  * candidates, promoted library entries - and a test runs in Node, so it can
  * read whatever environment the run inherits. TestForge's own environment
  * holds API keys, tokens and its settings (OPENAI_API_KEY and the rest of
- * .env.development, TESTFORGE_*), none of which a test needs.
+ * .env.development, MRONION_* and TESTFORGE_*), none of which a test needs.
  *
  * So no run inherits it. A run gets only what Node, the Playwright CLI and
  * the browser need to start on this machine, named below, plus what
@@ -17,6 +17,7 @@
  * This keeps keys out of a test's reach; it is not a sandbox. A real one
  * (the tests run inside Docker) is for the post-Phase 42 review.
  */
+import { underBothNames } from "@/lib/settings";
 
 /** What the run's process needs to start: the OS, temp and home folders, locale, display, and Playwright's browsers. */
 const PASSED_ON = new Set([
@@ -34,12 +35,15 @@ const PASSED_ON = new Set([
     "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "NODE_EXTRA_CA_CERTS",
 ]);
 
-/** The run's environment: the names above from `from` (matched without case, as Windows does), then `set`. */
+/**
+ * The run's environment: the names above from `from` (matched without case, as Windows does), then `set`, each of
+ * its settings under both names (Phase 48 Decision 8).
+ */
 export function runEnv(set: Record<string, string>, from: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
     // Next.js types every environment as having NODE_ENV; a run's doesn't need it.
     const env = {} as NodeJS.ProcessEnv;
     for (const [name, value] of Object.entries(from)) {
         if (value !== undefined && PASSED_ON.has(name.toUpperCase())) env[name] = value;
     }
-    return { ...env, ...set };
+    return { ...env, ...underBothNames(set) };
 }

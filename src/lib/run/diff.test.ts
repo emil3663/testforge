@@ -24,7 +24,7 @@ import { after, before, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-diff-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { persistRunJob } = await import("@/lib/run/persistence");
 const { diffFailures, diffRuns, pageTypeTitles } = await import("./diff");

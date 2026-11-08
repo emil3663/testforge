@@ -30,9 +30,9 @@ import type { SiteSuiteRecord } from "../report/types.ts";
 import type { SiteSuiteManifest } from "../site-suites/store.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-gap-writer-"));
-const savedEnv = Object.fromEntries(["TESTFORGE_DATA_DIR", "TESTFORGE_CLAUDE_COMMAND", "TESTFORGE_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "TESTFORGE_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
-process.env.TESTFORGE_CLAUDE_COMMAND = JSON.stringify([process.execPath, join(process.cwd(), "src/test-support/fake-claude.mjs")]);
-delete process.env.TESTFORGE_OLLAMA_MODEL;
+const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_CLAUDE_COMMAND", "MRONION_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
+process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([process.execPath, join(process.cwd(), "src/test-support/fake-claude.mjs")]);
+delete process.env.MRONION_OLLAMA_MODEL;
 delete process.env.OPENAI_API_KEY;
 
 const generateRoute = await import("../../app/api/generate/route.ts");
@@ -69,7 +69,7 @@ const post = (url: string, body: unknown) => new NextRequest(new URL(url), { met
 /** A fresh data folder and Claude Code log for one column. */
 function fresh(mode: string) {
     const id = run++;
-    process.env.TESTFORGE_DATA_DIR = join(scratch, `data-${id}`);
+    process.env.MRONION_DATA_DIR = join(scratch, `data-${id}`);
     process.env.FAKE_CLAUDE_LOG = join(scratch, `claude-${id}.log`);
     process.env.FAKE_CLAUDE_MODE = mode;
 }
@@ -112,7 +112,7 @@ test("opt-in off: Claude Code is never called and no gap test is written (TFP-19
 
 test("opt-in on: a test for each uncovered element only, each run and saved; the same site again asks for nothing (TFP-194)", { skip: needsChromium }, async () => {
     fresh("good");
-    process.env.TESTFORGE_GAP_LIMIT = "50";
+    process.env.MRONION_GAP_LIMIT = "50";
     await optIn("claude-code");
     const first = await generate();
     const gaps = first.siteSuite.gapTests;
@@ -156,15 +156,15 @@ test("opt-in on: a test for each uncovered element only, each run and saved; the
     assert.equal(again.siteSuite.generated, 0);
     assert.equal(parseTestUnits(again.code).filter((unit) => unit.describe[0] === "Gap tests").length, gaps.saved);
     assert.match(describeSiteSuite(again.siteSuite), /Gap tests: Claude Code was asked for nothing; no gap is left that hasn't been written for or tried\./);
-    delete process.env.TESTFORGE_GAP_LIMIT;
+    delete process.env.MRONION_GAP_LIMIT;
 });
 
 test("a test that fails is revised in the same session and saved once it passes (TFP-194)", { skip: needsChromium }, async () => {
     fresh("revise");
-    process.env.TESTFORGE_GAP_LIMIT = "1";
+    process.env.MRONION_GAP_LIMIT = "1";
     await optIn("claude-code");
     const body = await generate();
-    delete process.env.TESTFORGE_GAP_LIMIT;
+    delete process.env.MRONION_GAP_LIMIT;
     const [written] = body.siteSuite.gapTests!.tests;
     assert.deepEqual({ outcome: written.outcome.replace(/; candidate \w+ added$/, ""), attempts: written.attempts }, { outcome: "saved", attempts: 2 });
     const [firstCall, secondCall] = calls();
@@ -176,7 +176,7 @@ test("a test that fails is revised in the same session and saved once it passes 
 
 test("a test that breaches the read-only gate is rejected, never saved, and not asked for again (TFP-194)", { skip: needsChromium }, async () => {
     fresh("breach");
-    process.env.TESTFORGE_GAP_LIMIT = "1";
+    process.env.MRONION_GAP_LIMIT = "1";
     await optIn("claude-code");
     const body = await generate();
     const gaps = body.siteSuite.gapTests!;
@@ -189,7 +189,7 @@ test("a test that breaches the read-only gate is rejected, never saved, and not 
     assert.ok(!body.code.includes("gap test:"));
     // The next generation asks for the next gap, never the rejected one again.
     const again = await generate();
-    delete process.env.TESTFORGE_GAP_LIMIT;
+    delete process.env.MRONION_GAP_LIMIT;
     assert.equal(calls().length, 2);
     assert.notEqual(again.siteSuite.gapTests!.tests[0].covers, gaps.tests[0].covers);
 });

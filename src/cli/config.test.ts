@@ -13,7 +13,7 @@ import { buildConfig, ConfigError, loadConfig, parseFlags } from "./config.ts";
 
 const CWD = resolve("/work");
 
-test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing interactive, ./testforge-out", () => {
+test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing interactive, ./mr-onion-out", () => {
     const config = buildConfig({}, parseFlags(["--url", "localhost:4200/"]).raw, CWD);
     assert.equal(config.url, "http://localhost:4200");
     assert.deepEqual(config.runMode, { kind: "standard" });
@@ -21,7 +21,7 @@ test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing in
     assert.equal(config.auditMode, "fast");
     assert.equal(config.interactive, false);
     assert.equal(config.reportOnly, false);
-    assert.equal(config.out, resolve(CWD, "testforge-out"));
+    assert.equal(config.out, resolve(CWD, "mr-onion-out"));
     assert.equal(config.dataDir, null);
     assert.deepEqual(config.servers, []);
 });

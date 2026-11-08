@@ -23,7 +23,7 @@ import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-persistence-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const {
     archiveRun,

@@ -13,7 +13,7 @@
 // Then, for each case in the config:
 //   1. both sides get the same request and the same introspection data
 //      (Phase 21 Decision 2), generated in-process through the real POST
-//      /api/generate handler - TESTFORGE_OLLAMA_MODEL is set for gap-fill and
+//      /api/generate handler - MRONION_OLLAMA_MODEL is set for gap-fill and
 //      cleared for template-only, exactly as the route decides at runtime;
 //   2. each suite is executed through a running TestForge's POST /api/run and
 //      persisted like any other run (Phase 17), with its generation record
@@ -85,10 +85,13 @@ const GENERATORS = ["template", "gap-fill"];
 const CLOSED_PORT = "http://127.0.0.1:9/v1";
 
 async function generateWith(generator, testCase, contentProfile, { ollamaBaseUrl } = {}) {
-    if (generator === "gap-fill") process.env.TESTFORGE_OLLAMA_MODEL = model;
-    else delete process.env.TESTFORGE_OLLAMA_MODEL;
-    if (ollamaBaseUrl) process.env.TESTFORGE_OLLAMA_BASE_URL = ollamaBaseUrl;
-    else delete process.env.TESTFORGE_OLLAMA_BASE_URL;
+    // Both names (Phase 48): an old name left in the shell would otherwise still be read.
+    for (const prefix of ["MRONION_", "TESTFORGE_"]) {
+        if (generator === "gap-fill") process.env[`${prefix}OLLAMA_MODEL`] = model;
+        else delete process.env[`${prefix}OLLAMA_MODEL`];
+        if (ollamaBaseUrl) process.env[`${prefix}OLLAMA_BASE_URL`] = ollamaBaseUrl;
+        else delete process.env[`${prefix}OLLAMA_BASE_URL`];
+    }
     delete process.env.OPENAI_API_KEY; // never the OpenAI path in this comparison
     const started = performance.now();
     const res = await generate(

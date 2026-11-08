@@ -21,8 +21,8 @@ import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-split-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { splitSuite, SERIAL_UNIT } = await import("./split.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
@@ -280,4 +280,30 @@ test("in a real browser: with interactive tests on, the serial group runs after 
     } finally {
         await fixture.close();
     }
+});
+
+test("in a real browser: both passes get every setting the run sets under both names, the same value in each (Phase 48 Decision 8, TFP-276)", { skip: needsChromium }, async () => {
+    const twins = `const twins = () => {
+  for (const name of Object.keys(process.env).filter((name) => /^(MRONION|TESTFORGE)_/.test(name))) {
+    const twin = name.startsWith('MRONION_') ? 'TESTFORGE_' + name.slice(8) : 'MRONION_' + name.slice(10);
+    expect(process.env[twin], twin).toBe(process.env[name]);
+  }
+};`;
+    const code = `import { test, expect } from '@playwright/test';
+${twins}
+test('read-only pass', async () => {
+  twins();
+  expect(process.env.MRONION_TIMING_FILE).not.toMatch(/-serial\\.json$/);
+});
+test('serial pass', { annotation: { type: 'gate', description: 'interactive' } }, async () => {
+  test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'interactive');
+  twins();
+  expect(process.env.MRONION_TIMING_FILE).toMatch(/-serial\\.json$/);
+});
+`;
+    assert.deepEqual(splitSuite(code).map((unit) => unit.kind), ["tests", "serial"]);
+    const snapshot = await startRunJob(code, ["functional"], "fast", undefined, [], [], "both names", null, true);
+    const job = await finished(snapshot.runId, 120_000);
+    const records = job.result?.report?.execution.map((record: ExecutionRecord) => `${record.title}: ${record.status}`);
+    assert.deepEqual(records, ["read-only pass: Passed", "serial pass: Passed"], job.result?.output);
 });

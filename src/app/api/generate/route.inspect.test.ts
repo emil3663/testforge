@@ -108,8 +108,8 @@ test("with a local model configured, an inspected database request is no gap: th
         chatCalls += 1;
         json(res, 200, completion("test('x', async () => {});"));
     });
-    process.env.TESTFORGE_OLLAMA_MODEL = "testforge-qwen7b";
-    process.env.TESTFORGE_OLLAMA_BASE_URL = fakeBaseUrl();
+    process.env.MRONION_OLLAMA_MODEL = "testforge-qwen7b";
+    process.env.MRONION_OLLAMA_BASE_URL = fakeBaseUrl();
     const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"] });
     assert.equal(body.generatedBy, "template");
     assert.equal(body.gapFill.outcome, "no-gaps");

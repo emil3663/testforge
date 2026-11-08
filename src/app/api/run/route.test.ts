@@ -23,7 +23,7 @@ import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
 const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-run-route-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { GET, DELETE, POST } = await import("./route.ts");
 const { NextRequest } = await import("next/server");

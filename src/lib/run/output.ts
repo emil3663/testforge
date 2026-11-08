@@ -2,7 +2,7 @@ import { normalizeExecutionTitle, stripAnsi } from "@/lib/report/text";
 import type { ExecutionRecord, ReportArtifactItem } from "@/lib/report/types";
 import type { PlannedExecutionSnapshot, PlannedExecutionStatus, RunJob } from "@/lib/run/jobs";
 
-const PROGRESS_PREFIX = "TESTFORGE_PROGRESS ";
+const PROGRESS_PREFIX = "MRONION_PROGRESS ";
 
 function deriveLinkLabel(title: string) {
     const normalizedTitle = normalizeExecutionTitle(title);

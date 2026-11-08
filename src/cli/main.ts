@@ -1,12 +1,12 @@
 import { join } from "path";
 import { ConfigError, loadConfig, USAGE } from "@/cli/config";
 import { EXIT_COULD_NOT_RUN, installExitHandlers } from "@/cli/exit";
-import { setting } from "@/lib/settings";
+import { setting, underBothNames } from "@/lib/settings";
 
 /**
  * Phase 47 (TFP-245): `testforge run ...`. Started by bin/testforge.mjs from TestForge's own folder (the run
  * executor finds Playwright and its working folders there); paths on the command line resolve against the folder the
- * command was typed in, which the launcher passes as TESTFORGE_CLI_CWD.
+ * command was typed in, which the launcher passes as MRONION_CLI_CWD.
  */
 const EXIT_INVALID_CONFIG = 3;
 
@@ -39,8 +39,8 @@ async function main(argv: string[]): Promise<number> {
     // Decision 6: the data folder - site suites, candidates and (for TFP-246's baselines) the saved runs - is the one
     // the pipeline restores and saves. Set before the run's modules load: the runs folder is fixed when they do.
     if (config.dataDir) {
-        process.env.TESTFORGE_DATA_DIR = config.dataDir;
-        process.env.TESTFORGE_RUNS_ROOT = join(config.dataDir, "runs");
+        // Under both names (Decision 8), so an old name set in the shell can't disagree with --data-dir.
+        Object.assign(process.env, underBothNames({ MRONION_DATA_DIR: config.dataDir, MRONION_RUNS_ROOT: join(config.dataDir, "runs") }));
     }
     const { RUNS_ROOT } = await import("@/lib/run/persistence");
     if (config.dataDir && RUNS_ROOT !== join(config.dataDir, "runs")) {

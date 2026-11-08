@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 
 const scratch = mkdtempSync(join(tmpdir(), "testforge-baseline-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 
 const { buildConfig, ConfigError } = await import("./config.ts");
 const { findBaseline } = await import("./baseline.ts");
