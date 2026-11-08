@@ -1207,8 +1207,8 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-272 - A crawl whose browser fails to launch stays "running" forever (added 2026-11-08)
 
-- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
-  commit. Found while building TFP-263 (2026-11-08); present before and
+- **Status:** Done 2026-11-08: `ad498f8`, verified (Cowork, 2026-11-08).
+  Found while building TFP-263 (2026-11-08); present before and
   after it. Launch and the first page now sit in their own `try` in
   `src/lib/pipeline/crawl.ts`; a throw closes any browser that started and
   returns "failed" with "The browser for the crawl could not start: " and
