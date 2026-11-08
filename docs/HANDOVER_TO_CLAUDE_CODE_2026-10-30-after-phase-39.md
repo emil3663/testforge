@@ -101,11 +101,18 @@ this replaces them. Their history is in git and the records.
    (D39) comes first. The trademark check is done (owner decision,
    2026-11-03, in the register's D39); the rename needs its own decision
    record from a planning session.
+   **Done to TFP-247 (2026-11-08):** TFP-263, TFP-272, TFP-245 and TFP-246;
+   also TFP-269 to TFP-271, TFP-273 and TFP-274.
 
 Order of 6 to 11: owner decision, 2026-11-03; 10a added 2026-11-04. Items
-0 to 6 are done (TFP-268: `6211ae7`, baseline `8d6f408`).
+0 to 11 are done, up to TFP-247 (2026-11-08).
 
 ## Not for this handover
 
 - The rename (D39): its own decision record, written in a planning session.
+  **Owner decision (Emil, 2026-11-08):** the repo stays public, and the
+  rename is built on a branch of its own and merged to `main` in one go,
+  once every rename ticket is verified, so `main` never shows a
+  half-renamed state. The licence (MIT, "Copyright (c) 2026 emil3663")
+  doesn't name the project and stays as it is.
 - Phase 43 onwards: after Phase 47's Gate A, per the register.
