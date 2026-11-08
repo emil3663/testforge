@@ -497,7 +497,24 @@ generate logic first moves out of the API routes into `src/lib/pipeline/`,
 shared by the UI and the CLI. Shipped as a pinned Docker image and a GitHub
 Action. Phase 16 Decision 1 is amended: a team's own CI runner counts as
 local. Record: `phase-47-ci-integration-decision-record.md`; tickets TFP-263,
-TFP-245 to TFP-249.
+TFP-245 to TFP-249. Paused at TFP-247 until Phase 48 merges (amended
+2026-11-08): the image and action ship as `mr-onion`.
+
+---
+
+### Phase 48 — The rename to Mr Onion (locked 2026-11-08, not started; after TFP-246, before TFP-247)
+
+TestForge becomes Mr Onion: the visible name, the package and command
+(`mr-onion`), the `MRONION_*` settings, the data folder, the GitHub repo
+(`emil3663/mr-onion`), the plugin and every living doc. Ticket and test-ID
+prefixes, dated records, saved data and the licence stay. The old command
+and setting names keep working until 1.0, with a notice; the data folder
+moves once on first start; saved runs, baselines and site suites keep
+working unchanged. "Identical except the name" is measured with a rename
+map in the template check. Built on branch `phase-48-mr-onion` behind a
+draft PR, merged to `main` in one `--no-ff` merge at Gate B, then tagged
+0.3.0. Record: `phase-48-rename-to-mr-onion-decision-record.md`; tickets
+TFP-275 to TFP-281.
 
 ## Sequencing note
 

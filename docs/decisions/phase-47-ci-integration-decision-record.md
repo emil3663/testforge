@@ -10,7 +10,8 @@ Scope: TestForge runs as one step in another project's CI pipeline:
 - it ships as a pinned Docker image and a GitHub Action.
 
 Status: **Locked (Emil, 2026-10-27). In progress: TFP-263, TFP-272,
-TFP-245 and TFP-246 done; TFP-247 waits for the rename phase (D39).**
+TFP-245 and TFP-246 done; TFP-247 waits for Phase 48, the rename to
+Mr Onion (Decision 11, amended 2026-11-08).**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
 - Phase 16 Decision 1 is amended in its own record, in the same change as
@@ -165,6 +166,10 @@ TFP-245 and TFP-246 done; TFP-247 waits for the rename phase (D39).**
     - Rejected: after Phase 43 (a deployed URL would get performance judged
       from the start, but the request waits longer); after the Standard
       sets (CI much later).
+    - **Amended 2026-11-08 (Phase 48):** TFP-247 and TFP-248 publish and
+      document `mr-onion` (image `ghcr.io/emil3663/mr-onion`, command
+      `mr-onion run`); they start after Phase 48 merges. See
+      `phase-48-rename-to-mr-onion-decision-record.md`, Decision 13.
 
 ## Acceptance Criteria
 
