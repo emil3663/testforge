@@ -173,8 +173,12 @@ Status: **Locked (Emil, 2026-10-27). In progress: TFP-263 done
      in them.
 
 2. **The CLI (TFP-245)**
-   - Against local Toolshop **clean**: exit `0`; JUnit counts equal
-     `report.json`'s.
+   - Against local Toolshop **clean**: exit `1`; JUnit counts equal
+     `report.json`'s; with `--report-only`, exit `0`. **Amended 2026-11-08
+     (Emil):** it read "exit `0`", which Decision 5 rules out (no baseline:
+     any failing test fails the build) on a site whose Standard suite fails
+     46 tests in every run (Phase 39 Gate C). "Clean exits `0`" moves to
+     TFP-246, with clean as its own baseline.
    - Against local Toolshop **with-bugs**: exit `1`; the failing JUnit cases
      are the report's failing tests.
    - An unreachable URL: exit `2`. A malformed config: exit `3`, naming the

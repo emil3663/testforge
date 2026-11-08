@@ -13,7 +13,11 @@
     // Run by path, standing in for gh, from nightly-email/issue.test.mjs (TFP-252).
     "scripts/nightly-email/fake-gh.mjs",
     // Read by the allure CLI, by this name.
-    "allurerc.mjs"
+    "allurerc.mjs",
+    // TFP-245: spawned by path from bin/testforge.mjs.
+    "src/cli/main.ts",
+    // TFP-245: given to `testforge run --server` as a command.
+    "scripts/toolshop-local/serve-toolshop.mjs"
   ],
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.{mjs,mts,ts}", "tests/**/*.ts", "*.{ts,mjs}"],
   // An export used only in its own file is over-exported, not dead (79 of them at TFP-259).

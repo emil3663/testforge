@@ -34,6 +34,7 @@ before it reaches the model, so a session uses fewer tokens.
 
 - During a measurement session, the monitor only reads the run's log: no repo-wide searches, builds or tests.
 - On this machine, stopping or expiring a Monitor leaves its inner script running: kill it by PID before re-arming, and check for leftovers when a session ends.
+- A background job past 1.5x its projection is investigated, not waited on: what it's blocked on, and any orphaned process holding its pipes. Arm that watchdog with the job.
 
 ## Linux-only failures
 

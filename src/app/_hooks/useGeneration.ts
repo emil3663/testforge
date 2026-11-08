@@ -3,6 +3,7 @@ import { buildBusyInspectionTargets, buildSelectedPracticeDescription, normalize
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, CrawlResult, SavedSuiteResult, Step, TestAuditMode } from "@/app/_lib/types";
 import { STANDARD_RUN, type RunMode } from "@/lib/comprehensive/run-mode";
 import { buildPageTypeCoverage } from "@/lib/selection/coverage";
+import { generationRecordFrom } from "@/lib/pipeline/generation-record";
 import { readDroppedJourneys } from "@/app/_lib/dropped-journeys";
 import type { DroppedJourney } from "@/lib/generate/journey-check";
 
@@ -251,12 +252,8 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
                     selectedBy: params.isTypeSelection ? "type" : "user",
                 })
                 : undefined;
-            // A template-only generation answers without `generatedBy` (no model or key configured); the
-            // page types and the site suite's record (Phase 42, TFP-190) still need a record to travel
-            // in, and "template" is what wrote that suite.
-            const siteSuite = data.siteSuite && typeof data.siteSuite === "object" ? data.siteSuite : undefined;
-            const generatedBy = typeof data.generatedBy === "string" ? data.generatedBy : pageTypes || siteSuite ? "template" : null;
-            setLastGeneration(generatedBy ? { generatedBy, model: data.model, fallbackReason: data.fallbackReason, gapFill: data.gapFill, gates: data.gates ?? [], ...(pageTypes ? { pageTypes } : {}), ...(siteSuite ? { siteSuite } : {}) } : null);
+            // Phase 47 (TFP-245): built as the CLI builds it.
+            setLastGeneration(generationRecordFrom(data, pageTypes));
             if (params.urlListPages) {
                 // The list stays in the field as typed, so the same pages can be run again.
             } else if (params.isBaseUrlPlaceholderActive && normalizedBaseUrl.value === defaultBaseUrl) {

@@ -335,6 +335,48 @@ Or run every saved suite:
 npx playwright test --project=chromium
 ```
 
+That runs a frozen suite: no coverage, gap list, suite reuse or run diffing. For TestForge itself in a pipeline, use `testforge run`, below.
+
+---
+
+## Running TestForge in a pipeline (`testforge run`)
+
+Phase 47 (`docs/decisions/phase-47-ci-integration-decision-record.md`). One command crawls, generates and runs against a target, with no UI and no server, and ends with an exit code a pipeline acts on:
+
+```bash
+npm run testforge -- run --url http://localhost:4200 --out reports
+```
+
+It does what the UI does, through the same code: crawls the site, picks the pages by page type, inspects them, generates the suite (the same suite the UI would, for the same page data) and runs it. From the command line, give the arguments after `npm run testforge --`, or run `node bin/testforge.mjs run ...`; `npm run testforge -- --help` lists every option.
+
+| Exit code | Meaning |
+|---|---|
+| `0` | No test failed |
+| `1` | A test failed or was blocked (with `--report-only`: reported, exit `0`) |
+| `2` | Couldn't run: the target was unreachable, the crawl found no page, the browser or a `--server` didn't start, or no test executed. Never a pass |
+| `3` | Invalid configuration; the message names the field |
+
+**What it writes in `--out`** (default `./testforge-out`): `report.json` (the run's result and report, with the TestForge version and commit), `report.html` (the report the UI exports), `junit.xml` (for the pipeline's test view; its counts are the report's), `suite.spec.ts` (the suite that ran), `page-data.json` (the inspection it was generated from) and `evidence/` (traces and screenshots, failing tests only). Login values are redacted from every file.
+
+**In CI, no model writes tests** (Decision 9): the gap writer, a local model and OpenAI stay off, whatever the site's settings or the environment say. Candidates and promoted library tests still run.
+
+**Options worth knowing:**
+
+- `--practices functional,security` — Standard's areas (default: all ten); `--mode comprehensive --area security` for one Comprehensive area.
+- `--pages /,/contact` — test these pages instead of crawling.
+- `--interactive` — also run the journey tests that submit forms (off by default, as in the UI).
+- `--data-dir <dir>` — TestForge's data folder, saved runs included. Restore it before the job and save it after (a CI cache or artifact), so site suites carry over between runs.
+- `--config testforge.json` — any of the options as JSON fields, plus `login` (the UI's login settings: environment variable names only, never a value). A flag wins over the file.
+
+**Starting the app in the same job:** `--server "<command>" --port <n>` starts the command, waits until the port answers (`--server-timeout`, default 120 s), runs, then stops it, whatever the result: it closes the server's stdin, sends SIGTERM on Linux and macOS, and after 30 s kills its whole process tree. Repeat the pair for a backend and a frontend. A port already in use, or a server that exits or doesn't answer in time, ends the run with exit `2`. So does Ctrl+C, a cancelled job (SIGTERM) or a crash, each after stopping the servers it started. The local Toolshop, for example:
+
+```bash
+npm run testforge -- run --url http://localhost:4200 --server-timeout 900 \
+  --server "node scripts/toolshop-local/serve-toolshop.mjs sprint5 --ready-port 4299" --port 4299
+```
+
+`serve-toolshop.mjs` starts the containers, opens port 4299 once the database is seeded (port 4200 answers before that), and stops the containers when `testforge run` closes its stdin.
+
 ---
 
 ## Tech stack
@@ -369,6 +411,7 @@ npx playwright test --project=chromium
 | `npm run report:open:regression` | Open the latest local regression Allure report |
 | `npm run build:self-test` / `start:self-test` / `serve:self-test` | Build and serve the self-test target on :3001 (the regression suite starts it) |
 | `npm run library:promote` | Promote a candidate test into the library (with the tester's approval) |
+| `npm run testforge -- run --url <url>` | Crawl, generate and run against a site with no UI, for a pipeline (exit codes and outputs above) |
 | `npm run compare:generators` | Compare the template alone with the template plus the local model's gap-fill (setup in `docs/GENERATOR_COMPARISON.md`) |
 | `npm run benchmark:local` | Benchmark local (Ollama) models |
 | `npm run comparison:fixture` | Serve the comparison fixture: a small site with one switchable injected defect per area |
@@ -384,7 +427,7 @@ npx playwright test --project=chromium
 - The PR validation workflow runs lint, build, and the smoke suite with Allure on every pull request, and uploads a smoke Allure artifact.
 - The self-test workflow runs the same checks on every push to `main` and keeps its smoke-report artifacts for 30 days.
 - The regression workflow can be triggered manually from GitHub Actions and keeps its regression-report artifacts for 30 days. It builds once, before Playwright starts the server.
-- Running TestForge itself as a step in another project's pipeline is planned as Phase 47 (`docs/decisions/phase-47-ci-integration-decision-record.md`).
+- Running TestForge itself as a step in another project's pipeline is Phase 47 (`docs/decisions/phase-47-ci-integration-decision-record.md`): the `testforge run` command is built (above); baselines, the Docker image and the GitHub Action follow.
 - The nightly workflow runs the unit suite, `check:template-unchanged` (against the recorded template baseline) and `knip` (dead code) every night at 02:00 UTC and on manual dispatch, not on every push. The unit log is kept as an artifact for 30 days. Each run puts its summary on its own page and emails it to the address in the `CI_REPORT_TO` variable, passed or failed.
 
 ---

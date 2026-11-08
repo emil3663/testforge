@@ -43,7 +43,15 @@ export type GenerateOutcome =
     | { ok: true; body: Record<string, unknown> }
     | { ok: false; error: string };
 
-export async function generateSuite(input: Record<string, unknown>): Promise<GenerateOutcome> {
+export interface GenerateOptions {
+    /**
+     * Phase 47 Decision 9 (TFP-245): false in CI, so no model writes anything - not the gap writer, the local model
+     * or OpenAI - whatever the site's settings or the environment say. Candidates and promoted entries still run.
+     */
+    models?: boolean;
+}
+
+export async function generateSuite(input: Record<string, unknown>, { models = true }: GenerateOptions = {}): Promise<GenerateOutcome> {
     const { baseUrl, description, selectedPractices, contentProfile, contentRules, auditMode, autoInspect, runMode } = input;
 
     if (!description || typeof description !== "string") {
@@ -111,7 +119,8 @@ export async function generateSuite(input: Record<string, unknown>): Promise<Gen
         selectedJourneyIds.filter((id) => !normalizedContentRules.selectedJourneyIds.includes(id))
     );
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = models ? process.env.OPENAI_API_KEY : undefined;
+    const configuredLocalModel = models ? process.env.TESTFORGE_OLLAMA_MODEL?.trim() : undefined;
 
     const origin = new URL(normalizedBaseUrl.value).origin;
     // Phase 42 (TFP-190, Decision 1): the template's suite, with the site's saved tests reused, regenerated or
@@ -133,9 +142,9 @@ export async function generateSuite(input: Record<string, unknown>): Promise<Gen
         const applied = bound?.record ? { code: bound.code, record: { ...fromSuite.record, candidateTests: bound.record } } : fromSuite;
         siteSuite = applied.record;
         // Phase 42 (TFP-194, Decision 6): gap tests only for a site that opted in; off, nothing is sent anywhere.
-        const { gapWriter } = await loadSiteSettings(origin);
+        const { gapWriter } = models ? await loadSiteSettings(origin) : { gapWriter: "off" as const };
         if (gapWriter === "off") return applied.code;
-        const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+        const localModel = configuredLocalModel;
         const writer = gapWriter === "claude-code" ? claudeCodeWriter() : localModel ? localModelWriter(localModel) : null;
         if (!writer) {
             siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set" } };
@@ -174,7 +183,7 @@ export async function generateSuite(input: Record<string, unknown>): Promise<Gen
         // Phase 42 (TFP-195): pool candidates matching this site's gaps run with it, outside the verdict. Not saved in the site suite.
         const suite = (await applyCandidates(await withSiteSuite(buildComprehensiveSuite(normalizedBaseUrl.value, normalizedRunMode, pageScope)), normalizedContentProfile, siteSuite?.store)).code;
         const scope = { runMode: normalizedRunMode, pageScope };
-        const localModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+        const localModel = configuredLocalModel;
         if (!localModel) return respond({ code: suite, generatedBy: "template", ...scope, gates: [] });
         const area = [normalizedRunMode.area];
         const local = await generateLocalSuite(localModel, buildGenerationMessages(requestContext, area), area);
@@ -196,7 +205,7 @@ export async function generateSuite(input: Record<string, unknown>): Promise<Gen
     // Phase 30 Decision 5: a configured local model wins over an OpenAI key.
     // Phase 34 (TFP-118): it no longer replaces the template - it fills only
     // the areas the template left without tests (Phase 21 TFP-100, Option B).
-    const ollamaModel = process.env.TESTFORGE_OLLAMA_MODEL?.trim();
+    const ollamaModel = configuredLocalModel;
     if (ollamaModel) {
         const generated = mockGenerateDetailed(
             normalizedBaseUrl.value,

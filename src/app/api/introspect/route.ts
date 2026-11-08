@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { inspectPages } from "@/lib/introspect/inspector";
-import { normalizeNamedFlows } from "@/lib/introspect/journeys";
-import { findForeignPath, foreignPathMessage, normalizeInspectionPathList } from "@/lib/introspect/paths";
+import { findForeignPath, foreignPathMessage } from "@/lib/introspect/paths";
+import { inspectSite } from "@/lib/pipeline/inspect";
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -53,22 +52,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: foreignPathMessage(normalizedBaseUrl.value, foreign) }, { status: 400 });
     }
 
-    const normalizedPaths = normalizeInspectionPathList(normalizedBaseUrl.value, paths);
-    const { pages, warnings, requestedPaths, failedPages, dependencyMap, siteGraph, journeys } = await inspectPages(
-        normalizedBaseUrl.value,
-        normalizedPaths,
-        normalizeNamedFlows(namedFlows)
-    );
-
-    return NextResponse.json({
-        scannedAt: new Date().toISOString(),
-        baseUrl: normalizedBaseUrl.value,
-        pages,
-        warnings,
-        requestedPaths,
-        failedPages,
-        dependencyMap,
-        siteGraph,
-        journeys,
-    });
+    // Phase 47 (TFP-245): the inspection is in src/lib/pipeline, shared with the CLI.
+    return NextResponse.json(await inspectSite(normalizedBaseUrl.value, paths, namedFlows));
 }

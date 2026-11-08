@@ -320,6 +320,46 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-245 - Headless runner with a verdict, exit codes and JUnit output
 
+- **Status:** Built 2026-11-08; verified (Cowork, 2026-11-08) after the
+  fixes below, awaiting commit. **First pass:** on a Linux clone (2
+  cores), the uncommitted files on `6b617b2`: an unreachable URL exits `2`;
+  a config with an unknown area exits `3`, naming `practices[0]`; the CLI,
+  junit, config, run and pipeline tests pass, **except four server tests
+  that fail on every Linux run** (an interrupt's stop, `stopAllServers`, a
+  port already in use, and, intermittently, "once stopped nothing
+  listens"). Measured: `stopServers` returns after the shell exits and
+  before the killed process group has gone; the server's port still
+  answers at +0 ms and is free by +100 ms. CI runners are 2-core Linux, so
+  this is the platform that matters. A fifth, the IPv6 loopback test,
+  fails where `::1` can't be bound (`EAFNOSUPPORT`). Fixes: `stopServers`
+  waits, bounded, until each process group has gone; the IPv6 test skips,
+  with its reason, where `::1` isn't available. Read: `Not run` never fails
+  the build and becomes `<skipped>` in JUnit; `Blocked` fails it and
+  becomes `<error>`; `--report-only` turns test failures into exit `0`.
+  Claude Code's Toolshop runs, the UI-versus-CLI byte comparison, the port
+  sampling and the full suites weren't re-run here (no Docker here).
+  **Rulings (Emil, 2026-11-08):** (1) criterion 2's "clean: exit `0`"
+  contradicts Decision 5 (no baseline: any failing test fails) on a site
+  with 46 real failures; it becomes "clean: exit `1`, JUnit counts equal
+  the report's; with `--report-only`, exit `0`" (the record's criterion 2,
+  amended), and "clean exits `0`" moves to TFP-246 (clean, with its own
+  baseline); (2) `Blocked` fails the build, `Not run` doesn't; (3) the
+  default practices are all ten areas; (4) the stop order (stdin, SIGTERM,
+  then the tree after 30 s); (5) `page-data.json` in `--out`, redacted as
+  every other file (Decision 7), and `serve-toolshop.mjs --ready-port`; (6)
+  Claude Code's `CLAUDE.md` line on jobs past 1.5x their projection.
+  **Fixed after verification (2026-11-08):** `stopServers` waits, up to
+  5 s, until each server's process group has gone (Windows: its shell);
+  the IPv6 test skips, with its reason, where `::1` can't be bound;
+  `page-data.json`'s redaction has its own test. **Re-verified (Cowork,
+  2026-11-08)** on the same 2-core Linux clone, the fixed files on
+  `6b617b2`: the server and exit tests 5 runs in a row, each 6 passed, 0
+  failed, 1 skipped (`# SKIP IPv6 loopback ::1 can't be bound on this
+  machine (EAFNOSUPPORT)`); all CLI, pipeline and introspect tests 40
+  passed, 0 failed, 1 skipped; `check:template-unchanged 6b617b2`: 172
+  inputs, 172 identical; `tsc` exit 0. Claude Code's clean `--report-only`
+  run (exit `0`, 470 tests, 46 failures, 0 errors, 18 skipped, matching the
+  report) wasn't re-run here.
 - **Phase:** 47
 - **Priority:** P0
 - **Suggested labels:** `ci`, `run`, `report`
@@ -342,8 +382,9 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
     redaction applies to every output file.
 - **Deliverables:** the CLI, its unit tests, a `README.md` section.
 - **Acceptance criteria:**
-  - against local Toolshop **clean**: exit 0, and the JUnit file's counts
-    equal `report.json`'s;
+  - against local Toolshop **clean**: exit 1, and the JUnit file's counts
+    equal `report.json`'s; with `--report-only`, exit 0 (amended 2026-11-08,
+    Emil: clean exits 0 with its baseline in TFP-246);
   - against local Toolshop **with-bugs**: exit 1, and the failing JUnit
     cases name the same tests as the report;
   - against an unreachable URL: exit 2, never 0;
@@ -376,7 +417,10 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - with one bug fixed in the local copy, the second run reports it fixed
     and exits 0; with one new bug planted, it exits 1 naming only that one;
   - a changed page type is regenerated, not failed, as in the UI path
-    (RUN-30).
+    (RUN-30);
+  - clean twice, the first as baseline: the second exits 0, its 46 known
+    failures listed as known (moved from TFP-245's criterion 2, Emil,
+    2026-11-08).
 - **Dependencies:** [TFP-245]
 
 ### TFP-247 - Packaging: a pinned, reproducible runner
