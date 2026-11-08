@@ -395,8 +395,8 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-246 - Baselines and state on an ephemeral runner
 
-- **Status:** Built 2026-11-08; verified (Cowork, 2026-11-08) after the
-  rulings below, awaiting commit. **Re-verified** on a Linux clone, the
+- **Status:** Done 2026-11-08: `9dca554`, verified (Cowork, 2026-11-08)
+  after the rulings below. **Re-verified** on a Linux clone, the
   updated files on `653aaf2`: the CLI, diff, persistence and runs-route
   tests 78 passed, 0 failed, 1 skipped (IPv6, its reason given);
   `check:template-unchanged 653aaf2`: 172 identical; `tsc` exit 0. Read:
