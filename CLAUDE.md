@@ -47,6 +47,8 @@ for this file (or for the skill that should have caught it) in your next
 commit. Keep this file short: every line here should prevent a real
 mistake. Ticket-specific rulings stay in the decision records.
 
+- "Locked" alone doesn't confirm a record's **[for Emil]** lines: ask, and record only what the owner confirms.
+
 ## Before reporting a ticket done
 
 Every new test must be seen failing first: a bug's reproduction before the

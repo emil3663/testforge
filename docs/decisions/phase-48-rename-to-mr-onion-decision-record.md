@@ -14,9 +14,21 @@ Scope:
 
 Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`).**
-- Emil locked the record as drafted on 2026-11-08, confirming every
+- ~~Emil locked the record as drafted on 2026-11-08, confirming every
   **[for Emil]** line below as proposed. The markers stay to show which
-  lines were proposals before the lock.
+  lines were proposals before the lock.~~
+  **Amended 2026-11-08, 23:33 (Emil, planning session; the lock above was
+  recorded before the [for Emil] lines had been confirmed):** Emil has now
+  confirmed every **[for Emil]** line as proposed, except Decision 9 (the
+  nightly's secret keeps its name; see its amendment), and with these
+  stated: the generated suite's text and the local model's tag are renamed
+  in this phase, not at 1.0 (Decision 3); the mailboxes and local folder
+  names stay for now (Decision 4); 0.3.0 is tagged only after the merge,
+  once every ticket on the branch is done (Decision 13); saved suites on a
+  user's machine aren't rewritten, while everything that ships is renamed
+  (Decision 8). The repo rename at Gate B is done with the planning
+  session's help in the owner's browser (Decision 10). The markers stay
+  to show which lines were proposals before the lock.
 - Source: the deferred-work register's D39 (proposed 2026-10-30; the
   trademark check closed by owner decision, 2026-11-03) and the current
   handover's "Not for this handover" (owner decision, 2026-11-08: the repo
@@ -24,8 +36,9 @@ Status: **Locked (Emil, 2026-11-08). In progress on branch
 - Answered in this planning session (Emil, 2026-11-08): the `mr-onion`
   spelling, the one-time data-folder move, the old names working until 1.0,
   and no domain for now (Decisions 2, 6, 7 and 12).
-- Lines marked **[for Emil]** are proposals from this session, not
-  decisions, until the owner confirms them at the lock.
+- ~~Lines marked **[for Emil]** are proposals from this session, not
+  decisions, until the owner confirms them at the lock.~~ Confirmed
+  2026-11-08 (amendment above).
 - Order: after Phase 47's TFP-246, before TFP-247 (Decision 13). Tickets
   TFP-275 to TFP-281.
 - **On lock, in the same change:** the register's D39 row becomes
@@ -150,7 +163,8 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
    - Every `TESTFORGE_*` setting, including the child-process protocol
      names and the `TESTFORGE_PROGRESS` marker.
    - The plugin and marketplace names.
-   - Workflow step names, and the nightly's secret (Decision 9).
+   - Workflow step names~~, and the nightly's secret (Decision 9)~~.
+     **Amended 2026-11-08 (Emil):** the secret keeps its name (Decision 9).
    - **[for Emil]** The generated suite's own text: the header comment, the
      setting it checks and names in skip reasons, and the test data and
      markers it sends to a target (probe paths, `Mr Onion check <time>`,
@@ -255,6 +269,14 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      required.
    - A repo rename keeps secrets, issues, Actions history, Dependabot and
      CodeQL settings.
+
+   **Amended 2026-11-08 (Emil):** the secret is **not** renamed in this
+   phase. `TESTFORGE_SMTP_PASSWORD` is only the label GitHub stores the
+   mailbox's app password under; it isn't user-facing, and the mailbox
+   itself stays (Decision 4). It keeps its name until a new mailbox is
+   decided (D44), so there is no fallback expression and no owner step in
+   GitHub's settings. `check:old-name`'s allowlist carries it, with this
+   reason. The sender display name still becomes "Mr Onion nightly".
 
 10. **The GitHub repo is renamed at the merge, by the owner.** **[for Emil]**
     - Sequence: the branch passes Gate B; the owner renames
@@ -421,8 +443,9 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      (`scripts/old-name/allowlist.json`). Each entry is a path or pattern
      with a reason, and it covers only: dated records and reports in
      `docs/decisions/`, `benchmarks/`, `examples/`, past `CHANGELOG.md`
-     entries, the compatibility code and its tests, the rename map, and
-     `LICENSE`'s absence of the name. The allowlist is reviewed line by line
+     entries, the compatibility code and its tests, the rename map,
+     the nightly's `TESTFORGE_SMTP_PASSWORD` secret name (Decision 9,
+     amended), and `LICENSE`'s absence of the name. The allowlist is reviewed line by line
      at Gate B.
    - The check runs in PR Validation.
    - `CHANGELOG.md`'s 0.3.0 entry states the new names, the old names'
@@ -468,7 +491,8 @@ lock:
   or rewritten. Until then, runs set both names (Decision 8). Not before
   1.0's removal ticket, and not as part of it.
 - **D44: A Mr Onion mailbox** in place of `testforgeapp@gmail.com` and its
-  aliases, if one is wanted (Decision 4).
+  aliases, if one is wanted (Decision 4). The nightly's secret is renamed
+  with it (Decision 9, amended 2026-11-08).
 - **A domain** (Decision 12): its own owner decision, with the four checks
   listed there, at the time of the EU/US trademark filing or when a site is
   needed.
@@ -502,6 +526,15 @@ lock:
 - **Deliverables:** the module and its unit tests; every read migrated.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** the lock; the branch and its draft PR (Decision 14).
+- **Done 2026-11-08 (`46e3994`):** `check:template-unchanged cf501ad`
+  172 of 172 identical with no map; unit 791 of 791, self-test 5 of 5,
+  regression 73 of 73, none skipped. **Accepted (Emil, 2026-11-08):** the
+  direct reads left outside `src/lib/settings.ts`:
+  `src/lib/run/request-cap-fixture.ts:27-31` (copied into each run folder
+  and run in the Playwright child, so it can't import the module; its env
+  comes from the parent), `scripts/nightly-email/notify.mjs:41` (the
+  nightly's secret, which keeps its name: Decision 9, amended), and the
+  save/restore around writes in `src/app/api/generate/route-test-helpers.ts:47,72`.
 
 ### TFP-276 - The new names, with the old ones as fallback
 
@@ -562,8 +595,9 @@ lock:
 - **Scope:** `seo.ts`, `page.tsx`, `HelpPanel.tsx`, `report/html.ts`,
   `comprehensive-html.ts`, `report/text.ts`, CLI messages,
   `junit.ts`'s default, `package.json`'s name, `marketplace.json`,
-  `plugin.json`, workflow step names, the nightly secret fallback and email
-  display name (Decision 9), the issue template's URL, and
+  `plugin.json`, workflow step names, ~~the nightly secret fallback and~~
+  the nightly email's display name (Decision 9; the secret keeps its name,
+  amended 2026-11-08), the issue template's URL, and
   `tests/regression/` file names. Plus the render-and-grep script of
   criterion 5.
 - **Deliverables:** the above, with each user-visible string's test
