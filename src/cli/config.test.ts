@@ -82,3 +82,13 @@ test("the config file: an unknown field, bad JSON and a missing file are each na
     assert.equal(good.out, join(dir, "reports"), "paths in the file resolve against the folder the command ran in");
     assert.equal(good.dataDir, join(dir, "state"));
 });
+
+test("TFP-246: --baseline is a run.json, resolved like --out, or \"latest\"", () => {
+    const flags = (...rest: string[]) => buildConfig({}, parseFlags(["--url", "http://localhost:3000", ...rest]).raw, CWD);
+    assert.equal(flags().baseline, null);
+    assert.equal(flags("--baseline", "latest").baseline, "latest");
+    assert.equal(flags("--baseline", "previous/run.json").baseline, resolve(CWD, "previous/run.json"));
+    assert.equal(buildConfig({ url: "http://localhost:3000", baseline: "latest" }, {}, CWD).baseline, "latest", "a config file field too");
+    assert.throws(() => flags("--baseline", " "), (error: unknown) => error instanceof ConfigError && error.field === "baseline");
+    assert.throws(() => buildConfig({ url: "http://localhost:3000", baseline: 3 }, {}, CWD), (error: unknown) => error instanceof ConfigError && error.field === "baseline");
+});

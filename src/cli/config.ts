@@ -39,6 +39,8 @@ export interface CliConfig {
     out: string;
     dataDir: string | null;
     reportOnly: boolean;
+    /** TFP-246: the run to compare with - a run.json, or "latest" (the newest like run in the data folder); null for none. */
+    baseline: string | null;
     servers: ServerSpec[];
     serverTimeoutMs: number;
 }
@@ -60,14 +62,16 @@ export const USAGE = `Usage: testforge run --url <base URL> [options]
   --out <dir>              where the reports go (default ./testforge-out)
   --data-dir <dir>         TestForge's data folder, runs included (restore and save it between jobs)
   --report-only            report failures, exit 0 unless the run couldn't run
+  --baseline <run.json>    fail only on failures this earlier run didn't have; "latest" for the
+                           newest run of the same site and tests in the data folder
   --server "<command>"     start this before the run; give its --port next (repeatable)
   --port <n>               the port the --server before it answers on
   --server-timeout <s>     how long a server may take to answer (default 120)
   --config <file>          a JSON file with any of these, plus "login"
 
-Exit codes: 0 no failures, 1 test failures, 2 couldn't run, 3 invalid configuration.`;
+Exit codes: 0 no failures (with --baseline: no new ones), 1 test failures, 2 couldn't run, 3 invalid configuration.`;
 
-const FILE_FIELDS = ["url", "mode", "area", "pageCap", "practices", "auditMode", "description", "pages", "interactive", "login", "out", "dataDir", "reportOnly", "servers", "serverTimeout"] as const;
+const FILE_FIELDS = ["url", "mode", "area", "pageCap", "practices", "auditMode", "description", "pages", "interactive", "login", "out", "dataDir", "reportOnly", "baseline", "servers", "serverTimeout"] as const;
 type FileField = (typeof FILE_FIELDS)[number];
 type Raw = Partial<Record<FileField, unknown>>;
 
@@ -84,6 +88,7 @@ const FLAGS: Record<string, { field: FileField; kind: "string" | "boolean" | "li
     "--out": { field: "out", kind: "string" },
     "--data-dir": { field: "dataDir", kind: "string" },
     "--report-only": { field: "reportOnly", kind: "boolean" },
+    "--baseline": { field: "baseline", kind: "string" },
     "--server-timeout": { field: "serverTimeout", kind: "number" },
 };
 
@@ -225,6 +230,9 @@ export function buildConfig(fileRaw: Raw, flagRaw: Raw, cwd: string): CliConfig 
     const dataDir = raw.dataDir === undefined ? null : optionalString("dataDir", raw.dataDir, "");
     if (dataDir !== null && !dataDir.trim()) throw new ConfigError("dataDir", "must be a folder");
 
+    const baseline = raw.baseline === undefined ? null : optionalString("baseline", raw.baseline, "").trim();
+    if (baseline !== null && !baseline) throw new ConfigError("baseline", "must be a run.json file, or \"latest\"");
+
     return {
         url: url.value,
         runMode,
@@ -237,6 +245,7 @@ export function buildConfig(fileRaw: Raw, flagRaw: Raw, cwd: string): CliConfig 
         out: resolve(cwd, optionalString("out", raw.out, "testforge-out")),
         dataDir: dataDir === null ? null : resolve(cwd, dataDir),
         reportOnly: optionalBoolean("reportOnly", raw.reportOnly),
+        baseline: baseline === null || baseline === "latest" ? baseline : resolve(cwd, baseline),
         servers: servers(raw.servers),
         serverTimeoutMs: serverTimeout * 1000,
     };

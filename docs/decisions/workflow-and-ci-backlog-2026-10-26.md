@@ -395,6 +395,58 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-246 - Baselines and state on an ephemeral runner
 
+- **Status:** Built 2026-11-08; verified (Cowork, 2026-11-08) after the
+  rulings below, awaiting commit. **Re-verified** on a Linux clone, the
+  updated files on `653aaf2`: the CLI, diff, persistence and runs-route
+  tests 78 passed, 0 failed, 1 skipped (IPv6, its reason given);
+  `check:template-unchanged 653aaf2`: 172 identical; `tsc` exit 0. Read:
+  `pageTypeTitles` replaces a whole path only (not inside `/en/product/1`
+  or `/product/1.html`) and keeps exact paths for a type any one run tested
+  twice; `latest` refuses a verdict with exit `2` or new failures, and
+  takes exit `0`, a first run, or a UI run. Claude Code's clean-twice runs
+  across two Toolshop starts (exit `1`, then `0` with 0 new and 46 known)
+  weren't re-run here. **First pass:** `--baseline <run.json | latest>` compares
+  through `diffRuns`, which gains `failures` (known, new, fixed); only new
+  failures fail the build; `--out` gains `run.json` and `baseline.json`.
+  **Verified** on a Linux clone, the uncommitted files on `653aaf2`: the
+  CLI, diff and diff-route tests 52 passed, 0 failed, 1 skipped (the IPv6
+  test, its reason given); `check:template-unchanged 653aaf2`: 172
+  identical; `tsc` exit 0. Read: `diffFailures` keys on (browser, title);
+  Failed and Blocked count as failing; a failing duplicate title wins over
+  a passing one. Claude Code's Toolshop cases (with-bugs twice 0, one fixed
+  0, one planted 1 naming only `TFSE-040`, a page type changed 0, clean
+  twice 0 on one start) and its unit run (781 of 781) weren't re-run here.
+  **Rulings (Emil, 2026-11-08, as recommended):** (1) **before the commit,** a test is
+  matched by its page type, not its exact path: `/product/<id>` gets a new
+  id on every Toolshop start, so a fresh start in each CI job (Decision 2)
+  shows 4 "new" failures that aren't; titles are compared with each page's
+  path replaced by its page-type pattern, as site-suite reuse groups
+  pages, and the clean-twice case is re-run across two starts; (2)
+  `latest` skips a run whose verdict was failing (each `run.json` records
+  its verdict), so a failure can't become known by being saved; (3)
+  criterion 3 is met: the changed type was regenerated at generation
+  (RUN-29) and only it, and the stale recheck ran with nothing to do
+  (CI-17 says so); (4) `run.json` and `baseline.json` join Decision 7's
+  outputs, and `/api/runs/diff` gains `failures` (an addition); (5) the
+  current run's titles are redacted the same way before comparing, so a
+  title quoting a login value matches its redacted baseline. **Built
+  (Claude Code, 2026-11-08):** (1) `pageTypeTitles` in `src/lib/run/diff.ts`,
+  over both runs' pages, used for `failures` only (the diff's other lists are
+  unchanged); (2) `verdict` (`exitCode`, `baselineRunId`, `newFailures`) on
+  the saved run and in `--out/run.json` (with `firstRun`); "failing" read
+  as: failed on a new failure against its baseline, couldn't run, or
+  failed without `--baseline`; a first run (`--baseline latest` with none
+  yet), which fails on its own failures, stays a baseline (Decision 5), and
+  a run with no verdict (the UI's) is accepted; (5) `diffRuns(..., {
+  redact })`. A second fresh-context review's fixes: a path is matched
+  whole (not after `/en`, nor before `.html`); a type of which either run
+  tested two pages keeps exact paths (merged, a failure moving between the
+  two would read as known); a verdict that can't be saved is said and the
+  reports are still written. **Left for Emil:** once a real new failure
+  lands, `latest` stays on the last accepted run until the failure is
+  fixed, or accepted by giving that run's `run.json` as `--baseline`; two
+  processes sharing one data folder can race on a record's write (TFP-198's
+  one-process assumption).
 - **Phase:** 47
 - **Priority:** P1
 - **Suggested labels:** `ci`, `site-suites`

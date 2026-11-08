@@ -137,6 +137,10 @@ and TFP-245 done (2026-11-08); TFP-246 next.**
    TestForge version and commit), the HTML export, JUnit XML, the executed
    `suite.spec.ts`, and evidence for failing tests only. Redaction applies
    to every file. (Emil, 2026-10-27)
+   **Amended 2026-11-08 (Emil, TFP-246):** also `page-data.json` (TFP-245),
+   `run.json` (the saved run with its verdict, for a later job's
+   `--baseline`) and `baseline.json` (the comparison); `/api/runs/diff`
+   gains `failures` (known, new, fixed), an addition.
 
 8. **Distribution: a Docker image first, an npm package later.**
    (Emil, 2026-10-27)
@@ -194,6 +198,14 @@ and TFP-245 done (2026-11-08); TFP-246 next.**
    - One bug fixed in the local copy: reported fixed, exit `0`. One new
      defect planted: exit `1`, naming only that one.
    - A changed page type is regenerated, not failed (RUN-30's behaviour).
+   - **Rulings (Emil, 2026-11-08, TFP-246):** a test is matched across runs
+     by its page type, not its exact path (`/product/<id>` gets a new id on
+     each start of a reseeded target), with both runs' titles redacted the
+     same way first; `--baseline latest` never takes a run that failed on a
+     new failure against its baseline (each run records its verdict), while
+     a first run stays a baseline; the changed-type criterion is met by
+     generation-time regeneration (RUN-29's path), the stale recheck having
+     nothing to do.
 
 4. **The image (TFP-247)**
    - Criterion 2's clean and with-bugs checks give the same results from

@@ -351,12 +351,12 @@ It does what the UI does, through the same code: crawls the site, picks the page
 
 | Exit code | Meaning |
 |---|---|
-| `0` | No test failed |
-| `1` | A test failed or was blocked (with `--report-only`: reported, exit `0`) |
+| `0` | No test failed; with `--baseline`, no test failed that the baseline didn't |
+| `1` | A test failed or was blocked; with `--baseline`, one the baseline didn't have (with `--report-only`: reported, exit `0`) |
 | `2` | Couldn't run: the target was unreachable, the crawl found no page, the browser or a `--server` didn't start, or no test executed. Never a pass |
 | `3` | Invalid configuration; the message names the field |
 
-**What it writes in `--out`** (default `./testforge-out`): `report.json` (the run's result and report, with the TestForge version and commit), `report.html` (the report the UI exports), `junit.xml` (for the pipeline's test view; its counts are the report's), `suite.spec.ts` (the suite that ran), `page-data.json` (the inspection it was generated from) and `evidence/` (traces and screenshots, failing tests only). Login values are redacted from every file.
+**What it writes in `--out`** (default `./testforge-out`): `report.json` (the run's result and report, with the TestForge version and commit), `report.html` (the report the UI exports), `junit.xml` (for the pipeline's test view; its counts are the report's), `suite.spec.ts` (the suite that ran), `page-data.json` (the inspection it was generated from), `run.json` (the saved run, for a later job's `--baseline`), `baseline.json` (with `--baseline`: the comparison) and `evidence/` (traces and screenshots, failing tests only). Login values are redacted from every file.
 
 **In CI, no model writes tests** (Decision 9): the gap writer, a local model and OpenAI stay off, whatever the site's settings or the environment say. Candidates and promoted library tests still run.
 
@@ -376,6 +376,22 @@ npm run testforge -- run --url http://localhost:4200 --server-timeout 900 \
 ```
 
 `serve-toolshop.mjs` starts the containers, opens port 4299 once the database is seeded (port 4200 answers before that), and stops the containers when `testforge run` closes its stdin.
+
+### Baselines: fail only on new failures (TFP-246)
+
+A first run fails the build on any failing test. Every later run can compare with an earlier one, so failures the team already knows about are reported but don't fail it (Decision 5):
+
+```bash
+npm run testforge -- run --url http://localhost:4200 --data-dir .testforge-data --baseline latest
+```
+
+- `--baseline latest` takes the newest finished run with a report of the same tests from the data folder: the same site, areas (or Comprehensive area), audit mode, interactive setting and login. It never takes a run whose verdict failed (each run's `run.json` records it): one that failed on a new failure against its own baseline (even with `--report-only`), one that couldn't run, or one run without `--baseline` that failed. So a regression can't become known by being saved. The exception is a first run, `--baseline latest` with no earlier run, whose failures become the known ones. With none there yet, the run is a first run and says so. Pages given with `--pages` aren't recorded on a run, so they aren't matched.
+- `--baseline <run.json>` takes a given run: an earlier job's `--out/run.json` (downloaded as an artifact, say), or one in `<data-dir>/runs/<id>/`. One of another site, or with no report, is exit `3` before anything starts.
+- The comparison is the UI's run diff, per test and browser, with each page's path in a title read as its page type (`/product/:id`), so a target whose ids change each time it starts keeps its tests, and with both runs' titles redacted. A type of which either run tested two pages keeps their exact paths. **New**: failing now, and passing, not run or absent in the baseline. **Known**: failing in both. **Fixed**: failing in the baseline, passing now. A test failing in the baseline that no longer runs is none of the three. Only new failures fail the build; the log names every new, fixed and known test (redacted like the files), and `baseline.json` has all three lists. `junit.xml` still marks every failing test as failed: it reports the run, not the verdict.
+
+**Keeping state between jobs** (Decision 6). Point `--data-dir` at a workspace folder, restore it before the run and save it after. It holds `runs/` (the baselines) and `site-suites/` (the suite TestForge reuses while each page type is unchanged, and regenerates for a page type whose structure changed: RUN-29, RUN-30). Restore it with the CI's cache or artifact step, and save it after every run: a run that failed on a new failure is saved too, and never taken as a baseline. A cache step that saves only when the job passes never saves a first run that fails (any failing test, with no baseline), so every run would stay a first run. Saved runs, evidence included, accumulate in `runs/`. TFP-248's action does this for GitHub Actions, tested in TestForge's own CI; until then this guide gives no workflow it hasn't run.
+
+**Or commit the site suite into the target's repo**, for a team that wants to review it: keep `--data-dir` in the repo (`.testforge/`), commit `.testforge/site-suites/`, and ignore `.testforge/runs/` (with `--baseline`, give an earlier job's `run.json` artifact instead of `latest`). A suite's folder is `site-suites/<site>/<run type and areas>/`, for example `site-suites/http_localhost_4200/standard-fast-<hash>/`. The commit shows each regenerated page type's changes; a test edited by hand there is kept and never regenerated (Phase 42).
 
 ---
 

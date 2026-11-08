@@ -50,6 +50,18 @@ export interface RunRecord {
     // Phase 35 (TFP-132): present only on Comprehensive runs, so a Standard
     // run's record is exactly what it was.
     runMode?: RunMode;
+    // Phase 47 (TFP-246, ruling 2): `testforge run`'s verdict on this run. Absent on the UI's runs.
+    verdict?: RunVerdict;
+}
+
+export interface RunVerdict {
+    exitCode: number;
+    /** The run it was compared with, or null for a first run. */
+    baselineRunId: string | null;
+    /** Failures the baseline didn't have; null with no baseline. */
+    newFailures: number | null;
+    /** A baseline was asked for (`--baseline latest`) and there was none yet: this run's failures are the first known ones. */
+    firstRun: boolean;
 }
 
 // TFP-198 (run-evidence-sweep backlog, Decision 3): run storage assumes one
@@ -105,6 +117,14 @@ async function writeRunRecord(record: RunRecord) {
     const temporary = `${target}.tmp`;
     await writeFile(temporary, JSON.stringify(record, null, 2), "utf8");
     await rename(temporary, target);
+}
+
+/** TFP-246 (ruling 2): the CLI's verdict, added to a saved run's record. False when the run wasn't saved. */
+export async function recordRunVerdict(runId: string, verdict: RunVerdict): Promise<boolean> {
+    const record = await loadRunRecord(runId);
+    if (!record) return false;
+    await writeRunRecord({ ...record, verdict });
+    return true;
 }
 
 /**

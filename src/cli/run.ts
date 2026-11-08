@@ -1,6 +1,7 @@
 import { copyFile, mkdir, writeFile } from "fs/promises";
 import { basename, join } from "path";
-import type { CliConfig } from "@/cli/config";
+import { compareWithBaseline, describeComparison, findBaseline, type Baseline } from "@/cli/baseline";
+import { ConfigError, type CliConfig } from "@/cli/config";
 import { buildJUnit } from "@/cli/junit";
 import { ServerStartError, startServers, stopServers, type StartedServer } from "@/cli/servers";
 import { buildSelectedPracticeDescription, normalizeInspectionPaths, typeSelectedPaths } from "@/app/_lib/derive";
@@ -14,8 +15,10 @@ import { inspectSite } from "@/lib/pipeline/inspect";
 import { buildResultHtmlDocument } from "@/lib/report/html";
 import { RunLoginError } from "@/lib/run/auth";
 import { startRunJob } from "@/lib/run/executor";
+import type { RunDiff, RunDiffFailures } from "@/lib/run/diff";
 import { normalizeGenerationRecord } from "@/lib/run/generation-record";
 import { runJobs, type RunJob, type RunResultPayload } from "@/lib/run/jobs";
+import { isValidRunId, loadRunRecord, recordRunVerdict } from "@/lib/run/persistence";
 import { buildRedactor } from "@/lib/run/redact";
 import { buildPageTypeCoverage } from "@/lib/selection/coverage";
 import { currentVersion } from "@/lib/version";
@@ -73,8 +76,11 @@ async function waitForRun(runId: string, log: Log): Promise<RunJob> {
     }
 }
 
-/** Decision 5's verdict for a finished run. A run that executed nothing is never a pass. */
-export function verdictOf(result: RunResultPayload, reportOnly: boolean): { exitCode: ExitCode; summary: string } {
+/**
+ * Decision 5's verdict for a finished run. A run that executed nothing is never a pass. With a baseline's
+ * comparison (TFP-246), only new failures fail the build; known ones are reported.
+ */
+export function verdictOf(result: RunResultPayload, reportOnly: boolean, failures: RunDiffFailures | null = null): { exitCode: ExitCode; summary: string } {
     const report = result.report;
     if (!report || result.runStatus === "cancelled" || result.runStatus === "empty") {
         return { exitCode: EXIT.couldNotRun, summary: `The run couldn't run (${result.runStatus}): ${result.output.split("\n")[0] || "no report"}` };
@@ -82,18 +88,33 @@ export function verdictOf(result: RunResultPayload, reportOnly: boolean): { exit
     const { planned, executed, passed, failed, flaky, blocked, notRun } = report.summary;
     const counts = `${planned} planned: ${passed} passed, ${flaky} flaky, ${failed} failed, ${blocked} blocked, ${notRun} not run`;
     if (executed === 0) return { exitCode: EXIT.couldNotRun, summary: `No test executed (${counts}).` };
+    const reportOnlyNote = reportOnly ? " --report-only: reported, not failing the build." : "";
+    if (failures) {
+        const against = `${counts}; against the baseline, ${failures.new.length} new failure(s), ${failures.known.length} known, ${failures.fixed.length} fixed.`;
+        if (failures.new.length > 0) return { exitCode: reportOnly ? EXIT.passed : EXIT.failed, summary: `${against}${reportOnlyNote}` };
+        return { exitCode: EXIT.passed, summary: against };
+    }
     // Blocked tests didn't execute, unexplained: like failures, they fail the build, so a broken site can't pass.
-    if (failed + blocked > 0) return { exitCode: reportOnly ? EXIT.passed : EXIT.failed, summary: `${counts}.${reportOnly ? " --report-only: reported, not failing the build." : ""}` };
+    if (failed + blocked > 0) return { exitCode: reportOnly ? EXIT.passed : EXIT.failed, summary: `${counts}.${reportOnlyNote}` };
     return { exitCode: EXIT.passed, summary: `${counts}.` };
+}
+
+/** Login values, from the environment variables the login names, as the run's own redactor finds them. */
+function redactorFor(config: CliConfig) {
+    const secrets = config.login ? [process.env[config.login.usernameEnv], process.env[config.login.passwordEnv]].filter((value): value is string => Boolean(value)) : [];
+    return buildRedactor(secrets);
 }
 
 const safeName = (text: string) => text.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "test";
 
-/** Decision 7's outputs. Every text file goes through the run's redactor again; evidence was scrubbed by the run. */
-export async function writeOutputs(config: CliConfig, job: RunJob, code: string, profile: unknown, log: Log) {
+/**
+ * Decision 7's outputs. Every text file goes through the run's redactor again; evidence was scrubbed by the run.
+ * TFP-246: the saved run's run.json too, so a later job can take it as its --baseline, and baseline.json with the
+ * comparison when there was one.
+ */
+export async function writeOutputs(config: CliConfig, job: RunJob, code: string, profile: unknown, log: Log, comparison: { baseline: Baseline; diff: RunDiff } | null = null) {
     const result = job.result as RunResultPayload;
-    const secrets = config.login ? [process.env[config.login.usernameEnv], process.env[config.login.passwordEnv]].filter((value): value is string => Boolean(value)) : [];
-    const redactor = buildRedactor(secrets);
+    const redactor = redactorFor(config);
     const write = (name: string, text: string) => writeFile(join(config.out, name), redactor.redact(text), "utf8");
 
     await mkdir(config.out, { recursive: true });
@@ -103,6 +124,9 @@ export async function writeOutputs(config: CliConfig, job: RunJob, code: string,
     if (result.report) await write("junit.xml", buildJUnit(result.report));
     // The inspection the suite was generated from: the same page data gives the same suite, from the UI or here.
     await write("page-data.json", JSON.stringify(profile, null, 2));
+    const record = isValidRunId(job.id) ? await loadRunRecord(job.id) : null;
+    if (record) await write("run.json", JSON.stringify(record, null, 2));
+    if (comparison) await write("baseline.json", JSON.stringify({ baseline: comparison.baseline, ...comparison.diff }, null, 2));
 
     // Evidence for failing (and blocked) tests only.
     const failing = (result.report?.execution ?? []).filter((record) => record.status === "Failed" || record.status === "Blocked");
@@ -140,8 +164,42 @@ export function buildGenerateRequest(config: CliConfig, paths: string[], profile
     });
 }
 
+/**
+ * A finished run: compared with its baseline (TFP-246), its outputs written, its verdict. Throws CouldNotRun when the
+ * comparison can't be made - after the outputs are written.
+ */
+export async function finishRun(config: CliConfig, job: RunJob, code: string, profile: unknown, log: Log, baseline: Baseline | null): Promise<ExitCode> {
+    let comparison: { baseline: Baseline; diff: RunDiff } | null = null;
+    let notCompared: string | null = null;
+    // Test titles can quote a page, and a page a login value: the comparison and its log are redacted as the files are.
+    const redactor = redactorFor(config);
+    if (baseline && job.result?.report) {
+        try {
+            comparison = { baseline, diff: await compareWithBaseline(baseline, job.id, (text) => redactor.redact(text)) };
+            describeComparison(baseline, comparison.diff).forEach((line) => log(redactor.redact(line)));
+        } catch (error) {
+            notCompared = error instanceof Error ? error.message : String(error);
+        }
+    }
+    const verdict = notCompared ? null : verdictOf(job.result as RunResultPayload, config.reportOnly, comparison?.diff.failures ?? null);
+    // Ruling 2: the verdict goes into the saved run, and so into --out's run.json, before the outputs are written.
+    if (isValidRunId(job.id)) {
+        await recordRunVerdict(job.id, {
+            exitCode: verdict?.exitCode ?? EXIT.couldNotRun,
+            baselineRunId: baseline?.runId ?? null,
+            newFailures: comparison ? comparison.diff.failures.new.length : null,
+            firstRun: config.baseline !== null && baseline === null,
+        }).catch((error: unknown) => log(`The verdict couldn't be saved with the run (${error instanceof Error ? error.message : String(error)}); without it, a later --baseline latest can take this run as its baseline.`));
+    }
+    // The reports are written whatever the comparison did: a run that couldn't be compared still has them.
+    await writeOutputs(config, job, code, profile, log, comparison);
+    if (!verdict) throw new CouldNotRun(notCompared ?? "the run couldn't be compared with its baseline");
+    log(verdict.summary);
+    return verdict.exitCode;
+}
+
 /** The whole run, against servers already started. Throws CouldNotRun, or returns the verdict. */
-async function runPipeline(config: CliConfig, log: Log): Promise<ExitCode> {
+async function runPipeline(config: CliConfig, log: Log, baseline: Baseline | null): Promise<ExitCode> {
     const { paths, crawl } = await choosePages(config, log);
     const practices = practicesOf(config);
     const description = descriptionOf(config);
@@ -172,19 +230,23 @@ async function runPipeline(config: CliConfig, log: Log): Promise<ExitCode> {
         throw error;
     }
     const job = await waitForRun(started.runId, log);
-    await writeOutputs(config, job, code, profile, log);
-    const verdict = verdictOf(job.result as RunResultPayload, config.reportOnly);
-    log(verdict.summary);
-    return verdict.exitCode;
+    return finishRun(config, job, code, profile, log, baseline);
 }
 
 /** Starts the servers, runs, and stops every server it started, whatever happened. */
 export async function runTarget(config: CliConfig, log: Log = (line) => console.log(line)): Promise<ExitCode> {
     let servers: StartedServer[] = [];
     try {
+        // TFP-246: before anything starts, so a baseline that can't be used is exit 3 and "latest" isn't this run.
+        const baseline = await findBaseline(config);
+        log(baseline ? `Baseline: run ${baseline.runId} (${baseline.finishedAt}), from ${baseline.from}.` : config.baseline ? "Baseline: no earlier run of this site and these tests in the data folder; a first run, so any failing test fails the build." : "No baseline: any failing test fails the build.");
         servers = await startServers(config.servers, config.serverTimeoutMs, log);
-        return await runPipeline(config, log);
+        return await runPipeline(config, log, baseline);
     } catch (error) {
+        if (error instanceof ConfigError) {
+            log(`testforge: invalid configuration: ${error.message}`);
+            return EXIT.invalidConfig;
+        }
         if (error instanceof CouldNotRun || error instanceof ServerStartError) {
             log(`TestForge couldn't run: ${error.message}`);
             return EXIT.couldNotRun;

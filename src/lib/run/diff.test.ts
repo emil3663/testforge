@@ -27,7 +27,7 @@ const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-diff-test-"));
 process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { persistRunJob } = await import("@/lib/run/persistence");
-const { diffRuns } = await import("./diff");
+const { diffFailures, diffRuns, pageTypeTitles } = await import("./diff");
 
 const jobFilesRoot = join(scratchRoot, "job-files");
 
@@ -228,4 +228,127 @@ test("Group 4: a missing runId is reported by which side was missing", async () 
     if (!outcomeA.ok) {
         assert.equal(outcomeA.error, "not-found-a");
     }
+});
+
+// Phase 47 (TFP-246): a CI baseline fails the build only on B's failures that A didn't have.
+test("TFP-246: failures against a baseline - known, new and fixed, by browser and title", () => {
+    const record = (title: string, status: "Passed" | "Failed" | "Blocked" | "Flaky" | "Not run", browser = "chromium") => ({ title, browser, status });
+    const a = [
+        record("still broken", "Failed"),
+        record("blocked before, failing now", "Blocked"),
+        record("was broken, passes", "Failed"),
+        record("was broken, flaky now", "Failed"),
+        record("was broken, not run now", "Failed"),
+        record("was broken, gone", "Failed"),
+        record("passed, now fails", "Passed"),
+        record("not run, now fails", "Not run"),
+        record("fails on firefox only", "Passed", "firefox"),
+        record("passes both", "Passed"),
+    ];
+    const b = [
+        record("still broken", "Failed"),
+        record("blocked before, failing now", "Failed"),
+        record("was broken, passes", "Passed"),
+        record("was broken, flaky now", "Flaky"),
+        record("was broken, not run now", "Not run"),
+        record("passed, now fails", "Failed"),
+        record("not run, now fails", "Blocked"),
+        record("fails on firefox only", "Failed", "firefox"),
+        record("new test, failing", "Failed"),
+        record("passes both", "Passed"),
+    ];
+    const failures = diffFailures(a, b);
+    const titles = (changes: { title: string }[]) => changes.map((change) => change.title).sort();
+    assert.deepStrictEqual(titles(failures.known), ["blocked before, failing now", "still broken"]);
+    assert.deepStrictEqual(titles(failures.new), ["fails on firefox only", "new test, failing", "not run, now fails", "passed, now fails"]);
+    assert.deepStrictEqual(titles(failures.fixed), ["was broken, flaky now", "was broken, passes"]);
+    assert.deepStrictEqual(failures.new.find((change) => change.title === "new test, failing"), { title: "new test, failing", browser: "chromium", from: "not run", to: "Failed" });
+    // A repeated title: the failing record counts, whichever comes first.
+    assert.deepStrictEqual(diffFailures([record("t", "Passed")], [record("t", "Failed"), record("t", "Passed")]).new.map((change) => change.title), ["t"]);
+    assert.deepStrictEqual(diffFailures([record("t", "Passed"), record("t", "Failed")], [record("t", "Failed")]).known.map((change) => change.title), ["t"]);
+    // The same test on another browser is another test.
+    assert.deepStrictEqual(diffFailures([record("t", "Failed", "chromium")], [record("t", "Failed", "firefox")]).new.map((change) => change.browser), ["firefox"]);
+});
+
+function resultWith(execution: ReturnType<typeof executionRecord>[]) {
+    const passed = execution.filter((e) => e.status === "Passed").length;
+    return {
+        runId: randomUUID(), runStatus: "failed", passed: false, output: "", duration: 1000,
+        progress: { totalTests: execution.length, startedTests: execution.length, completedTests: execution.length, passedTests: passed, failedTests: execution.length - passed, flakyTests: 0, blockedTests: 0, currentTestTitle: null, currentLinkLabel: null, lastCompletedTitle: null, activeExecutions: [], plannedExecutions: [] },
+        report: {
+            summary: { planned: execution.length, executed: execution.length, passed, failed: execution.length - passed, blocked: 0, flaky: 0, duration: 1000, releaseRecommendation: "", defectDistribution: { Critical: 0, Major: 0, Minor: 0 }, passFailRatio: { passed, failed: execution.length - passed }, browsers: ["chromium"], defectTrend: [] },
+            execution,
+            defects: { issues: [], heatmap: [] },
+            coverage: { percentage: 100, covered: 0, total: 0, uncovered: [], matrix: [] },
+            notTested: [],
+            performance: { totalDuration: 0, averageDuration: 0, throughput: 0, slowestTests: [], pageResponseTimes: [], resourceUtilization: "", scalability: "" },
+            usability: { successRate: 0, findings: [], videoClips: "", sessionEvidence: [], tasksCompleted: 0, totalTasks: 0 },
+            seo: { requested: false, score: 0, statusLabel: "", passedChecks: 0, failedChecks: 0, notCoveredChecks: 0, totalChecks: 0, checks: [], pageGroups: [], findings: [], strengths: [], recommendations: [] },
+            rawOutput: "",
+        },
+    };
+}
+
+test("TFP-246: diffRuns carries the failures, so the CLI's baseline is the run diff's", async () => {
+    const jobA = await makeAndPersistJob({ result: resultWith([executionRecord("known", "Failed"), executionRecord("fixed", "Failed"), executionRecord("regressed", "Passed")]) });
+    const jobB = await makeAndPersistJob({ result: resultWith([executionRecord("known", "Failed"), executionRecord("fixed", "Passed"), executionRecord("regressed", "Failed")]) });
+    const outcome = await diffRuns(jobA.id, jobB.id);
+    assert.equal(outcome.ok, true);
+    if (!outcome.ok) return;
+    assert.deepStrictEqual(outcome.diff.failures.known.map((change) => change.title), ["known"]);
+    assert.deepStrictEqual(outcome.diff.failures.new.map((change) => change.title), ["regressed"]);
+    assert.deepStrictEqual(outcome.diff.failures.fixed.map((change) => change.title), ["fixed"]);
+});
+
+// Ruling 1 (Emil, 2026-11-08): a target reseeded between jobs gives its product pages new ids; their tests are the same.
+test("TFP-246: titles are matched by page type, so a page's new id isn't a new test", () => {
+    // Two runs, each of one product page: the reseed's two ids are one type.
+    const byType = pageTypeTitles([
+        ["/", "/product/01M6XT24QZMZ0JHXDPZFBXFF19", "/#/product/6", "/contact"],
+        ["/", "/product/01M6XVGEZD8Y1Y6FT80RB5E28G", "/#/product/7", "/contact"],
+    ]);
+    assert.equal(byType("TFSE-016: keeps meta description stable for /product/01M6XT24QZMZ0JHXDPZFBXFF19"), "TFSE-016: keeps meta description stable for /product/:id");
+    assert.equal(byType("TFAC-050: /product/01M6XVGEZD8Y1Y6FT80RB5E28G passes the WCAG 2.2 A and AA scan"), "TFAC-050: /product/:id passes the WCAG 2.2 A and AA scan");
+    assert.equal(byType("TFFU-217: quantity steppers change the value by one on /#/product/6"), "TFFU-217: quantity steppers change the value by one on /#/product/:id");
+    assert.equal(byType("TFSE-031: keeps meta description stable for /contact"), "TFSE-031: keeps meta description stable for /contact", "a page that is its own type is left as it is");
+    assert.equal(byType("TFUS-026: / shows every image it loads"), "TFUS-026: / shows every image it loads");
+    assert.equal(pageTypeTitles([["/", "/contact"]])("TFSE-031: /contact"), "TFSE-031: /contact");
+
+    // A whole path only.
+    const one = pageTypeTitles([["/product/1"], ["/product/2"]]);
+    assert.equal(one("on /product/1"), "on /product/:id");
+    for (const title of ["links to /product/12", "on /product/1/reviews", "on /en/product/1", "on /product/1.html", "on x/product/1"]) {
+        assert.equal(one(title), title, title);
+    }
+    assert.equal(one("on /product/1, then /product/2."), "on /product/:id, then /product/:id.", "punctuation after a path ends it");
+
+    // A run that tested two pages of one type keeps their exact paths: merged, one's new failure could read as the other's known one.
+    const two = pageTypeTitles([["/product/11111", "/product/22222"], ["/product/11111", "/product/22222"]]);
+    assert.equal(two("on /product/22222"), "on /product/22222");
+    const swapped = diffFailures(
+        [{ title: "on /product/11111", browser: "chromium", status: "Failed" }, { title: "on /product/22222", browser: "chromium", status: "Passed" }],
+        [{ title: "on /product/11111", browser: "chromium", status: "Passed" }, { title: "on /product/22222", browser: "chromium", status: "Failed" }],
+        two
+    );
+    assert.deepStrictEqual([swapped.new.map((change) => change.title), swapped.fixed.map((change) => change.title), swapped.known], [["on /product/22222"], ["on /product/11111"], []]);
+
+    const record = (title: string, status: "Passed" | "Failed") => ({ title, browser: "chromium", status });
+    const failures = diffFailures(
+        [record("TFSE-016: for /product/01M6XT24QZMZ0JHXDPZFBXFF19", "Failed"), record("TFRL-005: on /product/01M6XT24QZMZ0JHXDPZFBXFF19", "Passed")],
+        [record("TFSE-016: for /product/01M6XVGEZD8Y1Y6FT80RB5E28G", "Failed"), record("TFRL-005: on /product/01M6XVGEZD8Y1Y6FT80RB5E28G", "Failed")],
+        pageTypeTitles([["/product/01M6XT24QZMZ0JHXDPZFBXFF19"], ["/product/01M6XVGEZD8Y1Y6FT80RB5E28G"]])
+    );
+    assert.deepStrictEqual(failures.known.map((change) => change.title), ["TFSE-016: for /product/01M6XVGEZD8Y1Y6FT80RB5E28G"], "known, and named as this run names it");
+    assert.deepStrictEqual(failures.new.map((change) => change.title), ["TFRL-005: on /product/01M6XVGEZD8Y1Y6FT80RB5E28G"], "a real regression on the page is still new");
+});
+
+test("TFP-246: diffRuns matches by page type across its two runs' pages, and redacts both sides' titles first", async () => {
+    const profile = (path: string) => ({ pages: [{ path, actionableElements: [] }, { path: "/", actionableElements: [] }] });
+    const jobA = await makeAndPersistJob({ contentProfile: profile("/product/01M6XT24QZMZ0JHXDPZFBXFF19"), result: resultWith([executionRecord("on /product/01M6XT24QZMZ0JHXDPZFBXFF19", "Failed"), executionRecord("welcome [redacted]", "Failed")]) });
+    const jobB = await makeAndPersistJob({ contentProfile: profile("/product/01M6XVGEZD8Y1Y6FT80RB5E28G"), result: resultWith([executionRecord("on /product/01M6XVGEZD8Y1Y6FT80RB5E28G", "Failed"), executionRecord("welcome ada", "Failed")]) });
+    const outcome = await diffRuns(jobA.id, jobB.id, { redact: (text) => text.replace("ada", "[redacted]") });
+    assert.equal(outcome.ok, true);
+    if (!outcome.ok) return;
+    assert.deepStrictEqual(outcome.diff.failures.new, []);
+    assert.deepStrictEqual(outcome.diff.failures.known.map((change) => change.title).sort(), ["on /product/01M6XVGEZD8Y1Y6FT80RB5E28G", "welcome ada"]);
 });
