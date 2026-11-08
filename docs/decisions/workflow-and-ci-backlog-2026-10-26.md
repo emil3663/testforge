@@ -1167,8 +1167,9 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-271 - Tell the user when a selected journey is dropped (added 2026-11-04)
 
-- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
-  commit. Split from TFP-268's scope (Emil, 2026-11-04). The journey check
+- **Status:** Done 2026-11-08: `5a2673d`, verified (Cowork, 2026-11-08);
+  the review's two low items (the inspected-path reason, the untested
+  "steps don't match" reason) were fixed in it. Split from TFP-268's scope (Emil, 2026-11-04). The journey check
   moved to `src/lib/generate/journey-check.ts`, used by both the normaliser
   and `explainDroppedJourneys`; the route adds `droppedJourneys` (id and
   reason) only when one is dropped; `GeneratedSuiteSection` shows them
