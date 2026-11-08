@@ -1,6 +1,6 @@
 # Dependency upkeep: the watch list and two tickets (2026-11-08)
 
-**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 open.
+**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 done (`99b477c`).
 
 Emil asked for a way to see dependency issues and clear them with patches,
 not only dismiss them. Two parts, both chosen on 2026-11-08:
@@ -31,8 +31,13 @@ back, and remove it (with the date and commit) when it is cleared.
 
 ## TFP-273 - Monthly Dependabot version updates
 
-- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
-  commit. `.github/dependabot.yml` (npm and github-actions, monthly,
+- **Status:** Done 2026-11-08: `99b477c`, verified (Cowork, 2026-11-08).
+  First run (13:48Z, both update jobs succeeded): npm opened 5 pull
+  requests, #18 the `nextjs` group (4), #19 `npm-minor-and-patch` (10),
+  #20 openai 7, #21 typescript 7, #22 eslint 10; the limit held back none;
+  github-actions, none (every action on its latest major). CI: #18, #19,
+  #20 and #22 green; #21 fails lint (`typescript-eslint does not support
+  TS 7.0`). `.github/dependabot.yml` (npm and github-actions, monthly,
   limit 5; npm minors and patches in one group, majors one per package;
   `next`, `eslint-config-next`, `@playwright/test` and `playwright-core`
   majors ignored) and a merge rule in `docs/QUALITY_GATES.md` §3. **Read
