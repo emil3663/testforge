@@ -49,11 +49,19 @@ test("both names, the same value: that value, and no notice", (t) => {
 test("both names, different values: the new one wins, and the notice says so", (t) => {
     const warn = notices(t);
     assert.equal(setting("OLLAMA_BASE_URL", { MRONION_OLLAMA_BASE_URL: "http://new", TESTFORGE_OLLAMA_BASE_URL: "http://old" }), "http://new");
-    // A blank new value is still the new value: the old one is never read past it.
-    assert.equal(setting("ENV", { MRONION_ENV: "", TESTFORGE_ENV: "ci" }), "");
     assert.deepEqual(warn.calls.map((call) => call.arguments), [
         ["MRONION_OLLAMA_BASE_URL and TESTFORGE_OLLAMA_BASE_URL are both set and differ; using MRONION_OLLAMA_BASE_URL. The old name stops working at 1.0."],
-        ["MRONION_ENV and TESTFORGE_ENV are both set and differ; using MRONION_ENV. The old name stops working at 1.0."],
+    ]);
+});
+
+test("a blank new name with an old value: the old value, with a notice saying the new one is blank (Decision 5, amended 2026-11-09)", (t) => {
+    // A pipeline that templates in an empty MRONION_X must not lose the TESTFORGE_X it already sets.
+    const warn = notices(t);
+    assert.equal(setting("ENV", { MRONION_ENV: "", TESTFORGE_ENV: "ci" }), "ci");
+    assert.equal(setting("LIBRARY_PROMOTED_DIR", { MRONION_LIBRARY_PROMOTED_DIR: "  ", TESTFORGE_LIBRARY_PROMOTED_DIR: "/lib" }), "/lib");
+    assert.deepEqual(warn.calls.map((call) => call.arguments), [
+        ["MRONION_ENV is blank; using TESTFORGE_ENV. The old name stops working at 1.0."],
+        ["MRONION_LIBRARY_PROMOTED_DIR is blank; using TESTFORGE_LIBRARY_PROMOTED_DIR. The old name stops working at 1.0."],
     ]);
 });
 

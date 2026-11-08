@@ -214,6 +214,12 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      name supplied the value, the app prints one notice per process naming
      both, on the server log or CLI stderr. When both are set and differ,
      the new one wins and the notice says so.
+     **Amended 2026-11-09 (Emil, owner decision):** a blank `MRONION_X`
+     (empty or only spaces) doesn't hide a `TESTFORGE_X` that has a value:
+     the old value is used, and the notice says the new name is blank. A
+     pipeline that templates in an empty new variable keeps its old one. A
+     blank `MRONION_X` on its own stays as it was: returned blank, which
+     each reader treats as unset.
    - Removal of the old command and the old user-set names is planned with
      1.0 (the versioning rule, TFP-257: 1.0 after Phase 47 declares the CLI
      and report stable). The removal needs its own ticket at that time.

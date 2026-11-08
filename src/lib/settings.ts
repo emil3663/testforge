@@ -65,6 +65,12 @@ export function setting(name: SettingName, env: Record<string, string | undefine
         notice(name, `${OLD_PREFIX}${name} is now ${PREFIX}${name}; the old name stops working at 1.0.`);
         return old;
     }
+    // Decision 5, amended 2026-11-09: a blank new name (a pipeline templating in an empty variable) doesn't hide an
+    // old one that has a value. A blank new name alone is returned as it is.
+    if (value.trim() === "" && old.trim() !== "") {
+        notice(name, `${PREFIX}${name} is blank; using ${OLD_PREFIX}${name}. The old name stops working at 1.0.`);
+        return old;
+    }
     notice(name, `${PREFIX}${name} and ${OLD_PREFIX}${name} are both set and differ; using ${PREFIX}${name}. The old name stops working at 1.0.`);
     return value;
 }
