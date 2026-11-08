@@ -1,6 +1,6 @@
 # Dependency upkeep: the watch list and two tickets (2026-11-08)
 
-**Status:** Owner decision (Emil, 2026-11-08). TFP-273 and TFP-274 open.
+**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 open.
 
 Emil asked for a way to see dependency issues and clear them with patches,
 not only dismiss them. Two parts, both chosen on 2026-11-08:
@@ -55,8 +55,9 @@ back, and remove it (with the date and commit) when it is cleared.
 
 ## TFP-274 - CodeQL "Incomplete URL scheme check" in the crawl (High)
 
-- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
-  commit. `shouldQueueUrl` queues only `http:` and `https:`
+- **Status:** Done 2026-11-08: `e9ab8b5`, verified (Cowork, 2026-11-08);
+  #6133 closed as fixed by CodeQL's scan of `e9ab8b5` (13:24:46Z;
+  JavaScript results 16 to 15). `shouldQueueUrl` queues only `http:` and `https:`
   (`CRAWLED_PROTOCOLS`), exported for its test. **Verified** on a Linux
   clone, the uncommitted files on `59eb2fd`: `crawl.test.ts` and the crawl
   route test 5 of 5 passed, 0 skipped; with the old blocklist (exported),
