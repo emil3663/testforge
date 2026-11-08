@@ -30,8 +30,8 @@
     "comparison:fixture": "node scripts/comparison-fixture.mjs"
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.59.1",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "dictionary-en": "^4.0.0",
     "dictionary-en-gb": "^3.0.0",
     "next": "16.4.3",
@@ -48,12 +48,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "allure": "^3.5.0",
-    "allure-playwright": "^3.7.1",
-    "dotenv-cli": "^11.0.0",
+    "allure-playwright": "^3.14.0",
+    "dotenv-cli": "^11.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
-    "knip": "6.44.0",
-    "nodemailer": "10.1.7",
+    "knip": "6.44.1",
+    "nodemailer": "10.3.1",
     "tailwindcss": "^4"
   },
   "//": [
