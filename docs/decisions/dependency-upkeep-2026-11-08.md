@@ -55,6 +55,15 @@ back, and remove it (with the date and commit) when it is cleared.
 
 ## TFP-274 - CodeQL "Incomplete URL scheme check" in the crawl (High)
 
+- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
+  commit. `shouldQueueUrl` queues only `http:` and `https:`
+  (`CRAWLED_PROTOCOLS`), exported for its test. **Verified** on a Linux
+  clone, the uncommitted files on `59eb2fd`: `crawl.test.ts` and the crawl
+  route test 5 of 5 passed, 0 skipped; with the old blocklist (exported),
+  the scheme-only test fails on `vbscript:msgbox(1)`, so this ticket's
+  "can't fail on today's code" holds only for the origin-level test.
+  Claude Code's template check (172 identical) and unit run (769 of 769)
+  weren't re-run here. #6133 closing is checked after the push.
 - **Phase:** None — next, before TFP-273
 - **Priority:** P1 (a High alert open on `main`)
 - **Suggested labels:** `security`, `crawl`

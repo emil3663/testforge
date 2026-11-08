@@ -154,12 +154,15 @@ function normalizeCrawlUrl(url: URL) {
     return crawlKeyOf(url);
 }
 
-function shouldQueueUrl(candidateUrl: URL, origin: string) {
+// TFP-274: an allowlist, not a blocklist of schemes (CodeQL #6133): only http and https pages are crawled.
+const CRAWLED_PROTOCOLS = new Set(["http:", "https:"]);
+
+export function shouldQueueUrl(candidateUrl: URL, origin: string) {
     if (candidateUrl.origin !== origin) {
         return false;
     }
 
-    if (["mailto:", "tel:", "javascript:", "data:"].includes(candidateUrl.protocol)) {
+    if (!CRAWLED_PROTOCOLS.has(candidateUrl.protocol)) {
         return false;
     }
 
