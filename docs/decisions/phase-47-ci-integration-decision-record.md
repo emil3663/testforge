@@ -11,7 +11,8 @@ Scope: TestForge runs as one step in another project's CI pipeline:
 
 Status: **Locked (Emil, 2026-10-27). In progress: TFP-263, TFP-272,
 TFP-245 and TFP-246 done; TFP-247 waits for Phase 48, the rename to
-Mr Onion (Decision 11, amended 2026-11-08).**
+Mr Onion (Decision 11, amended 2026-11-08). Tracking issue
+[#24](https://github.com/emil3663/testforge/issues/24), opened 2026-11-08.**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
 - Phase 16 Decision 1 is amended in its own record, in the same change as

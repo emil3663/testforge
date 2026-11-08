@@ -13,7 +13,9 @@ Scope:
   in one go before Phase 47's TFP-247 publishes an image.
 
 Status: **Locked (Emil, 2026-11-08). In progress on branch
-`phase-48-mr-onion`: TFP-275 done (`46e3994`).**
+`phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`).
+Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
+[#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
   **[for Emil]** line below as proposed. The markers stay to show which
   lines were proposals before the lock.~~
