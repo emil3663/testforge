@@ -13,7 +13,7 @@
 import assert from "node:assert";
 import { test } from "node:test";
 
-const { POST } = await import("./route.ts");
+const { POST, GET } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
 
 test("POST /api/crawl: truncated JSON body returns 400 with a JSON error body, not a 500", async () => {
@@ -42,4 +42,26 @@ test("POST /api/crawl: non-object JSON body (e.g. a bare string) is rejected wit
 
     assert.equal(res.status, 400);
     assert.equal(typeof body.error, "string");
+});
+
+// TFP-272: a browser that can't start ends the crawl as failed, saying why, instead of leaving it running.
+test("POST /api/crawl: when the browser can't start, the crawl ends as failed with the cause in error", async (t) => {
+    const { chromium } = await import("@playwright/test");
+    t.mock.method(chromium, "launch", async () => {
+        throw new Error("browserType.launch: Executable doesn't exist at /no/such/chrome\n╔══ Looks like Playwright was just installed ══╗");
+    });
+    const started = await (await POST(new NextRequest(new URL("http://localhost/api/crawl"), {
+        method: "POST",
+        body: JSON.stringify({ baseUrl: "http://localhost:4399" }),
+        headers: { "content-type": "application/json" },
+    }))).json();
+
+    let snapshot = started;
+    for (let poll = 0; poll < 40 && snapshot.crawlStatus === "running"; poll++) {
+        await new Promise((resolve) => setTimeout(resolve, 25));
+        snapshot = await (await GET(new NextRequest(new URL(`http://localhost/api/crawl?crawlId=${started.crawlId}`)))).json();
+    }
+
+    assert.equal(snapshot.crawlStatus, "failed");
+    assert.equal(snapshot.error, "The browser for the crawl could not start: browserType.launch: Executable doesn't exist at /no/such/chrome");
 });

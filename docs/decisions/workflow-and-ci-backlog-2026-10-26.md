@@ -1207,8 +1207,18 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-272 - A crawl whose browser fails to launch stays "running" forever (added 2026-11-08)
 
-- **Status:** Open. Found while building TFP-263 (2026-11-08); present
-  before and after it.
+- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
+  commit. Found while building TFP-263 (2026-11-08); present before and
+  after it. Launch and the first page now sit in their own `try` in
+  `src/lib/pipeline/crawl.ts`; a throw closes any browser that started and
+  returns "failed" with "The browser for the crawl could not start: " and
+  the cause's first line. **Verified** on a Linux clone, the uncommitted
+  files on `b493265`: `src/app/api/crawl/route.test.ts` 3 of 3 passed, 0
+  skipped; with the old `crawl.ts` the new test fails (2 passed, 1 failed,
+  `browserType.launch: Executable doesn't exist at /no/such/chrome`).
+  CRW-04 ✅. Claude Code's standalone status script, its 18 browser-crawl
+  unit tests and regression (73 of 73) weren't re-run here. The CLI's half
+  of the scope (report and exit non-zero) comes with TFP-245.
 - **Phase:** None — after TFP-263, before TFP-245
 - **Priority:** P2
 - **Suggested labels:** `bug`, `crawl`

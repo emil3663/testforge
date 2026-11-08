@@ -1,4 +1,4 @@
-import { chromium } from "@playwright/test";
+import { chromium, type Browser, type Page } from "@playwright/test";
 import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
 import { capturePageOutline, type PageOutline } from "@/lib/selection/page-outline";
 import { groupPagesIntoTypes, labelPageType, type OutlinedPageType, type PageTypeLabel } from "@/lib/selection/page-types";
@@ -172,12 +172,22 @@ function shouldQueueUrl(candidateUrl: URL, origin: string) {
 
 export async function crawlSite(baseUrl: string, control: CrawlControl): Promise<CrawlOutcome> {
     const { progress, isCancelled } = control;
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
+    // TFP-272: a browser that can't start ends the crawl as failed, with the cause's first line, never a crawl left running.
+    let browser: Browser | undefined;
+    let page: Page;
+    try {
+        browser = await chromium.launch({ headless: true });
+        page = await browser.newPage();
+    } catch (error) {
+        await browser?.close().catch(() => { });
+        const cause = error instanceof Error ? error.message.split("\n")[0] : String(error);
+        return { status: "failed", finishedAt: Date.now(), error: `The browser for the crawl could not start: ${cause}` };
+    }
+    const openBrowser = browser;
     control.onBrowser?.(async () => {
         await Promise.all([
             page.close().catch(() => { }),
-            browser.close().catch(() => { }),
+            openBrowser.close().catch(() => { }),
         ]);
     });
     const startUrl = new URL(baseUrl);
@@ -361,6 +371,6 @@ export async function crawlSite(baseUrl: string, control: CrawlControl): Promise
     } finally {
         control.onBrowser?.(null);
         await page.close().catch(() => { });
-        await browser.close().catch(() => { });
+        await openBrowser.close().catch(() => { });
     }
 }
