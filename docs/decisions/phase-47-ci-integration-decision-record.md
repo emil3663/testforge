@@ -9,8 +9,8 @@ Scope: TestForge runs as one step in another project's CI pipeline:
   build;
 - it ships as a pinned Docker image and a GitHub Action.
 
-Status: **Locked (Emil, 2026-10-27). In progress: TFP-263 done
-(2026-11-08); TFP-272, then TFP-245, next.**
+Status: **Locked (Emil, 2026-10-27). In progress: TFP-263, TFP-272
+and TFP-245 done (2026-11-08); TFP-246 next.**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
 - Phase 16 Decision 1 is amended in its own record, in the same change as

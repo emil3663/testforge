@@ -320,8 +320,8 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-245 - Headless runner with a verdict, exit codes and JUnit output
 
-- **Status:** Built 2026-11-08; verified (Cowork, 2026-11-08) after the
-  fixes below, awaiting commit. **First pass:** on a Linux clone (2
+- **Status:** Done 2026-11-08: `2c4b6f3`, verified (Cowork, 2026-11-08) after
+  the fixes below. **First pass:** on a Linux clone (2
   cores), the uncommitted files on `6b617b2`: an unreachable URL exits `2`;
   a config with an unknown area exits `3`, naming `practices[0]`; the CLI,
   junit, config, run and pipeline tests pass, **except four server tests
