@@ -1,94 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { chromium, type Browser, type Page } from "@playwright/test";
 import { randomUUID } from "crypto";
-import { crawlKeyOf, gotoPage, pagePathOf } from "@/lib/introspect/routes";
-import { capturePageOutline, type PageOutline } from "@/lib/selection/page-outline";
-import { groupPagesIntoTypes, labelPageType, type OutlinedPageType, type PageTypeLabel } from "@/lib/selection/page-types";
-import { rankPageTypes, selectComprehensivePagesByType, selectStandardPages, type PageTypeSelection, type RankedPageType } from "@/lib/selection/select";
-import { DEFAULT_PAGE_CAP } from "@/lib/comprehensive/run-mode";
-
-// Only correct when TestForge is testing itself. For any other target
-// (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
-const DEFAULT_BASE_URL = "http://localhost:3000";
-const MAX_CRAWL_PAGES = 100;
-const MAX_DISCOVERED_LINKS_PER_PAGE = 200;
-const SKIPPED_EXTENSIONS = /\.(?:pdf|doc|docx|xls|xlsx|csv|zip|ppt|pptx|jpg|jpeg|png|gif|svg|webp|ico|css|js|json|xml|txt|mp3|mp4|avi|mov|woff|woff2|ttf|eot)(?:[?#].*)?$/i;
+import { crawlSite, createEmptyCrawlProgress, normalizeCrawlBaseUrl, type CrawlProgressSnapshot, type CrawlResultPayload } from "@/lib/pipeline/crawl";
 
 type CrawlLifecycleStatus = "running" | "completed" | "failed" | "cancelled";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface CrawledPage {
-    path: string;
-    url: string;
-    title: string;
-    discoveredFrom: string | null;
-    /** Phase 40 Decision 2 (TFP-171): absent when the page's outline couldn't be read. */
-    outline?: PageOutline;
-}
-
-type CrawledPageType = OutlinedPageType & { label: PageTypeLabel };
-
-/**
- * Phase 40 Decisions 1 to 3 (TFP-170, TFP-171, revised at Gate A in
- * TFP-176): the pages, in discovery order, grouped by address, split by form
- * signature and merged only among siblings under one parent, each labelled
- * for the report. The start page is the first page crawled.
- */
-function typesOf(pages: CrawledPage[]): CrawledPageType[] {
-    const outlines = new Map(pages.map((page) => [page.path, page.outline]));
-    const startPath = pages[0]?.path ?? "/";
-    return groupPagesIntoTypes(pages.map((page) => ({ path: page.path, outline: page.outline })))
-        .map((type) => ({ ...type, label: labelPageType(type, outlines.get(type.pages[0]), startPath) }));
-}
-
-/**
- * Phase 40 Decisions 4 to 6 (TFP-172): the types ranked, and the pages
- * Standard (up to 8 types) and Comprehensive (its default 20-page budget)
- * cover. A Comprehensive run with another budget selects again from the
- * ranking.
- */
-function selectionOf(pages: CrawledPage[], types: CrawledPageType[]) {
-    const outlines = new Map(pages.map((page) => [page.path, page.outline]));
-    const rankedTypes = rankPageTypes(types, (path) => outlines.get(path));
-    return {
-        rankedTypes,
-        pageSelection: { standard: selectStandardPages(rankedTypes), comprehensive: selectComprehensivePagesByType(rankedTypes, DEFAULT_PAGE_CAP) },
-    };
-}
-
-function typedResultOf(pages: CrawledPage[]) {
-    const pageTypes = typesOf(pages);
-    return { pageTypes, ...selectionOf(pages, pageTypes) };
-}
-
-interface CrawlResultPayload {
-    crawledAt: string;
-    baseUrl: string;
-    pageCount: number;
-    pages: CrawledPage[];
-    /** Phase 40 Decision 1 (TFP-170): the pages grouped into types by address pattern. */
-    pageTypes?: CrawledPageType[];
-    /** Phase 40 Decision 4 (TFP-172): the types in coverage order. */
-    rankedTypes?: RankedPageType[];
-    /** Phase 40 Decisions 5 and 6 (TFP-172): the pages each run type covers. */
-    pageSelection?: { standard: PageTypeSelection; comprehensive: PageTypeSelection };
-    warnings?: string[];
-}
-
-interface CrawlProgressSnapshot {
-    maxPages: number;
-    visitedUrls: number;
-    queuedUrls: number;
-    discoveredPages: number;
-    warningsCount: number;
-    currentUrl: string | null;
-    currentPath: string | null;
-    currentTitle: string | null;
-    lastCompletedPath: string | null;
-    lastCompletedTitle: string | null;
-}
 
 interface CrawlStatusPayload {
     crawlId: string;
@@ -109,29 +26,14 @@ interface CrawlJob {
     progress: CrawlProgressSnapshot;
     result: CrawlResultPayload | null;
     error: string | null;
-    browser: Browser | null;
-    page: Page | null;
+    /** Closes the crawl's page and browser while it runs (Phase 47 TFP-263: the crawl itself is in src/lib/pipeline). */
+    closeBrowser: (() => Promise<void>) | null;
 }
 
 const globalCrawlJobs = globalThis as typeof globalThis & {
     __testforgeCrawlJobs?: Map<string, CrawlJob>;
 };
 const crawlJobs = globalCrawlJobs.__testforgeCrawlJobs ?? (globalCrawlJobs.__testforgeCrawlJobs = new Map());
-
-function createEmptyCrawlProgress(): CrawlProgressSnapshot {
-    return {
-        maxPages: MAX_CRAWL_PAGES,
-        visitedUrls: 0,
-        queuedUrls: 0,
-        discoveredPages: 0,
-        warningsCount: 0,
-        currentUrl: null,
-        currentPath: null,
-        currentTitle: null,
-        lastCompletedPath: null,
-        lastCompletedTitle: null,
-    };
-}
 
 function buildCrawlSnapshot(job: CrawlJob): CrawlStatusPayload {
     return {
@@ -144,243 +46,19 @@ function buildCrawlSnapshot(job: CrawlJob): CrawlStatusPayload {
     };
 }
 
-function normalizeBaseUrl(baseUrl: unknown) {
-    if (typeof baseUrl !== "string" || !baseUrl.trim()) {
-        return { ok: true as const, value: DEFAULT_BASE_URL };
-    }
-
-    const trimmed = baseUrl.trim();
-    const withProtocol = /^[a-zA-Z][a-zA-Z\d+.-]*:\/\//.test(trimmed)
-        ? trimmed
-        : `http://${trimmed}`;
-
-    try {
-        const normalized = new URL(withProtocol);
-        normalized.hash = "";
-        return {
-            ok: true as const,
-            value: normalized.toString().replace(/\/$/, ""),
-        };
-    } catch {
-        return {
-            ok: false as const,
-            message: "baseUrl must be a valid URL",
-        };
-    }
-}
-
-// TFP-165: a hash route is a page, named as the address bar shows it (/#/contact).
-function normalizePath(url: URL) {
-    return pagePathOf(url);
-}
-
-// TFP-165: the query and an in-page anchor are dropped, but a hash route
-// (#/contact, #!/contact) is kept: it is its own page.
-function normalizeCrawlUrl(url: URL) {
-    return crawlKeyOf(url);
-}
-
-function shouldQueueUrl(candidateUrl: URL, origin: string) {
-    if (candidateUrl.origin !== origin) {
-        return false;
-    }
-
-    if (["mailto:", "tel:", "javascript:", "data:"].includes(candidateUrl.protocol)) {
-        return false;
-    }
-
-    if (SKIPPED_EXTENSIONS.test(candidateUrl.pathname)) {
-        return false;
-    }
-
-    return true;
-}
-
 async function runCrawlJob(job: CrawlJob) {
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
-    job.browser = browser;
-    job.page = page;
-    const startUrl = new URL(job.baseUrl);
-    const normalizedStartUrl = normalizeCrawlUrl(startUrl);
-    const queue: Array<{ url: string; discoveredFrom: string | null }> = [{
-        url: normalizedStartUrl.toString(),
-        discoveredFrom: null,
-    }];
-    const queued = new Set<string>([normalizedStartUrl.toString()]);
-    const visited = new Set<string>();
-    const visitedPaths = new Set<string>();
-    const pages: CrawledPage[] = [];
-    const warnings: string[] = [];
-
-    job.progress.queuedUrls = queue.length;
-
-    try {
-        while (queue.length > 0 && pages.length < MAX_CRAWL_PAGES) {
-            if (job.cancellationRequested) {
-                break;
-            }
-
-            const nextItem = queue.shift();
-
-            if (!nextItem) {
-                break;
-            }
-
-            const targetUrl = nextItem.url;
-            const targetPath = normalizePath(new URL(targetUrl));
-            if (visited.has(targetUrl)) {
-                job.progress.queuedUrls = queue.length;
-                continue;
-            }
-
-            visited.add(targetUrl);
-            job.progress.visitedUrls = visited.size;
-            job.progress.queuedUrls = queue.length;
-            job.progress.currentUrl = targetUrl;
-            job.progress.currentPath = targetPath;
-            job.progress.currentTitle = null;
-
-            try {
-                // TFP-165: a hash route loads as a fresh document, so the network-idle wait means something.
-                await gotoPage(page, targetUrl, { timeout: 30000 });
-
-                if (job.cancellationRequested) {
-                    break;
-                }
-
-                const pageData = await page.evaluate(({ origin, limit }) => {
-                    const links = Array.from(document.querySelectorAll("a[href]"))
-                        .map((anchor) => {
-                            const rawHref = anchor.getAttribute("href");
-                            if (!rawHref) {
-                                return null;
-                            }
-
-                            try {
-                                const resolved = new URL(rawHref, window.location.href);
-                                return resolved.toString();
-                            } catch {
-                                return null;
-                            }
-                        })
-                        .filter((link): link is string => Boolean(link))
-                        .filter((link, index, allLinks) => allLinks.indexOf(link) === index)
-                        .filter((link) => link.startsWith(origin))
-                        .slice(0, limit);
-
-                    return {
-                        title: document.title.replace(/\s+/g, " ").trim(),
-                        currentUrl: window.location.href,
-                        links,
-                    };
-                }, {
-                    origin: startUrl.origin,
-                    limit: MAX_DISCOVERED_LINKS_PER_PAGE,
-                });
-
-                const currentUrl = normalizeCrawlUrl(new URL(pageData.currentUrl));
-                const path = normalizePath(currentUrl);
-                job.progress.currentTitle = pageData.title || null;
-
-                if (!visitedPaths.has(path)) {
-                    visitedPaths.add(path);
-                    // Phase 40 Decision 2 (TFP-171): the page's outline, read from the page already open.
-                    const outline = await page.evaluate(capturePageOutline).catch(() => undefined);
-                    pages.push({
-                        path,
-                        url: currentUrl.toString(),
-                        title: pageData.title,
-                        discoveredFrom: nextItem.discoveredFrom,
-                        ...(outline ? { outline } : {}),
-                    });
-                    job.progress.discoveredPages = pages.length;
-                }
-
-                for (const discoveredUrl of pageData.links) {
-                    try {
-                        const candidateUrl = normalizeCrawlUrl(new URL(discoveredUrl));
-
-                        if (!shouldQueueUrl(candidateUrl, startUrl.origin)) {
-                            continue;
-                        }
-
-                        const normalizedCandidate = candidateUrl.toString();
-                        if (queued.has(normalizedCandidate) || visited.has(normalizedCandidate)) {
-                            continue;
-                        }
-
-                        queued.add(normalizedCandidate);
-                        queue.push({
-                            url: normalizedCandidate,
-                            discoveredFrom: path,
-                        });
-                    } catch {
-                        continue;
-                    }
-                }
-
-                job.progress.lastCompletedPath = path;
-                job.progress.lastCompletedTitle = pageData.title || path;
-                job.progress.queuedUrls = queue.length;
-            } catch (error) {
-                if (job.cancellationRequested) {
-                    break;
-                }
-
-                warnings.push(
-                    `Could not crawl ${targetUrl}: ${error instanceof Error ? error.message : "Unknown error"}`
-                );
-                job.progress.warningsCount = warnings.length;
-                job.progress.queuedUrls = queue.length;
-            }
-        }
-
-        const sortedPages = [...pages].sort((left, right) => left.path.localeCompare(right.path));
-
-        job.finishedAt = Date.now();
-        job.progress.currentUrl = null;
-        job.progress.currentPath = null;
-        job.progress.currentTitle = null;
-        job.progress.queuedUrls = 0;
-        job.progress.discoveredPages = sortedPages.length;
-        job.result = {
-            crawledAt: new Date(job.finishedAt).toISOString(),
-            baseUrl: job.baseUrl,
-            pageCount: sortedPages.length,
-            pages: sortedPages,
-            // Phase 40 (TFP-170 to TFP-172): the pages grouped into types, in crawl order; ranked; selected.
-            ...typedResultOf(pages),
-            warnings,
-        };
-        job.status = job.cancellationRequested ? "cancelled" : "completed";
-    } catch (error) {
-        job.finishedAt = Date.now();
-        job.progress.currentUrl = null;
-        job.progress.currentPath = null;
-        job.progress.currentTitle = null;
-        job.progress.queuedUrls = 0;
-        if (job.cancellationRequested) {
-            const sortedPages = [...pages].sort((left, right) => left.path.localeCompare(right.path));
-            job.result = {
-                crawledAt: new Date(job.finishedAt).toISOString(),
-                baseUrl: job.baseUrl,
-                pageCount: sortedPages.length,
-                pages: sortedPages,
-                ...typedResultOf(pages),
-                warnings,
-            };
-            job.status = "cancelled";
-        } else {
-            job.error = error instanceof Error ? error.message : "Site crawl failed";
-            job.status = "failed";
-        }
-    } finally {
-        job.page = null;
-        job.browser = null;
-        await page.close().catch(() => { });
-        await browser.close().catch(() => { });
+    const outcome = await crawlSite(job.baseUrl, {
+        progress: job.progress,
+        isCancelled: () => job.cancellationRequested,
+        onBrowser: (close) => { job.closeBrowser = close; },
+    });
+    job.finishedAt = outcome.finishedAt;
+    if (outcome.status === "failed") {
+        job.error = outcome.error;
+    } else {
+        job.result = outcome.result;
     }
+    job.status = outcome.status;
 }
 
 export async function POST(req: NextRequest) {
@@ -392,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     const { baseUrl } = body;
 
-    const normalizedBaseUrl = normalizeBaseUrl(baseUrl);
+    const normalizedBaseUrl = normalizeCrawlBaseUrl(baseUrl);
 
     if (!normalizedBaseUrl.ok) {
         return NextResponse.json({ error: normalizedBaseUrl.message }, { status: 400 });
@@ -409,8 +87,7 @@ export async function POST(req: NextRequest) {
         progress: createEmptyCrawlProgress(),
         result: null,
         error: null,
-        browser: null,
-        page: null,
+        closeBrowser: null,
     };
 
     crawlJobs.set(crawlId, job);
@@ -450,10 +127,7 @@ export async function DELETE(req: NextRequest) {
 
     if (job.status === "running") {
         job.cancellationRequested = true;
-        await Promise.all([
-            job.page?.close().catch(() => { }),
-            job.browser?.close().catch(() => { }),
-        ]);
+        await job.closeBrowser?.();
     }
 
     return NextResponse.json(buildCrawlSnapshot(job));

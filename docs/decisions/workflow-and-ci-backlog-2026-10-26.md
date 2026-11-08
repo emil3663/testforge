@@ -8,7 +8,7 @@ can be picked up between Phase 39's tickets, after TFP-157's verification.
 **Ticket numbers:** TFP-244 to TFP-257, allocated against `main` at
 `8e93998` (highest then: TFP-243); TFP-259 and TFP-260 added 2026-10-27
 (TFP-258 was taken meanwhile); TFP-261 and TFP-262 added 2026-10-27; TFP-268 to TFP-270
-added 2026-11-03 (highest then: TFP-267); TFP-271 added 2026-11-04. Re-check before committing; renumber if
+added 2026-11-03 (highest then: TFP-267); TFP-271 added 2026-11-04; TFP-272 added 2026-11-08. Re-check before committing; renumber if
 another session took any of them.
 
 **Why this exists:**
@@ -1204,6 +1204,28 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - `check:template-unchanged`: 172 of 172 identical (suites don't change).
   - GEN-108 moves from ⚠️ to ✅.
 - **Dependencies:** TFP-268 (done).
+
+### TFP-272 - A crawl whose browser fails to launch stays "running" forever (added 2026-11-08)
+
+- **Status:** Open. Found while building TFP-263 (2026-11-08); present
+  before and after it.
+- **Phase:** None — after TFP-263, before TFP-245
+- **Priority:** P2
+- **Suggested labels:** `bug`, `crawl`
+- **Problem it solves:** `/api/crawl` starts the crawl with `void
+  runCrawlJob(job)`. If launching Chromium throws (a missing browser, a bad
+  `PLAYWRIGHT_BROWSERS_PATH`), the throw comes before the crawl's own
+  `try`, the promise rejects unseen, and the job's status never leaves
+  "running": the UI polls forever with no error.
+- **Scope:** a launch failure ends the job as "failed" with a plain
+  message naming the cause; the CLI path (TFP-245) reports it and exits
+  non-zero.
+- **Acceptance criteria:**
+  - **Red first:** a route test whose browser launch throws, failing on
+    today's code (status stays "running"), passing after (status
+    "failed", the message in `error`).
+  - The existing crawl tests pass unchanged.
+- **Dependencies:** TFP-263.
 
 ---
 

@@ -9,7 +9,8 @@ Scope: TestForge runs as one step in another project's CI pipeline:
   build;
 - it ships as a pinned Docker image and a GitHub Action.
 
-Status: **Locked (Emil, 2026-10-27). Not started.**
+Status: **Locked (Emil, 2026-10-27). In progress: TFP-263 done
+(2026-11-08); TFP-272, then TFP-245, next.**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
 - Phase 16 Decision 1 is amended in its own record, in the same change as
@@ -270,6 +271,22 @@ Part 1, with these changes once this record locks:
   moved with the code they test.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** None. Not during a Phase 39 measurement session.
+- **Verified 2026-11-08 (Cowork):** the uncommitted files on `5b58370`, on
+  a Linux clone: the crawl and four generate route test files 50 of 50
+  passed, 0 skipped; `check:template-unchanged 5b58370`: 172 inputs, 172
+  identical; `tsc` exit 0; neither route mentions the browser, the crawl
+  loop or a generator. Read: the generate route is the old body with its
+  four 400s returned as `{ ok: false, error }` and `respond` returning
+  `{ ok: true, body }`, nothing else; the crawl route keeps the job map and
+  hands the crawl `progress`, `isCancelled` and `onBrowser`, and DELETE
+  closes the browser through it. Claude Code's self-test (5 of 5),
+  regression (73 of 73) and unit run (729 of 729) weren't re-run here.
+  **Accepted differences (Emil, 2026-11-08):** the tests stay with the
+  routes (they are the unchanged proof the record names); progress stays an
+  object updated in place, not a callback; a finished crawl reports
+  "completed" after its browser has closed, not just before. **Found, not
+  this ticket:** a Chromium launch failure leaves the crawl job "running"
+  forever, before and after; TFP-272 in the workflow backlog.
 
 ## Recommended Execution Order
 
