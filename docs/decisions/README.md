@@ -58,6 +58,7 @@ research, nothing locked.
 |---|---|
 | [`deferred-work-register.md`](deferred-work-register.md) | Every deferred item (D1–D30), its status and the build order |
 | [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) | Working-agreement follow-ups, architect-facing docs, CI integration |
+| [`dependency-upkeep-2026-11-08.md`](dependency-upkeep-2026-11-08.md) | The dependency watch list the monthly check reads; TFP-273 (Dependabot version updates) and TFP-274 (the crawl's URL scheme allowlist) |
 | [`practice-site-targets-2026-10-19.md`](practice-site-targets-2026-10-19.md) | The practice sites TestForge should eventually find every issue in |
 | [`saas-prerequisites.md`](saas-prerequisites.md) | What a hosted version would need; deferred, not scheduled |
 | [`data/`](data/) | Data files the records cite |
