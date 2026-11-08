@@ -31,6 +31,25 @@ back, and remove it (with the date and commit) when it is cleared.
 
 ## TFP-273 - Monthly Dependabot version updates
 
+- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
+  commit. `.github/dependabot.yml` (npm and github-actions, monthly,
+  limit 5; npm minors and patches in one group, majors one per package;
+  `next`, `eslint-config-next`, `@playwright/test` and `playwright-core`
+  majors ignored) and a merge rule in `docs/QUALITY_GATES.md` §3. **Read
+  by Cowork:** the config does what the scope says; the merge rule's
+  reason for not using the template check (both refs share one
+  `node_modules`) is sound, so the unit and regression suites stand in for
+  it. Claude Code's schema check (valid; a broken copy invalid, naming both
+  fields) wasn't re-run here (SchemaStore isn't reachable from Cowork's
+  workspace). **Rulings (Emil, 2026-11-08):** (1) `next`, `react`,
+  `react-dom` and `eslint-config-next` in a group of their own, so a
+  Next.js update arrives as its own pull request (W3); (2) `@types/node`
+  majors ignored while `.nvmrc` is 24 (W5); (3) the first run's pull
+  requests reported, with how many the limit held back; (4) Dependabot
+  security updates turned on in the repository's settings (by Cowork), so
+  an alert with a patch gets a fix pull request (a minimatch 11 one will
+  fail CI and be closed, W1); the config's header says so. All four are
+  in the commit.
 - **Phase:** None — after TFP-274, before TFP-246
 - **Priority:** P2
 - **Suggested labels:** `ci`, `dependencies`

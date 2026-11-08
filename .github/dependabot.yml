@@ -1,0 +1,49 @@
+# TFP-273 (docs/decisions/dependency-upkeep-2026-11-08.md): monthly version updates, grouped so a month's
+# minor and patch moves are one pull request. Each pull request runs PR Validation and CodeQL; how one is
+# merged is in docs/QUALITY_GATES.md section 3. This is version updates only: Dependabot security updates (a pull
+# request per alert with a patch) are a repository setting, turned on 2026-11-08 (Emil), and not limited here.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+      include: scope
+    groups:
+      # A Next.js update arrives as its own pull request, with the packages that move with it, and gets its own
+      # ticket (the watch list's W3). Listed first: a dependency goes to the first group it matches.
+      nextjs:
+        patterns: [next, react, react-dom, eslint-config-next]
+      # Majors stay out of the group: one pull request per package, each judged on its own.
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # A Next.js major needs a decision record (AGENTS.md; the watch list's W3). eslint-config-next moves with it.
+      - dependency-name: next
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint-config-next
+        update-types: [version-update:semver-major]
+      # @types/node follows the Node in .nvmrc (24); its majors wait for that ticket (W5).
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+      # Playwright is kept to minors, in the group (W4); the runner and its core move together.
+      - dependency-name: "@playwright/test"
+        update-types: [version-update:semver-major]
+      - dependency-name: playwright-core
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+      include: scope
+    groups:
+      # Actions are pinned by major tag (actions/checkout@v7), so nearly every update is a major: one pull request a month.
+      github-actions:
+        patterns: ["*"]

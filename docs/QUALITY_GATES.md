@@ -131,6 +131,22 @@ The gates catch failures that are mechanical. Quality is judged by reading.
   a suite is reached by at least one, and a unit test fails if a new one
   isn't (TFP-258, GEN-107); comments between a helper's declarations are
   the known exception.
+- **A Dependabot pull request is merged only when it is measured like any
+  other change** (TFP-273, `.github/dependabot.yml`). PR Validation (lint,
+  build, smoke) and CodeQL pass on it; checked out locally after `npm ci`,
+  `npm run test:unit` and the regression suite (`npm run test:regression`,
+  which CI runs only by hand) pass, with their counts in the merge commit.
+  A failure is either explained there, with the output, or the pull request
+  is closed and the update ticketed. `check:template-unchanged` is not
+  evidence here: both refs link the working tree's one `node_modules`, so
+  for a pull request that changes only `package.json` and the lockfile it
+  compares the same code against itself and is always identical. A major
+  update gets its own pull request and is judged on its own. A Next.js
+  minor or patch arrives in a pull request of its own, with `react`,
+  `react-dom` and `eslint-config-next`, and gets a ticket; a Next.js major
+  isn't proposed at all (it needs a decision record). What each
+  held-back update waits on is the watch list in
+  `docs/decisions/dependency-upkeep-2026-11-08.md`.
 - **Form-submitting tests run only with `TESTFORGE_INTERACTIVE=1`** (GEN-44).
 - **A healthy real site doesn't turn red because of the template's own
   mistakes** (Phase 36 Decision 1, GEN-50). Every false failure found goes
