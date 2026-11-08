@@ -3,6 +3,8 @@ import { buildBusyInspectionTargets, buildSelectedPracticeDescription, normalize
 import type { BestPracticeArea, BusyInspectionTarget, ContentProfile, CrawlResult, SavedSuiteResult, Step, TestAuditMode } from "@/app/_lib/types";
 import { STANDARD_RUN, type RunMode } from "@/lib/comprehensive/run-mode";
 import { buildPageTypeCoverage } from "@/lib/selection/coverage";
+import { readDroppedJourneys } from "@/app/_lib/dropped-journeys";
+import type { DroppedJourney } from "@/lib/generate/journey-check";
 
 interface HandleGenerateParams {
     baseUrl: string;
@@ -45,6 +47,8 @@ interface HandleGenerateParams {
 
 export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: TestAuditMode) {
     const [editedCode, setEditedCode] = useState("");
+    // TFP-271: the selected journeys the last generation couldn't write a test for, and why.
+    const [droppedJourneys, setDroppedJourneys] = useState<DroppedJourney[]>([]);
     // Phase 34 (TFP-119): how the suite was generated (gap-fill outcome, gate
     // verdicts), passed on to /api/run so the run records it. Null when the
     // generate response carried none (template-only).
@@ -137,6 +141,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
         params.setIsCreationCollapsed(false);
         setSaveLabel("Add to Test Explorer");
         setSavedSuite(null);
+        setDroppedJourneys([]);
         params.setActiveTab("summary");
         params.setStatusFilter("All");
         params.setSelectedFailedRerunTitles([]);
@@ -223,6 +228,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Generation failed");
             setEditedCode(data.code);
+            setDroppedJourneys(readDroppedJourneys(data));
             setLastGeneratedRunMode(params.runMode);
             // Phase 40 (TFP-173): when the pages came from a crawl, the page types found, covered and skipped.
             const rankedTypes = params.crawlResult?.baseUrl === normalizedBaseUrl.value ? params.crawlResult.rankedTypes : undefined;
@@ -269,6 +275,7 @@ export function useGeneration(defaultBaseUrl: string, defaultTestAuditMode: Test
 
     return {
         editedCode,
+        droppedJourneys,
         lastGeneration,
         lastGeneratedRunMode,
         setEditedCode,

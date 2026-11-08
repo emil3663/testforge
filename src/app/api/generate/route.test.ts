@@ -64,6 +64,34 @@ test("POST /api/generate: empty body returns 400 with a JSON error body, not a 5
     assert.equal(typeof body.error, "string");
 });
 
+// --- TFP-271: a selected journey the route drops is named, with why ---------
+
+test("POST /api/generate: each selected journey that gets no test is listed with its reason; a kept one isn't, and none dropped means no field", async () => {
+    const { identifyJourneys } = await import("../../../lib/introspect/journeys.ts");
+    const edge = (from: string, to: string, kind: "link" | "form-submit") => ({ from, to, kind, text: `${kind} ${from}->${to}`, rawValue: to, tagName: kind === "form-submit" ? "form" : "a", attributeName: kind === "form-submit" ? "action" : "href", containerLabel: "" });
+    const siteGraph = {
+        nodes: ["/", "/login", "/authenticate"].map((path) => ({ path, url: `http://localhost:3000${path}`, title: path, inspected: true })),
+        edges: [edge("/", "/login", "link"), edge("/login", "/authenticate", "form-submit")],
+    };
+    const [kept] = identifyJourneys(siteGraph).journeys;
+    const forged = { ...kept, id: "automatic||forged", steps: [{ ...kept.steps[0], rawValue: "/not-in-graph" }] };
+    const shortened = { ...kept, id: "automatic||shortened", steps: [] };
+    const contentProfile = { scannedAt: "", baseUrl: "http://localhost:3000", pages: [], siteGraph, journeys: [kept, forged, shortened] };
+    const ask = async (selectedJourneyIds: string[]) => {
+        delete process.env.OPENAI_API_KEY;
+        return (await POST(generateRequest({ contentProfile, contentRules: { paths: ["/"], selectedJourneyIds } }))).json();
+    };
+
+    const body = await ask([kept.id, forged.id, shortened.id, "automatic||/gone > /away"]);
+    assert.deepStrictEqual(body.droppedJourneys, [
+        { id: forged.id, reason: "a step isn't in the site graph" },
+        { id: shortened.id, reason: "its steps don't match its path" },
+        { id: "automatic||/gone > /away", reason: "it isn't in the page data this suite was generated from" },
+    ]);
+
+    assert.ok(!("droppedJourneys" in (await ask([kept.id]))), "nothing dropped, no field");
+});
+
 // --- TFP-083: OpenAI failure modes -----------------------------------------
 
 installFakeServer();

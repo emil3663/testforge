@@ -1117,8 +1117,10 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-270 - Clear the six Dependabot alerts in dev dependencies (added 2026-11-03)
 
-- **Status:** Built 2026-11-04, verified (Cowork, 2026-11-04), awaiting
-  commit. Only `package.json` and `package-lock.json`: `npm audit fix`
+- **Status:** Done and verified 2026-11-04: `804c191`. After the push
+  Dependabot marked #142, #139, #138, #110 and #56 fixed; #144 was
+  dismissed as tolerable risk (2026-11-04, with the TFP-270 comment), so
+  none is open. Only `package.json` and `package-lock.json`: `npm audit fix`
   without `--force` (brace-expansion 1.1.14 to 1.1.21, and 19 ESLint-tree
   packages within their ranges) and an `overrides` entry pinning dompurify
   3.4.17, its reason and removal check in a top-level `"//"` field.
@@ -1165,7 +1167,20 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-271 - Tell the user when a selected journey is dropped (added 2026-11-04)
 
-- **Status:** Open. Split from TFP-268's scope (Emil, 2026-11-04).
+- **Status:** Built 2026-11-08, verified (Cowork, 2026-11-08), awaiting
+  commit. Split from TFP-268's scope (Emil, 2026-11-04). The journey check
+  moved to `src/lib/generate/journey-check.ts`, used by both the normaliser
+  and `explainDroppedJourneys`; the route adds `droppedJourneys` (id and
+  reason) only when one is dropped; `GeneratedSuiteSection` shows them
+  under the suite. **Verified** on a Linux clone, the uncommitted files on
+  `804c191`: the route, dropped-journeys and journey tests 42 of 42 passed,
+  0 skipped; with the old `route.ts`, the new route test fails (10 passed,
+  1 failed); `check:template-unchanged 804c191`: 172 inputs, 172
+  identical; `tsc` exit 0; GEN-108 ✅ (394 characters). Read: every
+  `respond(...)` call comes after `droppedJourneys` is set (the closure
+  reads it), as the code comment says. Claude Code's end-to-end test (fails
+  against `HEAD`'s component at `toBeVisible`, passes with the change), its
+  screenshot and its unit run (729 of 729) weren't re-run here.
 - **Phase:** None — after TFP-270, before Phase 47
 - **Priority:** P3
 - **Suggested labels:** `generate`, `ui`

@@ -194,6 +194,33 @@ test.describe("Journey tests (TFP-091)", () => {
     });
 });
 
+test.describe("A selected journey with no test (TFP-271)", () => {
+    test("a selected journey the generation drops is named under the suite with why; a usual selection shows nothing extra", async ({ page }, testInfo) => {
+        const notice = page.getByRole("status").filter({ hasText: /selected journeys? got no test/ });
+        await generateAgainstFixture(page);
+        await page.locator("[data-journey-id]").first().click();
+        await page.getByRole("button", { name: "Generate selected" }).click();
+        await expect(page.getByLabel("Run interactive tests")).toBeVisible({ timeout: 60_000 });
+        await expect(notice).toHaveCount(0);
+
+        // The screen only offers journeys the scan found, so the one it can't keep is added to the real request on its
+        // way out; the real route decides it's dropped, and the real screen shows what it said.
+        const missing = "automatic||/gone > /away";
+        await page.route("**/api/generate", async (route) => {
+            const body = route.request().postDataJSON();
+            body.contentRules.selectedJourneyIds = [...body.contentRules.selectedJourneyIds, missing];
+            await route.continue({ postData: JSON.stringify(body) });
+        });
+        await page.locator("[data-journey-id]").nth(1).click();
+        await page.getByRole("button", { name: "Generate selected" }).click();
+
+        await expect(notice).toBeVisible({ timeout: 60_000 });
+        await expect(notice).toContainText("1 selected journey got no test:");
+        await expect(notice.getByRole("listitem")).toHaveText(["/gone > /away: it isn't in the page data this suite was generated from."]);
+        await notice.screenshot({ path: testInfo.outputPath("dropped-journey-notice.png") });
+    });
+});
+
 test.describe("Named-flow entry (TFP-096)", () => {
     test("a named flow entered in the UI produces the same ranked candidates as the same flow sent to the API, and shows on the review screen", async ({ page, request }) => {
         const flows = [{ label: "signin", entryPath: "/login", exitPath: "/secure" }];

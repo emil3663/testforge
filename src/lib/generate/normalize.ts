@@ -1,7 +1,6 @@
 import type {
     ActionableElementType,
     BestPracticeArea,
-    CandidateJourney,
     ContentProfile,
     ContentRules,
     DependencyKind,
@@ -15,6 +14,7 @@ import type {
     TestAuditMode,
 } from "@/lib/generate/mock";
 import { BEST_PRACTICE_OPTIONS } from "@/lib/generate/mock";
+import { normalizeJourneys, normalizeStringSequence, SITE_GRAPH_EDGE_KINDS } from "@/lib/generate/journey-check";
 
 const DEPENDENCY_KINDS = new Set<string>([
     "xhr-fetch",
@@ -25,7 +25,6 @@ const DEPENDENCY_KINDS = new Set<string>([
     "cookie",
 ]);
 
-const SITE_GRAPH_EDGE_KINDS = new Set<string>(["link", "form-submit", "action"]);
 
 // Only correct when TestForge is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
@@ -74,19 +73,6 @@ export function normalizeSelectedPractices(input: unknown) {
 
 export function normalizeTestAuditMode(input: unknown): TestAuditMode {
     return input === "deep" ? "deep" : DEFAULT_TEST_AUDIT_MODE;
-}
-
-// TFP-268: order and repeats kept, for a journey's path, where a page visited
-// twice is two entries.
-function normalizeStringSequence(input: unknown) {
-    if (!Array.isArray(input)) {
-        return [] as string[];
-    }
-
-    return input
-        .filter((item): item is string => typeof item === "string")
-        .map((item) => item.replace(/\s+/g, " ").trim())
-        .filter(Boolean);
 }
 
 function normalizeStringList(input: unknown) {
@@ -177,57 +163,6 @@ function normalizeDependencyMap(input: unknown): DependencyMapEntry[] {
             };
         })
         .filter((item): item is DependencyMapEntry => item.kind !== null && Boolean(item.host));
-}
-
-// TFP-089: journeys are derived server-side from the graph; this only
-// re-validates the round-tripped JSON. A journey whose steps don't line up
-// with its page sequence is dropped rather than repaired.
-function normalizeJourneys(input: unknown, graph: SiteGraph): CandidateJourney[] {
-    if (!Array.isArray(input)) {
-        return [];
-    }
-
-    return input.flatMap((item): CandidateJourney[] => {
-        if (!item || typeof item !== "object") {
-            return [];
-        }
-
-        const journey = item as Record<string, unknown>;
-        const path = normalizeStringSequence(journey.path);
-        const steps = graph.edges.length > 0 && Array.isArray(journey.steps)
-            ? journey.steps.filter((step): step is Record<string, unknown> => !!step && typeof step === "object")
-            : [];
-        const known = new Set(graph.edges.map((edge) => [edge.from, edge.to, edge.kind, edge.rawValue, edge.text].join("\u0000")));
-        const stepEdges = steps.map((step) => ({
-            from: typeof step.from === "string" ? step.from : "",
-            to: typeof step.to === "string" ? step.to : "",
-            kind: (typeof step.kind === "string" && SITE_GRAPH_EDGE_KINDS.has(step.kind) ? step.kind : "link") as SiteGraphEdgeKind,
-            text: typeof step.text === "string" ? step.text.replace(/\s+/g, " ").trim() : "",
-            rawValue: typeof step.rawValue === "string" ? step.rawValue : "",
-            tagName: typeof step.tagName === "string" ? step.tagName.trim() : "",
-            attributeName: typeof step.attributeName === "string" ? step.attributeName.trim() : "",
-            containerLabel: typeof step.containerLabel === "string" ? step.containerLabel.replace(/\s+/g, " ").trim() : "",
-        }));
-        const aligned = path.length >= 2 && stepEdges.length === path.length - 1 &&
-            stepEdges.every((step, index) =>
-                step.from === path[index] && step.to === path[index + 1] &&
-                known.has([step.from, step.to, step.kind, step.rawValue, step.text].join("\u0000")));
-
-        if (!aligned || typeof journey.id !== "string" || (journey.source !== "automatic" && journey.source !== "named")) {
-            return [];
-        }
-
-        return [{
-            id: journey.id,
-            source: journey.source,
-            label: typeof journey.label === "string" ? journey.label : null,
-            path,
-            steps: stepEdges,
-            declaredExitPath: typeof journey.declaredExitPath === "string" ? journey.declaredExitPath : null,
-            exitInGraph: Boolean(journey.exitInGraph),
-            rank: typeof journey.rank === "number" && journey.rank > 0 ? journey.rank : 0,
-        }];
-    });
 }
 
 // TFP-088: like the dependency map, the graph is fully built server-side by

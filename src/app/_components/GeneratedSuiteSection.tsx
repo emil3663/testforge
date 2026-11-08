@@ -2,6 +2,8 @@ import type { RefObject } from "react";
 import { CollapsibleSection } from "@/app/_components/CollapsibleSection";
 import { Spinner } from "@/app/_components/Spinner";
 import type { TestAuditMode } from "@/app/_lib/types";
+import { droppedJourneysHeading, journeyName } from "@/app/_lib/dropped-journeys";
+import type { DroppedJourney } from "@/lib/generate/journey-check";
 import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 
 interface SavedSuiteResult {
@@ -38,6 +40,7 @@ interface GeneratedSuiteSectionProps {
     lastGeneratedAuditMode: TestAuditMode;
     runBlockedMessage: string;
     continueRunUnavailableMessage: string;
+    droppedJourneys?: DroppedJourney[];
 }
 
 export function GeneratedSuiteSection({
@@ -68,6 +71,7 @@ export function GeneratedSuiteSection({
     lastGeneratedAuditMode,
     runBlockedMessage,
     continueRunUnavailableMessage,
+    droppedJourneys = [],
 }: GeneratedSuiteSectionProps) {
     return (
                 <CollapsibleSection
@@ -188,6 +192,21 @@ export function GeneratedSuiteSection({
                             </div>
                         )}
                     </div>
+
+                    {/* TFP-271: a selected journey the generation couldn't write a test for is named, with why. */}
+                    {droppedJourneys.length > 0 && (
+                        <div role="status" className="mt-4 rounded-2xl border border-amber-700 bg-amber-950/40 px-4 py-3 text-xs leading-6 text-amber-200">
+                            <div className="font-semibold">{droppedJourneysHeading(droppedJourneys.length)}</div>
+                            <ul className="mt-1 list-disc space-y-1 pl-5 text-amber-100/90">
+                                {droppedJourneys.map((journey) => (
+                                    <li key={journey.id}>
+                                        <span className="font-mono">{journeyName(journey.id)}</span>: {journey.reason}.
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="mt-1 text-amber-100/70">Scan the pages again to get journeys this suite can test.</div>
+                        </div>
+                    )}
 
                     {savedSuite && (
                         <div className="mt-4 rounded-2xl border border-emerald-800 bg-emerald-950/40 px-4 py-3 text-xs leading-6 text-emerald-200">

@@ -20,6 +20,7 @@ import type { PageInspectionRecord } from "@/lib/report/types";
 import type { BestPracticeArea } from "@/lib/generate/mock/types";
 import { buildGapFillMessages, buildGenerationMessages, type GenerationRequestContext } from "@/lib/generate/messages";
 import { selectJourneys } from "@/lib/introspect/journeys";
+import { explainDroppedJourneys } from "@/lib/generate/journey-check";
 import { isComprehensive, normalizeRunMode, RunModeError, type RunMode } from "@/lib/comprehensive/run-mode";
 import { selectComprehensivePages } from "@/lib/comprehensive/pages";
 import { buildComprehensiveSuite, mergeComprehensiveScenarios } from "@/lib/generate/comprehensive";
@@ -68,6 +69,8 @@ export async function POST(req: NextRequest) {
 
     const normalizedPractices = normalizeSelectedPractices(selectedPractices);
     let normalizedContentProfile = normalizeContentProfile(contentProfile);
+    // TFP-271: the profile before normalising, so a dropped journey's reason is read from the one that was normalised.
+    let rawContentProfile: unknown = contentProfile;
 
     // Phase 34 TFP-122 (Decision 11): no page data in the request means the
     // pages are inspected here, as the app's own flow would, unless the caller
@@ -78,22 +81,32 @@ export async function POST(req: NextRequest) {
         const requestedPaths = contentRules && typeof contentRules === "object" ? (contentRules as { paths?: unknown }).paths : undefined;
         const inspection = await inspectForGeneration(normalizedBaseUrl.value, requestedPaths);
         pageInspection = inspection.record;
+        rawContentProfile = inspection.profile;
         normalizedContentProfile = normalizeContentProfile(inspection.profile);
     }
     // Every response below goes through here. Without an automatic inspection
     // it is exactly what it was before TFP-122; with one, it says so.
     // Phase 42 (TFP-190): when the template's suite went through the site's saved suite, what that gave.
     let siteSuite: SiteSuiteRecord | undefined;
+    // TFP-271: droppedJourneys is set just below; every call comes after it.
     const respond = (body: Record<string, unknown>) => {
-        const withSiteSuite = siteSuite ? { ...body, siteSuite } : body;
+        const withDropped = droppedJourneys.length > 0 ? { ...body, droppedJourneys } : body;
+        const withSiteSuite = siteSuite ? { ...withDropped, siteSuite } : withDropped;
         return NextResponse.json(pageInspection ? { ...withSiteSuite, generatedBy: body.generatedBy ?? "template", pageInspection } : withSiteSuite);
     };
 
     const normalizedContentRules = normalizeContentRules(contentRules);
+    const selectedJourneyIds = normalizedContentRules.selectedJourneyIds;
     normalizedContentRules.selectedJourneyIds = selectJourneys(
         normalizedContentProfile?.journeys ?? [],
         normalizedContentRules.selectedJourneyIds
     ).map((journey) => journey.id);
+    // TFP-271: a selected journey that gets no test is named, with why, never narrowed out without a word.
+    const droppedJourneys = explainDroppedJourneys(
+        (rawContentProfile as { journeys?: unknown } | null | undefined)?.journeys,
+        normalizedContentProfile?.siteGraph ?? { nodes: [], edges: [] },
+        selectedJourneyIds.filter((id) => !normalizedContentRules.selectedJourneyIds.includes(id))
+    );
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
     const apiKey = process.env.OPENAI_API_KEY;
 
