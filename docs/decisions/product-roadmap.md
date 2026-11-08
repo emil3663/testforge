@@ -502,7 +502,7 @@ TFP-245 to TFP-249. Paused at TFP-247 until Phase 48 merges (amended
 
 ---
 
-### Phase 48 — The rename to Mr Onion (locked 2026-11-08, not started; after TFP-246, before TFP-247)
+### Phase 48 — The rename to Mr Onion (locked 2026-11-08, in progress; after TFP-246, before TFP-247)
 
 TestForge becomes Mr Onion: the visible name, the package and command
 (`mr-onion`), the `MRONION_*` settings, the data folder, the GitHub repo

@@ -12,7 +12,8 @@ Scope:
 - It is built on its own branch, one ticket at a time, and merged to `main`
   in one go before Phase 47's TFP-247 publishes an image.
 
-Status: **Locked (Emil, 2026-11-08). Not started.**
+Status: **Locked (Emil, 2026-11-08). In progress on branch
+`phase-48-mr-onion`: TFP-275 done (`46e3994`).**
 - Emil locked the record as drafted on 2026-11-08, confirming every
   **[for Emil]** line below as proposed. The markers stay to show which
   lines were proposals before the lock.
