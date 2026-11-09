@@ -84,5 +84,5 @@ export function buildSummary({ jobs, unit, templateLine, run, issue = null }) {
         result("audit"),
         result("dead-code"),
     ].join("\n");
-    return { subject: `TestForge nightly: ${passed ? "PASS" : "FAIL"} · ${commit} · ${run.date}`, body, passed };
+    return { subject: `Mr Onion nightly: ${passed ? "PASS" : "FAIL"} · ${commit} · ${run.date}`, body, passed };
 }

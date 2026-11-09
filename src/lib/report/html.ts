@@ -147,7 +147,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TestForge Report ${escapeReportHtml(runId)}</title>
+    <title>Mr Onion Report ${escapeReportHtml(runId)}</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; background: #f4f4f5; color: #18181b; line-height: 1.5; }
@@ -241,13 +241,13 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
     <header class="tf-header">
         <div class="tf-logo">T</div>
         <div>
-            <div class="tf-header-name">TestForge</div>
+            <div class="tf-header-name">Mr Onion</div>
             <div class="tf-header-sub">AI-native test automation</div>
         </div>
     </header>
     <main>
         <div class="run-meta">Run <strong>${escapeReportHtml(runId)}</strong></div>
-            <h1 class="page-title">TestForge Report</h1>
+            <h1 class="page-title">Mr Onion Report</h1>
         <div class="tabs">
             <button class="tab-btn active" onclick="showTab(this,'tab-summary')">Summary</button>
             <button class="tab-btn" onclick="showTab(this,'tab-execution')">Execution</button>
@@ -399,7 +399,7 @@ export function buildReportHtmlDocument(report: RunReport, runId: string) {
 
 export function buildExecutionOutputHtmlDocument(result: RunResultLike) {
     const executionOutputMessage = result.runStatus === "cancelled"
-        ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
+        ? "The run was stopped before Playwright produced a structured report. Mr Onion preserved the latest available progress and raw console output."
         : "Structured report data was not available for this run, so only the raw console output is shown.";
     const fallbackExecutionMarkup = buildFallbackExecutionHtmlMarkup(result.progress);
 
@@ -408,7 +408,7 @@ export function buildExecutionOutputHtmlDocument(result: RunResultLike) {
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TestForge Execution Output ${escapeReportHtml(result.runId)}</title>
+    <title>Mr Onion Execution Output ${escapeReportHtml(result.runId)}</title>
     <style>
         body { font-family: Georgia, 'Times New Roman', serif; margin: 0; padding: 32px; background: #f5f1e8; color: #1f2937; }
         main { max-width: 960px; margin: 0 auto; }
@@ -418,7 +418,7 @@ export function buildExecutionOutputHtmlDocument(result: RunResultLike) {
 </head>
 <body>
     <main>
-        <h1>TestForge Execution Output</h1>
+        <h1>Mr Onion Execution Output</h1>
         <section>
             <h2>Structured report status</h2>
             <p>${escapeReportHtml(executionOutputMessage)}</p>

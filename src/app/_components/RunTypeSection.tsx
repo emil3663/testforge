@@ -43,7 +43,7 @@ export function RunTypeSection({
     return (
         <CollapsibleSection
             title="Run Type"
-            subtitle="Standard runs the same best-practice checks on every site. Comprehensive goes deep on one area, on every page TestForge knows, up to a cap."
+            subtitle="Standard runs the same best-practice checks on every site. Comprehensive goes deep on one area, on every page Mr Onion knows, up to a cap."
             collapsed={isCollapsed}
             onToggle={() => setIsCollapsed((value) => !value)}
         >

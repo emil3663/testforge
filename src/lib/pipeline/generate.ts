@@ -148,7 +148,7 @@ export async function generateSuite(input: Record<string, unknown>, { models = t
         const localModel = configuredLocalModel;
         const writer = gapWriter === "claude-code" ? claudeCodeWriter() : localModel ? localModelWriter(localModel) : null;
         if (!writer) {
-            siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set" } };
+            siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no MRONION_OLLAMA_MODEL is set" } };
             return applied.code;
         }
         // TFP-202: the writer's working folder goes when the generation's gaps are done.

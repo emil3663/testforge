@@ -114,7 +114,7 @@ export interface RunJob {
     // TFP-157 (Phase 39 Decisions 10 and 11): the host's row, its caps, and whether the ownership confirmation was
     // present; and, on a capped host, how the request cap went (set once the run's last pass closes).
     hostLimits?: import("@/lib/run/host-limits").HostLimits;
-    /** TFP-257: the TestForge running this, stamped at the start, so a pull during a run can't change what it says. */
+    /** TFP-257: the Mr Onion running this, stamped at the start, so a pull during a run can't change what it says. */
     producedBy?: import("@/lib/report/produced-by-types").ProducedBy;
     requestCap?: import("@/lib/run/request-cap").RequestCapStats | null;
     // TFP-094: the run's secret values (credentials and session contents),
@@ -130,9 +130,9 @@ export interface RunJob {
 }
 
 const globalRunJobs = globalThis as typeof globalThis & {
-    __testforgeRunJobs?: Map<string, RunJob>;
+    __mrOnionRunJobs?: Map<string, RunJob>;
 };
-export const runJobs = globalRunJobs.__testforgeRunJobs ?? (globalRunJobs.__testforgeRunJobs = new Map());
+export const runJobs = globalRunJobs.__mrOnionRunJobs ?? (globalRunJobs.__mrOnionRunJobs = new Map());
 
 export function createEmptyProgress(totalTests = 0): RunProgressSnapshot {
     return {
@@ -212,7 +212,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
     if (scrubNotes.length > 0) {
         const removed = scrubNotes.filter((note) => note.action === "removed").length;
         job.outputChunks.push(
-            `TestForge redacted this run's login credentials and session from ${scrubNotes.length - removed} captured artifact(s)${removed > 0 ? ` and removed ${removed} that could not be scrubbed` : ""}.\n`
+            `Mr Onion redacted this run's login credentials and session from ${scrubNotes.length - removed} captured artifact(s)${removed > 0 ? ` and removed ${removed} that could not be scrubbed` : ""}.\n`
         );
     }
 
@@ -311,7 +311,7 @@ async function finalizeRunJobUnredacted(job: RunJob) {
             const finalOutput = [
                 ...reportedErrors,
                 output,
-                "Playwright completed without executing any tests. TestForge did not produce a structured report because no test cases actually ran.",
+                "Playwright completed without executing any tests. Mr Onion did not produce a structured report because no test cases actually ran.",
             ]
                 .filter(Boolean)
                 .join("\n\n")

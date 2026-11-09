@@ -169,7 +169,7 @@ export function DiscoveredPagesSection({
                                     <div className="mt-3 rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3 text-xs leading-5 text-sky-900">
                                         {hasActiveCrawlSelection
                                             ? `The crawler selection will be used for inspection and generation across ${selectedCrawledPaths.length} page${selectedCrawledPaths.length === 1 ? "" : "s"}${isTypeSelection ? ", chosen by page type for this run type" : ""}.`
-                                            : "If no crawler pages are selected, TestForge falls back to the manual paths in Content Rules or the current base path."}
+                                            : "If no crawler pages are selected, Mr Onion falls back to the manual paths in Content Rules or the current base path."}
                                     </div>
 
                                     {isCrawlResultStale && (

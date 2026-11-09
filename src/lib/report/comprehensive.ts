@@ -14,7 +14,7 @@ import type { ComprehensiveGroup, ComprehensiveIssue, ComprehensiveCandidateSect
 export const UNCATEGORISED = "Not categorised";
 
 export const MODEL_NOT_CONFIGURED_NOTE =
-    "No local model is configured (TESTFORGE_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own.";
+    "No local model is configured (MRONION_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own.";
 
 const MODEL_REJECTED_REASONS: Record<string, string> = {
     timeout: "it did not answer within its time budget",

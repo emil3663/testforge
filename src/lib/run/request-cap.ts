@@ -32,16 +32,16 @@ import { TIMED_CHECK_TITLES } from "@/lib/generate/mock/performance-checks";
  *
  * Decision 11: the run records how many requests were given a slot, how many gave up waiting, and how many waited.
  */
-const REQUEST_CAP_URL_ENV_VAR = "TESTFORGE_REQUEST_CAP_URL";
-const REQUEST_CAP_TOKEN_ENV_VAR = "TESTFORGE_REQUEST_CAP_TOKEN";
-const REQUEST_CAP_DOMAIN_ENV_VAR = "TESTFORGE_REQUEST_CAP_DOMAIN";
-const NOT_JUDGED_TITLES_ENV_VAR = "TESTFORGE_NOT_JUDGED_TITLES";
-const NOT_JUDGED_REASON_ENV_VAR = "TESTFORGE_NOT_JUDGED_REASON";
+const REQUEST_CAP_URL_ENV_VAR = "MRONION_REQUEST_CAP_URL";
+const REQUEST_CAP_TOKEN_ENV_VAR = "MRONION_REQUEST_CAP_TOKEN";
+const REQUEST_CAP_DOMAIN_ENV_VAR = "MRONION_REQUEST_CAP_DOMAIN";
+const NOT_JUDGED_TITLES_ENV_VAR = "MRONION_NOT_JUDGED_TITLES";
+const NOT_JUDGED_REASON_ENV_VAR = "MRONION_NOT_JUDGED_REASON";
 /** The module a capped run's units import in place of `@playwright/test`, copied into the run's folder. */
-export const REQUEST_CAP_MODULE = "testforge-request-cap.ts";
-export const REQUEST_CAP_TOKEN_HEADER = "x-testforge-cap-token";
+export const REQUEST_CAP_MODULE = "mr-onion-request-cap.ts";
+export const REQUEST_CAP_TOKEN_HEADER = "x-mr-onion-cap-token";
 /** On a slot's answer: "1" when it waited in the queue, "0" when it was free at once (request-cap-fixture.ts reads it). */
-export const REQUEST_CAP_QUEUED_HEADER = "x-testforge-cap-queued";
+export const REQUEST_CAP_QUEUED_HEADER = "x-mr-onion-cap-queued";
 /** How long a slot stays held after it's handed back. */
 export const HOLD_AFTER_RESPONSE_MS = 1000;
 const LEASE_MS = 60_000;

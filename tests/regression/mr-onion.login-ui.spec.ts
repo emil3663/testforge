@@ -126,7 +126,7 @@ test.describe("Login config in the UI (TFP-097)", () => {
         expect(direct.status()).toBe(202);
         const apiRunId = (await direct.json()).runId;
 
-        // Same outcome: every test signed in, both passed - and the run signed out fails both (see testforge.auth.spec.ts).
+        // Same outcome: every test signed in, both passed - and the run signed out fails both (see mr-onion.auth.spec.ts).
         const uiRecords = await reportFor(request, uiRun.runId);
         const apiRecords = await reportFor(request, apiRunId);
         expect(uiRecords.map((record) => [record.title, record.status])).toEqual(apiRecords.map((record) => [record.title, record.status]));

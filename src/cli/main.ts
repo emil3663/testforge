@@ -4,7 +4,7 @@ import { EXIT_COULD_NOT_RUN, installExitHandlers } from "@/cli/exit";
 import { setting, underBothNames } from "@/lib/settings";
 
 /**
- * Phase 47 (TFP-245): `testforge run ...`. Started by bin/testforge.mjs from TestForge's own folder (the run
+ * Phase 47 (TFP-245): `mr-onion run ...`. Started by bin/mr-onion.mjs from Mr Onion's own folder (the run
  * executor finds Playwright and its working folders there); paths on the command line resolve against the folder the
  * command was typed in, which the launcher passes as MRONION_CLI_CWD.
  */
@@ -17,7 +17,7 @@ async function main(argv: string[]): Promise<number> {
         return command === undefined ? EXIT_INVALID_CONFIG : 0;
     }
     if (command !== "run") {
-        console.error(`testforge: unknown command "${command}"\n\n${USAGE}`);
+        console.error(`mr-onion: unknown command "${command}"\n\n${USAGE}`);
         return EXIT_INVALID_CONFIG;
     }
     if (rest.includes("--help") || rest.includes("-h")) {
@@ -30,7 +30,7 @@ async function main(argv: string[]): Promise<number> {
         config = await loadConfig(rest, setting("CLI_CWD") || process.cwd());
     } catch (error) {
         if (error instanceof ConfigError) {
-            console.error(`testforge: invalid configuration: ${error.message}`);
+            console.error(`mr-onion: invalid configuration: ${error.message}`);
             return EXIT_INVALID_CONFIG;
         }
         throw error;
@@ -44,7 +44,7 @@ async function main(argv: string[]): Promise<number> {
     }
     const { RUNS_ROOT } = await import("@/lib/run/persistence");
     if (config.dataDir && RUNS_ROOT !== join(config.dataDir, "runs")) {
-        console.error(`testforge: the runs folder was fixed before --data-dir could set it (${RUNS_ROOT})`);
+        console.error(`mr-onion: the runs folder was fixed before --data-dir could set it (${RUNS_ROOT})`);
         return EXIT_COULD_NOT_RUN;
     }
     const { runTarget } = await import("@/cli/run");
@@ -56,7 +56,7 @@ installExitHandlers();
 main(process.argv.slice(2)).then(
     (code) => process.exit(code),
     (error: unknown) => {
-        console.error(`testforge: couldn't run: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
+        console.error(`mr-onion: couldn't run: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
         process.exit(EXIT_COULD_NOT_RUN);
     }
 );

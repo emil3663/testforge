@@ -58,7 +58,7 @@ function namesProperty(node: ts.Node): boolean {
 
 /** Why the body is refused, naming the construct, or null when it uses none of the above. */
 export function forbiddenConstruct(body: string): string | null {
-    const source = ts.createSourceFile("__testforge_body__.ts", `async function __body__() {\n${body}\n}`, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    const source = ts.createSourceFile("__mrOnion_body__.ts", `async function __body__() {\n${body}\n}`, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
     let found: string | null = null;
     const visit = (node: ts.Node): void => {
         if (found) return;

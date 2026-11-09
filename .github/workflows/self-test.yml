@@ -37,7 +37,7 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Run TestForge smoke suite with Allure
+      - name: Run Mr Onion smoke suite with Allure
         run: npm run test:self:allure
 
       - name: Upload smoke Allure artifacts

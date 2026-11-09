@@ -96,7 +96,7 @@ test("without a model, or with its suite rejected, the report says so", () => {
     const mode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as ComprehensiveRunMode;
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const none = buildReport(json, ["accessibility"], "", "https://site.test", null, "", null, "", mode, 1).comprehensive!.model;
-    assert.deepEqual([none.status, none.note], ["not-configured", "No local model is configured (TESTFORGE_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own."]);
+    assert.deepEqual([none.status, none.note], ["not-configured", "No local model is configured (MRONION_OLLAMA_MODEL), so it was not asked for scenarios. The template's checks stand on their own."]);
     const rejected = buildReport(json, ["accessibility"], "", "https://site.test", null, "", { generatedBy: "fallback", model: MODEL, fallbackReason: "timeout", gates: [] }, "", mode, 1).comprehensive!.model;
     assert.deepEqual([rejected.status, rejected.note], ["rejected", `The local model (${MODEL}) was asked for accessibility scenarios, but its suite was not used: it did not answer within its time budget (see the gate verdicts). The template's checks stand on their own.`]);
 });

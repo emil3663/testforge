@@ -34,7 +34,7 @@ async function waitForRun(request: APIRequestContext, runId: string) {
 test.describe("TFP-261: the API answers only the tester's own pages on this machine", () => {
     let dir: string;
     test.beforeEach(() => {
-        dir = mkdtempSync(join(os.tmpdir(), "testforge-request-guard-"));
+        dir = mkdtempSync(join(os.tmpdir(), "mr-onion-request-guard-"));
     });
     test.afterEach(() => {
         rmSync(dir, { recursive: true, force: true });

@@ -4,7 +4,7 @@
  *
  * The end-to-end proof (a real authenticated run whose report, persisted
  * evidence and trace are grepped for the secrets) is
- * tests/regression/testforge.auth.spec.ts; these pin the redactor's own
+ * tests/regression/mr-onion.auth.spec.ts; these pin the redactor's own
  * properties, including the ones that would otherwise only show up as a leak.
  *
  * Run via:

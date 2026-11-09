@@ -2,7 +2,7 @@
  * TFP-092: normalizeLoginConfig / resolveCredentials / removeStaleAuthDirs.
  *
  * The login driver itself needs a real browser and a real login page, so it
- * is covered end to end in tests/regression/testforge.auth.spec.ts. What is
+ * is covered end to end in tests/regression/mr-onion.auth.spec.ts. What is
  * checked here are the properties that must hold before any browser opens:
  * a config is valid or the run does not start, credentials are only ever
  * referenced by environment variable name, and a missing value is a named

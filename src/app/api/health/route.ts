@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
     return NextResponse.json({
         status: "ok",
-        service: "testforge-next",
+        service: "mr-onion-next",
         ...currentVersion(),
         environment: setting("ENV") ?? process.env.NODE_ENV ?? "development",
         mode: "local-in-process",

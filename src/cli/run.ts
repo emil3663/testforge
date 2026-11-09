@@ -24,7 +24,7 @@ import { buildPageTypeCoverage } from "@/lib/selection/coverage";
 import { currentVersion } from "@/lib/version";
 
 /**
- * Phase 47 (TFP-245): `testforge run` - the UI's crawl, inspection, generation and run, in that order, through the
+ * Phase 47 (TFP-245): `mr-onion run` - the UI's crawl, inspection, generation and run, in that order, through the
  * same modules, with no server of its own. It ends with an exit code a pipeline acts on (Decision 5) and the
  * outputs Decision 7 lists in `--out`.
  */
@@ -244,14 +244,14 @@ export async function runTarget(config: CliConfig, log: Log = (line) => console.
         return await runPipeline(config, log, baseline);
     } catch (error) {
         if (error instanceof ConfigError) {
-            log(`testforge: invalid configuration: ${error.message}`);
+            log(`mr-onion: invalid configuration: ${error.message}`);
             return EXIT.invalidConfig;
         }
         if (error instanceof CouldNotRun || error instanceof ServerStartError) {
-            log(`TestForge couldn't run: ${error.message}`);
+            log(`Mr Onion couldn't run: ${error.message}`);
             return EXIT.couldNotRun;
         }
-        log(`TestForge couldn't run: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
+        log(`Mr Onion couldn't run: ${error instanceof Error ? error.stack ?? error.message : String(error)}`);
         return EXIT.couldNotRun;
     } finally {
         if (servers.length > 0) {

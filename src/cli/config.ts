@@ -7,7 +7,7 @@ import { normalizeBaseUrl } from "@/lib/generate/normalize";
 import { normalizeLoginConfig, RunLoginError, type LoginConfig } from "@/lib/run/auth";
 
 /**
- * Phase 47 (TFP-245): what `testforge run` was asked to do, from its flags and an optional JSON config file
+ * Phase 47 (TFP-245): what `mr-onion run` was asked to do, from its flags and an optional JSON config file
  * (`--config`; a flag wins over the file). Anything it can't use is a ConfigError naming the field: exit 3
  * (Decision 5), never a run of something other than what was asked.
  */
@@ -60,7 +60,7 @@ export const USAGE = `Usage: mr-onion run --url <base URL> [options]
   --pages </a,/b,...>      test these pages instead of crawling
   --interactive            also run the interactive (journey) tests
   --out <dir>              where the reports go (default ./mr-onion-out)
-  --data-dir <dir>         TestForge's data folder, runs included (restore and save it between jobs)
+  --data-dir <dir>         Mr Onion's data folder, runs included (restore and save it between jobs)
   --report-only            report failures, exit 0 unless the run couldn't run
   --baseline <run.json>    fail only on failures this earlier run didn't have; "latest" for the
                            newest run of the same site and tests in the data folder
@@ -251,7 +251,7 @@ export function buildConfig(fileRaw: Raw, flagRaw: Raw, cwd: string): CliConfig 
     };
 }
 
-/** The whole of `testforge run <flags>`: flags, the config file they name, and the two merged. */
+/** The whole of `mr-onion run <flags>`: flags, the config file they name, and the two merged. */
 export async function loadConfig(argv: string[], cwd: string): Promise<CliConfig> {
     const { raw, configFile } = parseFlags(argv);
     const fileRaw = configFile ? await readConfigFile(resolve(cwd, configFile)) : {};

@@ -21,7 +21,7 @@ import { parseTestUnits } from "@/lib/site-suites/units";
 import { SERIAL_UNIT } from "@/lib/run/split";
 
 /** Set on the run's Playwright process: where the timing reporter writes. Unset, it writes nothing. */
-export const TIMING_FILE_ENV_VAR = "TESTFORGE_TIMING_FILE";
+export const TIMING_FILE_ENV_VAR = "MRONION_TIMING_FILE";
 
 export type TimingStepKind = "goto" | "blank" | "settle" | "request" | "expect" | "other";
 
@@ -92,7 +92,7 @@ function inFixture(step) {
   return false;
 }
 
-class TestForgeTimingReporter {
+class MrOnionTimingReporter {
   constructor() {
     this.steps = new Map();
     this.tests = [];
@@ -138,7 +138,7 @@ class TestForgeTimingReporter {
   }
 }
 
-module.exports = TestForgeTimingReporter;
+module.exports = MrOnionTimingReporter;
 `;
 }
 

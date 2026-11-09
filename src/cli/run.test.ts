@@ -35,7 +35,7 @@ test("TFP-272: a browser that can't start is reported, and the run exits 2", asy
     const lines: string[] = [];
     const code = await runTarget(buildConfig({}, { url: "http://localhost:4200" }, tmpdir()), (line) => lines.push(line));
     assert.equal(code, EXIT.couldNotRun);
-    assert.ok(lines.includes("TestForge couldn't run: The crawl failed: The browser for the crawl could not start: browserType.launch: Executable doesn't exist at /no/such/chrome"), lines.join("\n"));
+    assert.ok(lines.includes("Mr Onion couldn't run: The crawl failed: The browser for the crawl could not start: browserType.launch: Executable doesn't exist at /no/such/chrome"), lines.join("\n"));
 });
 
 test("an unreachable URL: the crawl finds no page, exit 2, never 0", async () => {
@@ -43,7 +43,7 @@ test("an unreachable URL: the crawl finds no page, exit 2, never 0", async () =>
     const lines: string[] = [];
     const code = await runTarget(buildConfig({}, { url: `http://127.0.0.1:${port}` }, tmpdir()), (line) => lines.push(line));
     assert.equal(code, EXIT.couldNotRun);
-    assert.match(lines.at(-1) ?? "", new RegExp(`^TestForge couldn't run: The crawl found no page at http://127\\.0\\.0\\.1:${port} \\(Could not crawl .*ERR_CONNECTION_REFUSED`));
+    assert.match(lines.at(-1) ?? "", new RegExp(`^Mr Onion couldn't run: The crawl found no page at http://127\\.0\\.0\\.1:${port} \\(Could not crawl .*ERR_CONNECTION_REFUSED`));
 });
 
 test("Decision 7: a login value is redacted from every file in --out, page-data.json included", async (t) => {

@@ -1,5 +1,5 @@
-export const SITE_NAME = "TestForge";
-export const SITE_TITLE = "TestForge | AI-native Playwright test automation";
+export const SITE_NAME = "Mr Onion";
+export const SITE_TITLE = "Mr Onion | AI-native Playwright test automation";
 export const SITE_DESCRIPTION = "Generate, inspect, and run Playwright test suites from plain-English prompts with structured reporting, crawl-aware coverage, and content-aware assertions.";
 export const SITE_TAGLINE = "AI-native Playwright test creation with structured quality reporting";
 export const SITE_KEYWORDS = [

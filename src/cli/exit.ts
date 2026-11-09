@@ -1,7 +1,7 @@
 import { stopAllServers } from "@/cli/servers";
 
 /**
- * Phase 47 (TFP-245): however `testforge run` ends - Ctrl+C, a cancelled CI job (SIGTERM), or a crash - every
+ * Phase 47 (TFP-245): however `mr-onion run` ends - Ctrl+C, a cancelled CI job (SIGTERM), or a crash - every
  * server `--server` started is stopped first, and the exit code says the run couldn't run (2), never 1 ("a test
  * failed"), which is what Node would give an uncaught error.
  */
@@ -12,7 +12,7 @@ export function exitHandler(exit: (code: number) => void = (code) => process.exi
     let ending: Promise<void> | null = null;
     return (why: string) => {
         ending ??= (async () => {
-            log(`testforge: ${why}; stopping the server(s) it started.`);
+            log(`mr-onion: ${why}; stopping the server(s) it started.`);
             await stopAllServers(graceMs).catch(() => undefined);
             exit(EXIT_COULD_NOT_RUN);
         })();

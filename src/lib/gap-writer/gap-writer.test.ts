@@ -171,7 +171,7 @@ test("a test that fails is revised in the same session and saved once it passes 
     assert.ok(!firstCall.args.includes("--resume"));
     assert.deepEqual(secondCall.args.slice(-2), ["--resume", firstCall.session], "the revision resumes the first call's session");
     // TFP-202: what the run said goes back as untrusted data.
-    assert.match(secondCall.prompt, /^The test failed\.\nWhat TestForge's run of it said is between the two RUN-OUTPUT lines/);
+    assert.match(secondCall.prompt, /^The test failed\.\nWhat Mr Onion's run of it said is between the two RUN-OUTPUT lines/);
 });
 
 test("a test that breaches the read-only gate is rejected, never saved, and not asked for again (TFP-194)", { skip: needsChromium }, async () => {
@@ -199,6 +199,6 @@ test("the local model chosen with none configured: nothing written, and the repo
     await optIn("local-model");
     const body = await generate();
     assert.deepEqual(calls(), []);
-    assert.equal(body.siteSuite.gapTests?.note, "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set");
-    assert.match(describeSiteSuite(body.siteSuite), /Gap tests: none written, as the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set\./);
+    assert.equal(body.siteSuite.gapTests?.note, "the site chose the local model, and no MRONION_OLLAMA_MODEL is set");
+    assert.match(describeSiteSuite(body.siteSuite), /Gap tests: none written, as the site chose the local model, and no MRONION_OLLAMA_MODEL is set\./);
 });

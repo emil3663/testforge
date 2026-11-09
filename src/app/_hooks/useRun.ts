@@ -303,7 +303,7 @@ export function useRun(
 
         try {
             const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-            const fileName = `testforge-raw-output-${timestamp}.txt`;
+            const fileName = `mr-onion-raw-output-${timestamp}.txt`;
             const blob = new Blob([rawOutput], { type: "text/plain;charset=utf-8" });
             const objectUrl = URL.createObjectURL(blob);
             const anchor = document.createElement("a");
@@ -324,7 +324,7 @@ export function useRun(
     async function handleExportHtmlReport(report: RunReport, runId: string) {
         try {
             const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-            const fileName = `testforge-report-${runId}-${timestamp}.html`;
+            const fileName = `mr-onion-report-${runId}-${timestamp}.html`;
             const blob = new Blob([buildReportHtmlDocument(report, runId)], { type: "text/html;charset=utf-8" });
             const objectUrl = URL.createObjectURL(blob);
             const anchor = document.createElement("a");

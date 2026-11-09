@@ -32,7 +32,7 @@ const LOG = (failing) => [
 
 test("a passing run: PASS, the short commit and date in the subject, the counts, the template line and the link", () => {
     const { subject, body, passed } = buildSummary({ jobs: ALL_GREEN, unit: COUNTS, templateLine: TEMPLATE, run: RUN });
-    assert.equal(subject, "TestForge nightly: PASS · 4eff1dc · 2026-10-20");
+    assert.equal(subject, "Mr Onion nightly: PASS · 4eff1dc · 2026-10-20");
     assert.equal(passed, true);
     assert.ok(body.includes(RUN.url), body);
     assert.ok(body.includes("Trigger: schedule"), body);
@@ -49,7 +49,7 @@ test("failing tests: FAIL, each name, capped at 20 with how many more", () => {
     const failing = Array.from({ length: 23 }, (_, at) => `failing test ${at + 1}`);
     const { subject, body, passed } = buildSummary({ jobs: { ...ALL_GREEN, unit: "failure" }, unit: { ...COUNTS, fail: 23, failing }, templateLine: TEMPLATE, run: RUN });
     assert.equal(MAX_FAILING_NAMES, 20);
-    assert.equal(subject, "TestForge nightly: FAIL · 4eff1dc · 2026-10-20");
+    assert.equal(subject, "Mr Onion nightly: FAIL · 4eff1dc · 2026-10-20");
     assert.equal(passed, false);
     assert.ok(body.includes("failing test 20\n"), body);
     assert.ok(!body.includes("failing test 21"), body);
@@ -72,7 +72,7 @@ test("exactly 20 failing tests: all named, no 'and N more'", () => {
 
 test("a cancelled job with no counts: FAIL, and the body says the counts can't be read", () => {
     const { subject, body } = buildSummary({ jobs: { ...ALL_GREEN, unit: "cancelled", "template-unchanged": "cancelled" }, unit: null, templateLine: null, run: RUN });
-    assert.ok(subject.startsWith("TestForge nightly: FAIL"), subject);
+    assert.ok(subject.startsWith("Mr Onion nightly: FAIL"), subject);
     assert.ok(body.includes("unit: cancelled"), body);
     assert.ok(body.includes("Counts can't be read: the job was cancelled before its summary."), body);
     assert.ok(body.includes("Check line can't be read: the job was cancelled before its summary."), body);
@@ -87,7 +87,7 @@ for (const job of Object.keys(ALL_GREEN)) {
     for (const result of ["failure", "cancelled", "skipped"]) {
         test(`${job} ${result}: FAIL, even with every other job green`, () => {
             const { subject, passed, body } = buildSummary({ jobs: { ...ALL_GREEN, [job]: result }, unit: COUNTS, templateLine: TEMPLATE, run: RUN });
-            assert.ok(subject.startsWith("TestForge nightly: FAIL"), subject);
+            assert.ok(subject.startsWith("Mr Onion nightly: FAIL"), subject);
             assert.equal(passed, false);
             assert.ok(body.includes(`${job}: ${result}`), body);
         });
@@ -98,7 +98,7 @@ test("a job that didn't report at all is a FAIL, not a pass by omission", () => 
     const { audit, ...withoutAudit } = ALL_GREEN;
     assert.equal(audit, "success");
     const { subject, body } = buildSummary({ jobs: withoutAudit, unit: COUNTS, templateLine: TEMPLATE, run: RUN });
-    assert.ok(subject.startsWith("TestForge nightly: FAIL"), subject);
+    assert.ok(subject.startsWith("Mr Onion nightly: FAIL"), subject);
     assert.ok(body.includes("audit: not reported"), body);
 });
 
@@ -150,7 +150,7 @@ test("parseTemplateLine takes the check's line without its name, and null when i
     assert.equal(parseTemplateLine(""), null);
 });
 
-const MESSAGE = { subject: "TestForge nightly: PASS · 4eff1dc · 2026-10-20", body: "the body" };
+const MESSAGE = { subject: "Mr Onion nightly: PASS · 4eff1dc · 2026-10-20", body: "the body" };
 const transportThat = (sendMail) => ({ createTransport: (options) => ({ options, sendMail }) });
 
 test("a send asks for Gmail over TLS, as testforgeapp, to CI_REPORT_TO, in plain text", async () => {
@@ -166,7 +166,8 @@ test("a send asks for Gmail over TLS, as testforgeapp, to CI_REPORT_TO, in plain
     assert.equal(options.secure, true);
     assert.deepEqual(options.auth, { user: "testforgeapp@gmail.com", pass: "app-password" });
     assert.ok(options.connectionTimeout > 0 && options.socketTimeout > 0, "a hung server must not hang the job");
-    assert.equal(mail.from, "testforgeapp@gmail.com");
+    // Phase 48 (TFP-279): the same mailbox, sent under the new name.
+    assert.equal(mail.from, "\"Mr Onion nightly\" <testforgeapp@gmail.com>");
     assert.equal(mail.to, "ci@example.com");
     assert.equal(mail.subject, MESSAGE.subject);
     assert.equal(mail.text, "the body");

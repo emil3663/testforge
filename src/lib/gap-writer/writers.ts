@@ -11,7 +11,7 @@ import { setting } from "@/lib/settings";
 /**
  * Phase 42 (TFP-194, Decision 6): the writers of gap tests. Each writes the
  * body of one Playwright test for one uncovered element, and revises it from
- * what TestForge's run of it said. TestForge, not the writer, runs every
+ * what Mr Onion's run of it said. Mr Onion, not the writer, runs every
  * attempt, behind the read-only gate and the request guard (gap-run.ts).
  *
  * - Claude Code (`claude -p`, JSON output), once per gap: the first prompt,
@@ -19,7 +19,7 @@ import { setting } from "@/lib/settings";
  *   it reports (`total_cost_usd`).
  * - The local model (Ollama), the offline option: one conversation, no cost.
  *
- * `TESTFORGE_CLAUDE_COMMAND` (a JSON array: the program and its first
+ * `MRONION_CLAUDE_COMMAND` (a JSON array: the program and its first
  * arguments) replaces `claude`; tests point it at a stand-in.
  *
  * TFP-202 (batch 2 ruling 5): the prompt carries text read from the site
@@ -62,7 +62,7 @@ export interface GapWriter {
 /** TFP-195 (Decision 8): the candidate - the same test with the site's page and locator left as blanks. */
 export const GENERALISE_PROMPT = [
     "Generalise the test you just wrote to the component's pattern, so it can run on another site that has the same component.",
-    "Write __PAGE__ wherever it names the page's path, as an expression with no quotes around it (`await page.goto(__PAGE__);`: TestForge puts the quoted path there), and __LOCATOR__ wherever it finds the element (the whole locator expression, as given to you); TestForge fills both in for each site.",
+    "Write __PAGE__ wherever it names the page's path, as an expression with no quotes around it (`await page.goto(__PAGE__);`: Mr Onion puts the quoted path there), and __LOCATOR__ wherever it finds the element (the whole locator expression, as given to you); Mr Onion fills both in for each site.",
     "Keep everything else. Answer with the body only, in one ```ts code block.",
 ].join("\n");
 
@@ -84,12 +84,12 @@ export function gapPrompt(target: GapTarget, baseUrl: string): string {
     return [
         `Write the body of one Playwright test (TypeScript) that checks one ${target.kind} on the site at ${baseUrl}.`,
         "",
-        untrustedBlock("PAGE-DATA", `The ${target.kind}, as TestForge read it from the site,`, [
+        untrustedBlock("PAGE-DATA", `The ${target.kind}, as Mr Onion read it from the site,`, [
             `page: ${JSON.stringify(target.page)}`,
             `name: ${JSON.stringify(target.name)}`,
             `locator: ${target.locator ? JSON.stringify(target.locator) : "(none)"}`,
         ]),
-        "`page` is the page's path, `name` what the page calls the element, and `locator` (when given) the Playwright locator expression TestForge finds it with; each is a JSON string.",
+        "`page` is the page's path, `name` what the page calls the element, and `locator` (when given) the Playwright locator expression Mr Onion finds it with; each is a JSON string.",
         "",
         "Rules:",
         "- The body runs inside `async ({ page }) => { ... }`. Start with `await page.goto(<page>);`, the page's path (the base URL is set).",
@@ -103,7 +103,7 @@ export function gapPrompt(target: GapTarget, baseUrl: string): string {
 export function revisionPrompt(notRun: boolean, message: string): string {
     return [
         `The test ${notRun ? "was not run" : "failed"}.`,
-        untrustedBlock("RUN-OUTPUT", "What TestForge's run of it said", message.split("\n").map((line) => JSON.stringify(line))),
+        untrustedBlock("RUN-OUTPUT", "What Mr Onion's run of it said", message.split("\n").map((line) => JSON.stringify(line))),
         "Answer with the corrected body only, in one ```ts code block, under the same rules.",
     ].join("\n");
 }
@@ -117,7 +117,7 @@ function claudeCommand(): string[] {
     if (configured) {
         const parsed = JSON.parse(configured) as unknown;
         if (Array.isArray(parsed) && parsed.length > 0 && parsed.every((part) => typeof part === "string")) return parsed as string[];
-        throw new Error("TESTFORGE_CLAUDE_COMMAND must be a JSON array of strings");
+        throw new Error("MRONION_CLAUDE_COMMAND must be a JSON array of strings");
     }
     return ["claude"];
 }
@@ -154,7 +154,7 @@ export function claudeArgs(session: string | null): string[] {
  */
 async function runClaude(prompt: string, session: string | null, cwd: string): Promise<{ result: string; costUsd: number | null; sessionId: string | null }> {
     const [program, ...first] = claudeCommand();
-    if (session !== null && !/^[A-Za-z0-9-]{1,100}$/.test(session)) throw new Error("Claude Code returned a session id TestForge won't pass on");
+    if (session !== null && !/^[A-Za-z0-9-]{1,100}$/.test(session)) throw new Error("Claude Code returned a session id Mr Onion won't pass on");
     const shell = process.platform === "win32" && (program === "claude" || /\.(cmd|bat)$/i.test(program));
     const args = [...first, ...claudeArgs(session)].map((arg) => (shell ? `"${arg}"` : arg));
     const output = await new Promise<string>((resolve, reject) => {
@@ -176,7 +176,7 @@ export function claudeCodeWriter(): GapWriter {
     let session: string | null = null;
     // TFP-202: one empty folder for the generation's calls (a resumed session is looked up from it), removed after.
     let folder: Promise<string> | null = null;
-    const cwd = () => (folder ??= mkdtemp(join(tmpdir(), "testforge-claude-")));
+    const cwd = () => (folder ??= mkdtemp(join(tmpdir(), "mr-onion-claude-")));
     return {
         name: "claude-code",
         async write(target, baseUrl) {
