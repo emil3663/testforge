@@ -3,7 +3,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "fs/promises";
 import { isAbsolute, join, relative, resolve } from "path";
 import type { RunMode } from "@/lib/comprehensive/run-mode";
 import type { BestPracticeArea, ContentProfile, ContentRules, TestAuditMode } from "@/lib/generate/mock/types";
-import { dataDir } from "@/lib/storage/data-dir";
+import { dataDir, underCurrentName } from "@/lib/storage/data-dir";
 
 /**
  * Phase 42 (TFP-190, Decisions 1 and 4): where a site suite is kept - in
@@ -132,9 +132,15 @@ export async function loadSiteSuite(origin: string, identity: SiteSuiteIdentity)
  */
 export function siteSuiteDirFromStore(store: string): string | null {
     const root = join(dataDir(), "site-suites");
+    const within = (dir: string) => {
+        const inside = relative(root, dir);
+        return Boolean(inside) && !inside.startsWith("..") && !isAbsolute(inside);
+    };
     const dir = resolve(store);
-    const inside = relative(root, dir);
-    return inside && !inside.startsWith("..") && !isAbsolute(inside) ? dir : null;
+    if (within(dir)) return dir;
+    // Phase 48 (TFP-277): a record made before the data folder moved names the suite under the folder's old name.
+    const moved = underCurrentName(dir);
+    return moved !== null && within(moved) ? moved : null;
 }
 
 export async function loadSiteSuiteAt(dir: string): Promise<LoadedSiteSuite | null> {

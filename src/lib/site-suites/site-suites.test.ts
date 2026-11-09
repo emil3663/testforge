@@ -31,7 +31,7 @@ const { POST } = await import("../../app/api/generate/route.ts");
 const { NextRequest } = await import("next/server");
 const { startRecordedFixture } = await import("../../test-support/comparison-fixture.ts");
 const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
-const { dataDir } = await import("../storage/data-dir.ts");
+const { dataDir, defaultDataDirs } = await import("../storage/data-dir.ts");
 const { parseTestUnits, withId } = await import("./units.ts");
 const needsChromium = await chromiumSkipReason();
 
@@ -174,14 +174,16 @@ test("nothing is written inside the repo (TFP-190)", { skip: needsChromium }, as
     assert.equal(repoStatus(), statusBefore);
 });
 
-test("the data folder: TESTFORGE_DATA_DIR, else where the platform keeps app data (equivalence partitioning)", () => {
+test("the data folder: MRONION_DATA_DIR, else where the platform keeps app data (equivalence partitioning)", () => {
+    // The default folders are worked out without touching the disk: resolving one for real can move a folder
+    // (Phase 48, TFP-277), and src/lib/storage/data-dir.test.ts covers that under temporary folders only.
     const home = "/home/emil";
     assert.equal(dataDir({ MRONION_DATA_DIR: " /srv/tf-data " }, "win32", home), resolve("/srv/tf-data"));
-    assert.equal(dataDir({ LOCALAPPDATA: "C:\\Users\\Emil\\AppData\\Local" }, "win32", home), join("C:\\Users\\Emil\\AppData\\Local", "TestForge"));
-    assert.equal(dataDir({}, "win32", home), join(home, "AppData", "Local", "TestForge"));
-    assert.equal(dataDir({}, "darwin", home), join(home, "Library", "Application Support", "TestForge"));
-    assert.equal(dataDir({ XDG_DATA_HOME: "/data" }, "linux", home), join("/data", "testforge"));
-    assert.equal(dataDir({ XDG_DATA_HOME: "  " }, "linux", home), join(home, ".local", "share", "testforge"));
+    assert.equal(defaultDataDirs({ LOCALAPPDATA: "C:\\Users\\Emil\\AppData\\Local" }, "win32", home).current, join("C:\\Users\\Emil\\AppData\\Local", "MrOnion"));
+    assert.equal(defaultDataDirs({}, "win32", home).current, join(home, "AppData", "Local", "MrOnion"));
+    assert.equal(defaultDataDirs({}, "darwin", home).current, join(home, "Library", "Application Support", "MrOnion"));
+    assert.equal(defaultDataDirs({ XDG_DATA_HOME: "/data" }, "linux", home).current, join("/data", "mr-onion"));
+    assert.equal(defaultDataDirs({ XDG_DATA_HOME: "  " }, "linux", home).current, join(home, ".local", "share", "mr-onion"));
 });
 
 /** Phase 42 (TFP-203 verification): the guard's helper reaches every describe. ISTQB technique: equivalence partitioning. */

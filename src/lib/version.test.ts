@@ -54,6 +54,18 @@ test("the footer names the run's own stamp, without a commit where there's none,
     assert.match(buildVersionFooterHtml(undefined), /version not recorded/);
 });
 
+test("the footer names the product the run's version had: TestForge below 0.3.0, Mr Onion from it (Phase 48 Decision 7)", () => {
+    // Boundary values around 0.3.0, as a saved 0.2.x run and every later one are read by the same code.
+    assert.match(buildVersionFooterHtml({ version: "0.2.9", commit: null }), />TestForge 0\.2\.9</);
+    assert.match(buildVersionFooterHtml({ version: "0.3.0", commit: "abc1234" }), />Mr Onion 0\.3\.0 \(abc1234\)</);
+    assert.match(buildVersionFooterHtml({ version: "0.10.0", commit: null }), />Mr Onion 0\.10\.0</);
+    assert.match(buildVersionFooterHtml({ version: "1.0.0", commit: null }), />Mr Onion 1\.0\.0</);
+    // A version that can't be read could be either name's: it says neither.
+    assert.match(buildVersionFooterHtml({ version: "unknown", commit: null }), />version unknown</);
+    // An empty version is no stamp at all.
+    assert.match(buildVersionFooterHtml({ version: "", commit: null }), />TestForge version not recorded</);
+});
+
 test("a built server says what it was built from, whatever HEAD is now", (t) => {
     t.after(() => {
         delete process.env.MRONION_BUILD_VERSION;
