@@ -15,8 +15,8 @@ Scope:
 Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
-(Emil, 2026-11-09). TFP-278 built (`48604dc`, baseline `8892b7e`),
-waiting for its independent verification.
+(Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
+independently verified (2026-11-09).
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -625,14 +625,34 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 4. Independently verified
   (it moves the baseline).
 - **Dependencies:** Gate A.
-- **Built 2026-11-09 (`48604dc`; `TEMPLATE_BASELINE` `8892b7e`), not yet
-  verified.** The mapped template check 172 of 172 identical; raw, 307
+- **Done 2026-11-09 (`48604dc`; `TEMPLATE_BASELINE` `8892b7e`),
+  independently verified the same day.** The mapped template check 172 of 172 identical; raw, 307
   changed lines, each the map applied; a one-character mutant red; a
   0.2.0 saved suite's interactive test Not run without `--interactive`
   and run with it; the old local tag used, and named, when only it is
   built. The nightly dispatched on the branch at `8892b7e`: run
   42556213111, every job green, its email sent. Evidence: `48604dc`'s
   body, GEN-109 to GEN-112.
+- **Verified 2026-11-09 (planning session, independently).** Every
+  checked part of Acceptance Criteria 4 met:
+
+  | Check | How | Result |
+  |---|---|---|
+  | Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `48604dc`, `8892b7e`, `5bd1dde` on `phase-48-mr-onion`; the remote branch is at `5bd1dde`; `main` is still `cf501ad`. `8892b7e` changes only `TEMPLATE_BASELINE` (`06489fd` to `48604dc`) |
+  | The map holds names only | Read `rename-map.json` | Six tokens, each a spelling of the name (`TestForge-Sample-1`, `TestForge`, `TESTFORGE_`, `__testforge`, `testforge-`, `testforge@`) |
+  | Mapped check | `check:template-unchanged 3c742e8 --rename-map …`, in a fresh clone | 172 inputs, 172 identical, 0 different, exit 0; replacements 2, 222, 52, 8, 51 and 2 |
+  | Raw check | The same, with no map | Exit 1, every input different |
+  | Only the name moved | An independent script over the raw outputs: each changed line compared with every spelling of either name blanked | 307 changed lines, 0 with any other difference; the old name, in any case, 0 times in the head's output (172 inputs in the base's) |
+  | The mapped check can go red | A mutant: one character of the generated header comment changed (`key.` to `key!`) | 2 identical, 170 different, exit 1, the line named; reverted in the scratch clone |
+  | Saved suites keep running | Read `interactive.ts`, `child-env.ts`'s `runEnv`, `playwright-cli.ts` | Every run child gets the switch under both names; the UI's switch shows for a suite that checks either name |
+  | Old local model tag | Read `resolveLocalModel` and the generation gate | Only when the new tag is asked for and missing; the record's "model tag" verdict names `ollama cp` |
+  | Nightly on the branch | Run 42556213111's page | Nightly #36, `workflow_dispatch` on `phase-48-mr-onion` at `8892b7e`: success; unit, audit, dead-code, template-unchanged, issue and notify all ran |
+
+  Not checked here: the live saved-suite run against local Toolshop and
+  the full unit, self-test and regression suites (no browser or Windows
+  shell in this session; they rest on `48604dc`'s body, and Gate B
+  re-runs the suites). Accepted as reported: the old-name branch of the
+  timing filter has no test, since a probe route is always written fresh.
 
 ### TFP-279 - The visible name, JUnit, plugin and workflows
 
