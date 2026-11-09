@@ -580,7 +580,7 @@ lock:
 - **Dependencies:** TFP-276.
 - **Built 2026-11-09 (`9844233`), not yet verified.** Every check used
   copies under a temporary `LOCALAPPDATA` or `XDG_DATA_HOME`; the real
-  `%LOCALAPPDATA%TestForge` was unchanged (41 files, no `MrOnion`)
+  `%LOCALAPPDATA%\TestForge` was unchanged (41 files, no `MrOnion`)
   before and after each. Evidence: `9844233`'s body, RUN-50 to RUN-53.
   For the verification and the owner, not decided by the build:
   - criterion 3 has the 0.2.0 folder holding runs, and "the UI lists
