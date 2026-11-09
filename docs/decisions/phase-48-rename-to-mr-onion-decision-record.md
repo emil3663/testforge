@@ -13,7 +13,8 @@ Scope:
   in one go before Phase 47's TFP-247 publishes an image.
 
 Status: **Locked (Emil, 2026-11-08). In progress on branch
-`phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`).
+`phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
+TFP-277 built (`9844233`), waiting for Gate A's independent verification.
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -577,6 +578,23 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 3. The highest-risk ticket:
   independently verified before Gate A passes.
 - **Dependencies:** TFP-276.
+- **Built 2026-11-09 (`9844233`), not yet verified.** Every check used
+  copies under a temporary `LOCALAPPDATA` or `XDG_DATA_HOME`; the real
+  `%LOCALAPPDATA%TestForge` was unchanged (41 files, no `MrOnion`)
+  before and after each. Evidence: `9844233`'s body, RUN-50 to RUN-53.
+  For the verification and the owner, not decided by the build:
+  - criterion 3 has the 0.2.0 folder holding runs, and "the UI lists
+    the same runs". The default folder holds runs only when a user set
+    the runs folder inside it; the UI lists the repo's `runs/`
+    (`RUNS_ROOT`), which the move doesn't touch. The build's check put
+    a run in the folder (`--data-dir`), showed it serving as
+    `--baseline latest` after the move, and showed the UI's candidate
+    list unchanged;
+  - `package.json` is still 0.2.0, so every footer on the branch says
+    "TestForge 0.2.0" until the 0.3.0 bump, which no ticket names;
+  - running this branch's app or CLI with no data folder set moves the
+    real folder; going back to `main` then needs `TESTFORGE_DATA_DIR`
+    pointed at the moved one (Decision 14's rollback note).
 
 ### TFP-278 - The generated suite's text and the local model's tag
 
