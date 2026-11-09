@@ -32,7 +32,7 @@ const { buildInputs, CONTENT_PROFILE_PATH } = await import("../../../scripts/tem
 
 const profile = JSON.parse(readFileSync(join(process.cwd(), CONTENT_PROFILE_PATH), "utf8"));
 const GATE = /\{ type: 'gate', description: '(read-only|interactive|active)' \}/g;
-const INTERACTIVE_SKIP = "test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', ";
+const INTERACTIVE_SKIP = "test.skip(process.env.MRONION_INTERACTIVE !== '1', ";
 
 /** Each test(...) in a suite, from its call to the next test's (or the end). */
 function testsIn(code: string) {
@@ -128,7 +128,7 @@ test("model-written blocks: the describe declares the gate once - interactive fo
     const template = "import { test, expect } from '@playwright/test';\n";
     const gapFill = mergeLocalSuite(template, MODEL_SUITE, "m", ["database"]);
     assert.deepEqual(describeGates(gapFill), ["interactive"]);
-    assert.match(gapFill, /'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', /);
+    assert.match(gapFill, /'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.MRONION_INTERACTIVE !== '1', /);
 
     const openAi = gateOpenAiSuite(MODEL_SUITE, "gpt-x");
     assert.deepEqual(describeGates(openAi), ["interactive"]);
@@ -136,7 +136,7 @@ test("model-written blocks: the describe declares the gate once - interactive fo
     assert.deepEqual(describeGates(openAiSecurity), ["active"]);
     assert.ok(openAiSecurity.includes(`() => {
     ${ACTIVE_GATE_SKIP}`), openAiSecurity);
-    assert.doesNotMatch(openAiSecurity, /TESTFORGE_INTERACTIVE/);
+    assert.doesNotMatch(openAiSecurity, /MRONION_INTERACTIVE/);
     assert.deepEqual(findTypeErrors(openAiSecurity), []);
     assert.equal(openAiGate(["functional", "accessibility"]), "interactive");
     assert.match(openAi, /^import \{ test, expect \} from '@playwright\/test';\n\n/);

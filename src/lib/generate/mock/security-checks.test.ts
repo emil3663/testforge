@@ -118,7 +118,7 @@ test("security suite: payload tests never type into passwords, and are at the ac
     assert.equal(payloadTests.length, 1);
     for (const body of payloadTests) {
         assert.match(body.slice(0, 400), /\{ annotation: \{ type: 'gate', description: 'active' \} \}, async \(\{ page \}\) => \{\n    test\.skip\(true, 'attack-shaped input: needs the ownership confirmation, not built yet'\);/);
-        assert.doesNotMatch(body, /TESTFORGE_INTERACTIVE/, "not behind the interactive switch any more");
+        assert.doesNotMatch(body, /MRONION_INTERACTIVE/, "not behind the interactive switch any more");
         assert.match(body, /the page renders user input as HTML \(cross-site scripting\)/);
     }
 });
@@ -171,7 +171,7 @@ test("payload goes only into free-text fields; email, url and tel get valid dumm
     assert.match(code, /\[id="name"\]'\)\.fill\(payload\)/);
     assert.match(code, /\[id="message"\]'\)\.fill\(payload\)/);
     assert.doesNotMatch(code, /\[id="email"\]'\)\.fill\(payload\)/, "an email field must never get the payload");
-    assert.match(code, /\[id="email"\]'\)\.fill\('testforge-check@example\.com'\)/);
+    assert.match(code, /\[id="email"\]'\)\.fill\('mr-onion-check@example\.com'\)/);
     assert.match(code, /\[id="site"\]'\)\.fill\('https:\/\/example\.com\/'\)/);
     assert.match(code, /\[id="phone"\]'\)\.fill\('5550100'\)/);
     assert.deepEqual(findTypeErrors(code), []);

@@ -315,7 +315,8 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
             reached = named ? [targetOf(named, options.baseUrl)] : [];
         }
         const set = targets.get(check) ?? new Set<string>();
-        for (const target of reached) if (target !== own && !target.includes("testforge-missing")) set.add(target);
+        // The missing-route probe, by its name before the rename (a saved suite keeps its text) and after.
+        for (const target of reached) if (target !== own && !/(?:mr-onion|testforge)-missing/.test(target)) set.add(target);
         targets.set(check, set);
         const spent = effort.get(check) ?? { tests: 0, loads: 0, requests: 0, ms: 0 };
         spent.tests++;

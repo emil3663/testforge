@@ -22,6 +22,21 @@ test("resolveOllamaModel: no prefix or pattern matching", () => {
     assert.equal(resolveOllamaModel(["testforge-qwen7b-old:latest", "qwen2.5-coder:7b"], "testforge-qwen7b"), null);
 });
 
+// Phase 48 (TFP-278, Decision 3): the local model's new tag, with the old one as fallback. Decision table: which tags
+// are built (new, old, both, neither) for the new name asked for, plus another name asked for, plus a tagged name.
+test("resolveLocalModel: the new tag when it's built; the old one, said so, when only it is; never for another name", async () => {
+    const { resolveLocalModel } = await import("./ollama.ts");
+    assert.deepEqual(resolveLocalModel(["mr-onion-qwen7b:latest"], "mr-onion-qwen7b"), { model: "mr-onion-qwen7b:latest", oldTag: false });
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:latest"], "mr-onion-qwen7b"), { model: "testforge-qwen7b:latest", oldTag: true });
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:latest", "mr-onion-qwen7b:latest"], "mr-onion-qwen7b"), { model: "mr-onion-qwen7b:latest", oldTag: false });
+    assert.deepEqual(resolveLocalModel(["qwen2.5-coder:7b"], "mr-onion-qwen7b"), { model: null, oldTag: false });
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:7b"], "mr-onion-qwen7b:7b"), { model: "testforge-qwen7b:7b", oldTag: true });
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:latest"], "mr-onion-qwen7b:7b"), { model: null, oldTag: false });
+    // A tester who still names the old tag gets exactly it, as before.
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:latest"], "testforge-qwen7b"), { model: "testforge-qwen7b:latest", oldTag: false });
+    assert.deepEqual(resolveLocalModel(["testforge-qwen7b:latest"], "other-model"), { model: null, oldTag: false });
+});
+
 test("stripCodeFence: removes a language-tagged fence", () => {
     assert.equal(stripCodeFence("```typescript\nconst a = 1;\n```"), "const a = 1;");
 });

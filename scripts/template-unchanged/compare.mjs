@@ -45,6 +45,43 @@ export function compareOutputs(base, head) {
     return { inputs: baseKeys.length, identical: baseKeys.length - different.length, different };
 }
 
+/**
+ * Phase 48 (TFP-278, Decision 11): a rename map's replacements, from its JSON text. Each is a literal { from, to },
+ * applied in the file's order; anything else stops the check by name.
+ */
+export function parseRenameMap(text) {
+    let parsed;
+    try {
+        parsed = JSON.parse(text);
+    } catch (error) {
+        throw new CheckError(`the rename map isn't JSON: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    const replacements = parsed?.replacements;
+    if (!Array.isArray(replacements) || replacements.length === 0) throw new CheckError("the rename map has no replacements");
+    replacements.forEach((entry, index) => {
+        if (typeof entry?.from !== "string" || entry.from === "" || typeof entry?.to !== "string") {
+            throw new CheckError(`the rename map's replacement ${index + 1} needs a non-empty "from" and a "to"`);
+        }
+    });
+    return replacements.map(({ from, to }) => ({ from, to }));
+}
+
+/** The base side's outputs with every replacement applied, in order, and how many times each matched. */
+export function applyRenameMap(outputs, replacements) {
+    const counts = replacements.map(() => 0);
+    const mapped = {};
+    for (const [key, text] of Object.entries(outputs)) {
+        let next = text;
+        replacements.forEach(({ from, to }, index) => {
+            const parts = next.split(from);
+            counts[index] += parts.length - 1;
+            next = parts.join(to);
+        });
+        mapped[key] = next;
+    }
+    return { outputs: mapped, counts };
+}
+
 export function formatResult(result, baseName, headName) {
     const lines = [`template-unchanged: ${baseName} -> ${headName}: ${result.inputs} inputs, ${result.identical} identical, ${result.different.length} different`];
     for (const diff of result.different) {

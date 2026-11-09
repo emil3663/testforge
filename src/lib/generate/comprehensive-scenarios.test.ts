@@ -67,8 +67,8 @@ test("in a real browser: a deliberately failing model test is shown as 'failed: 
         assert.deepEqual(findTypeErrors(merged), []);
         const withModel: GenerationRecord = { generatedBy: "template+ollama", model: MODEL, gates: [] };
 
-        const alone = buildReport(await runWithPlaywright(suite, { TESTFORGE_INTERACTIVE: "1" }), ["accessibility"], "", origin, null, suite, { generatedBy: "template", gates: [] }, "", mode, 1);
-        const report = buildReport(await runWithPlaywright(merged, { TESTFORGE_INTERACTIVE: "1" }), ["accessibility"], "", origin, null, merged, withModel, "", mode, 1);
+        const alone = buildReport(await runWithPlaywright(suite, { MRONION_INTERACTIVE: "1" }), ["accessibility"], "", origin, null, suite, { generatedBy: "template", gates: [] }, "", mode, 1);
+        const report = buildReport(await runWithPlaywright(merged, { MRONION_INTERACTIVE: "1" }), ["accessibility"], "", origin, null, merged, withModel, "", mode, 1);
 
         assert.equal(report.execution.filter((r) => r.generator === "local model").length, 1, "the model's test ran");
         assert.deepEqual(verdict(report), verdict(alone), "every count, group, coverage figure and the recommendation are what they are without the model");
@@ -86,7 +86,7 @@ test("in a real browser: in a passive security run the model's test is at the ac
     const mode = normalizeRunMode({ kind: "comprehensive", area: "security" }) as ComprehensiveRunMode;
     await withSite(async (origin) => {
         const merged = mergeComprehensiveScenarios(buildComprehensiveSuite(origin, mode, { covered: ["/"], notCovered: [], pageCap: 20 }), FAILING_SCENARIO, MODEL, mode);
-        const report = buildReport(await runWithPlaywright(merged, { TESTFORGE_INTERACTIVE: "1" }), ["security"], "", origin, null, merged, { generatedBy: "template+ollama", model: MODEL, gates: [] }, "", mode, 1);
+        const report = buildReport(await runWithPlaywright(merged, { MRONION_INTERACTIVE: "1" }), ["security"], "", origin, null, merged, { generatedBy: "template+ollama", model: MODEL, gates: [] }, "", mode, 1);
         assert.deepEqual(report.comprehensive!.model.tests.map((t) => [t.outcome, t.detail]), [["not run", "attack-shaped input: needs the ownership confirmation, not built yet"]]);
         assert.equal(report.summary.notRun, 0, "and it is not counted as not run either");
     });

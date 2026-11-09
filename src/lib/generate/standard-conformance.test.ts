@@ -41,11 +41,11 @@ const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts
 const needsChromium = await chromiumSkipReason();
 
 const PAGES = ["/", "/login", "/notes"];
-const PROBE = "/testforge-missing-";
+const PROBE = "/mr-onion-missing-";
 const AXE_SCAN = "passes the WCAG 2.2 A and AA scan";
 
 async function runSuite(code: string, label: string): Promise<{ records: ExecutionRecord[]; json: JsonReport }> {
-    const { report } = await runPlaywrightSpec(code, `standard-conformance-unit-${label}`, [], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `standard-conformance-unit-${label}`, [], { MRONION_INTERACTIVE: "0" });
     return { records: flattenSuites(report.suites), json: report };
 }
 
@@ -58,7 +58,7 @@ interface Outcome {
 
 /** Each shared check by page and title (ids dropped): its outcome, findings, failure and issues, the probe's random path masked. */
 function outcomes(records: ExecutionRecord[], keep: (record: ExecutionRecord) => boolean = () => true): Record<string, Outcome> {
-    const mask = (text: string) => text.replace(/\/testforge-missing-[a-z0-9]+/g, "/testforge-missing-<id>");
+    const mask = (text: string) => text.replace(/\/mr-onion-missing-[a-z0-9]+/g, "/mr-onion-missing-<id>");
     return Object.fromEntries(records
         .filter((record) => record.page && keep(record))
         .map((record): [string, Outcome] => [`${record.page} | ${record.title.replace(/^TF[A-Z]+-\d+: /, "")}`, {

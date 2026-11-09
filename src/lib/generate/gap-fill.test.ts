@@ -63,7 +63,7 @@ test("mergeLocalSuite: the whole local block skips unless interactive tests are 
     const firstStatement = wrapper.split("\n")[1].trim();
     assert.equal(
         firstStatement,
-        "test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model (testforge-qwen7b:latest): it may submit forms on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run');"
+        "test.skip(process.env.MRONION_INTERACTIVE !== '1', 'gap-fill test written by the local model (testforge-qwen7b:latest): it may submit forms on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run');"
     );
     assert.ok(!TEMPLATE.includes("test.skip"), "the template's own tests are not touched by it");
     assert.deepEqual(findTypeErrors(merged), []);

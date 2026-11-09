@@ -4,7 +4,7 @@ import { mkdtemp, rm } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import OpenAI from "openai";
-import { DEFAULT_OLLAMA_BASE_URL, OLLAMA_PLACEHOLDER_API_KEY, resolveOllamaModel, stripCodeFence } from "@/lib/generate/ollama";
+import { DEFAULT_OLLAMA_BASE_URL, OLLAMA_PLACEHOLDER_API_KEY, resolveLocalModel, stripCodeFence } from "@/lib/generate/ollama";
 import { ollamaTimeoutMs } from "@/lib/generate/local-generation";
 import { setting } from "@/lib/settings";
 
@@ -207,7 +207,8 @@ export function localModelWriter(configuredModel: string): GapWriter {
     let model: string | null = null;
     const ask = async (content: string): Promise<GapWriterReply> => {
         const signal = AbortSignal.timeout(ollamaTimeoutMs());
-        model ??= resolveOllamaModel((await client.models.list({ signal })).data.map((entry) => entry.id), configuredModel);
+        // Phase 48 (TFP-278): with the old tag when only the model built before the rename is there; its id names it.
+        model ??= resolveLocalModel((await client.models.list({ signal })).data.map((entry) => entry.id), configuredModel).model;
         if (!model) throw new Error(`Ollama has no model "${configuredModel}"`);
         messages.push({ role: "user", content });
         const chat = await client.chat.completions.create({ model, messages, temperature: 0.2 }, { signal });

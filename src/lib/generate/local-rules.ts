@@ -155,7 +155,7 @@ export const DATABASE_EXAMPLE = `import { test, expect } from '@playwright/test'
 
 test.describe('Database', () => {
   test('a new record is still shown after reloading the page', async ({ page }) => {
-    const value = \`TestForge check \${Date.now()}\`;
+    const value = \`Mr Onion check \${Date.now()}\`;
     await page.goto('https://example.invalid/EXAMPLE-FORM-PAGE');
     await page.getByLabel('EXAMPLE-FIELD-LABEL').fill(value);
     await page.getByRole('button', { name: 'EXAMPLE-SAVE-BUTTON' }).click();
@@ -211,7 +211,7 @@ export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> =
         example: ACCESSIBILITY_EXAMPLE,
     },
     reliability: {
-        rules: `Reliability (TestForge's meaning - not uptime or load):
+        rules: `Reliability (Mr Onion's meaning - not uptime or load):
 - Reliability means graceful degradation: make something the page depends on fail, then check the page survives.
 - Simulate the failure BEFORE page.goto: page.route(match, (route) => route.abort('failed')) for a network dependency (API calls, third-party scripts), or page.addInitScript(...) that makes window.localStorage throw for storage.
 - page.route only matches network request URLs. It cannot block an input, a button or any other element on the page - never write a route pattern named after a page element.
@@ -244,7 +244,7 @@ export const CATEGORY_GUIDES: Partial<Record<BestPracticeArea, CategoryGuide>> =
     },
     database: {
         rules: `Database:
-- Check persistence through the page, not the database: create or update something with a unique value (include Date.now()), reload the page, and assert the same value is still shown. The 'TestForge check' prefix in the example is real test data, not a placeholder - reuse it.
+- Check persistence through the page, not the database: create or update something with a unique value (include Date.now()), reload the page, and assert the same value is still shown. The 'Mr Onion check' prefix in the example is real test data, not a placeholder - reuse it.
 - A test that only checks that a form is visible is not a database test.
 - If the request's page has no form that saves data (for example a sign-in page), do not pretend: write test.skip('database persistence', ...) with a comment naming the kind of page that would be needed.`,
         example: DATABASE_EXAMPLE,

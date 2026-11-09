@@ -72,3 +72,27 @@ test("the input list is the 166 (144 without page data, 22 with it), then TFP-25
     );
     assert.ok(inputs.filter((input) => input.pageData).every((input) => input.baseUrl === "http://127.0.0.1:4410" && input.description === "Check the site."));
 });
+
+// Phase 48 (TFP-278, Decision 11): the rename map. Decision table of a map's shape (valid, not JSON, empty, a
+// replacement missing a field) and of how replacements apply (in order, every occurrence, counted).
+test("parseRenameMap: a map's replacements in order; anything malformed stops the check by name", async () => {
+    const { parseRenameMap } = await import("./compare.mjs");
+    assert.deepEqual(parseRenameMap('{"replacements":[{"from":"A-1","to":"B-1","why":"x"},{"from":"A","to":"B"}]}'), [{ from: "A-1", to: "B-1" }, { from: "A", to: "B" }]);
+    assert.throws(() => parseRenameMap("not json"), (error) => error instanceof CheckError && /isn't JSON/.test(error.message));
+    assert.throws(() => parseRenameMap('{"replacements":[]}'), (error) => error instanceof CheckError && /no replacements/.test(error.message));
+    assert.throws(() => parseRenameMap('{"replacements":[{"from":"","to":"B"}]}'), (error) => error instanceof CheckError && /replacement 1/.test(error.message));
+    assert.throws(() => parseRenameMap('{"replacements":[{"from":"A"}]}'), (error) => error instanceof CheckError && /replacement 1/.test(error.message));
+});
+
+test("applyRenameMap: every occurrence, each replacement after the one before it, counted; the outputs passed in are left as they are", async () => {
+    const { applyRenameMap } = await import("./compare.mjs");
+    const base = { one: "TestForge-Sample-1 and TestForge, TESTFORGE_X", two: "nothing to rename" };
+    const replacements = [{ from: "TestForge-Sample-1", to: "MrOnion-Sample-1" }, { from: "TestForge", to: "Mr Onion" }, { from: "TESTFORGE_", to: "MRONION_" }];
+    const { outputs, counts } = applyRenameMap(base, replacements);
+    assert.deepEqual(outputs, { one: "MrOnion-Sample-1 and Mr Onion, MRONION_X", two: "nothing to rename" });
+    assert.deepEqual(counts, [1, 1, 1]);
+    assert.equal(base.one, "TestForge-Sample-1 and TestForge, TESTFORGE_X");
+    // The mapped base compares as identical only when the head says exactly the new names.
+    assert.equal(compareOutputs(outputs, { one: "MrOnion-Sample-1 and Mr Onion, MRONION_X", two: "nothing to rename" }).different.length, 0);
+    assert.equal(compareOutputs(outputs, { one: "MrOnion-Sample-1 and Mr Onion, MRONION_Y", two: "nothing to rename" }).different.length, 1);
+});

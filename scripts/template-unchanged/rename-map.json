@@ -1,0 +1,11 @@
+{
+    "//": "Phase 48 (TFP-278, Decision 11): the literal name tokens the rename changed in the generator's output, applied in this order to the base ref's output before the byte-for-byte comparison. Only names belong here: a token that isn't a name is a review finding.",
+    "replacements": [
+        { "from": "TestForge-Sample-1", "to": "MrOnion-Sample-1", "why": "the journey tests' sample password; no space in a password" },
+        { "from": "TestForge", "to": "Mr Onion", "why": "the display name: header comment, sample text, test data, error text" },
+        { "from": "TESTFORGE_", "to": "MRONION_", "why": "the settings prefix: the interactive switch the suite checks and names" },
+        { "from": "__testforge", "to": "__mrOnion", "why": "the window global the script-payload check reads" },
+        { "from": "testforge-", "to": "mr-onion-", "why": "probe routes, fixture file names, the probe attribute, a sample address" },
+        { "from": "testforge@", "to": "mr-onion@", "why": "the journey tests' sample address" }
+    ]
+}

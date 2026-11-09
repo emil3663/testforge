@@ -39,12 +39,13 @@ function arg(name, fallback) {
 
 const configPath = arg("config");
 if (!configPath) {
-    console.error("usage: npm run compare:generators -- --config <file.json> [--server http://127.0.0.1:3100] [--model testforge-qwen7b] [--only <case,case>]");
+    console.error("usage: npm run compare:generators -- --config <file.json> [--server http://127.0.0.1:3100] [--model mr-onion-qwen7b] [--only <case,case>]");
     process.exit(2);
 }
 const config = JSON.parse(readFileSync(configPath, "utf8"));
 const server = arg("server", config.server ?? "http://127.0.0.1:3100");
-const model = arg("model", config.model ?? "testforge-qwen7b");
+// Phase 48 (TFP-278): the new tag; a model built under the old one is used in its place, said so in the record.
+const model = arg("model", config.model ?? "mr-onion-qwen7b");
 const only = arg("only");
 const onlyNames = only ? only.split(",") : null;
 const cases = config.cases.filter((c) => !onlyNames || onlyNames.includes(c.name));

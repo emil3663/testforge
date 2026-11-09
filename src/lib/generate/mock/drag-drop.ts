@@ -49,7 +49,7 @@ export function buildDragDropTests(
       for (let i = 0; i < binary.length; i++) {
         bytes[i] = binary.charCodeAt(i);
       }
-      const file = new File([bytes], 'testforge-drop-fixture.png', { type: 'image/png' });
+      const file = new File([bytes], 'mr-onion-drop-fixture.png', { type: 'image/png' });
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       element.dispatchEvent(new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true }));
@@ -72,7 +72,7 @@ export function buildDragDropTests(
     const target = ${locatorExpression};
 
     await target.evaluate((element) => {
-      const file = new File(['not an image'], 'testforge-drop-fixture.txt', { type: 'text/plain' });
+      const file = new File(['not an image'], 'mr-onion-drop-fixture.txt', { type: 'text/plain' });
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       element.dispatchEvent(new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true }));

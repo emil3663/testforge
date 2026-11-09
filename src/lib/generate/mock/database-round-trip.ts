@@ -79,7 +79,7 @@ function roundTripTest(form: PersistenceForm) {
     test.skip(process.env.${INTERACTIVE_ENV_VAR} !== '1', '${escapeForSingleQuotedString(SKIP_REASON)}');
 
     // A value no earlier run can have saved, so finding it proves this run saved it.
-    const value = \`TestForge check \${Date.now()}\`;
+    const value = \`Mr Onion check \${Date.now()}\`;
     await page.goto('${path}', { waitUntil: 'domcontentloaded' });
     const field = ${fieldLocator(form.field)};
     await expect(field, 'the "${name}" field on ${path} should be visible').toBeVisible();

@@ -72,11 +72,11 @@ export function formFieldNamesTest(path: string) {
         await page.evaluate(() => {
           const probe = document.createElement('input');
           probe.type = 'file';
-          probe.setAttribute('data-testforge-probe', '');
+          probe.setAttribute('data-mr-onion-probe', '');
           document.body.appendChild(probe);
         });
-        fileDefault = firstLine(await page.locator('[data-testforge-probe]').ariaSnapshot());
-        await page.evaluate(() => document.querySelector('[data-testforge-probe]')?.remove());
+        fileDefault = firstLine(await page.locator('[data-mr-onion-probe]').ariaSnapshot());
+        await page.evaluate(() => document.querySelector('[data-mr-onion-probe]')?.remove());
       }
       return firstLine(snapshot) === fileDefault;
     };

@@ -4,7 +4,7 @@ import { Spinner } from "@/app/_components/Spinner";
 import type { TestAuditMode } from "@/app/_lib/types";
 import { droppedJourneysHeading, journeyName } from "@/app/_lib/dropped-journeys";
 import type { DroppedJourney } from "@/lib/generate/journey-check";
-import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
+import { checksInteractiveSwitch } from "@/lib/run/interactive";
 
 interface SavedSuiteResult {
     fileName: string;
@@ -107,7 +107,7 @@ export function GeneratedSuiteSection({
                                 </span>
                                 <span>Open completed report in a new page</span>
                             </label>
-                            {editedCode.includes(INTERACTIVE_ENV_VAR) && (
+                            {checksInteractiveSwitch(editedCode) && (
                                 <label className="mt-3 flex items-start gap-3 text-xs text-zinc-400">
                                     <input
                                         type="checkbox"

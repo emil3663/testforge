@@ -171,7 +171,7 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     const appended = body.code.slice(expectedTemplate.length);
     assert.match(
         appended,
-        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
+        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.MRONION_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
     );
     assert.match(appended, /a saved note is still shown after a reload/);
     assert.doesNotMatch(appended, /import |```/, "the local import and fence are dropped");
@@ -180,6 +180,24 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
         body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`),
         ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "duplicate tests: kept", "merged suite type check: kept"]
     );
+});
+
+test("Phase 48 (TFP-278): the new tag asked for and only the old one built - the old one fills the gap, and the generation record names it", async () => {
+    fakeOpenAi(["qwen2.5-coder:7b", CATALOG_ID], (_req, res) => json(res, 200, completion("```typescript\n" + GOOD + "\n```")));
+    useOllama();
+    process.env.MRONION_OLLAMA_MODEL = "mr-onion-qwen7b";
+    const body = await (await POST(request(GAP))).json();
+
+    assert.equal(body.generatedBy, "template+ollama", JSON.stringify({ fallbackReason: body.fallbackReason, gates: body.gates }));
+    assert.equal(body.model, CATALOG_ID);
+    const tag = body.gates.find((g: { gate: string }) => g.gate === "model tag");
+    assert.deepEqual(tag, {
+        gate: "model tag",
+        bar: "mr-onion-qwen7b",
+        measured: "testforge-qwen7b:latest, the tag's old name",
+        verdict: "kept",
+        evidence: ["ollama cp testforge-qwen7b mr-onion-qwen7b gives it the new name, with no rebuild"],
+    });
 });
 
 test("Option B: the local model is asked only for the gap areas, with only their guides", async () => {

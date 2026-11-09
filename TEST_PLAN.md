@@ -59,7 +59,7 @@ Each area's cases are in a file of their own under `docs/test-plan/` (TFP-253). 
 | § | Area | Cases | File |
 |---|------|-------|------|
 | 3.1 | Health & Observability (HLT) | 1 | [docs/test-plan/HLT.md](docs/test-plan/HLT.md) |
-| 3.2 | Generate (GEN) | 108 | [docs/test-plan/GEN.md](docs/test-plan/GEN.md) |
+| 3.2 | Generate (GEN) | 112 | [docs/test-plan/GEN.md](docs/test-plan/GEN.md) |
 | 3.3 | Crawl (CRW) | 5 | [docs/test-plan/CRW.md](docs/test-plan/CRW.md) |
 | 3.4 | Introspect (INT) | 11 | [docs/test-plan/INT.md](docs/test-plan/INT.md) |
 | 3.5 | Run (RUN) | 53 | [docs/test-plan/RUN.md](docs/test-plan/RUN.md) |

@@ -50,7 +50,7 @@ export function buildRouteHelpers(indent: string) {
         "  cache.__tfMissingRoutes ??= new Map();",
         "  let probe = cache.__tfMissingRoutes.get(prefix);",
         "  if (!probe) {",
-        "    const missing = prefix + 'testforge-missing-' + Math.random().toString(36).slice(2, 10);",
+        "    const missing = prefix + 'mr-onion-missing-' + Math.random().toString(36).slice(2, 10);",
         "    probe = tfRouteView(missing).then((view) => ({ route: new URL(missing).pathname + new URL(missing).hash, view }));",
         "    cache.__tfMissingRoutes.set(prefix, probe);",
         "  }",

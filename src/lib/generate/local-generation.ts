@@ -2,7 +2,7 @@ import OpenAI, { APIConnectionError } from "openai";
 import { countGate, type GateVerdict } from "./gates";
 import { localRulesFor } from "./local-rules";
 import type { BestPracticeArea } from "./mock/types";
-import { DEFAULT_OLLAMA_BASE_URL, OLLAMA_PLACEHOLDER_API_KEY, resolveOllamaModel, stripCodeFence } from "./ollama";
+import { DEFAULT_OLLAMA_BASE_URL, LOCAL_MODEL_TAG, OLD_LOCAL_MODEL_TAG, OLLAMA_PLACEHOLDER_API_KEY, resolveLocalModel, stripCodeFence } from "./ollama";
 import { setting } from "@/lib/settings";
 import { findDuplicateTests, findPromisesToPlainMatchers, findTypeErrors, findUnawaitedAssertions } from "./validate";
 
@@ -80,13 +80,18 @@ export async function generateLocalSuite(
         });
 
         const catalog = await client.models.list({ signal });
-        model = resolveOllamaModel(
+        const resolved = resolveLocalModel(
             catalog.data.map((m) => m.id),
             configuredModel
-        ) ?? undefined;
+        );
+        model = resolved.model ?? undefined;
         if (!model) {
             console.error(`[api/generate] Ollama has no model "${configuredModel}", using template generator.`);
             return { ok: false, reason: "ollama_model_missing", gates };
+        }
+        // Phase 48 (TFP-278): the model built before the rename, under its old tag; the record says so.
+        if (resolved.oldTag) {
+            gates.push({ gate: "model tag", bar: configuredModel, measured: `${model}, the tag's old name`, verdict: "kept", evidence: [`ollama cp ${OLD_LOCAL_MODEL_TAG} ${LOCAL_MODEL_TAG} gives it the new name, with no rebuild`] });
         }
 
         const localMessages = withLocalRules(messages, areas);

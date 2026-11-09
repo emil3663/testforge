@@ -32,6 +32,7 @@ const { normalizeContentRules, normalizeTestAuditMode } = await import("../gener
 const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts");
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { startRunJob } = await import("./executor.ts");
+const { checksInteractiveSwitch } = await import("./interactive.ts");
 const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { setMachineLimitForTests } = await import("./host-limits.ts");
 const { flattenSuites } = await import("../report/execution.ts");
@@ -280,6 +281,25 @@ test("in a real browser: with interactive tests on, the serial group runs after 
     } finally {
         await fixture.close();
     }
+});
+
+test("in a real browser: a unit saved by 0.2.0 checks TESTFORGE_INTERACTIVE; it is Not run when the run leaves interactive tests off, and runs when it turns them on (Phase 48 Decision 8, TFP-278)", { skip: needsChromium }, async () => {
+    // As 0.2.0's template wrote an interactive test, before the rename: the old setting name in its skip.
+    const saved = `import { test, expect } from '@playwright/test';
+test('a saved interactive test', { annotation: { type: 'gate', description: 'interactive' } }, async () => {
+  test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run');
+  expect(process.env.MRONION_INTERACTIVE).toBe('1');
+});
+`;
+    // The skip line alone, as 0.2.0 wrote it, names only the old setting: the UI still offers the interactive switch.
+    assert.ok(checksInteractiveSwitch(saved.split("\n").find((line) => line.includes("test.skip(")) ?? ""), "the UI offers the interactive switch for it");
+    const statuses = [];
+    for (const interactive of [false, true]) {
+        const snapshot = await startRunJob(saved, ["functional"], "fast", undefined, [], [], "a saved suite", null, interactive);
+        const job = await finished(snapshot.runId, 120_000);
+        statuses.push(job.result?.report?.execution.map((record: ExecutionRecord) => record.status).join(",") ?? job.result?.output);
+    }
+    assert.deepEqual(statuses, ["Not run", "Passed"]);
 });
 
 test("in a real browser: both passes get every setting the run sets under both names, the same value in each (Phase 48 Decision 8, TFP-276)", { skip: needsChromium }, async () => {

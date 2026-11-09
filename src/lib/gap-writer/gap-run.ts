@@ -7,6 +7,7 @@ import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { flattenSuites } from "@/lib/report/execution";
 import { runEnv } from "@/lib/run/child-env";
+import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder } from "@/lib/run/run-folders";
 import { forbiddenConstruct } from "./code-check";
 import type { JsonReport } from "@/lib/report/types";
@@ -98,7 +99,7 @@ export async function runGapSpec(spec: string): Promise<GapRunOutcome> {
         await new Promise<void>((resolve) => {
             const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", "--config", config, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
                 cwd: process.cwd(),
-                env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" }),
+                env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", [INTERACTIVE_ENV_VAR]: "0" }),
                 stdio: "ignore",
                 windowsHide: true,
             });

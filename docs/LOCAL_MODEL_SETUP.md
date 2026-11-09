@@ -32,8 +32,8 @@ ollama pull qwen2.5-coder:7b
 ## 2. Create TestForge's model from the Modelfile
 
 TestForge never calls `qwen2.5-coder:7b` directly. It calls
-**`testforge-qwen7b`**, a model defined by
-[`ollama/Modelfile.testforge-qwen7b`](../ollama/Modelfile.testforge-qwen7b):
+**`mr-onion-qwen7b`**, a model defined by
+[`ollama/Modelfile.mr-onion-qwen7b`](../ollama/Modelfile.mr-onion-qwen7b):
 
 ```text
 FROM qwen2.5-coder:7b
@@ -66,7 +66,7 @@ Ollama choose.
 From the repository root:
 
 ```sh
-ollama create testforge-qwen7b -f ollama/Modelfile.testforge-qwen7b
+ollama create mr-onion-qwen7b -f ollama/Modelfile.mr-onion-qwen7b
 ```
 
 Use exactly that name. TestForge looks it up by name, and a missing model is
@@ -79,8 +79,13 @@ reported as `ollama_model_missing` (below) rather than falling back to the raw
 ollama list
 ```
 
-`testforge-qwen7b:latest` should be listed. Ollama adds the `:latest` tag
+`mr-onion-qwen7b:latest` should be listed. Ollama adds the `:latest` tag
 itself; TestForge accepts the name with or without it.
+
+Built before the rename, as `testforge-qwen7b`? It is used as it is when
+`mr-onion-qwen7b` is asked for and missing, and the generation record says
+so (a "model tag" gate). `ollama cp testforge-qwen7b mr-onion-qwen7b` gives
+it the new name, with no rebuild.
 
 To check the exact endpoint TestForge talks to:
 
@@ -93,7 +98,7 @@ curl http://localhost:11434/v1/models
 Add to `.env.local` (gitignored — not `.env.development`, which is committed):
 
 ```sh
-TESTFORGE_OLLAMA_MODEL=testforge-qwen7b
+MRONION_OLLAMA_MODEL=mr-onion-qwen7b
 ```
 
 Restart the dev server. Setting this variable is the whole opt-in:
@@ -170,7 +175,7 @@ model output, and logs the cause on the server console.
 ## Checklist
 
 - [ ] `ollama pull qwen2.5-coder:7b`
-- [ ] `ollama create testforge-qwen7b -f ollama/Modelfile.testforge-qwen7b`
-- [ ] `ollama list` shows `testforge-qwen7b:latest`
-- [ ] `TESTFORGE_OLLAMA_MODEL=testforge-qwen7b` in `.env.local`, server restarted
+- [ ] `ollama create mr-onion-qwen7b -f ollama/Modelfile.mr-onion-qwen7b`
+- [ ] `ollama list` shows `mr-onion-qwen7b:latest`
+- [ ] `MRONION_OLLAMA_MODEL=mr-onion-qwen7b` in `.env.local`, server restarted
 - [ ] A generation returns `"generatedBy": "ollama"`
