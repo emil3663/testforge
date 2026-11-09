@@ -14,7 +14,8 @@ Scope:
 
 Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
-TFP-277 built (`9844233`), waiting for Gate A's independent verification.
+TFP-277 done (`9844233`); Gate A independently verified and passed
+(Emil, 2026-11-09).
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -409,6 +410,14 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      the notice once, and the UI lists the same runs. `--baseline latest`
      takes the same run as on 0.2.0. A saved site suite is reused, not
      regenerated.
+     **Amended 2026-11-09 (Gate A; the criterion was written from Phase
+     47's context line, which the code doesn't bear out):** the default
+     data folder holds site suites, candidates and gap-writer settings,
+     not the UI's runs. Runs are in the repo's `runs/` (`RUNS_ROOT`)
+     unless the runs folder is set inside the data folder, as `--data-dir`
+     does. So the criterion reads: the UI's candidate list is unchanged,
+     and a run kept in the data folder (via `--data-dir`) serves as
+     `--baseline latest` after the move. The repo's `runs/` isn't touched.
    - The same on Linux (`~/.local/share/testforge` → `mr-onion`), in the
      WSL clone. macOS is covered by unit tests only, stated as a limit.
    - Both folders present: the new one is used, nothing is moved, and the
@@ -578,7 +587,8 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 3. The highest-risk ticket:
   independently verified before Gate A passes.
 - **Dependencies:** TFP-276.
-- **Built 2026-11-09 (`9844233`), not yet verified.** Every check used
+- **Done 2026-11-09 (`9844233`): verified at Gate A, passed (Emil,
+  2026-11-09).** Every check used
   copies under a temporary `LOCALAPPDATA` or `XDG_DATA_HOME`; the real
   `%LOCALAPPDATA%\TestForge` was unchanged (41 files, no `MrOnion`)
   before and after each. Evidence: `9844233`'s body, RUN-50 to RUN-53.
@@ -595,6 +605,8 @@ lock:
   - running this branch's app or CLI with no data folder set moves the
     real folder; going back to `main` then needs `TESTFORGE_DATA_DIR`
     pointed at the moved one (Decision 14's rollback note).
+- **Verified 2026-11-09 (planning session, independently; Gate A).** See
+  Gate A's verification below.
 
 ### TFP-278 - The generated suite's text and the local model's tag
 
@@ -626,6 +638,11 @@ lock:
   amended 2026-11-08), the issue template's URL, and
   `tests/regression/` file names. Plus the render-and-grep script of
   criterion 5.
+  **Amended 2026-11-09 (Emil, Gate A ruling 2):** also `package.json`'s
+  version to `0.3.0`, so the footer of a run on the branch names Mr Onion
+  and criterion 5's report check can pass. `main` doesn't see 0.3.0 before
+  the merge (Decision 14). The changelog's 0.3.0 entry stays in TFP-280,
+  and the `v0.3.0` tag in TFP-281, after the merge (Decision 13).
 - **Deliverables:** the above, with each user-visible string's test
   updated.
 - **Acceptance criteria:** Acceptance Criteria 5. The template check is
@@ -683,6 +700,42 @@ lock:
   TFP-277 against a copy of a real 0.2.0 data folder on Windows.
 - Nothing visible has changed yet. If the phase stopped here, the branch
   would still be safe to merge.
+
+**Gate A verification (planning session, 2026-11-09): every checked
+criterion met. The owner's ruling: passed (Emil, 2026-11-09).** The planning session
+verified it independently. It designed the record but built none of
+TFP-275 to TFP-277.
+
+| Check | How | Result |
+|---|---|---|
+| Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `506c5b5`, `9844233`, `69142d0`, `81e239a` on `phase-48-mr-onion`; the remote branch is at `81e239a`; `main` is at `cf501ad` |
+| Scope | `git show --stat` | The move, the store's old-path mapping, the footer rule and their tests; plus the self-test server's temporary data folder (a real isolation defect found while building, fixed in the ticket per the standing policy: kept) |
+| Template unchanged (criteria 1-3) | `check:template-unchanged cf501ad`, in a fresh clone of the branch | 172 inputs, 172 identical, 0 different, exit 0 |
+| Data-dir, settings and version tests | Re-run, Linux, Node 22, temporary `XDG_DATA_HOME`/`LOCALAPPDATA` | 34 passed, 0 failed, 1 skipped (needs Chromium) |
+| The move on a real filesystem | A probe calling `dataDir()` twice per process, in temporary folders | Old only: renamed, file intact, one notice. Both: new used, old left, one notice. Rename refused (read-only parent, EACCES): old used, notice gives the reason; the next start moved it. `MRONION_DATA_DIR` or `TESTFORGE_DATA_DIR` set: that folder used, the default old folder not moved (the old name's deprecation notice printed) |
+| The owner's real folder | Listing of `%LOCALAPPDATA%` | `TestForge` present, no `MrOnion` |
+| Code read against Decision 6 | `data-dir.ts`, `store.ts`, `text.ts` | Matches, including the two review fixes (a process left on the old folder follows a later move; a pre-move record's suite path maps to the new folder) |
+
+Not checked here, with where they are checked:
+- the Windows live checks (655 files moved, `EPERM` with a held file,
+  `--baseline latest`'s 0 new / 46 known / 0 fixed on both versions, 470
+  reused) and TFP-276's live two-command run: this session has no Windows
+  shell or browser. They rest on `9844233`'s and `621dd8a`'s bodies, with
+  their outputs quoted;
+- the full unit, self-test and regression suites: not re-run (815, 5 and 73
+  reported). Gate B's verification re-runs them in full;
+- PR #23's checks for `69142d0` and `81e239a`: GitHub couldn't be read
+  from this session. Confirm they are green before TFP-278 starts.
+
+Rulings:
+1. **Criterion 3's runs line** is amended (above): the criterion was
+   wrong about where runs live, and the build's check is the right one.
+2. **The 0.3.0 bump** goes in TFP-279 (Emil, 2026-11-09). The changelog
+   entry and tag stay after it, as before.
+3. **The owner's own folder** (Emil, 2026-11-09): the owner backs up
+   `%LOCALAPPDATA%\TestForge` before running the branch himself, then lets
+   it move as it will for every user after the merge. Claude Code's checks
+   keep using copies under a temporary folder.
 
 ### Gate B — Ready for `main`
 
