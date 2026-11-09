@@ -15,7 +15,8 @@ Scope:
 Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
-(Emil, 2026-11-09).
+(Emil, 2026-11-09). TFP-278 built (`48604dc`, baseline `8892b7e`),
+waiting for its independent verification.
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -624,6 +625,14 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 4. Independently verified
   (it moves the baseline).
 - **Dependencies:** Gate A.
+- **Built 2026-11-09 (`48604dc`; `TEMPLATE_BASELINE` `8892b7e`), not yet
+  verified.** The mapped template check 172 of 172 identical; raw, 307
+  changed lines, each the map applied; a one-character mutant red; a
+  0.2.0 saved suite's interactive test Not run without `--interactive`
+  and run with it; the old local tag used, and named, when only it is
+  built. The nightly dispatched on the branch at `8892b7e`: run
+  42556213111, every job green, its email sent. Evidence: `48604dc`'s
+  body, GEN-109 to GEN-112.
 
 ### TFP-279 - The visible name, JUnit, plugin and workflows
 
