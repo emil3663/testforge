@@ -16,7 +16,7 @@ import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
 /**
  * Phase 42 (TFP-194, Decisions 5 and 6): gap tests, once per gap. For each
  * element or link no test checks in context (TFP-201's gap list), up to
- * `limit` per generation, the site's writer writes a test body; TestForge
+ * `limit` per generation, the site's writer writes a test body; Mr Onion
  * runs it behind the gates (gap-run.ts), and a failure goes back to the
  * writer for a revision, up to `maxAttempts`. A breach of the read-only
  * gate rejects the test at once.
@@ -31,7 +31,7 @@ import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
  * candidate already matches gets no new test (Comprehensive runs the
  * candidate; on Standard it becomes the gap's test, TFP-203,
  * src/lib/candidates/standard.ts). After a test is saved, the writer
- * generalises it, TestForge binds that back to the same element and runs
+ * generalises it, Mr Onion binds that back to the same element and runs
  * it, and a candidate that passes joins the pool.
  */
 

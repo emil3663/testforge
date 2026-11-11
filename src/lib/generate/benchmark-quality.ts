@@ -18,7 +18,7 @@ import { findTypeErrors, findUnawaitedAssertions } from "./validate";
 //                 or aria assertions)
 //   functional    interacts with the page (click, fill, check, select, press).
 //                 Decision 6 names no trait for functional; this one is
-//                 TestForge's own and is stated in the benchmark report.
+//                 Mr Onion's own and is stated in the benchmark report.
 
 const SIGNALS: Partial<Record<BestPracticeArea, (code: string) => boolean>> = {
     "performance/load": (code) => /Date\.now\(\)|performance\.(now|timing|getEntries)|getEntriesByType\(|loadEventEnd|responseStart|domContentLoadedEventEnd/.test(code),
@@ -86,11 +86,11 @@ export function scoreSuite(area: BestPracticeArea, code: string): SuiteQuality {
 }
 
 /**
- * The suite as TestForge runs it. A gap-fill suite is appended to the
+ * The suite as Mr Onion runs it. A gap-fill suite is appended to the
  * template's, which opens with test.use({ baseURL }), so relative URLs
  * resolve against the site. Run on its own, a model suite with
  * page.goto('/login') failed with "Cannot navigate to invalid URL" (C3 and C6
- * in the Phase 36 benchmark), penalising a suite that works in TestForge.
+ * in the Phase 36 benchmark), penalising a suite that works in Mr Onion.
  * A suite that sets its own baseURL is left alone.
  */
 export function withBaseUrl(code: string, baseUrl: string): string {

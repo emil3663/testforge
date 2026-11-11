@@ -25,7 +25,7 @@ import { parseTestUnits, withId, type TestUnit } from "./units";
  *   test the generator no longer writes is retired - its type is gone, or
  *   what it tested is (a link taken off a page whose structure is the same).
  *   A saved test whose file no longer
- *   matches what TestForge wrote was edited by hand: it is kept as it is,
+ *   matches what Mr Onion wrote was edited by hand: it is kept as it is,
  *   never regenerated, and flagged when its page changed or is gone.
  *
  * The template generator is deterministic, so a reused test usually reads

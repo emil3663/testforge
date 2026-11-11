@@ -7,10 +7,10 @@ resets.
 
 - **Repository:** `https://github.com/testsmith-io/practice-software-testing`,
   cloned into the WSL distribution `Ubuntu`, at
-  `~/practice-software-testing` (D26, 2026-10-27), never inside TestForge.
+  `~/practice-software-testing` (D26, 2026-10-27), never inside Mr Onion.
   Its code stays in WSL's Linux filesystem, so Docker's bind mounts never
   cross the Windows mount: the register's standing rule for every site
-  TestForge hosts locally.
+  Mr Onion hosts locally.
 - **Pinned commit:** `5a6ccc26` (2026-10-07). `start-toolshop.ps1` checks it
   out, so runs are reproducible; change `$PinnedCommit` there to move it.
 - **Versions:** `sprint5` (clean) and `sprint5-with-bugs`.
@@ -65,9 +65,9 @@ for with-bugs (863 to 1,070 s at Gates B to D) and 381 to 391 s for clean.
   is.
 - **Starting one version stops the other** (`docker compose down`, then `up`).
 
-## What TestForge adds, and why
+## What Mr Onion adds, and why
 
-Testsmith's files are not changed. TestForge adds:
+Testsmith's files are not changed. Mr Onion adds:
 - **The API's storage given to php-fpm's user.** Testsmith's `composer`
   service ends with `chown -R www-data /var/www`, which in its image is
   uid 82, while php-fpm runs as uid 1000. In the Linux filesystem that
@@ -93,7 +93,7 @@ Testsmith's files are not changed. TestForge adds:
   run as every measured baseline since Phase 41 did (a file cache could, for
   example, make the API's request throttling count across requests).
 - **Only Testsmith's `docker-compose.yml`.** Its override file adds cron,
-  phpMyAdmin and MailCatcher, which no TestForge run needs, so it isn't used.
+  phpMyAdmin and MailCatcher, which no Mr Onion run needs, so it isn't used.
 - **`compose.loopback.yml`: this machine only (TFP-260).** Testsmith's file
   publishes 4200, 8091, 8000 and 3306 on every interface, MariaDB with the
   root password `root` among them. This replaces those lists with

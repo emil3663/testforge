@@ -30,7 +30,7 @@ import { after, before, test } from "node:test";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 import type { SiteSuiteManifest } from "../site-suites/store.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-candidates-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-candidates-"));
 const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_RUNS_ROOT", "MRONION_CLAUDE_COMMAND", "MRONION_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");

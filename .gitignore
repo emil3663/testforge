@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# TestForge — temp test run files (created by /api/run)
+# Mr Onion — temp test run files (created by /api/run)
 /runs/
 
 # ── Node / Next.js ───────────────────────────────────────────────────────────

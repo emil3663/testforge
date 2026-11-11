@@ -10,9 +10,9 @@ tab, choose **Report a vulnerability**. That opens a private advisory that
 only the maintainer can see.
 
 Please include what you found, how to reproduce it (the request, the
-config, the TestForge commit), and what an attacker could do with it.
+config, the Mr Onion commit), and what an attacker could do with it.
 
-**What to expect.** TestForge is maintained by one person, so responses are
+**What to expect.** Mr Onion is maintained by one person, so responses are
 best effort: an acknowledgement within a week, then updates in the advisory
 until it is fixed or declined with a reason. Once a fix lands, the advisory
 is published with credit to the reporter, unless you'd rather not be named.
@@ -25,18 +25,18 @@ backported.
 
 ## Security model
 
-TestForge is a **local, single-user developer tool**. It is not designed to
+Mr Onion is a **local, single-user developer tool**. It is not designed to
 be deployed, shared on a network or exposed to the internet.
 
 - **It executes code by design.** `POST /api/run` runs the Playwright suite
-  it is given, as the user who started TestForge, with that user's file and
+  it is given, as the user who started Mr Onion, with that user's file and
   network access. This is the product working as intended under the local
   model (Phase 16, `docs/decisions/phase-16-local-first-decision-record.md`),
   not a bug to be patched. There is no login, no multi-user isolation and
   no sandbox.
 - **So the server must only be reachable from the tester's own machine.**
-  TestForge listens on `127.0.0.1` only, and its API refuses requests whose
-  `Host` or `Origin` isn't TestForge's own local address and writes
+  Mr Onion listens on `127.0.0.1` only, and its API refuses requests whose
+  `Host` or `Origin` isn't Mr Onion's own local address and writes
   (`POST`, `PUT`, `PATCH`, `DELETE`) whose body isn't `application/json`,
   so a web page open in the same browser
   can't drive it. Don't override the address, and don't put it behind a
@@ -51,14 +51,14 @@ be deployed, shared on a network or exposed to the internet.
   secrets; change them, in `.env` for Plane, before running either stack
   anywhere else.
 
-### What TestForge does to limit harm
+### What Mr Onion does to limit harm
 
 | Area | What it does | Where |
 |---|---|---|
 | Generated tests | Read-only by default: a request guard blocks non-GET traffic to the target unless a run turns on the interactive gate; data-changing and attack-shaped tests need a typed ownership confirmation (Phase 43, not yet built: until then they don't run) | `src/lib/run/`, `docs/decisions/phase-38-*`, `phase-43-*` |
 | Model-written tests | Restricted to the page and `expect`: imports, Node APIs, non-GET requests, routes and code built at run time are refused before running. **This is a filter, not a sandbox**; the Docker sandbox is Phase 45 | `src/lib/gap-writer/`, `docs/decisions/phase-45-*` |
 | The gap writer | Calls the Claude Code CLI with every tool and MCP server off, without this machine's CLAUDE.md, auto memory or hooks (`--safe-mode`), from an empty temporary folder, with the page's text marked as untrusted data | `src/lib/gap-writer/writers.ts` |
-| Child processes | Every Playwright run gets only the environment Playwright needs, plus the proxy settings when set: no API keys, tokens or TestForge settings. A test can read a proxy setting, so a password in a proxy URL is within its reach | `src/lib/run/child-env.ts` |
+| Child processes | Every Playwright run gets only the environment Playwright needs, plus the proxy settings when set: no API keys, tokens or Mr Onion settings. A test can read a proxy setting, so a password in a proxy URL is within its reach | `src/lib/run/child-env.ts` |
 | Credentials | Login credentials come only from environment variables; they're redacted from every report, log and saved file; a run's signed-in session file lives in a per-run folder outside the evidence and is deleted when the run's process ends | `src/lib/run/auth.ts`, `redact.ts`, `docs/decisions/phase-20-*` |
 | Load on target sites | Hosts other than local ones are capped: at most 3 workers sharing 5 requests per second | `src/lib/run/host-limits.ts`, `request-cap.ts` |
 | Local data | Run history, site suites and candidates (target URLs and page structure; from Phase 43, ownership confirmations and their contact email) stay in the local data folder, never in the repo | `src/lib/storage/data-dir.ts` |
@@ -66,7 +66,7 @@ be deployed, shared on a network or exposed to the internet.
 
 ### Testing other people's sites
 
-TestForge sends real traffic to the sites it tests. Only test sites you own
+Mr Onion sends real traffic to the sites it tests. Only test sites you own
 or have permission to test, or the public practice sites listed in
 `docs/decisions/practice-site-targets-2026-10-19.md`. Standard runs are
 designed not to be intrusive, but they are still automated traffic.
@@ -78,3 +78,10 @@ designed not to be intrusive, but they are still automated traffic.
   the nightly fails on a high or critical advisory in the app's own
   dependencies (`npm audit --omit=dev`). Dev tooling isn't checked: Allure's
   and ESLint's chains carry advisories `npm audit fix` can't clear.
+
+### For the maintainer
+
+- The repository was renamed from `emil3663/testforge` to
+  `emil3663/mr-onion` (Phase 48). GitHub redirects the old address only
+  while no repository takes that name, so nothing is ever created again as
+  `emil3663/testforge`, by this account or anyone else.

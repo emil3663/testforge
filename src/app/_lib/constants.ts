@@ -53,7 +53,7 @@ export const BEST_PRACTICE_OPTIONS = [
     },
 ] as const;
 
-// Only correct when TestForge is testing itself - it's the form's starting
+// Only correct when Mr Onion is testing itself - it's the form's starting
 // value, not a recommendation. For any other target (Plane on :80,
 // test-assist on :4321, ...) the user must replace it.
 export const DEFAULT_BASE_URL = "http://localhost:3000";

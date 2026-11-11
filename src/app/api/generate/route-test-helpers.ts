@@ -39,10 +39,10 @@ const ENV_KEYS = [
  */
 export function installFakeServer() {
     const savedEnv = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
-    // Phase 42 (TFP-190): the route saves each site's suite in TestForge's data folder. Each
+    // Phase 42 (TFP-190): the route saves each site's suite in Mr Onion's data folder. Each
     // test file gets its own temporary one, so no test reads or writes the real folder.
     const savedDataDir = process.env.MRONION_DATA_DIR;
-    const dataDir = mkdtempSync(join(tmpdir(), "testforge-data-"));
+    const dataDir = mkdtempSync(join(tmpdir(), "mr-onion-data-"));
     process.env.MRONION_DATA_DIR = dataDir;
 
     before(async () => {

@@ -16,7 +16,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-version-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-version-"));
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));

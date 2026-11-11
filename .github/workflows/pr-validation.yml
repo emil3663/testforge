@@ -33,6 +33,10 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      # Phase 48 (TFP-280): the old name stays only where scripts/old-name/allowlist.json says why.
+      - name: Check for the old name
+        run: npm run check:old-name
+
       - name: Run build
         run: npm run build
 

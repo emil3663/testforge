@@ -1517,7 +1517,7 @@ test.describe("Mr Onion regression coverage", () => {
             "",
             "test.use({ baseURL: 'http://127.0.0.1:3001' });",
             "",
-            "if (process.env.TESTFORGE_NEVER_SET === 'yes') {",
+            "if (process.env.MRONION_NEVER_SET === 'yes') {",
             "  test('declared, never collected', async () => { expect(1).toBe(1); });",
             "}",
         ].join("\n"));

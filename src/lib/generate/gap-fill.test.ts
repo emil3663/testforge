@@ -29,12 +29,12 @@ test("mergeLocalSuite: template kept whole; every @playwright/test import form d
         "  test('x', async ({ page }) => { await page.goto('/'); await expect(page.locator('body')).toBeVisible(); });",
         "});",
     ].join("\n");
-    const merged = mergeLocalSuite(TEMPLATE, local, "testforge-qwen7b:latest", ["database"]);
+    const merged = mergeLocalSuite(TEMPLATE, local, "mr-onion-qwen7b:latest", ["database"]);
     assert.ok(merged.startsWith(TEMPLATE));
     // Import statements, not mentions: since TFP-168 the model's page.goto adds tfGoto, whose type names @playwright/test.
     assert.equal((merged.match(/^\s*import\b[^\n]*@playwright\/test/gm) ?? []).length, 1, "only the template's import remains");
     assert.match(merged, /await tfGoto\(page, '\/'\)/, "the model's visit goes through tfGoto (TFP-168)");
-    assert.match(merged, /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
+    assert.match(merged, /test\.describe\('Local model \(mr-onion-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\([^\n]+\);\n\n    test\.describe\('Database Coverage', \(\) => \{\n        test\.describe\('Database'/);
     assert.deepEqual(findTypeErrors(merged), []);
 });
 
@@ -47,7 +47,7 @@ test("mergeLocalSuite: several gap areas are not forced under one area block", (
 });
 
 test("localModelSuiteTitle: the prefix the run report recognises", () => {
-    assert.equal(localModelSuiteTitle("testforge-qwen7b:latest"), "Local model (testforge-qwen7b:latest)");
+    assert.equal(localModelSuiteTitle("mr-onion-qwen7b:latest"), "Local model (mr-onion-qwen7b:latest)");
 });
 
 // --- GEN-43 (amended Decision 6) ---------------------------------------------
@@ -58,12 +58,12 @@ test("findGapAreas: an area the template inspected and found nothing to test in 
 });
 
 test("mergeLocalSuite: the whole local block skips unless interactive tests are on, with a stated reason", () => {
-    const merged = mergeLocalSuite(TEMPLATE, "test('x', async () => {});", "testforge-qwen7b:latest", ["database"]);
+    const merged = mergeLocalSuite(TEMPLATE, "test('x', async () => {});", "mr-onion-qwen7b:latest", ["database"]);
     const wrapper = merged.slice(merged.indexOf("test.describe('Local model"));
     const firstStatement = wrapper.split("\n")[1].trim();
     assert.equal(
         firstStatement,
-        "test.skip(process.env.MRONION_INTERACTIVE !== '1', 'gap-fill test written by the local model (testforge-qwen7b:latest): it may submit forms on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run');"
+        "test.skip(process.env.MRONION_INTERACTIVE !== '1', 'gap-fill test written by the local model (mr-onion-qwen7b:latest): it may submit forms on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run');"
     );
     assert.ok(!TEMPLATE.includes("test.skip"), "the template's own tests are not touched by it");
     assert.deepEqual(findTypeErrors(merged), []);

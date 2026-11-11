@@ -1,6 +1,6 @@
-// Phase 47 (TFP-245): the local Toolshop as a `testforge run --server` command. start-toolshop.ps1 starts the
+// Phase 47 (TFP-245): the local Toolshop as a `mr-onion run --server` command. start-toolshop.ps1 starts the
 // containers and returns, so on its own there would be nothing for --server to stop. This starts it, stays running
-// while the run goes, and stops the containers (stop-toolshop.ps1) when its stdin closes - which is how `testforge
+// while the run goes, and stops the containers (stop-toolshop.ps1) when its stdin closes - which is how `mr-onion
 // run` asks a server to stop - or on Ctrl+C or a signal. It exits non-zero if the start fails, so the run ends with
 // exit 2.
 //
@@ -11,7 +11,7 @@
 //   node scripts/toolshop-local/serve-toolshop.mjs sprint5 [--ready-port 4299]            # the clean version
 //   node scripts/toolshop-local/serve-toolshop.mjs sprint5-with-bugs [--ready-port 4299]
 //
-//   npm run testforge -- run --url http://localhost:4200 --server-timeout 600 \
+//   npm run mr-onion -- run --url http://localhost:4200 --server-timeout 600 \
 //     --server "node scripts/toolshop-local/serve-toolshop.mjs sprint5 --ready-port 4299" --port 4299
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:net";

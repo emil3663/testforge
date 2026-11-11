@@ -1,10 +1,10 @@
 /**
  * Phase 42 (TFP-194, Decisions 5 and 6): gap tests, once per gap, opt-in per
  * site. Through POST /api/generate on the comparison fixture's /types shop,
- * pages inspected in a real browser, each written test run by TestForge
+ * pages inspected in a real browser, each written test run by Mr Onion
  * behind the read-only gate and the request guard. Claude Code is a
  * stand-in (src/test-support/fake-claude.mjs) reached by the real call path
- * (TESTFORGE_CLAUDE_COMMAND): nothing in this file reaches Claude Code.
+ * (MRONION_CLAUDE_COMMAND): nothing in this file reaches Claude Code.
  *
  * ISTQB technique: decision table. Conditions: the site's opt-in (off; on)
  * and what the writer's test does (finds its target; fails, then is fixed
@@ -29,7 +29,7 @@ import { after, before, test } from "node:test";
 import type { SiteSuiteRecord } from "../report/types.ts";
 import type { SiteSuiteManifest } from "../site-suites/store.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-gap-writer-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-gap-writer-"));
 const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_CLAUDE_COMMAND", "MRONION_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
 process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([process.execPath, join(process.cwd(), "src/test-support/fake-claude.mjs")]);
 delete process.env.MRONION_OLLAMA_MODEL;

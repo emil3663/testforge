@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { findForeignPath, foreignPathMessage } from "@/lib/introspect/paths";
 import { inspectSite } from "@/lib/pipeline/inspect";
 
-// Only correct when TestForge is testing itself. For any other target
+// Only correct when Mr Onion is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
 

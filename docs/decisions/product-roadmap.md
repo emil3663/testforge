@@ -1,4 +1,4 @@
-# TestForge Product Roadmap
+# Mr Onion Product Roadmap
 
 **Version:** 1.1
 **Date:** 2026-08-28; header and Phase 39 status refreshed 2026-10-27
@@ -7,7 +7,7 @@ before implementation starts; this file carries each phase's outline and
 current status in its heading.
 
 This document is the map across phases. For every record, report and
-backlog by phase, see the [decisions index](README.md); for what TestForge
+backlog by phase, see the [decisions index](README.md); for what Mr Onion
 does today, `../APPLICATION_OVERVIEW.md`; for everything deferred and the
 build order after Phase 39, `deferred-work-register.md`.
 
@@ -17,9 +17,9 @@ written on 2026-08-28, as the starting point Phase 16 was planned from.
 
 ## Product Vision
 
-TestForge tests any website with reproducible results, and shows what was
+Mr Onion tests any website with reproducible results, and shows what was
 tested and how — not just what passed. A tester describes what to check in
-plain English or picks from best-practice coverage areas; TestForge crawls the
+plain English or picks from best-practice coverage areas; Mr Onion crawls the
 site, inspects what's actually on each page, and generates a deterministic
 Playwright suite from that inspection — no AI required for the core product.
 Runs, evidence and coverage are persisted so two runs of the same site can be
@@ -96,7 +96,7 @@ run: TFP-040/041/042 (`examples/`) exercised the real generator against
 this phase's decision record, not just this outline.
 
 ### Phase 18 — Integration mapping and failure injection
-During crawl and introspect, TestForge records every outbound dependency a
+During crawl and introspect, Mr Onion records every outbound dependency a
 page talks to — XHR/fetch targets, form action hosts, third-party scripts,
 iframes, auth redirects, cookies set — and aggregates it into a dependency
 map per site. Generated tests use Playwright's `page.route()` to block or fail
@@ -126,16 +126,16 @@ re-litigate whether local failure injection is in scope at all.
 
 ### Phase 19 — Path and journey mapping
 The page graph from crawl and the actionable elements from introspect combine
-into a walkable graph of the site. TestForge surfaces likely user journeys —
+into a walkable graph of the site. Mr Onion surfaces likely user journeys —
 sequences of pages and actions — for review, and generates tests that walk
 selected paths end to end rather than page by page. Independent of Phase 18;
 sequencing between the two is a scheduling choice, not a dependency.
 
 ### Phase 20 — Authenticated testing
 A site owner provisions a dedicated automation account, following setup
-instructions TestForge ships with the product (the same pattern used for
+instructions Mr Onion ships with the product (the same pattern used for
 Selenium automation accounts: exempted from lockout, rate-limiting, MFA
-interruption and new-sign-in alerts). TestForge drives a config-supplied login
+interruption and new-sign-in alerts). Mr Onion drives a config-supplied login
 flow once per run and caches the resulting Playwright `storageState`; every
 generated test in that run starts already authenticated. Credentials are
 referenced by name from environment or a local secret store, never inlined in
@@ -234,7 +234,7 @@ Direction so far (Emil, 2026-09-28; to be locked in the decision record):
   coverage statement lists which requirements were tested and which cannot
   be verified from a browser, the same "not tested and why" rule as Phase 34.
 - **Active level (proposed):** drive ZAP (free, open source, Apache 2.0,
-  runs headless in Docker) rather than build a scanner. TestForge scopes the
+  runs headless in Docker) rather than build a scanner. Mr Onion scopes the
   scan, supplies the Phase 20 logged-in session, requires the ownership or
   permission confirmation, and translates ZAP's alerts into its own report.
 - **Timing, measured 2026-10-01** (TFP-136,
@@ -248,7 +248,7 @@ Direction so far (Emil, 2026-09-28; to be locked in the decision record):
   survive, is still to be decided; they were not measured.
 
 ### Phase 36 — Trust in results, and measuring the local model (locked 2026-09-29)
-Before comprehensive testing leans on the local model, TestForge stops
+Before comprehensive testing leans on the local model, Mr Onion stops
 turning healthy sites red and finds out what the model can do on this
 machine. Four suspected false failures on the-internet are resolved, not
 suppressed; optional SEO items become findings; three small defects are
@@ -330,7 +330,7 @@ in crawl order.
 See `phase-40-page-type-selection-decision-record.md`.
 
 ### Phase 41 — Check gaps (complete 2026-10-13)
-New checks for the known bugs TestForge reaches but misses at the read-only
+New checks for the known bugs Mr Onion reaches but misses at the read-only
 gate (24 of 37): layout consistency, overlap and unrendered images; spelling
 of interface text; controls that don't do their job (with the read-only gate
 widened to GET-only interactions behind a request guard); tab order and
@@ -401,7 +401,7 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
    clean full unit run since TFP-205. The re-run and the unit runs were R1
    (TFP-207). The flakes it actually found, two different ones, are in
    TFP-208 with these three.
-4. **The skills, relooked:** the skills TestForge and its build work rely on
+4. **The skills, relooked:** the skills Mr Onion and its build work rely on
    (`docs/CLAUDE_SKILLS.md`, Martin's draft QA/SRE skills, and the Cowork
    skills) adjusted for what Phases 38 to 42 changed, and new skills added
    where the work has a repeatable procedure worth capturing.
@@ -416,7 +416,7 @@ Planned 2026-10-15 as `post-phase-42-review-plan.md` (R1 to R6).
 6. the APG patterns, with INP;
 7. the rest of accessibility and security Standard;
 8. failure triage;
-9. D27, TestForge measured against an outside QA tool on local Toolshop,
+9. D27, Mr Onion measured against an outside QA tool on local Toolshop,
    once Standard is complete;
 10. D28, a security sweep of the model-code paths;
 11. Phase 45;
@@ -437,7 +437,7 @@ written permission:
 
 A valid confirmation does three things:
 - it lifts Phase 39's caps;
-- with a run's `TESTFORGE_ACTIVE` switch on, it opens the active gate, so
+- with a run's `MRONION_ACTIVE` switch on, it opens the active gate, so
   the script-payload test runs again;
 - it stores the tick the load-testing run (D24) needs.
 
@@ -449,7 +449,7 @@ See `phase-43-ownership-confirmation-decision-record.md`.
 ### Phase 44 — Scenario gaps, slice 1 (locked 2026-10-20, not started)
 The gap writer's new purpose: behaviour and edge cases nothing exercises.
 - **Slice 1:** double submit, back-and-resubmit, and retry after a timeout.
-- **How the tests are built:** TestForge's vetted harness does the
+- **How the tests are built:** Mr Onion's vetted harness does the
   mechanics, and Claude Code judges which scenarios apply where and what
   must hold.
 - **Proof:** each scenario type must fail on a planted-defect fixture
@@ -486,7 +486,7 @@ See `phase-46-app-screens-decision-record.md`.
 
 ---
 
-### Phase 47 — TestForge in a target's CI pipeline (locked 2026-10-27, not started; after Phase 39, before Phase 43)
+### Phase 47 — Mr Onion in a target's CI pipeline (locked 2026-10-27, not started; after Phase 39, before Phase 43)
 
 A command crawls, generates and runs against a target with no UI and no
 server, and ends with an exit code, JUnit and HTML. A second run compares

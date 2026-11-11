@@ -2,13 +2,13 @@
  * Phase 42 (TFP-202, P0; batch 2 ruling 5): the gap writer and the tests it
  * writes, hardened before any real use. Claude Code is TFP-194's stand-in
  * (src/test-support/fake-claude.mjs), reached by the real call path
- * (TESTFORGE_CLAUDE_COMMAND): nothing in this file reaches Claude Code.
+ * (MRONION_CLAUDE_COMMAND): nothing in this file reaches Claude Code.
  *
  * ISTQB technique: equivalence partitioning, one case per class:
  *   the call                 -> every tool off (the documented flags), from an empty temporary folder that is
  *                               removed afterwards; a revision resumes from the same folder; through the Windows
  *                               shell the empty `--tools ""` still arrives
- *   the environment          -> a gap test, and a test in a main run, read no key, token or TestForge setting
+ *   the environment          -> a gap test, and a test in a main run, read no key, token or Mr Onion setting
  *   the code check           -> each forbidden construct refused before anything runs; ordinary bodies pass
  *   the page text            -> an injection string sent as data between the markers, never as an instruction
  * Gate: Phase 42, before TFP-197.
@@ -23,7 +23,7 @@ import { join, resolve } from "node:path";
 import { after, test } from "node:test";
 import type { RunReport } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-hardening-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-hardening-"));
 const PROBES = { OPENAI_API_KEY: "sk-testforge-probe", ANTHROPIC_API_KEY: "sk-ant-testforge-probe", GITHUB_TOKEN: "ghp_testforge_probe", TESTFORGE_OLLAMA_MODEL: "probe-model", TESTFORGE_PROBE_SECRET: "probe", MRONION_OLLAMA_MODEL: "probe-model", MRONION_PROBE_SECRET: "probe" };
 const savedEnv = Object.fromEntries(["MRONION_CLAUDE_COMMAND", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_RUNS_ROOT", "MRONION_DATA_DIR", ...Object.keys(PROBES)].map((key) => [key, process.env[key]]));
 const FAKE = join(process.cwd(), "src/test-support/fake-claude.mjs");
@@ -73,7 +73,7 @@ test("the call: every tool off, from an empty temporary folder removed afterward
     }
     assert.ok(!first.args.includes("--resume"));
     assert.equal(second.args.at(-2), "--resume");
-    // A temporary folder, not TestForge's: empty when Claude Code started, the same one for the revision.
+    // A temporary folder, not Mr Onion's: empty when Claude Code started, the same one for the revision.
     assert.ok(resolve(first.cwd).startsWith(resolve(tmpdir())), first.cwd);
     assert.notEqual(resolve(first.cwd), resolve(process.cwd()));
     assert.equal(first.cwdEntries, 0);
@@ -167,7 +167,7 @@ test("the code check: each forbidden construct is refused before anything runs (
     for (const body of allowed) assert.equal(forbiddenConstruct(body), null, body);
 });
 
-test("the environment: a gap test reads no key, token or TestForge setting (TFP-202)", { skip: needsChromium }, async () => {
+test("the environment: a gap test reads no key, token or Mr Onion setting (TFP-202)", { skip: needsChromium }, async () => {
     Object.assign(process.env, PROBES);
     try {
         // The spec reads the environment directly, which a written body never could (the check refuses

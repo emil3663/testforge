@@ -30,7 +30,7 @@ export interface RunRecord {
     lastAccessedAt: string | null;
     result: RunResultPayload;
     artifactFiles: Record<string, PersistedArtifactFile>;
-    /** TFP-257: the TestForge that ran this; absent on runs from before it. */
+    /** TFP-257: the Mr Onion that ran this; absent on runs from before it. */
     producedBy?: ProducedBy;
     // Phase 17 Group 4 (TFP-073): the crawl/introspect snapshot this run
     // used, persisted so two runs can be diffed for newly discovered/missing
@@ -51,7 +51,7 @@ export interface RunRecord {
     // Phase 35 (TFP-132): present only on Comprehensive runs, so a Standard
     // run's record is exactly what it was.
     runMode?: RunMode;
-    // Phase 47 (TFP-246, ruling 2): `testforge run`'s verdict on this run. Absent on the UI's runs.
+    // Phase 47 (TFP-246, ruling 2): `mr-onion run`'s verdict on this run. Absent on the UI's runs.
     verdict?: RunVerdict;
 }
 
@@ -66,7 +66,7 @@ export interface RunVerdict {
 }
 
 // TFP-198 (run-evidence-sweep backlog, Decision 3): run storage assumes one
-// TestForge process at a time. Nothing here locks: two processes sharing a
+// Mr Onion process at a time. Nothing here locks: two processes sharing a
 // runs/ directory could interleave a record's read-modify-write (pin, first
 // access, archive) and lose one update, and would share run.json.tmp. Each
 // record write is atomic (a temporary file, then a rename), so a write that

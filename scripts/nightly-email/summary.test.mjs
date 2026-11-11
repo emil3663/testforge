@@ -16,7 +16,7 @@ const TEMPLATE = "24c4449 -> 2036c1d: 166 inputs, 166 identical, 0 different";
 
 // As node:test's spec reporter writes it (the shape of a real nightly's unit.log).
 const LOG = (failing) => [
-    "> testforge@0.2.0 test:unit",
+    "> mr-onion@0.3.0 test:unit",
     "✔ an ordinary test (12.5ms)",
     "ℹ run 1: busiest second 5 arrivals; a test's own ℹ line",
     "ℹ tests 658",

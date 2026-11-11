@@ -17,7 +17,7 @@ Last synced: 2026-10-20 (R6, `docs/decisions/r6-skills-relook-2026-10-20.md`).
   That makes 18.
 - The five built-ins added since the last sync are listed below.
 
-This repo's own plugin, `testforge-skills` (`skills/`), is separate: it loads
+This repo's own plugin, `mr-onion-skills` (`skills/`), is separate: it loads
 only in Claude Code sessions in this repo. See `skills/README.md`.
 
 ## Custom skills (created from work in these sessions)

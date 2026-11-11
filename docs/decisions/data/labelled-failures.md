@@ -1,7 +1,7 @@
 # Labelled Failure Set
 
 The seed for the failure-triage gate Phase 34 deferred (its "Related,
-deferred" section): every test failure TestForge has hand-classified, with
+deferred" section): every test failure Mr Onion has hand-classified, with
 its verdict, the evidence, and its source run. Started 2026-09-30 in Phase 36
 (TFP-123, Decision 1).
 
@@ -108,7 +108,7 @@ and a classifier only sees what is left).
 - 3 sites: 12 template-error failures (7 of them one cause, fixed by rule),
   5 model-error patterns (M4 alone covers 7 suites), 14 real SEO failures
   and 1 unclear finding. Too few, and too dominated by the two sites
-  TestForge was built against, to set a classifier threshold. T18 (TFP-152)
+  Mr Onion was built against, to set a classifier threshold. T18 (TFP-152)
   adds rizonetech.com and the set's first false pass: a check that passed
   where it should have failed, which a failure classifier never sees. Phase 34's
   plan stands: add labelled failures from later runs, and hold some back
@@ -125,7 +125,7 @@ and a classifier only sees what is left).
 - **Left out on purpose:** C3's and C6's benchmark suites that navigated to
   relative URLs and failed with "Cannot navigate to invalid URL". That was
   the benchmark running a model suite without the `test.use({ baseURL })`
-  TestForge's merged gap-fill suite gives it, not a mistake about the page.
+  Mr Onion's merged gap-fill suite gives it, not a mistake about the page.
 - Every template error found so far came from the generator assuming
   something about the page that one real page contradicted: visibility by
   design, a zero-size anchor, a root page that isn't the flow's page, a

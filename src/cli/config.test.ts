@@ -1,5 +1,5 @@
 /**
- * Phase 47 (TFP-245): `testforge run`'s configuration. A malformed one is exit 3 with a message naming the field
+ * Phase 47 (TFP-245): `mr-onion run`'s configuration. A malformed one is exit 3 with a message naming the field
  * (Decision 5); a valid one is what was asked, with the UI's defaults where nothing was.
  *
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/cli/config.test.ts

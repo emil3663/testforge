@@ -122,7 +122,7 @@ test("a missing-credential error names the variable and never a value", () => {
 });
 
 test("stale per-run login state is swept, but a run still in progress keeps its own", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "testforge-auth-sweep-"));
+    const dir = mkdtempSync(join(tmpdir(), "mr-onion-auth-sweep-"));
 
     try {
         for (const name of ["auth-finished-run", "auth-live-run", "artifacts-unrelated"]) {

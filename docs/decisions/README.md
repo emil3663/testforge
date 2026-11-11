@@ -50,7 +50,7 @@ research, nothing locked.
 | 44 | Scenario gaps, slice 1 | Locked (2026-10-20), not started | DR [`phase-44-scenario-gaps-decision-record.md`](phase-44-scenario-gaps-decision-record.md) · REF [`scenario-gap-candidates-2026-10-19.md`](scenario-gap-candidates-2026-10-19.md) |
 | 45 | Docker sandbox for model-written tests | Locked (2026-10-20), not started | DR [`phase-45-docker-sandbox-decision-record.md`](phase-45-docker-sandbox-decision-record.md) |
 | 46 | App screens | Locked (2026-10-20), not started | DR [`phase-46-app-screens-decision-record.md`](phase-46-app-screens-decision-record.md) |
-| 47 | TestForge in a target's CI pipeline | Locked (2026-10-27); in progress, paused at TFP-247 until Phase 48 merges | DR [`phase-47-ci-integration-decision-record.md`](phase-47-ci-integration-decision-record.md) · BL [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) Part 1 |
+| 47 | Mr Onion in a target's CI pipeline | Locked (2026-10-27); in progress, paused at TFP-247 until Phase 48 merges | DR [`phase-47-ci-integration-decision-record.md`](phase-47-ci-integration-decision-record.md) · BL [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) Part 1 |
 | 48 | The rename to Mr Onion (D39) | Locked (2026-11-08); in progress, TFP-275 and TFP-276 done, TFP-277 done, Gate A passed (Emil, 2026-11-09), TFP-278 done, TFP-279 done; after TFP-246, before TFP-247; branch `phase-48-mr-onion` | DR [`phase-48-rename-to-mr-onion-decision-record.md`](phase-48-rename-to-mr-onion-decision-record.md) |
 
 ## Not tied to one phase
@@ -60,7 +60,7 @@ research, nothing locked.
 | [`deferred-work-register.md`](deferred-work-register.md) | Every deferred item (D1–D30), its status and the build order |
 | [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) | Working-agreement follow-ups, architect-facing docs, CI integration |
 | [`dependency-upkeep-2026-11-08.md`](dependency-upkeep-2026-11-08.md) | The dependency watch list the monthly check reads; TFP-273 (Dependabot version updates) and TFP-274 (the crawl's URL scheme allowlist) |
-| [`practice-site-targets-2026-10-19.md`](practice-site-targets-2026-10-19.md) | The practice sites TestForge should eventually find every issue in |
+| [`practice-site-targets-2026-10-19.md`](practice-site-targets-2026-10-19.md) | The practice sites Mr Onion should eventually find every issue in |
 | [`saas-prerequisites.md`](saas-prerequisites.md) | What a hosted version would need; deferred, not scheduled |
 | [`data/`](data/) | Data files the records cite |
 

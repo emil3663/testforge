@@ -9,7 +9,7 @@ import { existsSync } from "node:fs";
  * "ENOENT: no such file or directory, rename '...run.json.tmp' -> '...run.json'", an unhandled rejection that
  * failed hardening.test.ts once in TFP-208's first full unit run. Every test that waits on a run waits here.
  *
- * The run modules are imported when called, not with this file, because the tests point TESTFORGE_RUNS_ROOT at
+ * The run modules are imported when called, not with this file, because the tests point MRONION_RUNS_ROOT at
  * their scratch folder before they import them.
  */
 export async function waitForSavedRun(runId: string, limitMs: number) {

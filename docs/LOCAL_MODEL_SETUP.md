@@ -1,13 +1,13 @@
-# Setting up a local model for TestForge generation
+# Setting up a local model for Mr Onion generation
 
-TestForge can generate its Playwright suites with a model running on your own
+Mr Onion can generate its Playwright suites with a model running on your own
 machine, through [Ollama](https://ollama.com), instead of the OpenAI API. It
 costs nothing per request and nothing leaves your machine. This page covers
-the one model TestForge is set up for, how to create it, and how to point
-TestForge at it.
+the one model Mr Onion is set up for, how to create it, and how to point
+Mr Onion at it.
 
 > **Scope:** one model, `qwen2.5-coder:7b`, in one fixed configuration. It is
-> the model that was measured against TestForge's real prompt (Phase 30,
+> the model that was measured against Mr Onion's real prompt (Phase 30,
 > `docs/decisions/phase-30-local-generation-path-decision-record.md`). Trying
 > lighter or different models is deliberately later work, not something this
 > page tunes.
@@ -29,9 +29,9 @@ TestForge at it.
 ollama pull qwen2.5-coder:7b
 ```
 
-## 2. Create TestForge's model from the Modelfile
+## 2. Create Mr Onion's model from the Modelfile
 
-TestForge never calls `qwen2.5-coder:7b` directly. It calls
+Mr Onion never calls `qwen2.5-coder:7b` directly. It calls
 **`mr-onion-qwen7b`**, a model defined by
 [`ollama/Modelfile.mr-onion-qwen7b`](../ollama/Modelfile.mr-onion-qwen7b):
 
@@ -44,8 +44,8 @@ PARAMETER num_gpu 29
 ```
 
 This is not optional tuning. Ollama's OpenAI-compatible endpoint, which
-TestForge uses, **silently drops a `num_ctx` sent with a request** and picks a
-context size from available VRAM instead. TestForge's prompt carries the whole
+Mr Onion uses, **silently drops a `num_ctx` sent with a request** and picks a
+context size from available VRAM instead. Mr Onion's prompt carries the whole
 page-inspection profile, so a small automatic context would cut it off without
 any error. Baking the sizes into the model is the only way to guarantee them.
 
@@ -69,7 +69,7 @@ From the repository root:
 ollama create mr-onion-qwen7b -f ollama/Modelfile.mr-onion-qwen7b
 ```
 
-Use exactly that name. TestForge looks it up by name, and a missing model is
+Use exactly that name. Mr Onion looks it up by name, and a missing model is
 reported as `ollama_model_missing` (below) rather than falling back to the raw
 `qwen2.5-coder:7b`.
 
@@ -80,20 +80,20 @@ ollama list
 ```
 
 `mr-onion-qwen7b:latest` should be listed. Ollama adds the `:latest` tag
-itself; TestForge accepts the name with or without it.
+itself; Mr Onion accepts the name with or without it.
 
 Built before the rename, as `testforge-qwen7b`? It is used as it is when
 `mr-onion-qwen7b` is asked for and missing, and the generation record says
 so (a "model tag" gate). `ollama cp testforge-qwen7b mr-onion-qwen7b` gives
 it the new name, with no rebuild.
 
-To check the exact endpoint TestForge talks to:
+To check the exact endpoint Mr Onion talks to:
 
 ```sh
 curl http://localhost:11434/v1/models
 ```
 
-## 4. Point TestForge at it
+## 4. Point Mr Onion at it
 
 Add to `.env.local` (gitignored — not `.env.development`, which is committed):
 
@@ -103,9 +103,9 @@ MRONION_OLLAMA_MODEL=mr-onion-qwen7b
 
 Restart the dev server. Setting this variable is the whole opt-in:
 
-| Set | TestForge generates with |
+| Set | Mr Onion generates with |
 | --- | --- |
-| `TESTFORGE_OLLAMA_MODEL` | the local model — even if `OPENAI_API_KEY` is also set |
+| `MRONION_OLLAMA_MODEL` | the local model — even if `OPENAI_API_KEY` is also set |
 | only `OPENAI_API_KEY` | OpenAI |
 | neither | the built-in template generator |
 
@@ -113,15 +113,15 @@ Optional, only if the defaults don't fit:
 
 | Variable | Default | When to change it |
 | --- | --- | --- |
-| `TESTFORGE_OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Ollama on another port or machine. Keep the `/v1`. |
-| `TESTFORGE_OLLAMA_TIMEOUT_MS` | `180000` (3 min) | Slower hardware that needs longer than 3 minutes per generation. |
+| `MRONION_OLLAMA_BASE_URL` | `http://localhost:11434/v1` | Ollama on another port or machine. Keep the `/v1`. |
+| `MRONION_OLLAMA_TIMEOUT_MS` | `180000` (3 min) | Slower hardware that needs longer than 3 minutes per generation. |
 
 ## 5. Verify a generation
 
 Generate a suite in the app. The `/api/generate` response says which path
 produced it:
 
-- `"generatedBy": "ollama", "model": "testforge-qwen7b:latest"` — the local
+- `"generatedBy": "ollama", "model": "mr-onion-qwen7b:latest"` — the local
   model wrote it.
 - `"generatedBy": "fallback"` — the local call failed and you got the template
   generator's suite instead. `fallbackReason` says why (next section).
@@ -156,16 +156,16 @@ test under titles naming the page's fields, so read those closely.
 
 ## When it falls back
 
-TestForge never fails a generation because the local model did. Any failure
+Mr Onion never fails a generation because the local model did. Any failure
 returns the template generator's suite, labelled so it is never mistaken for
 model output, and logs the cause on the server console.
 
 | `fallbackReason` | Meaning | Fix |
 | --- | --- | --- |
-| `ollama_unreachable` | Nothing answered at the base URL. | Start Ollama (`ollama serve`, or the tray app), or fix `TESTFORGE_OLLAMA_BASE_URL`. |
-| `ollama_model_missing` | Ollama answered, but has no model by that name. | Run step 2, or fix `TESTFORGE_OLLAMA_MODEL`. |
+| `ollama_unreachable` | Nothing answered at the base URL. | Start Ollama (`ollama serve`, or the tray app), or fix `MRONION_OLLAMA_BASE_URL`. |
+| `ollama_model_missing` | Ollama answered, but has no model by that name. | Run step 2, or fix `MRONION_OLLAMA_MODEL`. |
 | `ollama_error` | Ollama answered with an error, e.g. the model failed to load. | Check Ollama's own log; often not enough memory. |
-| `timeout` | No answer within `TESTFORGE_OLLAMA_TIMEOUT_MS`. | Raise the timeout, or close other GPU-heavy programs. |
+| `timeout` | No answer within `MRONION_OLLAMA_TIMEOUT_MS`. | Raise the timeout, or close other GPU-heavy programs. |
 | `empty_completion` | The model returned nothing usable. | Retry; if it repeats, report it. |
 | `invalid_output` | The model returned a suite, but it doesn't type-check against Playwright (for example, it calls a matcher Playwright doesn't have). The server console lists the errors. | See [Read a local suite before trusting it](#read-a-local-suite-before-trusting-it). Retrying, or wording the request differently, can help. |
 | `unawaited_assertion` | The suite compiled, but has a check on the page or an element without `await`, which never runs. The server console lists the lines. | Retry. The rules already tell the model to await every check. |

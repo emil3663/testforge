@@ -6,7 +6,7 @@ described `TA-NNN` tickets, `TESTASSIST_BACKLOG.md` and a deployed browser
 build, none of which exist here. Its two hard-won lessons live on as the
 `dont-stub-what-you-prove` and `find-the-hidden-platform` skills.*
 
-How work on TestForge is decided, built, checked and recorded. Gates,
+How work on Mr Onion is decided, built, checked and recorded. Gates,
 evidence rules and the verification checklist are in
 [`QUALITY_GATES.md`](QUALITY_GATES.md); this document is the process
 around them. Review it when the way of working changes, and at least at
@@ -39,7 +39,7 @@ whatever permission mode the session runs in:
 - spending money: paid API calls beyond what a ticket budgets, new services.
 
 **In product code and product docs**, the person approving is **the
-tester** (or "the user" in UI copy) — TestForge is meant for other people's
+tester** (or "the user" in UI copy) — Mr Onion is meant for other people's
 sites and teams. Code and README text never name a maintainer as the
 approver.
 
@@ -116,7 +116,7 @@ added as comments, closed by the commit that completes the phase (TFP-262).
 ## Running Claude Code
 
 These follow from the Claude Code team's current guidance (Boris Cherny's
-and Cat Wu's practices, 2026) where they fit how TestForge is built.
+and Cat Wu's practices, 2026) where they fit how Mr Onion is built.
 
 **Auto mode for ticket implementation.** Auto mode is Claude Code's
 starting permission mode, when no `permissions.defaultMode` is set, from
@@ -187,8 +187,8 @@ loop like any other work.
 
 | Doc | Says | Update when |
 |---|---|---|
-| `README.md` | How to set up and use TestForge, and its security model | A user-visible behaviour, setting or command changes |
-| `docs/APPLICATION_OVERVIEW.md` | What TestForge is and does now, for a new reader | Every phase completion |
+| `README.md` | How to set up and use Mr Onion, and its security model | A user-visible behaviour, setting or command changes |
+| `docs/APPLICATION_OVERVIEW.md` | What Mr Onion is and does now, for a new reader | Every phase completion |
 | `docs/decisions/product-roadmap.md` | Every phase, in order, with its status | Every lock, gate and completion |
 | `docs/decisions/deferred-work-register.md` | Everything deferred, its build order and standing rules | Whenever a record defers or picks up work |
 | `TEST_PLAN.md` | Feature status, known limitations, and the index of test-case areas | In the commit that changes the behaviour |

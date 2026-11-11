@@ -55,7 +55,7 @@ export function buildSummary(
     records: ExecutionRecord[],
     defects: DefectRecord[],
     duration: number,
-    /** Whether the run turned interactive tests on (TESTFORGE_INTERACTIVE=1); off by default, as in the executor. */
+    /** Whether the run turned interactive tests on (MRONION_INTERACTIVE=1); off by default, as in the executor. */
     interactiveEnabled = false
 ) {
     const passed = records.filter((record) => record.status === "Passed").length;

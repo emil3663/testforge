@@ -9,7 +9,7 @@
  * regenerated suite with one fewer test, the record's own example), not a
  * synthetic all-zero case.
  *
- * TESTFORGE_RUNS_ROOT points RUNS_ROOT at a fresh mkdtemp directory, same
+ * MRONION_RUNS_ROOT points RUNS_ROOT at a fresh mkdtemp directory, same
  * isolation pattern as persistence.test.ts.
  *
  * Requires the "@/" alias resolution diff.ts uses at runtime - run via:
@@ -23,7 +23,7 @@ import { join } from "node:path";
 import { after, before, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
-const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-diff-test-"));
+const scratchRoot = mkdtempSync(join(tmpdir(), "mr-onion-diff-test-"));
 process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { persistRunJob } = await import("@/lib/run/persistence");

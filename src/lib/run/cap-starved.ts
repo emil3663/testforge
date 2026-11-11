@@ -35,7 +35,7 @@ export function waitingWithin(spans: Array<[number, number]>, from: number, to: 
 }
 
 /**
- * The step that failed: the test's last step to end, when it failed. A step that failed and was caught (TestForge's
+ * The step that failed: the test's last step to end, when it failed. A step that failed and was caught (Mr Onion's
  * settle wait, `waitForLoadState('networkidle').catch(...)`, fails whenever it reaches its cap) is never it, nor is an
  * earlier failure the test went on from. A test that failed outside any recorded step (a hook, a fixture, a plain
  * throw) has none, and stands.

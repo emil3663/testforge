@@ -22,7 +22,7 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import { setting } from "@/lib/settings";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-run-folders-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-run-folders-"));
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 

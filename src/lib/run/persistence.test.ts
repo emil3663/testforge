@@ -7,7 +7,7 @@
  * "survives a server restart", so every persistence test proves it the
  * same way: persist, then read back through a fresh runId lookup only.
  *
- * TESTFORGE_RUNS_ROOT points RUNS_ROOT at a fresh mkdtemp directory per
+ * MRONION_RUNS_ROOT points RUNS_ROOT at a fresh mkdtemp directory per
  * run and removes it afterward - this suite must never touch the real
  * runs/ directory a live dev server is using.
  *
@@ -22,7 +22,7 @@ import { after, before, test } from "node:test";
 import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
-const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-persistence-test-"));
+const scratchRoot = mkdtempSync(join(tmpdir(), "mr-onion-persistence-test-"));
 process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const {

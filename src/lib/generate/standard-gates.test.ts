@@ -46,7 +46,7 @@ async function standardRun(interactive: "unset" | "1") {
         const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
         const rules = normalizeContentRules({ selectedJourneyIds: inspection.journeys.map((journey) => journey.id) });
         const template = mockGenerate(fixture.origin, "Check the site.", AREAS, profile as never, rules, normalizeTestAuditMode("fast"));
-        const code = mergeLocalSuite(template, MODEL_BLOCK, "testforge-qwen7b:latest", ["functional"]);
+        const code = mergeLocalSuite(template, MODEL_BLOCK, "mr-onion-qwen7b:latest", ["functional"]);
         fixture.recorded.length = 0;
 
         // Unset unless this run asked for interactive, so the generated tests see it as missing, not "0".

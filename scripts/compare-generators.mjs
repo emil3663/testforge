@@ -15,7 +15,7 @@
 //      (Phase 21 Decision 2), generated in-process through the real POST
 //      /api/generate handler - MRONION_OLLAMA_MODEL is set for gap-fill and
 //      cleared for template-only, exactly as the route decides at runtime;
-//   2. each suite is executed through a running TestForge's POST /api/run and
+//   2. each suite is executed through a running Mr Onion's POST /api/run and
 //      persisted like any other run (Phase 17), with its generation record
 //      (gap-fill outcome and gate verdicts, Phase 34 Decision 8). A gap-fill
 //      suite that added nothing is the template's, byte for byte, and is not
@@ -160,7 +160,7 @@ async function runSuite(code, testCase, contentProfile, generation) {
     }
 }
 
-log(`target ${config.target} via TestForge ${server}, local model ${model}, ${cases.length} case(s) -> ${outDir}`);
+log(`target ${config.target} via Mr Onion ${server}, local model ${model}, ${cases.length} case(s) -> ${outDir}`);
 await resetFixture();
 log("introspecting target once, shared by both generators");
 const contentProfile = await json("POST", "/api/introspect", { baseUrl: config.target, paths: config.paths });

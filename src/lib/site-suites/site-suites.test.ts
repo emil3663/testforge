@@ -1,5 +1,5 @@
 /**
- * Phase 42 (TFP-190, Decision 1): a site's suite is saved in TestForge's data
+ * Phase 42 (TFP-190, Decision 1): a site's suite is saved in Mr Onion's data
  * folder with each page type's fingerprint, and reused on later runs. Run
  * through POST /api/generate on the comparison fixture's /types shop, with
  * the pages inspected in a real browser, as a run does.
@@ -59,7 +59,7 @@ after(async () => {
 
 /** A fresh, empty data folder for one column of the table. */
 function freshDataDir() {
-    const folder = mkdtempSync(join(tmpdir(), "testforge-data-"));
+    const folder = mkdtempSync(join(tmpdir(), "mr-onion-data-"));
     folders.push(folder);
     process.env.MRONION_DATA_DIR = folder;
     return folder;

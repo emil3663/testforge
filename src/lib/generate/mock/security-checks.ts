@@ -14,7 +14,7 @@ import type { ActionableElementDetail, ContentProfile } from "./types";
 // - an executed script payload FAILS the test: it is an exploitable defect;
 // - a missing security header or cookie flag is recorded as a named FINDING
 //   (a Playwright annotation, shown in the run report) and does not fail the
-//   test. Many real sites have no CSP, and TestForge cannot tell a session
+//   test. Many real sites have no CSP, and Mr Onion cannot tell a session
 //   cookie from an analytics one, so failing would turn most runs red on
 //   hardening gaps rather than defects.
 //

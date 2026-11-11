@@ -1,5 +1,5 @@
 /**
- * Phase 47 (TFP-246, Decision 5): `testforge run --baseline`. The baseline is found in the data folder before the run
+ * Phase 47 (TFP-246, Decision 5): `mr-onion run --baseline`. The baseline is found in the data folder before the run
  * ("latest": the newest run of the same site and tests), or copied in from an earlier job's run.json; one that can't
  * be used is exit 3 before anything starts; with one, only new failures fail the build.
  *
@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-baseline-test-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-baseline-test-"));
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 
 const { buildConfig, ConfigError } = await import("./config.ts");

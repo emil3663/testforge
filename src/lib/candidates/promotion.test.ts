@@ -28,7 +28,7 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { Candidate, CandidateEvidence } from "./pool.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-promotion-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-promotion-"));
 const savedDataDir = process.env.MRONION_DATA_DIR;
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 

@@ -6,6 +6,8 @@ How work is decided, built and recorded, and what *owner decision* and
 Read the handover, then only the test-plan area (`docs/test-plan/<area>.md`)
 and the record section the ticket names.
 
+The product is Mr Onion; `npm run check:old-name` must pass.
+
 ## Shell output: use RTK
 
 RTK (Rust Token Killer, `github.com/rtk-ai/rtk`) compresses command output

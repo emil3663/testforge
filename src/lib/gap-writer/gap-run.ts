@@ -14,10 +14,10 @@ import type { JsonReport } from "@/lib/report/types";
 import type { GapTarget } from "./writers";
 
 /**
- * Phase 42 (TFP-194, Decision 5): a written gap test, composed by TestForge
+ * Phase 42 (TFP-194, Decision 5): a written gap test, composed by Mr Onion
  * and run behind the gates before it can join a site suite.
  *
- * The writer gives only a test body. TestForge wraps it: a test at the
+ * The writer gives only a test body. Mr Onion wraps it: a test at the
  * read-only gate, its whole body inside Phase 41's request guard, so any
  * request but GET, HEAD or QUERY and any form submission is aborted and
  * fails the test as a breach. A breach rejects the test outright.
@@ -30,7 +30,7 @@ import type { GapTarget } from "./writers";
  * TFP-202: the check reads the body's syntax tree and covers the network and
  * code built at run time too (code-check.ts), and the test runs with only the
  * environment Playwright needs (src/lib/run/child-env.ts): no keys, tokens or
- * TestForge settings.
+ * Mr Onion settings.
  */
 
 

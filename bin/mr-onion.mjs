@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Phase 47 (TFP-245): the `mr-onion` command (`testforge` until Phase 48; bin/testforge.mjs is that name's alias,
-// until 1.0). It runs src/cli/main.ts with the repo's own TypeScript loader, from TestForge's folder (the run executor
+// until 1.0). It runs src/cli/main.ts with the repo's own TypeScript loader, from Mr Onion's folder (the run executor
 // finds Playwright and its working folders there), and passes on the folder the command was typed in, so --out,
 // --config and --data-dir resolve where the user expects: under both names (Phase 48 Decision 8), so an inherited old
 // one can't disagree with it. Its exit code is the CLI's.

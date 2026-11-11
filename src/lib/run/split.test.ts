@@ -20,7 +20,7 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-split-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-split-"));
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 
@@ -202,8 +202,8 @@ test("in a real browser: Comprehensive security and accessibility on the fixture
             const code = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area }) as never, { covered: paths, notCovered: [], pageCap: 20 });
             const units = splitSuite(code);
             assert.equal(units.length, paths.length + (area === "security" ? 1 : 0), `${area}: ${units.map((unit) => unit.name).join(", ")}`);
-            const { report: oneFile } = await runPlaywrightSpec(code, `split-${area}-one-file`, ["--workers=1", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
-            const { report: split } = await runPlaywrightSpec(units, `split-${area}-units`, ["--workers=4", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+            const { report: oneFile } = await runPlaywrightSpec(code, `split-${area}-one-file`, ["--workers=1", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
+            const { report: split } = await runPlaywrightSpec(units, `split-${area}-units`, ["--workers=4", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
             assert.deepEqual(outcome(flattenSuites(split.suites ?? [])), outcome(flattenSuites(oneFile.suites ?? [])), `${area}: every test, the same area, page, status and findings`);
             // One report suite per unit file, and the units spread over more than one worker.
             assert.equal((split.suites ?? []).length, units.length, `${area}: a file per unit`);
@@ -229,7 +229,7 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         const areas = ["functional", "accessibility", "seo/content", "security", "usability"];
         const code = mockGenerate(fixture.origin, "Check the site.", areas as never, profile as never, normalizeContentRules({ paths }), normalizeTestAuditMode("fast"));
         const units = splitSuite(code);
-        const { report: oneFile } = await runPlaywrightSpec(code, "split-standard-one-file", ["--workers=1", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+        const { report: oneFile } = await runPlaywrightSpec(code, "split-standard-one-file", ["--workers=1", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
         const snapshot = await startRunJob(code, areas, "fast", fixture.origin, [], [], "Check the site.", profile as never);
         const job = await finished(snapshot.runId, 300_000);
         const report = job.result?.report;

@@ -2,13 +2,13 @@
  * Phase 42 (TFP-202, batch 2 ruling 5): the environment a Playwright run
  * gets. A run's spec file can hold code a model wrote - gap tests, pool
  * candidates, promoted library entries - and a test runs in Node, so it can
- * read whatever environment the run inherits. TestForge's own environment
+ * read whatever environment the run inherits. Mr Onion's own environment
  * holds API keys, tokens and its settings (OPENAI_API_KEY and the rest of
  * .env.development, MRONION_* and TESTFORGE_*), none of which a test needs.
  *
  * So no run inherits it. A run gets only what Node, the Playwright CLI and
  * the browser need to start on this machine, named below, plus what
- * TestForge sets for that run on purpose (the interactive switch, the run's
+ * Mr Onion sets for that run on purpose (the interactive switch, the run's
  * login state, the JSON report's path). Everything else is left out.
  *
  * TFP-209: the proxy settings go through too, when set. A test can read them,

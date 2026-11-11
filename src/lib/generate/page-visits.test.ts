@@ -47,7 +47,7 @@ test("every page.goto in a suite goes through the helper, added once after test.
 });
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `page-visits-unit-${label}`, ["--workers=1"], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `page-visits-unit-${label}`, ["--workers=1"], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 
@@ -129,7 +129,7 @@ test("model and OpenAI page visits go through tfGoto: no raw page.goto outside t
 
     const template = mockGenerate("http://x.test", "Check the site.", ["functional"], null, normalizeContentRules(undefined), normalizeTestAuditMode("fast"));
     assert.ok(template.includes(PAGE_VISIT_HELPER), "the template suite has the helper (TFP-167)");
-    const merged = mergeLocalSuite(template, modelCode, "testforge-qwen7b", ["database"]);
+    const merged = mergeLocalSuite(template, modelCode, "mr-onion-qwen7b", ["database"]);
     assert.deepEqual(rawVisits(merged), [], "gap-fill: no raw page.goto");
     assert.match(merged, /await tfGoto\(page, '\/notes'\);/);
     assert.equal(merged.split("async function tfGoto(").length, 2, "gap-fill: the helper once");
@@ -137,7 +137,7 @@ test("model and OpenAI page visits go through tfGoto: no raw page.goto outside t
 
     const mode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" }) as Parameters<typeof mergeComprehensiveScenarios>[3];
     const suite = buildComprehensiveSuite("http://x.test", mode, { covered: ["/"], notCovered: [], pageCap: 20 });
-    const scenarios = mergeComprehensiveScenarios(suite, modelCode, "testforge-qwen7b", mode);
+    const scenarios = mergeComprehensiveScenarios(suite, modelCode, "mr-onion-qwen7b", mode);
     assert.deepEqual(rawVisits(scenarios), [], "scenarios: no raw page.goto");
     assert.equal(scenarios.split("async function tfGoto(").length, 2, "scenarios: the helper once");
     assert.deepEqual(findTypeErrors(scenarios), []);

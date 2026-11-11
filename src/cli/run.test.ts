@@ -1,5 +1,5 @@
 /**
- * Phase 47 (TFP-245): `testforge run`'s exit codes for a run that couldn't run, its verdict on one that did, and the
+ * Phase 47 (TFP-245): `mr-onion run`'s exit codes for a run that couldn't run, its verdict on one that did, and the
  * suite it generates: the UI's, byte for byte, for the same page data.
  *
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/cli/run.test.ts

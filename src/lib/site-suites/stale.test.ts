@@ -23,7 +23,7 @@ import { join } from "node:path";
 import { after, before, test } from "node:test";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-stale-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-stale-"));
 const savedEnv = { data: process.env.MRONION_DATA_DIR, runs: process.env.MRONION_RUNS_ROOT };
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 

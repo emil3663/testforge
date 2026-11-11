@@ -24,7 +24,7 @@ const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
-const MODEL = "testforge-qwen7b:latest";
+const MODEL = "mr-onion-qwen7b:latest";
 const FAILING_SCENARIO = [
     "import { test, expect } from '@playwright/test';",
     "test('the home page greets the user by name', async ({ page }) => {",

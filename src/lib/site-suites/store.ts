@@ -7,7 +7,7 @@ import { dataDir, underCurrentName } from "@/lib/storage/data-dir";
 
 /**
  * Phase 42 (TFP-190, Decisions 1 and 4): where a site suite is kept - in
- * TestForge's local data folder, never in the repo - and its shape on disk.
+ * Mr Onion's local data folder, never in the repo - and its shape on disk.
  *
  *   <data>/site-suites/<site>/<suite>/manifest.json
  *   <data>/site-suites/<site>/<suite>/profile.json   (the page data it was written from)
@@ -17,7 +17,7 @@ import { dataDir, underCurrentName } from "@/lib/storage/data-dir";
  * identity: the run type (Standard, or Comprehensive for one area), the
  * selected practices and the audit mode, as the sweep compares runs
  * (TFP-198), so a link-only run never retires an accessibility suite's tests.
- * Each test is its own file, written as TestForge generated it; the manifest
+ * Each test is its own file, written as Mr Onion generated it; the manifest
  * records the hash of what was written, so a file that no longer matches has
  * been edited by hand and is never replaced silently.
  */
@@ -55,9 +55,9 @@ export interface StoredUnit {
     title: string;
     /** The page type it was written for (its address pattern), or "site" for a test of the whole site. */
     type: string;
-    /** sha256 of the file as TestForge wrote it. */
+    /** sha256 of the file as Mr Onion wrote it. */
     writtenHash: string;
-    /** When TestForge wrote it: the manifest's savedAt for a test this run generated, earlier for a reused one. */
+    /** When Mr Onion wrote it: the manifest's savedAt for a test this run generated, earlier for a reused one. */
     writtenAt: string;
     /** TFP-194: who wrote it - the template (absent), or a gap writer for one uncovered element. */
     origin?: "gap-writer";
@@ -164,7 +164,7 @@ export async function loadSiteSuiteAt(dir: string): Promise<LoadedSiteSuite | nu
 /**
  * Writes the suite whole: each unit's file, then the manifest (to a
  * temporary file and renamed, as run records are since TFP-198). Files of
- * units the new manifest no longer lists are removed. One TestForge process
+ * units the new manifest no longer lists are removed. One Mr Onion process
  * at a time (the run-evidence-sweep backlog's Decision 3).
  */
 export async function loadSiteSuiteProfile(dir: string): Promise<ContentProfile | null> {

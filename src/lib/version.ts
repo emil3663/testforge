@@ -5,8 +5,8 @@ import type { ProducedBy } from "@/lib/report/produced-by-types";
 import { setting } from "./settings";
 
 /**
- * TFP-257: which TestForge this is. package.json's `version` is the one source of truth, and the commit comes from git,
- * so a saved report answers "which TestForge found this?" by itself. Server only: the report's HTML is also built in
+ * TFP-257: which Mr Onion this is. package.json's `version` is the one source of truth, and the commit comes from git,
+ * so a saved report answers "which Mr Onion found this?" by itself. Server only: the report's HTML is also built in
  * the browser, so a run carries this as data (producedBy), stamped when it starts.
  *
  * A built server says what it was built from (next.config.ts sets MRONION_BUILD_* at `next build`): a pull under a

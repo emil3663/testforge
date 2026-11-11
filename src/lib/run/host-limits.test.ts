@@ -35,7 +35,7 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-host-limits-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-host-limits-"));
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 

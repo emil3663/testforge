@@ -42,7 +42,7 @@ const eslintConfig = defineConfig([
       "**/artifacts/**",
       // Phase 36 (TFP-126): suites the local-model benchmark recorded. They
       // are measured model output, kept as written - including ones that
-      // fail TestForge's own gates - not project code.
+      // fail Mr Onion's own gates - not project code.
       "benchmarks/**/*.spec.ts",
     ],
   },

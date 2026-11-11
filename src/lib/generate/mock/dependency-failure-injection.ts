@@ -4,7 +4,7 @@ import type { ContentProfile, DependencyKind, DependencyMapEntry } from "./types
 // TFP-085: cookies are recorded by TFP-084 (a real dependency worth
 // knowing about), but page.route() intercepts network requests - a cookie
 // isn't a routable request, so there's no honest way to "block" one this
-// way. Every other kind names a real request TestForge's own introspect
+// way. Every other kind names a real request Mr Onion's own introspect
 // pass observed, so route() can target it.
 const ROUTABLE_KINDS = new Set<DependencyKind>([
     "xhr-fetch",
@@ -86,7 +86,7 @@ function triggerStepFor(entry: DependencyMapEntry): string {
 // target routinely carries a session token or timestamp query string that
 // changes on every real request and would never match again. Asserts only
 // that the page didn't break (still responds, still renders a body, no
-// uncaught exception) - never a specific fallback UI TestForge can't know
+// uncaught exception) - never a specific fallback UI Mr Onion can't know
 // in advance, per Decision 2.
 export function buildDependencyFailureTests(contentProfile: ContentProfile | null): string[] {
     const dependencyMap = contentProfile?.dependencyMap ?? [];

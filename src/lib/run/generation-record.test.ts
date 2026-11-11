@@ -13,7 +13,7 @@ const { normalizeGenerationRecord } = await import("./generation-record.ts");
 const GATE = { gate: "type check", bar: "0 type errors", measured: "1 type errors", verdict: "rejected", evidence: ["3:1 TS2339 toBeAccessible"] };
 
 test("normalizeGenerationRecord: a real /api/generate record is kept as is", () => {
-    const record = { generatedBy: "fallback", model: "testforge-qwen7b:latest", fallbackReason: "invalid_output", gapFill: { gapAreas: ["database"], outcome: "rejected" }, gates: [GATE] };
+    const record = { generatedBy: "fallback", model: "mr-onion-qwen7b:latest", fallbackReason: "invalid_output", gapFill: { gapAreas: ["database"], outcome: "rejected" }, gates: [GATE] };
     assert.deepEqual(normalizeGenerationRecord(record), record);
 });
 

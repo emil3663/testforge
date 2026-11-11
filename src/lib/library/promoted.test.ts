@@ -3,7 +3,7 @@
  * promoted entries. Unit cases read recorded page data (TFP-193's fixture
  * profile, no browser); one case generates through POST /api/generate and
  * runs through POST /api/run on the comparison fixture's /types pages, in a
- * real browser, with its own promoted folder (TESTFORGE_LIBRARY_PROMOTED_DIR).
+ * real browser, with its own promoted folder (MRONION_LIBRARY_PROMOTED_DIR).
  *
  * ISTQB technique: decision table. Conditions: an entry's pattern (an
  * element on several pages; a link repeated across pages; on no page), its
@@ -30,7 +30,7 @@ import type { ContentProfile } from "../generate/mock/types.ts";
 import type { PromotedEntry } from "../candidates/promotion.ts";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-promoted-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-promoted-"));
 const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_RUNS_ROOT", "MRONION_LIBRARY_PROMOTED_DIR", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
 process.env.MRONION_DATA_DIR = join(scratch, "data");
 process.env.MRONION_RUNS_ROOT = join(scratch, "runs");

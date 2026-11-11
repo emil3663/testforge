@@ -25,7 +25,7 @@ import { join } from "node:path";
 import { after, before, test } from "node:test";
 import type { ContentProfile } from "../generate/mock/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-coverage-map-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-coverage-map-"));
 const savedDataDir = process.env.MRONION_DATA_DIR;
 process.env.MRONION_DATA_DIR = scratch;
 

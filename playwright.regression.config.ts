@@ -45,8 +45,8 @@ export default defineConfig({
         reuseExistingServer: false,
         timeout: 120_000,
         // Phase 20: test-only credentials for tests/regression/auth-fixture.ts.
-        // A credential only ever reaches TestForge as an environment variable.
-        // Phase 42 (TFP-190): site suites are saved in TestForge's data folder; the
+        // A credential only ever reaches Mr Onion as an environment variable.
+        // Phase 42 (TFP-190): site suites are saved in Mr Onion's data folder; the
         // server under test gets a temporary one outside the repo, never the real one.
         env: { ...AUTH_FIXTURE_ENV, MRONION_DATA_DIR: setting("DATA_DIR") || mkdtempSync(join(os.tmpdir(), "mr-onion-regression-data-")) },
     },

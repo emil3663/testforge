@@ -83,7 +83,7 @@ async function outputsFor(ref, outFile) {
         generate(workTree, outFile);
         return JSON.parse(readFileSync(outFile, "utf8"));
     }
-    const folder = mkdtempSync(join(tmpdir(), `testforge-template-${ref.name}-`));
+    const folder = mkdtempSync(join(tmpdir(), `mr-onion-template-${ref.name}-`));
     try {
         await extract(ref.commit, folder);
         generate(folder, outFile);

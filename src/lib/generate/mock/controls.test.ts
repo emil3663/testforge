@@ -38,7 +38,7 @@ const NEW_CHECKS = "sort options|filters send|quantity steppers|option lists sho
 const ITEM = "/store/item/01J8Z3K4QWHAMMER";
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `controls-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", NEW_CHECKS], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `controls-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", NEW_CHECKS], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 

@@ -66,7 +66,7 @@ export function comprehensiveLabel(mode: ComprehensiveRunMode): string {
 }
 
 /**
- * A host only the person running TestForge can reach: localhost, a
+ * A host only the person running Mr Onion can reach: localhost, a
  * `.localhost` or `.test` name (reserved for testing, RFC 6761; Phase 39
  * Decision 10's table), or a loopback address. Anything else is someone's
  * site.

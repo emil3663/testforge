@@ -104,7 +104,7 @@ for (const spec of dirs) {
     const optionB = data.mode === "option-b";
     const [A, B] = optionB ? ["template", "gap-fill"] : ["deterministic", "local"];
     const [labelA, labelB] = optionB ? ["Template only", "Template + gap-fill"] : ["Deterministic", "Local"];
-    w(`Local model \`${data.model}\`, TestForge ${data.server}, finished ${data.finishedAt ?? "(incomplete)"}. Source: \`${dir}\`.`);
+    w(`Local model \`${data.model}\`, Mr Onion ${data.server}, finished ${data.finishedAt ?? "(incomplete)"}. Source: \`${dir}\`.`);
     w(`Distinct discovered elements with a usable name, by type and name across all pages (for the reference proxy): ${names.length}.`);
     w();
     if (data.gapSweep) {

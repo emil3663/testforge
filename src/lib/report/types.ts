@@ -286,7 +286,7 @@ export interface RunReport {
     notTested: NotTestedElement[];
     /** Phase 42 (TFP-192): absent when the run had no page data or no suite source. */
     coverageMap?: CoverageMap;
-    /** TFP-257: the TestForge that ran this, stamped when the run started; absent on runs from before it. */
+    /** TFP-257: the Mr Onion that ran this, stamped when the run started; absent on runs from before it. */
     producedBy?: import("./produced-by-types").ProducedBy;
     /** Phase 39 (TFP-211): where the run's time went; absent on runs from before it, or when the timing reporter wrote nothing. */
     runTiming?: import("@/lib/run/timing").RunTiming;
@@ -371,7 +371,7 @@ export interface GenerationRecord {
     fallbackReason?: string;
     gapFill?: { gapAreas: string[]; outcome: string };
     gates: GenerationGateVerdict[];
-    /** Phase 34 TFP-122: present only when the request brought no page data and TestForge inspected the pages itself. */
+    /** Phase 34 TFP-122: present only when the request brought no page data and Mr Onion inspected the pages itself. */
     pageInspection?: PageInspectionRecord;
     /** Phase 40 Decision 7 (TFP-173): page types found, covered and skipped; present when the pages came from a crawl. */
     pageTypes?: PageTypeCoverageRecord;

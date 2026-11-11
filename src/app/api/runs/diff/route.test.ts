@@ -16,7 +16,7 @@ import { join } from "node:path";
 import { after, before, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
-const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-diff-route-test-"));
+const scratchRoot = mkdtempSync(join(tmpdir(), "mr-onion-diff-route-test-"));
 process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { GET } = await import("./route.ts");

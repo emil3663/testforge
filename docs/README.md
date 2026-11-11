@@ -7,8 +7,8 @@ reference.
 
 | Doc | For |
 |---|---|
-| [`APPLICATION_OVERVIEW.md`](APPLICATION_OVERVIEW.md) | What TestForge is and does today, its architecture, and where it's going |
-| [`../README.md`](../README.md) | Setting up and using TestForge; its security model; scripts |
+| [`APPLICATION_OVERVIEW.md`](APPLICATION_OVERVIEW.md) | What Mr Onion is and does today, its architecture, and where it's going |
+| [`../README.md`](../README.md) | Setting up and using Mr Onion; its security model; scripts |
 | [`../SECURITY.md`](../SECURITY.md) | The security model, what limits harm, and how to report a vulnerability |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Issues first, pull requests by invitation; checks and commit style |
 | [`WORKING_AGREEMENTS.md`](WORKING_AGREEMENTS.md) | How work is decided, built, verified and recorded; the decision vocabulary |
@@ -37,7 +37,7 @@ reference.
 | Doc | For |
 |---|---|
 | [`CLAUDE_SKILLS.md`](CLAUDE_SKILLS.md) | The account-level Claude skills used on this project |
-| [`../skills/README.md`](../skills/README.md) | The `testforge-skills` plugin: what each skill generalises from |
+| [`../skills/README.md`](../skills/README.md) | The `mr-onion-skills` plugin: what each skill generalises from |
 | [`GENERATOR_COMPARISON.md`](GENERATOR_COMPARISON.md) | How the generators were compared |
 | [`REIMAGINING.md`](REIMAGINING.md), [`REIMAGINING-RESPONSE.md`](REIMAGINING-RESPONSE.md) | The proposal to rebuild TestForge as skills only, and why it was declined |
 | [`../skills/testing/find-the-hidden-platform/TA-230.md`](../skills/testing/find-the-hidden-platform/TA-230.md) | A test-assist defect kept as source material for the `find-the-hidden-platform` skill, beside it (moved from `docs/` by TFP-255) |

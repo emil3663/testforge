@@ -2,7 +2,7 @@
  * TFP-267: a link with no text is found by its href, in a CSS attribute selector built inside the generated suite.
  * Inside the generator's template literals `'\\"'` writes `'\"'` into the suite, which there is just `"`: the replace
  * did nothing, and CodeQL's "replacement of a substring with itself" was right. So an href holding `"` broke the
- * selector and its link check failed on TestForge's own error, not the site's, and an href holding `\` matched nothing.
+ * selector and its link check failed on Mr Onion's own error, not the site's, and an href holding `\` matched nothing.
  *
  * ISTQB technique: equivalence partitioning of the href (a double quote, a backslash, both, neither), in a real browser
  * through the generated test, so the selector is parsed by Playwright and matched against the real attribute.
@@ -41,7 +41,7 @@ async function checkOn(hrefs: string[]) {
         const [check] = buildLinkDetailTests("/", 5000, false, hrefs.map(mailto), [], [], []);
         const code = `import { test, expect } from '@playwright/test';\ntest.use({ baseURL: '${baseURL}' });\n${check}\n`;
         assert.deepEqual(findTypeErrors(code), []);
-        const { report } = await runPlaywrightSpec(code, "href-escaping-unit", ["--workers=1", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+        const { report } = await runPlaywrightSpec(code, "href-escaping-unit", ["--workers=1", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
         const [record] = flattenSuites(report.suites);
         return record.status === "Passed" ? "Passed" : `${record.status}: ${(record.rawMessage ?? "").slice(0, 200)}`;
     } finally {

@@ -1,6 +1,6 @@
 # Changelog
 
-What changed in TestForge, for someone using it. Each entry links the
+What changed in Mr Onion, for someone using it. Each entry links the
 decision record behind it; [`docs/decisions/README.md`](docs/decisions/README.md)
 indexes them all.
 
@@ -10,6 +10,61 @@ phase completes; the patch version for fixes between phases. 1.0 comes when
 the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
+
+### Renamed: TestForge is now Mr Onion (0.3.0)
+
+The app, its reports, the command, the settings, the data folder, the
+GitHub repo and the Claude Code plugin all take the new name
+([Phase 48](docs/decisions/phase-48-rename-to-mr-onion-decision-record.md)).
+Ticket and test IDs, saved runs, baselines and site suites are unchanged.
+
+- **The command is `mr-onion`** (`mr-onion run`, `npm run mr-onion`). The
+  default output folder is `./mr-onion-out`. `testforge` and
+  `npm run testforge` still work until 1.0: they print one line saying the
+  name has changed, then run the same command with the same exit code.
+- **Settings are named `MRONION_*`** in place of `TESTFORGE_*`, with the
+  rest of each name unchanged (`MRONION_DATA_DIR`, `MRONION_OLLAMA_MODEL`,
+  ...). The old names still work until 1.0, with one notice per setting
+  naming both. If both are set, the new one wins, unless the new one is
+  blank. Every setting Mr Onion sets for a run reaches its tests under both
+  names, so a suite saved before the rename runs as it did, interactive tests
+  included.
+- **The data folder moves once.** On the first start, `%LOCALAPPDATA%\TestForge`
+  becomes `%LOCALAPPDATA%\MrOnion` (macOS: `~/Library/Application Support/MrOnion`;
+  Linux: `~/.local/share/mr-onion`). Your runs, site suites and candidates
+  move with it, and one notice says where they went. A folder you set
+  yourself (`--data-dir`, `MRONION_DATA_DIR` or `TESTFORGE_DATA_DIR`) is
+  never moved. If the move can't happen (a file in the folder held open),
+  the old folder is used and the next start tries again.
+- **Generated suites say Mr Onion.** Their header, the setting they check
+  (`MRONION_INTERACTIVE`), and the test data and probe routes they send to
+  a site use the new name.
+- **The local model's tag is `mr-onion-qwen7b`**, built from
+  `ollama/Modelfile.mr-onion-qwen7b`. A model you built as
+  `testforge-qwen7b` is used when the new tag is missing, and the
+  generation record says so; `ollama cp testforge-qwen7b mr-onion-qwen7b`
+  gives it the new name with no rebuild.
+- **Reinstall the Claude Code plugin.** It is now `mr-onion-skills` in
+  `mr-onion-skills-marketplace`. Once your checkout has the renamed
+  marketplace, `testforge-skills@testforge-skills-marketplace` no longer
+  resolves ("not found in marketplace"). Updating the marketplace isn't
+  enough, as it keeps its old registered name; remove it and add it again,
+  from your checkout's folder:
+
+  ```sh
+  claude plugin uninstall testforge-skills@testforge-skills-marketplace
+  claude plugin marketplace remove testforge-skills-marketplace
+  claude plugin marketplace add <your checkout>
+  claude plugin install mr-onion-skills@mr-onion-skills-marketplace
+  ```
+
+  (In Claude Code, the same with `/plugin`.) The skills are the same twelve,
+  and the repo's `.claude/settings.json` enables the new name.
+- **The repo is `github.com/emil3663/mr-onion`.** Old links and clones
+  redirect.
+- **Going back to 0.2.x** reads only the old data folder, which has moved.
+  Set `TESTFORGE_DATA_DIR` to the moved folder (`%LOCALAPPDATA%\MrOnion` and
+  so on) so 0.2.x finds your runs and suites.
 
 ### Security
 
@@ -24,7 +79,7 @@ the report and the CI command are declared stable, after Phase 47.
 ### Changed
 
 - A run's environment now passes on `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
-  and `NODE_EXTRA_CA_CERTS` when they are set. TestForge doesn't yet set
+  and `NODE_EXTRA_CA_CERTS` when they are set. Mr Onion doesn't yet set
   Playwright's own proxy option, so this hasn't been shown to carry a run
   through a proxy ([TFP-209](docs/decisions/post-phase-42-review-plan.md)).
 
@@ -189,5 +244,5 @@ TestForge from a FastAPI backend to Next.js ([history](docs/consolidation/README
 - The `testforge-skills` Claude Code plugin: 12 testing and engineering
   skills, usable without the app ([`skills/README.md`](skills/README.md)).
 
-[Unreleased]: https://github.com/emil3663/testforge/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/emil3663/testforge/releases/tag/v0.2.0
+[Unreleased]: https://github.com/emil3663/mr-onion/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/emil3663/mr-onion/releases/tag/v0.2.0

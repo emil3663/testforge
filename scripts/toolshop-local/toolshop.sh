@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # D26: the local Toolshop's commands, run inside the WSL distribution by start-toolshop.ps1 and stop-toolshop.ps1
 # (`wsl -d Ubuntu --cd <this folder> -e bash ./toolshop.sh ...`). Testsmith's checkout lives in the distribution's
-# own Linux filesystem, so Docker's bind mounts of its code never cross the Windows mount; only TestForge's
+# own Linux filesystem, so Docker's bind mounts of its code never cross the Windows mount; only Mr Onion's
 # small compose overrides are read from this folder.
 #   checkout <upstream> <commit>      clone if missing, check out the commit, print it
-#   compose <sprint> <args...>        docker compose with Testsmith's file and TestForge's overrides
+#   compose <sprint> <args...>        docker compose with Testsmith's file and Mr Onion's overrides
 #   has-autoload <sprint>             exit 0 when the API's vendor/autoload.php exists
 #   give-storage <sprint>             the API's storage/ and bootstrap/cache to the user php-fpm runs as
 #   stop                              docker compose down

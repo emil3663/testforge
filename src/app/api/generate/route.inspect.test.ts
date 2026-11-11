@@ -104,11 +104,11 @@ test("supplied page data is used as-is and nothing is inspected", async () => {
 
 test("with a local model configured, an inspected database request is no gap: the model is not called", { skip: needsChromium }, async () => {
     let chatCalls = 0;
-    fakeOpenAi(["testforge-qwen7b:latest"], (_req, res) => {
+    fakeOpenAi(["mr-onion-qwen7b:latest"], (_req, res) => {
         chatCalls += 1;
         json(res, 200, completion("test('x', async () => {});"));
     });
-    process.env.MRONION_OLLAMA_MODEL = "testforge-qwen7b";
+    process.env.MRONION_OLLAMA_MODEL = "mr-onion-qwen7b";
     process.env.MRONION_OLLAMA_BASE_URL = fakeBaseUrl();
     const body = await generate({ baseUrl: siteUrl, description: "Check that notes are saved.", selectedPractices: ["database"] });
     assert.equal(body.generatedBy, "template");

@@ -81,7 +81,7 @@ test("buildReport carries the generation record and the empty areas, and the HTM
     };
     const generation: GenerationRecord = {
         generatedBy: "fallback",
-        model: "testforge-qwen7b:latest",
+        model: "mr-onion-qwen7b:latest",
         fallbackReason: "invalid_output",
         gapFill: { gapAreas: ["database"], outcome: "rejected" },
         gates: [{ gate: "type check", bar: "0 type errors", measured: "1 type errors", verdict: "rejected", evidence: ["5:30 TS2339 Property toBeAccessible does not exist"] }],
@@ -105,7 +105,7 @@ test("Phase 37: a promise_to_plain_matcher rejection is saved with the run, name
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const saved = normalizeGenerationRecord({
         generatedBy: "fallback",
-        model: "testforge-qwen7b:latest",
+        model: "mr-onion-qwen7b:latest",
         fallbackReason: "promise_to_plain_matcher",
         gapFill: { gapAreas: ["database"], outcome: "rejected" },
         gates: [

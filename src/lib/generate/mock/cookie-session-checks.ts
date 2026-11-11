@@ -13,7 +13,7 @@
 //   failure; the parent-domain case above still fails.
 //
 // "Session cookie" is decided by name (session, sess, sid, auth, token, jwt,
-// and the common framework names). TestForge cannot tell a session cookie
+// and the common framework names). Mr Onion cannot tell a session cookie
 // from an analytics one for certain (Phase 34 Decision 3), so the rule is
 // stated, not guessed at per site. A site with no such cookie on its landing
 // page skips the test with that reason (reported as Not run), rather than

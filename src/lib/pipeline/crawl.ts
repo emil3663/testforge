@@ -11,7 +11,7 @@ import { DEFAULT_PAGE_CAP } from "@/lib/comprehensive/run-mode";
  * the caller's callbacks; the job map stays in the route.
  */
 
-// Only correct when TestForge is testing itself. For any other target
+// Only correct when Mr Onion is testing itself. For any other target
 // (Plane on :80, test-assist on :4321, ...) the caller must supply baseUrl.
 const DEFAULT_BASE_URL = "http://localhost:3000";
 const MAX_CRAWL_PAGES = 100;

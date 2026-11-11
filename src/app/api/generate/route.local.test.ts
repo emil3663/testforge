@@ -1,7 +1,7 @@
 /**
  * Tests for POST /api/generate's local (Ollama) path.
  *
- * Phase 34 (TFP-118), Option B: with TESTFORGE_OLLAMA_MODEL set, the template
+ * Phase 34 (TFP-118), Option B: with MRONION_OLLAMA_MODEL set, the template
  * always generates and the local model is asked only for the selected areas
  * the template left without tests; its tests are appended in a labelled block.
  * Every gate from Phases 30-33 still applies - TFP-103 guard/timeout/fallback
@@ -93,7 +93,7 @@ async function expectFallback(reason: string, practices = GAP) {
 
 // --- when the local model is (not) asked -------------------------------------
 
-test("Option B: with TESTFORGE_OLLAMA_MODEL unset the response is exactly the template-only one", async () => {
+test("Option B: with MRONION_OLLAMA_MODEL unset the response is exactly the template-only one", async () => {
     const body = await (await POST(request(GAP))).json();
     assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
     assert.equal(chatBodies.length, 0);

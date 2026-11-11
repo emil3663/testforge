@@ -1,4 +1,4 @@
-# TestForge — what it actually does
+# Mr Onion — what it actually does
 
 *Living doc. Last reviewed 2026-10-31, against `main` at `b38c622` (Phase 39
 complete). Reviewed at every phase completion
@@ -9,12 +9,12 @@ from `TEST_PLAN.md`).*
 
 ## In one paragraph
 
-TestForge is a test automation assistant for websites. Give it a base URL
+Mr Onion is a test automation assistant for websites. Give it a base URL
 and it crawls the site, groups its pages into page types, inspects one page
 of each type, writes a Playwright TypeScript suite from what it actually
 found, runs it in Chromium, and returns a report that says what was tested,
 how, and — just as prominently — what wasn't tested and why. The suite is
-plain Playwright you can keep and run without TestForge. The core needs no
+plain Playwright you can keep and run without Mr Onion. The core needs no
 AI and no API key. It is a local, single-user tool today: a Next.js app on
 the tester's machine, not a hosted service.
 
@@ -90,8 +90,8 @@ security and accessibility finds 33 (Phase 41 Gate B).
   (confirmation required).
 
 Site suites, run history and candidates hold one site's details, so they
-live in TestForge's local data folder (`%LOCALAPPDATA%\TestForge` on
-Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
+live in Mr Onion's local data folder (`%LOCALAPPDATA%\MrOnion` on
+Windows; `MRONION_DATA_DIR` overrides), never in the repo.
 
 ## Architecture
 
@@ -118,18 +118,18 @@ Windows; `TESTFORGE_DATA_DIR` overrides), never in the repo.
 ```
 
 - **No database.** Runs are folders (`run.json`, the executed
-  `suite.spec.ts`, `evidence/`), written atomically; one TestForge process
+  `suite.spec.ts`, `evidence/`), written atomically; one Mr Onion process
   per data folder.
 - **Async runs.** `POST /api/run` returns a job (202); the UI polls
   `GET /api/run`. Concurrency is by worker count with per-host request caps
   (Phase 39).
 - **Security model.** `/api/run` executes generated code with the user's
   privileges. That is accepted under the local-only model (Phase 16) and is
-  why TestForge must never be bound to a non-loopback interface or tunnelled
+  why Mr Onion must never be bound to a non-loopback interface or tunnelled
   (`README.md`, Security model). Model-written code is restricted to the page
   and `expect` and runs with no keys in its environment — not a sandbox; the
   Docker sandbox is Phase 45.
-- **Tests of TestForge itself.** Node unit tests, a Playwright self-test and
+- **Tests of Mr Onion itself.** Node unit tests, a Playwright self-test and
   regression suite against a built instance, Allure reports; CI runs PR
   validation, regression, self-test and the nightly unit and template
   checks (`.github/workflows/`).
@@ -141,7 +141,7 @@ In order (`product-roadmap.md`, `deferred-work-register.md`):
 - **Done:** Phase 39, run speed (2026-10-31): Standard about 2.5 times faster on the with-bugs
   Toolshop; at most 3 workers; capped runs report cap-starved tests as Not run.
 - **Next:** a few small tickets, after `v0.2.0` (2026-10-31, the first
-  tagged version); then Phase 47, TestForge as a step in a
+  tagged version); then Phase 47, Mr Onion as a step in a
   target's CI pipeline (`docs/decisions/phase-47-ci-integration-decision-record.md`),
   with the application's rename (D39, "Mr Onion" proposed) before its
   Docker image is published.
@@ -157,8 +157,8 @@ In order (`product-roadmap.md`, `deferred-work-register.md`):
 ## Relationship to `skills/`
 
 A parallel track, not a replacement: `skills/` packages the testing and
-engineering judgment behind TestForge as an installable Claude Code plugin
-(`testforge-skills`, 12 skills under `skills/testing/` and
+engineering judgment behind Mr Onion as an installable Claude Code plugin
+(`mr-onion-skills`, 12 skills under `skills/testing/` and
 `skills/engineering/`), usable without the app. `skills/proposed/` holds
 SRE and DORA skills under review, four of them being adopted (TFP-236).
 Rewriting TestForge as skills only was considered and declined
