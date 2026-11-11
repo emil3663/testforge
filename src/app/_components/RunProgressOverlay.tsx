@@ -80,10 +80,10 @@ export function RunProgressOverlay({
                             </div>
                             <p className="mt-4 text-sm leading-6 text-zinc-500">
                                 {isGenerating
-                                    ? "TestForge is inspecting the requested pages and translating the results into concrete Playwright assertions."
+                                    ? "Mr Onion is inspecting the requested pages and translating the results into concrete Playwright assertions."
                                     : isCancellingRun
-                                        ? "TestForge is stopping the running suite and preserving the latest available execution state."
-                                        : "TestForge is executing the generated suite and collecting structured reporting data."}
+                                        ? "Mr Onion is stopping the running suite and preserving the latest available execution state."
+                                        : "Mr Onion is executing the generated suite and collecting structured reporting data."}
                             </p>
                         </div>
                         {isRunning ? (

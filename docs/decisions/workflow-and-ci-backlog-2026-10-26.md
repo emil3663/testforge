@@ -1333,6 +1333,82 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - The existing crawl tests pass unchanged.
 - **Dependencies:** TFP-263.
 
+### TFP-282 - Link health's route test can pass under load without checking the route (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P2
+- **Suggested labels:** `test`, `flaky`
+- **Problem it solves:** in Phase 48's Gate B (2026-11-11), the unit test
+  "a linked missing route fails link health, naming it"
+  (`src/lib/introspect/routes.test.ts`) got Passed instead of Failed.
+  Beside the full suite's other browser tests it took 96 s, and the
+  generated check spent its 14 s route budget ("2 linked routes not
+  checked: the check stops after 14 s (/spa#/chainsaws,
+  /spa#/products/1)") before reaching the missing route. Alone it took
+  39 s and passed. The budget is a known coverage limit (U9 in
+  `data/labelled-failures.md`). The weakness is that the test passes
+  when the check never reached what it is meant to catch.
+- **Scope:** the test fails, not passes, when the route it checks wasn't
+  reached: it asserts the missing route was checked, not only the
+  verdict. It also gets the time it needs under load, either through its
+  own budget or by running alone. The generated check's 14 s budget
+  stays as it is: this ticket changes the test, not the template.
+- **Acceptance criteria:**
+  - **Red first:** with the budget forced short, today's test passes; the
+    new test fails, naming the unchecked route.
+  - The test passes in a full `npm run test:unit`, three runs in a row.
+  - `check:template-unchanged`: identical with no map.
+- **Dependencies:** Phase 48 merged.
+
+### TFP-283 - The self-test's server times out on a cold build (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P3
+- **Suggested labels:** `test`, `ci`
+- **Problem it solves:** `playwright.self-test.config.ts`'s webServer runs
+  `npm run serve:self-test`, which builds and then starts the app, within
+  `timeout: 120_000`. In Phase 48's Gate B (2026-11-11), a fresh session
+  with no build cache took 3.3 min to compile, and the suite stopped with
+  "Timed out waiting 120000ms from config.webServer" before any test ran.
+  The rerun, with a warm cache, passed 5 of 5. Whether the suite runs
+  depends on the cache, not the code.
+- **Scope:** the build happens before Playwright waits for the server (a
+  separate build step, as `test:regression` already does), or the
+  timeout covers a measured cold build. CI's self-test job gets the same
+  fix.
+- **Acceptance criteria:**
+  - **Red first:** with `.next/` removed, today's command times out;
+    after the fix it runs all 5 tests.
+  - A warm-cache run takes no longer than before, within a minute.
+- **Dependencies:** Phase 48 merged.
+
+### TFP-284 - Playwright on the current GitHub runner image (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P2
+- **Suggested labels:** `ci`, `dependencies`
+- **Problem it solves:** on 2026-11-11, between 09:05 and 15:25 UTC,
+  GitHub's `ubuntu-latest` moved from `ubuntu-24.04` to `ubuntu-26.04`.
+  Playwright 1.59.1 stops there: "ERROR: Playwright does not support
+  chromium on ubuntu26.04-x64" (PR Validation run 43048248301, both
+  attempts), before lint. Phase 48's merge was unblocked by pinning every
+  job to `ubuntu-24.04` (owner decision, 2026-11-11). That pin holds only
+  while GitHub keeps the 24.04 image.
+- **Scope:** move Playwright to a release that supports `ubuntu-26.04`
+  (1.65.0 is the latest on 2026-11-11; support not yet checked), then
+  return the jobs to `ubuntu-latest` or pin `ubuntu-26.04`. The browser
+  version moves with it, so the generated template is re-checked.
+- **Acceptance criteria:**
+  - **Red first:** the PR Validation failure above, quoted.
+  - Every workflow green on the new image: PR Validation, CodeQL,
+    regression, self-test, and a dispatched nightly.
+  - `check:template-unchanged`: identical with no map, or each difference
+    named and owner-accepted.
+- **Dependencies:** Phase 48 merged.
+
 ---
 
 ## Owner plans to carry into the register (2026-10-28) — carried 2026-10-30 as D38 and D39

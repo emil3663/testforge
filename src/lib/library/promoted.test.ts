@@ -3,7 +3,7 @@
  * promoted entries. Unit cases read recorded page data (TFP-193's fixture
  * profile, no browser); one case generates through POST /api/generate and
  * runs through POST /api/run on the comparison fixture's /types pages, in a
- * real browser, with its own promoted folder (TESTFORGE_LIBRARY_PROMOTED_DIR).
+ * real browser, with its own promoted folder (MRONION_LIBRARY_PROMOTED_DIR).
  *
  * ISTQB technique: decision table. Conditions: an entry's pattern (an
  * element on several pages; a link repeated across pages; on no page), its
@@ -30,11 +30,11 @@ import type { ContentProfile } from "../generate/mock/types.ts";
 import type { PromotedEntry } from "../candidates/promotion.ts";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-promoted-"));
-const savedEnv = Object.fromEntries(["TESTFORGE_DATA_DIR", "TESTFORGE_RUNS_ROOT", "TESTFORGE_LIBRARY_PROMOTED_DIR", "TESTFORGE_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-delete process.env.TESTFORGE_OLLAMA_MODEL;
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-promoted-"));
+const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_RUNS_ROOT", "MRONION_LIBRARY_PROMOTED_DIR", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
+process.env.MRONION_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+delete process.env.MRONION_OLLAMA_MODEL;
 delete process.env.OPENAI_API_KEY;
 
 const { bindPromotedEntries } = await import("./promoted.ts");
@@ -121,7 +121,7 @@ test("nothing promoted, no page with the pattern, or refused by the code check: 
     const name = buildCoverageMap(profile, template)!.entries.find((item) => item.kind === "element")!.name;
     assert.equal(bindPromotedEntries(template, profile, [entry("element", name, "await page.goto('__PAGE__');\nawait fetch('http://evil.example');")]).code, template);
     // The repo's own folder holds only its README: nothing is promoted yet.
-    delete process.env.TESTFORGE_LIBRARY_PROMOTED_DIR;
+    delete process.env.MRONION_LIBRARY_PROMOTED_DIR;
     assert.deepEqual(await loadPromotedEntries(), []);
     // An unreadable file is skipped, not a failed generation.
     const dir = join(scratch, "broken");
@@ -139,7 +139,7 @@ test("through the routes: a promoted entry is generated on Standard functional a
         return (await response.json()) as { code: string; siteSuite: SiteSuiteRecord };
     };
     // Nothing promoted first, to find a gap's pattern on this site.
-    process.env.TESTFORGE_LIBRARY_PROMOTED_DIR = join(scratch, "promoted-empty");
+    process.env.MRONION_LIBRARY_PROMOTED_DIR = join(scratch, "promoted-empty");
     const plain = await generate(["functional"]);
     assert.equal(libraryUnits(plain.code).length, 0);
     const { loadSiteSuiteProfile } = await import("../site-suites/store.ts");
@@ -152,7 +152,7 @@ test("through the routes: a promoted entry is generated on Standard functional a
     mkdirSync(dir, { recursive: true });
     const promoted = entry("link", gap.name);
     writeFileSync(join(dir, `${promoted.id}.json`), JSON.stringify(promoted, null, 2));
-    process.env.TESTFORGE_LIBRARY_PROMOTED_DIR = dir;
+    process.env.MRONION_LIBRARY_PROMOTED_DIR = dir;
     try {
         const body = await generate(["functional"]);
         const units = libraryUnits(body.code);
@@ -170,6 +170,6 @@ test("through the routes: a promoted entry is generated on Standard functional a
         // Inside the verdict: counted in the run's own summary, like any library entry.
         assert.deepEqual({ executed: summary.executed, passed: summary.passed }, { executed: 1, passed: 1 }, runJobs.get(runId)!.outputChunks.join("").slice(-2000));
     } finally {
-        process.env.TESTFORGE_LIBRARY_PROMOTED_DIR = join(scratch, "promoted-empty");
+        process.env.MRONION_LIBRARY_PROMOTED_DIR = join(scratch, "promoted-empty");
     }
 });

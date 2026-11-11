@@ -11,7 +11,7 @@ const BEST_PRACTICE_GUIDANCE = `Best-practice coverage to consider when relevant
 
 Prefer generating a balanced suite that covers the most relevant categories for the described scenario. If multiple categories are in scope, group related tests under separate test.describe blocks named after each coverage area. If a category requires tooling outside this repo, keep the executable Playwright code focused on what can actually run here and note the follow-up work in comments.`;
 
-export const SYSTEM_PROMPT = `You are TestForge, an expert Playwright test automation engineer.
+export const SYSTEM_PROMPT = `You are Mr Onion, an expert Playwright test automation engineer.
 Your job is to translate a plain-English test description into a clean, idiomatic Playwright TypeScript test file.
 
 Rules:

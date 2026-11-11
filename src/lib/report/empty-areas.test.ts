@@ -41,7 +41,7 @@ test("computeEmptyAreas: areas with a test are left out; empty ones say why, tem
     const empty = computeEmptyAreas(["functional", "database", "reliability"], [record("Functional")], SUITE, null);
     assert.deepEqual(empty.map((e) => e.area), ["Database", "Reliability"]);
     assert.match(empty[0].reasons[0], /^Database: no page inspection data/);
-    assert.match(empty[0].reasons[1], /no local model result was recorded .* TESTFORGE_OLLAMA_MODEL/);
+    assert.match(empty[0].reasons[1], /no local model result was recorded .* MRONION_OLLAMA_MODEL/);
     assert.match(empty[1].reasons.at(-1)!, /reliability is never sent to the local model/);
 });
 
@@ -81,7 +81,7 @@ test("buildReport carries the generation record and the empty areas, and the HTM
     };
     const generation: GenerationRecord = {
         generatedBy: "fallback",
-        model: "testforge-qwen7b:latest",
+        model: "mr-onion-qwen7b:latest",
         fallbackReason: "invalid_output",
         gapFill: { gapAreas: ["database"], outcome: "rejected" },
         gates: [{ gate: "type check", bar: "0 type errors", measured: "1 type errors", verdict: "rejected", evidence: ["5:30 TS2339 Property toBeAccessible does not exist"] }],
@@ -105,7 +105,7 @@ test("Phase 37: a promise_to_plain_matcher rejection is saved with the run, name
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const saved = normalizeGenerationRecord({
         generatedBy: "fallback",
-        model: "testforge-qwen7b:latest",
+        model: "mr-onion-qwen7b:latest",
         fallbackReason: "promise_to_plain_matcher",
         gapFill: { gapAreas: ["database"], outcome: "rejected" },
         gates: [
@@ -125,7 +125,7 @@ test("TFP-122: the HTML export says the page data was gathered automatically, or
     const json: JsonReport = { suites: [], errors: [], stats: { duration: 0, expected: 0, unexpected: 0, flaky: 0, skipped: 0 } };
     const withInspection = (pageInspection: GenerationRecord["pageInspection"]) =>
         buildReportHtmlDocument(buildReport(json, [], "", "http://x", null, "", { generatedBy: "template", gates: [], pageInspection }, "d"), "r");
-    assert.match(withInspection({ status: "inspected", paths: ["/notes"], pages: 1, warnings: [] }), /TestForge inspected \/notes automatically \(1 page\)/);
+    assert.match(withInspection({ status: "inspected", paths: ["/notes"], pages: 1, warnings: [] }), /Mr Onion inspected \/notes automatically \(1 page\)/);
     assert.match(withInspection({ status: "failed", paths: ["/"], pages: 0, warnings: [], reason: "Could not inspect http://x/: refused" }), /automatic inspection of \/ failed \(Could not inspect http:\/\/x\/: refused\)/);
     assert.doesNotMatch(withInspection(undefined), /No page data was supplied/);
 });

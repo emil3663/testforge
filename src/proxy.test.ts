@@ -1,6 +1,6 @@
 /**
  * TFP-261: the API's request guard (src/proxy.ts), decision by decision; the real server's refusals, and the code a
- * refused run would have run, are tests/regression/testforge.request-guard.spec.ts.
+ * refused run would have run, are tests/regression/mr-onion.request-guard.spec.ts.
  *
  * ISTQB technique: decision table. Conditions: the Host (loopback by each name, with or without a port; another name;
  * missing); the Origin (absent; the same origin; another origin; another port; "null"); the method (a read, a write);

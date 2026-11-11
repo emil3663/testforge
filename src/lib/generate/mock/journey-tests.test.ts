@@ -92,7 +92,7 @@ test("TFP-268: a selected journey through a form that posts back to its own page
 test("the test is skipped unless interactive tests are enabled for the run", () => {
     const [body] = buildJourneyTests(profile([journey()]), rules([journey().id]));
 
-    assert.ok(body.includes("test.skip(process.env.TESTFORGE_INTERACTIVE !== '1'"));
+    assert.ok(body.includes("test.skip(process.env.MRONION_INTERACTIVE !== '1'"));
 });
 
 test("each hop is asserted in order, using the real element from the graph", () => {

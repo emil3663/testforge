@@ -34,7 +34,7 @@ export function buildComprehensiveHtmlDocument(report: RunReport, runId: string)
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TestForge ${e(c.label)} ${e(runId)}</title>
+    <title>Mr Onion ${e(c.label)} ${e(runId)}</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; margin: 0; background: #f4f4f5; color: #18181b; line-height: 1.5; }
         main { max-width: 1140px; margin: 0 auto; padding: 24px 16px 48px; }

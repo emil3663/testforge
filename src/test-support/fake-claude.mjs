@@ -2,7 +2,7 @@
 // writer's tests run the real call path without reaching Claude Code. Reads the
 // prompt from stdin, appends { args, prompt, session, cwd, cwdEntries } to
 // FAKE_CLAUDE_LOG, and answers as FAKE_CLAUDE_MODE says:
-//   good    - a body that finds the target with TestForge's own locator
+//   good    - a body that finds the target with Mr Onion's own locator
 //   revise  - first a body that fails, then (on --resume) the good one
 //   breach  - a body that submits a form by POST, which the read-only gate must reject
 //             (TFP-202: a fetch would be refused by the code check before it ran)
@@ -31,7 +31,7 @@ const body = prompt.startsWith("Generalise")
     : mode === "breach"
     ? `await page.goto('${page}');\nawait page.evaluate(() => { const form = document.createElement('form'); form.method = 'post'; form.action = '/api/store/cart'; document.body.append(form); form.submit(); });`
     : mode === "revise" && !resumed
-        ? `await page.goto('${page}');\nawait expect(page.locator('#testforge-not-there')).toBeVisible({ timeout: 1000 });`
+        ? `await page.goto('${page}');\nawait expect(page.locator('#mr-onion-not-there')).toBeVisible({ timeout: 1000 });`
         : good;
 
 process.stdout.write(JSON.stringify({ type: "result", is_error: false, result: "```ts\n" + body + "\n```", total_cost_usd: 0.0125, session_id: session }));

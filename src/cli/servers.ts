@@ -151,7 +151,7 @@ export async function startServers(specs: ServerSpec[], timeoutMs: number, onLin
         // Something already on the port would be tested in the server's place.
         if (await portAnswers(spec.port)) {
             await stopServers(started, graceMs);
-            throw new ServerStartError(`The server "${spec.command}" couldn't start: port ${spec.port} is already in use, so TestForge would test whatever holds it.`);
+            throw new ServerStartError(`The server "${spec.command}" couldn't start: port ${spec.port} is already in use, so Mr Onion would test whatever holds it.`);
         }
         const server = startOne(spec);
         started.push(server);

@@ -151,7 +151,7 @@ const URL_SECRETS = String.raw`    test('__PATH__ puts no password or session to
 const MISSING_PAGE_PROBE = String.raw`    test('a page that cannot exist shows no stack trace or server file path', __DETAILS__, async ({ request }) => {
       // The one request of the passive level that isn't a page load: a single
       // GET to a path that cannot exist, redirects not followed.
-      const path = '/testforge-missing-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      const path = '/mr-onion-missing-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       const response = await request.get(path, { maxRedirects: 0, failOnStatusCode: false });
       const body = await response.text();
       const leaks = TF_ERROR_LEAKS

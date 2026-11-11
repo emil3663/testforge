@@ -30,14 +30,14 @@ import { after, before, test } from "node:test";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 import type { SiteSuiteManifest } from "../site-suites/store.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-candidates-"));
-const savedEnv = Object.fromEntries(["TESTFORGE_DATA_DIR", "TESTFORGE_RUNS_ROOT", "TESTFORGE_CLAUDE_COMMAND", "TESTFORGE_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "TESTFORGE_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_CLAUDE_COMMAND = JSON.stringify([process.execPath, join(process.cwd(), "src/test-support/fake-claude.mjs")]);
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-candidates-"));
+const savedEnv = Object.fromEntries(["MRONION_DATA_DIR", "MRONION_RUNS_ROOT", "MRONION_CLAUDE_COMMAND", "MRONION_GAP_LIMIT", "FAKE_CLAUDE_LOG", "FAKE_CLAUDE_MODE", "MRONION_OLLAMA_MODEL", "OPENAI_API_KEY"].map((key) => [key, process.env[key]]));
+process.env.MRONION_DATA_DIR = join(scratch, "data");
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_CLAUDE_COMMAND = JSON.stringify([process.execPath, join(process.cwd(), "src/test-support/fake-claude.mjs")]);
 process.env.FAKE_CLAUDE_LOG = join(scratch, "claude.log");
 process.env.FAKE_CLAUDE_MODE = "good";
-delete process.env.TESTFORGE_OLLAMA_MODEL;
+delete process.env.MRONION_OLLAMA_MODEL;
 delete process.env.OPENAI_API_KEY;
 
 const generateRoute = await import("../../app/api/generate/route.ts");
@@ -95,9 +95,9 @@ async function generate(origin: string, runMode?: unknown) {
 
 test("first site: a saved gap test is generalised, checked bound back, and pooled with its source (TFP-195)", { skip: needsChromium }, async () => {
     await optIn(siteA.origin, "claude-code");
-    process.env.TESTFORGE_GAP_LIMIT = "1";
+    process.env.MRONION_GAP_LIMIT = "1";
     const body = await generate(siteA.origin);
-    delete process.env.TESTFORGE_GAP_LIMIT;
+    delete process.env.MRONION_GAP_LIMIT;
     const gaps = body.siteSuite.gapTests!;
     assert.deepEqual([gaps.saved, gaps.candidates], [1, { matched: 0, added: 1, notKept: 0 }]);
     assert.match(gaps.tests[0].outcome, /^saved; candidate [0-9a-f]{12} added$/);
@@ -179,7 +179,7 @@ test("another site, Standard: a candidate that fails the gates there is not boun
         invalid: "await page.goto('__PAGE__');\nawait fetch('http://127.0.0.1:9/');",
     };
     for (const [kind, failing] of Object.entries(bodies)) {
-        process.env.TESTFORGE_DATA_DIR = join(scratch, `failing-${kind}`);
+        process.env.MRONION_DATA_DIR = join(scratch, `failing-${kind}`);
         try {
             await saveCandidate({ ...candidate, body: failing, evidence: [] });
             const body = await generate(siteB.origin);
@@ -192,14 +192,14 @@ test("another site, Standard: a candidate that fails the gates there is not boun
             // Tried once: not run again while its page type holds.
             assert.equal((await generate(siteB.origin)).siteSuite.candidateTests, undefined);
         } finally {
-            process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+            process.env.MRONION_DATA_DIR = join(scratch, "data");
         }
     }
 });
 
 test("second site, Standard: the bound candidate's run counts toward its promotion evidence, gaining that site (TFP-203)", { skip: needsChromium }, async () => {
     const candidate = (await loadCandidate(candidateId))!;
-    process.env.TESTFORGE_DATA_DIR = join(scratch, "standard-evidence");
+    process.env.MRONION_DATA_DIR = join(scratch, "standard-evidence");
     try {
         // One clean run on the first site so far: one site in its verdict.
         await saveCandidate({ ...candidate, evidence: [{ origin: siteA.origin, page: "/", at: "2026-10-15T00:00:00.000Z", status: "Passed", run: "earlier" }] });
@@ -223,15 +223,15 @@ test("second site, Standard: the bound candidate's run counts toward its promoti
         const verdict = promotionVerdict(after);
         assert.deepEqual({ runs: verdict.runs, sites: verdict.sites, gatesPassedEveryRun: verdict.gatesPassedEveryRun }, { runs: 2, sites: 2, gatesPassedEveryRun: true }, "the second site counts in its verdict");
     } finally {
-        process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+        process.env.MRONION_DATA_DIR = join(scratch, "data");
     }
 });
 
 test("second site, opted in: no new gap test for the candidate's pattern (TFP-195; TFP-203: the gap already has the candidate as its test)", { skip: needsChromium }, async () => {
     await optIn(siteB.origin, "claude-code");
-    process.env.TESTFORGE_GAP_LIMIT = "1";
+    process.env.MRONION_GAP_LIMIT = "1";
     const body = await generate(siteB.origin);
-    delete process.env.TESTFORGE_GAP_LIMIT;
+    delete process.env.MRONION_GAP_LIMIT;
     const candidate = (await loadCandidate(candidateId))!;
     // TFP-203: the Standard run before bound the candidate as the gap's test, so it isn't on the gap list at all.
     assert.equal(body.siteSuite.gapTests!.candidates!.matched, 0);
@@ -255,7 +255,7 @@ test("binding: a bare __PAGE__ gets the quoted path, one inside a string the pat
 });
 
 test("one pattern from two sites is one candidate; a rejected one is kept, never bound, never proposed again (TFP-195)", async () => {
-    process.env.TESTFORGE_DATA_DIR = join(scratch, "pool-only");
+    process.env.MRONION_DATA_DIR = join(scratch, "pool-only");
     const pattern = patternOf("link", "Privacy Policy [link]");
     const base = { pattern, body: "await page.goto('__PAGE__');\nawait expect(__LOCATOR__).toBeVisible();", gate: "read-only" as const, technique: "error guessing", writer: "claude-code", costUsd: 0.01 };
     const first = await addToPool({ ...base, sources: [{ origin: "http://a.test", page: "/", at: "t1" }] });
@@ -271,5 +271,5 @@ test("one pattern from two sites is one candidate; a rejected one is kept, never
     assert.equal(pool[0].reason, "checks a third-party link");
     assert.equal(matchingCandidate(pool, pattern), null, "never bound");
     assert.equal(poolHas(pool, pattern), true, "so never proposed again");
-    process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+    process.env.MRONION_DATA_DIR = join(scratch, "data");
 });

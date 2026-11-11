@@ -1,4 +1,4 @@
-name: TestForge CodeQL config
+name: Mr Onion CodeQL config
 # benchmarks/ and examples/ are frozen evidence (generated suites, run
 # output), never edited; comparisons/ is generated and gitignored.
 paths-ignore:

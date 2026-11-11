@@ -20,9 +20,9 @@ const WRITES = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 export function refusalOf(method: string, headers: Headers): string | null {
     const host = headers.get("host") ?? "";
     const hostname = host.replace(/:\d+$/, "").toLowerCase();
-    if (!LOOPBACK.has(hostname)) return `refused: the Host "${host}" isn't this machine (TestForge answers only on localhost, 127.0.0.1 or [::1])`;
+    if (!LOOPBACK.has(hostname)) return `refused: the Host "${host}" isn't this machine (Mr Onion answers only on localhost, 127.0.0.1 or [::1])`;
     const origin = headers.get("origin");
-    if (origin !== null && origin.toLowerCase() !== `http://${host.toLowerCase()}`) return `refused: the request comes from another origin (${origin}); TestForge's API answers only its own pages`;
+    if (origin !== null && origin.toLowerCase() !== `http://${host.toLowerCase()}`) return `refused: the request comes from another origin (${origin}); Mr Onion's API answers only its own pages`;
     if (WRITES.has(method.toUpperCase())) {
         const type = (headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
         if (type !== "application/json") return `refused: a ${method.toUpperCase()} must be Content-Type: application/json (it was ${type ? `"${type}"` : "missing"})`;

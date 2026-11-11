@@ -2,16 +2,16 @@ import { createServer, type Server } from "node:http";
 
 // Phase 20: a small real site with a real cookie login, for exercising
 // authenticated runs. Test-only values - never real credentials. They are
-// handed to the TestForge server under test through playwright.regression.
-// config.ts's webServer.env (the only way a credential reaches TestForge is
+// handed to the Mr Onion server under test through playwright.regression.
+// config.ts's webServer.env (the only way a credential reaches Mr Onion is
 // an environment variable), and read here by the specs that need to know
 // what the right and wrong values are.
 export const AUTH_FIXTURE_PORT = 4397;
 export const AUTH_FIXTURE_URL = `http://127.0.0.1:${AUTH_FIXTURE_PORT}`;
 
-export const AUTH_FIXTURE_USER_ENV = "TESTFORGE_TEST_LOGIN_USER";
-export const AUTH_FIXTURE_PASS_ENV = "TESTFORGE_TEST_LOGIN_PASS";
-export const AUTH_FIXTURE_WRONG_PASS_ENV = "TESTFORGE_TEST_LOGIN_WRONG_PASS";
+export const AUTH_FIXTURE_USER_ENV = "MRONION_TEST_LOGIN_USER";
+export const AUTH_FIXTURE_PASS_ENV = "MRONION_TEST_LOGIN_PASS";
+export const AUTH_FIXTURE_WRONG_PASS_ENV = "MRONION_TEST_LOGIN_WRONG_PASS";
 
 export const AUTH_FIXTURE_USER = "fixture-user";
 export const AUTH_FIXTURE_PASS = "Fixture-Pass-7391-zq";
@@ -24,7 +24,7 @@ export const AUTH_FIXTURE_ENV = {
 };
 
 // The session token the fixture issues. Specs also grep for it: it must not
-// leak into anything TestForge hands back either (TFP-094).
+// leak into anything Mr Onion hands back either (TFP-094).
 export const AUTH_FIXTURE_SESSION = `fixture-session-${Math.random().toString(36).slice(2)}-${Date.now()}`;
 
 // Like the real target the-internet.herokuapp.com (a Rack app): a session is

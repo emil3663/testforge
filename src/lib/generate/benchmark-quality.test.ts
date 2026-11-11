@@ -78,7 +78,7 @@ test("hasCategorySignal: an area with no defined trait is null, not a pass", () 
 const { withBaseUrl } = await import("./benchmark-quality.ts");
 const { findTypeErrors } = await import("./validate.ts");
 
-test("withBaseUrl: runs a model suite as TestForge does, with the site as the base for relative URLs", () => {
+test("withBaseUrl: runs a model suite as Mr Onion does, with the site as the base for relative URLs", () => {
     const code = "import { test, expect } from '@playwright/test';\ntest('a', async ({ page }) => { await page.goto('/login'); });\n";
     const run = withBaseUrl(code, "http://127.0.0.1:4410");
     assert.equal(run.split("\n")[1], "test.use({ baseURL: 'http://127.0.0.1:4410' });", "right after the imports");

@@ -20,8 +20,8 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import { randomUUID } from "node:crypto";
 
-const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-jobs-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+const scratchRoot = mkdtempSync(join(tmpdir(), "mr-onion-jobs-test-"));
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { createEmptyProgress, finalizeRunJob } = await import("./jobs.ts");
 // Every module is loaded here, before the first test() is registered: on
@@ -200,7 +200,7 @@ test("a Standard run's report and saved record carry nothing new", async () => {
 function gatedReport() {
     const skipped = (id: string, gate: string, reason: string) => ({ id, title: `${id}: t`, tests: [{ projectName: "chromium", status: "skipped", annotations: [{ type: "gate", description: gate }, { type: "skip", description: reason }], results: [{ duration: 0, retry: 0, errors: [] }] }] });
     return JSON.stringify({
-        suites: [{ title: "s.spec.ts", specs: [], suites: [{ title: "Functional Coverage", suites: [], specs: [skipped("TFFU-001", "interactive", "interactive journey test: it only runs when TESTFORGE_INTERACTIVE=1 is set for the run"), skipped("TFFU-002", "active", "attack-shaped input: needs the ownership confirmation, not built yet")] }] }],
+        suites: [{ title: "s.spec.ts", specs: [], suites: [{ title: "Functional Coverage", suites: [], specs: [skipped("TFFU-001", "interactive", "interactive journey test: it only runs when MRONION_INTERACTIVE=1 is set for the run"), skipped("TFFU-002", "active", "attack-shaped input: needs the ownership confirmation, not built yet")] }] }],
         errors: [],
         stats: { duration: 5, expected: 0, unexpected: 0, flaky: 0, skipped: 2 },
     });
@@ -220,10 +220,10 @@ test("the per-gate Not run count uses the run's interactive setting (TFP-146)", 
 // Phase 35 TFP-135 (Decision 5): a failing local-model test changes no verdict.
 test("a Comprehensive run whose only failure is a local-model test is saved as passed, the failure shown as needing review", async () => {
     const runMode = normalizeRunMode({ kind: "comprehensive", area: "accessibility" });
-    const job = makeJob({ runMode, workerCount: 1, selectedPractices: ["accessibility"], contentProfile: null, generation: { generatedBy: "template+ollama", model: "testforge-qwen7b:latest", gates: [] } });
+    const job = makeJob({ runMode, workerCount: 1, selectedPractices: ["accessibility"], contentProfile: null, generation: { generatedBy: "template+ollama", model: "mr-onion-qwen7b:latest", gates: [] } });
     const report = JSON.parse(passingReport("/"));
     report.suites.push({
-        title: "Local model (testforge-qwen7b:latest)",
+        title: "Local model (mr-onion-qwen7b:latest)",
         specs: [{ id: "m", title: "the home page greets the user by name", tests: [{ projectName: "chromium", status: "unexpected", results: [{ duration: 5, retry: 0, errors: [{ message: "Error: the greeting: expected 'Welcome back, Ada'" }] }] }] }],
         suites: [],
     });

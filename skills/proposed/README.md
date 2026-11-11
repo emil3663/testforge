@@ -105,7 +105,7 @@ Neither of us has read it. This is from the publisher's listing, not the book.
 - **One DORA claim is marked `[unverified]`** — that the 2025 research retired
   the Elite/High/Medium/Low tiers for team archetypes. Secondary sources say so;
   dora.dev's own 2025 material is gated and it couldn't be confirmed.
-- **Most of the runtime set doesn't apply to a local-only tool.** TestForge
+- **Most of the runtime set doesn't apply to a local-only tool.** Mr Onion
   isn't deployed, so SLOs, incident command, on-call, data integrity and
   cascading-failure work have little to bite on here. They're included because
   the ask was the whole set, not because all of it fits.

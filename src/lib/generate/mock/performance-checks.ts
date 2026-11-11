@@ -1,6 +1,6 @@
 // TFP-115 (Phase 34, Decision 2): read-only performance checks that need no
 // target-specific knowledge. Budgets are deliberately loose - they are
-// measured from wherever TestForge runs, over that machine's network, so a
+// measured from wherever Mr Onion runs, over that machine's network, so a
 // tight budget on an arbitrary site gives flaky results people learn to
 // ignore. Each fails only on a clear problem, and every failure says what was
 // measured, what the budget is and what it means, and names the culprit.

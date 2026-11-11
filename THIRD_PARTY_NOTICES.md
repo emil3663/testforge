@@ -1,6 +1,6 @@
 # Third-party notices
 
-TestForge's own code is under the MIT License (`LICENSE`). The spelling check
+Mr Onion's own code is under the MIT License (`LICENSE`). The spelling check
 (TFP-187, `src/lib/generate/mock/spelling.ts`) uses three packages whose
 licences ask that their notices travel with any copy of the software, so
 they are reproduced here in full, as each package ships them.

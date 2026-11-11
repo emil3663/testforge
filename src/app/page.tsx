@@ -327,7 +327,7 @@ export default function Home() {
                         </svg>
                     </div>
                     <div>
-                        <div className="text-lg font-semibold tracking-tight">TestForge</div>
+                        <div className="text-lg font-semibold tracking-tight">Mr Onion</div>
                         <div className="text-xs text-zinc-500">
                             AI-native test creation with structured quality reporting
                         </div>

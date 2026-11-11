@@ -31,7 +31,7 @@ with TFP-222 before Phase 39's TFP-155.
      and independently verified 2026-10-27**
      (`benchmarks/2026-10-27-d26-wsl/`). The run-time baseline comes from
      Gate D's re-measurement.
-**Then, before item 2: Phase 47, TestForge in a target's CI pipeline**
+**Then, before item 2: Phase 47, Mr Onion in a target's CI pipeline**
 (added 2026-10-27, Emil: after Phase 39, before Phase 43; numbered here
 without renumbering the items below, which the tables' Order columns cite).
 - Standard, read-only, against an app the CI job starts on `localhost`;
@@ -49,7 +49,7 @@ without renumbering the items below, which the tables' Order columns cite).
    - Saved with the site: exact hosts, contact email, 90-day expiry,
      active and load ticks.
    - It lifts Phase 39's caps.
-   - With a run's `TESTFORGE_ACTIVE` switch on, it opens the active gate
+   - With a run's `MRONION_ACTIVE` switch on, it opens the active gate
      and the script-payload test runs again.
    - Uncovered runs still run, with their active tests Not run.
    - Tickets TFP-218 to TFP-221.
@@ -79,14 +79,14 @@ without renumbering the items below, which the tables' Order columns cite).
      inconclusive, with a confidence score and a threshold below which a
      person decides.
    - Calibrated on the labelled failures.
-9. **D27: TestForge measured against QA My App and Playwright's Test Agents.**
+9. **D27: Mr Onion measured against QA My App and Playwright's Test Agents.**
    - A comparison benchmark on the local Toolshop copies, run once
      Standard is complete (after D3 and D19).
    - Scored with TFP-154's rule against the answer key.
-   - Every TestForge miss is tagged "planned in Dx" or "not planned".
+   - Every Mr Onion miss is tagged "planned in Dx" or "not planned".
      Only the unplanned ones become work, and they can reorder the
      Comprehensive and scenario steps that follow.
-10. **D28: a security sweep of TestForge's model-code paths.**
+10. **D28: a security sweep of Mr Onion's model-code paths.**
    - Zone by zone, each finding proven by a failing test.
    - Covers the gap writer, candidates and bound candidates,
      TFP-202's code check and stripped environment.
@@ -127,7 +127,7 @@ still to write.
 - R6 is done (2026-10-20): `r6-skills-relook-2026-10-20.md`, tickets
   TFP-236 to TFP-239, built with R4. D12 and D20 are settled there.
 
-**Standing rule (Emil, 2026-10-19):** any site TestForge hosts locally
+**Standing rule (Emil, 2026-10-19):** any site Mr Onion hosts locally
 under Docker keeps its code in WSL's Linux filesystem, not in a Windows
 folder mounted into Docker. See D26.
 
@@ -145,7 +145,7 @@ not the whole app** (Emil, 2026-10-20).
   selection), the template check shows which other sections' output moved.
   Those sections are run too, and nothing more.
 - **Full Standard evidence comes once, after D3.** Either a single full run
-  on both copies, or D27's TestForge side, which is a full Standard run on
+  on both copies, or D27's Mr Onion side, which is a full Standard run on
   both copies anyway. The choice is made when D3 closes.
 - **Run time:** each set's run-time cost is measured from its section run and
   added to the margin (below). The full run confirms the total.
@@ -201,11 +201,11 @@ Statuses:
 | # | Item | Source | Emil (2026-10-19) | Status | Order | Waits on |
 | --- | --- | --- | --- | --- | --- | --- |
 | D26 | The local Toolshop copies move into WSL's Linux filesystem, with the README's start timings corrected | Emil, 2026-10-19, from TFP-211's slow with-bugs start (about 6 min, composer once 10.5 min) | Wanted, after Phase 39; and the rule for every locally hosted site | **Built 2026-10-27, awaiting verification** (`benchmarks/2026-10-27-d26-wsl/`) | Moved into Phase 39 by Gate D's ruling 3 (2026-10-26), before the re-measurement | Phase 39 complete: the move also speeds up the Toolshop's API, so mid-phase it would shift the run times Phase 39 compares. What it covers is below |
-| D27 | A comparison benchmark: TestForge against the "QA My App" plugin (Anthropic Directory, community) and Playwright's Test Agents (planner, generator, healer; added 2026-11-02) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside TestForge | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
-| D28 | A security sweep of TestForge's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
+| D27 | A comparison benchmark: Mr Onion against the "QA My App" plugin (Anthropic Directory, community) and Playwright's Test Agents (planner, generator, healer; added 2026-11-02) on the local Toolshop copies | Emil, 2026-10-20 | Wanted: use outside testing tools as yardsticks, not inside Mr Onion | **Planned** | 8, after D3 and D19, once Standard is complete (Emil, 2026-10-20: earlier, it would mostly point at work already planned) | D26 (both tools run on the WSL setup), D1 to D3, D19. What it covers is below |
+| D28 | A security sweep of Mr Onion's own model-code paths, with the "Verified Security Sweep" plugin (Anthropic Directory, community) or an equivalent review | Emil, 2026-10-20 | Wanted, before the sandbox is built | **Planned** | 9, after D19, before Phase 45 | Nothing; it informs Phase 45's design. What it covers is below |
 | D29 | A retention policy for saved runs and their evidence | Emil, 2026-10-21, after 278 MB of leftover run folders were cleared | Wanted: stop cluttering with records and evidence nobody opens | **Planned** | 4, straight after Phase 46 | Phase 46 (the action belongs on its screens). What it covers is below |
 | D30 | A solo performance pass, so real sites without the ownership confirmation still get performance judged | Emil, 2026-10-21, after TFP-157's ruling that timed checks are Not run under the request cap | Wanted | **Planned**, with D3 | 7, with D3 | TFP-157 (Phase 39). What it covers is below |
-| D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for TestForge's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
+| D25 | A summary email after a run against a site, to the tester's inbox, with the way back to the full report | Emil, 2026-10-19, with TFP-217 (the same for Mr Onion's own nightly CI) | Wanted: a quick view for whoever is in charge of testing that site | **To plan** | Not set | A decision record of its own. It is most useful with D5's scheduled runs. The record decides the questions below |
 
 | D31 | Active and interactive gates against deployed URLs in CI (TFP-249) | Phase 47, deferred (2026-10-27) | Wanted, after Phase 43 | **Planned** | After Phase 43 | Phase 43, TFP-248 |
 | D32 | An npm package for the CI runner | Phase 47 Decision 8 (2026-10-27) | Deferred: the image pins Chromium, npm wouldn't | Open | - | TFP-247 |
@@ -216,11 +216,11 @@ Statuses:
 | D37 | The stale re-check's re-runs judged for cap starvation (it has no timing reporter, so a reused test it re-runs on a capped host keeps its re-run result) | Phase 39 ruling 4 amended (2026-10-28) | Deferred: rare path, documented as a known limitation | Open | - | TFP-264 |
 | D38 | "Comprehensive" becomes "Break Me" once more areas have Comprehensive sets: UI, report and docs wording | Emil, 2026-10-28 | Wanted, when more areas are built | Open | - | More Comprehensive areas (D4, D7) |
 | D39 | A new application name (many "testforge" repos exist): repo, package, `testforge-skills` plugin, data folder (`%LOCALAPPDATA%\TestForge`, one-time move), `TESTFORGE_*` settings, test-ID prefixes, `TFP-` prefix, `testforgeapp@gmail.com` | Emil, 2026-10-28; **proposed name "Mr Onion" (Emil, 2026-10-30)** | Wanted. Tagline "Mr Onion: peel back every layer" (Standard the first layer, "Break Me" the core). Ruled out: "Mr Pickles" (Cucumber's "pickles", the Pickles docs tool, a TV brand), "Señor Onion" (could read as a caricature; the ñ breaks technical names), "Allium" (JUXT's spec language with a Claude Code plugin; Alumnium, an AI testing tool), "Tearjerker", "Core Sample", "Shallot" (owner's preference) | **Locked → Phase 48** (Emil, 2026-11-08): `phase-48-rename-to-mr-onion-decision-record.md`. Test-ID and `TFP-` prefixes stay; the mailbox is D44. Nothing is ever created again as `emil3663/testforge`, so the old URL keeps redirecting (Phase 48 Decision 10) | Phase 48, after Phase 47's TFP-246, before TFP-247 | Phase 48 merged (TFP-281) |
-| D40 | An image a later check's own action brings in (a lazy-loaded image it scrolls to) charged to that check, not to the test that loaded the page, so a check the cap starved that way is Not run, not Failed | Phase 39 rulings on `70a0ad3`, item 2 (2026-10-28) | Deferred: a known limitation, [#16](https://github.com/emil3663/testforge/issues/16) | Open | - | TFP-264 |
+| D40 | An image a later check's own action brings in (a lazy-loaded image it scrolls to) charged to that check, not to the test that loaded the page, so a check the cap starved that way is Not run, not Failed | Phase 39 rulings on `70a0ad3`, item 2 (2026-10-28) | Deferred: a known limitation, [#16](https://github.com/emil3663/mr-onion/issues/16) | Open | - | TFP-264 |
 | D41 | Runs that really go through a proxy: the browser using it (Playwright's `proxy` option) and the lowercase variable names (`http_proxy`, `https_proxy`, `no_proxy`); TFP-209 only passes the uppercase names through | TFP-209's verification (2026-11-02) | Deferred, decided with Phase 47 (CI runners behind a corporate proxy) | Open | With Phase 47 | Phase 47's record |
 | D42 | A small System One decision model (Jev first; others benchmarked against it) as a fallback when the deterministic rules can't settle which Standard tests apply: page type, a form's purpose, which APG widget a control is, whether a library test fits a component | Emil, 2026-11-04, revisiting Martin's System One pointer from Phase 34 (only the typed-verdict pattern was adopted then, in TFP-119) | Wanted, with the reasoning below; Jev because most people he has spoken to use it, with a benchmark of the others at the time; packaging looked at closer to the time, with its pros and cons | Open | With D2, when its widget recognition is designed | D2; the labelled set below. What it covers is below |
 | D43 | Ending the child-side double setting names: saved site-suite units and library entries that check `TESTFORGE_*` names are regenerated or rewritten, so runs stop setting both names | Phase 48 Decision 8 (2026-11-08) | Deferred: until then every run sets both names | Open | Not before 1.0's removal ticket, and not part of it | Phase 48 merged; the 1.0 record |
-| D44 | A Mr Onion mailbox in place of `testforgeapp@gmail.com` and its `+ci` and `+<site>` aliases, if one is wanted | Phase 48 Decision 4 (2026-11-08) | Deferred: the old mailbox stays; the nightly's sender name becomes "Mr Onion nightly" | Open | - | Phase 48 merged |
+| D44 | A Mr Onion mailbox in place of `testforgeapp@gmail.com` and its `+ci` and `+<site>` aliases, if one is wanted | Phase 48 Decision 4 (2026-11-08) | Deferred: the old mailbox stays; the nightly's sender name becomes "Mr Onion nightly"; the nightly's `TESTFORGE_SMTP_PASSWORD` secret keeps its name until this lands (Phase 48 Decision 9, amended 2026-11-08) | Open | - | Phase 48 merged |
 
 **D39, before the name is committed (2026-10-30).** "Mr Onion" is the
 proposed name. First checks: no software, app, GitHub project or testing tool
@@ -335,7 +335,7 @@ page.
 ## Explanations Emil asked for
 
 **D8, confirming once.** Proposal for the design:
-- Save the confirmation with the site, in TestForge's local data next to
+- Save the confirmation with the site, in Mr Onion's local data next to
   Phase 42's site suite, not with each run. It records:
   - the hosts it covers;
   - which gates it allows (interactive, active, load testing);
@@ -354,7 +354,7 @@ page.
 Triage (Emil, 2026-10-19): the proposal stands, with these calls:
 - **What it unlocks:** the active gate; load testing, as its own tick; and
   lifting Phase 39's worker and request caps.
-  - The interactive gate stays as it is, on `TESTFORGE_INTERACTIVE=1` with
+  - The interactive gate stays as it is, on `MRONION_INTERACTIVE=1` with
     no confirmation (Phase 38 Decision 1).
 - **Expiry:** 90 days by default. The tester may pick another expiry up to
   1 year, and can withdraw it at any time.
@@ -427,7 +427,7 @@ inconclusive.
   Gate B (TFP-178), and R1's 5 false link failures.
 - It's what would have flagged those 5 before a person had to.
 
-**D20, skills at run time.** TestForge's own app reads none of the skills
+**D20, skills at run time.** Mr Onion's own app reads none of the skills
 under `skills/`. Phase 36 asked whether some should become rules the app
 applies, for example:
 - `honest-coverage`'s "what a green run leaves unknown" added to every
@@ -435,12 +435,12 @@ applies, for example:
 - `dont-stub-what-you-prove` run as a check on generated suites.
 
 "Proving the skills" is Martin's idea: test each skill against cases with
-known answers, as TestForge is tested.
+known answers, as Mr Onion is tested.
 
-**D25, what its decision record has to settle.** TFP-217 emails TestForge's
+**D25, what its decision record has to settle.** TFP-217 emails Mr Onion's
 own CI result from GitHub. A site run is different: it runs in the app, on
 the tester's machine.
-- **Credentials:** TestForge is local-only (Phase 16). The SMTP sign-in
+- **Credentials:** Mr Onion is local-only (Phase 16). The SMTP sign-in
   lives on the tester's machine, as an environment variable, as Phase 20's
   login credentials do. It is never saved with a run.
 - **Recipient:** an address set per site.
@@ -504,22 +504,22 @@ recommends keeping bind-mounted code in the WSL filesystem on Windows.
   predates the bug-80 wait (2026-10-13); with-bugs now takes 3 to 10
   minutes. Corrected with the move, with the new numbers.
 
-*The rule from now on* applies to every site TestForge hosts locally under
+*The rule from now on* applies to every site Mr Onion hosts locally under
 Docker, such as the-internet's local copy (Phase 39, TFP-158) and the
 practice sites (`practice-site-targets-2026-10-19.md`). Its code lives in
 WSL's Linux filesystem from the start.
 
 **D27, the comparison benchmark.**
 
-*Why:* TestForge's goal is to find every issue on a site. A comparable tool
-run on the same target, with the same answer key, shows what TestForge
+*Why:* Mr Onion's goal is to find every issue on a site. A comparable tool
+run on the same target, with the same answer key, shows what Mr Onion
 misses and what it finds that the other doesn't. That is measured, not
 claimed.
 
-*Not inside TestForge:* outside tools are yardsticks only. A third-party
+*Not inside Mr Onion:* outside tools are yardsticks only. A third-party
 plugin in a run would bring someone else's judgement into the verdict, an
 update cycle Emil doesn't control, and licensing questions. Most of these
-plugins also work from source code, while TestForge tests from the outside.
+plugins also work from source code, while Mr Onion tests from the outside.
 
 *When (Emil, 2026-10-20):* once Standard is complete, after D3 and D19. Run
 at step 2 it would mostly point at Standard sets not yet written. Run at the
@@ -531,7 +531,7 @@ very end it could no longer change the order.
 - **The score:** with TFP-154's rule against
   `benchmarks/2026-10-06-toolshop-known-bugs/answer-key.md`. Every
   difference between the two tools is listed, bug by bug.
-- **Each TestForge miss is tagged** against this register: "planned in Dx
+- **Each Mr Onion miss is tagged** against this register: "planned in Dx
   (or Phase N)" or "not planned". Only the unplanned misses become tickets or
   register items. They can reorder the Comprehensive and scenario steps that
   follow (Phase 44, D10, D7, D4).
@@ -542,7 +542,7 @@ very end it could no longer change the order.
 - **Before installing:** read its permissions. Its access is marked
   "privileged": its own agents and hooks run on Emil's machine, and it can
   file defects to GitHub, which is turned off for the benchmark.
-- **The output:** a short report under `benchmarks/`, with what TestForge
+- **The output:** a short report under `benchmarks/`, with what Mr Onion
   should take from it, ticketed or added here.
 - **Second yardstick (Emil, 2026-11-02): Playwright's Test Agents** —
   planner, generator and healer, in Playwright from 1.59 (Microsoft's
@@ -551,11 +551,11 @@ very end it could no longer change the order.
   Recorded as well:
   - **What the healer changes:** every test it repairs, and whether the
     repair made a failing test pass on with-bugs. A repair that turns a
-    real defect green is a defect hidden, not a test fixed; TestForge
+    real defect green is a defect hidden, not a test fixed; Mr Onion
     deliberately reports a failure that survives regeneration (RUN-30), so
-    a difference there is a design choice to show, not a TestForge miss.
-  - **Against TestForge's reuse:** the healer is the nearest outside match
-    to TestForge's stale-test regeneration (Phase 42), so the report
+    a difference there is a design choice to show, not a Mr Onion miss.
+  - **Against Mr Onion's reuse:** the healer is the nearest outside match
+    to Mr Onion's stale-test regeneration (Phase 42), so the report
     compares the two directly.
   - **Not permanent:** a one-off comparison when Standard is complete;
     repeated only at a milestone (for example before 1.0), never a gate.
@@ -594,7 +594,7 @@ before Phase 45 contains it and Phase 44 puts it to real use.
   failures carries videos and traces: two exceed 100 MB, the largest
   131 MB.
 - Many are development and benchmark runs nobody reopens.
-- A tester using TestForge daily meets the same growth.
+- A tester using Mr Onion daily meets the same growth.
 - (The 278 MB cleared from `.playwright-runs` the same day was a different
   thing: the evidence folders of runs never saved, none of the 505 a saved
   run's id, and loose run files from before TFP-222's run folders. Its
@@ -611,7 +611,7 @@ before Phase 45 contains it and Phase 44 puts it to real use.
   run list, showing what it would remove before removing it. And whether it
   also runs automatically.
 - **Where the record lives:** `runs/` sits in the repo folder (gitignored).
-  Phase 42's data folder (`TESTFORGE_DATA_DIR`) is where it belongs for a
+  Phase 42's data folder (`MRONION_DATA_DIR`) is where it belongs for a
   tester's install.
 
 **D30, the solo performance pass.**

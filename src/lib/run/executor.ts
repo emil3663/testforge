@@ -16,6 +16,7 @@ import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder, removeStaleRunFo
 import { removeOrphanedArtifactFolders } from "@/lib/run/persistence";
 import { recheckSiteSuiteAfterRun } from "@/lib/run/stale-recheck";
 import { buildTimingReporterSource, TIMING_FILE_ENV_VAR } from "@/lib/run/timing";
+import { underBothNames } from "@/lib/settings";
 import type { RawTiming } from "@/lib/run/timing";
 import { STANDARD_RUN } from "@/lib/comprehensive/run-mode";
 import { splitSuite } from "@/lib/run/split";
@@ -32,9 +33,9 @@ export type TestAuditMode = "fast" | "deep";
 const RUN_TIMEOUT_GRACE_MS = 15_000;
 
 export function buildProgressReporterSource() {
-    return `class TestForgeProgressReporter {
+    return `class MrOnionProgressReporter {
   emit(event) {
-    process.stdout.write('TESTFORGE_PROGRESS ' + JSON.stringify(event) + '\\n');
+    process.stdout.write('MRONION_PROGRESS ' + JSON.stringify(event) + '\\n');
   }
 
   onBegin(config, suite) {
@@ -51,7 +52,7 @@ export function buildProgressReporterSource() {
   }
 }
 
-module.exports = TestForgeProgressReporter;
+module.exports = MrOnionProgressReporter;
 `;
 }
 
@@ -225,7 +226,7 @@ export async function startRunJob(
         result: null,
     };
 
-    // Phase 42 (TFP-202): only what the run needs, never TestForge's own environment (keys, tokens,
+    // Phase 42 (TFP-202): only what the run needs, never Mr Onion's own environment (keys, tokens,
     // settings) - a run can hold tests a model wrote (gap tests, candidates, promoted entries).
     const childEnv = runEnv({
         // Always set, never inherited: skipped-by-default interactive tests
@@ -270,7 +271,7 @@ export async function startRunJob(
         ],
         {
             cwd: process.cwd(),
-            env: { ...childEnv, PLAYWRIGHT_JSON_OUTPUT_FILE: pass.report, [TIMING_FILE_ENV_VAR]: pass.timing },
+            env: { ...childEnv, ...underBothNames({ PLAYWRIGHT_JSON_OUTPUT_FILE: pass.report, [TIMING_FILE_ENV_VAR]: pass.timing }) },
             windowsHide: true,
             stdio: ["ignore", "pipe", "pipe"],
         }
@@ -312,14 +313,14 @@ export async function startRunJob(
         if (job.status === "running" && child && child.exitCode === null) {
             job.cancellationRequested = true;
             job.outputChunks.push(
-                `Run timed out after ${Math.round(runTimeout / 1000)}s and TestForge requested a graceful stop.\n`
+                `Run timed out after ${Math.round(runTimeout / 1000)}s and Mr Onion requested a graceful stop.\n`
             );
             child.kill("SIGINT");
 
             forceStopTimer = setTimeout(() => {
                 if (job.status === "running" && child.exitCode === null) {
                     child.kill("SIGTERM");
-                    job.outputChunks.push("Playwright did not stop in time, so TestForge forced termination.\n");
+                    job.outputChunks.push("Playwright did not stop in time, so Mr Onion forced termination.\n");
                 }
             }, RUN_TIMEOUT_GRACE_MS);
         }

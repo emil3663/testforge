@@ -49,7 +49,7 @@ export function gapFillSkipReason(model: string) {
  * full with interactive tests off, and nothing in it is checked for a submit.
  * When the run's areas include security it sits at the active gate instead,
  * as the local model's Comprehensive security scenarios do: a model's
- * security tests are expected to send script-shaped input (TestForge's own
+ * security tests are expected to send script-shaped input (Mr Onion's own
  * quality check looks for it), and Decision 1 puts that at the active gate.
  */
 export function openAiGate(areas: readonly string[]): TestGate {

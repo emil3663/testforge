@@ -1,5 +1,5 @@
 /**
- * Phase 39 (TFP-157, Decision 10): copied into a capped run's folder as `testforge-request-cap.ts`, and imported by
+ * Phase 39 (TFP-157, Decision 10): copied into a capped run's folder as `mr-onion-request-cap.ts`, and imported by
  * its units in place of `@playwright/test` (src/lib/run/request-cap.ts). Never imported by the app.
  *
  * It is `@playwright/test` with four fixtures wrapped, so every request a test makes to the site waits for a slot from
@@ -7,8 +7,8 @@
  * - `context`: a route on each test's context (its page loads, their resources and `page.request`);
  * - `browser`: a context a test opens itself (`browser.newContext()`) gets the same route;
  * - `request`: the API requests a test sends (`request.get` and the rest);
- * - an automatic fixture: a timed check (its title in TESTFORGE_NOT_JUDGED_TITLES) is Not run, with the reason
- *   (TESTFORGE_NOT_JUDGED_REASON), as
+ * - an automatic fixture: a timed check (its title in MRONION_NOT_JUDGED_TITLES) is Not run, with the reason
+ *   (MRONION_NOT_JUDGED_REASON), as
  *   a page load slowed by the cap measures the cap, not the site (owner decision, 2026-10-21).
  * - another (TFP-264, ruling 4 amended, 2026-10-28): each test records how long the cap held it up (the time at least
  *   one of its own requests waited for a slot) in a `request-cap-wait` annotation, and a test that failed or timed out
@@ -24,11 +24,11 @@ import type { APIRequestContext, Browser, BrowserContext, Frame, Request } from 
 
 export * from "@playwright/test";
 
-const SLOT_URL = process.env.TESTFORGE_REQUEST_CAP_URL ?? "";
-const TOKEN = process.env.TESTFORGE_REQUEST_CAP_TOKEN ?? "";
-const DOMAIN = process.env.TESTFORGE_REQUEST_CAP_DOMAIN ?? "";
-const NOT_JUDGED = (JSON.parse(process.env.TESTFORGE_NOT_JUDGED_TITLES ?? "[]") as string[]).map((source) => new RegExp(source));
-const NOT_JUDGED_REASON = process.env.TESTFORGE_NOT_JUDGED_REASON ?? "not judged under the request cap";
+const SLOT_URL = process.env.MRONION_REQUEST_CAP_URL ?? "";
+const TOKEN = process.env.MRONION_REQUEST_CAP_TOKEN ?? "";
+const DOMAIN = process.env.MRONION_REQUEST_CAP_DOMAIN ?? "";
+const NOT_JUDGED = (JSON.parse(process.env.MRONION_NOT_JUDGED_TITLES ?? "[]") as string[]).map((source) => new RegExp(source));
+const NOT_JUDGED_REASON = process.env.MRONION_NOT_JUDGED_REASON ?? "not judged under the request cap";
 
 /** As countsAgainstCap in host-limits.ts. */
 function counts(url: string): boolean {
@@ -43,7 +43,7 @@ function counts(url: string): boolean {
     return DOMAIN === "" || hostname === DOMAIN || hostname.endsWith(`.${DOMAIN}`);
 }
 
-const HEADERS = { "x-testforge-cap-token": TOKEN };
+const HEADERS = { "x-mr-onion-cap-token": TOKEN };
 
 /** As REQUEST_CAP_WAIT_ANNOTATION and REQUEST_CAP_WAITS_ANNOTATION in src/lib/report/execution.ts. */
 const WAIT_ANNOTATION = "request-cap-wait";
@@ -66,7 +66,7 @@ const DEFAULT_ASSERTION_WAIT_MS = 5000;
 // waiting during the step that failed. Only real waiting counts: a request the slot server queued (its answer says so,
 // as REQUEST_CAP_QUEUED_HEADER in request-cap.ts), one given up while queued, and one still waiting as the test ends.
 // A slot that was free at once is not waiting, however few ms its fetch took.
-const QUEUED_HEADER = "x-testforge-cap-queued";
+const QUEUED_HEADER = "x-mr-onion-cap-queued";
 /** Playwright's resource types for what a page's HTML pulls in as it is parsed. */
 const PARSER_LOADED = new Set(["image", "stylesheet", "script", "font", "media", "texttrack"]);
 let currentTest = 0;
@@ -210,8 +210,8 @@ async function capContext(context: BrowserContext, baseURL: string | undefined) 
     capRequests(context.request, baseURL);
 }
 
-export const test = base.extend<{ testforgeNotJudged: void; testforgeCapWait: void }, { browser: Browser }>({
-    testforgeCapWait: [async ({}, provide, testInfo) => {
+export const test = base.extend<{ mrOnionNotJudged: void; mrOnionCapWait: void }, { browser: Browser }>({
+    mrOnionCapWait: [async ({}, provide, testInfo) => {
         startTest();
         await provide();
         if (!SLOT_URL) return;
@@ -239,7 +239,7 @@ export const test = base.extend<{ testforgeNotJudged: void; testforgeCapWait: vo
         capRequests(request, baseURL);
         await provide(request);
     },
-    testforgeNotJudged: [async ({}, provide, testInfo) => {
+    mrOnionNotJudged: [async ({}, provide, testInfo) => {
         testInfo.skip(NOT_JUDGED.some((pattern) => pattern.test(testInfo.title)), NOT_JUDGED_REASON);
         await provide();
     }, { auto: true }],

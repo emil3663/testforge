@@ -8,7 +8,7 @@
 //   the request guard (src/lib/generate/read-only-guard.ts), which aborts
 //   anything else and fails the test as a guard breach.
 // - interactive: submitting forms with valid or harmlessly invalid data. Runs
-//   only with TESTFORGE_INTERACTIVE=1 (Phase 19 Decision 2, unchanged).
+//   only with MRONION_INTERACTIVE=1 (Phase 19 Decision 2, unchanged).
 // - active: attack-shaped input, lockout and rate-limit probing, load testing.
 //   Runs only after Phase 35 Decision 8's typed ownership confirmation, which
 //   is not built, so it is always closed (Decision 6).

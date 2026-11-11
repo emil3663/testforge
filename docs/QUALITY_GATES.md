@@ -87,7 +87,7 @@ The gates run in this order, in `src/lib/generate/local-generation.ts`:
 
 | Gate (as recorded) | What it rejects | Code | `fallbackReason` | Introduced | Test plan |
 | --- | --- | --- | --- | --- | --- |
-| time budget | No answer within `TESTFORGE_OLLAMA_TIMEOUT_MS` (default 180 s) | `ollamaTimeoutMs`, `local-generation.ts` | `timeout` | Phase 30 (TFP-105) | GEN-24 |
+| time budget | No answer within `MRONION_OLLAMA_TIMEOUT_MS` (default 180 s) | `ollamaTimeoutMs`, `local-generation.ts` | `timeout` | Phase 30 (TFP-105) | GEN-24 |
 | type check | Any TypeScript error against the project's Playwright types | `findTypeErrors`, `validate.ts` | `invalid_output` | Phase 30 (TFP-103 follow-up) | GEN-26 |
 | unawaited assertions | A web-first assertion that is never awaited, so it never runs | `findUnawaitedAssertions`, `validate.ts` | `unawaited_assertion` | Phase 33 (TFP-110) | GEN-31 |
 | promise to plain matcher | `expect(<Promise>)` followed by a matcher that doesn't retry. `.resolves` and `.rejects` are exempt. | `findPromisesToPlainMatchers`, `validate.ts` | `promise_to_plain_matcher` | Phase 37 Decision 2 (TFP-129) | GEN-56 |
@@ -133,7 +133,7 @@ The gates catch failures that are mechanical. Quality is judged by reading.
   the known exception.
 - **A Dependabot pull request is merged only when it is measured like any
   other change** (TFP-273, `.github/dependabot.yml`). PR Validation (lint,
-  build, smoke) and CodeQL pass on it; checked out locally after `npm ci`,
+  the old-name check, build, smoke) and CodeQL pass on it; checked out locally after `npm ci`,
   `npm run test:unit` and the regression suite (`npm run test:regression`,
   which CI runs only by hand) pass, with their counts in the merge commit.
   A failure is either explained there, with the output, or the pull request
@@ -147,7 +147,7 @@ The gates catch failures that are mechanical. Quality is judged by reading.
   isn't proposed at all (it needs a decision record). What each
   held-back update waits on is the watch list in
   `docs/decisions/dependency-upkeep-2026-11-08.md`.
-- **Form-submitting tests run only with `TESTFORGE_INTERACTIVE=1`** (GEN-44).
+- **Form-submitting tests run only with `MRONION_INTERACTIVE=1`** (GEN-44).
 - **A healthy real site doesn't turn red because of the template's own
   mistakes** (Phase 36 Decision 1, GEN-50). Every false failure found goes
   into the labelled failure set.

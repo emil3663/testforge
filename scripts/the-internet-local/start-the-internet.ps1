@@ -24,8 +24,8 @@ $ErrorActionPreference = "Continue"
 # The upstream commit the local copy runs, recorded so runs are reproducible.
 $PinnedCommit = "92ce1d11f7f78b3c86665f64a238b19aab29d7aa"
 $Upstream = "https://github.com/saucelabs/the-internet.git"
-$Image = "testforge/the-internet:$($PinnedCommit.Substring(0, 7))"
-$Container = "testforge-the-internet"
+$Image = "mr-onion/the-internet:$($PinnedCommit.Substring(0, 7))"
+$Container = "mr-onion-the-internet"
 $AppUrl = "http://localhost:7080"
 
 docker info --format "{{.ServerVersion}}" 2>$null | Out-Null

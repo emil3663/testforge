@@ -20,7 +20,7 @@ description: >
 
 ## Why this is a skill and not just "use browser_snapshot"
 
-A 2026 spike (TestForge's TFP-036, full writeup at
+A 2026 spike (Mr Onion's TFP-036, full writeup at
 `skills/INTROSPECT_CRAWL_SPIKE.md` if you have that repo open) checked this
 directly against Playwright MCP's real, complete 73-tool list rather than
 assuming. The verdict, on both halves:
@@ -59,7 +59,7 @@ Don't run this on a single already-described page — that's
 There's no single tool call for this; drive it as an explicit loop using
 whatever navigation/evaluation tool you have (`browser_navigate` +
 `browser_evaluate`, or repeated `browser_snapshot` calls after navigating).
-The algorithm, taken directly from TestForge's own `crawl/route.ts`:
+The algorithm, taken directly from Mr Onion's own `crawl/route.ts`:
 
 1. Start a queue with one entry: the base URL, `discoveredFrom: null`.
 2. Pop the next queued URL. If already visited, skip it.

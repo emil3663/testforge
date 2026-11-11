@@ -20,9 +20,9 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-split-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-split-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { splitSuite, SERIAL_UNIT } = await import("./split.ts");
 const { parseTestUnits } = await import("../site-suites/units.ts");
@@ -32,6 +32,7 @@ const { normalizeContentRules, normalizeTestAuditMode } = await import("../gener
 const { buildComprehensiveSuite } = await import("../generate/comprehensive.ts");
 const { normalizeRunMode } = await import("../comprehensive/run-mode.ts");
 const { startRunJob } = await import("./executor.ts");
+const { checksInteractiveSwitch } = await import("./interactive.ts");
 const { waitForSavedRun } = await import("../../test-support/saved-run.ts");
 const { setMachineLimitForTests } = await import("./host-limits.ts");
 const { flattenSuites } = await import("../report/execution.ts");
@@ -201,8 +202,8 @@ test("in a real browser: Comprehensive security and accessibility on the fixture
             const code = buildComprehensiveSuite(fixture.origin, normalizeRunMode({ kind: "comprehensive", area }) as never, { covered: paths, notCovered: [], pageCap: 20 });
             const units = splitSuite(code);
             assert.equal(units.length, paths.length + (area === "security" ? 1 : 0), `${area}: ${units.map((unit) => unit.name).join(", ")}`);
-            const { report: oneFile } = await runPlaywrightSpec(code, `split-${area}-one-file`, ["--workers=1", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
-            const { report: split } = await runPlaywrightSpec(units, `split-${area}-units`, ["--workers=4", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+            const { report: oneFile } = await runPlaywrightSpec(code, `split-${area}-one-file`, ["--workers=1", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
+            const { report: split } = await runPlaywrightSpec(units, `split-${area}-units`, ["--workers=4", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
             assert.deepEqual(outcome(flattenSuites(split.suites ?? [])), outcome(flattenSuites(oneFile.suites ?? [])), `${area}: every test, the same area, page, status and findings`);
             // One report suite per unit file, and the units spread over more than one worker.
             assert.equal((split.suites ?? []).length, units.length, `${area}: a file per unit`);
@@ -228,7 +229,7 @@ test("in a real browser: the executor runs a Standard suite on the local fixture
         const areas = ["functional", "accessibility", "seo/content", "security", "usability"];
         const code = mockGenerate(fixture.origin, "Check the site.", areas as never, profile as never, normalizeContentRules({ paths }), normalizeTestAuditMode("fast"));
         const units = splitSuite(code);
-        const { report: oneFile } = await runPlaywrightSpec(code, "split-standard-one-file", ["--workers=1", "--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+        const { report: oneFile } = await runPlaywrightSpec(code, "split-standard-one-file", ["--workers=1", "--timeout=30000"], { MRONION_INTERACTIVE: "0" });
         const snapshot = await startRunJob(code, areas, "fast", fixture.origin, [], [], "Check the site.", profile as never);
         const job = await finished(snapshot.runId, 300_000);
         const report = job.result?.report;
@@ -280,4 +281,49 @@ test("in a real browser: with interactive tests on, the serial group runs after 
     } finally {
         await fixture.close();
     }
+});
+
+test("in a real browser: a unit saved by 0.2.0 checks TESTFORGE_INTERACTIVE; it is Not run when the run leaves interactive tests off, and runs when it turns them on (Phase 48 Decision 8, TFP-278)", { skip: needsChromium }, async () => {
+    // As 0.2.0's template wrote an interactive test, before the rename: the old setting name in its skip.
+    const saved = `import { test, expect } from '@playwright/test';
+test('a saved interactive test', { annotation: { type: 'gate', description: 'interactive' } }, async () => {
+  test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run');
+  expect(process.env.MRONION_INTERACTIVE).toBe('1');
+});
+`;
+    // The skip line alone, as 0.2.0 wrote it, names only the old setting: the UI still offers the interactive switch.
+    assert.ok(checksInteractiveSwitch(saved.split("\n").find((line) => line.includes("test.skip(")) ?? ""), "the UI offers the interactive switch for it");
+    const statuses = [];
+    for (const interactive of [false, true]) {
+        const snapshot = await startRunJob(saved, ["functional"], "fast", undefined, [], [], "a saved suite", null, interactive);
+        const job = await finished(snapshot.runId, 120_000);
+        statuses.push(job.result?.report?.execution.map((record: ExecutionRecord) => record.status).join(",") ?? job.result?.output);
+    }
+    assert.deepEqual(statuses, ["Not run", "Passed"]);
+});
+
+test("in a real browser: both passes get every setting the run sets under both names, the same value in each (Phase 48 Decision 8, TFP-276)", { skip: needsChromium }, async () => {
+    const twins = `const twins = () => {
+  for (const name of Object.keys(process.env).filter((name) => /^(MRONION|TESTFORGE)_/.test(name))) {
+    const twin = name.startsWith('MRONION_') ? 'TESTFORGE_' + name.slice(8) : 'MRONION_' + name.slice(10);
+    expect(process.env[twin], twin).toBe(process.env[name]);
+  }
+};`;
+    const code = `import { test, expect } from '@playwright/test';
+${twins}
+test('read-only pass', async () => {
+  twins();
+  expect(process.env.MRONION_TIMING_FILE).not.toMatch(/-serial\\.json$/);
+});
+test('serial pass', { annotation: { type: 'gate', description: 'interactive' } }, async () => {
+  test.skip(process.env.TESTFORGE_INTERACTIVE !== '1', 'interactive');
+  twins();
+  expect(process.env.MRONION_TIMING_FILE).toMatch(/-serial\\.json$/);
+});
+`;
+    assert.deepEqual(splitSuite(code).map((unit) => unit.kind), ["tests", "serial"]);
+    const snapshot = await startRunJob(code, ["functional"], "fast", undefined, [], [], "both names", null, true);
+    const job = await finished(snapshot.runId, 120_000);
+    const records = job.result?.report?.execution.map((record: ExecutionRecord) => `${record.title}: ${record.status}`);
+    assert.deepEqual(records, ["read-only pass: Passed", "serial pass: Passed"], job.result?.output);
 });

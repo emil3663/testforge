@@ -16,9 +16,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-version-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-version-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const { currentVersion } = await import("./version.ts");
@@ -54,15 +54,27 @@ test("the footer names the run's own stamp, without a commit where there's none,
     assert.match(buildVersionFooterHtml(undefined), /version not recorded/);
 });
 
+test("the footer names the product the run's version had: TestForge below 0.3.0, Mr Onion from it (Phase 48 Decision 7)", () => {
+    // Boundary values around 0.3.0, as a saved 0.2.x run and every later one are read by the same code.
+    assert.match(buildVersionFooterHtml({ version: "0.2.9", commit: null }), />TestForge 0\.2\.9</);
+    assert.match(buildVersionFooterHtml({ version: "0.3.0", commit: "abc1234" }), />Mr Onion 0\.3\.0 \(abc1234\)</);
+    assert.match(buildVersionFooterHtml({ version: "0.10.0", commit: null }), />Mr Onion 0\.10\.0</);
+    assert.match(buildVersionFooterHtml({ version: "1.0.0", commit: null }), />Mr Onion 1\.0\.0</);
+    // A version that can't be read could be either name's: it says neither.
+    assert.match(buildVersionFooterHtml({ version: "unknown", commit: null }), />version unknown</);
+    // An empty version is no stamp at all.
+    assert.match(buildVersionFooterHtml({ version: "", commit: null }), />TestForge version not recorded</);
+});
+
 test("a built server says what it was built from, whatever HEAD is now", (t) => {
     t.after(() => {
-        delete process.env.TESTFORGE_BUILD_VERSION;
-        delete process.env.TESTFORGE_BUILD_COMMIT;
+        delete process.env.MRONION_BUILD_VERSION;
+        delete process.env.MRONION_BUILD_COMMIT;
     });
-    process.env.TESTFORGE_BUILD_VERSION = "9.9.9";
-    process.env.TESTFORGE_BUILD_COMMIT = "abc1234";
+    process.env.MRONION_BUILD_VERSION = "9.9.9";
+    process.env.MRONION_BUILD_COMMIT = "abc1234";
     assert.deepEqual(currentVersion(), { version: "9.9.9", commit: "abc1234" });
-    process.env.TESTFORGE_BUILD_COMMIT = "";
+    process.env.MRONION_BUILD_COMMIT = "";
     assert.deepEqual(currentVersion(), { version: "9.9.9", commit: null });
 });
 
@@ -92,6 +104,8 @@ test("in a real browser: a fresh run's run.json and report carry the stamp", { s
     assert.deepEqual(record.producedBy, currentVersion());
     assert.deepEqual(record.result.report.producedBy, currentVersion());
     // The saved report's own last line, built from the record as the browser builds it.
+    // Phase 48 (TFP-279): from 0.3.0 the footer names Mr Onion (Decision 7).
     const { version, commit } = currentVersion();
-    assert.ok(buildResultHtmlDocument(record.result).includes(`>TestForge ${version} (${commit})</footer>`));
+    assert.match(version, /^0\.3\./);
+    assert.ok(buildResultHtmlDocument(record.result).includes(`>Mr Onion ${version} (${commit})</footer>`));
 });

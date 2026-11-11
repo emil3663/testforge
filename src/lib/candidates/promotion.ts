@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from "fs/promises";
 import { join, relative } from "path";
+import { setting } from "@/lib/settings";
 import { loadCandidate, loadPool, saveCandidate, type Candidate } from "./pool";
 
 /**
@@ -16,7 +17,7 @@ import { loadCandidate, loadPool, saveCandidate, type Candidate } from "./pool";
  * - Promotion is a library commit through Claude Code: `promoteApproved`
  *   writes each approved candidate, with its evidence, as an entry under
  *   src/lib/library/promoted/, and marks it promoted in the pool. Claude
- *   Code runs it and commits the entries, reviewed like any code. TestForge
+ *   Code runs it and commits the entries, reviewed like any code. Mr Onion
  *   never writes into the repo itself.
  */
 
@@ -138,10 +139,10 @@ export async function promoteApproved(libraryDir: string = join(process.cwd(), P
 
 /**
  * The library's promoted entries, as committed. TFP-204: generation reads them, so a file that can't be read or
- * parsed is skipped rather than failing every generation. `TESTFORGE_LIBRARY_PROMOTED_DIR` replaces the folder;
+ * parsed is skipped rather than failing every generation. `MRONION_LIBRARY_PROMOTED_DIR` replaces the folder;
  * tests point it at their own.
  */
-export async function loadPromotedEntries(libraryDir: string = process.env.TESTFORGE_LIBRARY_PROMOTED_DIR?.trim() || join(process.cwd(), PROMOTED_DIR)): Promise<PromotedEntry[]> {
+export async function loadPromotedEntries(libraryDir: string = setting("LIBRARY_PROMOTED_DIR")?.trim() || join(process.cwd(), PROMOTED_DIR)): Promise<PromotedEntry[]> {
     const names = (await readdir(libraryDir).catch(() => [] as string[])).filter((name) => name.endsWith(".json")).sort();
     const entries: PromotedEntry[] = [];
     for (const name of names) {

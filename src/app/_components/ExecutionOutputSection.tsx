@@ -41,7 +41,7 @@ export function ExecutionOutputSection({
                     <CollapsibleSection
                         title="Execution Output"
                         subtitle={result.runStatus === "cancelled"
-                            ? "The run was stopped before Playwright produced a structured report. TestForge preserved the latest available progress and raw console output."
+                            ? "The run was stopped before Playwright produced a structured report. Mr Onion preserved the latest available progress and raw console output."
                             : "Structured report data was not available for this run, so only the raw console output is shown."}
                         collapsed={isReportCollapsed}
                         onToggle={() => setIsReportCollapsed((value) => !value)}
@@ -118,7 +118,7 @@ export function ExecutionOutputSection({
                                         Execution detail
                                     </div>
                                     <div className="mt-2 text-sm text-zinc-500">
-                                        TestForge preserved the planned execution list and the latest known state for each test when the run stopped.
+                                        Mr Onion preserved the planned execution list and the latest known state for each test when the run stopped.
                                     </div>
                                     <FallbackExecutionTable progress={result.progress} />
                                 </div>

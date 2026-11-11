@@ -7,7 +7,7 @@
 
 /** Phase 42 (TFP-190, Decision 1): what a run reused from its site suite, regenerated and retired. */
 export interface SiteSuiteRecord {
-    /** Where the site suite is kept (TestForge's local data folder). */
+    /** Where the site suite is kept (Mr Onion's local data folder). */
     store: string;
     /** No suite was saved for this site and suite type before this run. */
     firstRun: boolean;

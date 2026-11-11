@@ -1,26 +1,26 @@
-# Setting up an automation account for authenticated TestForge runs
+# Setting up an automation account for authenticated Mr Onion runs
 
-TestForge can log in once at the start of a run and then start every test in
+Mr Onion can log in once at the start of a run and then start every test in
 that run already signed in, so the parts of your site that sit behind a login
 get tested too. It does that with **an account you provision for the purpose**
 — an *automation account* — not with anyone's real account. This page covers
 what that account should look like, why it needs four specific exemptions, and
-how to point TestForge at it.
+how to point Mr Onion at it.
 
 It is deliberately generic. Every identity provider and every site does these
-things differently, and TestForge cannot maintain steps for all of them. What
+things differently, and Mr Onion cannot maintain steps for all of them. What
 follows says **what the account has to be allowed to do**; how you configure
 that on your platform is yours to look up.
 
-> **Not covered:** TestForge does not discover how to log in. You tell it the
+> **Not covered:** Mr Onion does not discover how to log in. You tell it the
 > login page and the form's selectors once, and it drives that form. See
-> [What TestForge can and cannot log in to](#what-testforge-can-and-cannot-log-in-to).
+> [What Mr Onion can and cannot log in to](#what-mr-onion-can-and-cannot-log-in-to).
 
 ---
 
 ## What an automation account is
 
-A separate account, used only by TestForge, that exists so automated runs never
+A separate account, used only by Mr Onion, that exists so automated runs never
 need a person's credentials. The same pattern is used for Selenium and other
 test-automation accounts.
 
@@ -49,7 +49,7 @@ where the section says to.
 ### 1. Account lockout
 
 **The problem.** Most sites lock an account after several failed sign-ins.
-TestForge signs in once per run, but if the selectors, the password, or the
+Mr Onion signs in once per run, but if the selectors, the password, or the
 post-login check are wrong, *every run is another failed attempt* on the same
 account. A few misconfigured runs can lock it, and then every later run fails
 for a reason that has nothing to do with the config.
@@ -73,16 +73,16 @@ are fine.
 
 **What to set up.** Exempt the account — or the address the runs come from —
 from rate limiting, or raise the limit for it. Allow-listing the machine that
-runs TestForge is usually the simplest form of this.
+runs Mr Onion is usually the simplest form of this.
 
-**Compensate.** Because TestForge is a local tool, the source address is one
+**Compensate.** Because Mr Onion is a local tool, the source address is one
 you control; an allow-list scoped to it is a small exemption.
 
 ### 3. MFA interruption
 
 **The problem.** Multi-factor authentication puts a second step — a code, a
 push approval, a security key — between the password and the signed-in page.
-TestForge drives only a single username-and-password form and has no way to
+Mr Onion drives only a single username-and-password form and has no way to
 complete a second factor. With MFA on, the login lands on the challenge page
 instead of the signed-in page and the run stops with a named error (see
 [When the login fails](#when-the-login-fails)).
@@ -113,15 +113,15 @@ useful, as long as it does not block the run.
 
 ---
 
-## Pointing TestForge at the account
+## Pointing Mr Onion at the account
 
 ### 1. Put the credentials in environment variables
 
 Credentials are **never** typed into a request, a config file, or generated
-code. You give TestForge the **names** of two environment variables, and it
+code. You give Mr Onion the **names** of two environment variables, and it
 reads the values from its own environment when a run starts.
 
-Set them for the TestForge server process — in your local `.env` (see
+Set them for the Mr Onion server process — in your local `.env` (see
 [`.env.example`](../.env.example)) or in the shell that starts it. Names are
 upper-case letters, digits and underscores:
 
@@ -130,7 +130,7 @@ MYAPP_TEST_USER=automation@example.test
 MYAPP_TEST_PASS=<a long random password>
 ```
 
-Environment variables are the only credential source TestForge supports today.
+Environment variables are the only credential source Mr Onion supports today.
 There is no integration with a secret manager; that is a deliberate deferral,
 not an oversight.
 
@@ -161,7 +161,7 @@ If you fill in some of the login settings but not all, the run is not started
 signed out: the missing field is reported by name.
 
 At least one of `postLoginPath` / `postLoginSelector` is required. Without a
-signal that only exists when signed in, TestForge could not tell a failed login
+signal that only exists when signed in, Mr Onion could not tell a failed login
 from a successful one, and every test would silently run signed out. Use both
 for a stricter check.
 
@@ -185,7 +185,7 @@ If you call the API directly instead, this is the `login` part of the request bo
 
 ### 3. What happens during the run
 
-TestForge opens the login page in a fresh browser, fills the two fields,
+Mr Onion opens the login page in a fresh browser, fills the two fields,
 submits, and waits for your post-login check. If it passes, the resulting
 session is used by every test in that run; each test starts signed in without
 logging in itself. The login runs in the same kind of browser context the tests
@@ -201,7 +201,7 @@ accident. The response says why:
 | You see | It means |
 |---|---|
 | `Login config: "<field>" is required.` / `…unrecognized field "<field>"…` / `…must be the NAME of an environment variable in upper case…` / `…must be on the same origin…` / `Login config needs "postLoginPath" or "postLoginSelector"…` | The `login` block is malformed (HTTP 400). Nothing was attempted. |
-| `Login credentials are not available: environment variable <NAME> is not set (or is empty)…` | The variable you named is not set for the TestForge server (HTTP 422). Set it and restart the server. |
+| `Login credentials are not available: environment variable <NAME> is not set (or is empty)…` | The variable you named is not set for the Mr Onion server (HTTP 422). Set it and restart the server. |
 | `Login failed: could not open the login page <url>…` | The login page could not be reached (HTTP 422). |
 | `Login failed: the <username field / password field / submit button> (selector "<selector>") was not found on <url>. Check the login selectors.` | A selector matches nothing visible on the login page (HTTP 422). |
 | `Login failed: after submitting the login form the page ended on <path>, and … never appeared. Check the credentials (<VAR> / <VAR>) and the post-login settings.` | The form was submitted but the signed-in signal never showed up (HTTP 422). Wrong credentials, or an exemption above is missing — a locked account, a rate limit, an MFA challenge or a new-device check all look like this. The path it ended on is the clue: `/login` usually means bad credentials; a path like `/verify` or `/mfa` means a challenge. |
@@ -211,7 +211,7 @@ credential value.
 
 ---
 
-## What TestForge does with the credentials and the session
+## What Mr Onion does with the credentials and the session
 
 - The values are read from the environment when the run starts and used only
   to fill the login form.
@@ -229,13 +229,13 @@ Two things to know:
 - **Screenshots and videos are not scrubbed.** They are images, and they show
   whatever the signed-in page showed. Do not point an automation account at
   pages that display secrets.
-- The scrubbing removes what TestForge *knows* is secret — the credentials and
+- The scrubbing removes what Mr Onion *knows* is secret — the credentials and
   the session. It cannot know that a page displays something else sensitive.
   That is another reason for a least-privilege account and test data.
 
 ---
 
-## What TestForge can and cannot log in to
+## What Mr Onion can and cannot log in to
 
 Supported: a login form **on the site under test** with a username (or email)
 field, a password field and a submit button, all on one page.
@@ -250,7 +250,7 @@ Not supported:
   domain cannot be driven. If your site delegates login that way, you need a
   local sign-in path for the automation account.
 
-TestForge does not try to work out a login flow on its own; if a login does not
+Mr Onion does not try to work out a login flow on its own; if a login does not
 fit the above, that is a limit of the config-driven design.
 
 ---
@@ -263,6 +263,6 @@ fit the above, that is a limit of the config-driven design.
 - [ ] Exempt from **rate limiting** (or the runner's address is allow-listed).
 - [ ] Exempt from **MFA** — with the compensations above.
 - [ ] Exempt from **new-sign-in alerts and challenges**, with notifications going somewhere monitored.
-- [ ] Username and password set as environment variables for the TestForge server, under upper-case names.
+- [ ] Username and password set as environment variables for the Mr Onion server, under upper-case names.
 - [ ] A `login` block with the URL, the three selectors, the two variable *names*, and a `postLoginPath` or `postLoginSelector`.
 - [ ] Nothing about the account's credentials committed to the repo.

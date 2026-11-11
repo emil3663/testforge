@@ -6,7 +6,7 @@ const demoQaLinksUrl = "https://demoqa.com/links";
 const demoQaDescription = "Create a functional smoke test for the DemoQA homepage and verify visible navigation links are present and usable.";
 const demoQaLinksDescription = "Create link coverage for the DemoQA links page and verify new-tab links and API response links are classified correctly.";
 const localAppUrl = "http://127.0.0.1:3001";
-const localSeoDescription = "Create SEO and usability coverage for the TestForge landing page including metadata, heading structure, canonical signals, and crawler files.";
+const localSeoDescription = "Create SEO and usability coverage for the Mr Onion landing page including metadata, heading structure, canonical signals, and crawler files.";
 
 function getSection(page: Page, title: RegExp): Locator {
     return page.locator("section").filter({
@@ -16,7 +16,7 @@ function getSection(page: Page, title: RegExp): Locator {
 
 async function openHome(page: Page) {
     await page.goto("/");
-    await expect(page.locator("header").getByText("TestForge", { exact: true })).toBeVisible();
+    await expect(page.locator("header").getByText("Mr Onion", { exact: true })).toBeVisible();
 }
 
 async function fillCreationInputs(page: Page, baseUrl: string, description: string) {
@@ -45,7 +45,7 @@ async function runSuite(page: Page) {
     await expect(page.getByText("Release readiness at a glance")).toBeVisible({ timeout: 120_000 });
 }
 
-test.describe("TestForge regression coverage", () => {
+test.describe("Mr Onion regression coverage", () => {
     test("reports health and observability metadata", async ({ request }) => {
         const response = await request.get("/api/health");
 
@@ -63,7 +63,7 @@ test.describe("TestForge regression coverage", () => {
         };
 
         expect(payload.status).toBe("ok");
-        expect(payload.service).toBe("testforge-next");
+        expect(payload.service).toBe("mr-onion-next");
         // TFP-257: package.json's version, and the commit this runs from.
         expect(payload.version).toMatch(/^\d+\.\d+\.\d+$/);
         expect(payload.commit).toMatch(/^[0-9a-f]{7,}$/);
@@ -116,7 +116,7 @@ test.describe("TestForge regression coverage", () => {
         const generateResponse = await request.post("/api/generate", {
             data: {
                 baseUrl: localAppUrl,
-                description: "Create a functional smoke test for the TestForge landing page.",
+                description: "Create a functional smoke test for the Mr Onion landing page.",
                 selectedPractices: ["functional"],
                 auditMode: "fast",
             },
@@ -162,7 +162,7 @@ test.describe("TestForge regression coverage", () => {
         // downstream consumer had to assume every discovered element was
         // unconditionally visible - the exact assumption behind TFP-040's 7
         // confirmed false positives. This is a type-shape regression check,
-        // not a specific true/false case: testforge's own landing page has
+        // not a specific true/false case: Mr Onion's own landing page has
         // no naturally-hidden actionable element to assert against inside
         // this self-contained suite. The specific false case (#btnRecord,
         // #btnClearSession, #uploadImage, #btnStopRecord, #textInput,
@@ -190,7 +190,7 @@ test.describe("TestForge regression coverage", () => {
         // precisely TA-252's shape (a .tool-btn list with only a CSS .active
         // class, no ARIA state), which the generator's own Accessibility
         // Coverage test (TFAC-001) had no data to catch. Shape check here,
-        // same reasoning as the isVisible test above: testforge's own
+        // same reasoning as the isVisible test above: Mr Onion's own
         // landing page has no real toggle group. Verified live against
         // test-assist and recorded in this commit's message: the seven
         // .tool-btn elements are detected as one group (role "button",
@@ -230,7 +230,7 @@ test.describe("TestForge regression coverage", () => {
 
     test("introspect reports dragDropTargets as a well-shaped array", async ({ request }) => {
         // TFP-061: shape check only, same reasoning as the two tests above -
-        // testforge's own landing page has no real drag-and-drop target to
+        // Mr Onion's own landing page has no real drag-and-drop target to
         // populate this array with, so the meaningful assertion (does it
         // find test-assist's canvas, and only the canvas, not its
         // descendants) was verified live against test-assist and is
@@ -793,7 +793,7 @@ test.describe("TestForge regression coverage", () => {
     test("covers SEO metadata and crawler-facing files", async ({ page, request }) => {
         await openHome(page);
 
-        await expect(page).toHaveTitle(/TestForge/i);
+        await expect(page).toHaveTitle(/Mr Onion/i);
         await expect(page.getByRole("heading", { level: 1 })).toContainText("Generate Playwright test suites");
         await expect(page.locator('meta[name="description"]').first()).toHaveAttribute("content", /Playwright test suites|plain-English/i);
         const canonicalHref = await page.locator('link[rel="canonical"]').first().getAttribute("href");
@@ -812,7 +812,7 @@ test.describe("TestForge regression coverage", () => {
 
         const manifestResponse = await request.get("/manifest.webmanifest");
         expect(manifestResponse.ok()).toBeTruthy();
-        expect(await manifestResponse.text()).toContain("TestForge");
+        expect(await manifestResponse.text()).toContain("Mr Onion");
     });
 
     test("covers the creation inputs, generation mode, and inferred best-practice state", async ({ page }) => {
@@ -839,7 +839,7 @@ test.describe("TestForge regression coverage", () => {
 
     test("covers the discovered site pages section, crawl lifecycle, and page selection controls", async ({ page }) => {
         await openHome(page);
-        await fillCreationInputs(page, localAppUrl, "Create link coverage for the TestForge interface.");
+        await fillCreationInputs(page, localAppUrl, "Create link coverage for the Mr Onion interface.");
 
         const crawlSection = page.getByText("Discovered Site Pages").locator("..").locator("..");
         await page.getByRole("button", { name: "Crawl site" }).click();
@@ -1459,12 +1459,12 @@ test.describe("TestForge regression coverage", () => {
         await runSuite(page);
         const reportPopup = await popupPromise;
 
-        await expect(reportPopup.getByRole("heading", { name: "TestForge Report" })).toBeVisible({ timeout: 120_000 });
+        await expect(reportPopup.getByRole("heading", { name: "Mr Onion Report" })).toBeVisible({ timeout: 120_000 });
 
         const downloadPromise = page.waitForEvent("download", { timeout: 30_000 });
         await page.getByRole("button", { name: "Save report as HTML" }).click();
         const download = await downloadPromise;
-        expect(download.suggestedFilename()).toMatch(/testforge-report-.*\.html$/i);
+        expect(download.suggestedFilename()).toMatch(/mr-onion-report-.*\.html$/i);
         const downloadedHtmlPath = await download.path();
         expect(downloadedHtmlPath).toBeTruthy();
         const downloadedHtml = await readFile(downloadedHtmlPath ?? "", "utf8");
@@ -1517,7 +1517,7 @@ test.describe("TestForge regression coverage", () => {
             "",
             "test.use({ baseURL: 'http://127.0.0.1:3001' });",
             "",
-            "if (process.env.TESTFORGE_NEVER_SET === 'yes') {",
+            "if (process.env.MRONION_NEVER_SET === 'yes') {",
             "  test('declared, never collected', async () => { expect(1).toBe(1); });",
             "}",
         ].join("\n"));
@@ -1527,7 +1527,7 @@ test.describe("TestForge regression coverage", () => {
         const reportPopup = await popupPromise;
 
         await expect(page.getByText("Execution Output")).toBeVisible({ timeout: 120_000 });
-        await expect(reportPopup.getByRole("heading", { name: "TestForge Execution Output" })).toBeVisible({ timeout: 120_000 });
+        await expect(reportPopup.getByRole("heading", { name: "Mr Onion Execution Output" })).toBeVisible({ timeout: 120_000 });
         await expect(reportPopup.getByText("Structured report data was not available for this run, so only the raw console output is shown.")).toBeVisible({ timeout: 120_000 });
         await expect(reportPopup.getByText(/without executing any tests/i)).toBeVisible({ timeout: 120_000 });
     });

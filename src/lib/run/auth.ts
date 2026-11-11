@@ -9,7 +9,7 @@ import { secretsFromStorageState } from "./redact";
 //
 // The site owner supplies the login URL, the selectors, and the NAMES of the
 // environment variables holding the credentials (Decision 3: referenced by
-// name, never inlined). TestForge drives that login once, in Chromium, before
+// name, never inlined). Mr Onion drives that login once, in Chromium, before
 // the run's tests start, and every test in the run reuses the resulting
 // storageState (Decision 2). The state file lives in a per-run directory that
 // is deleted when the run's process ends (Decision 5: single-run only) and is
@@ -19,7 +19,7 @@ import { secretsFromStorageState } from "./redact";
 // The base playwright.config.ts reads this to set use.storageState. The
 // executor always sets it (to the state file's path, or deletes it), never
 // inherits it, so an ambient value can't authenticate a run that didn't ask.
-export const STORAGE_STATE_ENV_VAR = "TESTFORGE_STORAGE_STATE";
+export const STORAGE_STATE_ENV_VAR = "MRONION_STORAGE_STATE";
 
 const AUTH_DIR_PREFIX = "auth-";
 const NAVIGATION_TIMEOUT_MS = 30_000;
@@ -160,7 +160,7 @@ export function resolveCredentials(config: LoginConfig, env: Record<string, stri
         if (!env[name]) {
             throw new RunLoginError(
                 "credential-missing",
-                `Login credentials are not available: environment variable ${name} is not set (or is empty) for the TestForge server.`
+                `Login credentials are not available: environment variable ${name} is not set (or is empty) for the Mr Onion server.`
             );
         }
     }

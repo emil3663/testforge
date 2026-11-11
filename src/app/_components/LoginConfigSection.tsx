@@ -34,7 +34,7 @@ const GROUPS: { title: string; fields: LoginConfigField[] }[] = [
 // fields, under the same rules, as the `login` block of POST /api/run - and
 // nothing else. In particular it has no username or password field: the two
 // credential fields take the NAME of an environment variable set for the
-// TestForge server (Decision 3), never a value, so this section cannot become
+// Mr Onion server (Decision 3), never a value, so this section cannot become
 // a place to type a real password.
 export function LoginConfigSection({ loginInputs, setLoginInputs, loginProblem, isCollapsed, setIsCollapsed }: LoginConfigSectionProps) {
     const isConfigured = Object.values(loginInputs).some((value) => value.trim().length > 0);
@@ -49,7 +49,7 @@ export function LoginConfigSection({ loginInputs, setLoginInputs, loginProblem, 
             <div className="space-y-5">
                 <div className="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-xs leading-6 text-indigo-900">
                     <strong>Never type a password here.</strong> The credentials are read from environment variables
-                    set for the TestForge server (a local <span className="font-mono">.env</span>, or the shell that starts it); you
+                    set for the Mr Onion server (a local <span className="font-mono">.env</span>, or the shell that starts it); you
                     only give their <em>names</em>. Use a dedicated automation account with the four exemptions
                     (lockout, rate limiting, MFA, new-sign-in alerts) — see{" "}
                     <span className="font-mono">docs/AUTOMATED_ACCOUNT_SETUP.md</span> before configuring a login.

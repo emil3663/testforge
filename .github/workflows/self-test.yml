@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   smoke-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
@@ -37,7 +37,7 @@ jobs:
       - name: Run build
         run: npm run build
 
-      - name: Run TestForge smoke suite with Allure
+      - name: Run Mr Onion smoke suite with Allure
         run: npm run test:self:allure
 
       - name: Upload smoke Allure artifacts

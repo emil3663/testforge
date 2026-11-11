@@ -36,7 +36,7 @@ const needsChromium = await chromiumSkipReason();
 const CHECKS = "consistent|overlapping controls|every image|same components";
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `layout-unit-${label}`, ["--timeout=30000", "--workers=1", "--grep", CHECKS], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `layout-unit-${label}`, ["--timeout=30000", "--workers=1", "--grep", CHECKS], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 

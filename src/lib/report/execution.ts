@@ -357,7 +357,7 @@ export function flattenSuites(
     for (const suite of suites) {
         const nextLineage = suite.title ? [...lineage, suite.title] : lineage;
 
-        // Phase 34 (TFP-118): Option B's appended block, e.g. "Local model (testforge-qwen7b:latest)".
+        // Phase 34 (TFP-118): Option B's appended block, e.g. "Local model (mr-onion-qwen7b:latest)".
         const localModel = nextLineage.find((title) => title.startsWith(LOCAL_MODEL_SUITE_PREFIX))?.slice(LOCAL_MODEL_SUITE_PREFIX.length, -1) ?? null;
 
         for (const spec of suite.specs ?? []) {

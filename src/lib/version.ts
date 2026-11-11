@@ -2,20 +2,22 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ProducedBy } from "@/lib/report/produced-by-types";
+import { setting } from "./settings";
 
 /**
- * TFP-257: which TestForge this is. package.json's `version` is the one source of truth, and the commit comes from git,
- * so a saved report answers "which TestForge found this?" by itself. Server only: the report's HTML is also built in
+ * TFP-257: which Mr Onion this is. package.json's `version` is the one source of truth, and the commit comes from git,
+ * so a saved report answers "which Mr Onion found this?" by itself. Server only: the report's HTML is also built in
  * the browser, so a run carries this as data (producedBy), stamped when it starts.
  *
- * A built server says what it was built from (next.config.ts sets TESTFORGE_BUILD_* at `next build`): a pull under a
+ * A built server says what it was built from (next.config.ts sets MRONION_BUILD_* at `next build`): a pull under a
  * running `next start` changes HEAD, not the code running. Otherwise it's read on each call, so a dev server stays
  * right after a pull. A copy with no package.json or no git says so (the version "unknown", the commit null) rather
  * than failing a run, and a copy without a .git of its own doesn't report the commit of a repo it sits inside.
  */
 export function currentVersion(root = process.cwd()): ProducedBy {
-    if (process.env.TESTFORGE_BUILD_VERSION) {
-        return { version: process.env.TESTFORGE_BUILD_VERSION, commit: process.env.TESTFORGE_BUILD_COMMIT || null };
+    const builtVersion = setting("BUILD_VERSION");
+    if (builtVersion) {
+        return { version: builtVersion, commit: setting("BUILD_COMMIT") || null };
     }
     return { version: packageVersion(root), commit: gitCommit(root) };
 }

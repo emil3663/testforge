@@ -28,25 +28,22 @@ export const chatBodies: Array<{ model?: string; messages?: Array<{ role: string
 const ENV_KEYS = [
     "OPENAI_API_KEY",
     "OPENAI_BASE_URL",
-    "TESTFORGE_OPENAI_TIMEOUT_MS",
-    "TESTFORGE_OLLAMA_MODEL",
-    "TESTFORGE_OLLAMA_BASE_URL",
-    "TESTFORGE_OLLAMA_TIMEOUT_MS",
+    ...["OPENAI_TIMEOUT_MS", "OLLAMA_MODEL", "OLLAMA_BASE_URL", "OLLAMA_TIMEOUT_MS"].flatMap((name) => [`MRONION_${name}`, `TESTFORGE_${name}`]),
 ] as const;
 
 /**
  * Starts the fake server for the calling test file and resets state around
  * every test. Every test starts with all generation env vars cleared, so a
- * developer's own TESTFORGE_OLLAMA_MODEL or OPENAI_API_KEY can never route a
+ * developer's own MRONION_OLLAMA_MODEL (or its old name) or OPENAI_API_KEY can never route a
  * test down the wrong path; the originals are restored when the file ends.
  */
 export function installFakeServer() {
     const savedEnv = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
-    // Phase 42 (TFP-190): the route saves each site's suite in TestForge's data folder. Each
+    // Phase 42 (TFP-190): the route saves each site's suite in Mr Onion's data folder. Each
     // test file gets its own temporary one, so no test reads or writes the real folder.
-    const savedDataDir = process.env.TESTFORGE_DATA_DIR;
-    const dataDir = mkdtempSync(join(tmpdir(), "testforge-data-"));
-    process.env.TESTFORGE_DATA_DIR = dataDir;
+    const savedDataDir = process.env.MRONION_DATA_DIR;
+    const dataDir = mkdtempSync(join(tmpdir(), "mr-onion-data-"));
+    process.env.MRONION_DATA_DIR = dataDir;
 
     before(async () => {
         // Connection: close on every response, so the SDK never reuses a pooled
@@ -69,8 +66,8 @@ export function installFakeServer() {
             if (savedEnv[k] === undefined) delete process.env[k];
             else process.env[k] = savedEnv[k];
         }
-        if (savedDataDir === undefined) delete process.env.TESTFORGE_DATA_DIR;
-        else process.env.TESTFORGE_DATA_DIR = savedDataDir;
+        if (savedDataDir === undefined) delete process.env.MRONION_DATA_DIR;
+        else process.env.MRONION_DATA_DIR = savedDataDir;
         rmSync(dataDir, { recursive: true, force: true });
     });
 
@@ -142,5 +139,5 @@ export async function templateCode(): Promise<string> {
 export function useFake(timeoutMs?: number) {
     process.env.OPENAI_API_KEY = "sk-test-not-real";
     process.env.OPENAI_BASE_URL = baseUrl;
-    if (timeoutMs) process.env.TESTFORGE_OPENAI_TIMEOUT_MS = String(timeoutMs);
+    if (timeoutMs) process.env.MRONION_OPENAI_TIMEOUT_MS = String(timeoutMs);
 }

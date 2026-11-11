@@ -2,7 +2,7 @@
  * TFP-092: normalizeLoginConfig / resolveCredentials / removeStaleAuthDirs.
  *
  * The login driver itself needs a real browser and a real login page, so it
- * is covered end to end in tests/regression/testforge.auth.spec.ts. What is
+ * is covered end to end in tests/regression/mr-onion.auth.spec.ts. What is
  * checked here are the properties that must hold before any browser opens:
  * a config is valid or the run does not start, credentials are only ever
  * referenced by environment variable name, and a missing value is a named
@@ -122,7 +122,7 @@ test("a missing-credential error names the variable and never a value", () => {
 });
 
 test("stale per-run login state is swept, but a run still in progress keeps its own", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "testforge-auth-sweep-"));
+    const dir = mkdtempSync(join(tmpdir(), "mr-onion-auth-sweep-"));
 
     try {
         for (const name of ["auth-finished-run", "auth-live-run", "artifacts-unrelated"]) {

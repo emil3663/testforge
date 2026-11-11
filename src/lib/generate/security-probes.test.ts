@@ -31,7 +31,7 @@ const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts
 const needsChromium = await chromiumSkipReason();
 
 async function runSuite(code: string, label: string) {
-    const { report } = await runPlaywrightSpec(code, `security-probes-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", "known paths|guessable"], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `security-probes-unit-${label}`, ["--timeout=60000", "--workers=1", "--grep", "known paths|guessable"], { MRONION_INTERACTIVE: "0" });
     const json = report;
     return flattenSuites(json.suites ?? []).map((record) => ({ ...record, probe: JSON.stringify(json).match(/known paths: [^"]*/)?.[0] ?? "" }));
 }

@@ -20,10 +20,11 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
+import { setting } from "@/lib/settings";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-run-folders-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-run-folders-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { startRunJob } = await import("./executor.ts");
 const { runJobs } = await import("./jobs.ts");
@@ -73,7 +74,7 @@ async function finished(id: string, root: string, timeoutMs: number) {
     while (Date.now() < deadline) {
         const job = runJobs.get(id);
         // Before TFP-222 there was no run folder: the saved record is enough.
-        if (job?.result && existsSync(join(process.env.TESTFORGE_RUNS_ROOT!, id)) && !existsSync(join(root, `run-${id}`))) return job;
+        if (job?.result && existsSync(join(setting("RUNS_ROOT")!, id)) && !existsSync(join(root, `run-${id}`))) return job;
         await new Promise((resolve) => setTimeout(resolve, 250));
     }
     const job = runJobs.get(id);
@@ -121,7 +122,7 @@ function artifactFolder(root: string, id: string, ageMs: number) {
 
 /** A saved run's run.json, its evidence at `filePath`; `text` replaces the record. */
 function savedRun(id: string, filePath: string, text?: string) {
-    const dir = join(process.env.TESTFORGE_RUNS_ROOT!, id);
+    const dir = join(setting("RUNS_ROOT")!, id);
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, "run.json"), text ?? JSON.stringify({ runId: id, artifactFiles: { a: { filePath, fileName: "trace.zip", contentType: "application/zip" } } }));
 }
@@ -137,7 +138,7 @@ test("TFP-242 removed: an aged artifacts folder of a run that was never saved", 
 test("TFP-242 removed: an aged folder left behind by a saved run whose evidence moved out", async () => {
     const id = randomUUID();
     const dir = artifactFolder(sweepRoot, id, 2 * HOUR);
-    savedRun(id, join(process.env.TESTFORGE_RUNS_ROOT!, id, "evidence", "trace.zip"));
+    savedRun(id, join(setting("RUNS_ROOT")!, id, "evidence", "trace.zip"));
     await removeOrphanedArtifactFolders(sweepRoot, []);
     assert.equal(existsSync(dir), false);
 });

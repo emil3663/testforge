@@ -35,9 +35,9 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-host-limits-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-host-limits-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const { hostLimitsFor, machineWorkerLimit, setMachineLimitForTests, siteDomainOf, countsAgainstCap } = await import("./host-limits.ts");
 const { startRequestCap, withRequestCap, REQUEST_CAP_TOKEN_HEADER, REQUEST_CAP_QUEUED_HEADER } = await import("./request-cap.ts");
@@ -110,8 +110,8 @@ test("what counts against the cap: the site's host and every host under its doma
 test("a capped run's units import the cap's module in place of @playwright/test, with nothing else changed", () => {
     const unit = "import { test, expect } from '@playwright/test';\nimport type { Page } from \"@playwright/test\";\ntest('a', async ({ page }) => { await page.goto('/'); });\n";
     const root = join("x", "run-1");
-    assert.equal(withRequestCap(unit, root, root), "import { test, expect } from './testforge-request-cap';\nimport type { Page } from \"./testforge-request-cap\";\ntest('a', async ({ page }) => { await page.goto('/'); });\n");
-    assert.match(withRequestCap(unit, join(root, "serial"), root), /from '\.\.\/testforge-request-cap'/);
+    assert.equal(withRequestCap(unit, root, root), "import { test, expect } from './mr-onion-request-cap';\nimport type { Page } from \"./mr-onion-request-cap\";\ntest('a', async ({ page }) => { await page.goto('/'); });\n");
+    assert.match(withRequestCap(unit, join(root, "serial"), root), /from '\.\.\/mr-onion-request-cap'/);
 });
 
 /**

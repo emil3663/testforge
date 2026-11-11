@@ -1,7 +1,7 @@
 import type { ContentProfile } from "@/lib/generate/mock/types";
 
 // Phase 35 (TFP-132, Decision 2): a Comprehensive run covers every page
-// TestForge knows on the site, up to a cap, and names the ones it left out.
+// Mr Onion knows on the site, up to a cap, and names the ones it left out.
 // Pages come from introspection (the profile's pages, inspected) and from the
 // crawl's site graph (pages only known as another page's link target), in
 // that order, same origin only. With no page data at all, the run covers "/".

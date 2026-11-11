@@ -1,5 +1,5 @@
 /**
- * Phase 47 (TFP-245): `testforge run`'s exit codes for a run that couldn't run, its verdict on one that did, and the
+ * Phase 47 (TFP-245): `mr-onion run`'s exit codes for a run that couldn't run, its verdict on one that did, and the
  * suite it generates: the UI's, byte for byte, for the same page data.
  *
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/cli/run.test.ts
@@ -35,7 +35,7 @@ test("TFP-272: a browser that can't start is reported, and the run exits 2", asy
     const lines: string[] = [];
     const code = await runTarget(buildConfig({}, { url: "http://localhost:4200" }, tmpdir()), (line) => lines.push(line));
     assert.equal(code, EXIT.couldNotRun);
-    assert.ok(lines.includes("TestForge couldn't run: The crawl failed: The browser for the crawl could not start: browserType.launch: Executable doesn't exist at /no/such/chrome"), lines.join("\n"));
+    assert.ok(lines.includes("Mr Onion couldn't run: The crawl failed: The browser for the crawl could not start: browserType.launch: Executable doesn't exist at /no/such/chrome"), lines.join("\n"));
 });
 
 test("an unreachable URL: the crawl finds no page, exit 2, never 0", async () => {
@@ -43,7 +43,7 @@ test("an unreachable URL: the crawl finds no page, exit 2, never 0", async () =>
     const lines: string[] = [];
     const code = await runTarget(buildConfig({}, { url: `http://127.0.0.1:${port}` }, tmpdir()), (line) => lines.push(line));
     assert.equal(code, EXIT.couldNotRun);
-    assert.match(lines.at(-1) ?? "", new RegExp(`^TestForge couldn't run: The crawl found no page at http://127\\.0\\.0\\.1:${port} \\(Could not crawl .*ERR_CONNECTION_REFUSED`));
+    assert.match(lines.at(-1) ?? "", new RegExp(`^Mr Onion couldn't run: The crawl found no page at http://127\\.0\\.0\\.1:${port} \\(Could not crawl .*ERR_CONNECTION_REFUSED`));
 });
 
 test("Decision 7: a login value is redacted from every file in --out, page-data.json included", async (t) => {
@@ -111,21 +111,21 @@ test("for the same page data the CLI's request is the UI's, and its suite the ro
     assert.deepEqual(cliRequest, uiBody);
 
     // Each side in a data folder of its own: a site suite saved by one would be reused by the other.
-    const saved = { dataDir: process.env.TESTFORGE_DATA_DIR, key: process.env.OPENAI_API_KEY, local: process.env.TESTFORGE_OLLAMA_MODEL };
+    const saved = { dataDir: process.env.MRONION_DATA_DIR, key: process.env.OPENAI_API_KEY, local: process.env.MRONION_OLLAMA_MODEL };
     delete process.env.OPENAI_API_KEY;
-    delete process.env.TESTFORGE_OLLAMA_MODEL;
+    delete process.env.MRONION_OLLAMA_MODEL;
     const [uiData, cliData] = [await mkdtemp(join(tmpdir(), "tfp245-ui-")), await mkdtemp(join(tmpdir(), "tfp245-cli-"))];
     t.after(async () => {
-        for (const [key, value] of [["TESTFORGE_DATA_DIR", saved.dataDir], ["OPENAI_API_KEY", saved.key], ["TESTFORGE_OLLAMA_MODEL", saved.local]] as const) {
+        for (const [key, value] of [["MRONION_DATA_DIR", saved.dataDir], ["OPENAI_API_KEY", saved.key], ["MRONION_OLLAMA_MODEL", saved.local]] as const) {
             if (value === undefined) delete process.env[key];
             else process.env[key] = value;
         }
         await Promise.all([uiData, cliData].map((dir) => rm(dir, { recursive: true, force: true })));
     });
 
-    process.env.TESTFORGE_DATA_DIR = uiData;
+    process.env.MRONION_DATA_DIR = uiData;
     const ui = await (await POST(new NextRequest(new URL("http://localhost/api/generate"), { method: "POST", body: JSON.stringify(uiBody), headers: { "content-type": "application/json" } }))).json();
-    process.env.TESTFORGE_DATA_DIR = cliData;
+    process.env.MRONION_DATA_DIR = cliData;
     const cli = await generateSuite(cliRequest, { models: false });
 
     assert.ok(cli.ok);

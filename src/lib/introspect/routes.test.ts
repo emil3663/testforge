@@ -45,7 +45,7 @@ test("Decision 1 and 2: a fragment starting with / or !/ is a route, named as th
 });
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `hash-routes-unit-${label}`, ["--workers=1"], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `hash-routes-unit-${label}`, ["--workers=1"], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 
@@ -94,12 +94,12 @@ test("in a real browser: routes are internal links, anchors stay anchors; a link
 
         const bulk = one(/link health: linked routes draw a page, not the app's "not found" view/);
         assert.equal(bulk.status, "Failed", JSON.stringify(bulk));
-        assert.match(bulk.rawMessage, /linked routes that show the app's "not found" view: \/spa#\/chainsaws \(draws the same as \/spa#\/testforge-missing-[a-z0-9]+, a route that cannot exist\)/);
+        assert.match(bulk.rawMessage, /linked routes that show the app's "not found" view: \/spa#\/chainsaws \(draws the same as \/spa#\/mr-onion-missing-[a-z0-9]+, a route that cannot exist\)/);
         assert.doesNotMatch(bulk.rawMessage.split("\n")[0], /contact|products|legacy/, "only the missing route");
 
         const chainsaws = one(/navigation link health: Chainsaws/);
         assert.equal(chainsaws.status, "Failed");
-        assert.match(chainsaws.rawMessage, /\/spa#\/chainsaws draws the same as \/spa#\/testforge-missing-[a-z0-9]+, a route that cannot exist: the app shows its "not found" view/);
+        assert.match(chainsaws.rawMessage, /\/spa#\/chainsaws draws the same as \/spa#\/mr-onion-missing-[a-z0-9]+, a route that cannot exist: the app shows its "not found" view/);
         for (const name of ["Contact", "Products", "Legacy", "First product"]) {
             assert.equal(one(new RegExp(`navigation link health: ${name}`)).status, "Passed", name);
         }

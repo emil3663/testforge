@@ -25,11 +25,11 @@ concurrency:
 env:
   # The template baseline: the last commit whose template output was checked and accepted. A change that
   # alters the output on purpose updates it here, in its own commit, as TFP-205's baseline was (63de663).
-  TEMPLATE_BASELINE: 06489fd
+  TEMPLATE_BASELINE: 48604dc
 
 jobs:
   unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     outputs:
       summary: ${{ steps.counts.outputs.summary }}
@@ -76,7 +76,7 @@ jobs:
   # TFP-266: the app's own dependencies can't drift back unnoticed. Dev tooling isn't checked: it has advisories
   # `npm audit fix` can't clear (the commit that added this lists them).
   audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
@@ -95,7 +95,7 @@ jobs:
 
   # TFP-259: unused files, exports and dependencies; knip.jsonc says why each exception is there.
   dead-code:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:
@@ -115,7 +115,7 @@ jobs:
         run: npx knip
 
   template-unchanged:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     outputs:
       line: ${{ steps.check-line.outputs.line }}
@@ -155,7 +155,7 @@ jobs:
   issue:
     needs: [unit, audit, dead-code, template-unchanged]
     if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
@@ -193,7 +193,7 @@ jobs:
   notify:
     needs: [unit, audit, dead-code, template-unchanged, issue]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     steps:

@@ -21,7 +21,7 @@ import { parseTestUnits } from "@/lib/site-suites/units";
 import { SERIAL_UNIT } from "@/lib/run/split";
 
 /** Set on the run's Playwright process: where the timing reporter writes. Unset, it writes nothing. */
-export const TIMING_FILE_ENV_VAR = "TESTFORGE_TIMING_FILE";
+export const TIMING_FILE_ENV_VAR = "MRONION_TIMING_FILE";
 
 export type TimingStepKind = "goto" | "blank" | "settle" | "request" | "expect" | "other";
 
@@ -92,7 +92,7 @@ function inFixture(step) {
   return false;
 }
 
-class TestForgeTimingReporter {
+class MrOnionTimingReporter {
   constructor() {
     this.steps = new Map();
     this.tests = [];
@@ -138,7 +138,7 @@ class TestForgeTimingReporter {
   }
 }
 
-module.exports = TestForgeTimingReporter;
+module.exports = MrOnionTimingReporter;
 `;
 }
 
@@ -315,7 +315,8 @@ export function summarizeTiming(raw: RawTiming, options: { baseUrl?: string; pro
             reached = named ? [targetOf(named, options.baseUrl)] : [];
         }
         const set = targets.get(check) ?? new Set<string>();
-        for (const target of reached) if (target !== own && !target.includes("testforge-missing")) set.add(target);
+        // The missing-route probe, by its name before the rename (a saved suite keeps its text) and after.
+        for (const target of reached) if (target !== own && !/(?:mr-onion|testforge)-missing/.test(target)) set.add(target);
         targets.set(check, set);
         const spent = effort.get(check) ?? { tests: 0, loads: 0, requests: 0, ms: 0 };
         spent.tests++;

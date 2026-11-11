@@ -55,7 +55,7 @@ function counts(records: ExecutionRecord[]) {
 const attributes = (values: ReturnType<typeof counts>) =>
     `tests="${values.tests}" failures="${values.failures}" errors="${values.errors}" skipped="${values.skipped}" time="${values.time}"`;
 
-export function buildJUnit(report: Pick<RunReport, "execution">, name = "TestForge"): string {
+export function buildJUnit(report: Pick<RunReport, "execution">, name = "Mr Onion"): string {
     const records = [...report.execution].sort((left, right) => left.order - right.order);
     const suites = new Map<string, ExecutionRecord[]>();
     for (const record of records) {

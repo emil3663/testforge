@@ -22,7 +22,7 @@ function breakStorageInitScript(kind: StorageKind): string {
         return `() => {
       try {
         if (window.indexedDB) {
-          window.indexedDB.open = () => { throw new Error('storage entry point mocked to fail (TestForge TFP-086)'); };
+          window.indexedDB.open = () => { throw new Error('storage entry point mocked to fail (Mr Onion TFP-086)'); };
         }
       } catch (e) {}
     }`;
@@ -32,7 +32,7 @@ function breakStorageInitScript(kind: StorageKind): string {
       try {
         Object.defineProperty(window, '${kind}', {
           configurable: true,
-          get() { throw new Error('storage entry point mocked to fail (TestForge TFP-086)'); },
+          get() { throw new Error('storage entry point mocked to fail (Mr Onion TFP-086)'); },
         });
       } catch (e) {}
     }`;

@@ -2,12 +2,12 @@ import { expect, type Page, test } from "@playwright/test";
 
 const localAppUrl = "http://127.0.0.1:3001";
 const localSeoDescription =
-    "Create SEO and usability coverage for the TestForge landing page including metadata, heading structure, canonical signals, and report export behavior.";
+    "Create SEO and usability coverage for the Mr Onion landing page including metadata, heading structure, canonical signals, and report export behavior.";
 
 async function openHome(page: Page) {
     await page.goto("/");
 
-    await expect(page.locator("header").getByText("TestForge", { exact: true })).toBeVisible();
+    await expect(page.locator("header").getByText("Mr Onion", { exact: true })).toBeVisible();
     await expect(page.getByText("Test Suite Creation")).toBeVisible();
     await expect(
         page.getByRole("button", { name: /Generated Suite Review the generated Playwright code/i })
@@ -180,7 +180,7 @@ test("smoke: runs a generated suite and opens report popup", async ({ page }) =>
     if (reportPopup) {
         await expect(
             reportPopup.getByRole("heading", {
-                name: outcome === "structured" ? "TestForge Report" : "TestForge Execution Output",
+                name: outcome === "structured" ? "Mr Onion Report" : "Mr Onion Execution Output",
             })
         ).toBeVisible({ timeout: 120_000 });
 
@@ -207,6 +207,6 @@ test("smoke: exports HTML report after suite run", async ({ page }) => {
     const downloadPromise = page.waitForEvent("download", { timeout: 30_000 });
     await page.getByRole("button", { name: "Save report as HTML" }).click();
     const download = await downloadPromise;
-    expect(download.suggestedFilename()).toMatch(/testforge-report-.*\.html$/i);
+    expect(download.suggestedFilename()).toMatch(/mr-onion-report-.*\.html$/i);
     await expect(page.getByText(/^Error:/)).toHaveCount(0);
 });

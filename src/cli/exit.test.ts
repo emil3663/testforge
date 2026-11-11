@@ -32,5 +32,5 @@ test("an interrupt stops the servers it started before exiting 2, and a second o
 
     assert.equal(await portAnswers(port), false, "the server was stopped before the exit");
     assert.deepEqual(exits, [2]);
-    assert.deepEqual(lines, ["testforge: stopped by SIGINT; stopping the server(s) it started."]);
+    assert.deepEqual(lines, ["mr-onion: stopped by SIGINT; stopping the server(s) it started."]);
 });

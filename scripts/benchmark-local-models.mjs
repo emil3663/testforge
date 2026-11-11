@@ -6,7 +6,7 @@
 //   npm run benchmark:local -- --config C8 --probe-num-gpu 12-29   (record each step, then stop)
 //   npm run benchmark:local -- --config C8 --num-gpu <largest that loaded>
 //
-// Needs Ollama, a TestForge server (default http://127.0.0.1:3100, any build;
+// Needs Ollama, a Mr Onion server (default http://127.0.0.1:3100, any build;
 // it only runs suites) and the comparison fixture (`npm run comparison:fixture`,
 // http://127.0.0.1:4410). Close other GPU programs first.
 //
@@ -30,6 +30,7 @@ import { release } from "node:os";
 import { join } from "node:path";
 
 const { generateLocalSuite, withLocalRules, ollamaTimeoutMs } = await import("../src/lib/generate/local-generation.ts");
+const { setting } = await import("../src/lib/settings.ts");
 const { buildGapFillMessages } = await import("../src/lib/generate/messages.ts");
 const { scoreSuite, withBaseUrl } = await import("../src/lib/generate/benchmark-quality.ts");
 const { normalizeBaseUrl, normalizeContentProfile, normalizeContentRules, normalizeSelectedPractices, normalizeTestAuditMode } = await import("../src/lib/generate/normalize.ts");
@@ -89,7 +90,7 @@ if (config.base && !numCtx && !rerunRelative) {
 }
 const calls = Number(arg("calls", "3"));
 const server = arg("server", "http://127.0.0.1:3100");
-const ollamaHost = (process.env.TESTFORGE_OLLAMA_BASE_URL?.trim() || "http://localhost:11434/v1").replace(/\/v1\/?$/, "");
+const ollamaHost = (setting("OLLAMA_BASE_URL")?.trim() || "http://localhost:11434/v1").replace(/\/v1\/?$/, "");
 const date = arg("date", new Date().toISOString().slice(0, 10));
 const root = join("benchmarks", date);
 const outDir = join(root, configId);
@@ -280,7 +281,7 @@ function detected(clean, defect) {
     return defect.tests.some((t) => passedClean.has(t.title) && !PASS.has(t.status) && t.status !== "Not run" && t.status !== "Blocked");
 }
 
-/** One call on TestForge's path (generateLocalSuite, the route's own call and gates), scored and run. */
+/** One call on Mr Onion's path (generateLocalSuite, the route's own call and gates), scored and run. */
 async function measuredCall(testCase, index) {
     const { areas, messages } = request(testCase);
     const started = performance.now();
@@ -321,7 +322,7 @@ if (rerunRelative) {
         reruns.push(rerun);
         log(`${record.case} #${record.call}: clean ${record.cleanPassed ? "pass" : "FAIL"} -> ${rerun.cleanPassed ? "pass" : "FAIL"}${testCase.defect ? `, detected ${record.detected} -> ${rerun.detected}` : ""}`);
     }
-    writeFileSync(join(outDir, "rerun-with-base-url.json"), JSON.stringify({ reason: "suites run without the base URL TestForge gives them; see withBaseUrl", rerunAt: new Date().toISOString(), reruns }, null, 2));
+    writeFileSync(join(outDir, "rerun-with-base-url.json"), JSON.stringify({ reason: "suites run without the base URL Mr Onion gives them; see withBaseUrl", rerunAt: new Date().toISOString(), reruns }, null, 2));
     log(`${reruns.length} suite(s) re-run -> ${join(outDir, "rerun-with-base-url.json")}`);
     process.exit(0);
 }
@@ -356,7 +357,7 @@ const save = (finishedAt) =>
 // Call order. Ollama reuses its cached prompt when a request repeats the one
 // before it: measured in the first smoke test, a native call made straight
 // after the identical OpenAI-compatible call evaluated a 6202-token prompt in
-// 0.3 s. So each round makes every case's TestForge-path call, then every
+// 0.3 s. So each round makes every case's Mr Onion-path call, then every
 // case's native call. Every call then follows a *different* request - the
 // shared system-prompt prefix is cached, the request itself is not - the same
 // condition for both endpoints, and the steady state a real user sees.

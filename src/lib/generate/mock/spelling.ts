@@ -43,7 +43,7 @@ let tfSpellers: Promise<TfSpeller> | null = null;
 
 function tfSpeller(): Promise<TfSpeller> {
   tfSpellers ??= (async () => {
-    // Loaded by name, not imported at the top of the file, like the axe scan: the dictionaries are TestForge's own packages.
+    // Loaded by name, not imported at the top of the file, like the axe scan: the dictionaries are Mr Onion's own packages.
     const load = (name: string) => import(name) as Promise<{ default: unknown }>;
     const [spellerModule, usModule, gbModule] = await Promise.all([load('nspell'), load('dictionary-en'), load('dictionary-en-gb')]);
     type Speller = { correct: (word: string) => boolean; suggest: (word: string) => string[] };

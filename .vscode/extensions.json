@@ -1,6 +1,6 @@
 {
   "recommendations": [
-    // AI assistant — core to the TestForge workflow
+    // AI assistant — core to the Mr Onion workflow
     "GitHub.copilot",
     "GitHub.copilot-chat",
     // TypeScript / Next.js / quality

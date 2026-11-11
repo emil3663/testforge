@@ -73,7 +73,7 @@ function skippedSpec(annotations?: Array<{ type: string; description?: string }>
 }
 
 test("flattenSuites: a test that skipped itself reports its own reason, not an interrupted run", () => {
-    const reason = "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
+    const reason = "database round trip: saves data through a form on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run";
     const [record] = flattenSuites(skippedSpec([{ type: "skip", description: reason }]));
     // Phase 34 Option C: a skip with a stated reason is "Not run", not "Blocked".
     assert.equal(record.status, "Not run");
@@ -185,7 +185,7 @@ test("flattenSuites: tests inside Option B's 'Local model (...)' block are label
                     specs: [{ id: "t1", title: "TFFU-001: loads", tests: [{ projectName: "chromium", status: "expected" as never, results: [{ duration: 1, retry: 0, errors: [], status: "passed" }] }] }],
                 },
                 {
-                    title: "Local model (testforge-qwen7b:latest)",
+                    title: "Local model (mr-onion-qwen7b:latest)",
                     specs: [],
                     suites: [
                         {
@@ -208,5 +208,5 @@ test("flattenSuites: tests inside Option B's 'Local model (...)' block are label
     assert.doesNotMatch(template.remarks, /local model/);
     assert.equal(local.generator, "local model");
     assert.equal(local.area, "Database");
-    assert.match(local.remarks, /Written by the local model \(testforge-qwen7b:latest\)\.$/);
+    assert.match(local.remarks, /Written by the local model \(mr-onion-qwen7b:latest\)\.$/);
 });

@@ -27,6 +27,24 @@ export function resolveOllamaModel(available: Iterable<string>, configured: stri
     return null;
 }
 
+/** Phase 48 (TFP-278, Decision 3): the tag `ollama/Modelfile.mr-onion-qwen7b` builds, and the one 0.2.x's built. */
+export const LOCAL_MODEL_TAG = "mr-onion-qwen7b";
+export const OLD_LOCAL_MODEL_TAG = "testforge-qwen7b";
+
+/**
+ * As resolveOllamaModel, and when the model asked for is the new tag and only the old one is built, the old one: a
+ * tester who built the model before the rename keeps local generation without a rebuild. `oldTag` says so, for the
+ * generation record (`ollama cp testforge-qwen7b mr-onion-qwen7b` gives it the new name).
+ */
+export function resolveLocalModel(available: Iterable<string>, configured: string): { model: string | null; oldTag: boolean } {
+    const ids = [...available];
+    const model = resolveOllamaModel(ids, configured);
+    const [name, tag] = configured.split(":");
+    if (model !== null || name !== LOCAL_MODEL_TAG) return { model, oldTag: false };
+    const old = resolveOllamaModel(ids, tag === undefined ? OLD_LOCAL_MODEL_TAG : `${OLD_LOCAL_MODEL_TAG}:${tag}`);
+    return { model: old, oldTag: old !== null };
+}
+
 /**
  * Removes a leading ```<lang> fence line and a trailing ``` line, each only
  * if present. Every local model spiked for Phase 30 wrapped its code in a

@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { JsonReport } from "../lib/report/types.ts";
 import { createRunFolder, removeRunFolder, removeStaleRunFolders, STALE_RUN_FOLDER_MS } from "../lib/run/run-folders.ts";
+import { underBothNames } from "../lib/settings.ts";
 
 /**
  * TFP-208: runs one generated spec through the Playwright CLI, as the real-browser unit tests do,
@@ -44,8 +45,11 @@ export async function runPlaywrightSpec(code: string | Array<{ name: string; cod
     const { dir: runDir, config } = await createRunFolder(RUNS_DIR, id, ", outputDir: './test-results'");
     const jsonFile = join(runDir, "report.json");
     for (const file of typeof code === "string" ? [{ name: `${name}.spec.ts`, code }] : code) await writeFile(join(runDir, file.name), file.code, "utf8");
-    const childEnv: NodeJS.ProcessEnv = { ...process.env, ...env, PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" };
-    for (const [key, value] of Object.entries(env)) if (value === undefined) delete childEnv[key];
+    // Phase 48 (TFP-278): a setting set or removed under both names, as a run's own children get it (Decision 8), so a
+    // developer's MRONION_INTERACTIVE can't switch on what a test turned off under the old name.
+    const set = Object.fromEntries(Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined));
+    const childEnv: NodeJS.ProcessEnv = { ...process.env, ...underBothNames(set), PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0" };
+    for (const [key, value] of Object.entries(env)) if (value === undefined) for (const name of Object.keys(underBothNames({ [key]: "" }))) delete childEnv[name];
     try {
         let stderr = "";
         const exit = await new Promise<string>((resolve, reject) => {

@@ -31,9 +31,9 @@ test("models off: an OpenAI key is never used; the suite is the template's, with
 
 test("models off: a configured local model is never asked to fill gaps either", async () => {
     const expected = await templateCode();
-    process.env.TESTFORGE_OLLAMA_MODEL = "qwen2.5-coder:7b";
-    process.env.TESTFORGE_OLLAMA_BASE_URL = fakeBaseUrl().replace(/\/v1$/, "");
-    process.env.TESTFORGE_OLLAMA_TIMEOUT_MS = "2000";
+    process.env.MRONION_OLLAMA_MODEL = "qwen2.5-coder:7b";
+    process.env.MRONION_OLLAMA_BASE_URL = fakeBaseUrl().replace(/\/v1$/, "");
+    process.env.MRONION_OLLAMA_TIMEOUT_MS = "2000";
 
     const off = await generateSuite(REQUEST, { models: false });
     assert.ok(off.ok);

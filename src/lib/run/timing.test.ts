@@ -28,8 +28,8 @@ import { randomUUID } from "node:crypto";
 import type { ContentProfile, LinkDetail } from "../generate/mock/types.ts";
 import type { RawTiming, RunTiming } from "./timing.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-timing-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-timing-test-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 
 const { buildTimingReporterSource, countControlKinds, summarizeTiming, targetOf, TIMING_FILE_ENV_VAR } = await import("./timing.ts");
 const { createEmptyProgress, finalizeRunJob } = await import("./jobs.ts");

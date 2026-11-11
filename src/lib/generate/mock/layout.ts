@@ -6,7 +6,7 @@ import type { ContentProfile } from "./types";
 
 /**
  * Phase 41 (TFP-186, Decision 1): layout and visual consistency, in Standard's
- * usability area, on the selected pages. TestForge can't know a site's
+ * usability area, on the selected pages. Mr Onion can't know a site's
  * intended design on a first run, but it can find elements that should look
  * alike and don't.
  *

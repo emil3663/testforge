@@ -43,7 +43,7 @@ const { chromiumSkipReason } = await import("../../test-support/chromium.ts");
 const { runPlaywrightSpec } = await import("../../test-support/playwright-cli.ts");
 const needsChromium = await chromiumSkipReason();
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-shared-visits-"));
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-shared-visits-"));
 const reporter = join(scratch, "timing-reporter.cjs");
 writeFileSync(reporter, buildTimingReporterSource(), "utf8");
 after(() => rmSync(scratch, { recursive: true, force: true }));
@@ -52,7 +52,7 @@ type Run = { records: ExecutionRecord[]; report: JsonReport; timing: RawTiming }
 let runs = 0;
 async function run(code: string, label: string, args: string[] = []): Promise<Run> {
     const timingFile = join(scratch, `timing-${++runs}.json`);
-    const { report } = await runPlaywrightSpec(code, `shared-${label}`, [`--reporter=json,${reporter.replace(/\\/g, "/")}`, "--workers=1", "--timeout=30000", ...args], { [TIMING_FILE_ENV_VAR]: timingFile, TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `shared-${label}`, [`--reporter=json,${reporter.replace(/\\/g, "/")}`, "--workers=1", "--timeout=30000", ...args], { [TIMING_FILE_ENV_VAR]: timingFile, MRONION_INTERACTIVE: "0" });
     return { records: flattenSuites(report.suites ?? []), report, timing: JSON.parse(readFileSync(timingFile, "utf8")) as RawTiming };
 }
 

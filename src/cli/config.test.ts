@@ -1,5 +1,5 @@
 /**
- * Phase 47 (TFP-245): `testforge run`'s configuration. A malformed one is exit 3 with a message naming the field
+ * Phase 47 (TFP-245): `mr-onion run`'s configuration. A malformed one is exit 3 with a message naming the field
  * (Decision 5); a valid one is what was asked, with the UI's defaults where nothing was.
  *
  * node --import ./scripts/register-node-test-ts-resolver.mjs --experimental-strip-types --test src/cli/config.test.ts
@@ -13,7 +13,7 @@ import { buildConfig, ConfigError, loadConfig, parseFlags } from "./config.ts";
 
 const CWD = resolve("/work");
 
-test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing interactive, ./testforge-out", () => {
+test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing interactive, ./mr-onion-out", () => {
     const config = buildConfig({}, parseFlags(["--url", "localhost:4200/"]).raw, CWD);
     assert.equal(config.url, "http://localhost:4200");
     assert.deepEqual(config.runMode, { kind: "standard" });
@@ -21,7 +21,7 @@ test("flags alone: the URL normalised, Standard, all ten areas, fast, nothing in
     assert.equal(config.auditMode, "fast");
     assert.equal(config.interactive, false);
     assert.equal(config.reportOnly, false);
-    assert.equal(config.out, resolve(CWD, "testforge-out"));
+    assert.equal(config.out, resolve(CWD, "mr-onion-out"));
     assert.equal(config.dataDir, null);
     assert.deepEqual(config.servers, []);
 });

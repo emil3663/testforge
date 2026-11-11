@@ -24,9 +24,9 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-cap-arrivals-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-cap-arrivals-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const { startRunJob } = await import("./executor.ts");
@@ -98,7 +98,7 @@ for (const how of ['fallback', 'continue']) {
 `;
 
 test("in a real browser: a context that closes after its request got a slot but before the route handed it on drops the request quietly, and its response rejects at once (Playwright 1.59; TFP-265, ruling 5)", { skip: needsChromium }, async () => {
-    const { report } = await runPlaywrightSpec(slotThenCloseSpec, "slot-then-close", ["--workers=1"], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(slotThenCloseSpec, "slot-then-close", ["--workers=1"], { MRONION_INTERACTIVE: "0" });
     const records = flattenSuites(report.suites);
     assert.equal(records.length, 2);
     for (const record of records) assert.equal(record.status, "Passed", `${record.title}: ${record.rawMessage ?? ""}`);

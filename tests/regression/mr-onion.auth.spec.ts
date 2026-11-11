@@ -19,7 +19,7 @@ import {
 
 // Phase 20 (TFP-092): config-driven login, once per run. Runs the real app
 // against a small real site with a real cookie login (auth-fixture.ts), through
-// the built app's own /api/run - no stubbing. The credentials reach TestForge
+// the built app's own /api/run - no stubbing. The credentials reach Mr Onion
 // only as environment variables (set for the server in
 // playwright.regression.config.ts), and the run request names them.
 
@@ -140,12 +140,12 @@ test.describe("Config-driven login (TFP-092)", () => {
     });
 
     test("a credential environment variable that is not set is a named error", async ({ request }) => {
-        const response = await startRun(request, { ...validLogin, passwordEnv: "TESTFORGE_TEST_LOGIN_NOT_SET" });
+        const response = await startRun(request, { ...validLogin, passwordEnv: "MRONION_TEST_LOGIN_NOT_SET" });
         const body = await response.json();
 
         expect(response.status()).toBe(422);
         expect(body.errorKind).toBe("credential-missing");
-        expect(body.error).toContain("environment variable TESTFORGE_TEST_LOGIN_NOT_SET is not set");
+        expect(body.error).toContain("environment variable MRONION_TEST_LOGIN_NOT_SET is not set");
     });
 
     test("an invalid login config is rejected before anything runs; inline credentials are never accepted", async ({ request }) => {
@@ -191,7 +191,7 @@ test('TFFU-001: deliberately tries to leak the session and the credentials', asy
   const cookies = await context.cookies();
   const session = cookies.find((cookie) => cookie.name === 'fixture_session')!.value;
   console.log('LEAK-ATTEMPT stdout session=' + session);
-  // TFP-202: a run's tests get only the environment Playwright needs, so the credentials TestForge was given as
+  // TFP-202: a run's tests get only the environment Playwright needs, so the credentials Mr Onion was given as
   // environment variables can't be read here. They are typed as literals, so their redaction is still tested.
   expect(process.env.${AUTH_FIXTURE_USER_ENV}, 'the username is not in the run environment').toBeUndefined();
   expect(process.env.${AUTH_FIXTURE_PASS_ENV}, 'the password is not in the run environment').toBeUndefined();
@@ -271,7 +271,7 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
         for (const file of files) {
             const label = file.slice(runDir.length + 1);
             // TFP-202: the run's own copy of the suite as it was sent, which now holds the credentials as the
-            // literals this test wrote in it. Exactly what the caller sent, nothing TestForge captured.
+            // literals this test wrote in it. Exactly what the caller sent, nothing Mr Onion captured.
             if (label === "suite.spec.ts") {
                 expect(await readFile(file, "utf8")).toBe(leakAttemptCode);
                 continue;
@@ -319,10 +319,10 @@ test.describe("Nothing leaks from an authenticated run (TFP-094)", () => {
 
 // Phase 20 (TFP-093): the login config references credentials by the NAME of
 // an environment variable and never carries a value. So the literal values
-// must appear nowhere TestForge writes or returns that is not scrubbed by
+// must appear nowhere Mr Onion writes or returns that is not scrubbed by
 // design: the generated suite, the run config it persists, and the API's own
 // responses. (RUN-18 covers what the run *captures*; this covers what
-// TestForge itself produces, which no scrubbing pass should be needed for.)
+// Mr Onion itself produces, which no scrubbing pass should be needed for.)
 test.describe("Credentials are referenced by name, never inlined (TFP-093)", () => {
     test("the literal credentials appear in no generated code, persisted run config, or API response", async ({ request }) => {
         const values = [AUTH_FIXTURE_PASS, AUTH_FIXTURE_USER];

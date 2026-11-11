@@ -39,7 +39,7 @@ test("findTypeErrors: rejects a syntax error", () => {
 
 test("findTypeErrors: rejects an import that is not installed", () => {
     // @axe-core/playwright was this example until Phase 35 (TFP-134) installed it.
-    const errors = findTypeErrors("import Missing from '@testforge/never-installed';\nconsole.log(Missing);");
+    const errors = findTypeErrors("import Missing from '@mr-onion/never-installed';\nconsole.log(Missing);");
     assert.ok(errors.some((e) => e.includes("TS2307")), errors.join("\n"));
 });
 
@@ -48,7 +48,7 @@ test("findTypeErrors: is lenient about style - implicit any is not an error", ()
 });
 
 test("findTypeErrors: the template generator's own suites pass, for every coverage area", () => {
-    // Guards against false positives: TestForge's known-good output must never be rejected.
+    // Guards against false positives: Mr Onion's known-good output must never be rejected.
     for (const practice of BEST_PRACTICE_OPTIONS) {
         const code = mockGenerate(
             "http://localhost:3000",

@@ -58,3 +58,10 @@ test("each suite has its own counts, and tests are in the report's order", () =>
     const titles = [...xml.matchAll(/<testcase name="([^"]*)"/g)].map((match) => match[1]);
     assert.deepEqual(titles, ["home page loads", "contact form submits", "search answers", "checkout journey", "menu opens", "cart total &amp; tax"]);
 });
+
+test("Phase 48 (TFP-279): the suites are named Mr Onion, and a record with no suite or area falls back to that name", () => {
+    const xml = buildJUnit({ execution: [record("no suite of its own", "Passed", { suite: "", area: "" as never })] });
+    assert.equal(attribute(xml, "testsuites", "name"), "Mr Onion");
+    assert.equal(attribute(xml, "testsuite", "name"), "Mr Onion");
+    assert.match(xml, /<testcase name="no suite of its own" classname="Mr Onion"/);
+});

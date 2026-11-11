@@ -28,9 +28,9 @@ import { join } from "node:path";
 import { after, test } from "node:test";
 import type { Candidate, CandidateEvidence } from "./pool.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-promotion-"));
-const savedDataDir = process.env.TESTFORGE_DATA_DIR;
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-promotion-"));
+const savedDataDir = process.env.MRONION_DATA_DIR;
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 
 const route = await import("../../app/api/candidates/route.ts");
 const { NextRequest } = await import("next/server");
@@ -38,8 +38,8 @@ const { addToPool, loadCandidate, loadPool, patternOf, poolHas, saveCandidate } 
 const { loadPromotedEntries, promoteApproved } = await import("./promotion.ts");
 
 after(() => {
-    if (savedDataDir === undefined) delete process.env.TESTFORGE_DATA_DIR;
-    else process.env.TESTFORGE_DATA_DIR = savedDataDir;
+    if (savedDataDir === undefined) delete process.env.MRONION_DATA_DIR;
+    else process.env.MRONION_DATA_DIR = savedDataDir;
     rmSync(scratch, { recursive: true, force: true });
 });
 

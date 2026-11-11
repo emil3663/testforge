@@ -1,6 +1,6 @@
 # Skills
 
-This directory holds Claude Code skills generalized from TestForge's own
+This directory holds Claude Code skills generalized from Mr Onion's own
 testing and engineering judgment, plus material Martin proposed directly
 (`code-structure`, `refactor-audit`) and one ported from a sibling repo
 (`plan-to-specs`). It's split into two categories so the distinction stays
@@ -24,15 +24,15 @@ were run against a real target before being called done.
 As of Phase 21 (TFP-051), these are real Claude Code plugin skills, not
 just files to open and follow by hand. `skills/.claude-plugin/plugin.json`
 declares both `testing/` and `engineering/` as skill directories, packaged
-as the `testforge-skills` plugin and registered via a local marketplace
+as the `mr-onion-skills` plugin and registered via a local marketplace
 (`.claude-plugin/marketplace.json`) that `.claude/settings.json` enables
 automatically for anyone with this repo trusted — no manual install step.
 
 Invoke any skill by its plugin-scoped name, e.g.:
 
 ```text
-/testforge-skills:write-playwright-test
-/testforge-skills:code-structure
+/mr-onion-skills:write-playwright-test
+/mr-onion-skills:code-structure
 ```
 
 Verified directly (`claude plugin install`, then a fresh session's own
@@ -134,7 +134,7 @@ practice: five to Emil's own prior incidents and write-ups (TA-227, TA-230,
 `DESKTOP_STABILITY_MATRIX.md`), two to Martin's own proposed drafts, one to
 Martin's own unmerged branch on a sibling repo, three to named chapters of
 the Google SRE book, one directly to the ISTQB testing taxonomy, and one
-(`crawl-and-classify-pages`) to TestForge's own `introspect`/`crawl` source,
+(`crawl-and-classify-pages`) to Mr Onion's own `introspect`/`crawl` source,
 via TFP-036's spike against Playwright MCP's real tool list. Full
 citation and verification detail for each is in
 [`ROADMAP.md`](ROADMAP.md) and the Phase 17-20 decision records under

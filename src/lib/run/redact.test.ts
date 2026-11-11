@@ -4,7 +4,7 @@
  *
  * The end-to-end proof (a real authenticated run whose report, persisted
  * evidence and trace are grepped for the secrets) is
- * tests/regression/testforge.auth.spec.ts; these pin the redactor's own
+ * tests/regression/mr-onion.auth.spec.ts; these pin the redactor's own
  * properties, including the ones that would otherwise only show up as a leak.
  *
  * Run via:
@@ -129,7 +129,7 @@ test("a zip with nothing to scrub is returned unchanged", async () => {
 });
 
 test("scrubArtifactDirectory scrubs text in place, rewrites zips, removes what it cannot scrub, and fails closed on a corrupt zip", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "testforge-redact-"));
+    const dir = mkdtempSync(join(tmpdir(), "mr-onion-redact-"));
 
     try {
         const evidence = join(dir, "test-1");
@@ -157,7 +157,7 @@ test("scrubArtifactDirectory scrubs text in place, rewrites zips, removes what i
 });
 
 test("with nothing to redact, scrubArtifactDirectory touches nothing", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "testforge-redact-"));
+    const dir = mkdtempSync(join(tmpdir(), "mr-onion-redact-"));
 
     try {
         writeFileSync(join(dir, "note.md"), "whatever");

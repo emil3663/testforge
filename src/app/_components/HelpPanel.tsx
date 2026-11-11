@@ -16,9 +16,9 @@ const REPORT_TABS: { label: string; description: string }[] = [
 ];
 
 const THINGS_WORTH_KNOWING: string[] = [
-    "You don't need to know how to code to use TestForge. If you can describe what \"working\" looks like, that's enough.",
-    "If no AI key is set up, TestForge still works — it falls back to a built-in test builder instead of the AI-written one.",
-    "A test TestForge writes is a real, standard test file. A developer can take it, tweak it, and keep using it — nothing here is locked to TestForge.",
+    "You don't need to know how to code to use Mr Onion. If you can describe what \"working\" looks like, that's enough.",
+    "If no AI key is set up, Mr Onion still works — it falls back to a built-in test builder instead of the AI-written one.",
+    "A test Mr Onion writes is a real, standard test file. A developer can take it, tweak it, and keep using it — nothing here is locked to Mr Onion.",
     "You can compare two past test runs against the same site to see what changed between them — useful after a new version ships.",
 ];
 
@@ -29,11 +29,11 @@ const FAQ: { question: string; answer: string }[] = [
     },
     {
         question: "What if my description doesn't cover everything?",
-        answer: "TestForge only tests what you describe (or what it discovers if you ask it to crawl/inspect first). If something wasn't checked, the Coverage tab will say so and explain why.",
+        answer: "Mr Onion only tests what you describe (or what it discovers if you ask it to crawl/inspect first). If something wasn't checked, the Coverage tab will say so and explain why.",
     },
     {
         question: "Can I trust the report?",
-        answer: "Every claim in the report is backed by something TestForge actually did in the browser — it doesn't guess or make things up about what happened.",
+        answer: "Every claim in the report is backed by something Mr Onion actually did in the browser — it doesn't guess or make things up about what happened.",
     },
 ];
 
@@ -78,7 +78,7 @@ export function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                             Help
                         </div>
                         <div className="mt-1 text-lg font-semibold text-zinc-950">
-                            How TestForge works
+                            How Mr Onion works
                         </div>
                     </div>
                     <button
@@ -103,11 +103,11 @@ export function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
 
                 <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-5 text-sm leading-6 text-zinc-600">
                     <section>
-                        <h3 className="text-sm font-semibold text-zinc-900">What is TestForge?</h3>
+                        <h3 className="text-sm font-semibold text-zinc-900">What is Mr Onion?</h3>
                         <p className="mt-2">
-                            TestForge writes automated quality tests for a website, without you having
+                            Mr Onion writes automated quality tests for a website, without you having
                             to write any code. You describe what you want checked in plain English —
-                            &ldquo;check that the login page works&rdquo; — and TestForge turns that
+                            &ldquo;check that the login page works&rdquo; — and Mr Onion turns that
                             into a real test, runs it against your site in a browser, and shows you a
                             report of what passed, what failed, and why.
                         </p>
@@ -123,14 +123,14 @@ export function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                             </li>
                             <li>
                                 <strong className="text-zinc-800">Describe what you want to check</strong>,
-                                in your own words. You can also ask TestForge to first &ldquo;crawl&rdquo;
+                                in your own words. You can also ask Mr Onion to first &ldquo;crawl&rdquo;
                                 the site (look at its pages) or &ldquo;introspect&rdquo; a page (look
                                 closely at what&rsquo;s on one page) so the test it writes actually
                                 matches what&rsquo;s really there, instead of guessing.
                             </li>
                             <li>
                                 <strong className="text-zinc-800">Click Generate.</strong>{" "}
-                                TestForge writes the test for you and shows you the code — you
+                                Mr Onion writes the test for you and shows you the code — you
                                 don&rsquo;t need to understand it, but you can read the comments if
                                 you&rsquo;re curious.
                             </li>
@@ -141,7 +141,7 @@ export function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                             </li>
                             <li>
                                 <strong className="text-zinc-800">Read the report.</strong>{" "}
-                                When it&rsquo;s done, TestForge shows a structured report broken into
+                                When it&rsquo;s done, Mr Onion shows a structured report broken into
                                 tabs (see below) telling you exactly what it found.
                             </li>
                         </ol>
@@ -158,7 +158,7 @@ export function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                         </ul>
                         <p className="mt-2">
                             Each tab can be exported as its own page you can share with someone else,
-                            even if they don&rsquo;t have TestForge.
+                            even if they don&rsquo;t have Mr Onion.
                         </p>
                     </section>
 

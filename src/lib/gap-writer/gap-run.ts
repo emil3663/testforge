@@ -7,16 +7,17 @@ import { READ_ONLY_GUARD_HELPER } from "@/lib/generate/read-only-guard";
 import { findTypeErrors } from "@/lib/generate/validate";
 import { flattenSuites } from "@/lib/report/execution";
 import { runEnv } from "@/lib/run/child-env";
+import { INTERACTIVE_ENV_VAR } from "@/lib/run/interactive";
 import { createRunFolder, PLAYWRIGHT_RUNS_DIR, removeRunFolder } from "@/lib/run/run-folders";
 import { forbiddenConstruct } from "./code-check";
 import type { JsonReport } from "@/lib/report/types";
 import type { GapTarget } from "./writers";
 
 /**
- * Phase 42 (TFP-194, Decision 5): a written gap test, composed by TestForge
+ * Phase 42 (TFP-194, Decision 5): a written gap test, composed by Mr Onion
  * and run behind the gates before it can join a site suite.
  *
- * The writer gives only a test body. TestForge wraps it: a test at the
+ * The writer gives only a test body. Mr Onion wraps it: a test at the
  * read-only gate, its whole body inside Phase 41's request guard, so any
  * request but GET, HEAD or QUERY and any form submission is aborted and
  * fails the test as a breach. A breach rejects the test outright.
@@ -29,7 +30,7 @@ import type { GapTarget } from "./writers";
  * TFP-202: the check reads the body's syntax tree and covers the network and
  * code built at run time too (code-check.ts), and the test runs with only the
  * environment Playwright needs (src/lib/run/child-env.ts): no keys, tokens or
- * TestForge settings.
+ * Mr Onion settings.
  */
 
 
@@ -98,7 +99,7 @@ export async function runGapSpec(spec: string): Promise<GapRunOutcome> {
         await new Promise<void>((resolve) => {
             const child = spawn(process.execPath, [join(process.cwd(), "node_modules", "playwright", "cli.js"), "test", "--config", config, "--reporter=json", "--project=chromium", "--timeout=30000", "--workers=1", `--output=${outputDir.replace(/\\/g, "/")}`], {
                 cwd: process.cwd(),
-                env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", TESTFORGE_INTERACTIVE: "0" }),
+                env: runEnv({ PLAYWRIGHT_JSON_OUTPUT_FILE: jsonFile, FORCE_COLOR: "0", [INTERACTIVE_ENV_VAR]: "0" }),
                 stdio: "ignore",
                 windowsHide: true,
             });

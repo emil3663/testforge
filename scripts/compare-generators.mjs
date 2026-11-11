@@ -13,9 +13,9 @@
 // Then, for each case in the config:
 //   1. both sides get the same request and the same introspection data
 //      (Phase 21 Decision 2), generated in-process through the real POST
-//      /api/generate handler - TESTFORGE_OLLAMA_MODEL is set for gap-fill and
+//      /api/generate handler - MRONION_OLLAMA_MODEL is set for gap-fill and
 //      cleared for template-only, exactly as the route decides at runtime;
-//   2. each suite is executed through a running TestForge's POST /api/run and
+//   2. each suite is executed through a running Mr Onion's POST /api/run and
 //      persisted like any other run (Phase 17), with its generation record
 //      (gap-fill outcome and gate verdicts, Phase 34 Decision 8). A gap-fill
 //      suite that added nothing is the template's, byte for byte, and is not
@@ -39,12 +39,13 @@ function arg(name, fallback) {
 
 const configPath = arg("config");
 if (!configPath) {
-    console.error("usage: npm run compare:generators -- --config <file.json> [--server http://127.0.0.1:3100] [--model testforge-qwen7b] [--only <case,case>]");
+    console.error("usage: npm run compare:generators -- --config <file.json> [--server http://127.0.0.1:3100] [--model mr-onion-qwen7b] [--only <case,case>]");
     process.exit(2);
 }
 const config = JSON.parse(readFileSync(configPath, "utf8"));
 const server = arg("server", config.server ?? "http://127.0.0.1:3100");
-const model = arg("model", config.model ?? "testforge-qwen7b");
+// Phase 48 (TFP-278): the new tag; a model built under the old one is used in its place, said so in the record.
+const model = arg("model", config.model ?? "mr-onion-qwen7b");
 const only = arg("only");
 const onlyNames = only ? only.split(",") : null;
 const cases = config.cases.filter((c) => !onlyNames || onlyNames.includes(c.name));
@@ -85,10 +86,13 @@ const GENERATORS = ["template", "gap-fill"];
 const CLOSED_PORT = "http://127.0.0.1:9/v1";
 
 async function generateWith(generator, testCase, contentProfile, { ollamaBaseUrl } = {}) {
-    if (generator === "gap-fill") process.env.TESTFORGE_OLLAMA_MODEL = model;
-    else delete process.env.TESTFORGE_OLLAMA_MODEL;
-    if (ollamaBaseUrl) process.env.TESTFORGE_OLLAMA_BASE_URL = ollamaBaseUrl;
-    else delete process.env.TESTFORGE_OLLAMA_BASE_URL;
+    // Both names (Phase 48): an old name left in the shell would otherwise still be read.
+    for (const prefix of ["MRONION_", "TESTFORGE_"]) {
+        if (generator === "gap-fill") process.env[`${prefix}OLLAMA_MODEL`] = model;
+        else delete process.env[`${prefix}OLLAMA_MODEL`];
+        if (ollamaBaseUrl) process.env[`${prefix}OLLAMA_BASE_URL`] = ollamaBaseUrl;
+        else delete process.env[`${prefix}OLLAMA_BASE_URL`];
+    }
     delete process.env.OPENAI_API_KEY; // never the OpenAI path in this comparison
     const started = performance.now();
     const res = await generate(
@@ -156,7 +160,7 @@ async function runSuite(code, testCase, contentProfile, generation) {
     }
 }
 
-log(`target ${config.target} via TestForge ${server}, local model ${model}, ${cases.length} case(s) -> ${outDir}`);
+log(`target ${config.target} via Mr Onion ${server}, local model ${model}, ${cases.length} case(s) -> ${outDir}`);
 await resetFixture();
 log("introspecting target once, shared by both generators");
 const contentProfile = await json("POST", "/api/introspect", { baseUrl: config.target, paths: config.paths });

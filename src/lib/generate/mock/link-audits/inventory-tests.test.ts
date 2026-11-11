@@ -93,7 +93,7 @@ after(async () => {
 });
 
 async function runSpec(code: string, label: string, grep?: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `link-inventory-${label}`, ["--timeout=30000", "--workers=1", ...(grep ? [`--grep=${grep}`] : [])], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `link-inventory-${label}`, ["--timeout=30000", "--workers=1", ...(grep ? [`--grep=${grep}`] : [])], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 

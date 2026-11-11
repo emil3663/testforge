@@ -6,11 +6,11 @@ body:
     attributes:
       value: |
         Thanks for reporting. **Found a security problem? Don't open an issue:** see `SECURITY.md` and report it privately.
-        Remove credentials and private site details before you attach anything. TestForge redacts credentials in its own outputs, but check.
+        Remove credentials and private site details before you attach anything. Mr Onion redacts credentials in its own outputs, but check.
   - type: input
     id: commit
     attributes:
-      label: TestForge commit
+      label: Mr Onion commit
       description: "`git rev-parse --short HEAD`"
       placeholder: 6bd7fc0
     validations:

@@ -13,7 +13,7 @@ const { normalizeGenerationRecord } = await import("./generation-record.ts");
 const GATE = { gate: "type check", bar: "0 type errors", measured: "1 type errors", verdict: "rejected", evidence: ["3:1 TS2339 toBeAccessible"] };
 
 test("normalizeGenerationRecord: a real /api/generate record is kept as is", () => {
-    const record = { generatedBy: "fallback", model: "testforge-qwen7b:latest", fallbackReason: "invalid_output", gapFill: { gapAreas: ["database"], outcome: "rejected" }, gates: [GATE] };
+    const record = { generatedBy: "fallback", model: "mr-onion-qwen7b:latest", fallbackReason: "invalid_output", gapFill: { gapAreas: ["database"], outcome: "rejected" }, gates: [GATE] };
     assert.deepEqual(normalizeGenerationRecord(record), record);
 });
 
@@ -70,11 +70,11 @@ test("normalizeGenerationRecord: an automatic inspection record is kept, and cap
 test("describePageInspection: one sentence saying where the page data came from, or why there is none", () => {
     assert.equal(
         describePageInspection({ status: "inspected", paths: ["/", "/notes"], pages: 2, warnings: [] }),
-        "No page data was supplied, so TestForge inspected /, /notes automatically (2 pages) and generated from it."
+        "No page data was supplied, so Mr Onion inspected /, /notes automatically (2 pages) and generated from it."
     );
     assert.equal(
         describePageInspection({ status: "inspected", paths: ["/", "/gone"], pages: 1, warnings: ["Could not inspect http://x/gone: 404"] }),
-        "No page data was supplied, so TestForge inspected /, /gone automatically (1 page) and generated from it. Not inspected: Could not inspect http://x/gone: 404."
+        "No page data was supplied, so Mr Onion inspected /, /gone automatically (1 page) and generated from it. Not inspected: Could not inspect http://x/gone: 404."
     );
     assert.equal(
         describePageInspection({ status: "failed", paths: ["/"], pages: 0, warnings: [], reason: "Could not inspect http://x/: net::ERR_CONNECTION_REFUSED at http://x/" }),

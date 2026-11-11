@@ -40,7 +40,7 @@ function stepLabel(step: SiteGraphEdge) {
 }
 
 // Generic, side-effect-agnostic sample input: enough for a form's own
-// client-side validation to let the submit through. TestForge has no way to
+// client-side validation to let the submit through. Mr Onion has no way to
 // know a real credential or business value, so a flow that needs one (a
 // login) will fail its declared-exit assertion with a specific message
 // rather than pass on a guess.
@@ -48,7 +48,7 @@ export const JOURNEY_HELPERS = `const normalizePath = (pathname: string) => path
 
 async function fillFormWithSampleValues(form: import('@playwright/test').Locator) {
   const sampleByType: Record<string, string> = {
-    email: 'testforge@example.com', password: 'TestForge-Sample-1', number: '1', tel: '5550100',
+    email: 'mr-onion@example.com', password: 'MrOnion-Sample-1', number: '1', tel: '5550100',
     url: 'https://example.com', date: '2026-01-15', time: '10:00', search: 'test',
   };
   const fields = form.locator('input:not([type=hidden]):not([type=submit]):not([type=button]):not([type=reset]):not([type=image]):not([type=file]):not([type=checkbox]):not([type=radio]), textarea');
@@ -56,7 +56,7 @@ async function fillFormWithSampleValues(form: import('@playwright/test').Locator
     const field = fields.nth(index);
     if (!(await field.isVisible()) || !(await field.isEditable())) continue;
     const type = ((await field.getAttribute('type')) ?? 'text').toLowerCase();
-    await field.fill(sampleByType[type] ?? 'TestForge sample');
+    await field.fill(sampleByType[type] ?? 'Mr Onion sample');
   }
   const selects = form.locator('select');
   for (let index = 0; index < await selects.count(); index++) {

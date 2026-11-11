@@ -1,7 +1,7 @@
 # Comparing the template generator with the local model
 
-TestForge writes every suite with the built-in **template generator**
-(deterministic, instant). With `TESTFORGE_OLLAMA_MODEL` set, a **local model**
+Mr Onion writes every suite with the built-in **template generator**
+(deterministic, instant). With `MRONION_OLLAMA_MODEL` set, a **local model**
 running in Ollama (see [LOCAL_MODEL_SETUP.md](LOCAL_MODEL_SETUP.md)) then
 fills only the areas the template left without tests: gap-filling, Phase 34
 Option B. This page shows how to run the template alone and the template with
@@ -20,8 +20,8 @@ compared the two when the local model replaced the template's suite.
 ## What you need
 
 - The local model set up and working ([LOCAL_MODEL_SETUP.md](LOCAL_MODEL_SETUP.md), steps 1-3).
-- A TestForge server to run the suites. Any running instance works, and it
-  does **not** need `TESTFORGE_OLLAMA_MODEL` set. The comparison picks the
+- A Mr Onion server to run the suites. Any running instance works, and it
+  does **not** need `MRONION_OLLAMA_MODEL` set. The comparison picks the
   generator itself, per request. From the repository root:
 
   ```sh
@@ -59,7 +59,7 @@ comparison switches them itself.
 npm run compare:generators -- --config scripts/comparison-configs/fixture.json
 ```
 
-Options: `--server http://127.0.0.1:3100` (default), `--model testforge-qwen7b`
+Options: `--server http://127.0.0.1:3100` (default), `--model mr-onion-qwen7b`
 (default), and `--only functional,accessibility` to run some cases only.
 
 A case can set `"enableInteractive": true`. Tests that submit forms on the
@@ -82,7 +82,7 @@ Then, for each case, it:
 
 1. Generates a suite with the template alone and with gap-filling, through
    the real `/api/generate` code.
-2. Runs both suites through the TestForge server, like any other run, saved
+2. Runs both suites through the Mr Onion server, like any other run, saved
    with how they were generated (gap-fill outcome, every gate's verdict).
    Both runs are saved in `runs/`, and you can open them in the app.
 3. Diffs the two runs with the run-diff API (`/api/runs/diff`).

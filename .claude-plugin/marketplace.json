@@ -1,14 +1,14 @@
 {
-  "name": "testforge-skills-marketplace",
+  "name": "mr-onion-skills-marketplace",
   "description": "Local marketplace for this repo's own skills/testing/ and skills/engineering/ content.",
   "owner": {
     "name": "Emil"
   },
   "plugins": [
     {
-      "name": "testforge-skills",
+      "name": "mr-onion-skills",
       "source": "./skills",
-      "description": "TestForge's testing-judgment and engineering-concern skills."
+      "description": "Mr Onion's testing-judgment and engineering-concern skills."
     }
   ]
 }

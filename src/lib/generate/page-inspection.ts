@@ -3,7 +3,7 @@ import { normalizeInspectionPathList } from "@/lib/introspect/paths";
 import type { PageInspectionRecord } from "@/lib/report/types";
 
 // Phase 34 TFP-122 (Decision 11): when a generate request brings no page data,
-// TestForge inspects the pages itself - the same introspection the app's own
+// Mr Onion inspects the pages itself - the same introspection the app's own
 // flow runs, called directly rather than over HTTP. TFP-120 found the one gap
 // left for the local model was "database without page data", where it had to
 // invent a flow; with page data the template writes a real round trip or says

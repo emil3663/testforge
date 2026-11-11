@@ -8,7 +8,7 @@ import { dataDir } from "@/lib/storage/data-dir";
 /**
  * Phase 42 (TFP-195, Decision 8): the candidate pool - gap tests generalised
  * to their component's pattern, on their way to the library. It sits in
- * TestForge's data folder beside the site suites, one file per pattern:
+ * Mr Onion's data folder beside the site suites, one file per pattern:
  *
  *   <data>/candidates/<id>.json
  *

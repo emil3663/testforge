@@ -23,9 +23,9 @@ import { join } from "node:path";
 import { after, before, test } from "node:test";
 import type { RunReport, SiteSuiteRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-stale-"));
-const savedEnv = { data: process.env.TESTFORGE_DATA_DIR, runs: process.env.TESTFORGE_RUNS_ROOT };
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-stale-"));
+const savedEnv = { data: process.env.MRONION_DATA_DIR, runs: process.env.MRONION_RUNS_ROOT };
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
 
 const generateRoute = await import("../../app/api/generate/route.ts");
 const runRoute = await import("../../app/api/run/route.ts");
@@ -51,7 +51,7 @@ before(async () => {
 
 after(async () => {
     await fixture?.close();
-    for (const [key, value] of [["TESTFORGE_DATA_DIR", savedEnv.data], ["TESTFORGE_RUNS_ROOT", savedEnv.runs]] as const) {
+    for (const [key, value] of [["MRONION_DATA_DIR", savedEnv.data], ["MRONION_RUNS_ROOT", savedEnv.runs]] as const) {
         if (value === undefined) delete process.env[key];
         else process.env[key] = value;
     }
@@ -89,7 +89,7 @@ async function runPage(generated: { code: string; siteSuite: SiteSuiteRecord }, 
 
 /** A fresh data folder, a suite saved on the clean site, and the suite a second generation reuses. */
 async function reusedSuite() {
-    process.env.TESTFORGE_DATA_DIR = join(scratch, `data-${folder++}`);
+    process.env.MRONION_DATA_DIR = join(scratch, `data-${folder++}`);
     await fixture.control("/__fixture/defect?set=none");
     await generate();
     const second = await generate();
@@ -183,7 +183,7 @@ test("a reused test fails on a page whose structure did not change: the failure 
 });
 
 test("a test this generation wrote fails on a changed page: it isn't read again, and the failure stands (TFP-191)", { skip: needsChromium }, async () => {
-    process.env.TESTFORGE_DATA_DIR = join(scratch, `data-${folder++}`);
+    process.env.MRONION_DATA_DIR = join(scratch, `data-${folder++}`);
     await fixture.control("/__fixture/defect?set=none");
     const first = await generate();
     assert.equal(first.siteSuite.firstRun, true);

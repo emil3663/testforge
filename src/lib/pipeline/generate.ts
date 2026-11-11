@@ -31,6 +31,7 @@ import { applyCandidates } from "@/lib/candidates/apply";
 import { bindCandidatesToGaps } from "@/lib/candidates/standard";
 import { loadPromotedEntries } from "@/lib/candidates/promotion";
 import { bindPromotedEntries } from "@/lib/library/promoted";
+import { setting, type SettingName } from "@/lib/settings";
 import type { SiteSuiteRecord } from "@/lib/report/types";
 
 /**
@@ -120,7 +121,7 @@ export async function generateSuite(input: Record<string, unknown>, { models = t
     );
     const normalizedAuditMode = normalizeTestAuditMode(auditMode);
     const apiKey = models ? process.env.OPENAI_API_KEY : undefined;
-    const configuredLocalModel = models ? process.env.TESTFORGE_OLLAMA_MODEL?.trim() : undefined;
+    const configuredLocalModel = models ? setting("OLLAMA_MODEL")?.trim() : undefined;
 
     const origin = new URL(normalizedBaseUrl.value).origin;
     // Phase 42 (TFP-190, Decision 1): the template's suite, with the site's saved tests reused, regenerated or
@@ -147,7 +148,7 @@ export async function generateSuite(input: Record<string, unknown>, { models = t
         const localModel = configuredLocalModel;
         const writer = gapWriter === "claude-code" ? claudeCodeWriter() : localModel ? localModelWriter(localModel) : null;
         if (!writer) {
-            siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no TESTFORGE_OLLAMA_MODEL is set" } };
+            siteSuite = { ...applied.record, gapTests: { writer: gapWriter, gaps: 0, asked: 0, saved: 0, rejected: 0, failed: 0, costUsd: 0, tests: [], note: "the site chose the local model, and no MRONION_OLLAMA_MODEL is set" } };
             return applied.code;
         }
         // TFP-202: the writer's working folder goes when the generation's gaps are done.
@@ -253,7 +254,7 @@ export async function generateSuite(input: Record<string, unknown>, { models = t
     // usable model, empty completion) degrades to the template generator and
     // is labelled, so template output is never passed off as AI output.
     // One budget covers the catalog lookup and the completion together.
-    const signal = AbortSignal.timeout(timeoutMs("TESTFORGE_OPENAI_TIMEOUT_MS", DEFAULT_OPENAI_TIMEOUT_MS));
+    const signal = AbortSignal.timeout(timeoutMs("OPENAI_TIMEOUT_MS", DEFAULT_OPENAI_TIMEOUT_MS));
     try {
         // maxRetries: 0 - the SDK would otherwise retry timeouts and 5xx,
         // silently multiplying the wait beyond the budget above.
@@ -309,7 +310,7 @@ function gapFillFallback(code: string, fallbackReason: LocalFailureReason, gapAr
 const DEFAULT_OPENAI_TIMEOUT_MS = 30_000;
 
 // Overridable so tests can prove the timeout path without waiting it out.
-function timeoutMs(envName: string, fallbackMs: number): number {
-    const raw = Number(process.env[envName]);
+function timeoutMs(name: SettingName, fallbackMs: number): number {
+    const raw = Number(setting(name));
     return Number.isFinite(raw) && raw > 0 ? raw : fallbackMs;
 }

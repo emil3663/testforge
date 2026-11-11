@@ -1,7 +1,7 @@
 /**
  * Tests for POST /api/generate's local (Ollama) path.
  *
- * Phase 34 (TFP-118), Option B: with TESTFORGE_OLLAMA_MODEL set, the template
+ * Phase 34 (TFP-118), Option B: with MRONION_OLLAMA_MODEL set, the template
  * always generates and the local model is asked only for the selected areas
  * the template left without tests; its tests are appended in a labelled block.
  * Every gate from Phases 30-33 still applies - TFP-103 guard/timeout/fallback
@@ -33,9 +33,9 @@ const LOCAL_MODEL = "testforge-qwen7b";
 const CATALOG_ID = `${LOCAL_MODEL}:latest`;
 
 function useOllama(opts: { timeoutMs?: number; baseUrl?: string } = {}) {
-    process.env.TESTFORGE_OLLAMA_MODEL = LOCAL_MODEL;
-    process.env.TESTFORGE_OLLAMA_BASE_URL = opts.baseUrl ?? fakeBaseUrl();
-    if (opts.timeoutMs) process.env.TESTFORGE_OLLAMA_TIMEOUT_MS = String(opts.timeoutMs);
+    process.env.MRONION_OLLAMA_MODEL = LOCAL_MODEL;
+    process.env.MRONION_OLLAMA_BASE_URL = opts.baseUrl ?? fakeBaseUrl();
+    if (opts.timeoutMs) process.env.MRONION_OLLAMA_TIMEOUT_MS = String(opts.timeoutMs);
 }
 
 /** A base URL nothing is listening on: bind an ephemeral port, then release it. */
@@ -60,10 +60,10 @@ const GAP = ["database"];
 
 /** The template-only suite for the same request (model variable unset). */
 async function templateFor(practices: string[]) {
-    const saved = process.env.TESTFORGE_OLLAMA_MODEL;
-    delete process.env.TESTFORGE_OLLAMA_MODEL;
+    const saved = process.env.MRONION_OLLAMA_MODEL;
+    delete process.env.MRONION_OLLAMA_MODEL;
     const body = await (await POST(request(practices))).json();
-    if (saved !== undefined) process.env.TESTFORGE_OLLAMA_MODEL = saved;
+    if (saved !== undefined) process.env.MRONION_OLLAMA_MODEL = saved;
     return body.code as string;
 }
 
@@ -93,7 +93,7 @@ async function expectFallback(reason: string, practices = GAP) {
 
 // --- when the local model is (not) asked -------------------------------------
 
-test("Option B: with TESTFORGE_OLLAMA_MODEL unset the response is exactly the template-only one", async () => {
+test("Option B: with MRONION_OLLAMA_MODEL unset the response is exactly the template-only one", async () => {
     const body = await (await POST(request(GAP))).json();
     assert.deepEqual(Object.keys(body), ["code", "siteSuite"]);
     assert.equal(chatBodies.length, 0);
@@ -171,7 +171,7 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
     const appended = body.code.slice(expectedTemplate.length);
     assert.match(
         appended,
-        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
+        /test\.describe\('Local model \(testforge-qwen7b:latest\)', \{ annotation: \{ type: 'gate', description: 'interactive' \} \}, \(\) => \{\n    test\.skip\(process\.env\.MRONION_INTERACTIVE !== '1', 'gap-fill test written by the local model \(testforge-qwen7b:latest\): it may submit forms on the live site[^']*'\);\n\n    test\.describe\('Database Coverage'/
     );
     assert.match(appended, /a saved note is still shown after a reload/);
     assert.doesNotMatch(appended, /import |```/, "the local import and fence are dropped");
@@ -180,6 +180,24 @@ test("Option B: a gap is filled - template suite first, then the local tests in 
         body.gates.map((g: { gate: string; verdict: string }) => `${g.gate}: ${g.verdict}`),
         ["time budget: kept", "type check: kept", "unawaited assertions: kept", "promise to plain matcher: kept", "duplicate tests: kept", "merged suite type check: kept"]
     );
+});
+
+test("Phase 48 (TFP-278): the new tag asked for and only the old one built - the old one fills the gap, and the generation record names it", async () => {
+    fakeOpenAi(["qwen2.5-coder:7b", CATALOG_ID], (_req, res) => json(res, 200, completion("```typescript\n" + GOOD + "\n```")));
+    useOllama();
+    process.env.MRONION_OLLAMA_MODEL = "mr-onion-qwen7b";
+    const body = await (await POST(request(GAP))).json();
+
+    assert.equal(body.generatedBy, "template+ollama", JSON.stringify({ fallbackReason: body.fallbackReason, gates: body.gates }));
+    assert.equal(body.model, CATALOG_ID);
+    const tag = body.gates.find((g: { gate: string }) => g.gate === "model tag");
+    assert.deepEqual(tag, {
+        gate: "model tag",
+        bar: "mr-onion-qwen7b",
+        measured: "testforge-qwen7b:latest, the tag's old name",
+        verdict: "kept",
+        evidence: ["ollama cp testforge-qwen7b mr-onion-qwen7b gives it the new name, with no rebuild"],
+    });
 });
 
 test("Option B: the local model is asked only for the gap areas, with only their guides", async () => {
@@ -247,7 +265,7 @@ test("Option B: a hung local model times out on its own budget - template kept, 
     fakeOpenAi([CATALOG_ID], () => {
         /* never responds */
     });
-    process.env.TESTFORGE_OPENAI_TIMEOUT_MS = "60000"; // must not apply to the local path
+    process.env.MRONION_OPENAI_TIMEOUT_MS = "60000"; // must not apply to the local path
     useOllama({ timeoutMs: 300 });
     const started = Date.now();
     const body = await expectFallback("timeout");

@@ -42,7 +42,7 @@ const { runPlaywrightSpec } = await import("../../../../test-support/playwright-
 const needsChromium = await chromiumSkipReason();
 
 async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `hidden-links-unit-${label}`, ["--timeout=30000"], { TESTFORGE_INTERACTIVE: "0" });
+    const { report } = await runPlaywrightSpec(code, `hidden-links-unit-${label}`, ["--timeout=30000"], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
 

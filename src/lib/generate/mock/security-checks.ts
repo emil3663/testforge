@@ -14,7 +14,7 @@ import type { ActionableElementDetail, ContentProfile } from "./types";
 // - an executed script payload FAILS the test: it is an exploitable defect;
 // - a missing security header or cookie flag is recorded as a named FINDING
 //   (a Playwright annotation, shown in the run report) and does not fail the
-//   test. Many real sites have no CSP, and TestForge cannot tell a session
+//   test. Many real sites have no CSP, and Mr Onion cannot tell a session
 //   cookie from an analytics one, so failing would turn most runs red on
 //   hardening gaps rather than defects.
 //
@@ -27,7 +27,7 @@ const MAX_FORMS = 3;
  * load and its handler runs - which the test detects without relying on a
  * dialog. The leading `">` breaks out of an attribute, the common reflection.
  */
-export const SCRIPT_PAYLOAD = `"><img src=x onerror="window.__testforgeXss=(window.__testforgeXss||0)+1">`;
+export const SCRIPT_PAYLOAD = `"><img src=x onerror="window.__mrOnionXss=(window.__mrOnionXss||0)+1">`;
 
 
 // Only free-text fields take the payload. An email, url or tel field would
@@ -37,7 +37,7 @@ const PAYLOAD_INPUT_TYPES = new Set(["", "text", "search"]);
 
 /** Valid values for typed fields that would otherwise block the submit. */
 export const DUMMY_VALUES: Record<string, string> = {
-    email: "testforge-check@example.com",
+    email: "mr-onion-check@example.com",
     url: "https://example.com/",
     tel: "5550100",
 };
@@ -123,7 +123,7 @@ ${fill}
     await page.waitForLoadState('load').catch(() => {});
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
 
-    const executed = await page.evaluate(() => (window as unknown as { __testforgeXss?: number }).__testforgeXss ?? 0);
+    const executed = await page.evaluate(() => (window as unknown as { __mrOnionXss?: number }).__mrOnionXss ?? 0);
     expect(
       executed + dialogs.length,
       'script-shaped input typed into ${names.join(", ")} on ${path} ran on ' + page.url() + ' after submitting: the page renders user input as HTML (cross-site scripting)'

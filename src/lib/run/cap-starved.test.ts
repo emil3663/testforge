@@ -26,9 +26,9 @@ import type { AddressInfo } from "node:net";
 import { after, test } from "node:test";
 import type { ExecutionRecord } from "../report/types.ts";
 
-const scratch = mkdtempSync(join(tmpdir(), "testforge-cap-starved-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratch, "runs");
-process.env.TESTFORGE_DATA_DIR = join(scratch, "data");
+const scratch = mkdtempSync(join(tmpdir(), "mr-onion-cap-starved-"));
+process.env.MRONION_RUNS_ROOT = join(scratch, "runs");
+process.env.MRONION_DATA_DIR = join(scratch, "data");
 after(() => rmSync(scratch, { recursive: true, force: true }));
 
 const { starvedReason, waitingWithin, failingStep, markCapStarved, STEP_TIMING_SLACK_MS } = await import("./cap-starved.ts");

@@ -33,7 +33,7 @@ function hostOf(url: string): string | null {
 // TFP-084: XHR/fetch targets can only be observed at the network level, not
 // via a static DOM scan - captured from requests the page's own natural load
 // already makes (inspectPages' existing goto + networkidle wait), never a
-// request TestForge triggers itself.
+// request Mr Onion triggers itself.
 function trackXhrFetchRequests(request: Request, baseUrl: string, sink: DependencyDetail[]) {
     const resourceType = request.resourceType();
     if (resourceType !== "xhr" && resourceType !== "fetch") {

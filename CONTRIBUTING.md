@@ -1,6 +1,6 @@
-# Contributing to TestForge
+# Contributing to Mr Onion
 
-Thanks for taking a look. TestForge is maintained by one person and built
+Thanks for taking a look. Mr Onion is maintained by one person and built
 in planned phases, so contributions work a little differently from a large
 open-source project.
 
@@ -25,7 +25,7 @@ open-source project.
 
 ### A good bug report
 
-- the TestForge commit (`git rev-parse --short HEAD`), Node version and OS;
+- the Mr Onion commit (`git rev-parse --short HEAD`), Node version and OS;
 - the site or local target you ran against, the run type (Standard, or
   Comprehensive and its area) and the gate;
 - what you expected and what the report said — the run's `run.json` or the
@@ -33,12 +33,12 @@ open-source project.
 - whether it happens again on a second run.
 
 **Remove credentials and private site details before you attach anything.**
-TestForge redacts credentials in its own outputs, but check.
+Mr Onion redacts credentials in its own outputs, but check.
 
 ## Setting up
 
 [`README.md`](README.md) covers prerequisites, installation, the local test
-targets and starting TestForge. [`docs/README.md`](docs/README.md) indexes
+targets and starting Mr Onion. [`docs/README.md`](docs/README.md) indexes
 the rest of the documentation; start with
 [`docs/APPLICATION_OVERVIEW.md`](docs/APPLICATION_OVERVIEW.md).
 
@@ -65,6 +65,7 @@ npm run lint
 node node_modules/typescript/bin/tsc --noEmit -p .
 npm run test:unit
 npm run check:template-unchanged -- origin/main   # compares your working tree
+npm run check:old-name       # the old name only where the allowlist says why
 npm run test:self            # needs Chromium: npx playwright install chromium
 ```
 
@@ -81,5 +82,5 @@ updated in the same commit.
 
 ## Licence
 
-TestForge is MIT-licensed ([`LICENSE`](LICENSE)). By contributing, you agree
+Mr Onion is MIT-licensed ([`LICENSE`](LICENSE)). By contributing, you agree
 that your contribution is licensed under the same terms.

@@ -9,13 +9,14 @@ import { appendToDescribes, fingerprintOf } from "@/lib/site-suites/reuse";
 import { hashOf, loadSiteSuiteAt, saveSiteSuite, siteSuiteDirFromStore, unitFileName, type GapAttempt, type SiteSuiteManifest, type StoredUnit } from "@/lib/site-suites/store";
 import { parseTestUnits } from "@/lib/site-suites/units";
 import { addToPool, bindCandidate, loadPool, matchingCandidate, patternOf, poolHas } from "@/lib/candidates/pool";
+import { setting } from "@/lib/settings";
 import { composeGapTest, gapTestTitle, runGapTest, type GapRunOutcome } from "./gap-run";
 import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
 
 /**
  * Phase 42 (TFP-194, Decisions 5 and 6): gap tests, once per gap. For each
  * element or link no test checks in context (TFP-201's gap list), up to
- * `limit` per generation, the site's writer writes a test body; TestForge
+ * `limit` per generation, the site's writer writes a test body; Mr Onion
  * runs it behind the gates (gap-run.ts), and a failure goes back to the
  * writer for a revision, up to `maxAttempts`. A breach of the read-only
  * gate rejects the test at once.
@@ -30,7 +31,7 @@ import { revisionPrompt, type GapTarget, type GapWriter } from "./writers";
  * candidate already matches gets no new test (Comprehensive runs the
  * candidate; on Standard it becomes the gap's test, TFP-203,
  * src/lib/candidates/standard.ts). After a test is saved, the writer
- * generalises it, TestForge binds that back to the same element and runs
+ * generalises it, Mr Onion binds that back to the same element and runs
  * it, and a candidate that passes joins the pool.
  */
 
@@ -72,7 +73,7 @@ export function doneGaps(manifest: SiteSuiteManifest): Set<string> {
 }
 
 export function gapLimit(): number {
-    const configured = Number(process.env.TESTFORGE_GAP_LIMIT);
+    const configured = Number(setting("GAP_LIMIT"));
     return Number.isInteger(configured) && configured >= 0 ? configured : DEFAULT_GAP_LIMIT;
 }
 

@@ -55,7 +55,7 @@ if (await pathExists(resultsDir)) {
         "--output",
         reportDir,
         "--report-name",
-        `TestForge ${suiteTitle} Report`,
+        `Mr Onion ${suiteTitle} Report`,
         "--history-limit",
         "5",
     ]);

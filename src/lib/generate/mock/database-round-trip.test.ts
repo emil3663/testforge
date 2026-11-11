@@ -128,7 +128,7 @@ test("database suite: skipped unless the run enables interactive tests - even wh
     for (const code of [selected, triggered]) {
         const body = code.slice(code.indexOf("TFDB-001"));
         assert.ok(body.length > 0, "a database test should be generated");
-        assert.match(body.slice(0, 400), /test\.skip\(process\.env\.TESTFORGE_INTERACTIVE !== '1'/);
+        assert.match(body.slice(0, 400), /test\.skip\(process\.env\.MRONION_INTERACTIVE !== '1'/);
     }
 });
 

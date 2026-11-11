@@ -34,7 +34,7 @@ const libraryFiles = new Map<string, ts.SourceFile | undefined>();
 
 /** Parses `code` as a spec file inside `projectDir`, next to the real node_modules. */
 function loadGenerated(code: string, projectDir: string) {
-    const fileName = path.join(projectDir, "__testforge_generated__.spec.ts").replace(/\\/g, "/");
+    const fileName = path.join(projectDir, "__mrOnion_generated__.spec.ts").replace(/\\/g, "/");
     const host = ts.createCompilerHost(COMPILER_OPTIONS, true);
     const { getSourceFile, fileExists, readFile } = host;
 
@@ -177,7 +177,7 @@ function isSetupStatement(statement: ts.Statement): boolean {
  * different setup is not a duplicate. Syntax only; no type information.
  */
 export function findDuplicateTests(code: string): string[] {
-    const source = ts.createSourceFile("__testforge_generated__.spec.ts", code, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    const source = ts.createSourceFile("__mrOnion_generated__.spec.ts", code, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
     // The node's tokens, trivia (whitespace, comments) skipped: layout never
     // makes two bodies differ. (ts.Printer keeps line breaks in call chains.)
     const print = (node: ts.Node) => {

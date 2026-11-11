@@ -1,12 +1,12 @@
 /**
  * Phase 38 TFP-146, Acceptance Criteria 1: a Standard run on the comparison
- * fixture, recorded at the server. With TESTFORGE_INTERACTIVE unset it sends
+ * fixture, recorded at the server. With MRONION_INTERACTIVE unset it sends
  * nothing but GET requests, and every interactive and active test is Not run
- * with its reason; with TESTFORGE_INTERACTIVE=1 the interactive tests run and
+ * with its reason; with MRONION_INTERACTIVE=1 the interactive tests run and
  * the active ones are still Not run, naming the ownership confirmation.
  *
  * ISTQB technique: decision table testing. Conditions: the test's gate
- * (read-only, interactive, active) and TESTFORGE_INTERACTIVE (unset, 1);
+ * (read-only, interactive, active) and MRONION_INTERACTIVE (unset, 1);
  * action: run, or Not run with the gate's reason. Both columns of the
  * interactive condition are run here.
  *
@@ -36,9 +36,9 @@ const needsChromium = await chromiumSkipReason();
 
 const AREAS: BestPracticeArea[] = ["functional", "responsive/mobile", "performance/load", "security", "accessibility", "usability", "seo/content", "cookie/session", "database", "reliability"];
 const MODEL_BLOCK = "test.describe('Functional', () => {\n  test('the notes page loads', async ({ page }) => { await page.goto('/notes'); await expect(page.locator('h1')).toBeVisible(); });\n});";
-const INTERACTIVE_REASON = /only runs when TESTFORGE_INTERACTIVE=1 is set for the run/;
+const INTERACTIVE_REASON = /only runs when MRONION_INTERACTIVE=1 is set for the run/;
 
-/** Introspects the fixture, generates the Standard suite, and runs it with the given TESTFORGE_INTERACTIVE. */
+/** Introspects the fixture, generates the Standard suite, and runs it with the given MRONION_INTERACTIVE. */
 async function standardRun(interactive: "unset" | "1") {
     const fixture = await startRecordedFixture();
     try {
@@ -46,11 +46,11 @@ async function standardRun(interactive: "unset" | "1") {
         const profile = { scannedAt: new Date().toISOString(), baseUrl: fixture.origin, ...inspection };
         const rules = normalizeContentRules({ selectedJourneyIds: inspection.journeys.map((journey) => journey.id) });
         const template = mockGenerate(fixture.origin, "Check the site.", AREAS, profile as never, rules, normalizeTestAuditMode("fast"));
-        const code = mergeLocalSuite(template, MODEL_BLOCK, "testforge-qwen7b:latest", ["functional"]);
+        const code = mergeLocalSuite(template, MODEL_BLOCK, "mr-onion-qwen7b:latest", ["functional"]);
         fixture.recorded.length = 0;
 
         // Unset unless this run asked for interactive, so the generated tests see it as missing, not "0".
-        const { report } = await runPlaywrightSpec(code, "standard-gates-unit", [], { TESTFORGE_INTERACTIVE: interactive === "1" ? "1" : undefined });
+        const { report } = await runPlaywrightSpec(code, "standard-gates-unit", [], { MRONION_INTERACTIVE: interactive === "1" ? "1" : undefined });
         const records = flattenSuites(report.suites);
         return { records, summary: buildSummary(records, [], 0, interactive === "1"), requests: [...fixture.recorded] };
     } finally {
@@ -65,7 +65,7 @@ test("in a real browser, interactive unset: the Standard run sends only GETs; in
     assert.ok(requests.length > 0);
     assert.deepEqual(requests.filter((request) => request.method !== "GET" || request.bodyBytes > 0), [], "nothing but GET requests, none with a body");
     // Phase 38 Acceptance Criteria 2 (TFP-147): one missing-page probe per Standard run, every area included.
-    assert.equal(requests.filter((request) => request.path.startsWith("/testforge-missing-")).length, 1, "exactly one missing-page probe");
+    assert.equal(requests.filter((request) => request.path.startsWith("/mr-onion-missing-")).length, 1, "exactly one missing-page probe");
     assert.deepEqual(records.filter((record) => !record.gate).map((record) => record.title), [], "every test declares a gate");
 
     const interactive = records.filter((record) => record.gate === "interactive");
@@ -82,7 +82,7 @@ test("in a real browser, interactive unset: the Standard run sends only GETs; in
     assert.deepEqual(summary.notRunByGate, { "read-only": 0, interactive: 12, active: 1 });
 });
 
-test("in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and submit forms; the active test is still Not run, naming the ownership confirmation", { skip: needsChromium }, async () => {
+test("in a real browser, MRONION_INTERACTIVE=1: interactive tests run and submit forms; the active test is still Not run, naming the ownership confirmation", { skip: needsChromium }, async () => {
     const { records, summary, requests } = await standardRun("1");
     const show = (list: typeof records) => JSON.stringify(list.map((record) => [record.title, record.status, record.gate, record.skipReason]));
 
@@ -91,7 +91,7 @@ test("in a real browser, TESTFORGE_INTERACTIVE=1: interactive tests run and subm
     assert.deepEqual(interactive.filter((record) => INTERACTIVE_REASON.test(record.skipReason ?? "")).map((record) => record.title), [], "no interactive test is held back by its gate");
     assert.ok(interactive.filter((record) => record.status === "Passed").length > 0, show(interactive));
     assert.ok(requests.some((request) => request.method === "POST"), "the interactive tests submitted forms");
-    assert.equal(requests.filter((request) => request.path.startsWith("/testforge-missing-")).length, 1, "exactly one missing-page probe");
+    assert.equal(requests.filter((request) => request.path.startsWith("/mr-onion-missing-")).length, 1, "exactly one missing-page probe");
 
     const active = records.filter((record) => record.gate === "active");
     assert.deepEqual(active.map((record) => [record.status, record.skipReason]), [["Not run", ACTIVE_GATE_REASON]], show(active));

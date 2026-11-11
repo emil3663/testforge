@@ -64,7 +64,7 @@ for (const dir of dirs) {
     console.log("| Measure | Value |");
     console.log("| --- | --- |");
     console.log(`| Suites measured | ${n} |`);
-    console.log(`| Wall time per call, OpenAI-compatible endpoint (TestForge's path): median / p90 | ${s(quantile(wall, 0.5))} / ${s(quantile(wall, 0.9))} |`);
+    console.log(`| Wall time per call, OpenAI-compatible endpoint (Mr Onion's path): median / p90 | ${s(quantile(wall, 0.5))} / ${s(quantile(wall, 0.9))} |`);
     console.log(`| Wall time, native /api/chat, same messages: median / p90 | ${s(quantile(nativeWall, 0.5))} / ${s(quantile(nativeWall, 0.9))} |`);
     console.log(`| Load duration (native): median / p90 | ${s(quantile(r.map((x) => x.native?.loadMs), 0.5))} / ${s(quantile(r.map((x) => x.native?.loadMs), 0.9))} |`);
     console.log(`| Prompt tokens: median / max | ${whole(quantile(prompts, 0.5))} / ${maxPrompt} |`);
@@ -72,10 +72,10 @@ for (const dir of dirs) {
     console.log(`| Output tokens: median / p90 | ${whole(quantile(r.map((x) => x.native?.evalCount), 0.5))} / ${whole(quantile(r.map((x) => x.native?.evalCount), 0.9))} |`);
     console.log(`| Generation: tokens per s out, median | ${one(quantile(r.map((x) => rate(x.native?.evalCount, x.native?.evalMs)), 0.5))} |`);
     console.log(`| Output cut at num_predict (native done_reason "length") | ${count((x) => x.native?.doneReason === "length")} of ${n} |`);
-    console.log(`| Timeouts at ${data.timeoutMs / 1000} s (TestForge path) | ${count((x) => x.openai.outcome === "timeout")} |`);
+    console.log(`| Timeouts at ${data.timeoutMs / 1000} s (Mr Onion path) | ${count((x) => x.openai.outcome === "timeout")} |`);
     console.log(`| Endpoints agree: identical prompt token count | ${promptAgree} of ${both.length} |`);
     console.log(`| Endpoints agree: wall time per output token, difference median / max (${perToken.length} pairs) | ${one(quantile(perTokenDiffs, 0.5))}% / ${one(perTokenDiffs.length ? Math.max(...perTokenDiffs) : null)}% |`);
-    console.log(`| Wall time per output token: TestForge path / native, median | ${one(quantile(perToken.map((x) => x.openai.ms / x.openai.completionTokens), 0.5))} ms / ${one(quantile(perToken.map((x) => x.native.ms / x.native.evalCount), 0.5))} ms |`);
+    console.log(`| Wall time per output token: Mr Onion path / native, median | ${one(quantile(perToken.map((x) => x.openai.ms / x.openai.completionTokens), 0.5))} ms / ${one(quantile(perToken.map((x) => x.native.ms / x.native.evalCount), 0.5))} ms |`);
     console.log(`| Route outcome | ${Object.entries(r.reduce((acc, x) => ((acc[x.openai.outcome] = (acc[x.openai.outcome] ?? 0) + 1), acc), {})).map(([k, v]) => `${k} ${v}`).join(", ")} |`);
     console.log(`| **Both gates passed** | **${count((x) => x.quality?.gatesPassed)} of ${n}** |`);
     console.log(`| At least one test | ${count((x) => (x.quality?.tests ?? 0) > 0)} of ${n} |`);

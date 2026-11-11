@@ -5,7 +5,12 @@
 // TFP-258 it runs Comprehensive's generator too, so a ref from before
 // Phase 35's Comprehensive runs can't be compared (exit 2, named).
 //
-//   npm run check:template-unchanged -- <base-ref> [<head-ref>]
+//   npm run check:template-unchanged -- <base-ref> [<head-ref>] [--rename-map <file>]
+//
+// Phase 48 (TFP-278, Decision 11): with --rename-map, the base ref's output
+// has the map's literal name tokens replaced first
+// (scripts/template-unchanged/rename-map.json), so "identical except the
+// name" is measured, not read.
 //
 // The head defaults to the working tree. Each ref's src/, scripts/ and
 // package.json are extracted with `git archive` into a temporary folder that
@@ -21,7 +26,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CheckError, compareOutputs, formatResult } from "./template-unchanged/compare.mjs";
+import { applyRenameMap, CheckError, compareOutputs, formatResult, parseRenameMap } from "./template-unchanged/compare.mjs";
 
 const workTree = join(dirname(fileURLToPath(import.meta.url)), "..");
 const RESOLVER = "scripts/register-node-test-ts-resolver.mjs";
@@ -78,7 +83,7 @@ async function outputsFor(ref, outFile) {
         generate(workTree, outFile);
         return JSON.parse(readFileSync(outFile, "utf8"));
     }
-    const folder = mkdtempSync(join(tmpdir(), `testforge-template-${ref.name}-`));
+    const folder = mkdtempSync(join(tmpdir(), `mr-onion-template-${ref.name}-`));
     try {
         await extract(ref.commit, folder);
         generate(folder, outFile);
@@ -88,17 +93,37 @@ async function outputsFor(ref, outFile) {
     }
 }
 
+const USAGE = "usage: npm run check:template-unchanged -- <base-ref> [<head-ref>] [--rename-map <file>]";
+
+/** The refs, and the rename map's path when --rename-map names one (Phase 48, TFP-278). */
+function parseArgs(args) {
+    const refs = [];
+    let renameMap = null;
+    for (let i = 0; i < args.length; i++) {
+        if (args[i] === "--rename-map") {
+            renameMap = args[++i];
+            if (!renameMap) throw new CheckError(`--rename-map needs a file; ${USAGE}`);
+        } else refs.push(args[i]);
+    }
+    if (refs.length === 0 || refs.length > 2) throw new CheckError(USAGE);
+    return { baseArg: refs[0], headArg: refs[1] ?? WORK_TREE, renameMap };
+}
+
 async function main() {
-    const [baseArg, headArg = WORK_TREE] = process.argv.slice(2);
-    if (!baseArg) throw new CheckError("usage: npm run check:template-unchanged -- <base-ref> [<head-ref>]");
+    const { baseArg, headArg, renameMap } = parseArgs(process.argv.slice(2));
+    const replacements = renameMap === null ? null : parseRenameMap(readFileSync(renameMap, "utf8"));
     const base = resolveRef(baseArg);
     const head = resolveRef(headArg);
     const outDir = join(workTree, "comparisons", "template-unchanged", `${base.name}-${head.name}`);
     mkdirSync(outDir, { recursive: true });
     const baseOutputs = await outputsFor(base, join(outDir, "base.json"));
     const headOutputs = await outputsFor(head, join(outDir, "head.json"));
-    const result = compareOutputs(baseOutputs, headOutputs);
-    console.log(formatResult(result, base.name, head.name));
+    // Decision 11: with a map, the base side's output has the old names replaced by the new, then the two are compared
+    // byte for byte as before: only the names may differ.
+    const mapped = replacements === null ? null : applyRenameMap(baseOutputs, replacements);
+    const result = compareOutputs(mapped?.outputs ?? baseOutputs, headOutputs);
+    console.log(formatResult(result, mapped ? `${base.name} (renamed)` : base.name, head.name));
+    if (mapped) console.log(`rename map ${renameMap}: ${replacements.map(({ from, to }, index) => `"${from}" -> "${to}" ${mapped.counts[index]}x`).join("; ")}`);
     console.log(`outputs kept in ${outDir}`);
     return result.different.length === 0 ? 0 : 1;
 }

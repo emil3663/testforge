@@ -310,12 +310,12 @@ test("request recording: the passive run sends only GET page loads, one missing-
 
         assert.deepEqual([...new Set(recorded.map((r) => r.method))], ["GET"], "every request is a GET");
         assert.ok(recorded.every((r) => r.bodyBytes === 0), "no request carries a body");
-        const probes = recorded.filter((r) => r.path.startsWith("/testforge-missing-"));
+        const probes = recorded.filter((r) => r.path.startsWith("/mr-onion-missing-"));
         assert.equal(probes.length, 1, "exactly one missing-page probe");
         // Phase 41 (TFP-184): one GET per known path, on the one origin (these pages call no API).
         const known = recorded.filter((r) => (KNOWN_PATHS as readonly string[]).includes(r.path));
         assert.equal(known.length, KNOWN_PATHS.length, "one GET per known path");
-        const others = recorded.filter((r) => !r.path.startsWith("/testforge-missing-") && !(KNOWN_PATHS as readonly string[]).includes(r.path));
+        const others = recorded.filter((r) => !r.path.startsWith("/mr-onion-missing-") && !(KNOWN_PATHS as readonly string[]).includes(r.path));
         assert.deepEqual([...new Set(others.map((r) => r.path))].sort(), ["/", "/favicon.ico", "/login", "/notes"].filter((p) => p !== "/favicon.ico" || others.some((r) => r.path === p)).sort(), "only the covered pages (and the browser's own favicon request) are loaded");
         // Phase 39 (TFP-212): the checks that load the page themselves, each a load, and the rest one shared visit per page.
         const ownLoads = code.replace(SHARED_VISIT_HELPER, "").match(/tfGoto\(page, /g)?.length ?? 0;

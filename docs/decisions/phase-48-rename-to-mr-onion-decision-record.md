@@ -12,10 +12,31 @@ Scope:
 - It is built on its own branch, one ticket at a time, and merged to `main`
   in one go before Phase 47's TFP-247 publishes an image.
 
-Status: **Locked (Emil, 2026-11-08). Not started.**
-- Emil locked the record as drafted on 2026-11-08, confirming every
+Status: **Locked (Emil, 2026-11-08). In progress on branch
+`phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
+TFP-277 done (`9844233`); Gate A independently verified and passed
+(Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
+independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`). TFP-280 done (`276f7b5`); its
+allowlist accepted at Gate B (Emil, 2026-11-11).
+Gate B passed (Emil, 2026-11-11); TFP-281 (the repo rename and merge)
+next.
+Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
+[#23](https://github.com/emil3663/testforge/pull/23).**
+- ~~Emil locked the record as drafted on 2026-11-08, confirming every
   **[for Emil]** line below as proposed. The markers stay to show which
-  lines were proposals before the lock.
+  lines were proposals before the lock.~~
+  **Amended 2026-11-08, 23:33 (Emil, planning session; the lock above was
+  recorded before the [for Emil] lines had been confirmed):** Emil has now
+  confirmed every **[for Emil]** line as proposed, except Decision 9 (the
+  nightly's secret keeps its name; see its amendment), and with these
+  stated: the generated suite's text and the local model's tag are renamed
+  in this phase, not at 1.0 (Decision 3); the mailboxes and local folder
+  names stay for now (Decision 4); 0.3.0 is tagged only after the merge,
+  once every ticket on the branch is done (Decision 13); saved suites on a
+  user's machine aren't rewritten, while everything that ships is renamed
+  (Decision 8). The repo rename at Gate B is done with the planning
+  session's help in the owner's browser (Decision 10). The markers stay
+  to show which lines were proposals before the lock.
 - Source: the deferred-work register's D39 (proposed 2026-10-30; the
   trademark check closed by owner decision, 2026-11-03) and the current
   handover's "Not for this handover" (owner decision, 2026-11-08: the repo
@@ -23,8 +44,9 @@ Status: **Locked (Emil, 2026-11-08). Not started.**
 - Answered in this planning session (Emil, 2026-11-08): the `mr-onion`
   spelling, the one-time data-folder move, the old names working until 1.0,
   and no domain for now (Decisions 2, 6, 7 and 12).
-- Lines marked **[for Emil]** are proposals from this session, not
-  decisions, until the owner confirms them at the lock.
+- ~~Lines marked **[for Emil]** are proposals from this session, not
+  decisions, until the owner confirms them at the lock.~~ Confirmed
+  2026-11-08 (amendment above).
 - Order: after Phase 47's TFP-246, before TFP-247 (Decision 13). Tickets
   TFP-275 to TFP-281.
 - **On lock, in the same change:** the register's D39 row becomes
@@ -98,8 +120,15 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
   branch. Links to `github.com/emil3663/testforge` appear in `README.md`,
   `TEST_PLAN.md`, `CHANGELOG.md`, `.github/ISSUE_TEMPLATE/config.yml` and
   four decision files.
-- **No Pages site.** No Pages workflow exists, and nothing links to an
-  `emil3663.github.io` address, so there is nothing to redirect.
+- ~~**No Pages site.** No Pages workflow exists, and nothing links to an
+  `emil3663.github.io` address, so there is nothing to redirect.~~
+  **Amended 2026-11-11 (Emil, TFP-281):** there is a Pages site. No
+  workflow builds it: GitHub Pages publishes `main`'s README from the
+  branch root, now at `emil3663.github.io/mr-onion/` (its title read
+  "TestForge | mr-onion" after the rename, before the merge). Pages
+  doesn't redirect after a rename, so `emil3663.github.io/testforge/`
+  no longer answers (404). Nothing tracked links to either address.
+  Acceptance Criteria 7 checks the title after the merge.
 - **Mailboxes.** `testforgeapp@gmail.com`, with `+ci` for the nightly email
   (TFP-217) and `+<site>` for site runs (D25).
 - **Scale.** 1,348 tracked files mention the name, case-insensitively. Most
@@ -149,7 +178,8 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
    - Every `TESTFORGE_*` setting, including the child-process protocol
      names and the `TESTFORGE_PROGRESS` marker.
    - The plugin and marketplace names.
-   - Workflow step names, and the nightly's secret (Decision 9).
+   - Workflow step names~~, and the nightly's secret (Decision 9)~~.
+     **Amended 2026-11-08 (Emil):** the secret keeps its name (Decision 9).
    - **[for Emil]** The generated suite's own text: the header comment, the
      setting it checks and names in skip reasons, and the test data and
      markers it sends to a target (probe paths, `Mr Onion check <time>`,
@@ -197,6 +227,12 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      name supplied the value, the app prints one notice per process naming
      both, on the server log or CLI stderr. When both are set and differ,
      the new one wins and the notice says so.
+     **Amended 2026-11-09 (Emil, owner decision):** a blank `MRONION_X`
+     (empty or only spaces) doesn't hide a `TESTFORGE_X` that has a value:
+     the old value is used, and the notice says the new name is blank. A
+     pipeline that templates in an empty new variable keeps its old one. A
+     blank `MRONION_X` on its own stays as it was: returned blank, which
+     each reader treats as unset.
    - Removal of the old command and the old user-set names is planned with
      1.0 (the versioning rule, TFP-257: 1.0 after Phase 47 declares the CLI
      and report stable). The removal needs its own ticket at that time.
@@ -254,6 +290,14 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      required.
    - A repo rename keeps secrets, issues, Actions history, Dependabot and
      CodeQL settings.
+
+   **Amended 2026-11-08 (Emil):** the secret is **not** renamed in this
+   phase. `TESTFORGE_SMTP_PASSWORD` is only the label GitHub stores the
+   mailbox's app password under; it isn't user-facing, and the mailbox
+   itself stays (Decision 4). It keeps its name until a new mailbox is
+   decided (D44), so there is no fallback expression and no owner step in
+   GitHub's settings. `check:old-name`'s allowlist carries it, with this
+   reason. The sender display name still becomes "Mr Onion nightly".
 
 10. **The GitHub repo is renamed at the merge, by the owner.** **[for Emil]**
     - Sequence: the branch passes Gate B; the owner renames
@@ -377,6 +421,14 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      the notice once, and the UI lists the same runs. `--baseline latest`
      takes the same run as on 0.2.0. A saved site suite is reused, not
      regenerated.
+     **Amended 2026-11-09 (Gate A; the criterion was written from Phase
+     47's context line, which the code doesn't bear out):** the default
+     data folder holds site suites, candidates and gap-writer settings,
+     not the UI's runs. Runs are in the repo's `runs/` (`RUNS_ROOT`)
+     unless the runs folder is set inside the data folder, as `--data-dir`
+     does. So the criterion reads: the UI's candidate list is unchanged,
+     and a run kept in the data folder (via `--data-dir`) serves as
+     `--baseline latest` after the move. The repo's `runs/` isn't touched.
    - The same on Linux (`~/.local/share/testforge` → `mr-onion`), in the
      WSL clone. macOS is covered by unit tests only, stated as a limit.
    - Both folders present: the new one is used, nothing is moved, and the
@@ -420,8 +472,9 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      (`scripts/old-name/allowlist.json`). Each entry is a path or pattern
      with a reason, and it covers only: dated records and reports in
      `docs/decisions/`, `benchmarks/`, `examples/`, past `CHANGELOG.md`
-     entries, the compatibility code and its tests, the rename map, and
-     `LICENSE`'s absence of the name. The allowlist is reviewed line by line
+     entries, the compatibility code and its tests, the rename map,
+     the nightly's `TESTFORGE_SMTP_PASSWORD` secret name (Decision 9,
+     amended), and `LICENSE`'s absence of the name. The allowlist is reviewed line by line
      at Gate B.
    - The check runs in PR Validation.
    - `CHANGELOG.md`'s 0.3.0 entry states the new names, the old names'
@@ -439,6 +492,10 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      (Decision 9). The old URL `github.com/emil3663/testforge` redirects
      (web and `git ls-remote`). The template check against the branch's
      baseline is identical. `check:old-name` passes.
+     **Added 2026-11-11 (Emil):** once the Pages build after the merge
+     finishes, the `<title>` of `emil3663.github.io/mr-onion/` reads
+     Mr Onion ("Mr Onion | mr-onion", the second half being the repo
+     name), with no old name, quoted.
    - The register's D39 is marked done with the merge hash; the record's
      status line, the roadmap and the decisions index say "Complete".
 
@@ -467,7 +524,8 @@ lock:
   or rewritten. Until then, runs set both names (Decision 8). Not before
   1.0's removal ticket, and not as part of it.
 - **D44: A Mr Onion mailbox** in place of `testforgeapp@gmail.com` and its
-  aliases, if one is wanted (Decision 4).
+  aliases, if one is wanted (Decision 4). The nightly's secret is renamed
+  with it (Decision 9, amended 2026-11-08).
 - **A domain** (Decision 12): its own owner decision, with the four checks
   listed there, at the time of the EU/US trademark filing or when a site is
   needed.
@@ -501,6 +559,15 @@ lock:
 - **Deliverables:** the module and its unit tests; every read migrated.
 - **Acceptance criteria:** Acceptance Criteria 1.
 - **Dependencies:** the lock; the branch and its draft PR (Decision 14).
+- **Done 2026-11-08 (`46e3994`):** `check:template-unchanged cf501ad`
+  172 of 172 identical with no map; unit 791 of 791, self-test 5 of 5,
+  regression 73 of 73, none skipped. **Accepted (Emil, 2026-11-08):** the
+  direct reads left outside `src/lib/settings.ts`:
+  `src/lib/run/request-cap-fixture.ts:27-31` (copied into each run folder
+  and run in the Playwright child, so it can't import the module; its env
+  comes from the parent), `scripts/nightly-email/notify.mjs:41` (the
+  nightly's secret, which keeps its name: Decision 9, amended), and the
+  save/restore around writes in `src/app/api/generate/route-test-helpers.ts:47,72`.
 
 ### TFP-276 - The new names, with the old ones as fallback
 
@@ -535,6 +602,26 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 3. The highest-risk ticket:
   independently verified before Gate A passes.
 - **Dependencies:** TFP-276.
+- **Done 2026-11-09 (`9844233`): verified at Gate A, passed (Emil,
+  2026-11-09).** Every check used
+  copies under a temporary `LOCALAPPDATA` or `XDG_DATA_HOME`; the real
+  `%LOCALAPPDATA%\TestForge` was unchanged (41 files, no `MrOnion`)
+  before and after each. Evidence: `9844233`'s body, RUN-50 to RUN-53.
+  For the verification and the owner, not decided by the build:
+  - criterion 3 has the 0.2.0 folder holding runs, and "the UI lists
+    the same runs". The default folder holds runs only when a user set
+    the runs folder inside it; the UI lists the repo's `runs/`
+    (`RUNS_ROOT`), which the move doesn't touch. The build's check put
+    a run in the folder (`--data-dir`), showed it serving as
+    `--baseline latest` after the move, and showed the UI's candidate
+    list unchanged;
+  - `package.json` is still 0.2.0, so every footer on the branch says
+    "TestForge 0.2.0" until the 0.3.0 bump, which no ticket names;
+  - running this branch's app or CLI with no data folder set moves the
+    real folder; going back to `main` then needs `TESTFORGE_DATA_DIR`
+    pointed at the moved one (Decision 14's rollback note).
+- **Verified 2026-11-09 (planning session, independently; Gate A).** See
+  Gate A's verification below.
 
 ### TFP-278 - The generated suite's text and the local model's tag
 
@@ -552,6 +639,34 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 4. Independently verified
   (it moves the baseline).
 - **Dependencies:** Gate A.
+- **Done 2026-11-09 (`48604dc`; `TEMPLATE_BASELINE` `8892b7e`),
+  independently verified the same day.** The mapped template check 172 of 172 identical; raw, 307
+  changed lines, each the map applied; a one-character mutant red; a
+  0.2.0 saved suite's interactive test Not run without `--interactive`
+  and run with it; the old local tag used, and named, when only it is
+  built. The nightly dispatched on the branch at `8892b7e`: run
+  42556213111, every job green, its email sent. Evidence: `48604dc`'s
+  body, GEN-109 to GEN-112.
+- **Verified 2026-11-09 (planning session, independently).** Every
+  checked part of Acceptance Criteria 4 met:
+
+  | Check | How | Result |
+  |---|---|---|
+  | Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `48604dc`, `8892b7e`, `5bd1dde` on `phase-48-mr-onion`; the remote branch is at `5bd1dde`; `main` is still `cf501ad`. `8892b7e` changes only `TEMPLATE_BASELINE` (`06489fd` to `48604dc`) |
+  | The map holds names only | Read `rename-map.json` | Six tokens, each a spelling of the name (`TestForge-Sample-1`, `TestForge`, `TESTFORGE_`, `__testforge`, `testforge-`, `testforge@`) |
+  | Mapped check | `check:template-unchanged 3c742e8 --rename-map …`, in a fresh clone | 172 inputs, 172 identical, 0 different, exit 0; replacements 2, 222, 52, 8, 51 and 2 |
+  | Raw check | The same, with no map | Exit 1, every input different |
+  | Only the name moved | An independent script over the raw outputs: each changed line compared with every spelling of either name blanked | 307 changed lines, 0 with any other difference; the old name, in any case, 0 times in the head's output (172 inputs in the base's) |
+  | The mapped check can go red | A mutant: one character of the generated header comment changed (`key.` to `key!`) | 2 identical, 170 different, exit 1, the line named; reverted in the scratch clone |
+  | Saved suites keep running | Read `interactive.ts`, `child-env.ts`'s `runEnv`, `playwright-cli.ts` | Every run child gets the switch under both names; the UI's switch shows for a suite that checks either name |
+  | Old local model tag | Read `resolveLocalModel` and the generation gate | Only when the new tag is asked for and missing; the record's "model tag" verdict names `ollama cp` |
+  | Nightly on the branch | Run 42556213111's page | Nightly #36, `workflow_dispatch` on `phase-48-mr-onion` at `8892b7e`: success; unit, audit, dead-code, template-unchanged, issue and notify all ran |
+
+  Not checked here: the live saved-suite run against local Toolshop and
+  the full unit, self-test and regression suites (no browser or Windows
+  shell in this session; they rest on `48604dc`'s body, and Gate B
+  re-runs the suites). Accepted as reported: the old-name branch of the
+  timing filter has no test, since a probe route is always written fresh.
 
 ### TFP-279 - The visible name, JUnit, plugin and workflows
 
@@ -561,15 +676,31 @@ lock:
 - **Scope:** `seo.ts`, `page.tsx`, `HelpPanel.tsx`, `report/html.ts`,
   `comprehensive-html.ts`, `report/text.ts`, CLI messages,
   `junit.ts`'s default, `package.json`'s name, `marketplace.json`,
-  `plugin.json`, workflow step names, the nightly secret fallback and email
-  display name (Decision 9), the issue template's URL, and
+  `plugin.json`, workflow step names, ~~the nightly secret fallback and~~
+  the nightly email's display name (Decision 9; the secret keeps its name,
+  amended 2026-11-08), the issue template's URL, and
   `tests/regression/` file names. Plus the render-and-grep script of
   criterion 5.
+  **Amended 2026-11-09 (Emil, Gate A ruling 2):** also `package.json`'s
+  version to `0.3.0`, so the footer of a run on the branch names Mr Onion
+  and criterion 5's report check can pass. `main` doesn't see 0.3.0 before
+  the merge (Decision 14). The changelog's 0.3.0 entry stays in TFP-280,
+  and the `v0.3.0` tag in TFP-281, after the merge (Decision 13).
 - **Deliverables:** the above, with each user-visible string's test
   updated.
 - **Acceptance criteria:** Acceptance Criteria 5. The template check is
   identical against TFP-278's baseline with no map.
 - **Dependencies:** TFP-278.
+- **Done 2026-11-11 (`d4f10cf`; the plugin enabled under its new name in
+  `c35217d`; PR #23's checks green on `c35217d`).** Built 2026-11-09. `check:visible-name` on
+  the built app and a Standard and a Comprehensive run: no old name
+  found (RPT-22); JUnit named Mr Onion with counts equal to report.json's
+  (CI-23); the template check 172 of 172 identical against `48604dc`, no
+  map; `package.json` at 0.3.0 (Gate A ruling 2). The plugin installs as
+  `mr-onion-skills` from the renamed marketplace with its 12 skills,
+  under a temporary `CLAUDE_CONFIG_DIR` (the owner's condition, 2026-11-11;
+  the real config unchanged), and the repo's `.claude/settings.json`
+  enables the new name. Evidence: `d4f10cf`'s and `c35217d`'s bodies.
 
 ### TFP-280 - Docs, changelog and the leftover-name check
 
@@ -583,9 +714,40 @@ lock:
   text against history: present-tense text is renamed; a sentence that
   records what happened on a date, a quoted output or a frozen path keeps
   the old name.
+  **Amended 2026-11-11 (Emil):** the 0.3.0 entry's plugin reinstall note
+  says what a tester with the old plugin does. Once their checkout has
+  the renamed `marketplace.json`, `testforge-skills@testforge-skills-marketplace`
+  no longer resolves ("not found in marketplace"). They uninstall it,
+  add or update the marketplace (now `mr-onion-skills-marketplace`), and
+  install `mr-onion-skills@mr-onion-skills-marketplace`; the repo's
+  `.claude/settings.json` enables the new name (TFP-279). The skills are
+  the same twelve.
+  **Corrected 2026-11-11 (Gate B verification; the build tested it):**
+  "add or update the marketplace" is wrong. An update keeps the old
+  registered name, and the new plugin then isn't found. The tester removes
+  `testforge-skills-marketplace` and adds the checkout again, as the
+  changelog's four commands do.
 - **Deliverables:** the above.
 - **Acceptance criteria:** Acceptance Criteria 6.
 - **Dependencies:** TFP-279.
+- **Done 2026-11-11 (`276f7b5`; the Gate B doc fixes in `e50cc6e`; the
+  allowlist accepted at Gate B, Emil, 2026-11-11, criterion 6 read as
+  ruled there; PR #23's checks green on `e50cc6e`).** Built 2026-11-11. `check:old-name`: 16,838
+  hits in 1,175 files (tracked paths included), all allowed by 52 of 52
+  entries; seen failing on a planted name, a stale entry and an entry
+  with no reason; in PR Validation (TST-08). For Gate B to rule on:
+  - the allowlist goes beyond criterion 6's list. Besides dated records,
+    benchmarks, examples, past changelog entries, the compatibility code
+    and the rename map, it allows: docs/consolidation/ and the dated
+    handover and briefs; owner decisions (the nightly's secret, the old
+    mailbox, SECURITY's note, the WSL folder); and history inside living
+    files, line by line (Phase 31's model, CI-12, the roadmap's Scope
+    section, D39/D43/D44, Phase 48's own cases). Each entry says why;
+  - the reinstall note above says "add or update the marketplace".
+    Tried under a temporary `CLAUDE_CONFIG_DIR`, an update keeps the old
+    registered name, and the new plugin then can't be found; the
+    marketplace has to be removed and added again. The changelog gives
+    those four commands.
 
 ### TFP-281 - Merge to `main` — Gate B
 
@@ -594,9 +756,16 @@ lock:
   step, proven on the merged result.
 - **Scope:** merge `main` into the branch; independent verification of
   criteria 1 to 6; the owner's repo rename and the remote URL (Decision 10);
-  the `--no-ff` merge; the post-merge checks; the secret switch-over
-  (Decision 9); the record, roadmap, index and register updated; ask the
+  the `--no-ff` merge; the post-merge checks; ~~the secret switch-over
+  (Decision 9);~~ the record, roadmap, index and register updated; ask the
   owner before pushing `v0.3.0`.
+  **Amended 2026-11-11 (Gate B verification; Decision 9 as amended
+  2026-11-08):** there is no secret switch-over. The secret keeps its
+  name, so the post-merge check is only that the nightly's email
+  arrives.
+  **Amended 2026-11-11 (Emil):** also the Context section's Pages line
+  corrected, and the Pages site's title checked after the merge
+  (Acceptance Criteria 7).
 - **Deliverables:** the merge commit; the verification report; the
   `v0.3.0` tag and release, once confirmed.
 - **Acceptance criteria:** Acceptance Criteria 7.
@@ -623,6 +792,42 @@ lock:
 - Nothing visible has changed yet. If the phase stopped here, the branch
   would still be safe to merge.
 
+**Gate A verification (planning session, 2026-11-09): every checked
+criterion met. The owner's ruling: passed (Emil, 2026-11-09).** The planning session
+verified it independently. It designed the record but built none of
+TFP-275 to TFP-277.
+
+| Check | How | Result |
+|---|---|---|
+| Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `506c5b5`, `9844233`, `69142d0`, `81e239a` on `phase-48-mr-onion`; the remote branch is at `81e239a`; `main` is at `cf501ad` |
+| Scope | `git show --stat` | The move, the store's old-path mapping, the footer rule and their tests; plus the self-test server's temporary data folder (a real isolation defect found while building, fixed in the ticket per the standing policy: kept) |
+| Template unchanged (criteria 1-3) | `check:template-unchanged cf501ad`, in a fresh clone of the branch | 172 inputs, 172 identical, 0 different, exit 0 |
+| Data-dir, settings and version tests | Re-run, Linux, Node 22, temporary `XDG_DATA_HOME`/`LOCALAPPDATA` | 34 passed, 0 failed, 1 skipped (needs Chromium) |
+| The move on a real filesystem | A probe calling `dataDir()` twice per process, in temporary folders | Old only: renamed, file intact, one notice. Both: new used, old left, one notice. Rename refused (read-only parent, EACCES): old used, notice gives the reason; the next start moved it. `MRONION_DATA_DIR` or `TESTFORGE_DATA_DIR` set: that folder used, the default old folder not moved (the old name's deprecation notice printed) |
+| The owner's real folder | Listing of `%LOCALAPPDATA%` | `TestForge` present, no `MrOnion` |
+| Code read against Decision 6 | `data-dir.ts`, `store.ts`, `text.ts` | Matches, including the two review fixes (a process left on the old folder follows a later move; a pre-move record's suite path maps to the new folder) |
+
+Not checked here, with where they are checked:
+- the Windows live checks (655 files moved, `EPERM` with a held file,
+  `--baseline latest`'s 0 new / 46 known / 0 fixed on both versions, 470
+  reused) and TFP-276's live two-command run: this session has no Windows
+  shell or browser. They rest on `9844233`'s and `621dd8a`'s bodies, with
+  their outputs quoted;
+- the full unit, self-test and regression suites: not re-run (815, 5 and 73
+  reported). Gate B's verification re-runs them in full;
+- PR #23's checks for `69142d0` and `81e239a`: GitHub couldn't be read
+  from this session. Confirm they are green before TFP-278 starts.
+
+Rulings:
+1. **Criterion 3's runs line** is amended (above): the criterion was
+   wrong about where runs live, and the build's check is the right one.
+2. **The 0.3.0 bump** goes in TFP-279 (Emil, 2026-11-09). The changelog
+   entry and tag stay after it, as before.
+3. **The owner's own folder** (Emil, 2026-11-09): the owner backs up
+   `%LOCALAPPDATA%\TestForge` before running the branch himself, then lets
+   it move as it will for every user after the merge. Claude Code's checks
+   keep using copies under a temporary folder.
+
 ### Gate B — Ready for `main`
 
 - Acceptance Criteria 4 to 6 met on the branch with `main` merged in,
@@ -630,3 +835,81 @@ lock:
 - The owner rules on the merge, then renames the repo.
 - After the merge: Acceptance Criteria 7's post-merge checks, recorded
   under this gate.
+
+**Gate B verification, part 1: the branch (planning session,
+2026-11-11).** Every criterion checked here is met, except the three doc
+findings below, which are fixed in the working tree. The planning session
+built none of TFP-279 or TFP-280. The owner's ruling: pending.
+
+| Check | How | Result |
+|---|---|---|
+| Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `d4f10cf`, `c35217d`, `7d59b4e`, `276f7b5`, `d9a7853` on `phase-48-mr-onion`; the remote branch is at `d9a7853` |
+| `main` merged in | `git merge-base main phase-48-mr-onion` | `cf501ad`, which is `main`'s head: `main` hasn't moved since the lock, so the branch already contains it |
+| Package | `package.json` | `"name": "mr-onion"`, `"version": "0.3.0"` |
+| Leftover names (criterion 6) | `npm run check:old-name`, in a fresh clone | 16,838 hits in 1,175 files, all allowed by 52 of 52 entries, exit 0 |
+| The allowlist | All 52 entries read | Each has a reason, and each falls in one of five groups: frozen evidence and dated records (1-9); compatibility code and its tests (10-36); the owner's decisions to keep a name (37-40); history lines inside living files, matched line by line (41-52). Nothing user-facing found behind an entry. Whole-file entries are used only for compatibility code and dated documents |
+| Template, no map (criteria 4-5) | `check:template-unchanged 48604dc` | 172 inputs, 172 identical, exit 0 |
+| Template, mapped (criterion 4) | `check:template-unchanged 3c742e8 --rename-map …` | 172 inputs, 172 identical, exit 0 |
+| Types | `tsc --noEmit -p .` | exit 0 |
+| Changelog's 0.3.0 entry (criterion 6) | Read | New names, old names until 1.0, the data-folder move, the plugin reinstall (four commands), the repo, and going back to 0.2.x: all present |
+
+Findings, fixed in the working tree by the planning session (doc edits):
+1. `CHANGELOG.md` said "Your runs, site suites and candidates move with it"
+   and that going back lets 0.2.x find "your runs". The app's runs are in
+   the repo's `runs/` folder and don't move (Gate A ruling 1). Both lines
+   now name site suites, candidates and gap-writer settings.
+2. TFP-280's amendment said "add or update the marketplace". It is
+   corrected to remove and add again, as tested.
+3. TFP-281's scope still listed "the secret switch-over (Decision 9)",
+   which Decision 9's amendment removed. It is struck through, with an
+   amendment.
+
+Not checked here, and where they are checked: the full unit, self-test
+and regression suites, and `npm run check:visible-name` (it needs the
+built app and real Standard and Comprehensive runs). This session's VM
+has no Chromium, and each unit file takes about 30 s to start here. A
+fresh Claude Code session on the owner's machine that built none of
+Phase 48 runs them as part 2. Also not checked here: PR #23's checks on
+`d9a7853` (reported green).
+
+**For the owner's ruling:**
+- **Criterion 6's allowlist.** It goes beyond the record's list
+  (`docs/consolidation/`, the dated handover and briefs, the four owner
+  decisions, history lines in living files). Recommended: accept it, and
+  read criterion 6 as "frozen evidence, dated documents, compatibility
+  code, the owner's decisions to keep a name, and history lines in living
+  files, each with its reason".
+  **Ruled 2026-11-11 (Emil): accepted.** Criterion 6 reads as above.
+- **Gate B passes** once part 2 is green.
+
+**Gate B verification, part 2: the suites (a fresh Claude Code session on
+the owner's machine that built none of Phase 48, 2026-11-11).** It ran on
+`e50cc6e` (only docs changed since `d9a7853`), with a temporary
+`LOCALAPPDATA` and no data-folder setting. The real
+`%LOCALAPPDATA%\TestForge` was identical before and after (41 files), and
+nothing was committed.
+
+| Command | First run | Rerun, nothing changed |
+|---|---|---|
+| `npm run test:unit` | 821 tests: 820 passed, 1 failed, 0 skipped (18 min 18 s), exit 1 | The failing file alone (`routes.test.ts`): 3 of 3 passed, exit 0 |
+| `npm run test:self` | "Timed out waiting 120000ms from config.webServer", 0 tests ran, exit 1 | 5 of 5 passed, exit 0 |
+| `npm run test:regression` | 73 passed, none skipped, flaky or failed, exit 0 | — |
+| `npm run check:visible-name` | "no old name found", exit 0. Title "Mr Onion \| …", og:site_name "Mr Onion", JUnit `<testsuites name="Mr Onion">` with counts equal to the reports', the footer "Mr Onion 0.3.0 (e50cc6e)" | — |
+
+The two first-run failures, read by the planning session:
+- **Unit:** link health's 14 s route budget ran out under the full
+  suite's load (96 s for the test, against 39 s alone), so the missing
+  route was never checked and the test got Passed. This is the known
+  budget limit (U9 in `data/labelled-failures.md`). The rename touched
+  only name strings in that test and the code it runs. Ticketed as
+  TFP-282.
+- **Self-test:** the server's build-then-start runs inside a 120 s limit
+  unchanged since April 2026, and a cold build took 3.3 min. With a warm
+  cache it fits. The cause is the build cache, not the code. Ticketed as
+  TFP-283.
+
+**Gate B ruling (Emil, 2026-11-11): passed, green on the reruns.** Each
+first-run failure is logged as one data point with its cause. If either
+fails the same way again, it is treated as a real signal, not explained
+again. Next: the owner renames the repo (Decision 10), then the
+`--no-ff` merge and Acceptance Criteria 7's post-merge checks.

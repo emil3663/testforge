@@ -18,10 +18,11 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
+import { setting } from "@/lib/settings";
 import { randomUUID } from "node:crypto";
 
-const scratchRoot = mkdtempSync(join(tmpdir(), "testforge-runs-route-test-"));
-process.env.TESTFORGE_RUNS_ROOT = join(scratchRoot, "runs");
+const scratchRoot = mkdtempSync(join(tmpdir(), "mr-onion-runs-route-test-"));
+process.env.MRONION_RUNS_ROOT = join(scratchRoot, "runs");
 
 const { PATCH } = await import("./route.ts");
 const { NextRequest } = await import("next/server");
@@ -31,7 +32,7 @@ after(() => {
 });
 
 before(async () => {
-    await mkdir(process.env.TESTFORGE_RUNS_ROOT!, { recursive: true });
+    await mkdir(setting("RUNS_ROOT")!, { recursive: true });
 });
 
 function patchRequest(body: unknown) {

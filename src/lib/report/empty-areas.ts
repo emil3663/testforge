@@ -35,7 +35,7 @@ export function templateNotesFor(area: BestPracticeArea, suiteCode: string | nul
 
 function localReason(area: BestPracticeArea, generation: GenerationRecord | null): string | null {
     if (area === "reliability") return "reliability is never sent to the local model (Phase 33, GEN-32 open)";
-    if (!generation) return "no local model result was recorded for this run - the local model only fills gaps when TESTFORGE_OLLAMA_MODEL is set";
+    if (!generation) return "no local model result was recorded for this run - the local model only fills gaps when MRONION_OLLAMA_MODEL is set";
     const gapFill = generation.gapFill;
     if (!gapFill || !gapFill.gapAreas.includes(area)) return null;
     if (gapFill.outcome === "rejected") {

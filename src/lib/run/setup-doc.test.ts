@@ -51,7 +51,7 @@ test("the section has no field that takes a credential value", () => {
     assert.ok(section.includes('type="text"'));
 });
 
-test("the doc's JSON example is a login block TestForge accepts, using every field", () => {
+test("the doc's JSON example is a login block Mr Onion accepts, using every field", () => {
     const example = /```json\n([\s\S]*?)\n```/.exec(doc);
     assert.ok(example, "the doc has no JSON example");
 

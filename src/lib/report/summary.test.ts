@@ -14,7 +14,7 @@ import type { ExecutionRecord, ExecutionStatus } from "./types.ts";
 
 const { buildSummary } = await import("./summary.ts");
 
-const INTERACTIVE_OFF = "database round trip: saves data through a form on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
+const INTERACTIVE_OFF = "database round trip: saves data through a form on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run";
 
 function record(status: ExecutionStatus, skipReason?: string): ExecutionRecord {
     return {
@@ -53,7 +53,7 @@ test("a failure still means Not ready, whatever was not run", () => {
 });
 
 test("GEN-43: a run where every test was not run gives no recommendation, not Ready for release", () => {
-    const gapFill = "gap-fill test written by the local model (m): it may submit forms on the live site, so it only runs when TESTFORGE_INTERACTIVE=1 is set for the run";
+    const gapFill = "gap-fill test written by the local model (m): it may submit forms on the live site, so it only runs when MRONION_INTERACTIVE=1 is set for the run";
     const summary = buildSummary([record("Not run", gapFill)], [], 1);
     assert.equal(summary.releaseRecommendation, "No recommendation: no test ran");
     assert.equal(summary.executed, 0);

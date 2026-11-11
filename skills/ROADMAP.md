@@ -238,7 +238,7 @@ Status: built, unverified live (see caveat above).
   judgments. **Not covered, on both halves, not a close call.** Method
   caveat, stated plainly: no live browser-automation tool was available in
   the session that ran this spike, so the comparison is built from a full
-  read of TestForge's own code plus Playwright MCP's real tool
+  read of Mr Onion's own code plus Playwright MCP's real tool
   documentation (fetched directly, all 73 tools), not a live run against
   the two originally-intended target pages. Full comparison, including the
   per-tool breakdown: [`skills/INTROSPECT_CRAWL_SPIKE.md`](INTROSPECT_CRAWL_SPIKE.md).

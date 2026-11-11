@@ -11,10 +11,23 @@ export function escapeReportHtml(value: string) {
         .replace(/'/g, "&#39;");
 }
 
+/**
+ * Phase 48 (TFP-277, Decision 7): the name the product had at a version - TestForge below 0.3.0, Mr Onion from it -
+ * so a report never says a past run was made by a name it didn't have. A version that can't be read could be either
+ * name's, so it gets neither.
+ */
+function productNameAt(version: string): string | null {
+    const parts = /^(\d+)\.(\d+)\.\d+/.exec(version);
+    if (!parts) return null;
+    return Number(parts[1]) === 0 && Number(parts[2]) < 3 ? "TestForge" : "Mr Onion";
+}
+
 /** TFP-257: the report's last line, from the run's own stamp, so a saved report says what made it, not what reads it. */
 export function buildVersionFooterHtml(producedBy: { version: string; commit: string | null } | undefined) {
-    const made = producedBy
-        ? `TestForge ${escapeReportHtml(producedBy.version)}${producedBy.commit ? ` (${escapeReportHtml(producedBy.commit)})` : ""}`
+    const stamped = producedBy?.version ? producedBy : undefined;
+    const name = stamped ? productNameAt(stamped.version) : null;
+    const made = stamped
+        ? `${name ?? "version"} ${escapeReportHtml(stamped.version)}${stamped.commit ? ` (${escapeReportHtml(stamped.commit)})` : ""}`
         : "TestForge version not recorded";
     return `<footer style="max-width: 1140px; margin: 0 auto; padding: 0 16px 24px; font-size: 12px; color: #71717a;">${made}</footer>`;
 }

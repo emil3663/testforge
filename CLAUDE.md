@@ -6,6 +6,8 @@ How work is decided, built and recorded, and what *owner decision* and
 Read the handover, then only the test-plan area (`docs/test-plan/<area>.md`)
 and the record section the ticket names.
 
+The product is Mr Onion; `npm run check:old-name` must pass.
+
 ## Shell output: use RTK
 
 RTK (Rust Token Killer, `github.com/rtk-ai/rtk`) compresses command output
@@ -46,6 +48,8 @@ When the owner corrects something that would recur, propose a one-line rule
 for this file (or for the skill that should have caught it) in your next
 commit. Keep this file short: every line here should prevent a real
 mistake. Ticket-specific rulings stay in the decision records.
+
+- "Locked" alone doesn't confirm a record's **[for Emil]** lines: ask, and record only what the owner confirms.
 
 ## Before reporting a ticket done
 

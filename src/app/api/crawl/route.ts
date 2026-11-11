@@ -31,9 +31,9 @@ interface CrawlJob {
 }
 
 const globalCrawlJobs = globalThis as typeof globalThis & {
-    __testforgeCrawlJobs?: Map<string, CrawlJob>;
+    __mrOnionCrawlJobs?: Map<string, CrawlJob>;
 };
-const crawlJobs = globalCrawlJobs.__testforgeCrawlJobs ?? (globalCrawlJobs.__testforgeCrawlJobs = new Map());
+const crawlJobs = globalCrawlJobs.__mrOnionCrawlJobs ?? (globalCrawlJobs.__mrOnionCrawlJobs = new Map());
 
 function buildCrawlSnapshot(job: CrawlJob): CrawlStatusPayload {
     return {
