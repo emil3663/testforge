@@ -120,8 +120,15 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
   branch. Links to `github.com/emil3663/testforge` appear in `README.md`,
   `TEST_PLAN.md`, `CHANGELOG.md`, `.github/ISSUE_TEMPLATE/config.yml` and
   four decision files.
-- **No Pages site.** No Pages workflow exists, and nothing links to an
-  `emil3663.github.io` address, so there is nothing to redirect.
+- ~~**No Pages site.** No Pages workflow exists, and nothing links to an
+  `emil3663.github.io` address, so there is nothing to redirect.~~
+  **Amended 2026-11-11 (Emil, TFP-281):** there is a Pages site. No
+  workflow builds it: GitHub Pages publishes `main`'s README from the
+  branch root, now at `emil3663.github.io/mr-onion/` (its title read
+  "TestForge | mr-onion" after the rename, before the merge). Pages
+  doesn't redirect after a rename, so `emil3663.github.io/testforge/`
+  no longer answers (404). Nothing tracked links to either address.
+  Acceptance Criteria 7 checks the title after the merge.
 - **Mailboxes.** `testforgeapp@gmail.com`, with `+ci` for the nightly email
   (TFP-217) and `+<site>` for site runs (D25).
 - **Scale.** 1,348 tracked files mention the name, case-insensitively. Most
@@ -485,6 +492,10 @@ What carries the name today (`main` at `4459382`, 2026-11-08):
      (Decision 9). The old URL `github.com/emil3663/testforge` redirects
      (web and `git ls-remote`). The template check against the branch's
      baseline is identical. `check:old-name` passes.
+     **Added 2026-11-11 (Emil):** once the Pages build after the merge
+     finishes, the `<title>` of `emil3663.github.io/mr-onion/` reads
+     Mr Onion ("Mr Onion | mr-onion", the second half being the repo
+     name), with no old name, quoted.
    - The register's D39 is marked done with the merge hash; the record's
      status line, the roadmap and the decisions index say "Complete".
 
@@ -752,6 +763,9 @@ lock:
   2026-11-08):** there is no secret switch-over. The secret keeps its
   name, so the post-merge check is only that the nightly's email
   arrives.
+  **Amended 2026-11-11 (Emil):** also the Context section's Pages line
+  corrected, and the Pages site's title checked after the merge
+  (Acceptance Criteria 7).
 - **Deliverables:** the merge commit; the verification report; the
   `v0.3.0` tag and release, once confirmed.
 - **Acceptance criteria:** Acceptance Criteria 7.
