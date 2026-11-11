@@ -38,12 +38,12 @@
     "@playwright/test": "^1.59.1",
     "dictionary-en": "^4.0.0",
     "dictionary-en-gb": "^3.0.0",
-    "next": "16.4.3",
+    "next": "16.4.5",
     "nspell": "^2.1.5",
     "openai": "^6.34.0",
     "playwright-core": "^1.59.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "typescript": "^5"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "allure-playwright": "^3.7.1",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "16.4.5",
     "knip": "6.44.0",
     "nodemailer": "10.1.7",
     "tailwindcss": "^4"
