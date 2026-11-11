@@ -1,6 +1,6 @@
 {
   "extraKnownMarketplaces": {
-    "testforge-skills-marketplace": {
+    "mr-onion-skills-marketplace": {
       "source": {
         "source": "directory",
         "path": "./"
@@ -8,7 +8,7 @@
     }
   },
   "enabledPlugins": {
-    "testforge-skills@testforge-skills-marketplace": true
+    "mr-onion-skills@mr-onion-skills-marketplace": true
   },
   "hooks": {
     "SessionStart": [

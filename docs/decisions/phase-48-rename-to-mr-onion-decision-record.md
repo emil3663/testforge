@@ -701,6 +701,14 @@ lock:
   text against history: present-tense text is renamed; a sentence that
   records what happened on a date, a quoted output or a frozen path keeps
   the old name.
+  **Amended 2026-11-11 (Emil):** the 0.3.0 entry's plugin reinstall note
+  says what a tester with the old plugin does. Once their checkout has
+  the renamed `marketplace.json`, `testforge-skills@testforge-skills-marketplace`
+  no longer resolves ("not found in marketplace"). They uninstall it,
+  add or update the marketplace (now `mr-onion-skills-marketplace`), and
+  install `mr-onion-skills@mr-onion-skills-marketplace`; the repo's
+  `.claude/settings.json` enables the new name (TFP-279). The skills are
+  the same twelve.
 - **Deliverables:** the above.
 - **Acceptance criteria:** Acceptance Criteria 6.
 - **Dependencies:** TFP-279.
