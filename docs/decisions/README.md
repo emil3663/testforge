@@ -51,7 +51,7 @@ research, nothing locked.
 | 45 | Docker sandbox for model-written tests | Locked (2026-10-20), not started | DR [`phase-45-docker-sandbox-decision-record.md`](phase-45-docker-sandbox-decision-record.md) |
 | 46 | App screens | Locked (2026-10-20), not started | DR [`phase-46-app-screens-decision-record.md`](phase-46-app-screens-decision-record.md) |
 | 47 | Mr Onion in a target's CI pipeline | Locked (2026-10-27); in progress, paused at TFP-247 until Phase 48 merges | DR [`phase-47-ci-integration-decision-record.md`](phase-47-ci-integration-decision-record.md) · BL [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) Part 1 |
-| 48 | The rename to Mr Onion (D39) | Locked (2026-11-08); in progress, TFP-275 and TFP-276 done, TFP-277 done, Gate A passed (Emil, 2026-11-09), TFP-278 done, TFP-279 done, TFP-280 built (allowlist for Gate B); after TFP-246, before TFP-247; branch `phase-48-mr-onion` | DR [`phase-48-rename-to-mr-onion-decision-record.md`](phase-48-rename-to-mr-onion-decision-record.md) |
+| 48 | The rename to Mr Onion (D39) | Locked (2026-11-08); in progress, TFP-275 and TFP-276 done, TFP-277 done, Gate A passed (Emil, 2026-11-09), TFP-278 done, TFP-279 done, TFP-280 done, Gate B passed (Emil, 2026-11-11), TFP-281 (rename and merge) next; after TFP-246, before TFP-247; branch `phase-48-mr-onion` | DR [`phase-48-rename-to-mr-onion-decision-record.md`](phase-48-rename-to-mr-onion-decision-record.md) |
 
 ## Not tied to one phase
 

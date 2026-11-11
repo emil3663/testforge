@@ -1333,6 +1333,57 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - The existing crawl tests pass unchanged.
 - **Dependencies:** TFP-263.
 
+### TFP-282 - Link health's route test can pass under load without checking the route (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P2
+- **Suggested labels:** `test`, `flaky`
+- **Problem it solves:** in Phase 48's Gate B (2026-11-11), the unit test
+  "a linked missing route fails link health, naming it"
+  (`src/lib/introspect/routes.test.ts`) got Passed instead of Failed.
+  Beside the full suite's other browser tests it took 96 s, and the
+  generated check spent its 14 s route budget ("2 linked routes not
+  checked: the check stops after 14 s (/spa#/chainsaws,
+  /spa#/products/1)") before reaching the missing route. Alone it took
+  39 s and passed. The budget is a known coverage limit (U9 in
+  `data/labelled-failures.md`). The weakness is that the test passes
+  when the check never reached what it is meant to catch.
+- **Scope:** the test fails, not passes, when the route it checks wasn't
+  reached: it asserts the missing route was checked, not only the
+  verdict. It also gets the time it needs under load, either through its
+  own budget or by running alone. The generated check's 14 s budget
+  stays as it is: this ticket changes the test, not the template.
+- **Acceptance criteria:**
+  - **Red first:** with the budget forced short, today's test passes; the
+    new test fails, naming the unchecked route.
+  - The test passes in a full `npm run test:unit`, three runs in a row.
+  - `check:template-unchanged`: identical with no map.
+- **Dependencies:** Phase 48 merged.
+
+### TFP-283 - The self-test's server times out on a cold build (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P3
+- **Suggested labels:** `test`, `ci`
+- **Problem it solves:** `playwright.self-test.config.ts`'s webServer runs
+  `npm run serve:self-test`, which builds and then starts the app, within
+  `timeout: 120_000`. In Phase 48's Gate B (2026-11-11), a fresh session
+  with no build cache took 3.3 min to compile, and the suite stopped with
+  "Timed out waiting 120000ms from config.webServer" before any test ran.
+  The rerun, with a warm cache, passed 5 of 5. Whether the suite runs
+  depends on the cache, not the code.
+- **Scope:** the build happens before Playwright waits for the server (a
+  separate build step, as `test:regression` already does), or the
+  timeout covers a measured cold build. CI's self-test job gets the same
+  fix.
+- **Acceptance criteria:**
+  - **Red first:** with `.next/` removed, today's command times out;
+    after the fix it runs all 5 tests.
+  - A warm-cache run takes no longer than before, within a minute.
+- **Dependencies:** Phase 48 merged.
+
 ---
 
 ## Owner plans to carry into the register (2026-10-28) — carried 2026-10-30 as D38 and D39

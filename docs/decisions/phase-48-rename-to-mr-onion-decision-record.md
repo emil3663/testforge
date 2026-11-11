@@ -16,8 +16,10 @@ Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
 (Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
-independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`). TFP-280 built (`276f7b5`); its
-allowlist waits for Gate B's line-by-line review.
+independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`). TFP-280 done (`276f7b5`); its
+allowlist accepted at Gate B (Emil, 2026-11-11).
+Gate B passed (Emil, 2026-11-11); TFP-281 (the repo rename and merge)
+next.
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -717,7 +719,9 @@ lock:
 - **Deliverables:** the above.
 - **Acceptance criteria:** Acceptance Criteria 6.
 - **Dependencies:** TFP-279.
-- **Built 2026-11-11 (`276f7b5`), not yet done.** `check:old-name`: 16,838
+- **Done 2026-11-11 (`276f7b5`; the Gate B doc fixes in `e50cc6e`; the
+  allowlist accepted at Gate B, Emil, 2026-11-11, criterion 6 read as
+  ruled there; PR #23's checks green on `e50cc6e`).** Built 2026-11-11. `check:old-name`: 16,838
   hits in 1,175 files (tracked paths included), all allowed by 52 of 52
   entries; seen failing on a planted name, a stale entry and an entry
   with no reason; in PR Validation (TST-08). For Gate B to rule on:
@@ -862,5 +866,36 @@ Phase 48 runs them as part 2. Also not checked here: PR #23's checks on
   code, the owner's decisions to keep a name, and history lines in living
   files, each with its reason".
   **Ruled 2026-11-11 (Emil): accepted.** Criterion 6 reads as above.
-- **Gate B passes** once part 2 is green. Then the repo rename (Decision
-  10), the merge and Acceptance Criteria 7's post-merge checks.
+- **Gate B passes** once part 2 is green.
+
+**Gate B verification, part 2: the suites (a fresh Claude Code session on
+the owner's machine that built none of Phase 48, 2026-11-11).** It ran on
+`e50cc6e` (only docs changed since `d9a7853`), with a temporary
+`LOCALAPPDATA` and no data-folder setting. The real
+`%LOCALAPPDATA%\TestForge` was identical before and after (41 files), and
+nothing was committed.
+
+| Command | First run | Rerun, nothing changed |
+|---|---|---|
+| `npm run test:unit` | 821 tests: 820 passed, 1 failed, 0 skipped (18 min 18 s), exit 1 | The failing file alone (`routes.test.ts`): 3 of 3 passed, exit 0 |
+| `npm run test:self` | "Timed out waiting 120000ms from config.webServer", 0 tests ran, exit 1 | 5 of 5 passed, exit 0 |
+| `npm run test:regression` | 73 passed, none skipped, flaky or failed, exit 0 | — |
+| `npm run check:visible-name` | "no old name found", exit 0. Title "Mr Onion \| …", og:site_name "Mr Onion", JUnit `<testsuites name="Mr Onion">` with counts equal to the reports', the footer "Mr Onion 0.3.0 (e50cc6e)" | — |
+
+The two first-run failures, read by the planning session:
+- **Unit:** link health's 14 s route budget ran out under the full
+  suite's load (96 s for the test, against 39 s alone), so the missing
+  route was never checked and the test got Passed. This is the known
+  budget limit (U9 in `data/labelled-failures.md`). The rename touched
+  only name strings in that test and the code it runs. Ticketed as
+  TFP-282.
+- **Self-test:** the server's build-then-start runs inside a 120 s limit
+  unchanged since April 2026, and a cold build took 3.3 min. With a warm
+  cache it fits. The cause is the build cache, not the code. Ticketed as
+  TFP-283.
+
+**Gate B ruling (Emil, 2026-11-11): passed, green on the reruns.** Each
+first-run failure is logged as one data point with its cause. If either
+fails the same way again, it is treated as a real signal, not explained
+again. Next: the owner renames the repo (Decision 10), then the
+`--no-ff` merge and Acceptance Criteria 7's post-merge checks.
