@@ -16,8 +16,7 @@ Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
 (Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
-independently verified (2026-11-09). TFP-279 built (`d4f10cf`); the plugin's
-install waits for the owner's go-ahead.
+independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`).
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -678,16 +677,16 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 5. The template check is
   identical against TFP-278's baseline with no map.
 - **Dependencies:** TFP-278.
-- **Built 2026-11-09 (`d4f10cf`), not yet done.** `check:visible-name` on
+- **Done 2026-11-11 (`d4f10cf`; the plugin enabled under its new name in
+  `c35217d`; PR #23's checks green on `c35217d`).** Built 2026-11-09. `check:visible-name` on
   the built app and a Standard and a Comprehensive run: no old name
   found (RPT-22); JUnit named Mr Onion with counts equal to report.json's
   (CI-23); the template check 172 of 172 identical against `48604dc`, no
-  map; `package.json` at 0.3.0 (Gate A ruling 2). Waiting for the owner
-  (confirmation required, a Claude settings change): installing the
-  plugin as `mr-onion-skills` from the renamed marketplace, and the
-  repo's `.claude/settings.json`, which still enables
-  `testforge-skills@testforge-skills-marketplace` and so doesn't resolve
-  in this tree. Evidence: `d4f10cf`'s body.
+  map; `package.json` at 0.3.0 (Gate A ruling 2). The plugin installs as
+  `mr-onion-skills` from the renamed marketplace with its 12 skills,
+  under a temporary `CLAUDE_CONFIG_DIR` (the owner's condition, 2026-11-11;
+  the real config unchanged), and the repo's `.claude/settings.json`
+  enables the new name. Evidence: `d4f10cf`'s and `c35217d`'s bodies.
 
 ### TFP-280 - Docs, changelog and the leftover-name check
 
