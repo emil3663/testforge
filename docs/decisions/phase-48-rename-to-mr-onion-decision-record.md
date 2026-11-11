@@ -16,7 +16,8 @@ Status: **Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
 (Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
-independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`).
+independently verified (2026-11-09). TFP-279 done (`d4f10cf`, `c35217d`). TFP-280 built (`276f7b5`); its
+allowlist waits for Gate B's line-by-line review.
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
 [#23](https://github.com/emil3663/testforge/pull/23).**
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
@@ -711,6 +712,22 @@ lock:
 - **Deliverables:** the above.
 - **Acceptance criteria:** Acceptance Criteria 6.
 - **Dependencies:** TFP-279.
+- **Built 2026-11-11 (`276f7b5`), not yet done.** `check:old-name`: 16,838
+  hits in 1,175 files (tracked paths included), all allowed by 52 of 52
+  entries; seen failing on a planted name, a stale entry and an entry
+  with no reason; in PR Validation (TST-08). For Gate B to rule on:
+  - the allowlist goes beyond criterion 6's list. Besides dated records,
+    benchmarks, examples, past changelog entries, the compatibility code
+    and the rename map, it allows: docs/consolidation/ and the dated
+    handover and briefs; owner decisions (the nightly's secret, the old
+    mailbox, SECURITY's note, the WSL folder); and history inside living
+    files, line by line (Phase 31's model, CI-12, the roadmap's Scope
+    section, D39/D43/D44, Phase 48's own cases). Each entry says why;
+  - the reinstall note above says "add or update the marketplace".
+    Tried under a temporary `CLAUDE_CONFIG_DIR`, an update keeps the old
+    registered name, and the new plugin then can't be found; the
+    marketplace has to be removed and added again. The changelog gives
+    those four commands.
 
 ### TFP-281 - Merge to `main` — Gate B
 
