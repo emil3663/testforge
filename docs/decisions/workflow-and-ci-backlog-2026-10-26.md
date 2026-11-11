@@ -1384,6 +1384,31 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - A warm-cache run takes no longer than before, within a minute.
 - **Dependencies:** Phase 48 merged.
 
+### TFP-284 - Playwright on the current GitHub runner image (added 2026-11-11)
+
+- **Status:** Open.
+- **Phase:** None — after Phase 48 merges
+- **Priority:** P2
+- **Suggested labels:** `ci`, `dependencies`
+- **Problem it solves:** on 2026-11-11, between 09:05 and 15:25 UTC,
+  GitHub's `ubuntu-latest` moved from `ubuntu-24.04` to `ubuntu-26.04`.
+  Playwright 1.59.1 stops there: "ERROR: Playwright does not support
+  chromium on ubuntu26.04-x64" (PR Validation run 43048248301, both
+  attempts), before lint. Phase 48's merge was unblocked by pinning every
+  job to `ubuntu-24.04` (owner decision, 2026-11-11). That pin holds only
+  while GitHub keeps the 24.04 image.
+- **Scope:** move Playwright to a release that supports `ubuntu-26.04`
+  (1.65.0 is the latest on 2026-11-11; support not yet checked), then
+  return the jobs to `ubuntu-latest` or pin `ubuntu-26.04`. The browser
+  version moves with it, so the generated template is re-checked.
+- **Acceptance criteria:**
+  - **Red first:** the PR Validation failure above, quoted.
+  - Every workflow green on the new image: PR Validation, CodeQL,
+    regression, self-test, and a dispatched nightly.
+  - `check:template-unchanged`: identical with no map, or each difference
+    named and owner-accepted.
+- **Dependencies:** Phase 48 merged.
+
 ---
 
 ## Owner plans to carry into the register (2026-10-28) — carried 2026-10-30 as D38 and D39
