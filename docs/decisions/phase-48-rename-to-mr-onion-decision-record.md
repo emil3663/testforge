@@ -709,6 +709,11 @@ lock:
   install `mr-onion-skills@mr-onion-skills-marketplace`; the repo's
   `.claude/settings.json` enables the new name (TFP-279). The skills are
   the same twelve.
+  **Corrected 2026-11-11 (Gate B verification; the build tested it):**
+  "add or update the marketplace" is wrong. An update keeps the old
+  registered name, and the new plugin then isn't found. The tester removes
+  `testforge-skills-marketplace` and adds the checkout again, as the
+  changelog's four commands do.
 - **Deliverables:** the above.
 - **Acceptance criteria:** Acceptance Criteria 6.
 - **Dependencies:** TFP-279.
@@ -736,9 +741,13 @@ lock:
   step, proven on the merged result.
 - **Scope:** merge `main` into the branch; independent verification of
   criteria 1 to 6; the owner's repo rename and the remote URL (Decision 10);
-  the `--no-ff` merge; the post-merge checks; the secret switch-over
-  (Decision 9); the record, roadmap, index and register updated; ask the
+  the `--no-ff` merge; the post-merge checks; ~~the secret switch-over
+  (Decision 9);~~ the record, roadmap, index and register updated; ask the
   owner before pushing `v0.3.0`.
+  **Amended 2026-11-11 (Gate B verification; Decision 9 as amended
+  2026-11-08):** there is no secret switch-over. The secret keeps its
+  name, so the post-merge check is only that the nightly's email
+  arrives.
 - **Deliverables:** the merge commit; the verification report; the
   `v0.3.0` tag and release, once confirmed.
 - **Acceptance criteria:** Acceptance Criteria 7.
@@ -808,3 +817,50 @@ Rulings:
 - The owner rules on the merge, then renames the repo.
 - After the merge: Acceptance Criteria 7's post-merge checks, recorded
   under this gate.
+
+**Gate B verification, part 1: the branch (planning session,
+2026-11-11).** Every criterion checked here is met, except the three doc
+findings below, which are fixed in the working tree. The planning session
+built none of TFP-279 or TFP-280. The owner's ruling: pending.
+
+| Check | How | Result |
+|---|---|---|
+| Commits exist and are pushed | `git log`, `git show --stat`, `git ls-remote origin` | `d4f10cf`, `c35217d`, `7d59b4e`, `276f7b5`, `d9a7853` on `phase-48-mr-onion`; the remote branch is at `d9a7853` |
+| `main` merged in | `git merge-base main phase-48-mr-onion` | `cf501ad`, which is `main`'s head: `main` hasn't moved since the lock, so the branch already contains it |
+| Package | `package.json` | `"name": "mr-onion"`, `"version": "0.3.0"` |
+| Leftover names (criterion 6) | `npm run check:old-name`, in a fresh clone | 16,838 hits in 1,175 files, all allowed by 52 of 52 entries, exit 0 |
+| The allowlist | All 52 entries read | Each has a reason, and each falls in one of five groups: frozen evidence and dated records (1-9); compatibility code and its tests (10-36); the owner's decisions to keep a name (37-40); history lines inside living files, matched line by line (41-52). Nothing user-facing found behind an entry. Whole-file entries are used only for compatibility code and dated documents |
+| Template, no map (criteria 4-5) | `check:template-unchanged 48604dc` | 172 inputs, 172 identical, exit 0 |
+| Template, mapped (criterion 4) | `check:template-unchanged 3c742e8 --rename-map …` | 172 inputs, 172 identical, exit 0 |
+| Types | `tsc --noEmit -p .` | exit 0 |
+| Changelog's 0.3.0 entry (criterion 6) | Read | New names, old names until 1.0, the data-folder move, the plugin reinstall (four commands), the repo, and going back to 0.2.x: all present |
+
+Findings, fixed in the working tree by the planning session (doc edits):
+1. `CHANGELOG.md` said "Your runs, site suites and candidates move with it"
+   and that going back lets 0.2.x find "your runs". The app's runs are in
+   the repo's `runs/` folder and don't move (Gate A ruling 1). Both lines
+   now name site suites, candidates and gap-writer settings.
+2. TFP-280's amendment said "add or update the marketplace". It is
+   corrected to remove and add again, as tested.
+3. TFP-281's scope still listed "the secret switch-over (Decision 9)",
+   which Decision 9's amendment removed. It is struck through, with an
+   amendment.
+
+Not checked here, and where they are checked: the full unit, self-test
+and regression suites, and `npm run check:visible-name` (it needs the
+built app and real Standard and Comprehensive runs). This session's VM
+has no Chromium, and each unit file takes about 30 s to start here. A
+fresh Claude Code session on the owner's machine that built none of
+Phase 48 runs them as part 2. Also not checked here: PR #23's checks on
+`d9a7853` (reported green).
+
+**For the owner's ruling:**
+- **Criterion 6's allowlist.** It goes beyond the record's list
+  (`docs/consolidation/`, the dated handover and briefs, the four owner
+  decisions, history lines in living files). Recommended: accept it, and
+  read criterion 6 as "frozen evidence, dated documents, compatibility
+  code, the owner's decisions to keep a name, and history lines in living
+  files, each with its reason".
+  **Ruled 2026-11-11 (Emil): accepted.** Criterion 6 reads as above.
+- **Gate B passes** once part 2 is green. Then the repo rename (Decision
+  10), the merge and Acceptance Criteria 7's post-merge checks.

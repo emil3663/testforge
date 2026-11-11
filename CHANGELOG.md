@@ -31,8 +31,10 @@ Ticket and test IDs, saved runs, baselines and site suites are unchanged.
   included.
 - **The data folder moves once.** On the first start, `%LOCALAPPDATA%\TestForge`
   becomes `%LOCALAPPDATA%\MrOnion` (macOS: `~/Library/Application Support/MrOnion`;
-  Linux: `~/.local/share/mr-onion`). Your runs, site suites and candidates
-  move with it, and one notice says where they went. A folder you set
+  Linux: `~/.local/share/mr-onion`). Your site suites, candidates and
+  gap-writer settings move with it, and one notice says where they went.
+  The runs the app lists are in the repo's `runs/` folder, which the move
+  doesn't touch. A folder you set
   yourself (`--data-dir`, `MRONION_DATA_DIR` or `TESTFORGE_DATA_DIR`) is
   never moved. If the move can't happen (a file in the folder held open),
   the old folder is used and the next start tries again.
@@ -64,7 +66,7 @@ Ticket and test IDs, saved runs, baselines and site suites are unchanged.
   redirect.
 - **Going back to 0.2.x** reads only the old data folder, which has moved.
   Set `TESTFORGE_DATA_DIR` to the moved folder (`%LOCALAPPDATA%\MrOnion` and
-  so on) so 0.2.x finds your runs and suites.
+  so on) so 0.2.x finds your site suites and candidates.
 
 ### Security
 
