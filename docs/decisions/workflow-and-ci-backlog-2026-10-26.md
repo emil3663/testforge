@@ -477,6 +477,35 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-247 - Packaging: a pinned, reproducible runner
 
+- **Status:** Built 2026-11-12 (Claude Code): `7b65bc4`, on the local
+  branch `tfp-247-docker-image`, to verify; not pushed or published.
+  Unit 830 of 830, 0 skipped (821 plus the 9 new).
+  `Dockerfile` on Ubuntu 24.04 (CI's runner pin, so TFP-284 moves both),
+  base images pinned by digest: Node 24.14.1 copied from the official
+  image, Playwright 1.59.1 from the lockfile (`npm ci --omit=dev`), its
+  Chromium headless shell 147.0.7727.15 (every launch in `src/` is
+  headless); `scripts/image/check-pins.mjs` fails the build if any of
+  them drifts (CI-24). `.dockerignore` lets in only what `mr-onion run`
+  loads. `.github/workflows/release-image.yml`: a `v*` tag builds, runs
+  `scripts/image/verify-image.mjs` on the built image (CI-25), then pushes
+  that same image as `ghcr.io/emil3663/mr-onion:<version>`; a pull request
+  touching the image, or a manual run, builds and verifies without
+  pushing. **Measured locally** (Windows 11, Docker Desktop 29.4.0):
+  build 2 min 41 s, 1.74 GB unpacked; `verify-image.mjs` every check
+  held, and failed 4 of 5 on an image with its browsers moved; Acceptance
+  Criteria 4's Toolshop comparison (CI-26) identical on clean
+  (exit `1`, 470 / 46 / 0 / 18, `17ec8e9`) and with-bugs (exit `1`,
+  481 / 84 / 0 / 20, `5ca6b7a`). **A fresh-context review** of the diff
+  found the new test missing from `test:unit` (a lost space, which also
+  dropped `src/cli/config.test.ts`) and a manual run from a tag able to
+  publish; both fixed, with the pull-request paths widened to everything
+  the image holds; the image rebuilt and re-verified. Left as found: the
+  system libraries `playwright install --with-deps` takes from Ubuntu are
+  unpinned (the `Dockerfile` says so); a pull request's run stamps its
+  merge commit. **Not yet shown:** the workflow on
+  GitHub's runner (it first runs on this ticket's pull request), and
+  any push to ghcr.io, which makes the image public: the owner is asked
+  before the first one.
 - **Phase:** 47
 - **Priority:** P1
 - **Suggested labels:** `ci`, `release`
