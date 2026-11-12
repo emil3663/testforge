@@ -502,7 +502,7 @@ TFP-245 to TFP-249. Paused at TFP-247 until Phase 48 merges (amended
 
 ---
 
-### Phase 48 — The rename to Mr Onion (locked 2026-11-08, in progress; after TFP-246, before TFP-247)
+### Phase 48 — The rename to Mr Onion (complete 2026-11-12; after TFP-246, before TFP-247)
 
 TestForge becomes Mr Onion: the visible name, the package and command
 (`mr-onion`), the `MRONION_*` settings, the data folder, the GitHub repo
@@ -514,7 +514,8 @@ working unchanged. "Identical except the name" is measured with a rename
 map in the template check. Built on branch `phase-48-mr-onion` behind a
 draft PR, merged to `main` in one `--no-ff` merge at Gate B, then tagged
 0.3.0. Record: `phase-48-rename-to-mr-onion-decision-record.md`; tickets
-TFP-275 to TFP-281.
+TFP-275 to TFP-281. Merged as `2861a4c` (2026-11-11); the first scheduled
+nightly on `main` green on 2026-11-12.
 
 ## Sequencing note
 

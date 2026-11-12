@@ -12,7 +12,10 @@ Scope:
 - It is built on its own branch, one ticket at a time, and merged to `main`
   in one go before Phase 47's TFP-247 publishes an image.
 
-Status: **Locked (Emil, 2026-11-08). In progress on branch
+Status: **Complete 2026-11-12: merged to `main` as `2861a4c` (2026-11-11);
+the first scheduled nightly on `main` green (run 43191298031); the
+`v0.3.0` tag waits for the owner's confirmation (Decision 13).**
+~~**Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
 (Emil, 2026-11-09). TFP-278 done (`48604dc`, baseline `8892b7e`),
@@ -21,7 +24,7 @@ allowlist accepted at Gate B (Emil, 2026-11-11).
 Gate B passed (Emil, 2026-11-11); TFP-281 (the repo rename and merge)
 next.
 Tracking issue [#25](https://github.com/emil3663/testforge/issues/25); draft PR
-[#23](https://github.com/emil3663/testforge/pull/23).**
+[#23](https://github.com/emil3663/testforge/pull/23).**~~
 - ~~Emil locked the record as drafted on 2026-11-08, confirming every
   **[for Emil]** line below as proposed. The markers stay to show which
   lines were proposals before the lock.~~
@@ -770,6 +773,39 @@ lock:
   `v0.3.0` tag and release, once confirmed.
 - **Acceptance criteria:** Acceptance Criteria 7.
 - **Dependencies:** TFP-280.
+- **Done 2026-11-12 (merge `2861a4c`, 2026-11-11; the owner's go-ahead,
+  2026-11-11).** The tag waits for the owner (Decision 13).
+  - **Before the merge:** `origin` set to
+    `https://github.com/emil3663/mr-onion.git` after the owner's rename.
+    PR Validation on `0c25416` failed before lint: GitHub's
+    `ubuntu-latest` had moved to `ubuntu-26.04`, and "Playwright does
+    not support chromium on ubuntu26.04-x64" (run 43048248301, both
+    attempts). By the owner's choice (2026-11-11), `83c7d87` pins every
+    job to `ubuntu-24.04`, and TFP-284 (in the workflow-and-CI backlog)
+    tracks the Playwright upgrade. On `99903a3`, PR Validation (old-name
+    step: "16842 hits in 1175 files; 16842 allowed by 52 of 52 entries")
+    and CodeQL were green. The dispatched nightly 43049335228 passed on
+    attempt 3: unit 821 tests, 820 passed, 0 failed, 1 skipped (the
+    Windows-only shell test). Attempts 1 and 2 failed before any test
+    ran, because the runner couldn't resolve `azure.archive.ubuntu.com`;
+    they opened issue #26, which attempt 3 closed. `main` hadn't moved
+    since the lock (`cf501ad`, the merge base).
+  - **The merge:** `git merge --no-ff phase-48-mr-onion`, `2861a4c`, with
+    parents `cf501ad` and `99903a3`; PR #23 shows as merged.
+
+  | Post-merge check (Acceptance Criteria 7) | Result |
+  |---|---|
+  | The merge's tree is the branch's last verified commit | `git diff --stat phase-48-mr-onion 2861a4c`: empty |
+  | Old URL redirects | Web: `301`, `Location: https://github.com/emil3663/mr-onion`; `git ls-remote https://github.com/emil3663/testforge.git` returns `2861a4c` for `main` |
+  | Template check against `48604dc` | "172 inputs, 172 identical, 0 different", exit 0 |
+  | `check:old-name` | "16842 hits in 1175 files; 16842 allowed by 52 of 52 entries", exit 0 |
+  | Pages title | `<title>Mr Onion \| mr-onion</title>`, built from `2861a4c` (2026-11-11 17:25 UTC); the old `emil3663.github.io/testforge/` returns 404 |
+  | Smoke Test and CodeQL on the push | 5 passed (2.0 min); CodeQL success |
+  | Scheduled nightly and its email (Decision 9) | Run 43191298031 (schedule, `main`, `2861a4c`, 2026-11-12 09:25 to 09:44 UTC): all six jobs green; unit 821 tests, 820 passed, 0 failed, 1 skipped (the Windows-only shell test); notify sent to `testforgeapp+ci@gmail.com`; arrival confirmed by the owner |
+
+  - **Records:** D39 done (`2861a4c`); Phase 48 Complete in this record,
+    the roadmap and the index; the changelog's 0.3.0 entry dated
+    2026-11-12; issue #25 closed.
 
 ## Recommended Execution Order
 
