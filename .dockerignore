@@ -1,0 +1,17 @@
+# Phase 47 (TFP-247): the image gets only what `mr-onion run` loads. Everything is left out, then the run's own
+# files are let back in, so a new folder in the repo never reaches the image unasked.
+*
+!package.json
+!.nvmrc
+!package-lock.json
+!tsconfig.json
+!playwright.config.ts
+!bin/
+!src/
+!scripts/register-node-test-ts-resolver.mjs
+!scripts/node-test-ts-resolver.mjs
+!scripts/comparison-fixture.mjs
+!scripts/image/
+src/**/*.test.ts
+src/**/*.test.mjs
+src/test-support/

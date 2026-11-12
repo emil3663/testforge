@@ -1,0 +1,103 @@
+name: Release Image
+
+# Phase 47 (TFP-247, Decision 8): builds Mr Onion's image, runs it and asserts on its output, then publishes that same
+# image to ghcr.io/emil3663/mr-onion, tagged with the version. Only a version tag publishes: a pull request that
+# touches the image, and a manual run, build and verify it without pushing (a rehearsal).
+on:
+  push:
+    tags: ['v*']
+  pull_request:
+    # Everything .dockerignore lets into the image, so a change that would break the image's run shows on its pull
+    # request, not first on the release tag.
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - .nvmrc
+      - package.json
+      - package-lock.json
+      - tsconfig.json
+      - playwright.config.ts
+      - bin/**
+      - src/**
+      - scripts/register-node-test-ts-resolver.mjs
+      - scripts/node-test-ts-resolver.mjs
+      - scripts/comparison-fixture.mjs
+      - scripts/image/**
+      - .github/workflows/release-image.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      # The host runs only verify-image.mjs, which needs no dependencies; the image installs its own.
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Read the version
+        id: version
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF" == refs/tags/* && "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::the tag $GITHUB_REF_NAME isn't package.json's version, v$version"
+            exit 1
+          fi
+
+      - name: Build the image
+        run: >
+          docker build -t mr-onion:verify
+          --build-arg MRONION_BUILD_VERSION=${{ steps.version.outputs.version }}
+          --build-arg MRONION_BUILD_COMMIT=${{ steps.version.outputs.commit }}
+          .
+
+      # The step a green release rests on: the image runs a real suite on the comparison fixture and exits 2 on an
+      # unreachable URL. A failed check exits 1, and nothing below runs.
+      - name: Run the image and check its output
+        shell: bash
+        run: node scripts/image/verify-image.mjs mr-onion:verify --version ${{ steps.version.outputs.version }} --commit ${{ steps.version.outputs.commit }} 2>&1 | tee verify-image.log
+
+      - name: Record the image's size
+        if: always()
+        shell: bash
+        run: |
+          docker image inspect mr-onion:verify --format '{{.Size}}' | awk '{ printf "Image size: %.0f MB\n", $1 / 1e6 }' | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo '```'; cat verify-image.log 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the verification log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: verify-image-${{ github.run_number }}-${{ github.run_attempt }}
+          path: verify-image.log
+          if-no-files-found: warn
+          retention-days: 30
+
+      # The image just verified, retagged: never a second build. Only a tag's push publishes: a manual run started
+      # from a tag has a tag ref too, and is a rehearsal.
+      - name: Publish to GitHub's container registry
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          IMAGE: ghcr.io/emil3663/mr-onion:${{ steps.version.outputs.version }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag mr-onion:verify "$IMAGE"
+          docker push "$IMAGE"
+          echo "Published $IMAGE ($(docker image inspect "$IMAGE" --format '{{index .RepoDigests 0}}'))" | tee -a "$GITHUB_STEP_SUMMARY"
