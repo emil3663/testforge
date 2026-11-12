@@ -13,8 +13,10 @@ Scope:
   in one go before Phase 47's TFP-247 publishes an image.
 
 Status: **Complete 2026-11-12: merged to `main` as `2861a4c` (2026-11-11);
-the first scheduled nightly on `main` green (run 43191298031); the
-`v0.3.0` tag waits for the owner's confirmation (Decision 13).**
+the first scheduled nightly on `main` green (run 43191298031); `v0.3.0` tagged on
+`49431af` and pushed, with the owner's confirmation (Decision 13), and
+released: [v0.3.0](https://github.com/emil3663/mr-onion/releases/tag/v0.3.0)
+(2026-11-12).**
 ~~**Locked (Emil, 2026-11-08). In progress on branch
 `phase-48-mr-onion`: TFP-275 done (`46e3994`), TFP-276 done (`621dd8a`);
 TFP-277 done (`9844233`); Gate A independently verified and passed
@@ -774,7 +776,8 @@ lock:
 - **Acceptance criteria:** Acceptance Criteria 7.
 - **Dependencies:** TFP-280.
 - **Done 2026-11-12 (merge `2861a4c`, 2026-11-11; the owner's go-ahead,
-  2026-11-11).** The tag waits for the owner (Decision 13).
+  2026-11-11).** `v0.3.0` tagged on `49431af` and released 2026-11-12,
+  with the owner's confirmation (Decision 13).
   - **Before the merge:** `origin` set to
     `https://github.com/emil3663/mr-onion.git` after the owner's rename.
     PR Validation on `0c25416` failed before lint: GitHub's
@@ -802,6 +805,7 @@ lock:
   | Pages title | `<title>Mr Onion \| mr-onion</title>`, built from `2861a4c` (2026-11-11 17:25 UTC); the old `emil3663.github.io/testforge/` returns 404 |
   | Smoke Test and CodeQL on the push | 5 passed (2.0 min); CodeQL success |
   | Scheduled nightly and its email (Decision 9) | Run 43191298031 (schedule, `main`, `2861a4c`, 2026-11-12 09:25 to 09:44 UTC): all six jobs green; unit 821 tests, 820 passed, 0 failed, 1 skipped (the Windows-only shell test); notify sent to `testforgeapp+ci@gmail.com`; arrival confirmed by the owner |
+  | Template check in the scheduled nightly | "48604dc -> 2861a4c: 172 inputs, 172 identical, 0 different" |
 
   - **Records:** D39 done (`2861a4c`); Phase 48 Complete in this record,
     the roadmap and the index; the changelog's 0.3.0 entry dated

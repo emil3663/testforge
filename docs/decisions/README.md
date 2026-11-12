@@ -50,7 +50,7 @@ research, nothing locked.
 | 44 | Scenario gaps, slice 1 | Locked (2026-10-20), not started | DR [`phase-44-scenario-gaps-decision-record.md`](phase-44-scenario-gaps-decision-record.md) · REF [`scenario-gap-candidates-2026-10-19.md`](scenario-gap-candidates-2026-10-19.md) |
 | 45 | Docker sandbox for model-written tests | Locked (2026-10-20), not started | DR [`phase-45-docker-sandbox-decision-record.md`](phase-45-docker-sandbox-decision-record.md) |
 | 46 | App screens | Locked (2026-10-20), not started | DR [`phase-46-app-screens-decision-record.md`](phase-46-app-screens-decision-record.md) |
-| 47 | Mr Onion in a target's CI pipeline | Locked (2026-10-27); in progress, paused at TFP-247 until Phase 48 merges | DR [`phase-47-ci-integration-decision-record.md`](phase-47-ci-integration-decision-record.md) · BL [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) Part 1 |
+| 47 | Mr Onion in a target's CI pipeline | Locked (2026-10-27); in progress, resumes at TFP-247 (owner decision, 2026-11-12) after Phase 48 | DR [`phase-47-ci-integration-decision-record.md`](phase-47-ci-integration-decision-record.md) · BL [`workflow-and-ci-backlog-2026-10-26.md`](workflow-and-ci-backlog-2026-10-26.md) Part 1 |
 | 48 | The rename to Mr Onion (D39) | Complete (2026-11-12); merged as `2861a4c` | DR [`phase-48-rename-to-mr-onion-decision-record.md`](phase-48-rename-to-mr-onion-decision-record.md) |
 
 ## Not tied to one phase
