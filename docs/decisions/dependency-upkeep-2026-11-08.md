@@ -1,6 +1,6 @@
 # Dependency upkeep: the watch list and two tickets (2026-11-08)
 
-**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 done (`99b477c`).
+**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 done (`99b477c`). TFP-285 open (added 2026-11-12).
 
 Emil asked for a way to see dependency issues and clear them with patches,
 not only dismiss them. Two parts, both chosen on 2026-11-08:
@@ -107,4 +107,36 @@ back, and remove it (with the date and commit) when it is cleared.
     schemes; the commit says so (`docs/QUALITY_GATES.md` §1).
   - `check:template-unchanged` identical; the crawl tests pass unchanged.
   - Code scanning shows #6133 closed as fixed after the push.
+- **Dependencies:** none.
+
+## TFP-285 - fast-xml-parser's quadratic stop-node scan (Dependabot #146, Low)
+
+- **Status:** Open (added 2026-11-12, owner decision: patch it).
+- **Phase:** None — before TFP-247
+- **Priority:** P3 (a Low alert open on `main`)
+- **Suggested labels:** `security`, `dependencies`
+- **Problem it solves:** Dependabot alert #146 (GHSA-474x-hrwr-fgx4,
+  CVE-2026-126066, Low), opened 2026-11-11 when Phase 48 reached `main`:
+  `fast-xml-parser` up to 5.11.2 rescans the rest of the input from every
+  `<` inside a stop node that is never closed, so a crafted input costs
+  O(n²) CPU before the parser throws. It needs the non-default `stopNodes`
+  option. The advisory calls it a static-analysis finding, not
+  benchmarked. Here it is reached only through Allure, a dev dependency:
+  `allure` → `@allurereport/core` → `@allurereport/reader` →
+  `fast-xml-parser` 5.11.2. The reader parses our own test results when
+  `test:self:allure` and `test:regression:allure` build their reports,
+  and none of its four parsers sets `stopNodes`. Nothing in `src/`,
+  `scripts/` or `bin/` uses the package.
+- **Scope:** `npm update fast-xml-parser`. The reader asks for `^5.11.1`,
+  so 5.12.0 is within range: only `package-lock.json` changes, with no
+  override and no Allure upgrade.
+- **Acceptance criteria** (`docs/QUALITY_GATES.md` §3, a dependency
+  change):
+  - Only `package-lock.json` changes; `npm ls fast-xml-parser` shows
+    5.12.0 or later.
+  - After `npm ci`: `npm run test:self:allure` and
+    `npm run test:regression:allure` pass and write their Allure reports;
+    `npm run test:unit` passes. The counts are in the commit body.
+  - PR Validation and CodeQL green.
+  - Dependabot closes #146 when it rescans `main`, checked after the push.
 - **Dependencies:** none.
