@@ -1,6 +1,6 @@
 # Dependency upkeep: the watch list and two tickets (2026-11-08)
 
-**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 done (`99b477c`). TFP-285 open (added 2026-11-12).
+**Status:** Owner decision (Emil, 2026-11-08). TFP-274 done (`e9ab8b5`); TFP-273 done (`99b477c`). TFP-285 done (`f48579f`, `f354687`).
 
 Emil asked for a way to see dependency issues and clear them with patches,
 not only dismiss them. Two parts, both chosen on 2026-11-08:
@@ -111,7 +111,17 @@ back, and remove it (with the date and commit) when it is cleared.
 
 ## TFP-285 - fast-xml-parser's quadratic stop-node scan (Dependabot #146, Low)
 
-- **Status:** Open (added 2026-11-12, owner decision: patch it).
+- **Status:** Done 2026-11-12: `f48579f` (the lockfile), `f354687` (one
+  `check:old-name` allowlist entry for the old command's bin line, which
+  npm copied into the lockfile; the owner chose this, 2026-11-12), on
+  `main` by fast-forward (PR #29). `package-lock.json` has one
+  `fast-xml-parser`, 5.12.0. After `npm ci`: `test:unit` 821 of 821,
+  0 skipped; `test:self:allure` 5 passed, its Allure report 5 of 5;
+  `test:regression:allure` 73 passed, its report 73 of 73. PR
+  Validation and CodeQL green on `f354687`. The dependency graph
+  shows 5.12.0, and Dependabot closed its own bump PR #27 at 16:19Z.
+  Alert #146 was still open at 16:28Z: it closes on Dependabot's next
+  scan of `main`. Added 2026-11-12 (owner decision: patch it).
 - **Phase:** None — before TFP-247
 - **Priority:** P3 (a Low alert open on `main`)
 - **Suggested labels:** `security`, `dependencies`
