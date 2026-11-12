@@ -31,6 +31,7 @@
         { "path": "bin/testforge.mjs", "why": "compatibility: the old command, until 1.0 (Decision 5)" },
         { "path": "bin/mr-onion.mjs", "line": "TESTFORGE_CLI_CWD|`testforge` until Phase 48|bin/testforge\\.mjs is", "why": "compatibility: sets the launch folder under both names; names its alias" },
         { "path": "package.json", "line": "\"testforge\": \"(bin/testforge\\.mjs|node bin/testforge\\.mjs)\"", "why": "compatibility: the old command's bin entry and npm script, until 1.0 (Decision 5)" },
+        { "path": "package-lock.json", "line": "^\\s*\"testforge\": \"bin/testforge\\.mjs\",?$", "why": "compatibility: the old command's bin entry, as package.json declares it and npm copies it into the lockfile, until 1.0 (Decision 5)" },
         { "path": "scripts/compare-generators.mjs", "line": "\"TESTFORGE_\"", "why": "compatibility: clears both names of the model settings between generators" },
         { "path": ".env.example", "line": "The old TESTFORGE_\\* names still work", "why": "says the old setting names still work until 1.0 (Decision 5)" },
         { "path": "docs/LOCAL_MODEL_SETUP.md", "line": "Built before the rename, as `testforge-qwen7b`\\?|`ollama cp testforge-qwen7b", "why": "how a model built under the old tag keeps working (Decision 3)" },
