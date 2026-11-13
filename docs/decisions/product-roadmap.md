@@ -486,7 +486,7 @@ See `phase-46-app-screens-decision-record.md`.
 
 ---
 
-### Phase 47 — Mr Onion in a target's CI pipeline (locked 2026-10-27, not started; after Phase 39, before Phase 43)
+### Phase 47 — Mr Onion in a target's CI pipeline (complete 2026-11-13, 0.4.0; after Phase 39, before Phase 43)
 
 A command crawls, generates and runs against a target with no UI and no
 server, and ends with an exit code, JUnit and HTML. A second run compares
@@ -498,7 +498,10 @@ shared by the UI and the CLI. Shipped as a pinned Docker image and a GitHub
 Action. Phase 16 Decision 1 is amended: a team's own CI runner counts as
 local. Record: `phase-47-ci-integration-decision-record.md`; tickets TFP-263,
 TFP-245 to TFP-249. Paused at TFP-247 until Phase 48 merges (amended
-2026-11-08): the image and action ship as `mr-onion`.
+2026-11-08): the image and action ship as `mr-onion`. Complete 2026-11-13
+at TFP-248 (owner decision, 2026-11-13), Gate A passed the same day; released
+as 0.4.0, the image's first publish. TFP-249 stays deferred (D31), after
+Phase 43.
 
 ---
 

@@ -106,6 +106,7 @@ test("in a real browser: a fresh run's run.json and report carry the stamp", { s
     // The saved report's own last line, built from the record as the browser builds it.
     // Phase 48 (TFP-279): from 0.3.0 the footer names Mr Onion (Decision 7).
     const { version, commit } = currentVersion();
-    assert.match(version, /^0\.3\./);
+    const [major, minor] = version.split(".").map(Number);
+    assert.ok(major > 0 || minor >= 3, `${version} is from before 0.3.0, so its footer would say TestForge`);
     assert.ok(buildResultHtmlDocument(record.result).includes(`>Mr Onion ${version} (${commit})</footer>`));
 });

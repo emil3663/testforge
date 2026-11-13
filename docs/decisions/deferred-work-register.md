@@ -46,6 +46,9 @@ without renumbering the items below, which the tables' Order columns cite).
   TFP-275 to TFP-281; no measurement session while the branch is open.
 - **Resumes at TFP-247** (owner decision, 2026-11-12): Phase 48 is
   complete (`2861a4c`, `v0.3.0`).
+- **Complete 2026-11-13** at TFP-248 (owner decision, 2026-11-13), Gate A
+  passed; released as 0.4.0. TFP-249 stays deferred as D31, after
+  Phase 43.
 
 2. **Phase 43 (D8): the ownership confirmation, once per site.**
    - Saved with the site: exact hosts, contact email, 90-day expiry,

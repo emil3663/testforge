@@ -6,11 +6,6 @@ fail. It runs in a pinned Docker image, so the same site gives the same
 suite on every machine. On GitHub Actions, a composite action wraps that
 image.
 
-> **Before v0.4.0:** the image is published to
-> `ghcr.io/emil3663/mr-onion` from v0.4.0 on. Until then, build it from this
-> repository (`docker build -t mr-onion .`) and give the action its name
-> (`image: mr-onion`). This repository's own CI does that.
-
 ## GitHub Actions
 
 The usual pattern: build your app, start it in the job, and test it on

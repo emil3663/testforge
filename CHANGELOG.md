@@ -11,6 +11,48 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-11-13
+
+### Mr Onion in your pipeline (Phase 47)
+
+Mr Onion can run as one step of another project's CI. It crawls the
+site, generates the suite and runs it, then ends with an exit code the
+pipeline acts on
+([Phase 47](docs/decisions/phase-47-ci-integration-decision-record.md);
+the guide is [`docs/CI_INTEGRATION.md`](docs/CI_INTEGRATION.md)).
+
+- **A GitHub Action**, `emil3663/mr-onion/action@v0.4.0`. Give it the URL
+  your job reaches, such as a server the job starts on `localhost`. It
+  runs Mr Onion's image as the job's own user, attaches the HTML report and
+  JUnit results, writes a job summary, and fails the step on failing tests
+  ([TFP-248](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+- **A pinned Docker image**, `ghcr.io/emil3663/mr-onion:0.4.0`: Node
+  24.14.1, Playwright 1.59.1 and its Chromium 147, on Ubuntu 24.04. The
+  same site gives the same suite on any machine. It runs as any user
+  (`--user`), so its files in a mounted folder are yours, not root's.
+  Every release runs the built image and checks what it writes before
+  publishing it (TFP-247, TFP-248).
+- **`mr-onion run`** does what the UI does, through the same code, with
+  no UI and no server. Exit `0` means no failures, `1` test failures, `2`
+  couldn't run (never a pass), and `3` invalid configuration. It writes
+  `report.json`, `report.html`, `junit.xml`, the suite that ran, and
+  evidence for failing tests. `--server` starts your app first and stops
+  it afterwards, whatever the result. The command was in 0.3.0's code but
+  not in its notes (TFP-245).
+- **Baselines:** with `--baseline latest`, only failures an earlier run
+  didn't have fail the build. Known and fixed tests are listed. A run
+  whose own verdict failed never becomes a baseline. This was also in
+  0.3.0's code (TFP-246).
+- **In CI, no model writes tests**, and attack-shaped tests don't run
+  until a site's ownership can be confirmed there (Phase 43, then
+  TFP-249).
+
+### Security
+
+- fast-xml-parser 5.12.0 (from 5.11.2), for a Low advisory in its
+  stop-node scan (GHSA-474x-hrwr-fgx4)
+  ([TFP-285](docs/decisions/dependency-upkeep-2026-11-08.md)).
+
 ## [0.3.0] — 2026-11-12
 
 ### Renamed: TestForge is now Mr Onion (0.3.0)
