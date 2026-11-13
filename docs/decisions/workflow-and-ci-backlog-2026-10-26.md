@@ -534,6 +534,36 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-248 - GitHub Action, example workflow and CI guide
 
+- **Status:** Built 2026-11-13 (Claude Code): `9b5e573`, on the branch
+  `tfp-248-github-action`, pull request #31, not merged. **To verify:**
+  this is Phase 47's Gate A, and the owner rules on it. Unit 839 of 839,
+  0 skipped (830 plus the 9 new).
+  - **The action** (`action/`) is a composite action around the image. It
+    runs the image as the job's own user, attaches the reports, writes a
+    job summary, and ends the step with the run's exit code. The image is
+    an input, defaulting to `ghcr.io/emil3663/mr-onion` at the action's
+    own version; nothing is published before v0.4.0.
+  - **Gate A** (`.github/workflows/action-gate.yml`) builds the image in
+    the job and starts the local Toolshop there (`toolshop.sh start`,
+    `start-toolshop.ps1`'s steps for a runner without WSL).
+  - **On GitHub** (PR #31, `9b5e573`): clean `report-only` exit `0`;
+    clean against it exit `0` (0 new, 46 known); with-bugs exit `1`; a URL
+    nothing answers on exit `2`. The reports and artifacts were there,
+    and every file was the job user's (CI-29). Release Image's
+    verification held on the same commit, its new checks included.
+  - **TFP-247's two notes:** the image now runs as any user (CI-27), and
+    `verify-image.mjs` requires the fixture's verdict run to fail a test
+    and exit `1` (CI-25). Each was shown red live in WSL.
+  - **Docs:** `docs/CI_INTEGRATION.md` and
+    `action/examples/deploy-preview.yml`.
+  - **A fresh-context review** found three bugs, all fixed: the action's
+    `mode` default overrode the config file's; a signal-killed run gave a
+    misleading message; and a Gate A check could end without its
+    summary. It also found three limits, now in the guide.
+  - **Left as found:** Gate A runs on changes to the action, the image and
+    the Toolshop scripts, not on CLI-only ones. The URL is printed in the
+    log.
+  - **Not run by CI:** the guide's cache example and the preview example.
 - **Notes from TFP-247's verification** (planning session, 2026-11-12):
   - the image runs as root, so the files it writes into a mounted
     workspace are owned by root;
