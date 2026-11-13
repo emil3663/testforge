@@ -40,8 +40,12 @@ the guide is [`docs/CI_INTEGRATION.md`](docs/CI_INTEGRATION.md)).
   it afterwards, whatever the result. The command was in 0.3.0's code but
   not in its notes (TFP-245).
 - **Baselines:** with `--baseline latest`, only failures an earlier run
-  didn't have fail the build. Known and fixed tests are listed. A run
-  whose own verdict failed never becomes a baseline. This was also in
+  didn't have fail the build. Known and fixed tests are listed. A run is
+  taken as `latest` only if it exited `0`, or was a first run
+  (`--baseline latest` with no earlier run), failures included. One that
+  failed on a new failure (even with `--report-only`), failed without
+  `--baseline`, or couldn't run never is. A run with no recorded verdict
+  (saved by the app, or before 0.3.0) is taken too. This was also in
   0.3.0's code (TFP-246).
 - **In CI, no model writes tests**, and attack-shaped tests don't run
   until a site's ownership can be confirmed there (Phase 43, then
@@ -50,7 +54,8 @@ the guide is [`docs/CI_INTEGRATION.md`](docs/CI_INTEGRATION.md)).
 ### Security
 
 - fast-xml-parser 5.12.0 (from 5.11.2), for a Low advisory in its
-  stop-node scan (GHSA-474x-hrwr-fgx4)
+  stop-node scan (GHSA-474x-hrwr-fgx4). A development dependency of the
+  Allure reports only: it isn't in the app, the command or the image
   ([TFP-285](docs/decisions/dependency-upkeep-2026-11-08.md)).
 
 ## [0.3.0] — 2026-11-12
