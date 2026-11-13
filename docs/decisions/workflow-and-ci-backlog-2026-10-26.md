@@ -188,6 +188,28 @@ Moved word for word from [`docs/test-plan/RUN.md`](../test-plan/RUN.md) by TFP-2
   - **The audit count:** the builder's correction in `e8a52c7` stands (its
     "8" was npm's total on 30 Oct; the 19 moderates are newer advisories).
   - Done when the next scan shows no open alert that isn't dismissed.
+  - **#6134, #6135 and #6136 (2026-11-13, owner decision): dismissed as
+    false positives.**
+    - **What they flag:** `js/bad-code-sanitization`, medium, opened
+      2026-11-08 with the CLI (TFP-245). Each points at one expression of
+      the `tfShared.rerun(...)` wrapper in
+      `src/lib/generate/shared-visits.ts:351`: `wrapped`, `indent` and
+      `lineIndent(close)`.
+    - **What CodeQL traced:** a value from the CLI's
+      `JSON.parse(JSON.stringify(...))` request copy
+      (`src/cli/run.ts:40`). The only value carried is Comprehensive's
+      `pageCap`, which is written into the suite's header comments
+      (`src/lib/generate/comprehensive.ts:139`, `:148`). From there the
+      whole suite counts as tainted.
+    - **The reason given in GitHub:** "The traced value is Comprehensive's
+      page cap, which normalizeRunMode accepts only as an integer from 1
+      to 100; the page paths beside it come from new URL() and sit in
+      line comments. No user- or site-controlled value reaches generated
+      code on this path."
+    - **Not chosen:** `Number(scope.pageCap)` at the two comment lines. It
+      guards nothing real, and only CodeQL's next scan could show whether
+      it clears the alerts.
+    - **After the dismissal:** no CodeQL alert is open.
 
 - **Phase:** None — after TFP-266
 - **Priority:** P1
