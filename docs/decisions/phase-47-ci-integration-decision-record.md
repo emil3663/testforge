@@ -14,7 +14,12 @@ Status: **Locked (Emil, 2026-10-27). Complete 2026-11-13, released as
 Mr Onion: Decision 11, amended 2026-11-08). Gate A passed (owner ruling,
 2026-11-13). The phase completes at TFP-248, with v0.4.0 (owner decision,
 2026-11-13; TFP-249 stays deferred as D31). The image's first publish
-is v0.4.0's (owner decision, 2026-11-12). Tracking issue
+is v0.4.0's (owner decision, 2026-11-12): tagged on `436b954` after the
+owner's confirmation (2026-11-13), once Action Gate, dispatched on that
+commit, was green. `ghcr.io/emil3663/mr-onion:0.4.0` was published
+(`sha256:8a9b2be313aa2ae802aa55b381c699965794f049da4585e3578a2a5469119a38`) and is public: it pulls with no login. The
+[release](https://github.com/emil3663/mr-onion/releases/tag/v0.4.0) uses
+the changelog's [0.4.0] section. Tracking issue
 [#24](https://github.com/emil3663/testforge/issues/24), opened 2026-11-08.**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
