@@ -477,8 +477,18 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-247 - Packaging: a pinned, reproducible runner
 
-- **Status:** Built 2026-11-12 (Claude Code): `7b65bc4`, on the local
-  branch `tfp-247-docker-image`, to verify; not pushed or published.
+- **Status:** Done 2026-11-13: `7b65bc4` (its record `3adaccb`),
+  verified in a planning session (2026-11-12), on `main` by fast-forward
+  (PR #30). **First run on GitHub's runner** (Release Image, pull
+  request, `3adaccb`): build 46 s, the image check 1 min 46 s, every
+  check held (the fixture 123 planned, 113 executed, 104 passed, 9
+  failed, 10 not run, as locally; the verdict run exit `1`; the
+  unreachable URL), 1237 MB by `docker image inspect`, the publish step
+  skipped. PR Validation and CodeQL green on `3adaccb`. **Nothing is
+  published yet:** the first push to ghcr.io waits for v0.4.0 at Phase
+  47's completion (owner decision, 2026-11-12). Two notes from the
+  verification go to TFP-248 (its Notes).
+  Built 2026-11-12 (Claude Code), on the branch `tfp-247-docker-image`.
   Unit 830 of 830, 0 skipped (821 plus the 9 new).
   `Dockerfile` on Ubuntu 24.04 (CI's runner pin, so TFP-284 moves both),
   base images pinned by digest: Node 24.14.1 copied from the official
@@ -502,10 +512,9 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   the image holds; the image rebuilt and re-verified. Left as found: the
   system libraries `playwright install --with-deps` takes from Ubuntu are
   unpinned (the `Dockerfile` says so); a pull request's run stamps its
-  merge commit. **Not yet shown:** the workflow on
-  GitHub's runner (it first runs on this ticket's pull request), and
-  any push to ghcr.io, which makes the image public: the owner is asked
-  before the first one.
+  merge commit. Not shown at build time: the workflow on
+  GitHub's runner (shown above, on PR #30), and any push to ghcr.io,
+  which makes the image public (left for v0.4.0, above).
 - **Phase:** 47
 - **Priority:** P1
 - **Suggested labels:** `ci`, `release`
@@ -525,6 +534,11 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-248 - GitHub Action, example workflow and CI guide
 
+- **Notes from TFP-247's verification** (planning session, 2026-11-12):
+  - the image runs as root, so the files it writes into a mounted
+    workspace are owned by root;
+  - `scripts/image/verify-image.mjs` should assert that the fixture run
+    fails at least one test and exits `1`.
 - **Phase:** 47
 - **Priority:** P1
 - **Suggested labels:** `ci`, `docs`
