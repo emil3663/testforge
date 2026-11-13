@@ -76,7 +76,13 @@ Use this now. In the commit that adds the first work from this file:
        register's Phase 47 lines say Complete;
      - the changelog's Unreleased entries move to `0.4.0` with the date;
      - `package.json` goes to `0.4.0`;
+     - the guide's "Before v0.4.0" notice (`docs/CI_INTEGRATION.md`) is
+       removed (Gate A's ruling, 2026-11-13);
      - close Phase 47's tracking issue (#24).
+   - **Dispatch Action Gate on the release commit and see it green**
+     before asking for the tag (Gate A's ruling, 2026-11-13): its
+     pull-request trigger leaves out the CLI, so this is what shows the
+     action still works on the commit the tag will publish.
    - **Ask the owner before pushing the `v0.4.0` tag.** The tag runs
      `release-image.yml`, which verifies the image and then publishes
      `ghcr.io/emil3663/mr-onion:0.4.0`: that is the first public image.

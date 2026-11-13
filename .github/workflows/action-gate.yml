@@ -13,6 +13,10 @@ on:
       - scripts/image/**
       - scripts/toolshop-local/**
       - .github/workflows/action-gate.yml
+  # Gate A's ruling (2026-11-13): the pull-request paths leave out the CLI, so a CLI change that breaks the action
+  # shows here weekly, and on the release commit, dispatched by hand before each version tag.
+  schedule:
+    - cron: '0 3 * * 1'
   workflow_dispatch:
 
 permissions:
