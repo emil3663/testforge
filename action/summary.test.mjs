@@ -55,6 +55,12 @@ test("report-only: exit 0 with failing tests says they were reported, not that n
     assert.match(buildSummary({ report, comparison, exitCode: 0, url }), /^### Mr Onion: reported, not failing the build: new failures \(exit 0\)\n/);
 });
 
+test("a title's own backslash is escaped too, so it can't unescape the pipe after it (CodeQL #6137)", () => {
+    const titles = [{ title: "Path a\\|b", status: "Failed" }, { title: "Ends with \\", status: "Failed" }];
+    const text = buildSummary({ report: { report: { summary, execution: titles } }, comparison: null, exitCode: 1, url });
+    assert.match(text, /\n- Path a\\\\\\\|b\n- Ends with \\\\\n/);
+});
+
 test("more than 20 failures: 20 are listed, and the rest counted", () => {
     const many = Array.from({ length: 23 }, (_, index) => ({ title: `Test ${index + 1}`, status: "Failed" }));
     const text = buildSummary({ report: { report: { summary, execution: many } }, comparison: null, exitCode: 1, url });

@@ -17,7 +17,8 @@ const VERDICTS = {
     3: { plain: "invalid configuration", compared: "invalid configuration" },
 };
 
-const cell = (text) => String(text).replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+// A title is the site's text: its own backslashes are escaped first, so one can't unescape the pipe after it.
+const cell = (text) => String(text).replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
 
 function list(heading, tests) {
     if (tests.length === 0) return [];

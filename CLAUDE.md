@@ -57,6 +57,9 @@ Every new test must be seen failing first: a bug's reproduction before the
 fix, a behaviour change's test with the change removed. Quote the failure in
 the commit body, or say why it can't fail (`docs/QUALITY_GATES.md` §1).
 
+A pull request is green only when `gh pr checks` passes every check on its
+head commit: CodeQL's alert check fails apart from its green workflow runs.
+
 Run the ticket's checks, then review your diff against the ticket's
 Acceptance section in a fresh context (`/code-review`, or a subagent given
 only the diff and the criteria). Report evidence, not conclusions.
