@@ -44,10 +44,26 @@ test("Decision 1 and 2: a fragment starting with / or !/ is a route, named as th
     assert.equal(crawlKeyOf(new URL("https://shop.test/contact/?x=1#top")).toString(), "https://shop.test/contact");
 });
 
-async function runSuite(code: string, label: string): Promise<ExecutionRecord[]> {
-    const { report } = await runPlaywrightSpec(code, `hash-routes-unit-${label}`, ["--workers=1"], { MRONION_INTERACTIVE: "0" });
+async function runSuite(code: string, label: string, args: string[] = []): Promise<ExecutionRecord[]> {
+    const { report } = await runPlaywrightSpec(code, `hash-routes-unit-${label}`, ["--workers=1", ...args], { MRONION_INTERACTIVE: "0" });
     return flattenSuites(report.suites);
 }
+
+/**
+ * TFP-282: the generated route check stops after 14 s and names the routes it left (a known coverage limit, U9 in
+ * labelled-failures.md). Beside the full suite's other browser tests, that budget ran out before the missing route
+ * (Phase 48's Gate B), the check passed, and this test went red without saying why. Here the check gets the time it
+ * needs - its own deadline, and a Playwright timeout to match - and the template's 14 s stays as it is.
+ */
+const ROUTE_BUDGET = "const deadline = Date.now() + 14000;";
+const TEST_ROUTE_BUDGET_MS = 120_000;
+const withRouteBudget = (code: string, ms: number) => {
+    assert.equal(code.split(ROUTE_BUDGET).length, 2, "the generated route check's budget, once: if the template changed it, change this test with it");
+    return code.replace(ROUTE_BUDGET, `const deadline = Date.now() + ${ms};`);
+};
+
+/** The routes a route check left unchecked, from its "not checked" finding; empty when it reached every one. */
+const uncheckedRoutes = (record: ExecutionRecord) => (record.findings ?? []).filter((finding) => / linked routes? not checked: /.test(finding));
 
 test("in a real browser: the crawl finds every linked route of the fixture's hash-routed app as its own page", { skip: needsChromium }, async () => {
     const { POST, GET } = await import("../../app/api/crawl/route.ts");
@@ -85,7 +101,7 @@ test("in a real browser: routes are internal links, anchors stay anchors; a link
         // Deep mode: every link gets its own health check.
         const code = mockGenerate(fixture.origin, "Check the site.", ["functional"], profile as never, normalizeContentRules(undefined), normalizeTestAuditMode("deep"));
         assert.deepEqual(findTypeErrors(code), []);
-        const records = await runSuite(code, "spa");
+        const records = await runSuite(withRouteBudget(code, TEST_ROUTE_BUDGET_MS), "spa", [`--timeout=${TEST_ROUTE_BUDGET_MS + 60_000}`]);
         const one = (title: RegExp) => {
             const found = records.filter((record) => title.test(record.title));
             assert.equal(found.length, 1, `${title}: ${records.map((record) => record.title).join(" | ")}`);
@@ -93,6 +109,8 @@ test("in a real browser: routes are internal links, anchors stay anchors; a link
         };
 
         const bulk = one(/link health: linked routes draw a page, not the app's "not found" view/);
+        // The verdict counts only if the check reached the route it is meant to catch.
+        assert.deepEqual(uncheckedRoutes(bulk), [], `the route check didn't reach every linked route, so its verdict (${bulk.status}) doesn't test the missing one: ${uncheckedRoutes(bulk).join("; ")}`);
         assert.equal(bulk.status, "Failed", JSON.stringify(bulk));
         assert.match(bulk.rawMessage, /linked routes that show the app's "not found" view: \/spa#\/chainsaws \(draws the same as \/spa#\/mr-onion-missing-[a-z0-9]+, a route that cannot exist\)/);
         assert.doesNotMatch(bulk.rawMessage.split("\n")[0], /contact|products|legacy/, "only the missing route");
