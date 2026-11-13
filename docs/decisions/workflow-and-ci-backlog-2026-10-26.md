@@ -1442,7 +1442,31 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-282 - Link health's route test can pass under load without checking the route (added 2026-11-11)
 
-- **Status:** Open.
+- **Status:** Built 2026-11-13 (Claude Code): `79c9466`, on the local
+  branch `tfp-282-route-test`, to verify; not pushed. Test only:
+  `src/lib/introspect/routes.test.ts`.
+  - **The change:** the test gives the generated route check its own
+    deadline (120 s, with a 180 s Playwright timeout). Before the verdict,
+    it asserts that the check left no route unchecked, naming any it did.
+    The template's 14 s stays.
+  - **Red first, budget forced to 0:**
+    - **The ticket's premise was reversed.** Today's test *fails* there,
+      not passes: it asserts the verdict Failed and got "actual: 'Passed',
+      expected: 'Failed'", with the unchecked routes only inside the
+      record's JSON. The gap was an unexplained red, not a false green.
+    - **The new test** fails with "the route check didn't reach every
+      linked route, so its verdict (Passed) doesn't test the missing one:
+      4 linked routes not checked: ... (/spa#/products, /spa#!/legacy,
+      /spa#/chainsaws, /spa#/products/1)".
+  - **Three full `npm run test:unit` runs in a row:** each 840 of 840, 0
+    skipped. The route test took 98.9 s, 127.3 s and 116.6 s; Gate B's
+    failing run was 96 s.
+  - **Other checks:** `check:template-unchanged main 79c9466`, 172 of 172
+    identical, no map. tsc and eslint clean.
+  - **A fresh-context review** found no false-green path. Left as found,
+    as template code: each route view's fixed 8 s page load can still fail
+    the check under extreme load, as can the per-link tests' loads. That
+    would be a red with a less clear message, never a false pass.
 - **Phase:** None — after Phase 48 merges
 - **Priority:** P2
 - **Suggested labels:** `test`, `flaky`
