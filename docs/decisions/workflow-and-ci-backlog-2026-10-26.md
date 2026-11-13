@@ -534,10 +534,22 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-248 - GitHub Action, example workflow and CI guide
 
-- **Status:** Built 2026-11-13 (Claude Code): `9b5e573`, on the branch
-  `tfp-248-github-action`, pull request #31, not merged. **To verify:**
-  this is Phase 47's Gate A, and the owner rules on it. Unit 839 of 839,
-  0 skipped (830 plus the 9 new).
+- **Status:** Done 2026-11-13: `9b5e573` and `04f9e08`, on `main` by
+  fast-forward (PRs #31 and #32). Gate A was verified by a planning session
+  and passed (owner ruling, 2026-11-13; the Phase 47 record, under Gate A).
+  `a388eaf` adds the gate's weekly schedule and its dispatch before each
+  version tag, which the ruling asked for.
+  - **PR #31 was merged with CodeQL's alert check failing.** Its workflow
+    runs were green, and the builder read only those. Alert #6137
+    (`js/incomplete-sanitization`) was in the summary's escaping of test
+    titles: a title's backslash was escaped and its pipe wasn't. `04f9e08`
+    fixes it, shown red first. PR #32 merged once every check passed,
+    that one included. CLAUDE.md now says a pull request is green only
+    when `gh pr checks` passes every check on its head commit.
+  - Action Gate was green on all four commits it ran on: `9b5e573`,
+    `e406694`, `a388eaf` and `04f9e08`.
+  - Built 2026-11-13 (Claude Code). Unit 839 of 839, 0 skipped (830 plus
+    the 9 new); the summary's tests are 6 with `04f9e08`.
   - **The action** (`action/`) is a composite action around the image. It
     runs the image as the job's own user, attaches the reports, writes a
     job summary, and ends the step with the run's exit code. The image is

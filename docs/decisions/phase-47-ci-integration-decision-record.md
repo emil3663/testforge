@@ -10,10 +10,11 @@ Scope: TestForge runs as one step in another project's CI pipeline:
 - it ships as a pinned Docker image and a GitHub Action.
 
 Status: **Locked (Emil, 2026-10-27). In progress: TFP-263, TFP-272,
-TFP-245, TFP-246 and TFP-247 done (after Phase 48, the rename to
-Mr Onion: Decision 11, amended 2026-11-08); next TFP-248. The image's
-first publish waits for v0.4.0 at this phase's completion (owner
-decision, 2026-11-12). Tracking issue
+TFP-245, TFP-246, TFP-247 and TFP-248 done (after Phase 48, the rename to
+Mr Onion: Decision 11, amended 2026-11-08). Gate A passed (owner ruling,
+2026-11-13). The phase completes at TFP-248, with v0.4.0 (owner decision,
+2026-11-13; TFP-249 stays deferred as D31). The image's first publish
+is v0.4.0's (owner decision, 2026-11-12). Tracking issue
 [#24](https://github.com/emil3663/testforge/issues/24), opened 2026-11-08.**
 - Cowork drafted Decisions 1 to 11 the same day; Emil confirmed every one as
   proposed, choosing option (a) for Decision 11.
