@@ -327,5 +327,42 @@ Part 1, with these changes once this record locks:
 - Acceptance Criteria 1, 2 and 5 met; independent verification of the exit
   codes and the JUnit counts.
 
+**Gate A verification (planning session, 2026-11-13; it built none of
+TFP-248): every checked criterion met. The owner's ruling (2026-11-13):
+Gate A passes.**
+
+| Check | How | Result |
+|---|---|---|
+| Scope | `git diff --stat main e406694` | The action (`action/`), the Gate A workflow, the guide, the Toolshop start script for CI, the image change, `verify-image.mjs` and its tests, the README, the test plan and records; and the handover swap with its allowlist entry, as the handover asked |
+| Criterion 5: clean passes, with-bugs fails, a broken URL is exit 2 | Read `action-gate.yml` | Clean runs twice, the first as the baseline, and must exit 0 (with no `continue-on-error`, so a new failure turns the job red). With-bugs must exit 1 with its step failed. A URL nothing answers on must exit 2 with its step failed. Each Toolshop run must write `report.html`, `junit.xml` and `report.json`; clean must write `baseline.json`; both artifacts must exist. A step with `shell: bash` checks them all and fails on any one |
+| Criterion 5: on GitHub | PR #31's checks; the builder's report | Action Gate green on `9b5e573` (clean 0 against its baseline, 0 new / 46 known; with-bugs 1, 84 failed; broken 2); a second run on `e406694` was in progress when checked |
+| The exit code reaches the step | Read `action.yml` and `run.sh` | The step ends with the run's own exit code, after the summary and the upload; docker's own failures (125 to 127) and a run killed by a signal count as exit 2, never as a verdict |
+| TFP-247 note 1: root-owned files | Read `run.sh`, the `Dockerfile`, the gate's ownership check | The action runs the image as the job's user, with the out and data folders made first. The image runs as any user (its run folders sticky and world-writable, like `/tmp`). The gate fails if any file the runs wrote isn't the job user's. The guide gives `--user` and a `chown` fallback for running the image without the action |
+| TFP-247 note 2: the failing path | Read `verify-image.mjs` | The fixture's verdict run must fail at least one test and exit 1 (shown red by the builder on an all-passing fixture) |
+| Secrets | Read `run.sh` | Only variables named in `env` are passed, by name (`-e NAME`), so no value is on a command line; a name that isn't a variable name is exit 3 |
+| The guide's claims | Read `docs/CI_INTEGRATION.md` | It says what's tested (GitHub Actions, a server started in the job) and what isn't (the preview example, other CI systems), and what doesn't run in CI and why |
+
+Not checked here: the Gate A run's logs on GitHub beyond its checks
+page, and the unit suite (839 of 839 reported). The verifier has no
+browser or Docker in its VM.
+
+**For the owner's ruling:**
+1. **Gate A passes** (recommended).
+2. **Gate A's trigger.** It runs only when a pull request changes the
+   action, the image or the Toolshop scripts, not the CLI (about 17
+   minutes a run). Recommended: keep that, and add a weekly schedule.
+   Also dispatch it by hand on the release commit before each version
+   tag, so a CLI change that breaks the action is caught before a
+   release publishes it.
+3. **The guide's "Before v0.4.0" notice** comes out in the `v0.4.0`
+   commit (the handover's item 2).
+
+**Ruled (owner decision, 2026-11-13):**
+1. Gate A passes.
+2. Action Gate keeps its pull-request trigger and gains a weekly schedule.
+   It is dispatched by hand on the release commit, and seen green, before
+   asking to push a version tag (the handover's item 2).
+3. The guide's "Before v0.4.0" notice is removed in the `v0.4.0` commit.
+
 ### Gate B — A second run can be trusted
 - Acceptance Criteria 3 met.
