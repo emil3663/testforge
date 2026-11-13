@@ -5,7 +5,6 @@
         { "path": "examples/", "why": "frozen evidence: example outputs as they were generated (Decision 4)" },
         { "path": "docs/decisions/", "except": ["docs/decisions/README.md", "docs/decisions/product-roadmap.md", "docs/decisions/deferred-work-register.md", "docs/decisions/data/labelled-failures.md"], "why": "dated decision records, backlogs and reports: what was decided and measured, under the name it had (Decision 4). The index, the roadmap, the register and the labelled-failures dataset are living and renamed" },
         { "path": "docs/consolidation/", "why": "the Phases 1 to 12 consolidation runbooks: dated history" },
-        { "path": "docs/HANDOVER_TO_CLAUDE_CODE_2026-10-30-after-phase-39.md", "why": "a dated handover, kept as it was handed over" },
         { "path": "docs/REIMAGINING.md", "why": "a dated brief (2026-09-15) about the product as it was named then" },
         { "path": "docs/REIMAGINING-RESPONSE.md", "why": "the dated reply (2026-09-16) to that brief" },
         { "path": "skills/INTROSPECT_CRAWL_SPIKE.md", "why": "the Phase 22 spike report (TFP-036): what that spike did, as written" },

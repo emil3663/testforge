@@ -10,7 +10,7 @@
 # build time. A published image is fixed once built; a rebuild can differ there, and its verification is the check.
 #
 #   docker build -t mr-onion --build-arg MRONION_BUILD_VERSION=0.3.0 --build-arg MRONION_BUILD_COMMIT=$(git rev-parse --short HEAD) .
-#   docker run --rm --init --ipc=host --network host -v "$PWD:/work" mr-onion run --url http://localhost:4200 --out out
+#   docker run --rm --init --ipc=host --network host --user "$(id -u):$(id -g)" -v "$PWD:/work" mr-onion run --url http://localhost:4200 --out out
 #
 # Moving a pin: change it here, rebuild, and run scripts/image/verify-image.mjs; the release workflow does the same.
 ARG NODE_IMAGE=node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c
@@ -46,6 +46,12 @@ ARG MRONION_BUILD_COMMIT=""
 ENV MRONION_BUILD_VERSION=${MRONION_BUILD_VERSION} \
     MRONION_BUILD_COMMIT=${MRONION_BUILD_COMMIT}
 RUN node scripts/image/check-pins.mjs
+
+# TFP-248: any user can run the image (`docker run --user "$(id -u):$(id -g)"`), so what it writes into a mounted
+# workspace is owned by that user, not root. The folders a run writes outside the workspace are open to every user and
+# sticky, like /tmp: the run folders, the runs folder used without --data-dir, and a home for the default data folder.
+RUN mkdir -p .playwright-runs runs /home/mr-onion && chmod 1777 .playwright-runs runs /home/mr-onion
+ENV HOME=/home/mr-onion
 
 # Paths on the command line (--out, --config, --data-dir) resolve against the folder the command runs in: mount the
 # workspace there. The run itself works in /opt/mr-onion, where Playwright and its run folders are.

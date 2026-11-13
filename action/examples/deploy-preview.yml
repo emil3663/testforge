@@ -1,0 +1,28 @@
+# An example (TFP-248): Mr Onion against a preview deployment, once the host says it is live. Copy it into your
+# repository's .github/workflows/. Hosts that report deployments to GitHub (Vercel, Netlify, Render and others) send a
+# deployment_status event with the preview's URL; for one that doesn't, run this after your own deploy step instead,
+# with its URL.
+#
+# A deployed preview is a remote host: the run is capped (3 workers sharing 5 requests per second) and its timed checks
+# are reported Not run, until Phase 43 lets CI confirm the site is yours. docs/CI_INTEGRATION.md has the rest.
+#
+# A baseline matches runs by site, and each preview has a URL of its own, so a preview's run is a first run: any
+# failing test fails it. To report a site's known failures without failing the check, set report-only: 'true'.
+name: Mr Onion on the preview
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  mr-onion:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: emil3663/mr-onion/action@v0.4.0
+        with:
+          url: ${{ github.event.deployment_status.environment_url }}
+          artifact-name: mr-onion-preview-${{ github.event.deployment.id }}

@@ -1,0 +1,121 @@
+name: Action Gate
+
+# Phase 47 Gate A (TFP-248, Acceptance Criteria 5): the action, as a team's job runs it, against the local Toolshop
+# started in this job. Clean twice, the first as the baseline: the second passes. With-bugs fails. A URL nothing
+# answers on fails with exit 2. Each run attaches its reports and writes a job summary, and leaves the workspace's
+# files owned by the job's user. The image is built here and passed in: no image is pulled (the first is v0.4.0's).
+on:
+  pull_request:
+    paths:
+      - action/**
+      - Dockerfile
+      - .dockerignore
+      - scripts/image/**
+      - scripts/toolshop-local/**
+      - .github/workflows/action-gate.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Build the image
+        run: >
+          docker build -t mr-onion:gate
+          --build-arg MRONION_BUILD_VERSION=$(node -p "require('./package.json').version")
+          --build-arg MRONION_BUILD_COMMIT=$(git rev-parse --short HEAD)
+          .
+
+      - name: Start the clean Toolshop
+        run: bash scripts/toolshop-local/toolshop.sh start sprint5
+
+      - name: Clean, the baseline
+        id: baseline
+        uses: ./action
+        with:
+          url: http://localhost:4200
+          image: mr-onion:gate
+          report-only: 'true'
+          out: out/clean-baseline
+          artifact-name: clean-baseline
+
+      # Not continue-on-error: a clean run with a new failure turns the gate red here.
+      - name: Clean, against the baseline
+        id: clean
+        uses: ./action
+        with:
+          url: http://localhost:4200
+          image: mr-onion:gate
+          baseline: latest
+          out: out/clean
+          artifact-name: clean
+
+      - name: Start the with-bugs Toolshop
+        run: bash scripts/toolshop-local/toolshop.sh start sprint5-with-bugs
+
+      - name: With-bugs, which must fail
+        id: with-bugs
+        continue-on-error: true
+        uses: ./action
+        with:
+          url: http://localhost:4200
+          image: mr-onion:gate
+          out: out/with-bugs
+          data-dir: .mr-onion-with-bugs
+          artifact-name: with-bugs
+
+      - name: A URL nothing answers on, which must fail with exit 2
+        id: broken
+        continue-on-error: true
+        uses: ./action
+        with:
+          url: http://localhost:4299
+          image: mr-onion:gate
+          out: out/broken
+          data-dir: .mr-onion-broken
+          artifact-name: broken
+
+      - name: Check each run's result
+        shell: bash
+        env:
+          BASELINE: ${{ steps.baseline.outputs.exit-code }}
+          CLEAN: ${{ steps.clean.outputs.exit-code }}
+          WITH_BUGS: ${{ steps.with-bugs.outputs.exit-code }}
+          WITH_BUGS_OUTCOME: ${{ steps.with-bugs.outcome }}
+          BROKEN: ${{ steps.broken.outputs.exit-code }}
+          BROKEN_OUTCOME: ${{ steps.broken.outcome }}
+          CLEAN_ARTIFACT: ${{ steps.clean.outputs.artifact-id }}
+          WITH_BUGS_ARTIFACT: ${{ steps.with-bugs.outputs.artifact-id }}
+        run: |
+          failed=0
+          expect() { if [ "$2" = "$3" ]; then echo "ok   $1: $2"; else echo "FAIL $1: $2, expected $3"; failed=1; fi; }
+          expect "clean, the baseline: exit" "$BASELINE" 0
+          expect "clean, against the baseline: exit" "$CLEAN" 0
+          expect "with-bugs: exit" "$WITH_BUGS" 1
+          expect "with-bugs: the step" "$WITH_BUGS_OUTCOME" failure
+          expect "the broken URL: exit" "$BROKEN" 2
+          expect "the broken URL: the step" "$BROKEN_OUTCOME" failure
+          for run in clean-baseline clean with-bugs; do
+            for file in report.html junit.xml report.json; do
+              if [ -s "out/$run/$file" ]; then echo "ok   $run: $file written"; else echo "FAIL $run: no $file"; failed=1; fi
+            done
+          done
+          [ -s out/clean/baseline.json ] && echo "ok   clean: compared with its baseline" || { echo "FAIL clean: no baseline.json"; failed=1; }
+          [ -n "$CLEAN_ARTIFACT" ] && echo "ok   clean: reports attached ($CLEAN_ARTIFACT)" || { echo "FAIL clean: no artifact"; failed=1; }
+          [ -n "$WITH_BUGS_ARTIFACT" ] && echo "ok   with-bugs: reports attached ($WITH_BUGS_ARTIFACT)" || { echo "FAIL with-bugs: no artifact"; failed=1; }
+          # A folder find can't read, or one missing, is reported, not an exit that skips the checks' summary.
+          foreign=$(find out .mr-onion .mr-onion-with-bugs .mr-onion-broken ! -user "$(id -u)" 2>&1 | head -5 || true)
+          [ -z "$foreign" ] && echo "ok   every file the runs wrote is the job user's ($(id -un))" || { echo "FAIL files not the job user's: $foreign"; failed=1; }
+          exit $failed
+
+      - name: Stop the Toolshop
+        if: always()
+        run: bash scripts/toolshop-local/toolshop.sh stop

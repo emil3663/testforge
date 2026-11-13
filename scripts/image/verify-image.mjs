@@ -4,13 +4,14 @@
 //   2. `--help` exits 0 with the usage;
 //   3. a real run on the comparison fixture, which the image itself starts with --server: --report-only exits 0, the
 //      JUnit totals are the report's, at least one test executed, and the report says which Mr Onion made it;
-//   4. the same run without --report-only exits with the verdict its own report implies (0 or 1);
+//   4. the same run without --report-only fails at least one test and exits 1 (TFP-248), so the failing path runs;
 //   5. an unreachable URL exits 2.
+// Every run is the caller's user, as the action runs it (TFP-248); on Linux, what it wrote must be that user's.
 // Exit 0 when every check holds; 1 naming each one that didn't.
 //
 //   node scripts/image/verify-image.mjs <image> [--version <v>] [--commit <sha>]
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,10 +48,28 @@ export function outputFailures(result, junitXml, expected = {}) {
     return failures;
 }
 
-/** The exit code a run's own report implies, without a baseline (Decision 5): 1 with a failed or blocked test, else 0. */
-export function impliedExit(result, reportOnly) {
-    const { failed, blocked } = result.report.summary;
-    return !reportOnly && failed + blocked > 0 ? 1 : 0;
+/**
+ * TFP-248: the verdict run on the fixture must fail a test and exit 1 (Decision 5, no baseline), so every release runs
+ * the failing path. A run that passes everything exits 0 rightly, and proves nothing about a failing one.
+ */
+export function verdictFailures(result, status) {
+    const failures = [];
+    if (!(result.report.summary.failed > 0)) failures.push(`no test failed (failed=${result.report.summary.failed}), so the failing path wasn't run`);
+    if (status !== 1) failures.push(`exited ${status}, not 1`);
+    return failures;
+}
+
+/** TFP-248: the files under a workspace that its user doesn't own (`files`: each one's path and uid), up to three named. */
+export function ownershipFailures(files, uid) {
+    const foreign = files.filter((file) => file.uid !== uid);
+    if (foreign.length === 0) return [];
+    const named = foreign.slice(0, 3).map((file) => `${file.path} (uid ${file.uid})`).join(", ");
+    return [`${foreign.length} file(s) in the workspace aren't owned by uid ${uid}: ${named}${foreign.length > 3 ? ", ..." : ""}`];
+}
+
+/** Every file and folder under `dir`, with its owner's uid. */
+function ownersUnder(dir) {
+    return readdirSync(dir, { recursive: true }).map((path) => ({ path, uid: statSync(join(dir, path)).uid }));
 }
 
 /** What check-pins.mjs printed that disagrees with the repo; empty when it agrees. */
@@ -92,7 +111,9 @@ function main(argv) {
         const dir = mkdtempSync(join(process.env.RUNNER_TEMP || tmpdir(), "mr-onion-image-"));
         return { dir, mount: ["--mount", `type=bind,src=${dir},dst=/work`] };
     };
-    const runArgs = ["run", "--rm", "--init", "--ipc=host"];
+    // TFP-248: as the action runs it, as the caller's user, never root (on Windows, which has no uid, a non-root one).
+    const uid = process.getuid?.() ?? 1000;
+    const runArgs = ["run", "--rm", "--init", "--ipc=host", "--user", `${uid}:${process.getgid?.() ?? 1000}`];
 
     const pins = docker([...runArgs, "--entrypoint", "node", image, "/opt/mr-onion/scripts/image/check-pins.mjs"]);
     let printed = null;
@@ -127,7 +148,7 @@ function main(argv) {
             }
         };
         const report = read("report.json");
-        return { run, result: report === null ? null : JSON.parse(report), junit: read("junit.xml") };
+        return { run, dir, result: report === null ? null : JSON.parse(report), junit: read("junit.xml") };
     };
 
     const reportOnly = fixtureRun(true);
@@ -139,13 +160,12 @@ function main(argv) {
         const { planned, executed, passed, failed, blocked, notRun } = reportOnly.result.report.summary;
         console.log(`       planned ${planned}, executed ${executed}, passed ${passed}, failed ${failed}, blocked ${blocked}, not run ${notRun}`);
     }
+    // Only Linux keeps a container's owners on a mounted folder; Docker Desktop's file sharing maps them to the caller.
+    if (process.platform === "linux") check("the workspace's files are the caller's", ownershipFailures(ownersUnder(reportOnly.dir), uid));
 
     const verdict = fixtureRun(false);
     check("the same run's verdict", verdict.result?.report
-        ? [
-            ...(verdict.run.status === impliedExit(verdict.result, false) ? [] : [`exited ${verdict.run.status}; its report implies ${impliedExit(verdict.result, false)}`]),
-            ...outputFailures(verdict.result, verdict.junit, expected),
-        ]
+        ? [...verdictFailures(verdict.result, verdict.run.status), ...outputFailures(verdict.result, verdict.junit, expected)]
         : [`exited ${verdict.run.status} and wrote no report`]);
 
     const { mount } = workspace();

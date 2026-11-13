@@ -1,0 +1,110 @@
+# Phase 47 (TFP-248, Decision 10): Mr Onion as one step of a GitHub Actions job. A composite action around the pinned
+# image (TFP-247): it runs `mr-onion run` against a URL the job can reach, attaches the reports, writes a job summary,
+# and ends the step with the run's own exit code (Decision 5): 0 no failures (with a baseline: no new ones), 1 test
+# failures, 2 couldn't run, 3 invalid configuration.
+#
+#   - uses: emil3663/mr-onion/action@v0.4.0
+#     with:
+#       url: http://localhost:3000
+#
+# The guide is docs/CI_INTEGRATION.md. Linux runners only: the image is a Linux image and the run reaches the target
+# through the host's network.
+name: Mr Onion
+description: Crawl a site, generate a Playwright suite and run it in Mr Onion's pinned image; fails the step on failures
+author: Emil
+branding:
+  icon: layers
+  color: purple
+
+inputs:
+  url:
+    description: The site to test, as the job reaches it (a server the job started on localhost, or a preview URL)
+    required: true
+  mode:
+    description: standard or comprehensive; empty for the config file's, else standard
+    default: ''
+  area:
+    description: Comprehensive only, security or accessibility
+    default: ''
+  baseline:
+    description: A run.json from an earlier run, or "latest" for the newest like run in data-dir; only new failures then fail the step
+    default: ''
+  config:
+    description: A JSON file with any of the command's options, plus "login" (docs/CI_INTEGRATION.md)
+    default: ''
+  report-only:
+    description: true to report failures and exit 0, unless the run couldn't run
+    default: 'false'
+  out:
+    description: Where the reports go, under the workspace (the action's, not the config file's out)
+    default: mr-onion-out
+  data-dir:
+    description: Mr Onion's data folder, saved runs included, under the workspace (the action's, not the config file's dataDir); restore and save it between jobs for a baseline
+    default: .mr-onion
+  env:
+    description: Names of environment variables to pass into the run, comma- or space-separated (a login's usernameEnv and passwordEnv)
+    default: ''
+  image:
+    description: The image to run; empty for ghcr.io/emil3663/mr-onion at this action's own version
+    default: ''
+  upload:
+    description: true to attach the out folder to the run as an artifact
+    default: 'true'
+  artifact-name:
+    description: The artifact's name; give each step its own when a job runs the action more than once
+    default: mr-onion-report
+
+outputs:
+  exit-code:
+    description: The run's exit code
+    value: ${{ steps.run.outputs.exit-code }}
+  out:
+    description: The folder the reports were written to
+    value: ${{ steps.run.outputs.out }}
+  artifact-id:
+    description: The attached artifact's id, when one was attached
+    value: ${{ steps.upload.outputs.artifact-id }}
+
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      run: bash "$GITHUB_ACTION_PATH/run.sh"
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_AREA: ${{ inputs.area }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_CONFIG: ${{ inputs.config }}
+        INPUT_REPORT_ONLY: ${{ inputs.report-only }}
+        INPUT_OUT: ${{ inputs.out }}
+        INPUT_DATA_DIR: ${{ inputs.data-dir }}
+        INPUT_ENV: ${{ inputs.env }}
+        INPUT_IMAGE: ${{ inputs.image }}
+
+    # A summary and the reports whatever the run's result: a failing run is the one whose report is needed.
+    - shell: bash
+      if: always() && steps.run.outputs.image != '' && steps.run.outputs.out != ''
+      run: bash "$GITHUB_ACTION_PATH/summary.sh"
+      env:
+        IMAGE: ${{ steps.run.outputs.image }}
+        OUT: ${{ steps.run.outputs.out }}
+        EXIT_CODE: ${{ steps.run.outputs.exit-code }}
+        URL: ${{ inputs.url }}
+
+    - id: upload
+      if: always() && inputs.upload == 'true' && steps.run.outputs.out != ''
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ steps.run.outputs.out }}
+        if-no-files-found: warn
+        retention-days: 30
+
+    - shell: bash
+      if: always()
+      run: |
+        code="${{ steps.run.outputs.exit-code }}"
+        echo "mr-onion: exit ${code:-2}"
+        exit "${code:-2}"

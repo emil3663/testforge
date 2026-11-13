@@ -67,7 +67,7 @@ Each area's cases are in a file of their own under `docs/test-plan/` (TFP-253). 
 | 3.7 | Export (EXP) | 2 | [docs/test-plan/EXP.md](docs/test-plan/EXP.md) |
 | 3.8 | Save-suite (SAV) | 3 | [docs/test-plan/SAV.md](docs/test-plan/SAV.md) |
 | 3.9 | Test suite (TST) | 8 | [docs/test-plan/TST.md](docs/test-plan/TST.md) |
-| 3.10 | CI command line (CI) | 23 | [docs/test-plan/CI.md](docs/test-plan/CI.md) |
+| 3.10 | CI command line (CI) | 29 | [docs/test-plan/CI.md](docs/test-plan/CI.md) |
 
 ## 4. Known Limitations & Gaps
 

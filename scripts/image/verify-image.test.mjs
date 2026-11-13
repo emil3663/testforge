@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { pinFailures } from "./check-pins.mjs";
-import { impliedExit, junitTotals, outputFailures, pinsFailures } from "./verify-image.mjs";
+import { junitTotals, outputFailures, ownershipFailures, pinsFailures, verdictFailures } from "./verify-image.mjs";
 
 const summary = { planned: 12, executed: 10, passed: 7, failed: 2, flaky: 0, blocked: 1, notRun: 2 };
 const result = { report: { summary }, producedBy: { version: "0.4.0", commit: "abc1234" } };
@@ -40,11 +40,30 @@ test("outputFailures fails a report made by another version or commit", () => {
     ]);
 });
 
-test("impliedExit: 1 with a failed or blocked test, 0 with --report-only or none", () => {
-    assert.equal(impliedExit(result, false), 1);
-    assert.equal(impliedExit(result, true), 0);
-    assert.equal(impliedExit({ report: { summary: { ...summary, failed: 0, blocked: 0 } } }, false), 0);
-    assert.equal(impliedExit({ report: { summary: { ...summary, failed: 0, blocked: 1 } } }, false), 1);
+test("verdictFailures: a fixture run that failed a test and exited 1 passes", () => {
+    assert.deepEqual(verdictFailures(result, 1), []);
+});
+
+test("verdictFailures fails a fixture run that passed everything, even with the right exit 0 for that", () => {
+    const passed = { report: { summary: { ...summary, passed: 9, failed: 0, blocked: 0 } } };
+    assert.deepEqual(verdictFailures(passed, 0), ["no test failed (failed=0), so the failing path wasn't run", "exited 0, not 1"]);
+    assert.deepEqual(verdictFailures({ report: { summary: { ...summary, failed: 0, blocked: 1 } } }, 1), ["no test failed (failed=0), so the failing path wasn't run"]);
+});
+
+test("verdictFailures fails a run that failed a test but didn't exit 1", () => {
+    assert.deepEqual(verdictFailures(result, 0), ["exited 0, not 1"]);
+    assert.deepEqual(verdictFailures(result, 2), ["exited 2, not 1"]);
+});
+
+test("ownershipFailures: a workspace whose files are all the caller's passes", () => {
+    assert.deepEqual(ownershipFailures([{ path: "out", uid: 1001 }, { path: "out/report.json", uid: 1001 }], 1001), []);
+});
+
+test("ownershipFailures names the files root (or anyone else) owns, three at most", () => {
+    const files = ["out", "out/report.json", "out/junit.xml", "out/report.html"].map((path) => ({ path, uid: 0 }));
+    assert.deepEqual(ownershipFailures([{ path: "a", uid: 1001 }, ...files], 1001), [
+        "4 file(s) in the workspace aren't owned by uid 1001: out (uid 0), out/report.json (uid 0), out/junit.xml (uid 0), ...",
+    ]);
 });
 
 const lock = { packages: { "node_modules/playwright-core": { version: "1.59.1" }, "node_modules/playwright": { version: "1.59.1" }, "node_modules/@playwright/test": { version: "1.59.1" } } };
