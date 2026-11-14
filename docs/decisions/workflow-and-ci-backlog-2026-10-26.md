@@ -1499,15 +1499,27 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-283 - The self-test's server times out on a cold build (added 2026-11-11)
 
-- **Status:** Built 2026-11-14 (Claude Code): `dc38039`, on the local
-  branch `tfp-283-cold-build`, to verify; not pushed.
+- **Status:** Done 2026-11-14: `dc38039` and `bc3a416`, on `main` by
+  fast-forward (PR #34, every check passed on its head `bc3a416`: CodeQL
+  and its alert check, PR Validation, Release Image). Verified by a
+  planning session (2026-11-14), with owner rulings the same day:
+  - the forced 20 s window is accepted as the red-first; no timing
+    session;
+  - no stale-build guard (the open point below stays as it is);
+  - PR Validation checks the production build again: `bc3a416` runs
+    `npm run build` (without `.env.development`'s values) after the smoke
+    tests and their artifact upload. It runs before the two PR comment
+    steps rather than literally last, so a failing build is never
+    commented as a pass. On PR #34 it built ("Compiled successfully in
+    2.4s", from the smoke build's cache; 12 of 12 static pages). Smoke
+    Test keeps no separate build: the ruling named PR Validation only.
+  - Built 2026-11-14 (Claude Code).
   - **The change**, as TFP-208 made for the regression suite:
     `test:self` and `test:self:allure` run `build:self-test` first, and
     the webServer runs `start:self-test` only. PR Validation and Smoke
-    Test drop their separate `npm run build`, which would build twice.
-    That build was never the one tested (`serve:self-test` rebuilt over
-    it). What CI no longer checks is that the app builds without
-    `.env.development`'s values. `serve:self-test` stays, for use by hand.
+    Test drop their separate `npm run build` before the tests, which would
+    build twice. That build was never the one tested (`serve:self-test`
+    rebuilt over it). `serve:self-test` stays, for use by hand.
   - **Red first, not as the criterion is written.** On this machine
     (12 cores) a cold build doesn't reach 120 s: with `.next/` removed,
     today's command built and started in about 51 s and passed 5 of 5
