@@ -1568,7 +1568,68 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-284 - Playwright on the current GitHub runner image (added 2026-11-11)
 
-- **Status:** Open.
+- **Status:** Built 2026-11-14 (Claude Code): `904db9b` and `71a208f`, on
+  the branch `tfp-284-playwright-ubuntu-26`, PR #37, not merged. **To
+  verify** (owner ruling, 2026-11-14: stop before merging).
+  - **Owner rulings, 2026-11-14:** Playwright 1.62.1, with 1.63+ as
+    TFP-286. Fix the beacon breach in this ticket without weakening the
+    test: keep `route.abort` and add an init-script stub in every frame for
+    `sendBeacon`, and for `fetch` with keepalive on any method but GET,
+    HEAD and QUERY. Keep TFP-199's classes (a beacon is noted, any other
+    such write is a breach). Prove it at the server for the existing case
+    and from an iframe. Name any path it can't cover as a known limitation
+    with an issue. Compare Action Gate's Toolshop counts with 0.4.0's.
+  - **The change** (`904db9b`): Playwright 1.62.1, the first release
+    supporting Ubuntu 26.04 (Chromium 147 → 151). Every job is pinned to
+    `ubuntu-26.04`, not `ubuntu-latest`, so `verify-image.mjs`'s check of
+    the image's OS against CI's runner can't drift silently. The image's
+    base is `ubuntu:26.04` by digest. Trace scrubbing reads Playwright's
+    zip library from `lib/utilsBundle`, since 1.62 removed `lib/zipBundle`.
+    The action's example and `docs/CI_INTEGRATION.md` keep
+    `ubuntu-24.04`: they describe running v0.4.0's image elsewhere.
+  - **The guard** (`71a208f`): from Chromium 151, a beacon or keepalive
+    fetch sent as a page is left reached the server although the route
+    aborted it, writes included. The stub stops them in the page in every
+    frame, and the route's rule judges them. Red first on 1.62.1 without
+    the stub: TFP-199's beacons reached the server, and so did the new
+    test's iframe beacons and keepalive cart POSTs. With it, the guard's
+    tests passed 4 of 4, four runs in a row. Measured with the stub:
+    a link's `ping` and a Web Worker's keepalive POST are still stopped by
+    the route. References taken before the guard armed, and `fetchLater()`,
+    reach the server: known limitations 12 and 13 (#35, #36), RUN-54.
+  - **On 1.65.0 first** (rejected): unit 833 of 840. Four failures were
+    the zip export, one the beacons, and two the 1.63+ step titles
+    (TFP-286).
+  - **Local, on 1.62.1 (Windows, a temporary `LOCALAPPDATA`; the real data
+    folder had 41 files before and after):** `npm run test:unit` 841 of
+    841, 0 skipped (840 plus the iframe test); `test:self` 5 of 5;
+    `test:regression` 73 passed. tsc and eslint clean.
+  - **`check:template-unchanged main`:** 164 of 172 identical, 8
+    different. The 8 are the 8 inputs whose suite contains the guard
+    helper. Each base output with the old helper's text replaced by the
+    new one is byte-identical to its head output, so the helper is the
+    only change. **For the owner to accept.** Then `TEMPLATE_BASELINE`
+    in `nightly.yml` is re-recorded in its own commit, as TFP-205's was.
+  - **On GitHub, Ubuntu 26.04, head `71a208f`:** every check passed: PR
+    Validation, CodeQL and its alert check, Release Image, Action Gate.
+    The image reports `"os":"26.04"`, `"playwright":"1.62.1"`,
+    `"chromium":"151.0.7922.34"`. Dispatched on the branch:
+    - Regression Test passed (73 passed);
+    - Smoke Test passed (5 passed);
+    - Action Gate passed;
+    - Nightly (43583263150) failed only its template check, "48604dc ->
+      71a208f: 172 inputs, 164 identical, 8 different": the 8 above,
+      against the recorded baseline. Unit, audit and dead-code passed. It
+      opened #38, which closes once the baseline is re-recorded and a
+      nightly passes.
+  - **Action Gate's Toolshop counts equal 0.4.0's** in both runs (PR
+    43583224389, dispatched 43583254897):
+    - clean 470 planned, 406 passed, 46 failed, 18 not run, exit 0;
+    - against its baseline 0 new, 46 known, 0 fixed;
+    - with-bugs 481, 377, 84, 20, exit 1;
+    - a broken URL exit 2.
+    These are counts; the failing tests' names weren't compared one by
+    one.
 - **Phase:** None — after Phase 48 merges
 - **Priority:** P2
 - **Suggested labels:** `ci`, `dependencies`
@@ -1590,6 +1651,38 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - `check:template-unchanged`: identical with no map, or each difference
     named and owner-accepted.
 - **Dependencies:** Phase 48 merged.
+
+### TFP-286 - Playwright 1.63+ and its step titles (added 2026-11-14)
+
+- **Status:** Open.
+- **Phase:** None
+- **Priority:** P2
+- **Suggested labels:** `dependencies`, `test`
+- **Problem it solves:** TFP-284 moved Playwright to 1.62.1, the first
+  release that supports Ubuntu 26.04, and not to the latest (owner ruling,
+  2026-11-14). From 1.63.0, an API step's title no longer carries what the
+  timing reporter reads. A request is titled by its method alone (the URL
+  moved to a separate subtitle), navigation is "Navigate" with the URL in
+  the subtitle, and "Wait for load state" drops the state. Measured on
+  1.65.0 (2026-11-14), `npm run test:unit` gave 833 of 840:
+  - the timing reporter's test (TFP-211) read the requests as "other"
+    steps;
+  - the shared-visits test (Decision 7) counted 0 page loads.
+  Each of those parses the title (`src/lib/run/timing.ts:70-77`, and the
+  shared-visits load counts, which come from the same steps).
+- **Scope:** read a step's target and load state from what 1.63+ reports
+  (the step's subtitle or parameters, if the reporter API gives them), for
+  both the old and the new form or the new only, and move Playwright to a
+  current release. The browser version moves with it, so the generated
+  template and the read-only guard (TFP-284's stub) are checked again.
+- **Acceptance criteria:**
+  - **Red first:** on 1.63+, the TFP-211 timing test and the Decision 7
+    shared-visits test fail as above, quoted.
+  - The full `npm run test:unit` passes on the new release.
+  - `check:template-unchanged`: identical with no map, or each difference
+    named and owner-accepted.
+  - Action Gate's Toolshop counts compared with the previous release's.
+- **Dependencies:** TFP-284.
 
 ---
 
