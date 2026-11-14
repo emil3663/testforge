@@ -1684,6 +1684,38 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
   - Action Gate's Toolshop counts compared with the previous release's.
 - **Dependencies:** TFP-284.
 
+### TFP-287 - The read-only guard covers references a page saves at load (added 2026-11-14)
+
+- **Status:** Open.
+- **Phase:** None
+- **Priority:** P2
+- **Suggested labels:** `bug`, `security`
+- **Problem it solves:** known limitation 12
+  ([#35](https://github.com/emil3663/mr-onion/issues/35)). TFP-284's stub
+  replaces `sendBeacon`, `fetch` and `fetchLater` when the guard arms,
+  after the page has loaded. A page that saved its own reference to one of
+  them at load (as an analytics script can) calls the original. Measured on
+  1.62.1 (2026-11-14): such a request, sent as the page is left, reached
+  the server.
+- **Scope (owner ruling, 2026-11-14):** a dormant wrapper for `sendBeacon`,
+  `fetch` and `fetchLater`, installed by an init script before each
+  read-only test's first navigation, so it is what the page saves at load.
+  It passes every call through until the guard switches it on, then
+  stops non-safe calls as TFP-284's stub does (TFP-199's classes). Loading
+  stays unjudged: the wrapper changes nothing until the guard arms.
+- **Acceptance criteria:**
+  - **Red first:** the measurement above, as a test at the server (a
+    reference to `sendBeacon` and to `fetch` saved at load, used as the
+    page is left under the guard), failing on TFP-284's guard.
+  - The same test passes, and nothing but GETs reaches the server.
+  - A page's load before the guard arms is unchanged: its requests,
+    beacons included, reach the server as today.
+  - The read-only guard's tests and the full `npm run test:unit` pass;
+    `check:template-unchanged` shows only the guard's lines changed,
+    owner-accepted.
+  - #35 closes, and known limitation 12 is removed in the same commit.
+- **Dependencies:** TFP-284.
+
 ---
 
 ## Owner plans to carry into the register (2026-10-28) — carried 2026-10-30 as D38 and D39
