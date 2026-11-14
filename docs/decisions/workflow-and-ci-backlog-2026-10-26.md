@@ -1568,9 +1568,31 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-284 - Playwright on the current GitHub runner image (added 2026-11-11)
 
-- **Status:** Built 2026-11-14 (Claude Code): `904db9b` and `71a208f`, on
-  the branch `tfp-284-playwright-ubuntu-26`, PR #37, not merged. **To
-  verify** (owner ruling, 2026-11-14: stop before merging).
+- **Status:** Done 2026-11-14: `904db9b`, `71a208f`, `0fe8ffe` and
+  `f5b8e5c`, on `main` by fast-forward (PR #37; every check passed on its
+  head `f5b8e5c`: PR Validation, CodeQL and its alert check, Release
+  Image, Action Gate). Verified by a planning session (2026-11-14), with
+  owner rulings the same day:
+  - **`fetchLater()` too**, closing #36. `0fe8ffe` extends the stub with
+    keepalive fetch's methods. Red first at the server, on 1.62.1 without
+    it: `POST /api/store/cart?later-page` and `?later-frame` arrived. With
+    it, the guard's tests passed 5 of 5, three runs in a row, and
+    `npm run test:unit` 842 of 842, 0 skipped. Known limitation 13 is
+    removed.
+  - **#35 stays** a known limitation (12). Its fix is TFP-287: a dormant
+    wrapper installed before each read-only test's first navigation.
+  - **The template change is accepted**, the guard helper only. Checked
+    again after `0fe8ffe`: 164 of 172 identical. The 8 are the guard's
+    suites, each byte-identical to its new output with the helper swapped.
+    `f5b8e5c` moves `TEMPLATE_BASELINE` to `0fe8ffe` in its own commit.
+  - **The nightly, dispatched on the branch at `f5b8e5c`** (43591682394),
+    passed every job: template "0fe8ffe -> f5b8e5c: 172 inputs, 172
+    identical, 0 different", plus unit, audit and dead-code. It closed
+    #38.
+  - **Action Gate on `f5b8e5c`** (43591680332): the same counts as 0.4.0's
+    and as the runs below.
+  - Built 2026-11-14 (Claude Code); first stopped for verification at
+    `6799874`.
   - **Owner rulings, 2026-11-14:** Playwright 1.62.1, with 1.63+ as
     TFP-286. Fix the beacon breach in this ticket without weakening the
     test: keep `route.abort` and add an init-script stub in every frame for
