@@ -35,6 +35,15 @@
  * attribute), or a non-safe request to a named analytics path. Every other
  * non-safe request, and every form submission, is still a breach.
  *
+ * TFP-284 (owner ruling, 2026-11-14): from Playwright 1.62 (Chromium 151), a
+ * beacon the route aborts still reaches the server: sendBeacon's, and a
+ * fetch with keepalive. So each frame also gets a stub, run in every frame
+ * the page has when the guard arms and, as an init script, in every frame
+ * after: sendBeacon, and a keepalive fetch with a method but GET, HEAD and
+ * QUERY, are stopped in the page and handed to the guard. The guard judges
+ * them as it judges the route's (a beacon is noted; anything else is a
+ * breach). The route's abort stays, for every other request.
+ *
  * Generated code, kept as a raw string like the passive security helpers, so
  * it reaches the generated file exactly as written here.
  */
@@ -64,22 +73,39 @@ const TF_BEACON_PATHS = ['/cdn-cgi/rum'];
 // TFP-181 (Phase 41 Decision 3): a read-only test that interacts runs its
 // interaction here. Any request but a safe one (GET, HEAD, QUERY) is aborted, and any form
 // submission stopped, and either fails the test as a guard breach, named. TFP-199: a site's
-// beacon is aborted too, but noted, not counted as a breach.
+// beacon is aborted too, but noted, not counted as a breach. TFP-284: sendBeacon and a keepalive fetch
+// are stopped in the page as well, in every frame, since the route's abort no longer stops them.
 async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact: () => Promise<void>) {
   const breaches: string[] = [];
   const beacons: string[] = [];
+  const judge = (method: string, url: string, type: string) => {
+    const beacon = type === 'ping' || TF_BEACON_PATHS.some((path) => new URL(url).pathname.startsWith(path));
+    (beacon ? beacons : breaches).push(method + ' ' + url + (beacon ? ' (' + type + ')' : ''));
+  };
   await page.exposeBinding('__tfGuardBreach', (_source, what: string) => { breaches.push(what); });
+  await page.exposeBinding('__tfGuardRequest', (_source, method: string, url: string, type: string) => judge(method, url, type));
   await page.route('**/*', async (route) => {
     const request = route.request();
     if (['GET', 'HEAD', 'QUERY'].includes(request.method())) return route.fallback();
-    const beacon = request.resourceType() === 'ping' || TF_BEACON_PATHS.some((path) => new URL(request.url()).pathname.startsWith(path));
-    (beacon ? beacons : breaches).push(request.method() + ' ' + request.url() + (beacon ? ' (' + request.resourceType() + ')' : ''));
+    judge(request.method(), request.url(), request.resourceType());
     await route.abort('blockedbyclient');
   });
-  const stopSubmissions = () => {
-    const scope = window as unknown as { __tfGuardBreach?: (what: string) => void; __tfGuardArmed?: boolean };
+  const armFrame = () => {
+    const scope = window as unknown as { __tfGuardBreach?: (what: string) => void; __tfGuardRequest?: (method: string, url: string, type: string) => void; __tfGuardArmed?: boolean };
     if (scope.__tfGuardArmed) return;
     scope.__tfGuardArmed = true;
+    const stopped = (method: string, url: string, type: string) => scope.__tfGuardRequest?.(method, new URL(url, location.href).href, type);
+    Navigator.prototype.sendBeacon = function (url: string | URL) { stopped('POST', String(url), 'ping'); return true; };
+    const send = window.fetch;
+    window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+      const request = input instanceof Request ? input : null;
+      const method = String(init?.method ?? request?.method ?? 'GET').toUpperCase();
+      if ((init?.keepalive ?? request?.keepalive) && !['GET', 'HEAD', 'QUERY'].includes(method)) {
+        stopped(method, request ? request.url : String(input), 'fetch');
+        return Promise.reject(new TypeError('Failed to fetch'));
+      }
+      return send.call(window, input, init);
+    };
     const name = (form: HTMLFormElement) => {
       const label = form.getAttribute('aria-label') || form.id || form.getAttribute('name') || '';
       const method = (form.getAttribute('method') || 'get').toUpperCase();
@@ -92,8 +118,9 @@ async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact
     }, true);
     HTMLFormElement.prototype.submit = function (this: HTMLFormElement) { scope.__tfGuardBreach?.(name(this)); };
   };
-  await page.addInitScript(stopSubmissions);
-  await page.evaluate(stopSubmissions);
+  await page.addInitScript(armFrame);
+  await page.evaluate(armFrame);
+  for (const frame of page.frames().slice(1)) await frame.evaluate(armFrame).catch(() => undefined); // a frame gone since
   let failure: unknown = null;
   try {
     await interact();

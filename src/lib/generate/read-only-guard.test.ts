@@ -218,3 +218,87 @@ test('beacons sent while the page stays', async ({ page }) => {
         await fixture.close();
     }
 });
+
+/**
+ * TFP-284 (owner ruling, 2026-11-14): from Playwright 1.62 (Chromium 151), a beacon or keepalive fetch sent as a
+ * page is left reaches the server although the route aborts it, so the guard also stops sendBeacon and a keepalive
+ * fetch in the page, in every frame. Two iframes: one loaded before the guard arms (armed when the guard starts)
+ * and one added while it is armed (armed by the init script). Every fixture page sends its site-beacons as it is
+ * left, and each frame also sends a keepalive POST to the cart as it is left. Two cases:
+ * - The page follows a link under the guard, so its frames are torn down with it: nothing but GETs reaches the
+ *   server. What the guard names is only ever one of those requests; whether a frame's report arrives as it is torn
+ *   down is Chromium's timing (TFP-208, above), so this case's verdict is not checked. (A frame navigated on its own
+ *   while the page stays was measured on 1.62.1 too: the route still stops its requests, so it is not a case here.)
+ * - The same requests sent while the frames stay: TFP-199's classes hold. The beacons are noted, the keepalive
+ *   POSTs are a breach, named.
+ */
+test("in a real browser: from an iframe loaded before the guard or added under it, sendBeacon and a keepalive POST are stopped, left or staying, and named in TFP-199's classes (TFP-284)", { skip: needsChromium }, async () => {
+    const fixture = await startRecordedFixture();
+    try {
+        await fixture.control("/__fixture/defect?set=site-beacons");
+        const code = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: '${fixture.origin}' });
+
+${READ_ONLY_GUARD_HELPER}
+
+const addFrame = (page: import('@playwright/test').Page, name: string) => page.evaluate((name) => new Promise<void>((resolve) => {
+  const frame = document.createElement('iframe');
+  frame.name = name;
+  frame.src = '/notes';
+  frame.onload = () => resolve();
+  document.body.append(frame);
+}), name);
+
+test('iframes left under the guard', async ({ page }) => {
+  await page.goto('/store');
+  await addFrame(page, 'before');
+  await tfReadOnlyGuarded(page, async () => {
+    await addFrame(page, 'after');
+    for (const name of ['before', 'after']) {
+      await page.frame({ name })!.evaluate((name) => addEventListener('pagehide', () => {
+        fetch('/api/store/cart?left-' + name, { method: 'POST', body: '{}', keepalive: true }).catch(() => undefined);
+      }), name);
+    }
+    await page.getByRole('link', { name: 'Notes', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Notes' })).toBeVisible();
+  });
+});
+
+test('iframes that stay', async ({ page }) => {
+  await page.goto('/store');
+  await addFrame(page, 'before');
+  await tfReadOnlyGuarded(page, async () => {
+    await addFrame(page, 'after');
+    for (const name of ['before', 'after']) {
+      await page.frame({ name })!.evaluate((name) => {
+        navigator.sendBeacon('/cdn-cgi/rum?' + name, '{}');
+        fetch('/api/store/cart?' + name, { method: 'POST', body: '{}', keepalive: true }).catch(() => undefined);
+      }, name);
+    }
+  });
+});
+`;
+        assert.deepEqual(findTypeErrors(code), []);
+        const { report } = await runPlaywrightSpec(code, "read-only-guard-frames", ["--timeout=30000", "--workers=1"]);
+        const records = flattenSuites(report.suites);
+        const notes = guardNotes(report.suites);
+
+        assert.deepEqual(fixture.recorded.filter((request) => request.method !== "GET").map((request) => `${request.method} ${request.path}`), [], "nothing but GETs reached the server");
+
+        const left = one(records, "iframes left under the guard");
+        const leftNamed = [...(notes.get("iframes left under the guard") ?? []), left.rawMessage ?? ""].join(" ");
+        const sent = [...leftNamed.matchAll(/POST ([^\s;",]+)/g)].map((match) => match[1].replace(fixture.origin, ""));
+        assert.deepEqual(sent.filter((path) => !/^\/(cdn-cgi\/rum\?(beacon)?|api\/store\/cart\?left-(before|after))$/.test(path)), [], `only the frames' own requests are named: ${leftNamed}`);
+
+        const stays = one(records, "iframes that stay");
+        const staysNote = (notes.get("iframes that stay") ?? []).join(" | ");
+        assert.equal(stays.status, "Failed", stays.rawMessage);
+        for (const name of ["before", "after"]) {
+            assert.ok(stays.rawMessage.includes(`POST ${fixture.origin}/api/store/cart?${name}`), `the ${name} frame's keepalive POST is a breach: ${stays.rawMessage}`);
+            assert.ok(staysNote.includes(`POST ${fixture.origin}/cdn-cgi/rum?${name} (ping)`), `the ${name} frame's beacon is noted: ${staysNote}`);
+        }
+    } finally {
+        await fixture.close();
+    }
+});
