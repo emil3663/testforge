@@ -1442,8 +1442,13 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-282 - Link health's route test can pass under load without checking the route (added 2026-11-11)
 
-- **Status:** Built 2026-11-13 (Claude Code): `79c9466`, on the local
-  branch `tfp-282-route-test`, to verify; not pushed. Test only:
+- **Status:** Done 2026-11-14: `79c9466`, on `main` by fast-forward
+  (PR #33, every check passed on its head `bd1872c`: CodeQL and its alert
+  check, PR Validation, Release Image). Verified by a planning session
+  (2026-11-14): only the generated suite's 14 s budget line is replaced,
+  and that is asserted once; the unchecked-routes assertion runs before
+  the verdict.
+  - Built 2026-11-13 (Claude Code). Test only:
   `src/lib/introspect/routes.test.ts`.
   - **The change:** the test gives the generated route check its own
     deadline (120 s, with a 180 s Playwright timeout). Before the verdict,
