@@ -25,12 +25,11 @@ the report and the CI command are declared stable, after Phase 47.
 - **The read-only guard stops a site's beacons again.** From Chromium 151, a
   beacon or keepalive request sent as a page is left reached the site even
   though the guard aborted it. That includes a keepalive POST, a write. The
-  guard now also stops `navigator.sendBeacon` and a keepalive `fetch` in the
-  page, in every frame. A site's beacons are still noted, not a failure, and
-  any other such write still fails the test as a guard breach. Two paths it
-  can't stop are known limitations:
-  [#35](https://github.com/emil3663/mr-onion/issues/35) and
-  [#36](https://github.com/emil3663/mr-onion/issues/36) (TFP-284).
+  guard now also stops `navigator.sendBeacon`, a keepalive `fetch` and
+  `fetchLater()` in the page, in every frame. A site's beacons are still
+  noted, not a failure, and any other such write still fails the test as a
+  guard breach. One path it can't stop yet is a known limitation:
+  [#35](https://github.com/emil3663/mr-onion/issues/35) (TFP-284).
 
 ## [0.4.0] — 2026-11-13
 

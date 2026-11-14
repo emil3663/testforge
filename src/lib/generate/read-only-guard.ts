@@ -42,7 +42,9 @@
  * after: sendBeacon, and a keepalive fetch with a method but GET, HEAD and
  * QUERY, are stopped in the page and handed to the guard. The guard judges
  * them as it judges the route's (a beacon is noted; anything else is a
- * breach). The route's abort stays, for every other request.
+ * breach). The route's abort stays, for every other request. Owner ruling,
+ * the same day: `fetchLater()` too (its request is sent at the latest as
+ * the page is left), with the same methods.
  *
  * Generated code, kept as a raw string like the passive security helpers, so
  * it reaches the generated file exactly as written here.
@@ -73,8 +75,8 @@ const TF_BEACON_PATHS = ['/cdn-cgi/rum'];
 // TFP-181 (Phase 41 Decision 3): a read-only test that interacts runs its
 // interaction here. Any request but a safe one (GET, HEAD, QUERY) is aborted, and any form
 // submission stopped, and either fails the test as a guard breach, named. TFP-199: a site's
-// beacon is aborted too, but noted, not counted as a breach. TFP-284: sendBeacon and a keepalive fetch
-// are stopped in the page as well, in every frame, since the route's abort no longer stops them.
+// beacon is aborted too, but noted, not counted as a breach. TFP-284: sendBeacon, a keepalive fetch and
+// fetchLater are stopped in the page as well, in every frame, since the route's abort no longer stops them.
 async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact: () => Promise<void>) {
   const breaches: string[] = [];
   const beacons: string[] = [];
@@ -91,7 +93,7 @@ async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact
     await route.abort('blockedbyclient');
   });
   const armFrame = () => {
-    const scope = window as unknown as { __tfGuardBreach?: (what: string) => void; __tfGuardRequest?: (method: string, url: string, type: string) => void; __tfGuardArmed?: boolean };
+    const scope = window as unknown as { __tfGuardBreach?: (what: string) => void; __tfGuardRequest?: (method: string, url: string, type: string) => void; __tfGuardArmed?: boolean; fetchLater?: (input: RequestInfo | URL, init?: RequestInit) => { activated: boolean } };
     if (scope.__tfGuardArmed) return;
     scope.__tfGuardArmed = true;
     const stopped = (method: string, url: string, type: string) => scope.__tfGuardRequest?.(method, new URL(url, location.href).href, type);
@@ -105,6 +107,14 @@ async function tfReadOnlyGuarded(page: import('@playwright/test').Page, interact
         return Promise.reject(new TypeError('Failed to fetch'));
       }
       return send.call(window, input, init);
+    };
+    const later = scope.fetchLater;
+    if (later) scope.fetchLater = (input: RequestInfo | URL, init?: RequestInit) => {
+      const request = input instanceof Request ? input : null;
+      const method = String(init?.method ?? request?.method ?? 'GET').toUpperCase();
+      if (['GET', 'HEAD', 'QUERY'].includes(method)) return later.call(window, input, init);
+      stopped(method, request ? request.url : String(input), 'fetchLater');
+      return { activated: false };
     };
     const name = (form: HTMLFormElement) => {
       const label = form.getAttribute('aria-label') || form.id || form.getAttribute('name') || '';

@@ -302,3 +302,52 @@ test('iframes that stay', async ({ page }) => {
         await fixture.close();
     }
 });
+
+/**
+ * TFP-284 (owner ruling, 2026-11-14, closing #36): fetchLater() queues a request the browser sends at the latest
+ * as the page is left, and the route's abort doesn't stop it. The stub covers it with keepalive fetch's methods.
+ * A fetchLater POST is queued under the guard in the main frame and in an iframe, and the page follows a link, so
+ * both would be sent. The call is made while the page is alive, so the breach is named every time.
+ */
+test("in a real browser: a fetchLater POST queued under the guard, in the page or an iframe, is stopped as a breach and never reaches the server (TFP-284)", { skip: needsChromium }, async () => {
+    const fixture = await startRecordedFixture();
+    try {
+        const code = `import { test, expect } from '@playwright/test';
+
+test.use({ baseURL: '${fixture.origin}' });
+
+${READ_ONLY_GUARD_HELPER}
+
+type Later = { fetchLater?: (url: string, init: RequestInit) => unknown };
+
+test('fetchLater, then a link', async ({ page }) => {
+  await page.goto('/store');
+  await tfReadOnlyGuarded(page, async () => {
+    await page.evaluate(() => new Promise<void>((resolve) => {
+      const frame = document.createElement('iframe');
+      frame.name = 'later';
+      frame.src = '/notes';
+      frame.onload = () => resolve();
+      document.body.append(frame);
+    }));
+    expect(await page.evaluate(() => typeof (window as unknown as Later).fetchLater), 'Chromium has fetchLater').toBe('function');
+    await page.evaluate(() => { (window as unknown as Later).fetchLater!('/api/store/cart?later-page', { method: 'POST', body: '{}' }); });
+    await page.frame({ name: 'later' })!.evaluate(() => { (window as unknown as Later).fetchLater!('/api/store/cart?later-frame', { method: 'POST', body: '{}' }); });
+    await page.getByRole('link', { name: 'Notes', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Notes' })).toBeVisible();
+  });
+});
+`;
+        assert.deepEqual(findTypeErrors(code), []);
+        const { report } = await runPlaywrightSpec(code, "read-only-guard-fetch-later", ["--timeout=30000", "--workers=1"]);
+        const record = one(flattenSuites(report.suites), "fetchLater, then a link");
+
+        assert.deepEqual(fixture.recorded.filter((request) => request.method !== "GET").map((request) => `${request.method} ${request.path}`), [], "nothing but GETs reached the server");
+        assert.equal(record.status, "Failed", record.rawMessage);
+        for (const where of ["page", "frame"]) {
+            assert.ok(record.rawMessage.includes(`POST ${fixture.origin}/api/store/cart?later-${where}`), `the ${where}'s fetchLater POST is a breach: ${record.rawMessage}`);
+        }
+    } finally {
+        await fixture.close();
+    }
+});
