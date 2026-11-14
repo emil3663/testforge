@@ -1499,7 +1499,41 @@ Moved word for word from [`docs/test-plan/GEN.md`](../test-plan/GEN.md) by TFP-2
 
 ### TFP-283 - The self-test's server times out on a cold build (added 2026-11-11)
 
-- **Status:** Open.
+- **Status:** Built 2026-11-14 (Claude Code): `dc38039`, on the local
+  branch `tfp-283-cold-build`, to verify; not pushed.
+  - **The change**, as TFP-208 made for the regression suite:
+    `test:self` and `test:self:allure` run `build:self-test` first, and
+    the webServer runs `start:self-test` only. PR Validation and Smoke
+    Test drop their separate `npm run build`, which would build twice.
+    That build was never the one tested (`serve:self-test` rebuilt over
+    it). What CI no longer checks is that the app builds without
+    `.env.development`'s values. `serve:self-test` stays, for use by hand.
+  - **Red first, not as the criterion is written.** On this machine
+    (12 cores) a cold build doesn't reach 120 s: with `.next/` removed,
+    today's command built and started in about 51 s and passed 5 of 5
+    (200 s). So the window was forced to 20 s with a throwaway config:
+    - today's command, cold: "Error: Timed out waiting 20000ms from
+      config.webServer.", exit 1, no tests ran;
+    - the fixed command, cold, same 20 s: the 45 s build ran outside the
+      window, the server was up about 4 s in, and 5 of 5 passed.
+    - A literal reproduction of the 3.3 min build (the WSL clone under
+      `taskset -c 0-1`) was not run: it is a timing session, and the
+      handover asks first. **For the verifier:** whether the forced
+      window meets the criterion.
+  - **As committed**, each run with a temporary `LOCALAPPDATA` (the real
+    data folder had 41 files before and after): cold, 5 of 5, 198 s
+    (before: 200 s); warm, 5 of 5, 171 s (before: 185 s).
+  - **Other checks:** tsc and eslint clean; `check:old-name` passes;
+    `check:template-unchanged main`, 172 of 172 identical.
+  - **A fresh-context review** found every CI caller fixed, the Allure
+    path's exit codes correct, and nothing outside the ticket. **Left
+    open, for the verifier:** run outside the scripts (the recommended
+    Playwright VS Code extension, or `playwright test -c` directly), the
+    suite now starts whatever `.next/` holds. A stale build passes
+    silently, where before it was rebuilt. A missing build fails ("Could
+    not find a production build"). `playwright.regression.config.ts` has
+    had the same exposure since TFP-208. A guard (a check of the build's
+    age, or a flag only the scripts set) is outside this ticket's scope.
 - **Phase:** None — after Phase 48 merges
 - **Priority:** P3
 - **Suggested labels:** `test`, `ci`
