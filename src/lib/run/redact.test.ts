@@ -23,7 +23,7 @@ const PASSWORD = 'p@ss"word\\with-quote';
 
 function makeZip(entries: Record<string, Buffer | string>): Promise<Buffer> {
     const require = createRequire(import.meta.url);
-    const { yazl } = require("playwright-core/lib/zipBundle");
+    const { yazl } = require("playwright-core/lib/utilsBundle"); // TFP-284: was lib/zipBundle, gone from Playwright 1.62
 
     return new Promise((resolve, reject) => {
         const zip = new yazl.ZipFile();

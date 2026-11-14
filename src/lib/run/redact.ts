@@ -130,7 +130,8 @@ export interface ZipEntryData {
 // playwright-core bundles yauzl/yazl for its own trace handling; using them
 // avoids adding a zip dependency. They are an internal export, so the
 // regression test that greps a real trace for the secrets is what guards
-// against an update moving them.
+// against an update moving them. TFP-284: Playwright 1.62 dropped the
+// `lib/zipBundle` export, and they are now in `lib/utilsBundle`.
 interface ZipReader {
     on(event: string, listener: (...args: never[]) => void): void;
     readEntry(): void;
@@ -148,7 +149,7 @@ function zipTools() {
     // lives) rather than import.meta.url, which the Playwright test loader
     // (CommonJS) cannot compile.
     const require = createRequire(join(process.cwd(), "package.json"));
-    return require("playwright-core/lib/zipBundle") as {
+    return require("playwright-core/lib/utilsBundle") as {
         yauzl: {
             fromBuffer: (
                 buffer: Buffer,

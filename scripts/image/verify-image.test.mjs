@@ -69,9 +69,10 @@ test("ownershipFailures names the files root (or anyone else) owns, three at mos
 const lock = { packages: { "node_modules/playwright-core": { version: "1.59.1" }, "node_modules/playwright": { version: "1.59.1" }, "node_modules/@playwright/test": { version: "1.59.1" } } };
 
 test("pinsFailures: the image's Ubuntu and Playwright against CI's pin and the lockfile", () => {
-    assert.deepEqual(pinsFailures({ os: "24.04", playwright: "1.59.1" }, lock), []);
-    assert.deepEqual(pinsFailures({ os: "26.04", playwright: "1.60.0" }, lock), [
-        "the image's Ubuntu is 26.04, not 24.04 (CI's runner pin)",
+    // TFP-284: CI's runner, and so the image, moved from Ubuntu 24.04 to 26.04.
+    assert.deepEqual(pinsFailures({ os: "26.04", playwright: "1.59.1" }, lock), []);
+    assert.deepEqual(pinsFailures({ os: "24.04", playwright: "1.60.0" }, lock), [
+        "the image's Ubuntu is 24.04, not 26.04 (CI's runner pin)",
         "the image's Playwright is 1.60.0; the lockfile says 1.59.1",
     ]);
     assert.equal(pinsFailures(null, lock).length, 2);

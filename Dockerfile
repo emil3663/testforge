@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
 # Phase 47 (TFP-247, Decision 8): Mr Onion's CLI as a pinned image, so "the same site gives the same suite" holds
 # between machines. Every version that decides a suite or a result is fixed here:
-# - the OS: Ubuntu 24.04, the runner image CI is pinned to (83c7d87; TFP-284 moves both together);
+# - the OS: Ubuntu 26.04, the runner image CI is pinned to (TFP-284 moved both together from 24.04);
 # - Node: the exact release, copied from the official image (.nvmrc names the major; the build checks they agree);
 # - Playwright: the lockfile's, through `npm ci`;
 # - Chromium: the build that Playwright version installs (its headless shell: every launch in src/ is headless).
 # Base images are pinned by digest as well as tag, so a re-pushed tag can't change a rebuild. Not pinned: the system
-# libraries and fonts `playwright install --with-deps` takes from Ubuntu's archive, which are whatever 24.04 has at
+# libraries and fonts `playwright install --with-deps` takes from Ubuntu's archive, which are whatever 26.04 has at
 # build time. A published image is fixed once built; a rebuild can differ there, and its verification is the check.
 #
 #   docker build -t mr-onion --build-arg MRONION_BUILD_VERSION=0.3.0 --build-arg MRONION_BUILD_COMMIT=$(git rev-parse --short HEAD) .
@@ -14,7 +14,7 @@
 #
 # Moving a pin: change it here, rebuild, and run scripts/image/verify-image.mjs; the release workflow does the same.
 ARG NODE_IMAGE=node:24.14.1-bookworm-slim@sha256:b506e7321f176aae77317f99d67a24b272c1f09f1d10f1761f2773447d8da26c
-ARG BASE_IMAGE=ubuntu:24.04@sha256:2198e4c65076e9cb0b3d695219df667c0e3b0072da64ca3c2648aca17dcecaf5
+ARG BASE_IMAGE=ubuntu:26.04@sha256:065aa8626841f16057b78b027b464cd59c4fac36c204c72dcbf48d66f5fa8a96
 
 FROM ${NODE_IMAGE} AS node
 

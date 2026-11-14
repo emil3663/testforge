@@ -11,6 +11,15 @@ the report and the CI command are declared stable, after Phase 47.
 
 ## [Unreleased]
 
+### Changed
+
+- **Playwright 1.62.1 and its Chromium 151**, from 1.59.1 and Chromium 147,
+  so Mr Onion runs on GitHub's Ubuntu 26.04 runners, where 1.59.1 stops
+  with "Playwright does not support chromium on ubuntu26.04-x64". The next
+  image is built on Ubuntu 26.04 too. The generated suites are unchanged
+  apart from the read-only guard below
+  ([TFP-284](docs/decisions/workflow-and-ci-backlog-2026-10-26.md)).
+
 ## [0.4.0] — 2026-11-13
 
 ### Mr Onion in your pipeline (Phase 47)

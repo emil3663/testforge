@@ -1,6 +1,6 @@
 // Phase 47 (TFP-247): runs a built image and asserts on what it writes, so a green release could have gone red
 // (Acceptance Criteria 4, the verified-release-pipeline skill). A built image proves nothing until it has run:
-//   1. its pins (check-pins.mjs in the image): Ubuntu 24.04, .nvmrc's Node, the lockfile's Playwright and Chromium;
+//   1. its pins (check-pins.mjs in the image): Ubuntu 26.04 (TFP-284), .nvmrc's Node, the lockfile's Playwright and Chromium;
 //   2. `--help` exits 0 with the usage;
 //   3. a real run on the comparison fixture, which the image itself starts with --server: --report-only exits 0, the
 //      JUnit totals are the report's, at least one test executed, and the report says which Mr Onion made it;
@@ -75,7 +75,7 @@ function ownersUnder(dir) {
 /** What check-pins.mjs printed that disagrees with the repo; empty when it agrees. */
 export function pinsFailures(pins, lock) {
     const failures = [];
-    if (pins?.os !== "24.04") failures.push(`the image's Ubuntu is ${pins?.os}, not 24.04 (CI's runner pin)`);
+    if (pins?.os !== "26.04") failures.push(`the image's Ubuntu is ${pins?.os}, not 26.04 (CI's runner pin)`); // TFP-284: was 24.04
     const locked = lock.packages?.["node_modules/playwright-core"]?.version;
     if (pins?.playwright !== locked) failures.push(`the image's Playwright is ${pins?.playwright}; the lockfile says ${locked}`);
     return failures;
