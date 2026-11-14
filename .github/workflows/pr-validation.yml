@@ -38,7 +38,7 @@ jobs:
         run: npm run check:old-name
 
       # TFP-283: the script builds first (build:self-test) and Playwright's webServer only starts, so its
-      # 120 s covers the start alone. A separate `npm run build` here would build twice.
+      # 120 s covers the start alone. The production build runs after the tests (below).
       - name: Run smoke tests with Allure
         run: npm run test:self:allure
 
@@ -52,6 +52,12 @@ jobs:
             artifacts/allure-results/smoke
           if-no-files-found: warn
           retention-days: 30
+
+      # TFP-283 (owner ruling, 2026-11-14): the smoke suite's build uses .env.development's values, so this
+      # checks the production build without them. After the smoke tests, and before the comments, so a
+      # failing build is never reported as a pass.
+      - name: Run production build
+        run: npm run build
 
       - name: Comment PR on success
         if: success()
