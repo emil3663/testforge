@@ -34,9 +34,8 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run build
-        run: npm run build
-
+      # TFP-283: the script builds first (build:self-test) and Playwright's webServer only starts, so its
+      # 120 s covers the start alone. A separate `npm run build` here would build twice.
       - name: Run Mr Onion smoke suite with Allure
         run: npm run test:self:allure
 

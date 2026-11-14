@@ -37,9 +37,8 @@ jobs:
       - name: Check for the old name
         run: npm run check:old-name
 
-      - name: Run build
-        run: npm run build
-
+      # TFP-283: the script builds first (build:self-test) and Playwright's webServer only starts, so its
+      # 120 s covers the start alone. A separate `npm run build` here would build twice.
       - name: Run smoke tests with Allure
         run: npm run test:self:allure
 

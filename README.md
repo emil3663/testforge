@@ -432,13 +432,13 @@ The action runs the image as the job's own user, attaches the reports, writes a 
 | `npm run test:unit` | Run the unit suite (about 620 tests; about 14 min) |
 | `npm run check:template-unchanged -- <commit>` | Compare the template generator's output on 172 fixed inputs with a commit's |
 | `npm run check:old-name` | List every use of the product's old name that `scripts/old-name/allowlist.json` doesn't allow, with why each allowed one stays |
-| `npm run test:self` | Run the smoke suite |
-| `npm run test:self:allure` | Run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
+| `npm run test:self` | Build the self-test target, then run the smoke suite |
+| `npm run test:self:allure` | Build the self-test target, run the smoke suite and generate an Allure report in `artifacts/allure-report/smoke` |
 | `npm run test:regression` | Run the regression suite |
 | `npm run test:regression:allure` | Run the regression suite and generate an Allure report in `artifacts/allure-report/regression` |
 | `npm run report:open:smoke` | Open the latest local smoke Allure report |
 | `npm run report:open:regression` | Open the latest local regression Allure report |
-| `npm run build:self-test` / `start:self-test` / `serve:self-test` | Build and serve the self-test target on :3001 (the regression suite starts it) |
+| `npm run build:self-test` / `start:self-test` / `serve:self-test` | Build and serve the self-test target on :3001 (the smoke and regression suites start it) |
 | `npm run library:promote` | Promote a candidate test into the library (with the tester's approval) |
 | `npm run mr-onion -- run --url <url>` | Crawl, generate and run against a site with no UI, for a pipeline (exit codes and outputs above) |
 | `npm run compare:generators` | Compare the template alone with the template plus the local model's gap-fill (setup in `docs/GENERATOR_COMPARISON.md`) |
